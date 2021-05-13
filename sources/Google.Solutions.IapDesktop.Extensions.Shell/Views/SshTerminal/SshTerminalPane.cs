@@ -215,15 +215,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.FormClosed += OnFormClosed;
 
             //
-            // Add debug command, but only show it if Shift key is pressed.
+            // Add debug commands, but only show it if Shift key is pressed.
             //
-            var copyStream = new ToolStripMenuItem("Copy received data");
-            copyStream.Click += (sender, args) => this.viewModel.CopyReceivedDataToClipboard();
+            var copyReceivedData = new ToolStripMenuItem("Copy received data");
+            copyReceivedData.Click += (sender, args) => this.viewModel.CopyReceivedDataToClipboard();
             this.TabContextStrip.Opening += (sender, args) =>
             {
-                copyStream.Visible = Control.ModifierKeys.HasFlag(Keys.Shift);
+                copyReceivedData.Visible = Control.ModifierKeys.HasFlag(Keys.Shift);
             };
-            this.TabContextStrip.Items.Add(copyStream);
+            this.TabContextStrip.Items.Add(copyReceivedData);
+
+            var copySentData = new ToolStripMenuItem("Copy sent data");
+            copySentData.Click += (sender, args) => this.viewModel.CopySentDataToClipboard();
+            this.TabContextStrip.Opening += (sender, args) =>
+            {
+                copySentData.Visible = Control.ModifierKeys.HasFlag(Keys.Shift);
+            };
+            this.TabContextStrip.Items.Add(copySentData);
         }
 
         private void ApplyTerminalSettings(TerminalSettings settings)
