@@ -1173,5 +1173,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.SelectWord(4, 0);
             Assert.AreEqual("first", this.terminal.TextSelection);
         }
+
+        //---------------------------------------------------------------------
+        // Special keys.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenPressingReturn_ThenTerminalSendsCarriageReturn()
+        {
+            //
+            // NB. This test requires a patched version of vtnetcore. If it fails,
+            // you're probably using an unpatched version.
+            //
+
+            this.terminal.SimulateKey(Keys.Return);
+            this.terminal.SimulateKey(Keys.A);
+            this.terminal.SimulateKey(Keys.Return | Keys.Shift);
+            this.terminal.SimulateKey(Keys.B);
+            this.terminal.SimulateKey(Keys.Return | Keys.Control);
+
+            Assert.AreEqual("\ra\rb\r", this.sendData.ToString());
+        }
     }
 }
