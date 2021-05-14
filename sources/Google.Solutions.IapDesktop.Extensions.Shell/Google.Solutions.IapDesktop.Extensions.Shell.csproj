@@ -157,6 +157,9 @@
       <DependentUpon>TerminalOptionsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Options\TerminalOptionsViewModel.cs" />
+    <Compile Include="Views\RemoteDesktop\MsRdpClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Views\RemoteDesktop\RemoteDesktopSessionBroker.cs" />
     <Compile Include="Views\RemoteDesktop\RdpClientExtensions.cs" />
     <Compile Include="Views\RemoteDesktop\RdpExceptions.cs" />

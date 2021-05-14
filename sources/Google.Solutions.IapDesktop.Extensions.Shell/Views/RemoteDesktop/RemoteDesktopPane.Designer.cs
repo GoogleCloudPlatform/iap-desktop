@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoteDesktopPane));
-            this.rdpClient = new AxMSTSCLib.AxMsRdpClient9NotSafeForScripting();
+            this.rdpClient = new MsRdpClient();
             this.spinner = new System.Windows.Forms.PictureBox();
             this.reconnectToResizeTimer = new System.Windows.Forms.Timer(this.components);
             this.reconnectPanel = new System.Windows.Forms.Panel();
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
         #endregion
 
-        private AxMSTSCLib.AxMsRdpClient9NotSafeForScripting rdpClient;
+        private MsRdpClient rdpClient;
         private System.Windows.Forms.PictureBox spinner;
         private System.Windows.Forms.Timer reconnectToResizeTimer;
         private System.Windows.Forms.Panel reconnectPanel;

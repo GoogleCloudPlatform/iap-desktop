@@ -317,6 +317,10 @@ namespace Google.Solutions.IapDesktop.Windows
                 "Full screen pane",
                 _ => CommandState.Enabled,
                 _ => this.serviceProvider.GetService<DebugFullScreenPane>().ShowWindow()));
+            debugCommand.AddCommand(new Command<IMainForm>(
+                "Track window focus",
+                _ => CommandState.Enabled,
+                _ => this.serviceProvider.GetService<DebugFocusWindow>().ShowWindow()));
 #endif
         }
 
