@@ -34,6 +34,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer;
 using System;
 using System.Diagnostics;
@@ -97,6 +98,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             }
         }
 
+
+        private static CommandState GetContextMenuCommandStateWhenRunningSshInstanceRequired(IProjectModelNode node)
+        {
+            if (node is IProjectModelInstanceNode vmNode && vmNode.IsSshSupported())
+            {
+                return vmNode.IsRunning
+                    ? CommandState.Enabled
+                    : CommandState.Disabled;
+            }
+            else
+            {
+                return CommandState.Unavailable;
+            }
+        }
+
         private CommandState GetCommandStateWhenActiveRemoteDesktopSessionRequired()
         {
             var activeSession = this.serviceProvider
@@ -149,7 +165,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 
         private async void Connect(
             IProjectModelNode node,
-            bool allowPersistentCredentials)
+            bool allowPersistentCredentials,
+            bool forceNewConnection)
         {
             try
             {
@@ -164,10 +181,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 }
                 else if (node is IProjectModelInstanceNode sshNode && sshNode.IsSshSupported())
                 {
-                    await this.serviceProvider
-                        .GetService<ISshConnectionService>()
-                        .ActivateOrConnectInstanceAsync(sshNode)
-                        .ConfigureAwait(true);
+                    if (forceNewConnection)
+                    {
+                        await this.serviceProvider
+                            .GetService<ISshConnectionService>()
+                            .ConnectInstanceAsync(sshNode)
+                            .ConfigureAwait(true);
+                    }
+                    else
+                    {
+                        await this.serviceProvider
+                            .GetService<ISshConnectionService>()
+                            .ActivateOrConnectInstanceAsync(sshNode)
+                            .ConfigureAwait(true);
+                    }
                 }
             }
             catch (Exception e) when (e.IsCancellation())
@@ -234,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 new Command<IProjectModelNode>(
                     "&Connect",
                     GetContextMenuCommandStateWhenRunningInstanceRequired,
-                    node => Connect(node, true))
+                    node => Connect(node, true, false))
                 {
                     Image = Resources.Connect_16,
                     IsDefault = true
@@ -244,17 +271,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 new Command<IProjectModelNode>(
                     "Connect &as user...",
                     GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,   // Windows/RDP only.
-                    node => Connect(node, false))
+                    node => Connect(node, false, false))
                 {
                     Image = Resources.Connect_16
                 },
                 1);
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Connect &new session",
+                    GetContextMenuCommandStateWhenRunningSshInstanceRequired,   // Linux/SSH only.
+                    node => Connect(node, false, true))
+                {
+                    Image = Resources.Connect_16
+                },
+                2);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Connect",
                     GetToolbarCommandStateWhenRunningInstanceRequired,
-                    node => Connect(node, true))
+                    node => Connect(node, true, false))
                 {
                     Image = Resources.Connect_16
                 });
@@ -299,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 {
                     Image = Resources.Password_16
                 },
-                2);
+                3);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectModelNode>(
