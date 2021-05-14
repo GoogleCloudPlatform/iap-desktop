@@ -42,7 +42,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             //
             // Cf. https://www.codeproject.com/Tips/109917/Fix-the-focus-issue-on-RDP-Client-from-the-AxInter
             //
-            if (m.Msg == WM_MOUSEACTIVATE)
+            // NB. Only do this when the control does not have focus yet, 
+            // otherwise we're interfering with operations such as dragging 
+            // or resizing windows.
+            //
+            if (!this.ContainsFocus && m.Msg == WM_MOUSEACTIVATE)
             {
                 this.Focus();
             }
