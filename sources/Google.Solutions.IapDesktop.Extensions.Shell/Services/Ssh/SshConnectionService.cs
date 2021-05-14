@@ -48,6 +48,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     {
         Task ActivateOrConnectInstanceAsync(
             IProjectModelInstanceNode vmNode);
+
+        Task ConnectInstanceAsync(
+            IProjectModelInstanceNode vmNode);
     }
 
     [Service(typeof(ISshConnectionService))]
@@ -93,6 +96,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 // SSH session was active, nothing left to do.
                 return;
             }
+
+            await ConnectInstanceAsync(vmNode).ConfigureAwait(true);
+        }
+
+        public async Task ConnectInstanceAsync(IProjectModelInstanceNode vmNode)
+        {
+            Debug.Assert(vmNode.IsSshSupported());
 
             // Select node so that tracking windows are updated.
             await this.projectModelService.SetActiveNodeAsync(

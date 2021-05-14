@@ -160,6 +160,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
+        public async Task WhenSessionExists_ThenConnectInstanceAsyncCreatesNewSessionSession()
+        {
+            this.serviceRegistry.AddMock<IConnectionSettingsService>();
+
+            this.sessionBroker.Setup(b => b.TryActivate(
+                    It.Is<InstanceLocator>(l => l == SampleLocator)))
+                .Returns(false);
+
+            this.serviceRegistry.AddMock<IConnectionSettingsService>()
+                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(
+                    InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
+                        .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
+            var vmNode = CreateInstanceNodeMock();
+
+            var service = new SshConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+
+            this.tunnelBrokerService.Verify(s => s.ConnectAsync(
+                It.Is<TunnelDestination>(d => d.RemotePort == 22),
+                It.IsAny<ISshRelayPolicy>(),
+                It.IsAny<TimeSpan>()), Times.Once);
+        }
+
+        [Test]
         public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncConnectsToConfiguredPort()
         {
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
