@@ -37,7 +37,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 {
     [TestFixture]
-    public class TestSshTerminalSessionBroker : WindowTestFixtureBase
+    public class TestRemoteDesktopSessionBroker : WindowTestFixtureBase
     {
         // Use a larger machine type as all this RDP'ing consumes a fair
         // amount of memory.
