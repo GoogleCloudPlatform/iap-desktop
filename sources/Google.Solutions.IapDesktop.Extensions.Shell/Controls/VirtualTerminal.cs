@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
     {
         private readonly VirtualTerminalController controller;
         private readonly DataConsumer controllerSink;
+        private readonly VirtualTerminalKeyHandler keyHandler;
 
         public event EventHandler<SendDataEventArgs> SendData;
         public event EventHandler<TerminalResizeEventArgs> TerminalResized;
@@ -111,6 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             this.controller = new VirtualTerminalController();
             this.controllerSink = new DataConsumer(this.controller);
+            this.keyHandler = new VirtualTerminalKeyHandler(this.controller);
 
 #if DEBUG
             this.controller.Debugging = true;
@@ -630,27 +632,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        private bool IsKeySequence(string key, bool control, bool shift)
-        {
-            return this.controller.GetKeySequence(key, control, shift) != null;
-        }
-
-        private static string NameFromKey(Keys key)
-        {
-            // Return name that is compatible with vtnetcore's KeyboardTranslation
-            switch (key)
-            {
-                case Keys.Next: // Alias for PageDown
-                    return "PageDown";
-
-                case Keys.Prior:   // Alias for PageUp
-                    return "PageUp";
-
-                default:
-                    return key.ToString();
-            }
-        }
-
         private bool SendKey(
             Keys keyCode,
             bool control,
@@ -750,10 +731,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 ScrollToEnd();
                 return true;
             }
-            else if (!alt && IsKeySequence(
-                NameFromKey(keyCode),
-                control,
-                shift))
+            else if (!alt && this.keyHandler.IsKeySequence(keyCode, control, shift))
             {
                 //
                 // This is a key sequence that needs to be
@@ -762,10 +740,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 // NB. If Alt is pressed, it cannot be a key sequence. 
                 // Otherwise, it might.
                 //
-                return this.controller.KeyPressed(
-                    NameFromKey(keyCode),
-                    control,
-                    shift);
+                return this.keyHandler.KeyPressed(keyCode, control, shift);
             }
             else if (alt && control)
             {
@@ -835,8 +810,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             // That means the status of the Control, Alt, and
             // Shift modifiers also does not matter.
             //
-            e.Handled = this.controller.KeyPressed(
-                e.KeyChar.ToString(),
+            e.Handled = this.keyHandler.KeyPressed(
+                e.KeyChar,
                 false,
                 false);
 
