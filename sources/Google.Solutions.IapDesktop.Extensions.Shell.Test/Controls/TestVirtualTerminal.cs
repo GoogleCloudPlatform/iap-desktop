@@ -1026,7 +1026,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        [Ignore("Not supported by vtnetcore")]
+        public void WhenTypingCtrlChar_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Control | Keys.A);
+            this.terminal.SimulateKey(Keys.Control | Keys.Z);
+
+            Assert.AreEqual("\u0001\u001a", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingAltChar_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Alt | Keys.A);
+            this.terminal.SimulateKey(Keys.Alt | Keys.Z);
+
+            Assert.AreEqual("\u001ba\u001bz", this.sendData.ToString());
+        }
+
+        [Test]
         public void WhenTypingCtrlSpace_ThenKeystrokeIsSent()
         {
             this.terminal.SimulateKey(Keys.Control | Keys.Space);
