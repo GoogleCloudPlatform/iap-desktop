@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 shift) != null;
         }
 
-        public bool KeyPressed(Keys keyCode, bool control, bool shift)
+        public bool KeyDown(Keys keyCode, bool control, bool shift)
         {
             return this.controller.KeyPressed(
                     NameFromKey(keyCode),

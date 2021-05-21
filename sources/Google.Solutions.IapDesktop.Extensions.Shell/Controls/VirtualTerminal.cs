@@ -632,7 +632,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        private bool SendKey(
+        private bool ProcessKeyDown(
             Keys keyCode,
             bool control,
             bool alt,
@@ -740,7 +740,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 // NB. If Alt is pressed, it cannot be a key sequence. 
                 // Otherwise, it might.
                 //
-                return this.keyHandler.KeyPressed(keyCode, control, shift);
+                return this.keyHandler.KeyDown(keyCode, control, shift);
             }
             else if (alt && control)
             {
@@ -788,7 +788,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            e.Handled = SendKey(e.KeyCode, e.Control, e.Alt, e.Shift);
+            e.Handled = ProcessKeyDown(e.KeyCode, e.Control, e.Alt, e.Shift);
 
             //
             // Suppress KeyPress if we already handled the key.
