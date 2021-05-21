@@ -761,10 +761,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             // That means the status of the Control, Alt, and
             // Shift modifiers also does not matter.
             //
-            e.Handled = this.keyHandler.KeyPressed(
-                e.KeyChar,
-                false,
-                false);
+            e.Handled = this.keyHandler.KeyPressed(e.KeyChar);
 
             ClearTextSelection();
         }

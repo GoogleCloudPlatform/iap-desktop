@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,8 +85,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 shift) != null;
         }
 
+        public bool KeyDown(Keys keyData)
+        {
+            return KeyDown(
+                keyData & Keys.KeyCode,
+                keyData.HasFlag(Keys.Alt),
+                keyData.HasFlag(Keys.Control),
+                keyData.HasFlag(Keys.Shift));
+        }
+
         public bool KeyDown(Keys keyCode, bool alt, bool control, bool shift)
         {
+            Debug.Assert((keyCode & Keys.KeyCode) == keyCode, "No modifiers");
+
             if (!alt && IsKeySequence(keyCode, control, shift))
             {
                 //
@@ -144,12 +156,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        public bool KeyPressed(char keyChar, bool control, bool shift)
+        public bool KeyPressed(char keyChar)
         {
             return this.controller.KeyPressed(
                     keyChar.ToString(),
-                    control,
-                    shift);
+                    false,
+                    false);
         }
     }
 }
