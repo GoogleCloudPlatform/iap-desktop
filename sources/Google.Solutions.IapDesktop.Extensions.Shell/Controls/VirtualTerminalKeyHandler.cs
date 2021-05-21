@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         //
         //---------------------------------------------------------------------
 
-        public bool IsKeySequence(Keys keyCode, bool control, bool shift)
+        private bool IsKeySequence(Keys keyCode, bool control, bool shift)
         {
             return this.controller.GetKeySequence(
                 NameFromKey(keyCode), 

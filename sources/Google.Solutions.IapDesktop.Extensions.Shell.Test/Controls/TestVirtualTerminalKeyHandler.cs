@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 
 
         //---------------------------------------------------------------------
-        // Modifiers.
+        // Cursor.
         //---------------------------------------------------------------------
 
         [Test]
@@ -136,15 +136,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // Numpad & Function Keys.
+        // Modifiers.
         //---------------------------------------------------------------------
 
         [Test]
-        public void AltV()
+        public void WhenTypingCtrlChar_ThenKeystrokeIsSent()
         {
-            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Alt | Keys.V));
-            Assert.AreEqual($"{Esc}v", this.sendData.ToString());
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Control | Keys.A));
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Control | Keys.Z));
+
+            Assert.AreEqual("\u0001\u001a", this.sendData.ToString());
         }
+
+        [Test]
+        public void WhenTypingAltChar_ThenKeystrokeIsSent()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Alt | Keys.A));
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Alt | Keys.Z));
+
+            Assert.AreEqual("\u001ba\u001bz", this.sendData.ToString());
+        }
+
+        //---------------------------------------------------------------------
+        // Numpad & Function Keys.
+        //---------------------------------------------------------------------
 
         [Test]
         public void Backspace()

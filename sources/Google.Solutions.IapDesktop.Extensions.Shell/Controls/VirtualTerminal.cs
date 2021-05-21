@@ -640,6 +640,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             this.scrolling = false;
 
+            //
+            // Process any non-xterm key sequences.
+            //
             if ((this.EnableCtrlV && control && !shift && !alt && keyCode == Keys.V) ||
                 (this.EnableShiftInsert && !control && shift && !alt && keyCode == Keys.Insert))
             {
@@ -733,6 +736,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
             else
             {
+                //
+                // Check if it is an xterm key sequences. If it is, handle it
+                // and skip further key processing by returning true.
+                //
                 return this.keyHandler.KeyDown(keyCode, alt, control, shift);
             }
         }
