@@ -1,0 +1,24 @@
+From 1dc511a149a8fc28a86b239005a1c2c621b0eec7 Mon Sep 17 00:00:00 2001
+From: IAP Desktop Build <iap-desktop+build@google.com>
+Date: Fri, 21 May 2021 11:32:01 +0200
+Subject: [PATCH 4/4] Add keyboard translation for Ctrl+Space
+
+---
+ VtNetCore/VirtualTerminal/KeyboardTranslations.cs | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/VtNetCore/VirtualTerminal/KeyboardTranslations.cs b/VtNetCore/VirtualTerminal/KeyboardTranslations.cs
+index 7310782..e5db30f 100644
+--- a/VtNetCore/VirtualTerminal/KeyboardTranslations.cs
++++ b/VtNetCore/VirtualTerminal/KeyboardTranslations.cs
+@@ -154,6 +154,7 @@
+             { "Enter",   new KeyboardTranslation { Normal = "\r", Shift = "\r", Control = "\r" } },
+             { "Return",  new KeyboardTranslation { Normal = "\r", Shift = "\r", Control = "\r" } },
+             { "Escape",  new KeyboardTranslation { Normal = "\u001b\u001b", Shift = "\u001b\u001b", Control = "\u001b\u001b" } },
++            { "Space",   new KeyboardTranslation { Control = "\u0000" } },
+             { "A",       new KeyboardTranslation { Control = "\u0001" } },
+             { "B",       new KeyboardTranslation { Control = "\u0002" } },
+             { "C",       new KeyboardTranslation { Control = "\u0003" } },
+-- 
+2.17.1.windows.2
+
