@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
     {
         private readonly VirtualTerminalController controller;
         private readonly DataConsumer controllerSink;
+        private readonly VirtualTerminalKeyHandler keyHandler;
 
         public event EventHandler<SendDataEventArgs> SendData;
         public event EventHandler<TerminalResizeEventArgs> TerminalResized;
@@ -111,6 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             this.controller = new VirtualTerminalController();
             this.controllerSink = new DataConsumer(this.controller);
+            this.keyHandler = new VirtualTerminalKeyHandler(this.controller);
 
 #if DEBUG
             this.controller.Debugging = true;
@@ -630,28 +632,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        private bool IsKeySequence(string key, bool control, bool shift)
-        {
-            return this.controller.GetKeySequence(key, control, shift) != null;
-        }
-
-        private static string NameFromKey(Keys key)
-        {
-            // Return name that is compatible with vtnetcore's KeyboardTranslation
-            switch (key)
-            {
-                case Keys.Next: // Alias for PageDown
-                    return "PageDown";
-
-                case Keys.Prior:   // Alias for PageUp
-                    return "PageUp";
-
-                default:
-                    return key.ToString();
-            }
-        }
-
-        private bool SendKey(
+        private bool ProcessKeyDown(
             Keys keyCode,
             bool control,
             bool alt,
@@ -659,6 +640,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             this.scrolling = false;
 
+            //
+            // Process any non-xterm key sequences.
+            //
             if ((this.EnableCtrlV && control && !shift && !alt && keyCode == Keys.V) ||
                 (this.EnableShiftInsert && !control && shift && !alt && keyCode == Keys.Insert))
             {
@@ -750,70 +734,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 ScrollToEnd();
                 return true;
             }
-            else if (!alt && IsKeySequence(
-                NameFromKey(keyCode),
-                control,
-                shift))
-            {
-                //
-                // This is a key sequence that needs to be
-                // translated to some VT sequence.
-                //
-                // NB. If Alt is pressed, it cannot be a key sequence. 
-                // Otherwise, it might.
-                //
-                return this.controller.KeyPressed(
-                    NameFromKey(keyCode),
-                    control,
-                    shift);
-            }
-            else if (alt && control)
-            {
-                //
-                // AltGr - let KeyPress handle the composition.
-                //
-                return false;
-            }
-            else if (alt)
-            {
-                //
-                // Somewhat non-standard, emulate the behavior
-                // of other terminals and escape the character.
-                //
-                // This enables applications like midnight 
-                // commander which rely on Alt+<char> keyboard
-                // shortcuts.
-                //
-                var ch = KeyUtil.CharFromKeyCode(keyCode);
-                if (ch.Length > 0)
-                {
-                    OnSendData(new SendDataEventArgs("\u001b" + ch));
-                    return true;
-                }
-                else
-                {
-                    //
-                    // This is a stray Alt press, could be part
-                    // of an Alt+Tab action. Do not handle this
-                    // as it might screw up subsequent input.
-                    //
-                    return false;
-                }
-            }
             else
             {
                 //
-                // This is a plain character. Defer handling to 
-                // KeyPress so that Windows does the nasty key
-                // composition and dead key handling for us.
+                // Check if it is an xterm key sequences. If it is, handle it
+                // and skip further key processing by returning true.
                 //
-                return false;
+                return this.keyHandler.KeyDown(keyCode, alt, control, shift);
             }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            e.Handled = SendKey(e.KeyCode, e.Control, e.Alt, e.Shift);
+            e.Handled = ProcessKeyDown(e.KeyCode, e.Control, e.Alt, e.Shift);
 
             //
             // Suppress KeyPress if we already handled the key.
@@ -835,10 +768,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             // That means the status of the Control, Alt, and
             // Shift modifiers also does not matter.
             //
-            e.Handled = this.controller.KeyPressed(
-                e.KeyChar.ToString(),
-                false,
-                false);
+            e.Handled = this.keyHandler.KeyPressed(e.KeyChar);
 
             ClearTextSelection();
         }
