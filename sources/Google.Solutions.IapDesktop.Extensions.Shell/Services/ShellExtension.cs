@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 1);
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
-                    "Connect &new session",
+                    "Connect in &new terminal",
                     GetContextMenuCommandStateWhenRunningSshInstanceRequired,   // Linux/SSH only.
                     node => Connect(node, false, true))
                 {
