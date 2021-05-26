@@ -94,6 +94,7 @@
       <DependentUpon>VirtualTerminal.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\VirtualTerminalKeyHandler.cs" />
+    <Compile Include="Controls\VirtualTerminalKeyTranslation.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
