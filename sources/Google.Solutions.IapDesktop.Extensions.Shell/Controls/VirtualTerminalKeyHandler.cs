@@ -74,6 +74,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             Debug.Assert((keyCode & Keys.KeyCode) == keyCode, "No modifiers");
 
+            //
+            // Instead of passing the key to vtnetcore to translate, use
+            // our own translation logic (which is more complete than
+            // vtnetcore's).
+            //
             var translation = VirtualTerminalKeyTranslation.ForKey(
                 keyCode, 
                 alt, 
