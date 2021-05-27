@@ -112,7 +112,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 { Keys.Tab,     new StandardMapping { Normal = "\t",          Shift = Esc + "[Z",     } },
                 { Keys.Return,  new StandardMapping { Normal = "\r",          Shift = "\r",           Control = "\r",       Alt = Esc + "\r" } },
                 { Keys.Escape,  new StandardMapping { Normal = Esc + Esc,     Shift = Esc + Esc,      Control = Esc + Esc } },
-                { Keys.Space,   new StandardMapping { Control = "\u0000",                                                   Alt = Esc + " " } },
+                { Keys.Pause,   new StandardMapping { Normal = "\u001a",      Shift = "\u001a",                             Alt = Esc + "\u001a" } },
+                { Keys.Space,   new StandardMapping {                                                 Control = "\u0000",   Alt = Esc + " " } },
+
                 { Keys.A,       new StandardMapping { Control = "\u0001",     Alt = Esc + "a" } },
                 { Keys.B,       new StandardMapping { Control = "\u0002",     Alt = Esc + "b" } },
                 { Keys.C,       new StandardMapping { Control = "\u0003",     Alt = Esc + "c" } },
@@ -139,6 +141,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 { Keys.X,       new StandardMapping { Control = "\u0018",     Alt = Esc + "x" } },
                 { Keys.Y,       new StandardMapping { Control = "\u0019",     Alt = Esc + "y" } },
                 { Keys.Z,       new StandardMapping { Control = "\u001a",     Alt = Esc + "z" } },
+
+                { Keys.D0,      new StandardMapping {                         Alt = Esc + "0" } },
+                { Keys.D1,      new StandardMapping {                         Alt = Esc + "1" } },
+                { Keys.D2,      new StandardMapping { Control = "\u0000",     Alt = Esc + "2" } },
+                { Keys.D3,      new StandardMapping { Control = Esc,          Alt = Esc + "3" } },
+                { Keys.D4,      new StandardMapping { Control = "\u001c",     Alt = Esc + "4" } },
+                { Keys.D5,      new StandardMapping { Control = "\u001d",     Alt = Esc + "5" } },
+                { Keys.D6,      new StandardMapping { Control = "\u001e",     Alt = Esc + "6" } },
+                { Keys.D7,      new StandardMapping { Control = "\u001f",     Alt = Esc + "7" } },
+                { Keys.D8,      new StandardMapping { Control = "\u007f",     Alt = Esc + "8" } },
+                { Keys.D9,      new StandardMapping {                         Alt = Esc + "9" } },
             };
 
         /// <summary>

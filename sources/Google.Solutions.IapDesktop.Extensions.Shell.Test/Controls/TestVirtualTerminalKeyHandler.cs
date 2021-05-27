@@ -615,7 +615,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.IsFalse(this.keyHandler.KeyDown(Keys.Back | Keys.Alt));
         }
 
-
         [Test]
         public void Tab()
         {
@@ -725,11 +724,162 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         }
 
         [Test]
-        [Ignore("Not supported by vtnetcore")]
         public void Pause()
         {
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.Pause));
             Assert.AreEqual("\u001a", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Pause | Keys.Shift));
+            Assert.AreEqual("\u001a", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.Pause | Keys.Control));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Pause | Keys.Alt));
+            Assert.AreEqual($"{Esc}\u001a", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D0()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D0));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D0 | Keys.Shift));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D0 | Keys.Control));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D0 | Keys.Alt));
+            Assert.AreEqual($"{Esc}0", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D1()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D1));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D1 | Keys.Shift));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D1 | Keys.Control));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D1 | Keys.Alt));
+            Assert.AreEqual($"{Esc}1", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D2()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D2));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D2 | Keys.Shift));
+            
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D2 | Keys.Control));
+            Assert.AreEqual($"\u0000", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D2 | Keys.Alt));
+            Assert.AreEqual($"{Esc}2", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D3()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D3));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D3 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D3 | Keys.Control));
+            Assert.AreEqual($"{Esc}", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D3 | Keys.Alt));
+            Assert.AreEqual($"{Esc}3", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D4()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D4));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D4 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D4 | Keys.Control));
+            Assert.AreEqual($"\u001c", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D4 | Keys.Alt));
+            Assert.AreEqual($"{Esc}4", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D5()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D5));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D5 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D5 | Keys.Control));
+            Assert.AreEqual($"\u001d", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D5 | Keys.Alt));
+            Assert.AreEqual($"{Esc}5", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D6()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D6));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D6 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D6 | Keys.Control));
+            Assert.AreEqual($"\u001e", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D6 | Keys.Alt));
+            Assert.AreEqual($"{Esc}6", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D7()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D7));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D7 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D7 | Keys.Control));
+            Assert.AreEqual($"\u001f", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D7 | Keys.Alt));
+            Assert.AreEqual($"{Esc}7", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D8()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D8));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D8 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D8 | Keys.Control));
+            Assert.AreEqual($"\u007f", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D8 | Keys.Alt));
+            Assert.AreEqual($"{Esc}8", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D9()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D9));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D9 | Keys.Shift));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D9 | Keys.Control));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D9 | Keys.Alt));
+            Assert.AreEqual($"{Esc}9", this.sendData.ToString());
+            this.sendData.Clear();
         }
     }
 }
