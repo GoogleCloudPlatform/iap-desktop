@@ -25,6 +25,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -615,7 +616,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.IsFalse(this.keyHandler.KeyDown(Keys.Back | Keys.Alt));
         }
 
-
         [Test]
         public void Tab()
         {
@@ -725,11 +725,470 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         }
 
         [Test]
-        [Ignore("Not supported by vtnetcore")]
         public void Pause()
         {
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.Pause));
             Assert.AreEqual("\u001a", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Pause | Keys.Shift));
+            Assert.AreEqual("\u001a", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.Pause | Keys.Control));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Pause | Keys.Alt));
+            Assert.AreEqual($"{Esc}\u001a", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D0()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D0));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D0 | Keys.Shift));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D0 | Keys.Control));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D0 | Keys.Alt));
+            Assert.AreEqual($"{Esc}0", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D1()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D1));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D1 | Keys.Shift));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D1 | Keys.Control));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D1 | Keys.Alt));
+            Assert.AreEqual($"{Esc}1", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D2()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D2));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D2 | Keys.Shift));
+            
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D2 | Keys.Control));
+            Assert.AreEqual($"\u0000", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D2 | Keys.Alt));
+            Assert.AreEqual($"{Esc}2", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D3()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D3));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D3 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D3 | Keys.Control));
+            Assert.AreEqual($"{Esc}", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D3 | Keys.Alt));
+            Assert.AreEqual($"{Esc}3", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D4()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D4));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D4 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D4 | Keys.Control));
+            Assert.AreEqual($"\u001c", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D4 | Keys.Alt));
+            Assert.AreEqual($"{Esc}4", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D5()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D5));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D5 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D5 | Keys.Control));
+            Assert.AreEqual($"\u001d", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D5 | Keys.Alt));
+            Assert.AreEqual($"{Esc}5", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D6()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D6));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D6 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D6 | Keys.Control));
+            Assert.AreEqual($"\u001e", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D6 | Keys.Alt));
+            Assert.AreEqual($"{Esc}6", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D7()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D7));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D7 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D7 | Keys.Control));
+            Assert.AreEqual($"\u001f", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D7 | Keys.Alt));
+            Assert.AreEqual($"{Esc}7", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D8()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D8));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D8 | Keys.Shift));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D8 | Keys.Control));
+            Assert.AreEqual($"\u007f", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D8 | Keys.Alt));
+            Assert.AreEqual($"{Esc}8", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void D9()
+        {
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D9));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D9 | Keys.Shift));
+            Assert.IsFalse(this.keyHandler.KeyDown(Keys.D9 | Keys.Control));
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.D9 | Keys.Alt));
+            Assert.AreEqual($"{Esc}9", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        //---------------------------------------------------------------------
+        // Num pad keys.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void NumPad0()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad0));
+            Assert.AreEqual($"{Esc}Op", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad0 | Keys.Shift));
+            Assert.AreEqual($"{Esc}Op", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad0 | Keys.Control));
+            Assert.AreEqual($"{Esc}Op", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad0 | Keys.Alt));
+            Assert.AreEqual($"{Esc}Op", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPad1()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad1));
+            Assert.AreEqual($"{Esc}Oq", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad1 | Keys.Shift));
+            Assert.AreEqual($"{Esc}Oq", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad1 | Keys.Control));
+            Assert.AreEqual($"{Esc}Oq", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad1 | Keys.Alt));
+            Assert.AreEqual($"{Esc}Oq", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPad2()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad2));
+            Assert.AreEqual($"{Esc}Or", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad2 | Keys.Shift));
+            Assert.AreEqual($"{Esc}Or", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad2 | Keys.Control));
+            Assert.AreEqual($"{Esc}Or", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad2 | Keys.Alt));
+            Assert.AreEqual($"{Esc}Or", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPad3()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad3));
+            Assert.AreEqual($"{Esc}Os", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad3 | Keys.Shift));
+            Assert.AreEqual($"{Esc}Os", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad3 | Keys.Control));
+            Assert.AreEqual($"{Esc}Os", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad3 | Keys.Alt));
+            Assert.AreEqual($"{Esc}Os", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPad4()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad4));
+            Assert.AreEqual($"{Esc}Ot", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad4 | Keys.Shift));
+            Assert.AreEqual($"{Esc}Ot", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad4 | Keys.Control));
+            Assert.AreEqual($"{Esc}Ot", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad4 | Keys.Alt));
+            Assert.AreEqual($"{Esc}Ot", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPad5()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad5));
+            Assert.AreEqual($"{Esc}Ou", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad5 | Keys.Shift));
+            Assert.AreEqual($"{Esc}Ou", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad5 | Keys.Control));
+            Assert.AreEqual($"{Esc}Ou", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad5 | Keys.Alt));
+            Assert.AreEqual($"{Esc}Ou", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+        
+        [Test]
+        public void NumPad6()
+        {
+            this.controller.EnableApplicationCursorKeys(true);
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad6));
+            Assert.AreEqual($"{Esc}Ov", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad6 | Keys.Shift));
+            Assert.AreEqual($"{Esc}Ov", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad6 | Keys.Control));
+            Assert.AreEqual($"{Esc}Ov", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad6 | Keys.Alt));
+            Assert.AreEqual($"{Esc}Ov", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPad7()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad7));
+            Assert.AreEqual($"{Esc}Ow", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad7 | Keys.Shift));
+            Assert.AreEqual($"{Esc}Ow", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad7 | Keys.Control));
+            Assert.AreEqual($"{Esc}Ow", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad7 | Keys.Alt));
+            Assert.AreEqual($"{Esc}Ow", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPad8()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad8));
+            Assert.AreEqual($"{Esc}Ox", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad8 | Keys.Shift));
+            Assert.AreEqual($"{Esc}Ox", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad8 | Keys.Control));
+            Assert.AreEqual($"{Esc}Ox", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad8 | Keys.Alt));
+            Assert.AreEqual($"{Esc}Ox", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPad9()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad9));
+            Assert.AreEqual($"{Esc}Oy", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad9 | Keys.Shift));
+            Assert.AreEqual($"{Esc}Oy", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad9 | Keys.Control));
+            Assert.AreEqual($"{Esc}Oy", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad9 | Keys.Alt));
+            Assert.AreEqual($"{Esc}Oy", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPadDivide()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Divide));
+            Assert.AreEqual($"{Esc}OQ", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Divide | Keys.Shift));
+            Assert.AreEqual($"{Esc}OQ", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Divide | Keys.Control));
+            Assert.AreEqual($"{Esc}OQ", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Divide | Keys.Alt));
+            Assert.AreEqual($"{Esc}/", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPadMultiply()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Multiply));
+            Assert.AreEqual($"{Esc}OR", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Multiply | Keys.Shift));
+            Assert.AreEqual($"{Esc}OR", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Multiply | Keys.Control));
+            Assert.AreEqual($"{Esc}OR", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Multiply | Keys.Alt));
+            Assert.AreEqual($"{Esc}*", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPadSubtract()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Subtract));
+            Assert.AreEqual($"{Esc}OS", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Subtract | Keys.Shift));
+            Assert.AreEqual($"{Esc}OS", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Subtract | Keys.Control));
+            Assert.AreEqual($"{Esc}OS", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Subtract | Keys.Alt));
+            Assert.AreEqual($"{Esc}-", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPadAdd()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Add));
+            Assert.AreEqual($"{Esc}Ol", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Add | Keys.Shift));
+            Assert.AreEqual($"{Esc}Om", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Add | Keys.Control));
+            Assert.AreEqual($"{Esc}Ol", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Add | Keys.Alt));
+            Assert.AreEqual($"{Esc}+", this.sendData.ToString());
+            this.sendData.Clear();
+        }
+
+        [Test]
+        public void NumPadSeparator()
+        {
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Separator));
+            Assert.AreEqual($"{Esc}On", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Separator | Keys.Shift));
+            Assert.AreEqual($"{Esc}On", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Separator | Keys.Control));
+            Assert.AreEqual($"{Esc}On", this.sendData.ToString());
+            this.sendData.Clear();
+
+            Assert.IsTrue(this.keyHandler.KeyDown(Keys.Separator | Keys.Alt));
+            Assert.AreEqual(
+                $"{Esc}" + CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator, 
+                this.sendData.ToString());
+            this.sendData.Clear();
         }
     }
 }
