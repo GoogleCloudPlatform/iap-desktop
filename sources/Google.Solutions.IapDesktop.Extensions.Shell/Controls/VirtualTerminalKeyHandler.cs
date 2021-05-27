@@ -38,22 +38,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
     {
         private readonly VirtualTerminalController controller;
 
-        private static string NameFromKey(Keys key)
-        {
-            // Return name that is compatible with vtnetcore's KeyboardTranslation
-            switch (key)
-            {
-                case Keys.Next: // Alias for PageDown
-                    return "PageDown";
-
-                case Keys.Prior:   // Alias for PageUp
-                    return "PageUp";
-
-                default:
-                    return key.ToString();
-            }
-        }
-
         private void Send(string data)
         {
             this.controller.SendData?.Invoke(
@@ -77,14 +61,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         //
         //---------------------------------------------------------------------
 
-        private bool IsKeySequence(Keys keyCode, bool control, bool shift)
-        {
-            return this.controller.GetKeySequence(
-                NameFromKey(keyCode), 
-                control, 
-                shift) != null;
-        }
-
         public bool KeyDown(Keys keyData)
         {
             return KeyDown(
@@ -98,52 +74,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             Debug.Assert((keyCode & Keys.KeyCode) == keyCode, "No modifiers");
 
-            if (!alt && IsKeySequence(keyCode, control, shift))
+            //
+            // Instead of passing the key to vtnetcore to translate, use
+            // our own translation logic (which is more complete than
+            // vtnetcore's).
+            //
+            var translation = VirtualTerminalKeyTranslation.ForKey(
+                keyCode, 
+                alt, 
+                control, 
+                shift,
+                this.controller.CursorState.ApplicationCursorKeysMode);
+
+            if (translation != null)
             {
                 //
-                // This is a key sequence that needs to be
-                // translated to some VT sequence.
+                // This key translated into some escape sequence. Send
+                // translated sequence and stop processing the key.
                 //
-                // NB. If Alt is pressed, it cannot be a key sequence. 
-                // Otherwise, it might.
-                //
-                return this.controller.KeyPressed(
-                    NameFromKey(keyCode),
-                    control,
-                    shift);
-            }
-            else if (alt && control)
-            {
-                //
-                // AltGr - let KeyPress handle the composition.
-                //
-                return false;
-            }
-            else if (alt)
-            {
-                //
-                // Somewhat non-standard, emulate the behavior
-                // of other terminals and escape the character.
-                //
-                // This enables applications like midnight 
-                // commander which rely on Alt+<char> keyboard
-                // shortcuts.
-                //
-                var ch = KeyUtil.CharFromKeyCode(keyCode);
-                if (ch.Length > 0)
-                {
-                    Send("\u001b" + ch);
-                    return true;
-                }
-                else
-                {
-                    //
-                    // This is a stray Alt press, could be part
-                    // of an Alt+Tab action. Do not handle this
-                    // as it might screw up subsequent input.
-                    //
-                    return false;
-                }
+                Send(translation);
+                return true;
             }
             else
             {
