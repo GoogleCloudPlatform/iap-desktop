@@ -152,6 +152,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 { Keys.D7,      new StandardMapping { Control = "\u001f",     Alt = Esc + "7" } },
                 { Keys.D8,      new StandardMapping { Control = "\u007f",     Alt = Esc + "8" } },
                 { Keys.D9,      new StandardMapping {                         Alt = Esc + "9" } },
+
+                //
+                // Numpad keys (these always behave as if in application cursor keys mode).
+                //
+                { Keys.NumPad0,  new StandardMapping { Normal = Ss3 + "p",  Shift = Ss3 + "p",    Control = Ss3 + "p",    Alt = Ss3 + "p" } },
+                { Keys.NumPad1,  new StandardMapping { Normal = Ss3 + "q",  Shift = Ss3 + "q",    Control = Ss3 + "q",    Alt = Ss3 + "q" } },
+                { Keys.NumPad2,  new StandardMapping { Normal = Ss3 + "r",  Shift = Ss3 + "r",    Control = Ss3 + "r",    Alt = Ss3 + "r" } },
+                { Keys.NumPad3,  new StandardMapping { Normal = Ss3 + "s",  Shift = Ss3 + "s",    Control = Ss3 + "s",    Alt = Ss3 + "s" } },
+                { Keys.NumPad4,  new StandardMapping { Normal = Ss3 + "t",  Shift = Ss3 + "t",    Control = Ss3 + "t",    Alt = Ss3 + "t" } },
+                { Keys.NumPad5,  new StandardMapping { Normal = Ss3 + "u",  Shift = Ss3 + "u",    Control = Ss3 + "u",    Alt = Ss3 + "u" } },
+                { Keys.NumPad6,  new StandardMapping { Normal = Ss3 + "v",  Shift = Ss3 + "v",    Control = Ss3 + "v",    Alt = Ss3 + "v" } },
+                { Keys.NumPad7,  new StandardMapping { Normal = Ss3 + "w",  Shift = Ss3 + "w",    Control = Ss3 + "w",    Alt = Ss3 + "w" } },
+                { Keys.NumPad8,  new StandardMapping { Normal = Ss3 + "x",  Shift = Ss3 + "x",    Control = Ss3 + "x",    Alt = Ss3 + "x" } },
+                { Keys.NumPad9,  new StandardMapping { Normal = Ss3 + "y",  Shift = Ss3 + "y",    Control = Ss3 + "y",    Alt = Ss3 + "y" } },
             };
 
         /// <summary>
@@ -170,17 +184,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 { Keys.Down,     new StandardMapping { Normal = Ss3 + "B" } },
                 { Keys.Right,    new StandardMapping { Normal = Ss3 + "C" } },
                 { Keys.Left,     new StandardMapping { Normal = Ss3 + "D" } },
-
-                { Keys.NumPad0,  new StandardMapping { Normal = Ss3 + "p",  Shift = Ss3 + "p",    Control = Ss3 + "p",    Alt = Ss3 + "p" } },
-                { Keys.NumPad1,  new StandardMapping { Normal = Ss3 + "q",  Shift = Ss3 + "q",    Control = Ss3 + "q",    Alt = Ss3 + "q" } },
-                { Keys.NumPad2,  new StandardMapping { Normal = Ss3 + "r",  Shift = Ss3 + "r",    Control = Ss3 + "r",    Alt = Ss3 + "r" } },
-                { Keys.NumPad3,  new StandardMapping { Normal = Ss3 + "s",  Shift = Ss3 + "s",    Control = Ss3 + "s",    Alt = Ss3 + "s" } },
-                { Keys.NumPad4,  new StandardMapping { Normal = Ss3 + "t",  Shift = Ss3 + "t",    Control = Ss3 + "t",    Alt = Ss3 + "t" } },
-                { Keys.NumPad5,  new StandardMapping { Normal = Ss3 + "u",  Shift = Ss3 + "u",    Control = Ss3 + "u",    Alt = Ss3 + "u" } },
-                { Keys.NumPad6,  new StandardMapping { Normal = Ss3 + "v",  Shift = Ss3 + "v",    Control = Ss3 + "v",    Alt = Ss3 + "v" } },
-                { Keys.NumPad7,  new StandardMapping { Normal = Ss3 + "w",  Shift = Ss3 + "w",    Control = Ss3 + "w",    Alt = Ss3 + "w" } },
-                { Keys.NumPad8,  new StandardMapping { Normal = Ss3 + "x",  Shift = Ss3 + "x",    Control = Ss3 + "x",    Alt = Ss3 + "x" } },
-                { Keys.NumPad9,  new StandardMapping { Normal = Ss3 + "y",  Shift = Ss3 + "y",    Control = Ss3 + "y",    Alt = Ss3 + "y" } },
             };
 
         public static string ForKey(
