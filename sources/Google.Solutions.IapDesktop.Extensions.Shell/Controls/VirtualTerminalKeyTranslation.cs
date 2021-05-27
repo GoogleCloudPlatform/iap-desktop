@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,7 +68,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         }
 
         private static string Esc = "\u001b";
-        private static string Ss3 = Esc + "[O";
+        private static string Ss3 = Esc + "O";
+        private static string DecimalSeparator = CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
 
         /// <summary>
         /// Standard Xterm key translations.
@@ -166,6 +168,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 { Keys.NumPad7,  new StandardMapping { Normal = Ss3 + "w",  Shift = Ss3 + "w",    Control = Ss3 + "w",    Alt = Ss3 + "w" } },
                 { Keys.NumPad8,  new StandardMapping { Normal = Ss3 + "x",  Shift = Ss3 + "x",    Control = Ss3 + "x",    Alt = Ss3 + "x" } },
                 { Keys.NumPad9,  new StandardMapping { Normal = Ss3 + "y",  Shift = Ss3 + "y",    Control = Ss3 + "y",    Alt = Ss3 + "y" } },
+
+                { Keys.Divide,   new StandardMapping { Normal = Ss3 + "Q",  Shift = Ss3 + "Q",    Control = Ss3 + "Q",    Alt = Esc + "/" } },
+                { Keys.Multiply, new StandardMapping { Normal = Ss3 + "R",  Shift = Ss3 + "R",    Control = Ss3 + "R",    Alt = Esc + "*" } },
+                { Keys.Subtract, new StandardMapping { Normal = Ss3 + "S",  Shift = Ss3 + "S",    Control = Ss3 + "S",    Alt = Esc + "-" } },
+                { Keys.Add,      new StandardMapping { Normal = Ss3 + "l",  Shift = Ss3 + "m",    Control = Ss3 + "l",    Alt = Esc + "+" } },
+                { Keys.Separator,new StandardMapping { Normal = Ss3 + "n",  Shift = Ss3 + "n",    Control = Ss3 + "n",    Alt = Esc + DecimalSeparator } },
+                // NB. We can't distinguish the numpad-return from the regular return key as
+                // both map to the same key codes.
             };
 
         /// <summary>
