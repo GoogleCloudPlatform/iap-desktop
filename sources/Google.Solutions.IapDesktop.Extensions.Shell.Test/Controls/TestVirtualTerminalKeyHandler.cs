@@ -19,16 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using VtNetCore.VirtualTerminal;
 
@@ -37,7 +31,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
     [TestFixture]
     public class TestVirtualTerminalKeyHandler
     {
-        private readonly string Esc = "\u001b";
+        private static readonly string Esc = "\u001b";
+        private static readonly string Ss3 = Esc + "O";
 
         private VirtualTerminalController controller;
         private VirtualTerminalKeyHandler keyHandler;
@@ -63,19 +58,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         public void F1()
         {
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F1));
-            Assert.AreEqual($"{Esc}[11~", this.sendData.ToString());
+            Assert.AreEqual($"{Ss3}P", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F1 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[23~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;2P", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F1 | Keys.Control));
-            Assert.AreEqual($"{Esc}[11~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;5P", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F1 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[11~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;9P", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -83,19 +78,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         public void F2()
         {
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F2));
-            Assert.AreEqual($"{Esc}[12~", this.sendData.ToString());
+            Assert.AreEqual($"{Ss3}Q", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F2 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[24~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;2Q", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F2 | Keys.Control));
-            Assert.AreEqual($"{Esc}[12~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;5Q", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F2 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[12~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;9Q", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -103,19 +98,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         public void F3()
         {
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F3));
-            Assert.AreEqual($"{Esc}[13~", this.sendData.ToString());
+            Assert.AreEqual($"{Ss3}R", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F3 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[25~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;2R", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F3 | Keys.Control));
-            Assert.AreEqual($"{Esc}[13~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;5R", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F3 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[13~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;9R", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -123,19 +118,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         public void F4()
         {
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F4));
-            Assert.AreEqual($"{Esc}[14~", this.sendData.ToString());
+            Assert.AreEqual($"{Ss3}S", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F4 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[26~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;2S", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F4 | Keys.Control));
-            Assert.AreEqual($"{Esc}[14~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;5S", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F4 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[14~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[1;9S", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -147,15 +142,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F5 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[28~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[15;2~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F5 | Keys.Control));
-            Assert.AreEqual($"{Esc}[15~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[15;5~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F5 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[15~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[15;9~", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -167,15 +162,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F6 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[29~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[17;2~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F6 | Keys.Control));
-            Assert.AreEqual($"{Esc}[17~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[17;5~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F6 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[17~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[17;9~", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -187,15 +182,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F7 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[31~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[18;2~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F7 | Keys.Control));
-            Assert.AreEqual($"{Esc}[18~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[18;5~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F7 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[18~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[18;9~", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -207,15 +202,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F8 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[32~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[19;2~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F8 | Keys.Control));
-            Assert.AreEqual($"{Esc}[19~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[19;5~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F8 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[19~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[19;9~", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -227,15 +222,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F9 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[33~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[20;2~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F9 | Keys.Control));
-            Assert.AreEqual($"{Esc}[20~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[20;5~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F9 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[20~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[20;9~", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -247,15 +242,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F10 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[24~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[21;2~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F10 | Keys.Control));
-            Assert.AreEqual($"{Esc}[21~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[21;5~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F10 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[21~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[21;9~", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -267,15 +262,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F11 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[23~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[23;2~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F11 | Keys.Control));
-            Assert.AreEqual($"{Esc}[23~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[23;5~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F11 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[23~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[23;9~", this.sendData.ToString());
             this.sendData.Clear();
         }
 
@@ -287,15 +282,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F12 | Keys.Shift));
-            Assert.AreEqual($"{Esc}[24~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[24;2~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F12 | Keys.Control));
-            Assert.AreEqual($"{Esc}[24~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[24;5~", this.sendData.ToString());
             this.sendData.Clear();
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.F12 | Keys.Alt));
-            Assert.AreEqual($"{Esc}{Esc}[24~", this.sendData.ToString());
+            Assert.AreEqual($"{Esc}[24;9~", this.sendData.ToString());
             this.sendData.Clear();
         }
 

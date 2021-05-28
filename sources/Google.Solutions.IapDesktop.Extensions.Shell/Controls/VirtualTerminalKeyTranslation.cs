@@ -67,9 +67,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        private static string Esc = "\u001b";
-        private static string Ss3 = Esc + "O";
-        private static string DecimalSeparator = CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
+        private static readonly string Esc = "\u001b";
+        private static readonly string Ss3 = Esc + "O";
+        private static readonly string DecimalSeparator = CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
 
         /// <summary>
         /// Standard Xterm key translations.
@@ -80,18 +80,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 //
                 // Function keys.
                 //
-                { Keys.F1,       new StandardMapping { Normal = Esc + "[11~", Shift = Esc + "[23~", Control = Esc + "[11~", Alt = Esc + Esc + "[11~" } },
-                { Keys.F2,       new StandardMapping { Normal = Esc + "[12~", Shift = Esc + "[24~", Control = Esc + "[12~", Alt = Esc + Esc + "[12~" } },
-                { Keys.F3,       new StandardMapping { Normal = Esc + "[13~", Shift = Esc + "[25~", Control = Esc + "[13~", Alt = Esc + Esc + "[13~" } },
-                { Keys.F4,       new StandardMapping { Normal = Esc + "[14~", Shift = Esc + "[26~", Control = Esc + "[14~", Alt = Esc + Esc + "[14~" } },
-                { Keys.F5,       new StandardMapping { Normal = Esc + "[15~", Shift = Esc + "[28~", Control = Esc + "[15~", Alt = Esc + Esc + "[15~" } },
-                { Keys.F6,       new StandardMapping { Normal = Esc + "[17~", Shift = Esc + "[29~", Control = Esc + "[17~", Alt = Esc + Esc + "[17~" } },
-                { Keys.F7,       new StandardMapping { Normal = Esc + "[18~", Shift = Esc + "[31~", Control = Esc + "[18~", Alt = Esc + Esc + "[18~" } },
-                { Keys.F8,       new StandardMapping { Normal = Esc + "[19~", Shift = Esc + "[32~", Control = Esc + "[19~", Alt = Esc + Esc + "[19~" } },
-                { Keys.F9,       new StandardMapping { Normal = Esc + "[20~", Shift = Esc + "[33~", Control = Esc + "[20~", Alt = Esc + Esc + "[20~" } },
-                { Keys.F10,      new StandardMapping { Normal = Esc + "[21~", Shift = Esc + "[24~", Control = Esc + "[21~", Alt = Esc + Esc + "[21~" } },
-                { Keys.F11,      new StandardMapping { Normal = Esc + "[23~", Shift = Esc + "[23~", Control = Esc + "[23~", Alt = Esc + Esc + "[23~" } },
-                { Keys.F12,      new StandardMapping { Normal = Esc + "[24~", Shift = Esc + "[24~", Control = Esc + "[24~", Alt = Esc + Esc + "[24~" } },
+                // Note that F1 through F4 are prefixed with SS3 , while the other keys are
+                // prefixed with CSI. Older versions of xterm implement different escape
+                // sequences for F1 through F4, with a CSI prefix.
+                //
+                { Keys.F1,       new StandardMapping { Normal = Ss3 + "P",    Shift = Esc + "[1;2P",  Control = Esc + "[1;5P",  Alt = Esc + "[1;9P" } },
+                { Keys.F2,       new StandardMapping { Normal = Ss3 + "Q",    Shift = Esc + "[1;2Q",  Control = Esc + "[1;5Q",  Alt = Esc + "[1;9Q" } },
+                { Keys.F3,       new StandardMapping { Normal = Ss3 + "R",    Shift = Esc + "[1;2R",  Control = Esc + "[1;5R",  Alt = Esc + "[1;9R" } },
+                { Keys.F4,       new StandardMapping { Normal = Ss3 + "S",    Shift = Esc + "[1;2S",  Control = Esc + "[1;5S",  Alt = Esc + "[1;9S" } },
+                { Keys.F5,       new StandardMapping { Normal = Esc + "[15~", Shift = Esc + "[15;2~", Control = Esc + "[15;5~", Alt = Esc + "[15;9~" } },
+                { Keys.F6,       new StandardMapping { Normal = Esc + "[17~", Shift = Esc + "[17;2~", Control = Esc + "[17;5~", Alt = Esc + "[17;9~" } },
+                { Keys.F7,       new StandardMapping { Normal = Esc + "[18~", Shift = Esc + "[18;2~", Control = Esc + "[18;5~", Alt = Esc + "[18;9~" } },
+                { Keys.F8,       new StandardMapping { Normal = Esc + "[19~", Shift = Esc + "[19;2~", Control = Esc + "[19;5~", Alt = Esc + "[19;9~" } },
+                { Keys.F9,       new StandardMapping { Normal = Esc + "[20~", Shift = Esc + "[20;2~", Control = Esc + "[20;5~", Alt = Esc + "[20;9~" } },
+                { Keys.F10,      new StandardMapping { Normal = Esc + "[21~", Shift = Esc + "[21;2~", Control = Esc + "[21;5~", Alt = Esc + "[21;9~" } },
+                { Keys.F11,      new StandardMapping { Normal = Esc + "[23~", Shift = Esc + "[23;2~", Control = Esc + "[23;5~", Alt = Esc + "[23;9~" } },
+                { Keys.F12,      new StandardMapping { Normal = Esc + "[24~", Shift = Esc + "[24;2~", Control = Esc + "[24;5~", Alt = Esc + "[24;9~" } },
 
                 //
                 // Arrow keys.
