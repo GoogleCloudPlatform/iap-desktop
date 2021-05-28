@@ -72,9 +72,7 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj:
 	git config user.name "IAP Desktop Build"
 	git am $(MAKEDIR)\vtnetcore-patches\0001-Handle-OSC-sequences-with-empty-text-parameters.patch
 	git am $(MAKEDIR)\vtnetcore-patches\0002-Fix-escape-sequences-for-bracketed-text-mode.patch
-	git am $(MAKEDIR)\vtnetcore-patches\0003-Translate-Enter-to-CR-instead-of-LF.patch
-	git am $(MAKEDIR)\vtnetcore-patches\0004-Add-keyboard-translation-for-Ctrl-Space.patch
-	git am $(MAKEDIR)\vtnetcore-patches\0005-Detect-key-modifier-options-XTMODKEYS.patch
+	git am $(MAKEDIR)\vtnetcore-patches\0003-Detect-key-modifier-options-XTMODKEYS.patch
 
 	cd $(MAKEDIR)
 
