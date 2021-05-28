@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 16
+TAG = 17
 
 VTNETCORE_TAG = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
@@ -73,6 +73,7 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj:
 	git am $(MAKEDIR)\vtnetcore-patches\0001-Handle-OSC-sequences-with-empty-text-parameters.patch
 	git am $(MAKEDIR)\vtnetcore-patches\0002-Fix-escape-sequences-for-bracketed-text-mode.patch
 	git am $(MAKEDIR)\vtnetcore-patches\0003-Detect-key-modifier-options-XTMODKEYS.patch
+	git am $(MAKEDIR)\vtnetcore-patches\0004-Handle-single-parameter-OSC-sequences.patch
 
 	cd $(MAKEDIR)
 
