@@ -84,7 +84,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 alt, 
                 control, 
                 shift,
-                this.controller.CursorState.ApplicationCursorKeysMode);
+                this.controller.CursorState.ApplicationCursorKeysMode,
+                this.controller.ModifyOtherKeys);
 
             if (translation != null)
             {

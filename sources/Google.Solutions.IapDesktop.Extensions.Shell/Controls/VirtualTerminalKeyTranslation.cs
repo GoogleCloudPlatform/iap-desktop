@@ -67,9 +67,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        private static string Esc = "\u001b";
-        private static string Ss3 = Esc + "O";
-        private static string DecimalSeparator = CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
+        private static readonly string Esc = "\u001b";
+        private static readonly string Ss3 = Esc + "O";
+        private static readonly string DecimalSeparator = CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
 
         /// <summary>
         /// Standard Xterm key translations.
@@ -80,40 +80,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 //
                 // Function keys.
                 //
-                { Keys.F1,       new StandardMapping { Normal = Esc + "[11~", Shift = Esc + "[23~", Control = Esc + "[11~", Alt = Esc + Esc + "[11~" } },
-                { Keys.F2,       new StandardMapping { Normal = Esc + "[12~", Shift = Esc + "[24~", Control = Esc + "[12~", Alt = Esc + Esc + "[12~" } },
-                { Keys.F3,       new StandardMapping { Normal = Esc + "[13~", Shift = Esc + "[25~", Control = Esc + "[13~", Alt = Esc + Esc + "[13~" } },
-                { Keys.F4,       new StandardMapping { Normal = Esc + "[14~", Shift = Esc + "[26~", Control = Esc + "[14~", Alt = Esc + Esc + "[14~" } },
-                { Keys.F5,       new StandardMapping { Normal = Esc + "[15~", Shift = Esc + "[28~", Control = Esc + "[15~", Alt = Esc + Esc + "[15~" } },
-                { Keys.F6,       new StandardMapping { Normal = Esc + "[17~", Shift = Esc + "[29~", Control = Esc + "[17~", Alt = Esc + Esc + "[17~" } },
-                { Keys.F7,       new StandardMapping { Normal = Esc + "[18~", Shift = Esc + "[31~", Control = Esc + "[18~", Alt = Esc + Esc + "[18~" } },
-                { Keys.F8,       new StandardMapping { Normal = Esc + "[19~", Shift = Esc + "[32~", Control = Esc + "[19~", Alt = Esc + Esc + "[19~" } },
-                { Keys.F9,       new StandardMapping { Normal = Esc + "[20~", Shift = Esc + "[33~", Control = Esc + "[20~", Alt = Esc + Esc + "[20~" } },
-                { Keys.F10,      new StandardMapping { Normal = Esc + "[21~", Shift = Esc + "[24~", Control = Esc + "[21~", Alt = Esc + Esc + "[21~" } },
-                { Keys.F11,      new StandardMapping { Normal = Esc + "[23~", Shift = Esc + "[23~", Control = Esc + "[23~", Alt = Esc + Esc + "[23~" } },
-                { Keys.F12,      new StandardMapping { Normal = Esc + "[24~", Shift = Esc + "[24~", Control = Esc + "[24~", Alt = Esc + Esc + "[24~" } },
+                // Note that F1 through F4 are prefixed with SS3 , while the other keys are
+                // prefixed with CSI. Older versions of xterm implement different escape
+                // sequences for F1 through F4, with a CSI prefix.
+                //
+                { Keys.F1,       new StandardMapping { Normal = Ss3 + "P",    Shift = Esc + "[1;2P",  Control = Esc + "[1;5P",  Alt = Esc + "[1;3P" } },
+                { Keys.F2,       new StandardMapping { Normal = Ss3 + "Q",    Shift = Esc + "[1;2Q",  Control = Esc + "[1;5Q",  Alt = Esc + "[1;3Q" } },
+                { Keys.F3,       new StandardMapping { Normal = Ss3 + "R",    Shift = Esc + "[1;2R",  Control = Esc + "[1;5R",  Alt = Esc + "[1;3R" } },
+                { Keys.F4,       new StandardMapping { Normal = Ss3 + "S",    Shift = Esc + "[1;2S",  Control = Esc + "[1;5S",  Alt = Esc + "[1;3S" } },
+                { Keys.F5,       new StandardMapping { Normal = Esc + "[15~", Shift = Esc + "[15;2~", Control = Esc + "[15;5~", Alt = Esc + "[15;3~" } },
+                { Keys.F6,       new StandardMapping { Normal = Esc + "[17~", Shift = Esc + "[17;2~", Control = Esc + "[17;5~", Alt = Esc + "[17;3~" } },
+                { Keys.F7,       new StandardMapping { Normal = Esc + "[18~", Shift = Esc + "[18;2~", Control = Esc + "[18;5~", Alt = Esc + "[18;3~" } },
+                { Keys.F8,       new StandardMapping { Normal = Esc + "[19~", Shift = Esc + "[19;2~", Control = Esc + "[19;5~", Alt = Esc + "[19;3~" } },
+                { Keys.F9,       new StandardMapping { Normal = Esc + "[20~", Shift = Esc + "[20;2~", Control = Esc + "[20;5~", Alt = Esc + "[20;3~" } },
+                { Keys.F10,      new StandardMapping { Normal = Esc + "[21~", Shift = Esc + "[21;2~", Control = Esc + "[21;5~", Alt = Esc + "[21;3~" } },
+                { Keys.F11,      new StandardMapping { Normal = Esc + "[23~", Shift = Esc + "[23;2~", Control = Esc + "[23;5~", Alt = Esc + "[23;3~" } },
+                { Keys.F12,      new StandardMapping { Normal = Esc + "[24~", Shift = Esc + "[24;2~", Control = Esc + "[24;5~", Alt = Esc + "[24;3~" } },
 
                 //
                 // Arrow keys.
                 //
-                { Keys.Up,       new StandardMapping { Normal = Esc + "[A",   Shift = Esc + "OA", Control = Esc + "OA",     Alt = Esc + Esc + "[A" } },
-                { Keys.Down,     new StandardMapping { Normal = Esc + "[B",   Shift = Esc + "OB", Control = Esc + "OB",     Alt = Esc + Esc + "[B" } },
-                { Keys.Right,    new StandardMapping { Normal = Esc + "[C",   Shift = Esc + "OC", Control = Esc + "OC",     Alt = Esc + Esc + "[C" } },
-                { Keys.Left,     new StandardMapping { Normal = Esc + "[D",   Shift = Esc + "OD", Control = Esc + "OD",     Alt = Esc + Esc + "[D" } },
-                { Keys.Home,     new StandardMapping { Normal = Esc + "[1~",  Shift = Esc + "[1~",                          Alt = Esc + Esc + "[1~" } },
-                { Keys.Insert,   new StandardMapping { Normal = Esc + "[2~",                                                Alt = Esc + Esc + "[2~" } },
-                { Keys.Delete,   new StandardMapping { Normal = Esc + "[3~",  Shift = Esc + "[3~",                          Alt = Esc + Esc + "[3~" } },
-                { Keys.End,      new StandardMapping { Normal = Esc + "[4~",  Shift = Esc + "[4~",                          Alt = Esc + Esc + "[4~" } },
-                { Keys.PageUp,   new StandardMapping { Normal = Esc + "[5~",  Shift = Esc + "[5~",                          Alt = Esc + Esc + "[5~" } },
-                { Keys.PageDown, new StandardMapping { Normal = Esc + "[6~",  Shift = Esc + "[6~",                          Alt = Esc + Esc + "[6~" } },
+                { Keys.Up,       new StandardMapping { Normal = Esc + "[A",   Shift = Esc + "[1;2A",  Control = Esc + "[1;5A",  Alt = Esc + "[1;3A" } },
+                { Keys.Down,     new StandardMapping { Normal = Esc + "[B",   Shift = Esc + "[1;2B",  Control = Esc + "[1;5B",  Alt = Esc + "[1;3B" } },
+                { Keys.Right,    new StandardMapping { Normal = Esc + "[C",   Shift = Esc + "[1;2C",  Control = Esc + "[1;5C",  Alt = Esc + "[1;3C" } },
+                { Keys.Left,     new StandardMapping { Normal = Esc + "[D",   Shift = Esc + "[1;2D",  Control = Esc + "[1;5D",  Alt = Esc + "[1;3D" } },
+                { Keys.Home,     new StandardMapping { Normal = Esc + "[H",   Shift = Esc + "[1;2H",  Control = Esc + "[1;5H",  Alt = Esc + "[1;3H" } },
+                { Keys.End,      new StandardMapping { Normal = Esc + "[F",   Shift = Esc + "[1;2F",  Control = Esc + "[1;5F",  Alt = Esc + "[1;3F" } },
+                { Keys.Insert,   new StandardMapping { Normal = Esc + "[2~",  Shift = Esc + "[2;2~",  Control = Esc + "[2;5~",  Alt = Esc + "[2;3~" } },
+                { Keys.Delete,   new StandardMapping { Normal = Esc + "[3~",  Shift = Esc + "[3;2~",  Control = Esc + "[3;5~",  Alt = Esc + "[3;3~" } },
+                { Keys.PageUp,   new StandardMapping { Normal = Esc + "[5~",  Shift = Esc + "[5;2~",  Control = Esc + "[5;5~",  Alt = Esc + "[5;3~" } },
+                { Keys.PageDown, new StandardMapping { Normal = Esc + "[6~",  Shift = Esc + "[6;2~",  Control = Esc + "[6;5~",  Alt = Esc + "[6;3~" } },
 
                 //
                 // Main keyboard.
                 //
-                { Keys.Back,    new StandardMapping { Normal = "\u007F",      Shift = "\b",           Control = "\u007F" } },
-                { Keys.Tab,     new StandardMapping { Normal = "\t",          Shift = Esc + "[Z",     } },
-                { Keys.Return,  new StandardMapping { Normal = "\r",          Shift = "\r",           Control = "\r",       Alt = Esc + "\r" } },
-                { Keys.Escape,  new StandardMapping { Normal = Esc + Esc,     Shift = Esc + Esc,      Control = Esc + Esc } },
+                { Keys.Back,    new StandardMapping { Normal = "\u007F",      Shift = "\u007F",       Control = "\b",           Alt = Esc + "\u007f" } },
+                { Keys.Tab,     new StandardMapping { Normal = "\t",          Shift = Esc + "[Z",     Control = "\t"                                 } },
+                { Keys.Return,  new StandardMapping { Normal = "\r",          Shift = "\r",           Control = "\r",           Alt = Esc + "\r" } },
+                { Keys.Escape,  new StandardMapping { Normal = Esc,           Shift = Esc,            Control = Esc } },
                 { Keys.Pause,   new StandardMapping { Normal = "\u001a",      Shift = "\u001a",                             Alt = Esc + "\u001a" } },
                 { Keys.Space,   new StandardMapping {                                                 Control = "\u0000",   Alt = Esc + " " } },
 
@@ -194,6 +198,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 { Keys.Down,     new StandardMapping { Normal = Ss3 + "B" } },
                 { Keys.Right,    new StandardMapping { Normal = Ss3 + "C" } },
                 { Keys.Left,     new StandardMapping { Normal = Ss3 + "D" } },
+                { Keys.Home,     new StandardMapping { Normal = Ss3 + "H" } },
+                { Keys.End,      new StandardMapping { Normal = Ss3 + "F" } },
+            };
+
+        /// <summary>
+        /// Extra translations to apply when modifyOtherKeys = 1.
+        /// 
+        /// See https://invisible-island.net/xterm/manpage/xterm.html#VT100-Widget-Resources:modifyOtherKeys
+        /// </summary>
+        private static readonly Dictionary<Keys, StandardMapping> ModifyOtherKeysModeWithExceptionTranslations
+            = new Dictionary<Keys, StandardMapping>
+            {
+                //
+                // NB. To manually enter this mode, run
+                //     printf '\033[>4;1m'
+                // To disable:
+                //     printf '\033[>4;2m'
+                //
+                { Keys.Tab,      new StandardMapping {                           Control = Esc + "[27;5;9"  } },
+                { Keys.Return,   new StandardMapping { Shift = Esc + "[27;2;13", Control = Esc + "[27;5;13" ,    Alt = Esc + "[27;3;13" } },
+
+                { Keys.D0,       new StandardMapping {                           Control = Esc + "[27;5;48"  } },
+                { Keys.D1,       new StandardMapping {                           Control = Esc + "[27;5;49"  } },
+                { Keys.D9,       new StandardMapping {                           Control = Esc + "[27;5;57"  } },
             };
 
         public static string ForKey(
@@ -201,7 +229,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             bool alt,
             bool control,
             bool shift,
-            bool applicationCursorKeysMode)
+            bool applicationCursorKeysMode,
+            ModifyOtherKeysMode modifyOtherKeysMode)
         {
             Debug.Assert((keyCode & Keys.KeyCode) == keyCode, "No modifiers");
 
@@ -212,22 +241,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 //
                 return null;
             }
+
+            if (modifyOtherKeysMode == ModifyOtherKeysMode.EnabledWithExceptions &&
+                ModifyOtherKeysModeWithExceptionTranslations.TryGetValue(keyCode, out var modMapping) &&
+                modMapping.Apply(alt, control, shift) is string modSequence)
+            {
+                return modSequence;
+            }
+
             if (applicationCursorKeysMode &&
                 ApplicationCursorKeysModeTranslations.TryGetValue(keyCode, out var appMapping) &&
                 appMapping.Apply(alt, control, shift) is string appSequence)
             {
                 return appSequence;
             }
-            else if (
-                StandardTranslations.TryGetValue(keyCode, out var stdMapping) &&
+
+            if (StandardTranslations.TryGetValue(keyCode, out var stdMapping) &&
                 stdMapping.Apply(alt, control, shift) is string stdSequence)
             {
                 return stdSequence;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
     }
 }
