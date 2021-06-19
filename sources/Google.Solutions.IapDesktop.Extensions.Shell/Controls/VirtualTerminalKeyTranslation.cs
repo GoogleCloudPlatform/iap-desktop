@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         private static readonly string Esc = "\u001b";
         private static readonly string Ss3 = Esc + "O";
-        private static readonly string DecimalSeparator = CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
+        private static readonly string DecimalSep = CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
 
         /// <summary>
         /// Standard Xterm key translations.
@@ -160,26 +160,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 { Keys.D9,      new StandardMapping {                         Alt = Esc + "9" } },
 
                 //
-                // Numpad keys (these always behave as if in application cursor keys mode).
+                // Numpad keys.
                 //
-                { Keys.NumPad0,  new StandardMapping { Normal = Ss3 + "p",  Shift = Ss3 + "p",    Control = Ss3 + "p",    Alt = Ss3 + "p" } },
-                { Keys.NumPad1,  new StandardMapping { Normal = Ss3 + "q",  Shift = Ss3 + "q",    Control = Ss3 + "q",    Alt = Ss3 + "q" } },
-                { Keys.NumPad2,  new StandardMapping { Normal = Ss3 + "r",  Shift = Ss3 + "r",    Control = Ss3 + "r",    Alt = Ss3 + "r" } },
-                { Keys.NumPad3,  new StandardMapping { Normal = Ss3 + "s",  Shift = Ss3 + "s",    Control = Ss3 + "s",    Alt = Ss3 + "s" } },
-                { Keys.NumPad4,  new StandardMapping { Normal = Ss3 + "t",  Shift = Ss3 + "t",    Control = Ss3 + "t",    Alt = Ss3 + "t" } },
-                { Keys.NumPad5,  new StandardMapping { Normal = Ss3 + "u",  Shift = Ss3 + "u",    Control = Ss3 + "u",    Alt = Ss3 + "u" } },
-                { Keys.NumPad6,  new StandardMapping { Normal = Ss3 + "v",  Shift = Ss3 + "v",    Control = Ss3 + "v",    Alt = Ss3 + "v" } },
-                { Keys.NumPad7,  new StandardMapping { Normal = Ss3 + "w",  Shift = Ss3 + "w",    Control = Ss3 + "w",    Alt = Ss3 + "w" } },
-                { Keys.NumPad8,  new StandardMapping { Normal = Ss3 + "x",  Shift = Ss3 + "x",    Control = Ss3 + "x",    Alt = Ss3 + "x" } },
-                { Keys.NumPad9,  new StandardMapping { Normal = Ss3 + "y",  Shift = Ss3 + "y",    Control = Ss3 + "y",    Alt = Ss3 + "y" } },
-
-                { Keys.Divide,   new StandardMapping { Normal = Ss3 + "Q",  Shift = Ss3 + "Q",    Control = Ss3 + "Q",    Alt = Esc + "/" } },
-                { Keys.Multiply, new StandardMapping { Normal = Ss3 + "R",  Shift = Ss3 + "R",    Control = Ss3 + "R",    Alt = Esc + "*" } },
-                { Keys.Subtract, new StandardMapping { Normal = Ss3 + "S",  Shift = Ss3 + "S",    Control = Ss3 + "S",    Alt = Esc + "-" } },
-                { Keys.Add,      new StandardMapping { Normal = Ss3 + "l",  Shift = Ss3 + "m",    Control = Ss3 + "l",    Alt = Esc + "+" } },
-                { Keys.Separator,new StandardMapping { Normal = Ss3 + "n",  Shift = Ss3 + "n",    Control = Ss3 + "n",    Alt = Esc + DecimalSeparator } },
                 // NB. We can't distinguish the numpad-return from the regular return key as
                 // both map to the same key codes.
+                //
+                { Keys.NumPad0,  new StandardMapping { Control = "0",                             Alt = Esc + "0" } },
+                { Keys.NumPad1,  new StandardMapping { Control = "1",                             Alt = Esc + "1" } },
+                { Keys.NumPad2,  new StandardMapping { Control = "2",                             Alt = Esc + "2" } },
+                { Keys.NumPad3,  new StandardMapping { Control = "3",                             Alt = Esc + "3" } },
+                { Keys.NumPad4,  new StandardMapping { Control = "4",                             Alt = Esc + "4" } },
+                { Keys.NumPad5,  new StandardMapping { Control = "5",                             Alt = Esc + "5" } },
+                { Keys.NumPad6,  new StandardMapping { Control = "6",                             Alt = Esc + "6" } },
+                { Keys.NumPad7,  new StandardMapping { Control = "7",                             Alt = Esc + "7" } },
+                { Keys.NumPad8,  new StandardMapping { Control = "8",                             Alt = Esc + "8" } },
+                { Keys.NumPad9,  new StandardMapping { Control = "9",                             Alt = Esc + "9" } },
+
+                { Keys.Divide,   new StandardMapping { Control = "/",         Shift = "/",        Alt = "/" } },
+                { Keys.Multiply, new StandardMapping { Control = "*",         Shift = "*",        Alt = "*" } },
+                { Keys.Subtract, new StandardMapping { Control = "-",         Shift = "",         Alt = "-" } },
+                { Keys.Add,      new StandardMapping { Control = "+",         Shift = "",         Alt = "+" } },
+                { Keys.Decimal,  new StandardMapping { Control = DecimalSep,  Shift = DecimalSep, Alt = Esc + DecimalSep } },
             };
 
         /// <summary>
