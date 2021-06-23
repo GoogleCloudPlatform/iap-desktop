@@ -271,12 +271,25 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                         {
                             var children = t.Result;
 
-                            // Clear any dummy node if present.
-                            Debug.Assert(!this.Nodes.OfType<Node>().Any());
-                            DisposeAndClear(this.Nodes);
+                            try
+                            {
+                                //
+                                // Suspend redrawing while updating nodes
+                                // to reduce flicker and vertical scrolling.
+                                //
+                                this.treeView.BeginUpdate();
 
-                            // Add nodes.
-                            AddTreeNodesForModelNodes(children);
+                                // Clear any dummy node if present.
+                                Debug.Assert(!this.Nodes.OfType<Node>().Any());
+                                DisposeAndClear(this.Nodes);
+
+                                // Add nodes.
+                                AddTreeNodesForModelNodes(children);
+                            }
+                            finally
+                            {
+                                this.treeView.EndUpdate();
+                            }
 
                             // Observe for changes.
                             children.CollectionChanged += ModelChildrenChanged;
