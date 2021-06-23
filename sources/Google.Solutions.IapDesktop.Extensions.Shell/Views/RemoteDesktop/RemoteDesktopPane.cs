@@ -59,7 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         private bool connecting = false;
 
         // Track the (client area) size of the remote connection.
-        private Size connectionSize;
+        private Size currentConnectionSize;
+        private Size initialConnectionSize;
 
         public InstanceLocator Instance { get; }
 
@@ -237,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 //
                 advancedSettings.DisplayConnectionBar =
                     (settings.RdpConnectionBar.EnumValue != RdpConnectionBarState.Off);
-                advancedSettings.ConnectionBarShowMinimizeButton = false;
+                advancedSettings.ConnectionBarShowMinimizeButton = true;
                 advancedSettings.PinConnectionBar =
                     (settings.RdpConnectionBar.EnumValue == RdpConnectionBarState.Pinned);
                 nonScriptable.ConnectionBarText = this.Instance.Name;
@@ -307,6 +308,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                         break;
                 }
 
+                this.currentConnectionSize = this.initialConnectionSize = new Size(
+                    this.rdpClient.DesktopWidth,
+                    this.rdpClient.DesktopHeight);
+
                 switch (settings.RdpBitmapPersistence.EnumValue)
                 {
                     case RdpBitmapPersistence.Disabled:
@@ -330,7 +335,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 advancedSettings.allowBackgroundInput = 1;
 
                 this.connecting = true;
-                this.connectionSize = this.Size;
                 this.rdpClient.Connect();
             }
         }
@@ -352,11 +356,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
         private void ReconnectToResize(Size size)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.connectionSize, size))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.currentConnectionSize, size))
             {
                 // Only resize if the size really changed, otherwise we put unnecessary
                 // stress on the control (especially if events come in quick succession).
-                if (size != this.connectionSize && !this.connecting)
+                if (size != this.currentConnectionSize && !this.connecting)
                 {
                     if (this.rdpClient.FullScreen)
                     {
@@ -376,10 +380,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                         try
                         {
                             this.rdpClient.UpdateSessionDisplaySettings(
-                                (uint)this.Width,
-                                (uint)this.Height,
-                                (uint)this.Width,
-                                (uint)this.Height,
+                                (uint)size.Width,
+                                (uint)size.Height,
+                                (uint)size.Width,
+                                (uint)size.Height,
                                 0,  // Landscape
                                 1,  // No desktop scaling
                                 1); // No device scaling
@@ -396,7 +400,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                         }
                     }
 
-                    this.connectionSize = size;
+                    this.currentConnectionSize = size;
                 }
             }
         }
@@ -411,7 +415,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         private void RemoteDesktopPane_SizeChanged(object sender, EventArgs e)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
-                this.autoResize, this.connectionSize, this.Size))
+                this.autoResize, this.currentConnectionSize, this.Size))
             {
                 if (this.Size.Width == 0 || this.Size.Height == 0)
                 {
@@ -420,9 +424,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                     // RDP control.
                     return;
                 }
-                else if (this.Size == this.connectionSize)
+                else if (this.Size == this.currentConnectionSize)
                 {
                     // This event is redundant, ignore.
+                    return;
+                }
+                else if (IsFullscreenMinimized)
+                {
+                    // During a restore, we might receive a request to resize
+                    // to normal size. We must ignore that.
                     return;
                 }
 
@@ -691,7 +701,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             LeaveFullScreen();
 
             this.rdpClient.Size = this.rdpClient.Parent.Size;
-            ReconnectToResize(this.rdpClient.Size);
+
+            ReconnectToResize(this.autoResize
+                ? this.rdpClient.Size
+                : this.initialConnectionSize);
+        }
+
+        private void rdpClient_OnRequestContainerMinimize(object sender, EventArgs e)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                MinimizeWindow();
+            }
         }
 
         //---------------------------------------------------------------------
