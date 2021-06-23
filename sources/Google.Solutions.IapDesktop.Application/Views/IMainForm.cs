@@ -31,6 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         IWin32Window Window { get; }
         DockPanel MainPanel { get; }
         void Close();
+        void Minimize();
 
         CommandContainer<IMainForm> ViewMenu { get; }
 

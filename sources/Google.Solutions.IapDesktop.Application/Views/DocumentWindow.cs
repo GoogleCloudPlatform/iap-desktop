@@ -41,6 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         //
         private static Form fullScreenForm = null;
 
+        private readonly IMainForm mainForm;
         private readonly ApplicationSettingsRepository settingsRepository;
 
         private static void MoveControls(Form source, Form target)
@@ -101,6 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             : base(serviceProvider, DockState.Document)
         {
             this.settingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
+            this.mainForm = serviceProvider.GetService<IMainForm>();
 
             this.DockAreas = DockAreas.Document;
         }
@@ -111,6 +113,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         protected static bool IsFullscreen
             => fullScreenForm != null && fullScreenForm.Visible;
+
+        protected static bool IsFullscreenMinimized
+            => fullScreenForm != null && fullScreenForm.WindowState == FormWindowState.Minimized;
 
         protected void EnterFullscreen(bool allScreens)
         {
@@ -149,6 +154,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         FormBorderStyle = FormBorderStyle.None,
                         StartPosition = FormStartPosition.Manual,
                         TopMost = true,
+                        ShowInTaskbar = false
                     };
                 }
 
@@ -157,7 +163,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     : Screen.FromControl(this).Bounds;
 
                 MoveControls(this, fullScreenForm);
-                fullScreenForm.Show();
+
+                //
+                // Make parent of main form so that when we minimize/
+                // restore, this window comes up front.
+                //
+                fullScreenForm.Show(this.mainForm.Window);
             }
         }
 
@@ -178,6 +189,26 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 //
                 fullScreenForm.Hide();
             }
+        }
+
+        protected void MinimizeWindow()
+        {
+            if (!IsFullscreen)
+            {
+                // Not in full screen mode.
+                return;
+            }
+
+            //
+            // Minimize this window.
+            //
+            fullScreenForm.WindowState = FormWindowState.Minimized;
+
+            //
+            // Minimize the main form (which is still running in the 
+            // back)
+            //
+            this.mainForm.Minimize();
         }
     }
 }

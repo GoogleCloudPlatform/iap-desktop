@@ -391,6 +391,10 @@ namespace Google.Solutions.IapDesktop.Windows
 
             return commandContainer;
         }
+        public void Minimize()
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
 
         //---------------------------------------------------------------------
         // Main menu events.

@@ -61,6 +61,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             throw new NotImplementedException();
         }
 
+        public void Minimize()
+        {
+        }
+
         //---------------------------------------------------------------------
         // IJobService.
         //---------------------------------------------------------------------
@@ -121,6 +125,5 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.Authorization.ReauthorizeAsync(token);
-
     }
 }
