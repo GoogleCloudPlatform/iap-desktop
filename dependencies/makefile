@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 17
+TAG = 18
 
 VTNETCORE_TAG = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
@@ -33,7 +33,7 @@ VTNETCORE_VERSION = 1.0.30.$(TAG)
 # - libssh2: vcpkg-ports\libssh2\portfile.cmake
 # - openssl: https://github.com/microsoft/vcpkg/blob/master/ports/openssl/portfile.cmake
 #
-VCPKG_TAG = 85308d1a2135f65bf52603687360f54e9c4e25ba
+VCPKG_TAG = 2021.05.12
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
 LIBSSH2_VERSION = 1.9.0.$(TAG)
 
@@ -127,7 +127,7 @@ $(MAKEDIR)\obj\vcpkg\vcpkg.exe: $(MAKEDIR)\obj\vcpkg\bootstrap-vcpkg.bat
 
 $(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
 	@echo "========================================================"
-	@echo "=== Building libssh2                                 ==="
+	@echo "=== Building libssh2 (x86)                           ==="
 	@echo "========================================================"
 
 	-echo | set /p="$(LIBSSH2_VERSION)" > $(MAKEDIR)\vcpkg-ports\libssh2\build.tmp
@@ -138,12 +138,26 @@ $(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll: $(MAKE
 		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
 		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
 
-$(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.$(LIBSSH2_VERSION).nupkg: \
-		$(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll
+$(MAKEDIR)\obj\vcpkg\installed\libssh2-x64-windows-mixed\bin\libssh2.dll: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
+	@echo "========================================================"
+	@echo "=== Building libssh2 (x64)                           ==="
+	@echo "========================================================"
+
+	-echo | set /p="$(LIBSSH2_VERSION)" > $(MAKEDIR)\vcpkg-ports\libssh2\build.tmp
+	-echo | set /p="$(LIBSSH2_VERSION:.=,)" > $(MAKEDIR)\vcpkg-ports\libssh2\build-comma.tmp
+
+	$(MAKEDIR)\obj\vcpkg\vcpkg.exe install libssh2 \
+		--triplet libssh2-x64-windows-mixed \
+		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
+		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
+
+$(MAKEDIR)\obj\libssh2\libssh2.$(LIBSSH2_VERSION).nupkg: \
+		$(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll \
+		$(MAKEDIR)\obj\vcpkg\installed\libssh2-x64-windows-mixed\bin\libssh2.dll
 	@echo "========================================================"
 	@echo "=== Building libssh2 nuget package                   ==="
 	@echo "========================================================"
-	nuget pack -OutputDirectory $(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\ <<libssh2.nuspec
+	nuget pack -OutputDirectory $(MAKEDIR)\obj\libssh2\ <<libssh2.nuspec
 <?xml version="1.0"?>
 <package>
   <metadata>
@@ -157,19 +171,21 @@ $(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.$(LIBSSH2_V
   </metadata>
   <files>
 	<!-- pretend the library is platform-neutral -->
-    <file src="obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll" target="build" />
-    <file src="obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll" target="build\net46" />
+    <file src="obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll" target="runtimes\win10-x86\native" />
+    <file src="obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.pdb" target="runtimes\win10-x86\native" />
+    <file src="obj\vcpkg\installed\libssh2-x64-windows-mixed\bin\libssh2.dll" target="runtimes\win10-x64\native" />
+    <file src="obj\vcpkg\installed\libssh2-x64-windows-mixed\bin\libssh2.pdb" target="runtimes\win10-x64\native" />
     <file src="libssh2.targets" target="build" />
   </files>
 </package>
 <<NOKEEP
 
-libssh2: $(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.$(LIBSSH2_VERSION).nupkg $(MAKEDIR)\NuGetPackages
+libssh2: $(MAKEDIR)\obj\libssh2\libssh2.$(LIBSSH2_VERSION).nupkg $(MAKEDIR)\NuGetPackages
 	@echo "========================================================"
 	@echo "=== Publishing libssh2 nuget package                 ===
 	@echo "========================================================"
 	nuget add \
-		$(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.$(LIBSSH2_VERSION).nupkg \
+		$(MAKEDIR)\obj\libssh2\libssh2.$(LIBSSH2_VERSION).nupkg \
 		-Source $(MAKEDIR)\NuGetPackages
 
 clean-libssh2: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
@@ -180,7 +196,12 @@ clean-libssh2: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
 		--triplet libssh2-x86-windows-mixed \
 		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
 		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
-	rd /S /Q $(LOCALAPPDATA)\vcpkg
+	$(MAKEDIR)\obj\vcpkg\vcpkg.exe remove libssh2 \
+		--triplet libssh2-x64-windows-mixed \
+		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
+		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
+	rd /S /Q $(MAKEDIR)\obj\libssh2\
+    rd /S /Q $(LOCALAPPDATA)\vcpkg
 
 #------------------------------------------------------------------------------
 # Main targets
