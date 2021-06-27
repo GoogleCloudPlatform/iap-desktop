@@ -43,21 +43,21 @@ SYMBOLS_PACKAGE    = installer\bin\$(PLATFORM)\$(CONFIGURATION)\Symbols-$(BINARY
 
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
-	Google.Solutions.Ssh.Test\bin\release\Google.Solutions.Ssh.Test.dll \
-	Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll \
-	Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll \
-	Google.Solutions.IapDesktop.Extensions.Os.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Os.Test.dll \
-	Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Shell.Test.dll \
-	Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll
+	Google.Solutions.IapTunneling.Test\bin\$(CONFIGURATION)\Google.Solutions.IapTunneling.Test.dll \
+	Google.Solutions.Ssh.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.Ssh.Test.dll \
+	Google.Solutions.IapDesktop.Application.Test\bin\$(CONFIGURATION)\Google.Solutions.IapDesktop.Application.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Os.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Os.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Shell.Test.dll
 
 NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.Common]* \
-	+[Google.Solutions.Ssh]* \
 	+[Google.Solutions.IapTunneling]* \
+	+[Google.Solutions.Ssh]* \
+	+[Google.Solutions.IapDesktop.Application]* \
 	+[Google.Solutions.IapDesktop.Extensions.Activity]* \
 	+[Google.Solutions.IapDesktop.Extensions.Os]* \
-	+[Google.Solutions.IapDesktop.Extensions.Shell]* \
-	+[Google.Solutions.IapDesktop.Application]*
+	+[Google.Solutions.IapDesktop.Extensions.Shell]*
 	
 SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /i SHA2 /fd sha256 /td sha256
 
