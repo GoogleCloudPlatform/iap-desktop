@@ -37,27 +37,27 @@ BINARY_VERSION = $(PRODUCT_VERSION).$(BUILD_NUMBER)
 
 MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
 
-INSTALLER_SNAPSHOT = installer\bin\$(CONFIGURATION)\InstallerSnapshot-$(BINARY_VERSION).zip
-INSTALLER_PACKAGE = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION).msi
-SYMBOLS_PACKAGE = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION).zip
+INSTALLER_SNAPSHOT = installer\bin\$(CONFIGURATION)\InstallerSnapshot-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
+INSTALLER_PACKAGE  = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).msi
+SYMBOLS_PACKAGE    = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
 
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
-	Google.Solutions.Ssh.Test\bin\release\Google.Solutions.Ssh.Test.dll \
-	Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll \
-	Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll \
-	Google.Solutions.IapDesktop.Extensions.Os.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Os.Test.dll \
-	Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Shell.Test.dll \
-	Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll
+	Google.Solutions.IapTunneling.Test\bin\$(CONFIGURATION)\Google.Solutions.IapTunneling.Test.dll \
+	Google.Solutions.Ssh.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.Ssh.Test.dll \
+	Google.Solutions.IapDesktop.Application.Test\bin\$(CONFIGURATION)\Google.Solutions.IapDesktop.Application.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Os.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Os.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Shell.Test.dll
 
 NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.Common]* \
-	+[Google.Solutions.Ssh]* \
 	+[Google.Solutions.IapTunneling]* \
+	+[Google.Solutions.Ssh]* \
+	+[Google.Solutions.IapDesktop.Application]* \
 	+[Google.Solutions.IapDesktop.Extensions.Activity]* \
 	+[Google.Solutions.IapDesktop.Extensions.Os]* \
-	+[Google.Solutions.IapDesktop.Extensions.Shell]* \
-	+[Google.Solutions.IapDesktop.Application]*
+	+[Google.Solutions.IapDesktop.Extensions.Shell]*
 	
 SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /i SHA2 /fd sha256 /td sha256
 
@@ -92,24 +92,25 @@ $(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): Google.Solutions.IapDesktop\OAuthClient.cs
 	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
 	
 !if ( "$(SKIP_ASSEMBLY_BUILD)" == "" ) 
-$(MAKEDIR)\installer\obj\$(CONFIGURATION): $(MAIN_ASSEMBLY)
+$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Creating staging area for installer              ==="
 	@echo "========================================================"
 	
-	md $(MAKEDIR)\installer\obj\$(CONFIGURATION)
+	md $(MAKEDIR)\installer\obj\$(PLATFORM)
+    md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 		
 	copy $(MAKEDIR)\installer\*.* \
-		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
-	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.exe* \
-		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
-	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.dll \
-		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\*.exe* \
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\*.dll \
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 !endif
 
 $(INSTALLER_PACKAGE).wixobj: \
 			$(MAKEDIR)\installer\Product.wxs \
-			$(MAKEDIR)\installer\obj\$(CONFIGURATION)
+			$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 	@echo "========================================================"
 	@echo "=== Compiling installer                              ==="
 	@echo "========================================================"
@@ -118,6 +119,7 @@ $(INSTALLER_PACKAGE).wixobj: \
 		-nologo \
 		-out $(INSTALLER_PACKAGE).wixobj \
 		-dCONFIGURATION=$(CONFIGURATION) \
+        -dPLATFORM=$(PLATFORM) \
 		-dVERSION=$(BINARY_VERSION) \
 		-dBASEDIR=$(MAKEDIR)\installer \
 		-arch x86 \
@@ -131,14 +133,14 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	@echo "========================================================"
 
 !if ( "$(CODESIGN)" != "" ) 
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\Google.*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\libssh2.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\vtnetcore.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*Interop*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\IapDesktop.exe
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\Google.*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\libssh2.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\vtnetcore.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*Interop*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\IapDesktop.exe
     
-    signtool verify /pa $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*.exe
-    signtool verify /pa $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*.dll
+    signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.exe
+    signtool verify /pa $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\*.dll
 !endif
 
 	light \
@@ -154,7 +156,7 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	signtool sign $(SIGNTOOL_FLAGS) $(INSTALLER_PACKAGE)
 !endif
 
-$(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(CONFIGURATION)
+$(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 	@echo "========================================================"
 	@echo "=== Packaging installer snapshot                     ==="
 	@echo "========================================================"
@@ -171,14 +173,14 @@ $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "=== Packaging symbols                                ==="
 	@echo "========================================================"
 
-	if not exist $(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols \
-		md $(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols
+	if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols \
+		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols
 
-	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.pdb \
-		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\*.pdb \
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols
 
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 $(SYMBOLS_PACKAGE) \
-		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols\*
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols\*
 
 #------------------------------------------------------------------------------
 # Main targets
