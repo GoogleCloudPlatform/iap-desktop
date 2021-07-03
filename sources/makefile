@@ -37,9 +37,9 @@ BINARY_VERSION = $(PRODUCT_VERSION).$(BUILD_NUMBER)
 
 MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
 
-INSTALLER_SNAPSHOT = installer\bin\$(PLATFORM)\$(CONFIGURATION)\InstallerSnapshot-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
-INSTALLER_PACKAGE  = installer\bin\$(PLATFORM)\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).msi
-SYMBOLS_PACKAGE    = installer\bin\$(PLATFORM)\$(CONFIGURATION)\Symbols-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
+INSTALLER_SNAPSHOT = installer\bin\$(CONFIGURATION)\InstallerSnapshot-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
+INSTALLER_PACKAGE  = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).msi
+SYMBOLS_PACKAGE    = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
 
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
@@ -173,14 +173,14 @@ $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "=== Packaging symbols                                ==="
 	@echo "========================================================"
 
-	if not exist $(MAKEDIR)\installer\bin\$(PLATFORM)\$(CONFIGURATION)\symbols \
-		md $(MAKEDIR)\installer\bin\$(PLATFORM)\$(CONFIGURATION)\symbols
+	if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols \
+		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols
 
 	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(PLATFORM)\$(CONFIGURATION)\*.pdb \
-		$(MAKEDIR)\installer\bin\$(PLATFORM)\$(CONFIGURATION)\symbols
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols
 
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 $(SYMBOLS_PACKAGE) \
-		$(MAKEDIR)\installer\bin\$(PLATFORM)\$(CONFIGURATION)\symbols\*
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols\*
 
 #------------------------------------------------------------------------------
 # Main targets
