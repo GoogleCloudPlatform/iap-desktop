@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                         UserFlags.AddToAdministrators,
                         TimeSpan.FromSeconds(60),
                         CancellationToken.None)
-                    .ConfigureAwait(false);
+                    .ConfigureAwait(true);
 
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                        UserFlags.AddToAdministrators,
                        TimeSpan.FromSeconds(60),
                        CancellationToken.None)
-                    .ConfigureAwait(false);
+                    .ConfigureAwait(true);
 
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
