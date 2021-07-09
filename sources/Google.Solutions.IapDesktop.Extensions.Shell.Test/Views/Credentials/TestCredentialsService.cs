@@ -82,8 +82,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-            serviceRegistry.AddMock<IComputeEngineAdapter>()
-                .Setup(a => a.ResetWindowsUserAsync(
+            serviceRegistry.AddMock<IWindowsCredentialAdapter>()
+                .Setup(a => a.CreateWindowsCredentialsAsync(
                     It.IsAny<InstanceLocator>(),
                     It.Is<string>(user => user == "alice"),
                     It.IsAny<CancellationToken>()))
@@ -118,8 +118,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-            serviceRegistry.AddMock<IComputeEngineAdapter>()
-                .Setup(a => a.ResetWindowsUserAsync(
+            serviceRegistry.AddMock<IWindowsCredentialAdapter>()
+                .Setup(a => a.CreateWindowsCredentialsAsync(
                     It.IsAny<InstanceLocator>(),
                     It.Is<string>(user => user == "bobsemail"),
                     It.IsAny<CancellationToken>()))

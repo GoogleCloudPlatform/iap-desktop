@@ -44,9 +44,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             IapTunnel tunnel,
             InstanceLocator vmInstanceReference)
         {
-            using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
+            using (var credentialAdapter = new WindowsCredentialAdapter(
+                new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>())))
             {
-                var credentials = await gceAdapter.ResetWindowsUserAsync(
+                var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                     vmInstanceReference,
                     CreateRandomUsername(),
                     TimeSpan.FromSeconds(60),

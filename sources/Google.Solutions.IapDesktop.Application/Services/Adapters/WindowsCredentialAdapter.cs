@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1;
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
@@ -36,46 +37,58 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-#pragma warning disable CA1032 // Implement standard exception constructors
-
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    /// <summary>
-    /// Extend 'InstancesResource' by a 'ResetWindowsUserAsync' method.
-    /// </summary>
-    internal static class ResetWindowsUserExtensions
+    public interface IWindowsCredentialAdapter : IDisposable
+    {
+        Task<bool> IsGrantedPermissionToCreateWindowsCredentialsAsync(
+            InstanceLocator instanceRef);
+
+        /// <summary>
+        /// Reset a SAM account password. If the SAM account does not exist,
+        /// it is created and made a local Administrator.
+        /// </summary>
+        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
+        Task<NetworkCredential> CreateWindowsCredentialsAsync(
+            InstanceLocator instanceRef,
+            string username,
+            CancellationToken token);
+
+        /// <summary>
+        /// Reset a SAM account password. If the SAM account does not exist,
+        /// it is created and made a local Administrator.
+        /// </summary>
+        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
+        Task<NetworkCredential> CreateWindowsCredentialsAsync(
+            InstanceLocator instanceRef,
+            string username,
+            TimeSpan timeout,
+            CancellationToken token);
+    }
+
+    public sealed class WindowsCredentialAdapter : IWindowsCredentialAdapter
     {
         private const int RsaKeySize = 2048;
         private const int SerialPort = 4;
         private const string MetadataKey = "windows-keys";
 
-        /// <summary>
-        /// Reset a SAM account password. If the SAM account does not exist,
-        /// it is created and made a local Administrator.
-        /// </summary>
-        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
-        public static Task<NetworkCredential> ResetWindowsUserAsync(
-            this InstancesResource resource,
-            string project,
-            string zone,
-            string instance,
-            string username,
-            CancellationToken token)
+        private readonly IComputeEngineAdapter computeEngineAdapter;
+
+        //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
+
+        public WindowsCredentialAdapter(
+            IComputeEngineAdapter computeEngineAdapter)
         {
-            return ResetWindowsUserAsync(
-                resource,
-                new InstanceLocator(project, zone, instance),
-                username,
-                token);
+            this.computeEngineAdapter = computeEngineAdapter;
         }
 
-        /// <summary>
-        /// Reset a SAM account password. If the SAM account does not exist,
-        /// it is created and made a local Administrator.
-        /// </summary>
-        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
-        public static async Task<NetworkCredential> ResetWindowsUserAsync(
-            this InstancesResource resource,
+        //---------------------------------------------------------------------
+        // IWindowsCredentialAdapter.
+        //---------------------------------------------------------------------
+
+        public async Task<NetworkCredential> CreateWindowsCredentialsAsync( // TODO: Rename, incl. overloads + exception
             InstanceLocator instanceRef,
             string username,
             CancellationToken token)
@@ -94,21 +107,36 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     Exponent = Convert.ToBase64String(keyParameters.Exponent),
                 };
 
+                //
                 // Send the request to the instance via a special metadata entry.
+                //
                 try
                 {
                     var requestJson = JsonConvert.SerializeObject(requestPayload);
-                    await resource.AddMetadataAsync(
-                        instanceRef,
-                        MetadataKey,
-                        requestJson,
-                        token).ConfigureAwait(false);
+                    await this.computeEngineAdapter.UpdateMetadataAsync(
+                            instanceRef,
+                            existingMetadata =>
+                            {
+                                existingMetadata.Add(new Metadata()
+                                {
+                                    Items = new[]
+                                    {
+                                        new Metadata.ItemsData()
+                                        {
+                                            Key = MetadataKey,
+                                            Value = requestJson
+                                        }
+                                    }
+                                });
+                            },
+                            token)
+                        .ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.IsNotFound())
                 {
                     ApplicationTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
 
-                    throw new PasswordResetException(
+                    throw new WindowsCredentialCreationFailedException(
                         $"Instance {instanceRef.Name} was not found.");
                 }
                 catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
@@ -121,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     // Setting metadata failed due to lack of permissions. Note that
                     // the Error object is not always populated, hence the OR filter.
 
-                    throw new PasswordResetException(
+                    throw new WindowsCredentialCreationFailedException(
                         "You do not have sufficient permissions to reset a Windows password. " +
                         "You need the 'Service Account User' and " +
                         "'Compute Instance Admin' roles (or equivalent custom roles) " +
@@ -139,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     // permissions on the VM, but lacks ActAs permission on the associated 
                     // service account.
 
-                    throw new PasswordResetException(
+                    throw new WindowsCredentialCreationFailedException(
                         "You do not have sufficient permissions to reset a Windows password. " +
                         "Because this VM instance uses a service account, you also need the " +
                         "'Service Account User' role.",
@@ -147,8 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
 
                 // Read response from serial port.
-                using (var serialPortStream = new SerialPortStream(
-                    resource,
+                using (var serialPortStream = this.computeEngineAdapter.GetSerialPortOutput(
                     instanceRef,
                     SerialPort))
                 {
@@ -188,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         var responsePayload = JsonConvert.DeserializeObject<ResponsePayload>(response);
                         if (!string.IsNullOrEmpty(responsePayload.ErrorMessage))
                         {
-                            throw new PasswordResetException(responsePayload.ErrorMessage);
+                            throw new WindowsCredentialCreationFailedException(responsePayload.ErrorMessage);
                         }
 
                         var password = rsa.Decrypt(
@@ -204,8 +231,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public static async Task<NetworkCredential> ResetWindowsUserAsync(
-            this InstancesResource resource,
+        public async Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
             TimeSpan timeout,
@@ -219,8 +245,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     try
                     {
-                        return await ResetWindowsUserAsync(
-                            resource,
+                        return await CreateWindowsCredentialsAsync(
                             instanceRef,
                             username,
                             combinedCts.Token).ConfigureAwait(false);
@@ -230,13 +255,44 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         ApplicationTraceSources.Default.TraceError(e);
                         // This task was cancelled because of a timeout, not because
                         // the enclosing job was cancelled.
-                        throw new PasswordResetException(
+                        throw new WindowsCredentialCreationFailedException(
                             $"Timeout waiting for Compute Engine agent to reset password for user {username}. " +
                             "Verify that the agent is running and that the account manager feature is enabled.");
                     }
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // Permission check.
+        //---------------------------------------------------------------------
+
+        public Task<bool> IsGrantedPermissionToCreateWindowsCredentialsAsync(InstanceLocator instanceRef)
+        {
+            //
+            // Resetting a user requires
+            //  (1) compute.instances.setMetadata
+            //  (2) iam.serviceAccounts.actAs (if the instance runs as service account)
+            //
+            // For performance reasons, only check (1).
+            //
+            return this.computeEngineAdapter.IsGrantedPermission(
+                instanceRef,
+                Permissions.ComputeInstancesSetMetadata);
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.computeEngineAdapter.Dispose();
+        }
+
+        //---------------------------------------------------------------------
+        // Data classes.
+        //---------------------------------------------------------------------
 
         internal class RequestPayload
         {
@@ -267,15 +323,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     }
 
     [Serializable]
-    public class PasswordResetException : Exception, IExceptionWithHelpTopic
+    public class WindowsCredentialCreationFailedException : Exception, IExceptionWithHelpTopic
     {
         public IHelpTopic Help { get; }
 
-        public PasswordResetException(string message) : base(message)
+        public WindowsCredentialCreationFailedException(string message) : base(message)
         {
         }
 
-        public PasswordResetException(string message, IHelpTopic helpTopic)
+        public WindowsCredentialCreationFailedException(string message, IHelpTopic helpTopic)
             : base(message)
         {
             this.Help = helpTopic;

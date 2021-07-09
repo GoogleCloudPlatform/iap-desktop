@@ -130,7 +130,7 @@
     <Compile Include="Services\Adapters\MetadataExtensions.cs" />
     <Compile Include="Services\Adapters\OperatingSystems.cs" />
     <Compile Include="Services\Adapters\Permissions.cs" />
-    <Compile Include="Services\Adapters\ResetWindowsUser.cs" />
+    <Compile Include="Services\Adapters\WindowsCredentialAdapter.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Services\Adapters\SerialPortStream.cs" />
