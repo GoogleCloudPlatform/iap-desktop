@@ -86,6 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .Setup(a => a.CreateWindowsCredentialsAsync(
                     It.IsAny<InstanceLocator>(),
                     It.Is<string>(user => user == "alice"),
+                    It.Is<UserFlags>(t => t == UserFlags.AddToAdministrators),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new NetworkCredential("alice", "password"));
 
@@ -122,6 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .Setup(a => a.CreateWindowsCredentialsAsync(
                     It.IsAny<InstanceLocator>(),
                     It.Is<string>(user => user == "bobsemail"),
+                    It.Is<UserFlags>(t => t == UserFlags.AddToAdministrators),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new NetworkCredential("bobsemail", "password"));
 

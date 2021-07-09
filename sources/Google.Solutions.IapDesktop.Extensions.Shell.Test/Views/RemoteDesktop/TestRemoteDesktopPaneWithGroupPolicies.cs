@@ -48,10 +48,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
-                    vmInstanceReference,
-                    CreateRandomUsername(),
-                    TimeSpan.FromSeconds(60),
-                    CancellationToken.None);
+                        vmInstanceReference,
+                        CreateRandomUsername(),
+                        UserFlags.AddToAdministrators,
+                        TimeSpan.FromSeconds(60),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 var settings = InstanceConnectionSettings.CreateNew(vmInstanceReference);
                 settings.RdpUsername.Value = credentials.UserName;

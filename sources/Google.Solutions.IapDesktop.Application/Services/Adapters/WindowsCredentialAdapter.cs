@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
+            UserFlags tyerType,
             CancellationToken token);
 
         /// <summary>
@@ -62,8 +63,25 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
+            UserFlags tyerType,
             TimeSpan timeout,
             CancellationToken token);
+    }
+
+    [Flags]
+    public enum UserFlags
+    {
+        /// <summary>
+        /// Add to local Administrators group. This is the default
+        /// behavior.
+        /// </summary>
+        AddToAdministrators = 1,
+
+        /// <summary>
+        /// Don't modify group memverships. This is only supported by
+        /// newer OS agent versions (Jan 2020 and later).
+        /// </summary>
+        None = 0
     }
 
     public sealed class WindowsCredentialAdapter : IWindowsCredentialAdapter
@@ -88,9 +106,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // IWindowsCredentialAdapter.
         //---------------------------------------------------------------------
 
-        public async Task<NetworkCredential> CreateWindowsCredentialsAsync( // TODO: Rename, incl. overloads + exception
+        public async Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
+            UserFlags userType,
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef, username))
@@ -105,6 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     Email = username,
                     Modulus = Convert.ToBase64String(keyParameters.Modulus),
                     Exponent = Convert.ToBase64String(keyParameters.Exponent),
+                    AddToAdministrators = userType.HasFlag(UserFlags.AddToAdministrators)
                 };
 
                 //
@@ -234,6 +254,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public async Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
+            UserFlags userType,
             TimeSpan timeout,
             CancellationToken token)
         {
@@ -248,6 +269,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         return await CreateWindowsCredentialsAsync(
                             instanceRef,
                             username,
+                            userType,
                             combinedCts.Token).ConfigureAwait(false);
                     }
                     catch (Exception e) when (e.IsCancellation() && timeoutCts.IsCancellationRequested)
@@ -310,6 +332,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
             [JsonProperty("exponent")]
             public string Exponent { get; set; }
+
+            [JsonProperty("addToAdministrators")]
+            public bool AddToAdministrators { get; set; }
         }
 
         internal class ResponsePayload

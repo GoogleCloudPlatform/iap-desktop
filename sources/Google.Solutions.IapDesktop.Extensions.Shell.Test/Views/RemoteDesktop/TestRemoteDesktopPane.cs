@@ -170,10 +170,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
-                    locator,
-                    CreateRandomUsername(),
-                    TimeSpan.FromSeconds(60),
-                    CancellationToken.None);
+                        locator,
+                        CreateRandomUsername(),
+                        UserFlags.AddToAdministrators,
+                        TimeSpan.FromSeconds(60),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
@@ -229,8 +231,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                        locator,
                        CreateRandomUsername(),
+                       UserFlags.AddToAdministrators,
                        TimeSpan.FromSeconds(60),
-                       CancellationToken.None);
+                       CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
