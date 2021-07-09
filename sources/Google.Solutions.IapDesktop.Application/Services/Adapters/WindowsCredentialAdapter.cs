@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     ApplicationTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
 
-                    throw new PasswordResetException(
+                    throw new WindowsCredentialCreationFailedException(
                         $"Instance {instanceRef.Name} was not found.");
                 }
                 catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     // Setting metadata failed due to lack of permissions. Note that
                     // the Error object is not always populated, hence the OR filter.
 
-                    throw new PasswordResetException(
+                    throw new WindowsCredentialCreationFailedException(
                         "You do not have sufficient permissions to reset a Windows password. " +
                         "You need the 'Service Account User' and " +
                         "'Compute Instance Admin' roles (or equivalent custom roles) " +
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     // permissions on the VM, but lacks ActAs permission on the associated 
                     // service account.
 
-                    throw new PasswordResetException(
+                    throw new WindowsCredentialCreationFailedException(
                         "You do not have sufficient permissions to reset a Windows password. " +
                         "Because this VM instance uses a service account, you also need the " +
                         "'Service Account User' role.",
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         var responsePayload = JsonConvert.DeserializeObject<ResponsePayload>(response);
                         if (!string.IsNullOrEmpty(responsePayload.ErrorMessage))
                         {
-                            throw new PasswordResetException(responsePayload.ErrorMessage);
+                            throw new WindowsCredentialCreationFailedException(responsePayload.ErrorMessage);
                         }
 
                         var password = rsa.Decrypt(
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         ApplicationTraceSources.Default.TraceError(e);
                         // This task was cancelled because of a timeout, not because
                         // the enclosing job was cancelled.
-                        throw new PasswordResetException(
+                        throw new WindowsCredentialCreationFailedException(
                             $"Timeout waiting for Compute Engine agent to reset password for user {username}. " +
                             "Verify that the agent is running and that the account manager feature is enabled.");
                     }
@@ -323,15 +323,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     }
 
     [Serializable]
-    public class PasswordResetException : Exception, IExceptionWithHelpTopic
+    public class WindowsCredentialCreationFailedException : Exception, IExceptionWithHelpTopic
     {
         public IHelpTopic Help { get; }
 
-        public PasswordResetException(string message) : base(message)
+        public WindowsCredentialCreationFailedException(string message) : base(message)
         {
         }
 
-        public PasswordResetException(string message, IHelpTopic helpTopic)
+        public WindowsCredentialCreationFailedException(string message, IHelpTopic helpTopic)
             : base(message)
         {
             this.Help = helpTopic;

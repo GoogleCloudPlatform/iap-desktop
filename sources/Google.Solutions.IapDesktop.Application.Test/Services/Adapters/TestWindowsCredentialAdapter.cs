@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     .ConfigureAwait(false);
                 Assert.Fail();
             }
-            catch (PasswordResetException e)
+            catch (WindowsCredentialCreationFailedException e)
             {
                 Assert.IsNotEmpty(e.Message);
             }
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     .ConfigureAwait(false);
                 Assert.Fail();
             }
-            catch (PasswordResetException e)
+            catch (WindowsCredentialCreationFailedException e)
             {
                 Assert.IsNotEmpty(e.Message);
             }
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var instanceLocator = await testInstance;
             using (var cts = new CancellationTokenSource())
             {
-                AssertEx.ThrowsAggregateException<PasswordResetException>(
+                AssertEx.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
                     () => adapter.CreateWindowsCredentialsAsync(
                     instanceLocator,
                     "test" + Guid.NewGuid().ToString().Substring(20),
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString();
 
-            AssertEx.ThrowsAggregateException<PasswordResetException>(
+            AssertEx.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
                 () => adapter.CreateWindowsCredentialsAsync(
                     locator,
                     username,
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString();
 
-            AssertEx.ThrowsAggregateException<PasswordResetException>(
+            AssertEx.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
                 () => adapter.CreateWindowsCredentialsAsync(
                     locator,
                     username,
