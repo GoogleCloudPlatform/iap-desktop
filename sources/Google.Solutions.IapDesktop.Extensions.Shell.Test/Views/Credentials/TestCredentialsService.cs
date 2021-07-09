@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         }
 
         [Test]
-        public async Task WhenPromptReturnsAdminUser_ThenCredentialIsGeneratedAndShown()
+        public async Task WhenPromptSucceeds_ThenCredentialIsGeneratedAndShown()
         {
             var serviceRegistry = new ServiceRegistry();
 
@@ -193,55 +193,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             showCredDialog.Verify(d => d.ShowDialog(
                 It.IsAny<IWin32Window>(),
                 It.Is<string>(u => u == "bob-admin"),
-                "password"), Times.Once);
-        }
-
-        [Test]
-        public async Task WhenPromptReturnsNonAdminUser_ThenCredentialIsGeneratedAndShown()
-        {
-            var serviceRegistry = new ServiceRegistry();
-
-            var auth = new Mock<IAuthorization>();
-            auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-            serviceRegistry.AddMock<IAuthorizationAdapter>()
-                .SetupGet(a => a.Authorization).Returns(auth.Object);
-
-            serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-            serviceRegistry.AddMock<IWindowsCredentialAdapter>()
-                .Setup(a => a.CreateWindowsCredentialsAsync(
-                    It.IsAny<InstanceLocator>(),
-                    It.Is<string>(user => user == "bob-user"),
-                    It.Is<UserFlags>(t => t == UserFlags.None),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new NetworkCredential("bob-user", "password"));
-
-            var showCredDialog = serviceRegistry.AddMock<IShowCredentialsDialog>();
-            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
-            credDialog
-                .Setup(d => d.ShowDialog(
-                    It.IsAny<IWin32Window>(),
-                    It.IsAny<string>()))
-                .Returns(new GenerateCredentialsDialogResult(
-                    DialogResult.OK,
-                    "bob-user"));
-
-            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
-            settings.RdpUsername.Value = "";
-
-            var credentialsService = new CredentialsService(serviceRegistry);
-            await credentialsService.GenerateCredentialsAsync(
-                    null,
-                    SampleInstance,
-                    settings,
-                    false)
-                .ConfigureAwait(false);
-
-            credDialog.Verify(d => d.ShowDialog(
-                It.IsAny<IWin32Window>(),
-                It.Is<string>(u => u == "bobsemail")), Times.Once);
-            showCredDialog.Verify(d => d.ShowDialog(
-                It.IsAny<IWin32Window>(),
-                It.Is<string>(u => u == "bob-user"),
                 "password"), Times.Once);
         }
 
