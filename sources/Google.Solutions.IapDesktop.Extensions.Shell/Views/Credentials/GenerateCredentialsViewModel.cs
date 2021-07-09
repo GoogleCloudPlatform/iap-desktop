@@ -13,7 +13,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         // https://docs.microsoft.com/en-us/windows/desktop/adschema/a-samaccountname
         private readonly string DisallowsCharactersInUsername = "\"/\\[]:;|=,+*?<>";
 
-        private bool addToAdministrators = true;
         private string username = string.Empty;
 
         public bool IsAllowedCharacterForUsername(char c)
@@ -22,16 +21,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         //---------------------------------------------------------------------
         // Observable "output" properties.
         //---------------------------------------------------------------------
-
-        public bool AddToAdministrators
-        {
-            get => this.addToAdministrators;
-            set
-            {
-                this.addToAdministrators = value;
-                RaisePropertyChange();
-            }
-        }
 
         public string Username
         {

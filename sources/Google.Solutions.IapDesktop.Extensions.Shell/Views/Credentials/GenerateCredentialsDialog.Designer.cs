@@ -56,7 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.titleLabel = new System.Windows.Forms.Label();
             this.savePwdNote = new System.Windows.Forms.Label();
             this.statusIcon = new System.Windows.Forms.PictureBox();
-            this.addToAdministratorsCheckBox = new System.Windows.Forms.CheckBox();
             this.headlineLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.statusIcon)).BeginInit();
             this.SuspendLayout();
@@ -64,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(219, 205);
+            this.cancelButton.Location = new System.Drawing.Point(219, 178);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 4;
@@ -74,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(138, 205);
+            this.okButton.Location = new System.Drawing.Point(138, 178);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 3;
@@ -106,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // savePwdNote
             // 
             this.savePwdNote.AutoSize = true;
-            this.savePwdNote.Location = new System.Drawing.Point(37, 164);
+            this.savePwdNote.Location = new System.Drawing.Point(37, 137);
             this.savePwdNote.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.savePwdNote.Name = "savePwdNote";
             this.savePwdNote.Size = new System.Drawing.Size(238, 13);
@@ -116,22 +115,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // statusIcon
             // 
             this.statusIcon.Image = ((System.Drawing.Image)(resources.GetObject("statusIcon.Image")));
-            this.statusIcon.Location = new System.Drawing.Point(22, 163);
+            this.statusIcon.Location = new System.Drawing.Point(22, 136);
             this.statusIcon.Margin = new System.Windows.Forms.Padding(2);
             this.statusIcon.Name = "statusIcon";
             this.statusIcon.Size = new System.Drawing.Size(23, 24);
             this.statusIcon.TabIndex = 6;
             this.statusIcon.TabStop = false;
-            // 
-            // addToAdministratorsCheckBox
-            // 
-            this.addToAdministratorsCheckBox.AutoSize = true;
-            this.addToAdministratorsCheckBox.Location = new System.Drawing.Point(40, 128);
-            this.addToAdministratorsCheckBox.Name = "addToAdministratorsCheckBox";
-            this.addToAdministratorsCheckBox.Size = new System.Drawing.Size(180, 17);
-            this.addToAdministratorsCheckBox.TabIndex = 2;
-            this.addToAdministratorsCheckBox.Text = "Add to local Administrators group";
-            this.addToAdministratorsCheckBox.UseVisualStyleBackColor = true;
             // 
             // headlineLabel
             // 
@@ -150,11 +139,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(320, 242);
+            this.ClientSize = new System.Drawing.Size(320, 215);
             this.ControlBox = false;
             this.Controls.Add(this.savePwdNote);
             this.Controls.Add(this.headlineLabel);
-            this.Controls.Add(this.addToAdministratorsCheckBox);
             this.Controls.Add(this.statusIcon);
             this.Controls.Add(this.titleLabel);
             this.Controls.Add(this.usernameText);
@@ -184,7 +172,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         private System.Windows.Forms.Label titleLabel;
         private System.Windows.Forms.Label savePwdNote;
         private System.Windows.Forms.PictureBox statusIcon;
-        private System.Windows.Forms.CheckBox addToAdministratorsCheckBox;
         private System.Windows.Forms.Label headlineLabel;
     }
 }

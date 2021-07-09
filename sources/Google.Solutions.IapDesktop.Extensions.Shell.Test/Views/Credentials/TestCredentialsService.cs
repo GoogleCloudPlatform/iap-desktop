@@ -59,8 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                     It.IsAny<string>()))
                 .Returns(new GenerateCredentialsDialogResult(
                     DialogResult.Cancel, 
-                    null, 
-                    false)); // Cancel dialog
+                    null)); // Cancel dialog
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpUsername.Value = "alice";
@@ -96,8 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                     It.IsAny<string>()))
                 .Returns(new GenerateCredentialsDialogResult(
                     DialogResult.Cancel,
-                    null,
-                    false)); // Cancel dialog
+                    null)); // Cancel dialog
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
 
@@ -131,8 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                     It.IsAny<string>()))
                 .Returns(new GenerateCredentialsDialogResult(
                     DialogResult.Cancel,
-                    null,
-                    false)); // Cancel dialog
+                    null)); // Cancel dialog
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpUsername.Value = "";
@@ -177,8 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                     It.IsAny<string>()))
                 .Returns(new GenerateCredentialsDialogResult(
                     DialogResult.OK,
-                    "bob-admin",
-                    true));
+                    "bob-admin"));
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpUsername.Value = "";
@@ -227,8 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                     It.IsAny<string>()))
                 .Returns(new GenerateCredentialsDialogResult(
                     DialogResult.OK,
-                    "bob-user",
-                    false));
+                    "bob-user"));
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpUsername.Value = "";

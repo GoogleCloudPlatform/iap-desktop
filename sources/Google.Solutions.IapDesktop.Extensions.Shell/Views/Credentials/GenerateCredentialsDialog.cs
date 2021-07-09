@@ -49,11 +49,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 this.viewModel,
                 m => m.Username,
                 this.components);
-            this.addToAdministratorsCheckBox.BindProperty(
-                c => c.Checked,
-                this.viewModel,
-                m => m.AddToAdministrators,
-                this.components);
 
             // Bind buttons.
             this.okButton.BindReadonlyProperty(
@@ -81,8 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 
             return new GenerateCredentialsDialogResult(
                 result,
-                this.viewModel.Username,
-                this.viewModel.AddToAdministrators);
+                this.viewModel.Username);
         }
     }
 
@@ -90,16 +84,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
     {
         public DialogResult Result { get; }
         public string Username { get; }
-        public bool AddToAdministrators { get; }
 
         public GenerateCredentialsDialogResult(
             DialogResult result,
-            string username,
-            bool addToAdministrators)
+            string username)
         {
             Result = result;
             Username = username;
-            AddToAdministrators = addToAdministrators;
         }
     }
 }

@@ -64,7 +64,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                     .Authorization
                     .SuggestWindowsUsername()
                 : settings.RdpUsername.StringValue;
-            var flags = UserFlags.AddToAdministrators;
 
             if (!silent)
             {
@@ -80,9 +79,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 if (dialogResult.Result == DialogResult.OK)
                 {
                     username = dialogResult.Username;
-                    flags = dialogResult.AddToAdministrators 
-                        ? UserFlags.AddToAdministrators 
-                        : UserFlags.None;
                 }
                 else
                 {
