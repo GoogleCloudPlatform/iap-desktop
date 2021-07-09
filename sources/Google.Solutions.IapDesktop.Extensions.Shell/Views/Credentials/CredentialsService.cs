@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                         .CreateWindowsCredentialsAsync(
                             instanceLocator,
                             username,
-                            flags,
+                            UserFlags.AddToAdministrators,
                             token))
                     .ConfigureAwait(true);
 

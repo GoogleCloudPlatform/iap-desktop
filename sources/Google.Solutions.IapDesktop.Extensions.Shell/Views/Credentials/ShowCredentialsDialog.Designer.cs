@@ -58,6 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.usernameText = new System.Windows.Forms.TextBox();
             this.statusIcon = new System.Windows.Forms.PictureBox();
             this.savePwdNote = new System.Windows.Forms.Label();
+            this.headlineLabel = new System.Windows.Forms.Label();
             this.groupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.statusIcon)).BeginInit();
             this.SuspendLayout();
@@ -65,9 +66,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // closeButton
             // 
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.closeButton.Location = new System.Drawing.Point(209, 208);
+            this.closeButton.Location = new System.Drawing.Point(219, 239);
             this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(82, 28);
+            this.closeButton.Size = new System.Drawing.Size(75, 23);
             this.closeButton.TabIndex = 3;
             this.closeButton.Text = "Close";
             this.closeButton.UseVisualStyleBackColor = true;
@@ -78,11 +79,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.groupBox.Controls.Add(this.passwordLabel);
             this.groupBox.Controls.Add(this.usernameLabel);
             this.groupBox.Controls.Add(this.usernameText);
-            this.groupBox.Location = new System.Drawing.Point(18, 21);
-            this.groupBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox.Location = new System.Drawing.Point(19, 71);
+            this.groupBox.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox.Name = "groupBox";
-            this.groupBox.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.groupBox.Size = new System.Drawing.Size(273, 108);
+            this.groupBox.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox.Size = new System.Drawing.Size(275, 108);
             this.groupBox.TabIndex = 4;
             this.groupBox.TabStop = false;
             this.groupBox.Text = "Logon credentials";
@@ -91,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // 
             this.passwordText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.passwordText.Location = new System.Drawing.Point(87, 70);
-            this.passwordText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.passwordText.Margin = new System.Windows.Forms.Padding(2);
             this.passwordText.Multiline = true;
             this.passwordText.Name = "passwordText";
             this.passwordText.PasswordChar = '*';
@@ -123,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // 
             this.usernameText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.usernameText.Location = new System.Drawing.Point(87, 32);
-            this.usernameText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.usernameText.Margin = new System.Windows.Forms.Padding(2);
             this.usernameText.Multiline = true;
             this.usernameText.Name = "usernameText";
             this.usernameText.ReadOnly = true;
@@ -133,8 +134,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // statusIcon
             // 
             this.statusIcon.Image = ((System.Drawing.Image)(resources.GetObject("statusIcon.Image")));
-            this.statusIcon.Location = new System.Drawing.Point(17, 146);
-            this.statusIcon.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.statusIcon.Location = new System.Drawing.Point(22, 191);
+            this.statusIcon.Margin = new System.Windows.Forms.Padding(2);
             this.statusIcon.Name = "statusIcon";
             this.statusIcon.Size = new System.Drawing.Size(23, 24);
             this.statusIcon.TabIndex = 8;
@@ -143,27 +144,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // savePwdNote
             // 
             this.savePwdNote.AutoSize = true;
-            this.savePwdNote.Location = new System.Drawing.Point(37, 141);
+            this.savePwdNote.Location = new System.Drawing.Point(37, 193);
             this.savePwdNote.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.savePwdNote.Name = "savePwdNote";
-            this.savePwdNote.Size = new System.Drawing.Size(215, 52);
+            this.savePwdNote.Size = new System.Drawing.Size(224, 13);
             this.savePwdNote.TabIndex = 7;
-            this.savePwdNote.Text = "The VM instance settings will be updated \r\nautomatically to use these credentials" +
-    ".\r\n\r\nCredentials are encrypted and stored locally.";
+            this.savePwdNote.Text = "Connection settings are updated automatically";
+            // 
+            // headlineLabel
+            // 
+            this.headlineLabel.AutoSize = true;
+            this.headlineLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.headlineLabel.Location = new System.Drawing.Point(11, 15);
+            this.headlineLabel.Name = "headlineLabel";
+            this.headlineLabel.Size = new System.Drawing.Size(184, 30);
+            this.headlineLabel.TabIndex = 9;
+            this.headlineLabel.Text = "Logon credentials";
             // 
             // ShowCredentialsDialog
             // 
             this.AcceptButton = this.closeButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(309, 247);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(320, 280);
             this.ControlBox = false;
-            this.Controls.Add(this.statusIcon);
             this.Controls.Add(this.savePwdNote);
+            this.Controls.Add(this.headlineLabel);
+            this.Controls.Add(this.statusIcon);
             this.Controls.Add(this.groupBox);
             this.Controls.Add(this.closeButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ShowCredentialsDialog";
@@ -190,5 +202,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         private System.Windows.Forms.TextBox usernameText;
         private System.Windows.Forms.PictureBox statusIcon;
         private System.Windows.Forms.Label savePwdNote;
+        private System.Windows.Forms.Label headlineLabel;
     }
 }
