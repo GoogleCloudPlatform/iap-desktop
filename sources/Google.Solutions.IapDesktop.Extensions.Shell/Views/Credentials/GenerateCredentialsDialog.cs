@@ -20,6 +20,7 @@
 //
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Windows.Forms;
 
@@ -27,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
     public interface IGenerateCredentialsDialog
     {
-        string PromptForUsername(
+        GenerateCredentialsDialogResult ShowDialog(
             IWin32Window owner,
             string suggestedUsername);
     }
@@ -36,37 +37,69 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
     [SkipCodeCoverage("View code")]
     public partial class GenerateCredentialsDialog : Form, IGenerateCredentialsDialog
     {
-        // SAM usernames do not permit these characters, see
-        // https://docs.microsoft.com/en-us/windows/desktop/adschema/a-samaccountname
-        private readonly string DisallowsCharactersInUsername = "\"/\\[]:;|=,+*?<>";
-
+        private readonly GenerateCredentialsViewModel viewModel
+            = new GenerateCredentialsViewModel();
 
         public GenerateCredentialsDialog()
         {
             InitializeComponent();
+
+            this.usernameText.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.Username,
+                this.components);
+            this.addToAdministratorsCheckBox.BindProperty(
+                c => c.Checked,
+                this.viewModel,
+                m => m.AddToAdministrators,
+                this.components);
+
+            // Bind buttons.
+            this.okButton.BindReadonlyProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsOkButtonEnabled,
+                this.components);
+
+            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
         }
 
         private void usernameText_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Cancel any keypresses of disallowed characters.
-            e.Handled = DisallowsCharactersInUsername.IndexOf(e.KeyChar) >= 0;
+            e.Handled = !this.viewModel.IsAllowedCharacterForUsername(e.KeyChar);
         }
 
-        public string PromptForUsername(
+        public GenerateCredentialsDialogResult ShowDialog(
             IWin32Window owner,
             string suggestedUsername)
         {
-            this.usernameText.Text = suggestedUsername;
+            this.viewModel.Username = suggestedUsername;
 
-            if (ShowDialog(owner) == DialogResult.OK &&
-                !String.IsNullOrWhiteSpace(this.usernameText.Text))
-            {
-                return this.usernameText.Text;
-            }
-            else
-            {
-                return null;
-            }
+            var result = ShowDialog(owner);
+
+            return new GenerateCredentialsDialogResult(
+                result,
+                this.viewModel.Username,
+                this.viewModel.AddToAdministrators);
+        }
+    }
+
+    public class GenerateCredentialsDialogResult
+    {
+        public DialogResult Result { get; }
+        public string Username { get; }
+        public bool AddToAdministrators { get; }
+
+        public GenerateCredentialsDialogResult(
+            DialogResult result,
+            string username,
+            bool addToAdministrators)
+        {
+            Result = result;
+            Username = username;
+            AddToAdministrators = addToAdministrators;
         }
     }
 }

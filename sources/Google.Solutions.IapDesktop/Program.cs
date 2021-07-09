@@ -219,6 +219,7 @@ namespace Google.Solutions.IapDesktop
             adapterLayer.AddSingleton<IJobHost>(mainForm);
             adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
             adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
+            adapterLayer.AddTransient<IWindowsCredentialAdapter, WindowsCredentialAdapter>();
             adapterLayer.AddTransient<GithubAdapter>();
             adapterLayer.AddTransient<BuganizerAdapter>();
             adapterLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();

@@ -26,6 +26,7 @@ using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Newtonsoft.Json;
@@ -100,6 +101,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             IComputeEngineAdapter computeEngineAdapter)
         {
             this.computeEngineAdapter = computeEngineAdapter;
+        }
+
+        public WindowsCredentialAdapter(IServiceProvider serviceProvider)
+            : this(serviceProvider.GetService<IComputeEngineAdapter>())
+        {
         }
 
         //---------------------------------------------------------------------
