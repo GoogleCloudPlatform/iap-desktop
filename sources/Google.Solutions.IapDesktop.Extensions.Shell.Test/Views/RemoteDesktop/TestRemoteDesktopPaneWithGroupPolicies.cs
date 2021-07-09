@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             using (var credentialAdapter = new WindowsCredentialAdapter(
                 new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>())))
             {
-                var credentials = await credentialAdapter.ResetWindowsUserAsync(
+                var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                     vmInstanceReference,
                     CreateRandomUsername(),
                     TimeSpan.FromSeconds(60),

@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IWindowsCredentialAdapter : IDisposable
     {
-        Task<bool> IsGrantedPermissionToResetWindowsUser(
+        Task<bool> IsGrantedPermissionToCreateWindowsCredentialsAsync(
             InstanceLocator instanceRef);
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         /// it is created and made a local Administrator.
         /// </summary>
         /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
-        Task<NetworkCredential> ResetWindowsUserAsync(
+        Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
             CancellationToken token);
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         /// it is created and made a local Administrator.
         /// </summary>
         /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
-        Task<NetworkCredential> ResetWindowsUserAsync(
+        Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
             TimeSpan timeout,
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // IWindowsCredentialAdapter.
         //---------------------------------------------------------------------
 
-        public async Task<NetworkCredential> ResetWindowsUserAsync( // TODO: Rename, incl. overloads + exception
+        public async Task<NetworkCredential> CreateWindowsCredentialsAsync( // TODO: Rename, incl. overloads + exception
             InstanceLocator instanceRef,
             string username,
             CancellationToken token)
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<NetworkCredential> ResetWindowsUserAsync(
+        public async Task<NetworkCredential> CreateWindowsCredentialsAsync(
             InstanceLocator instanceRef,
             string username,
             TimeSpan timeout,
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     try
                     {
-                        return await ResetWindowsUserAsync(
+                        return await CreateWindowsCredentialsAsync(
                             instanceRef,
                             username,
                             combinedCts.Token).ConfigureAwait(false);
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Permission check.
         //---------------------------------------------------------------------
 
-        public Task<bool> IsGrantedPermissionToResetWindowsUser(InstanceLocator instanceRef)
+        public Task<bool> IsGrantedPermissionToCreateWindowsCredentialsAsync(InstanceLocator instanceRef)
         {
             //
             // Resetting a user requires
