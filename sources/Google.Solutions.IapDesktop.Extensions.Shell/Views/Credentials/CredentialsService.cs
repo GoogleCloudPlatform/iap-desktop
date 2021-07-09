@@ -58,32 +58,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             ConnectionSettingsBase settings,
             bool silent)
         {
-            // Prompt for username to use.
-            string username;
-            if (silent)
+            var username = string.IsNullOrEmpty(settings.RdpUsername.StringValue)
+                ? this.serviceProvider
+                    .GetService<IAuthorizationAdapter>()
+                    .Authorization
+                    .SuggestWindowsUsername()
+                : settings.RdpUsername.StringValue;
+
+            if (!silent)
             {
-                username = string.IsNullOrEmpty(settings.RdpUsername.StringValue)
-                    ? this.serviceProvider
-                        .GetService<IAuthorizationAdapter>()
-                        .Authorization
-                        .SuggestWindowsUsername()
-                    : settings.RdpUsername.StringValue;
-            }
-            else
-            {
-                username = this.serviceProvider
+                //
+                // Prompt user to customize the defaults.
+                //
+
+                var dialogResult = this.serviceProvider
                     .GetService<IGenerateCredentialsDialog>()
-                    .PromptForUsername(
-                        owner,
-                        string.IsNullOrEmpty(settings.RdpUsername.StringValue)
-                            ? this.serviceProvider
-                                .GetService<IAuthorizationAdapter>()
-                                .Authorization
-                                .SuggestWindowsUsername()
-                            : settings.RdpUsername.StringValue);
-                if (username == null)
+                    .ShowDialog(owner,
+                    username);
+
+                if (dialogResult.Result == DialogResult.OK)
                 {
-                    // Aborted.
+                    username = dialogResult.Username;
+                }
+                else
+                {
                     throw new OperationCanceledException();
                 }
             }
@@ -96,6 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                         .CreateWindowsCredentialsAsync(
                             instanceLocator,
                             username,
+                            UserFlags.AddToAdministrators,
                             token))
                     .ConfigureAwait(true);
 

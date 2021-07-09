@@ -161,6 +161,7 @@
     <Compile Include="Views\Credentials\GenerateCredentialsDialog.Designer.cs">
       <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Credentials\GenerateCredentialsViewModel.cs" />
     <Compile Include="Views\Credentials\SamAccountName.cs" />
     <Compile Include="Views\Credentials\ShowCredentialsDialog.cs">
       <SubType>Form</SubType>

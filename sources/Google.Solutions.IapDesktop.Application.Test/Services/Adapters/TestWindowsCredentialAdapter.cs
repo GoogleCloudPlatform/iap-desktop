@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 await adapter.CreateWindowsCredentialsAsync(
                         await testInstance,
                         username,
+                        UserFlags.AddToAdministrators,
                         CancellationToken.None)
                     .ConfigureAwait(false);
                 Assert.Fail();
@@ -79,6 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 await adapter.CreateWindowsCredentialsAsync(
                         instanceRef,
                         username,
+                        UserFlags.AddToAdministrators,
                         CancellationToken.None)
                     .ConfigureAwait(false);
                 Assert.Fail();
@@ -90,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         [Test]
-        public async Task WhenUserDoesntExist_ThenResetPasswordCreatesNewUser(
+        public async Task WhenUserDoesntExist_ThenCreateWindowsCredentialsCreatesNewUser(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
@@ -100,6 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var credentials = await adapter.CreateWindowsCredentialsAsync(
                     await testInstance,
                     username,
+                    UserFlags.AddToAdministrators,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -109,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         [Test]
-        public async Task WhenUserExists_ThenResetPasswordUpdatesPassword(
+        public async Task WhenAdminUserExists_ThenCreateWindowsCredentialsUpdatesPassword(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
@@ -120,11 +123,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             await adapter.CreateWindowsCredentialsAsync(
                     await testInstance,
                     username,
+                    UserFlags.AddToAdministrators,
                     CancellationToken.None)
                 .ConfigureAwait(false);
             var credentials = await adapter.CreateWindowsCredentialsAsync(
                     await testInstance,
                     username,
+                    UserFlags.None,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -134,7 +139,34 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         [Test]
-        public async Task WhenTokenSourceIsCanceled_ThenResetPasswordThrowsTaskCanceledException(
+        public async Task WhenNormalUserExists_ThenCreateWindowsCredentialsUpdatesPasswordAndChangesType(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+
+            var username = "existinguser";
+
+            await adapter.CreateWindowsCredentialsAsync(
+                    await testInstance,
+                    username,
+                    UserFlags.None,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+            var credentials = await adapter.CreateWindowsCredentialsAsync(
+                    await testInstance,
+                    username,
+                    UserFlags.AddToAdministrators,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(username, credentials.UserName);
+            Assert.IsEmpty(credentials.Domain);
+            Assert.IsNotEmpty(credentials.Password);
+        }
+
+        [Test]
+        public async Task WhenTokenSourceIsCanceled_ThenCreateWindowsCredentialsThrowsTaskCanceledException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
@@ -149,13 +181,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     () => adapter.CreateWindowsCredentialsAsync(
                     instanceLocator,
                     "test" + Guid.NewGuid().ToString().Substring(20),
+                    UserFlags.AddToAdministrators,
                     TimeSpan.FromMinutes(1),
                     cts.Token).Wait());
             }
         }
 
         [Test]
-        public async Task WhenTimeoutElapses_ThenResetPasswordThrowsPasswordResetException(
+        public async Task WhenTimeoutElapses_ThenCreateWindowsCredentialsThrowsPasswordResetException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
@@ -168,11 +201,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     () => adapter.CreateWindowsCredentialsAsync(
                     instanceLocator,
                     "test" + Guid.NewGuid().ToString().Substring(20),
+                    UserFlags.AddToAdministrators,
                     TimeSpan.FromMilliseconds(1),
                     cts.Token).Wait());
             }
         }
-
 
         //---------------------------------------------------------------------
         // Permissions.
@@ -219,6 +252,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 () => adapter.CreateWindowsCredentialsAsync(
                     locator,
                     username,
+                    UserFlags.AddToAdministrators,
                     CancellationToken.None).Wait());
         }
 
@@ -231,9 +265,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             var result = await adapter.CreateWindowsCredentialsAsync(
-                await testInstance,
-                username,
-                CancellationToken.None);
+                    await testInstance,
+                    username,
+                    UserFlags.AddToAdministrators,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.IsNotNull(result.Password);
         }
 
@@ -250,6 +286,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 () => adapter.CreateWindowsCredentialsAsync(
                     locator,
                     username,
+                    UserFlags.AddToAdministrators,
                     CancellationToken.None).Wait());
         }
 
@@ -265,9 +302,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             var result = await adapter.CreateWindowsCredentialsAsync(
-                await testInstance,
-                username,
-                CancellationToken.None);
+                    await testInstance,
+                    username,
+                    UserFlags.AddToAdministrators,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.IsNotNull(result.Password);
         }
     }

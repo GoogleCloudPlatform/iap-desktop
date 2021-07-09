@@ -70,10 +70,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
-                    locator,
-                    CreateRandomUsername(),
-                    TimeSpan.FromSeconds(60),
-                    CancellationToken.None);
+                        locator,
+                        CreateRandomUsername(),
+                        UserFlags.AddToAdministrators,
+                        TimeSpan.FromSeconds(60),
+                        CancellationToken.None)
+                    .ConfigureAwait(true);
 
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
