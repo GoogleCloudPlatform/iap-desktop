@@ -48,7 +48,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     public class ComputeEngineAdapter : IComputeEngineAdapter
     {
         private const string MtlsBaseUri = "https://compute.mtls.googleapis.com/compute/v1/projects/";
-        private static readonly TimeSpan DefaultPasswordResetTimeout = TimeSpan.FromSeconds(25);
 
         private readonly ComputeService service;
 
@@ -481,34 +480,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         //---------------------------------------------------------------------
-        // Windows user.
-        //---------------------------------------------------------------------
-
-        public Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            CancellationToken token)
-        {
-            return ResetWindowsUserAsync(instanceRef, username, DefaultPasswordResetTimeout, token);
-        }
-
-        public async Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            TimeSpan timeout,
-            CancellationToken token)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef, timeout))
-            {
-                return await this.service.Instances.ResetWindowsUserAsync(
-                    instanceRef,
-                    username,
-                    timeout,
-                    token).ConfigureAwait(false);
-            }
-        }
-
-        //---------------------------------------------------------------------
         // Permission check.
         //---------------------------------------------------------------------
 
@@ -547,18 +518,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     return true;
                 }
             }
-        }
-
-        public Task<bool> IsGrantedPermissionToResetWindowsUser(InstanceLocator instanceRef)
-        {
-            //
-            // Resetting a user requires
-            //  (1) compute.instances.setMetadata
-            //  (2) iam.serviceAccounts.actAs (if the instance runs as service account)
-            //
-            // For performance reasons, only check (1).
-            //
-            return IsGrantedPermission(instanceRef, Permissions.ComputeInstancesSetMetadata);
         }
 
         public void Dispose()

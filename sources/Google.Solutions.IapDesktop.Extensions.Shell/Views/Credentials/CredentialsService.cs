@@ -88,11 +88,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 }
             }
 
-            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
+            using (var windowsCredentialAdapter = this.serviceProvider.GetService<IWindowsCredentialAdapter>())
             {
                 var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
                     new JobDescription("Generating Windows logon credentials..."),
-                    token => computeEngineAdapter
+                    token => windowsCredentialAdapter
                         .ResetWindowsUserAsync(
                             instanceLocator,
                             username,
@@ -118,9 +118,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 
         public async Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
         {
-            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
+            using (var windowsCredentialAdapter = this.serviceProvider.GetService<IWindowsCredentialAdapter>())
             {
-                return await computeEngineAdapter
+                return await windowsCredentialAdapter
                     .IsGrantedPermissionToResetWindowsUser(instance)
                     .ConfigureAwait(false);
             }

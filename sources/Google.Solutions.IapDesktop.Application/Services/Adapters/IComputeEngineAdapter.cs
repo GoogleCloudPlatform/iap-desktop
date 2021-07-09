@@ -117,29 +117,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             CancellationToken token);
 
         //---------------------------------------------------------------------
-        // Windows user.
-        //---------------------------------------------------------------------
-
-        Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            CancellationToken token);
-
-        Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            TimeSpan timeout,
-            CancellationToken token);
-
-        //---------------------------------------------------------------------
         // Permission check.
         //---------------------------------------------------------------------
 
         Task<bool> IsGrantedPermission(
             InstanceLocator instanceRef,
             string permission);
-
-        Task<bool> IsGrantedPermissionToResetWindowsUser(
-            InstanceLocator instanceRef);
     }
 }
