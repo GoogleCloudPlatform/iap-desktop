@@ -18,6 +18,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
