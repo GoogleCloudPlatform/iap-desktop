@@ -232,6 +232,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo.ico" />
+    <None Include="Resources\Documentation_16.png" />
     <None Include="Resources\Splash.png" />
     <None Include="Resources\IapBackground.png" />
     <None Include="Resources\About.bmp" />
