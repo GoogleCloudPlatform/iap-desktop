@@ -435,9 +435,19 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.IapOverview);
         }
 
+        private void openSecureConnectDocsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.SecureConnectDcaOverview);
+        }
+
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
             this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.IapAccess);
+        }
+
+        private void openIapFirewallDocsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.CreateIapFirewallRule);
         }
 
         private void reportGithubIssueToolStripMenuItem_Click(object sender, EventArgs e)
@@ -590,5 +600,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
+
     }
 }
