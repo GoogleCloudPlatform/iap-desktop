@@ -28,6 +28,9 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 
+#pragma warning disable CA1000 // Do not declare static members on generic types
+#pragma warning disable CA1031 // Do not catch general exception types
+
 namespace Google.Solutions.IapDesktop.Application.Settings
 {
     public interface IRegistrySetting : ISetting

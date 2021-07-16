@@ -220,8 +220,6 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Determine enrollment state of this device.
             //
-
-            // TODO: Run this asynchronously.
             this.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
                 new CertificateStoreAdapter(),
                 this.applicationSettings,

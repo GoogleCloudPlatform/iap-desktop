@@ -52,6 +52,8 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 
+#pragma warning disable CA1031 // Do not catch general exception types
+
 namespace Google.Solutions.IapDesktop
 {
     class Program : SingletonApplicationBase

@@ -26,6 +26,8 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
+#pragma warning disable CA1822 // Mark members as static
+
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     public class NetworkOptionsViewModel : ViewModelBase, IOptionsDialogPane

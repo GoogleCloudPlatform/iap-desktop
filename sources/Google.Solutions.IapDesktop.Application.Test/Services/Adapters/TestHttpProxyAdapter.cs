@@ -61,10 +61,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             using (var response = await client.SendAsync(
                 request,
                 HttpCompletionOption.ResponseHeadersRead,
-                CancellationToken.None))
+                CancellationToken.None).ConfigureAwait(true))
             {
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
+                return await response.Content.ReadAsStringAsync()
+                    .ConfigureAwait(true);
             }
         }
 
@@ -79,7 +80,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     ProxyBypassList,
                     null);
 
-                await SendWebRequest(SampleHttpsUrl);
+                await SendWebRequest(SampleHttpsUrl)
+                    .ConfigureAwait(true);
 
                 Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
@@ -99,7 +101,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     ProxyBypassList,
                     proxyCredentials);
 
-                await SendWebRequest(SampleHttpsUrl);
+                await SendWebRequest(SampleHttpsUrl)
+                    .ConfigureAwait(true);
 
                 Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
@@ -128,7 +131,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     proxiedUrl,
                     "This might fail on systems that have a proxy PAC configured by GPO");
 
-                await SendWebRequest(SampleHttpsUrl);
+                await SendWebRequest(SampleHttpsUrl)
+                    .ConfigureAwait(true);
 
                 Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
@@ -159,7 +163,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     proxiedUrl,
                     "This might fail on systems that have a proxy PAC configured by GPO");
 
-                await SendWebRequest(SampleHttpsUrl);
+                await SendWebRequest(SampleHttpsUrl)
+                    .ConfigureAwait(true);
 
                 Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
@@ -180,7 +185,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     proxyCredentials);
                 adapter.ActivateSystemProxySettings();
 
-                await SendWebRequest(SampleHttpsUrl);
+                await SendWebRequest(SampleHttpsUrl)
+                    .ConfigureAwait(true);
 
                 CollectionAssert.DoesNotContain(proxy.ConnectionTargets, SampleHttpsUrl.Host);
             }

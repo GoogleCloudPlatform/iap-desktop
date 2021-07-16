@@ -67,8 +67,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        private static readonly string Esc = "\u001b";
-        private static readonly string Ss3 = Esc + "O";
+        private const string Esc = "\u001b";
+        private const string Ss3 = Esc + "O";
         private static readonly string DecimalSep = CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
 
         /// <summary>

@@ -42,7 +42,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     {
         private const int DefaultKeySize = 3072;
 
-        // TODO: Make provider, key size configurable.
         private readonly CngProvider provider = CngProvider.MicrosoftSoftwareKeyStorageProvider;
         private readonly int keySize = DefaultKeySize;
 

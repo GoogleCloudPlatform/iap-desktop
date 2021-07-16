@@ -930,8 +930,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             // Extend selection until we hit a character that is
             // different in whitespace-ness.
             //
-            Predicate<char> predicate =
-                c => char.IsWhiteSpace(hitChar) == char.IsWhiteSpace(c);
+            bool predicate(char c) => char.IsWhiteSpace(hitChar) == char.IsWhiteSpace(c);
 
             SelectText(
                 FindPosition(position, predicate, TextSelectionDirection.Backward),
