@@ -42,7 +42,9 @@ namespace Google.Solutions.Ssh.Test
         {
             for (int i = 0; i < 10; i++)
             {
-                await Task.Delay(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 10));
+                await Task
+                    .Delay(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 10))
+                    .ConfigureAwait(false);
 
                 lock (buffer)
                 {
@@ -77,15 +79,19 @@ namespace Google.Solutions.Ssh.Test
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
 
             using (var key = new RsaSshKey(new RSACng()))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(
+                        await instanceLocatorTask,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
 
                 var receiveBuffer = new StringBuilder();
 
@@ -108,18 +114,19 @@ namespace Google.Solutions.Ssh.Test
                     receiveHandler,
                     UnexpectedErrorCallback))
                 {
-                    await connection.ConnectAsync();
+                    await connection.ConnectAsync().ConfigureAwait(false);
 
                     AssertEx.ThrowsAggregateException<InvalidOperationException>(
                         () => connection.ConnectAsync().Wait());
 
-                    await connection.SendAsync("whoami\n");
-                    await connection.SendAsync("exit\n");
+                    await connection.SendAsync("whoami\n").ConfigureAwait(false);
+                    await connection.SendAsync("exit\n").ConfigureAwait(false);
 
                     await AwaitBufferContentAsync(
-                        receiveBuffer,
-                        TimeSpan.FromSeconds(10),
-                        "testuser");
+                            receiveBuffer,
+                            TimeSpan.FromSeconds(10),
+                            "testuser")
+                        .ConfigureAwait(false);
 
                     StringAssert.Contains(
                         "testuser",
@@ -133,15 +140,19 @@ namespace Google.Solutions.Ssh.Test
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
 
             using (var key = new RsaSshKey(new RSACng()))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(
+                        await instanceLocatorTask,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
 
                 using (var connection = new SshShellConnection(
                     "testuser",
@@ -154,7 +165,9 @@ namespace Google.Solutions.Ssh.Test
                     _ => { },
                     UnexpectedErrorCallback))
                 {
-                    await connection.ConnectAsync();
+                    await connection
+                        .ConnectAsync()
+                        .ConfigureAwait(false);
                 }
             }
         }
@@ -164,15 +177,19 @@ namespace Google.Solutions.Ssh.Test
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
 
             using (var key = new RsaSshKey(new RSACng()))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(
+                        await instanceLocatorTask,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
 
                 var receiveBuffer = new StringBuilder();
 
@@ -195,17 +212,22 @@ namespace Google.Solutions.Ssh.Test
                     receiveHandler,
                     UnexpectedErrorCallback))
                 {
-                    await connection.ConnectAsync();
+                    await connection
+                        .ConnectAsync()
+                        .ConfigureAwait(false);
 
                     AssertEx.ThrowsAggregateException<InvalidOperationException>(
                         () => connection.ConnectAsync().Wait());
 
-                    await connection.SendAsync("locale;sleep 1;exit\n");
+                    await connection
+                        .SendAsync("locale;sleep 1;exit\n")
+                        .ConfigureAwait(false);
 
                     await AwaitBufferContentAsync(
-                        receiveBuffer,
-                        TimeSpan.FromSeconds(10),
-                        "testuser");
+                            receiveBuffer,
+                            TimeSpan.FromSeconds(10),
+                            "testuser")
+                        .ConfigureAwait(false);
 
                     StringAssert.Contains(
                         "LC_ALL=en_AU.UTF-8",
@@ -221,15 +243,19 @@ namespace Google.Solutions.Ssh.Test
                 ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
 
             using (var key = new RsaSshKey(new RSACng()))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(
+                        await instanceLocatorTask,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
 
                 var receiveBuffer = new StringBuilder();
 
@@ -252,17 +278,22 @@ namespace Google.Solutions.Ssh.Test
                     receiveHandler,
                     UnexpectedErrorCallback))
                 {
-                    await connection.ConnectAsync();
+                    await connection
+                        .ConnectAsync()
+                        .ConfigureAwait(false);
 
                     AssertEx.ThrowsAggregateException<InvalidOperationException>(
                         () => connection.ConnectAsync().Wait());
 
-                    await connection.SendAsync("locale;sleep 1;exit\n");
+                    await connection
+                        .SendAsync("locale;sleep 1;exit\n")
+                        .ConfigureAwait(false);
 
                     await AwaitBufferContentAsync(
-                        receiveBuffer,
-                        TimeSpan.FromSeconds(10),
-                        "testuser");
+                            receiveBuffer,
+                            TimeSpan.FromSeconds(10),
+                            "testuser")
+                        .ConfigureAwait(false);
 
                     StringAssert.Contains(
                         "LC_ALL=\r\n",
@@ -276,15 +307,19 @@ namespace Google.Solutions.Ssh.Test
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
 
             using (var key = new RsaSshKey(new RSACng()))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(
+                        await instanceLocatorTask,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
 
                 var receiveBuffer = new StringBuilder();
 
@@ -307,17 +342,22 @@ namespace Google.Solutions.Ssh.Test
                     receiveHandler,
                     UnexpectedErrorCallback))
                 {
-                    await connection.ConnectAsync();
+                    await connection
+                        .ConnectAsync()
+                        .ConfigureAwait(false);
 
                     AssertEx.ThrowsAggregateException<InvalidOperationException>(
                         () => connection.ConnectAsync().Wait());
 
-                    await connection.SendAsync("locale;sleep 1;exit\n");
+                    await connection
+                        .SendAsync("locale;sleep 1;exit\n")
+                        .ConfigureAwait(false);
 
                     await AwaitBufferContentAsync(
-                        receiveBuffer,
-                        TimeSpan.FromSeconds(10),
-                        "testuser");
+                            receiveBuffer,
+                            TimeSpan.FromSeconds(10),
+                            "testuser")
+                        .ConfigureAwait(false);
 
                     StringAssert.Contains(
                         "LC_ALL=\r\n",

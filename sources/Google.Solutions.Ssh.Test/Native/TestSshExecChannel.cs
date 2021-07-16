@@ -53,14 +53,18 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
             using (var key = new RsaSshKey(new RSACng()))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key).ConfigureAwait(true);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(
+                        await instanceLocatorTask,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
@@ -92,14 +96,18 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
             using (var key = new RsaSshKey(new RSACng()))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key).ConfigureAwait(true);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(
+                        await instanceLocatorTask,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
@@ -125,14 +133,18 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
             using (var key = new RsaSshKey(new RSACng()))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key).ConfigureAwait(true);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(
+                        await instanceLocatorTask,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
@@ -168,14 +180,18 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
             using (var key = new RsaSshKey(new RSACng()))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key).ConfigureAwait(true);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(
+                        await instanceLocatorTask,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))

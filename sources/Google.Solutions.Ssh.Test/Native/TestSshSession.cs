@@ -226,7 +226,9 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
             using (var session = CreateSession())
             {
@@ -276,7 +278,9 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
@@ -290,7 +294,9 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 12);
             using (var session = CreateSession())
             {
