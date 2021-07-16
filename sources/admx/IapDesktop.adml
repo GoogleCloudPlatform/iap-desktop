@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<!--  
+  Copyright 2021 Google LLC
+  
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<policyDefinitionResources revision="1.0" schemaVersion="1.0">
+  <displayName/>
+  <description/>
+  <resources>
+    <stringTable>
+      <!-- NB. The UI preserves whitespace, so do not add any unnecessary newlines/indentation -->
+      
+      <string id="IapDesktop">Google IAP Desktop</string>
+
+      <string id="IsUpdateCheckEnabled">Update Check</string>
+      <string id="IsUpdateCheckEnabled_Description">Periodically check for updates on exit</string>
+
+      <string id="IsDeviceCertificateAuthenticationEnabled">Enable endpoint verification</string>
+      <string id="IsDeviceCertificateAuthenticationEnabled_Description">Secure connections to Google Cloud by using device certificate authentication if possible. Device Certificate authentication requires the computer to be enrolled and the Endpoint Verfification native helper to be installed.
+      </string>
+
+      <string id="ProxyUrl">HTTPS proxy</string>
+      <string id="ProxyUrl_Description">Proxy URL, in format http://proxy.example.com:3128/.</string>
+
+      <string id="ProxyPacUrl">HTTPS proxy autoconfiguration</string>
+      <string id="ProxyPacUrl_Description">Proxy autoconfiguration URL, in format http://proxy.example.com:3128/proxy.pac.</string>
+    </stringTable>
+    <presentationTable>
+      <presentation id="ProxyUrl">
+        <textBox refId="ProxyUrl">
+          <label>URL:</label>
+        </textBox>
+      </presentation>
+      <presentation id="ProxyPacUrl">
+        <textBox refId="ProxyPacUrl">
+          <label>URL:</label>
+        </textBox>
+      </presentation>
+    </presentationTable>
+  </resources>
+</policyDefinitionResources>

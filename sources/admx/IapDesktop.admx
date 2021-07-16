@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  
+  Copyright 2021 Google LLC
+  
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<policyDefinitions 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    revision="1.0" 
+    schemaVersion="1.0" 
+    xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+
+  <policyNamespaces>
+    <target prefix="iapdesktop" namespace="Google.Solutions.IapDesktop" />
+    <using prefix="windows" namespace="Microsoft.Policies.Windows" />
+  </policyNamespaces>
+  
+  <resources minRequiredRevision="1.0" />
+  
+  <categories>
+    <category name="iapdesktop" displayName="$(string.IapDesktop)"/>
+  </categories>
+  
+  <policies>
+    <policy 
+        name="IsUpdateCheckEnabled" 
+        class="Machine" 
+        displayName="$(string.IsUpdateCheckEnabled)" 
+        explainText="$(string.IsUpdateCheckEnabled_Description)" 
+        key="Software\Policies\Google\IapDesktop\1.0\Application" 
+        valueName="IsUpdateCheckEnabled">
+      
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+      
+      <enabledValue>
+        <delete/>
+      </enabledValue>
+      <disabledValue>
+        <decimal value="0" />
+      </disabledValue>
+    </policy>
+    
+    <policy
+        name="IsDeviceCertificateAuthenticationEnabled"
+        class="Machine"
+        displayName="$(string.IsDeviceCertificateAuthenticationEnabled)"
+        explainText="$(string.IsDeviceCertificateAuthenticationEnabled_Description)"
+        key="Software\Policies\Google\IapDesktop\1.0\Application"
+        valueName="IsDeviceCertificateAuthenticationEnabled">
+
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+
+      <enabledValue>
+        <decimal value="1" />
+      </enabledValue>
+      <disabledValue>
+        <delete/>
+      </disabledValue>
+    </policy>
+
+    <policy
+        name="ProxyUrl"
+        class="Machine"
+        displayName="$(string.ProxyUrl)"
+        explainText="$(string.ProxyUrl_Description)"
+        key="Software\Policies\Google\IapDesktop\1.0\Application"
+        valueName="ProxyUrl"
+        presentation="$(presentation.ProxyUrl)" >
+
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+
+      <elements>
+        <text id="ProxyUrl" valueName="ProxyUrl" required="true" />
+      </elements>
+    </policy>
+
+    <policy
+        name="ProxyPacUrl"
+        class="Machine"
+        displayName="$(string.ProxyPacUrl)"
+        explainText="$(string.ProxyPacUrl_Description)"
+        key="Software\Policies\Google\IapDesktop\1.0\Application"
+        valueName="ProxyPacUrl"
+        presentation="$(presentation.ProxyPacUrl)" >
+
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+
+      <elements>
+        <text id="ProxyPacUrl" valueName="ProxyPacUrl" required="true" />
+      </elements>
+    </policy>
+  </policies>
+</policyDefinitions>
