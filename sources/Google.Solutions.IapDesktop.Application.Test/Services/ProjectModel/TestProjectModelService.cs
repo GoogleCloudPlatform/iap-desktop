@@ -76,7 +76,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             Status = "RUNNING"
         };
 
-
         private static readonly Instance SampleLinuxInstanceInZone2 = new Instance()
         {
             Id = 3u,
@@ -95,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         {
             Id = 4u,
             Name = "linux-nodisk-zone-1",
-            Disks = new AttachedDisk[0],
+            Disks = Array.Empty<AttachedDisk>(),
             Zone = "https://www.googleapis.com/compute/v1/projects/project-1/zones/zone-1"
         };
 
@@ -105,10 +104,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             Name = "linux-terminated-zone-1",
             Disks = new[]
             {
-                        new AttachedDisk()
-                        {
-                        }
-                    },
+                new AttachedDisk()
+                {
+                }
+            },
             Zone = "https://www.googleapis.com/compute/v1/projects/project-1/zones/zone-1",
             Status = "TERMINATED"
         };
