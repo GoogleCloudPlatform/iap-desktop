@@ -301,12 +301,12 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         public RegistryBoolSetting ApplyPolicy(RegistryKey policyKey)
         {
-            var policyValue = (int?)policyKey.GetValue(this.Key);
-            return policyKey == null
+            var policyValue = (int?)policyKey?.GetValue(this.Key);
+            return policyValue == null
                 ? this
                 : (RegistryBoolSetting)CreateNew(
                     policyValue == 1, 
-                    policyValue == 1, 
+                    this.DefaultValue, 
                     true);
         }
     }
