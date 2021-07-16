@@ -114,21 +114,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     false,
-                    key),
+                    key).ApplyPolicy(groupPolicyKey),
                 IsUpdateCheckEnabled = RegistryBoolSetting.FromKey(
                     "IsUpdateCheckEnabled",
                     "IsUpdateCheckEnabled",
                     null,
                     null,
                     true,
-                    key),
+                    key).ApplyPolicy(groupPolicyKey),
                 IsDeviceCertificateAuthenticationEnabled = RegistryBoolSetting.FromKey(
                     "IsDeviceCertificateAuthenticationEnabled",
                     "IsDeviceCertificateAuthenticationEnabled",
                     null,
                     null,
                     false,
-                    key),
+                    key).ApplyPolicy(groupPolicyKey),
                 ProxyUrl = RegistryStringSetting.FromKey(
                     "ProxyUrl",
                     "ProxyUrl",
@@ -136,7 +136,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     key,
-                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _)),
+                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _))
+                    .ApplyPolicy(groupPolicyKey),
                 ProxyPacUrl = RegistryStringSetting.FromKey(
                     "ProxyPacUrl",
                     "ProxyPacUrl",
@@ -144,7 +145,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     key,
-                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _)),
+                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _))
+                    .ApplyPolicy(groupPolicyKey),
 
                 //
                 // User preferences. These cannot be overriden by policy.

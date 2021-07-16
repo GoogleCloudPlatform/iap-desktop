@@ -61,8 +61,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             //
 
             var settings = this.settingsRepository.GetSettings();
+            
             this.isUpdateCheckEnabled = settings.IsUpdateCheckEnabled.BoolValue;
+            this.IsUpdateCheckEditable = !settings.IsUpdateCheckEnabled.IsReadOnly;
+
             this.isDcaEnabled = settings.IsDeviceCertificateAuthenticationEnabled.BoolValue;
+            this.IsDeviceCertificateAuthenticationEditable = 
+                !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly;
+
             this.lastUpdateCheck = settings.LastUpdateCheck.IsDefault
                 ? "never"
                 : DateTime.FromBinary(settings.LastUpdateCheck.LongValue).ToString();
@@ -136,6 +142,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public bool IsUpdateCheckEditable { get; }
+        public bool IsDeviceCertificateAuthenticationEditable { get; }
 
         public bool IsUpdateCheckEnabled
         {

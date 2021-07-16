@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GeneralOptionsControl));
-            this.updateCheckBox = new System.Windows.Forms.GroupBox();
+            this.updateBox = new System.Windows.Forms.GroupBox();
             this.updateIcon = new System.Windows.Forms.PictureBox();
             this.lastCheckLabel = new System.Windows.Forms.Label();
             this.lastCheckHeaderLabel = new System.Windows.Forms.Label();
@@ -60,12 +60,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.linkIcon = new System.Windows.Forms.PictureBox();
             this.enableBrowserIntegrationCheckBox = new System.Windows.Forms.CheckBox();
             this.secureConnectBox = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.secureConnectLink = new System.Windows.Forms.LinkLabel();
             this.secureConnectIcon = new System.Windows.Forms.PictureBox();
             this.enableDcaCheckBox = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.updateCheckBox.SuspendLayout();
+            this.updateBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.updateIcon)).BeginInit();
             this.browserIntegrationBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.linkIcon)).BeginInit();
@@ -73,18 +73,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             ((System.ComponentModel.ISupportInitialize)(this.secureConnectIcon)).BeginInit();
             this.SuspendLayout();
             // 
-            // updateCheckBox
+            // updateBox
             // 
-            this.updateCheckBox.Controls.Add(this.updateIcon);
-            this.updateCheckBox.Controls.Add(this.lastCheckLabel);
-            this.updateCheckBox.Controls.Add(this.lastCheckHeaderLabel);
-            this.updateCheckBox.Controls.Add(this.enableUpdateCheckBox);
-            this.updateCheckBox.Location = new System.Drawing.Point(4, 272);
-            this.updateCheckBox.Name = "updateCheckBox";
-            this.updateCheckBox.Size = new System.Drawing.Size(336, 83);
-            this.updateCheckBox.TabIndex = 1;
-            this.updateCheckBox.TabStop = false;
-            this.updateCheckBox.Text = "Updates:";
+            this.updateBox.Controls.Add(this.updateIcon);
+            this.updateBox.Controls.Add(this.lastCheckLabel);
+            this.updateBox.Controls.Add(this.lastCheckHeaderLabel);
+            this.updateBox.Controls.Add(this.enableUpdateCheckBox);
+            this.updateBox.Location = new System.Drawing.Point(4, 272);
+            this.updateBox.Name = "updateBox";
+            this.updateBox.Size = new System.Drawing.Size(336, 83);
+            this.updateBox.TabIndex = 1;
+            this.updateBox.TabStop = false;
+            this.updateBox.Text = "Updates:";
             // 
             // updateIcon
             // 
@@ -179,6 +179,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.secureConnectBox.TabStop = false;
             this.secureConnectBox.Text = "Endpoint Verification:";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(73, 62);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(218, 39);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Device certificate authentication requires the\r\ncomputer to be enrolled and the E" +
+    "ndpoint \r\nVerification native helper to be installed";
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -220,27 +230,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
     " possible";
             this.enableDcaCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(73, 62);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(218, 39);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Device certificate authentication requires the\r\ncomputer to be enrolled and the E" +
-    "ndpoint \r\nVerification native helper to be installed";
-            // 
             // GeneralOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.secureConnectBox);
             this.Controls.Add(this.browserIntegrationBox);
-            this.Controls.Add(this.updateCheckBox);
+            this.Controls.Add(this.updateBox);
             this.Name = "GeneralOptionsControl";
             this.Size = new System.Drawing.Size(343, 369);
-            this.updateCheckBox.ResumeLayout(false);
-            this.updateCheckBox.PerformLayout();
+            this.updateBox.ResumeLayout(false);
+            this.updateBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.updateIcon)).EndInit();
             this.browserIntegrationBox.ResumeLayout(false);
             this.browserIntegrationBox.PerformLayout();
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         #endregion
 
-        private System.Windows.Forms.GroupBox updateCheckBox;
+        private System.Windows.Forms.GroupBox updateBox;
         private System.Windows.Forms.Label lastCheckLabel;
         private System.Windows.Forms.Label lastCheckHeaderLabel;
         private System.Windows.Forms.CheckBox enableUpdateCheckBox;

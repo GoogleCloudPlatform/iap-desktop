@@ -36,6 +36,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             InitializeComponent();
 
+            this.updateBox.BindProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsUpdateCheckEditable,
+                this.Container);
+            this.secureConnectBox.BindProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsDeviceCertificateAuthenticationEditable,
+                this.Container);
+            
             this.enableUpdateCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
