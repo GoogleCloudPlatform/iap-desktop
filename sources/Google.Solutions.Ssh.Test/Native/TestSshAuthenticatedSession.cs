@@ -52,7 +52,9 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instanceLocator = await instanceLocatorTask;
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
             using (var key = new RsaSshKey(new RSACng()))
             {
@@ -85,14 +87,17 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instanceLocator = await instanceLocatorTask;
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
             using (var key = new RsaSshKey(new RSACng()))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
-                    instanceLocator,
-                    "testuser",
-                    key).ConfigureAwait(true);
+                        instanceLocator,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
@@ -115,7 +120,9 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instanceLocator = await instanceLocatorTask;
             var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
                 22);
             using (var key = new RsaSshKey(new RSACng()))
             {

@@ -44,7 +44,8 @@ namespace Google.Solutions.Ssh.Test
                             instanceLocator.ProjectId,
                             instanceLocator.Zone,
                             instanceLocator.Name)
-                    .ExecuteAsync();
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
                 var ip = instance
                     .NetworkInterfaces
                     .EnsureNotNull()
@@ -74,20 +75,22 @@ namespace Google.Solutions.Ssh.Test
         {
             using (var service = TestProject.CreateComputeService())
             {
-                await service.Instances.AddMetadataAsync(
-                    instanceLocator,
-                    new Metadata()
-                    {
-                        Items = new[]
+                await service.Instances
+                    .AddMetadataAsync(
+                        instanceLocator,
+                        new Metadata()
                         {
-                            new Metadata.ItemsData()
+                            Items = new[]
                             {
-                                Key = "ssh-keys",
-                                Value = $"{username}:ssh-rsa {rsaPublicKey} {username}"
+                                new Metadata.ItemsData()
+                                {
+                                    Key = "ssh-keys",
+                                    Value = $"{username}:ssh-rsa {rsaPublicKey} {username}"
+                                }
                             }
-                        }
-                    },
-                    CancellationToken.None);
+                        },
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
             }
         }
     }
