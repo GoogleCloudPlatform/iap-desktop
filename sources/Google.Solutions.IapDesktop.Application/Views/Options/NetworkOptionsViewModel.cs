@@ -57,6 +57,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             //
 
             var settings = this.settingsRepository.GetSettings();
+
+            this.IsProxyEditable =
+                !settings.ProxyUrl.IsReadOnly &&
+                !settings.ProxyPacUrl.IsReadOnly;
+
             if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue) &&
                 Uri.TryCreate(settings.ProxyUrl.StringValue, UriKind.Absolute, out Uri proxyUrl))
             {
@@ -179,6 +184,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public bool IsProxyEditable { get; }
 
         public enum ProxyType
         {

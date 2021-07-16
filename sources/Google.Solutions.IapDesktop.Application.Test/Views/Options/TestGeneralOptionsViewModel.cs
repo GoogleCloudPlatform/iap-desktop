@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         [Test]
-        public void WhenSettingDisabledByPolicy_ThenIsUpdateCheckEeditableIsFalse()
+        public void WhenSettingDisabledByPolicy_ThenIsUpdateCheckEditableIsFalse()
         {
             var settingsRepository = CreateSettingsRepository(
                 new Dictionary<string, object>
