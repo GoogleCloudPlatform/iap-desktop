@@ -109,7 +109,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                await stream.TestConnectionAsync(TimeSpan.FromSeconds(10));
+                await stream
+                    .TestConnectionAsync(TimeSpan.FromSeconds(10))
+                    .ConfigureAwait(false);
             }
         }
 

@@ -169,7 +169,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var eventService = serviceRegistry.AddMock<IEventService>();
 
             var modelService = new ProjectModelService(serviceRegistry);
-            await modelService.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await modelService
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
 
             projectRepository.Verify(p => p.AddProject(
                     It.Is<ProjectLocator>(id => id.Name == SampleProjectId)),
@@ -191,7 +193,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var eventService = serviceRegistry.AddMock<IEventService>();
 
             var modelService = new ProjectModelService(serviceRegistry);
-            await modelService.RemoveProjectAsync(new ProjectLocator(SampleProjectId));
+            await modelService
+                .RemoveProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
 
             projectRepository.Verify(p => p.RemoveProject(
                     It.Is<ProjectLocator>(id => id.Name == SampleProjectId)),
@@ -217,7 +221,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
+            var model = await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(1, model.Projects.Count());
             Assert.AreEqual(SampleProjectId, model.Projects.First().Project.Name);
@@ -241,8 +247,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
-            var modelSecondLoad = await modelService.GetRootNodeAsync(false, CancellationToken.None);
+            var model = await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
+            var modelSecondLoad = await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.AreSame(model, modelSecondLoad);
 
@@ -264,8 +274,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
-            var modelSecondLoad = await modelService.GetRootNodeAsync(true, CancellationToken.None);
+            var model = await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
+            var modelSecondLoad = await modelService
+                .GetRootNodeAsync(true, CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.AreNotSame(model, modelSecondLoad);
 
@@ -287,9 +301,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var projects = (await modelService.GetRootNodeAsync(false, CancellationToken.None))
-                .Projects
-                .ToList();
+            var projects = (await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true))
+                    .Projects
+                    .ToList();
 
             Assert.AreEqual(2, projects.Count);
 
@@ -341,10 +357,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var zones = await modelService.GetZoneNodesAsync(
-                new ProjectLocator(SampleProjectId),
-                false,
-                CancellationToken.None);
+            var zones = await modelService
+                .GetZoneNodesAsync(
+                    new ProjectLocator(SampleProjectId),
+                    false,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             var zone1 = zones.First();
             var zone2 = zones.Last();
@@ -376,14 +394,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var zones = await modelService.GetZoneNodesAsync(
-                new ProjectLocator(SampleProjectId),
-                false,
-                CancellationToken.None);
-            var zonesSecondLoad = await modelService.GetZoneNodesAsync(
-                new ProjectLocator(SampleProjectId),
-                false,
-                CancellationToken.None);
+            var zones = await modelService
+                .GetZoneNodesAsync(
+                    new ProjectLocator(SampleProjectId),
+                    false,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+            var zonesSecondLoad = await modelService
+                .GetZoneNodesAsync(
+                    new ProjectLocator(SampleProjectId),
+                    false,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.AreSame(zones, zonesSecondLoad);
 
@@ -707,7 +729,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
+            var model = await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
 
             var root = await modelService
                 .GetRootNodeAsync(

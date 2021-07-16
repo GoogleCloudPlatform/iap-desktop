@@ -183,12 +183,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 new Command<string>(
                     "parent",
                     ctx => CommandState.Enabled,
-                    ctx => new InvalidOperationException()));
+                    ctx => throw new InvalidOperationException()));
             var subMenu = parentMenu.AddCommand(
                     new Command<string>(
                         "test",
                         ctx => CommandState.Disabled,
-                        ctx => new InvalidOperationException()));
+                        ctx => throw new InvalidOperationException()));
 
             parentMenu.Context = "ctx";
             Assert.AreEqual("ctx", parentMenu.Context);

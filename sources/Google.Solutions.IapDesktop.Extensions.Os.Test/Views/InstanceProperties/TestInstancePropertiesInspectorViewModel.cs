@@ -81,7 +81,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             var viewModel = CreateInstanceDetailsViewModel();
 
             var node = new Mock<IProjectModelCloudNode>();
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
             Assert.IsNull(viewModel.InspectedObject);
@@ -95,7 +97,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
 
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
             Assert.IsNull(viewModel.InspectedObject);
@@ -109,7 +113,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
 
             var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
             Assert.IsNull(viewModel.InspectedObject);
@@ -124,10 +130,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsNotNull(viewModel.InspectedObject);
             StringAssert.Contains(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
@@ -142,7 +152,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch to denied node.
             var deniedNode = new Mock<IProjectModelInstanceNode>();

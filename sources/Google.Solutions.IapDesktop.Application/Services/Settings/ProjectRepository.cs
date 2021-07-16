@@ -31,34 +31,34 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 {
     public class ProjectRepository : IProjectRepository
     {
-        protected readonly RegistryKey baseKey;
+        protected RegistryKey BaseKey { get; }
 
         public ProjectRepository(RegistryKey baseKey)
         {
-            this.baseKey = baseKey;
+            this.BaseKey = baseKey;
         }
 
         public void AddProject(ProjectLocator project)
         {
-            using (this.baseKey.CreateSubKey(project.Name))
+            using (this.BaseKey.CreateSubKey(project.Name))
             { }
         }
 
         public void RemoveProject(ProjectLocator project)
         {
-            this.baseKey.DeleteSubKeyTree(project.Name, false);
+            this.BaseKey.DeleteSubKeyTree(project.Name, false);
         }
 
         public Task<IEnumerable<ProjectLocator>> ListProjectsAsync()
         {
-            var projects = this.baseKey.GetSubKeyNames()
+            var projects = this.BaseKey.GetSubKeyNames()
                 .Select(projectId => new ProjectLocator(projectId));
             return Task.FromResult(projects);
         }
 
         public RegistryKey OpenRegistryKey(string projectId)
         {
-            return this.baseKey.OpenSubKey(projectId, true);
+            return this.BaseKey.OpenSubKey(projectId, true);
         }
 
         public RegistryKey OpenRegistryKey(string projectId, string subkey, bool create)
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         {
             if (disposing)
             {
-                this.baseKey.Dispose();
+                this.BaseKey.Dispose();
             }
         }
     }

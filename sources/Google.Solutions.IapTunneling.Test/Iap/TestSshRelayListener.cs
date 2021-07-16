@@ -82,7 +82,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             using (var tokenSource = new CancellationTokenSource())
             {
                 // Write full payload.
-                await clientStream.WriteAsync(message, 0, message.Length, tokenSource.Token);
+                await clientStream
+                    .WriteAsync(message, 0, message.Length, tokenSource.Token)
+                    .ConfigureAwait(false);
                 Assert.AreEqual(length, clientStreamStats.BytesTransmitted);
 
                 // Read entire response.
@@ -90,11 +92,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 int totalBytesRead = 0;
                 while (true)
                 {
-                    var bytesRead = await clientStream.ReadAsync(
-                        response,
-                        totalBytesRead,
-                        response.Length - totalBytesRead,
-                        tokenSource.Token);
+                    var bytesRead = await clientStream
+                        .ReadAsync(
+                            response,
+                            totalBytesRead,
+                            response.Length - totalBytesRead,
+                            tokenSource.Token)
+                        .ConfigureAwait(false);
                     totalBytesRead += bytesRead;
 
                     if (bytesRead == 0 || totalBytesRead >= length)
@@ -103,9 +107,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     }
                 }
 
-                await clientStream.CloseAsync(tokenSource.Token);
+                await clientStream
+                    .CloseAsync(tokenSource.Token)
+                    .ConfigureAwait(false);
 
-                await Task.Delay(50);
+                await Task.Delay(50).ConfigureAwait(false);
 
                 Assert.AreEqual(length, totalBytesRead, "bytes read");
                 Assert.AreEqual(length, clientStreamStats.BytesReceived, "client received");

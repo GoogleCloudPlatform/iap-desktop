@@ -56,9 +56,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
-            var result = await service.GetInstanceInventoryAsync(
-                new InstanceLocator(TestProject.ProjectId, "us-central1-a", "doesnotexist"),
-                CancellationToken.None);
+            var result = await service
+                .GetInstanceInventoryAsync(
+                    new InstanceLocator(TestProject.ProjectId, "us-central1-a", "doesnotexist"),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.IsNull(result);
         }
@@ -73,7 +75,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
-            var info = await service.GetInstanceInventoryAsync(instanceRef, CancellationToken.None);
+            var info = await service
+                .GetInstanceInventoryAsync(instanceRef, CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.IsNotNull(info);
             Assert.AreEqual(instanceRef, info.Instance);
@@ -111,10 +115,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
-            var info = await service.ListProjectInventoryAsync(
-                TestProject.ProjectId,
-                OperatingSystems.All,
-                CancellationToken.None);
+            var info = await service
+                .ListProjectInventoryAsync(
+                    TestProject.ProjectId,
+                    OperatingSystems.All,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.IsTrue(info.ToList().Where(i => i.Instance == instanceRef).Any());
         }
@@ -130,10 +136,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
-            var info = await service.ListProjectInventoryAsync(
-                TestProject.ProjectId,
-                OperatingSystems.Linux,
-                CancellationToken.None);
+            var info = await service
+                .ListProjectInventoryAsync(
+                    TestProject.ProjectId,
+                    OperatingSystems.Linux,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(info.ToList().Where(i => i.Instance == instanceRef).Any());
         }
@@ -170,10 +178,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
-            var info = await service.ListZoneInventoryAsync(
-                new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
-                OperatingSystems.All,
-                CancellationToken.None);
+            var info = await service
+                .ListZoneInventoryAsync(
+                    new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
+                    OperatingSystems.All,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.IsTrue(info.ToList().Where(i => i.Instance == instanceRef).Any());
         }
@@ -189,10 +199,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
-            var info = await service.ListZoneInventoryAsync(
-                new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
-                OperatingSystems.Linux,
-                CancellationToken.None);
+            var info = await service
+                .ListZoneInventoryAsync(
+                    new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
+                    OperatingSystems.Linux,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(info.ToList().Where(i => i.Instance == instanceRef).Any());
         }
