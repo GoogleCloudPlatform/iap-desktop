@@ -65,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreEqual(17L, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
+                Assert.IsFalse(setting.IsReadOnly);
             }
         }
 
@@ -89,6 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreEqual(17L, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
+                Assert.IsFalse(setting.IsReadOnly);
             }
         }
 
@@ -115,6 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreEqual(420000000000001, setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
+                Assert.IsFalse(setting.IsReadOnly);
             }
         }
 

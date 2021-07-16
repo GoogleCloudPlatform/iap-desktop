@@ -73,6 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreEqual(Toppings.None, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
+                Assert.IsFalse(setting.IsReadOnly);
             }
         }
 
@@ -96,6 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreEqual(Toppings.None, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
+                Assert.IsFalse(setting.IsReadOnly);
             }
         }
 
@@ -124,6 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreEqual(Toppings.Cheese | Toppings.Chocolate, setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
+                Assert.IsFalse(setting.IsReadOnly);
             }
         }
 

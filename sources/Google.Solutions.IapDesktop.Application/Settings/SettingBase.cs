@@ -47,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         // Value.
         //---------------------------------------------------------------------
 
+        public bool IsReadOnly { get; }
         public bool IsDirty { get; private set; } = false;
 
         public T DefaultValue { get; }
@@ -115,7 +116,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 // becomes new default.
                 return CreateNew(
                     (T)this.Value,
-                    (T)this.Value);
+                    (T)this.Value,
+                    this.IsReadOnly);
             }
             else
             {
@@ -123,7 +125,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 // own setting serving as the new default.
                 return CreateNew(
                     (T)overlaySetting.Value,
-                    (T)this.Value);
+                    (T)this.Value,
+                    this.IsReadOnly);
             }
         }
 
@@ -140,7 +143,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string description,
             string category,
             T initialValue,
-            T defaultValue)
+            T defaultValue,
+            bool readOnly)
         {
             this.Key = key;
             this.Title = title;
@@ -148,6 +152,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             this.Category = category;
             this.currentValue = initialValue;
             this.DefaultValue = defaultValue;
+            this.IsReadOnly = readOnly;
 
             Debug.Assert(!this.IsDirty);
         }
@@ -156,6 +161,9 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         protected abstract T Parse(string value);
 
-        protected abstract SettingBase<T> CreateNew(T value, T defaultValue);
+        protected abstract SettingBase<T> CreateNew(
+            T value, 
+            T defaultValue,
+            bool readOnly);
     }
 }

@@ -33,6 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         object Value { get; set; }
         bool IsDefault { get; }
         bool IsDirty { get; }
+        bool IsReadOnly { get; }
         ISetting OverlayBy(ISetting setting);
         void Reset();
 
