@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         private readonly AsyncLock cacheLock = new AsyncLock();
         private CloudNode cachedRoot = null;
-        private IDictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>> cachedZones =
+        private readonly IDictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>> cachedZones =
             new Dictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>>();
 
         //---------------------------------------------------------------------

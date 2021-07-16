@@ -133,7 +133,6 @@
     <Compile Include="Settings\TestRegistryEnumSetting.cs" />
     <Compile Include="Settings\TestRegistrySecureStringSetting.cs" />
     <Compile Include="Settings\TestRegistryStringSetting.cs" />
-    <Compile Include="Settings\TestSettingsCollectionExtensions.cs" />
     <Compile Include="Host\TestCommandLineOptions.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
     <Compile Include="Services\SecureConnect\TestSecureConnectEnrollment.cs" />

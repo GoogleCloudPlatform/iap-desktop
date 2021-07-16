@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1000 // Do not declare static members on generic types
+
 namespace Google.Solutions.Common.Test.Integration
 {
     public class ResourceTask<T>

@@ -39,8 +39,6 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 
-#pragma warning disable CS4014 // call is not awaited
-
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {
     [TestFixture]

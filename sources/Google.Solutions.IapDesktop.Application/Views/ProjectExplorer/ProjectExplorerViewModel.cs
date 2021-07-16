@@ -471,7 +471,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             protected readonly ProjectExplorerViewModel viewModel;
 
             private bool isExpanded;
-            private int defaultImageIndex;
+            private readonly int defaultImageIndex;
             private RangeObservableCollection<ViewModelNode> nodes;
             private RangeObservableCollection<ViewModelNode> filteredNodes;
 

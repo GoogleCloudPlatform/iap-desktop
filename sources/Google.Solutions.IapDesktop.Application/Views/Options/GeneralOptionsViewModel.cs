@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private readonly HelpService helpService;
 
         private bool isUpdateCheckEnabled;
-        private string lastUpdateCheck;
+        private readonly string lastUpdateCheck;
 
         private bool isBrowserIntegrationEnabled;
         private bool isDcaEnabled;

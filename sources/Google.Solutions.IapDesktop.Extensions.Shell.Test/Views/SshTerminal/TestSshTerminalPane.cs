@@ -44,8 +44,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-#pragma warning disable CS4014 // call is not awaited
-
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {
     [TestFixture]
@@ -66,7 +64,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                             instanceLocator.ProjectId,
                             instanceLocator.Zone,
                             instanceLocator.Name)
-                    .ExecuteAsync();
+                    .ExecuteAsync()
+                    .ConfigureAwait(true);
                 return instance.PublicAddress();
             }
         }
@@ -108,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     this.serviceProvider);
                 var pane = await broker.ConnectAsync(
                         instanceLocator,
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
+                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator).ConfigureAwait(true), 22),
                         authorizedKey,
                         language,
                         TimeSpan.FromSeconds(10))
@@ -202,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         instanceLocator,
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
+                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator).ConfigureAwait(true), 22),
                         AuthorizedKey.ForMetadata(key, "test", true, null),
                         null,
                         TimeSpan.FromSeconds(10))
@@ -225,8 +224,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             this.eventService.BindHandler<SessionStartedEvent>(e => connectedEvent = e);
 
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
                 // Close the pane (not the window).
                 pane.Close();
@@ -245,10 +245,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
-                await Task.Delay(50);
+                await Task.Delay(50).ConfigureAwait(true);
 
                 // Send command and wait for event
                 AssertRaisesEvent<SessionEndedEvent>(
@@ -262,10 +263,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
-                await Task.Delay(50);
+                await Task.Delay(50).ConfigureAwait(true);
 
                 // Send keystroke and wait for event
                 AssertRaisesEvent<SessionEndedEvent>(
@@ -279,8 +281,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
                 pane.Terminal.SimulateKey(Keys.A);
                 pane.Terminal.SimulateKey(Keys.B);
@@ -300,8 +303,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
                 // Copy command with a line continuation.
                 Clipboard.SetText("whoami \\\r\n--help;exit\n\n");
@@ -326,11 +330,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
                 // Measure initial window.
-                await pane.SendAsync("echo 1: $COLUMNS x $LINES;exit\n");
+                await pane.SendAsync("echo 1: $COLUMNS x $LINES;exit\n")
+                    .ConfigureAwait(true);
 
                 var expectedInitialSize = $"1: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
 
@@ -349,11 +355,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential,
-                new CultureInfo("en-AU")))
+                    await instanceLocatorTask,
+                    await credential,
+                    new CultureInfo("en-AU"))
+                .ConfigureAwait(true))
             {
-                await pane.SendAsync("locale;sleep 1;exit\n");
+                await pane.SendAsync("locale;sleep 1;exit\n")
+                    .ConfigureAwait(true);
 
                 AwaitEvent<SessionEndedEvent>();
                 var buffer = pane.Terminal.GetBuffer();
@@ -375,18 +383,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
                 pane.Terminal.SimulateKey(Keys.A);
                 pane.Terminal.SimulateKey(Keys.B);
                 pane.Terminal.SimulateKey(Keys.C);
                 pane.Terminal.SimulateKey(Keys.Back);
 
-                await Task.Delay(50); // Do not let the Ctrl+C abort the echo.
+                await Task.Delay(50).ConfigureAwait(true); // Do not let the Ctrl+C abort the echo.
                 pane.Terminal.SimulateKey(Keys.C | Keys.Control);
 
-                await Task.Delay(50);
+                await Task.Delay(50).ConfigureAwait(true);
                 AssertRaisesEvent<SessionEndedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
@@ -400,8 +409,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
                 pane.Terminal.SimulateKey(Keys.A);
                 pane.Terminal.SimulateKey(Keys.B);
@@ -433,8 +443,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
                 pane.Terminal.SimulateKey(Keys.A);
                 pane.Terminal.SimulateKey(Keys.B);
@@ -466,15 +477,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
                 pane.Terminal.SimulateKey(Keys.A);
                 pane.Terminal.SimulateKey(Keys.C | Keys.Control | Keys.Alt);
                 pane.Terminal.SimulateKey(Keys.B);
                 pane.Terminal.SimulateKey(Keys.Enter);
 
-                await Task.Delay(50);
+                await Task.Delay(50).ConfigureAwait(true);
                 AssertRaisesEvent<SessionEndedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
@@ -494,8 +506,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             settingsRepository.SetSettings(settings);
 
             using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
+                    await instanceLocatorTask,
+                    await credential)
+                .ConfigureAwait(true))
             {
                 Assert.IsFalse(pane.Terminal.EnableCtrlC);
                 Assert.IsFalse(pane.Terminal.EnableCtrlV);

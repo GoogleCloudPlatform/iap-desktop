@@ -220,8 +220,6 @@ namespace Google.Solutions.Ssh
                         //
                         // Open connection and perform handshake using blocking I/O.
                         //
-                        // TODO: Configure algorithms.
-                        //
                         using (var connectedSession = session.Connect(this.endpoint))
                         using (var authenticatedSession = connectedSession.Authenticate(
                             this.username,
@@ -254,8 +252,6 @@ namespace Google.Solutions.Ssh
                                         UnsafeNativeMethods.WSAGetLastError(),
                                         "WSAEventSelect failed");
                                 }
-
-                                // TODO: Check host keys.
 
                                 //
                                 // Looks good so far, consider the connection successful.
