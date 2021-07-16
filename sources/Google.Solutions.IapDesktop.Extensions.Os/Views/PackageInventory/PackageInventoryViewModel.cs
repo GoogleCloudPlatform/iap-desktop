@@ -35,6 +35,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1822 // Mark members as static
+
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 {
     public class PackageInventoryViewModel

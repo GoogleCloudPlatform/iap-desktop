@@ -62,30 +62,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelHasScreensWithNegativeBounds_ThenShowDialogSucceeds()
         {
-            var model = new ObservableCollection<ScreenSelectorItem>();
-            model.Add(new ScreenSelectorItem()
+            var model = new ObservableCollection<ScreenSelectorItem>
             {
-                DeviceName = "first",
-                ScreenBounds = new Rectangle()
+                new ScreenSelectorItem()
                 {
-                    X = -1000,
-                    Y = -1000,
-                    Width = 500,
-                    Height = 500
-                }
-            });
+                    DeviceName = "first",
+                    ScreenBounds = new Rectangle()
+                    {
+                        X = -1000,
+                        Y = -1000,
+                        Width = 500,
+                        Height = 500
+                    }
+                },
 
-            model.Add(new ScreenSelectorItem()
-            {
-                DeviceName = "second",
-                ScreenBounds = new Rectangle()
+                new ScreenSelectorItem()
                 {
-                    X = 500,
-                    Y = 500,
-                    Width = 500,
-                    Height = 500
+                    DeviceName = "second",
+                    ScreenBounds = new Rectangle()
+                    {
+                        X = 500,
+                        Y = 500,
+                        Width = 500,
+                        Height = 500
+                    }
                 }
-            });
+            };
 
             var picker = new ScreenPicker<ScreenSelectorItem>()
             {

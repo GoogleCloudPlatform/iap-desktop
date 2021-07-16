@@ -333,7 +333,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             viewModel.Filter = "   PACKAGE-3   ";
             Assert.AreEqual(1, viewModel.FilteredPackages.Count);

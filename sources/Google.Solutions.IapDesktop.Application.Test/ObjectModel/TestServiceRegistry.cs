@@ -27,6 +27,7 @@ using System.Linq;
 #pragma warning disable CA1034 // Nested types should not be visible
 #pragma warning disable IDE0060 // Remove unused parameter
 #pragma warning disable CA1040 // Avoid empty interfaces
+#pragma warning disable CA1801 // Review unused parameters
 
 namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {

@@ -463,7 +463,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 pane.Terminal.SimulateKey(Keys.Z);
                 pane.Terminal.SimulateKey(Keys.Enter);
 
-                await Task.Delay(50);
+                await Task.Delay(50).ConfigureAwait(true);
                 AssertRaisesEvent<SessionEndedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
