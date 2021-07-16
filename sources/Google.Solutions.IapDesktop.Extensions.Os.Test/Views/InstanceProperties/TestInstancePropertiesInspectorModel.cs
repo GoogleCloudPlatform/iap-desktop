@@ -46,11 +46,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             var locator = await testInstance;
 
             var gceAdapter = new ComputeEngineAdapter(await credential);
-            var model = await InstancePropertiesInspectorModel.LoadAsync(
-                await testInstance,
-                gceAdapter,
-                new InventoryService(gceAdapter),
-                CancellationToken.None);
+            var model = await InstancePropertiesInspectorModel
+                .LoadAsync(
+                    await testInstance,
+                    gceAdapter,
+                    new InventoryService(gceAdapter),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(locator.Name, model.InstanceName);
             Assert.IsNull(model.Hostname);

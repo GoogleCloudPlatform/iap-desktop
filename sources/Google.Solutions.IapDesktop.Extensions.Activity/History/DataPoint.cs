@@ -57,8 +57,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 
         public override bool Equals(object obj)
         {
-            return obj is DataPoint &&
-                Equals((DataPoint)obj);
+            return obj is DataPoint point &&
+                Equals(point);
         }
 
         public static bool operator ==(DataPoint obj1, DataPoint obj2)

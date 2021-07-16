@@ -39,16 +39,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
         public class ServiceWithServiceProviderConstructor
         {
-            public IServiceProvider provider;
+            public IServiceProvider Provider { get; }
 
             public ServiceWithServiceProviderConstructor()
             {
-                this.provider = null;
+                this.Provider = null;
             }
 
             public ServiceWithServiceProviderConstructor(IServiceProvider provider)
             {
-                this.provider = provider;
+                this.Provider = provider;
             }
         }
 
@@ -61,11 +61,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
         public class ServiceWithServiceCategoryProviderConstructor
         {
-            public IServiceCategoryProvider provider;
+            public IServiceCategoryProvider Provider { get; }
 
             public ServiceWithServiceCategoryProviderConstructor(IServiceCategoryProvider provider)
             {
-                this.provider = provider;
+                this.Provider = provider;
             }
         }
 
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
             var service = registry.GetService<ServiceWithServiceProviderConstructor>();
             Assert.IsNotNull(service);
-            Assert.AreSame(registry, service.provider);
+            Assert.AreSame(registry, service.Provider);
 
         }
 
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
             var service = registry.GetService<ServiceWithServiceCategoryProviderConstructor>();
             Assert.IsNotNull(service);
-            Assert.AreSame(registry, service.provider);
+            Assert.AreSame(registry, service.Provider);
         }
 
         [Test]

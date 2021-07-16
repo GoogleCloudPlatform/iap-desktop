@@ -69,17 +69,21 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             for (int i = 0; i < count; i++)
             {
-                await stream.WriteAsync(message, 0, message.Length, this.tokenSource.Token);
+                await stream
+                    .WriteAsync(message, 0, message.Length, this.tokenSource.Token)
+                    .ConfigureAwait(false);
 
                 var response = new byte[length];
                 int totalBytesRead = 0;
                 while (true)
                 {
-                    var bytesRead = await stream.ReadAsync(
-                        response,
-                        totalBytesRead,
-                        response.Length - totalBytesRead,
-                        this.tokenSource.Token);
+                    var bytesRead = await stream
+                        .ReadAsync(
+                            response,
+                            totalBytesRead,
+                            response.Length - totalBytesRead,
+                            this.tokenSource.Token)
+                        .ConfigureAwait(false);
                     totalBytesRead += bytesRead;
 
                     if (bytesRead == 0 || totalBytesRead >= length)
@@ -92,7 +96,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 Assert.AreEqual(message, response);
             }
 
-            await stream.CloseAsync(this.tokenSource.Token);
+            await stream
+                .CloseAsync(this.tokenSource.Token)
+                .ConfigureAwait(false);
         }
     }
 }

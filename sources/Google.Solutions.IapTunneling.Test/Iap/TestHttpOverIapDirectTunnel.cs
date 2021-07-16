@@ -61,7 +61,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             byte[] request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
-            await stream.WriteAsync(request, 0, request.Length, CancellationToken.None);
+            await stream
+                .WriteAsync(request, 0, request.Length, CancellationToken.None)
+                .ConfigureAwait(false);
 
             byte[] buffer = new byte[64];
 
@@ -88,12 +90,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent));
 
-            await stream.WriteAsync(request, 0, request.Length, CancellationToken.None);
+            await stream
+                .WriteAsync(request, 0, request.Length, CancellationToken.None)
+                .ConfigureAwait(false);
 
             AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
             {
-
-
                 byte[] buffer = new byte[64 * 1024];
                 stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Wait();
             });
@@ -113,13 +115,17 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
 
             Assert.IsNull(stream.Sid);
-            await stream.WriteAsync(request, 0, request.Length, CancellationToken.None);
+            await stream
+                .WriteAsync(request, 0, request.Length, CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNull(stream.Sid);
 
             // Read a bit.
             byte[] buffer = new byte[stream.MinReadSize];
-            await stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None);
+            await stream
+                .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(stream.Sid);
         }
@@ -137,7 +143,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
-            await stream.WriteAsync(request, 0, request.Length, CancellationToken.None);
+            await stream
+                .WriteAsync(request, 0, request.Length, CancellationToken.None)
+                .ConfigureAwait(false);
 
             AssertEx.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
             {

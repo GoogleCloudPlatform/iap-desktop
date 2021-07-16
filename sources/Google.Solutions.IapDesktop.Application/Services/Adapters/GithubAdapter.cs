@@ -29,6 +29,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1822 // Mark members as static
+
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public class GithubAdapter

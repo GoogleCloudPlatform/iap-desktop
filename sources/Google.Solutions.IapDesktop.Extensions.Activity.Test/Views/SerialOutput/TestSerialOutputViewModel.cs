@@ -33,6 +33,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1812 // Avoid uninstantiated internal classes
+
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
 {
     [TestFixture]
@@ -91,8 +93,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
-            var node = await CreateNode(testInstance, true);
-            await viewModel.SwitchToModelAsync(node);
+            var node = await CreateNode(testInstance, true).ConfigureAwait(true);
+            await viewModel
+                .SwitchToModelAsync(node)
+                .ConfigureAwait(true);
 
             Assert.IsNull(viewModel.TailCancellationTokenSource, "not tailing yet");
 
@@ -115,8 +119,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
-            var node = await CreateNode(testInstance, true);
-            await viewModel.SwitchToModelAsync(node);
+            var node = await CreateNode(testInstance, true).ConfigureAwait(true);
+            await viewModel
+                .SwitchToModelAsync(node)
+                .ConfigureAwait(true);
 
             viewModel.IsTailBlocked = true;
             viewModel.IsTailEnabled = true;
@@ -130,8 +136,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
-            var node = await CreateNode(testInstance, true);
-            await viewModel.SwitchToModelAsync(node);
+            var node = await CreateNode(testInstance, true).ConfigureAwait(true);
+            await viewModel
+                .SwitchToModelAsync(node)
+                .ConfigureAwait(true);
 
             Assert.IsNull(viewModel.TailCancellationTokenSource, "not tailing yet");
 
@@ -199,7 +207,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         {
             var viewModel = CreateViewModel(await credential);
             var node = new Mock<IProjectModelCloudNode>();
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsEnableTailingButtonEnabled);
             Assert.IsFalse(viewModel.IsOutputBoxEnabled);
@@ -211,8 +221,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
-            var node = await CreateNode(testInstance, false);
-            await viewModel.SwitchToModelAsync(node);
+            var node = await CreateNode(testInstance, false).ConfigureAwait(true);
+            await viewModel
+                .SwitchToModelAsync(node)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsEnableTailingButtonEnabled);
             Assert.IsFalse(viewModel.IsOutputBoxEnabled);
@@ -225,8 +237,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
-            var node = await CreateNode(testInstance, true);
-            await viewModel.SwitchToModelAsync(node);
+            var node = await CreateNode(testInstance, true).ConfigureAwait(true);
+            await viewModel
+                .SwitchToModelAsync(node)
+                .ConfigureAwait(true);
 
             var instanceLocator = await testInstance;
 

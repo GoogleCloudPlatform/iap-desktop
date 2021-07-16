@@ -85,18 +85,24 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             byte[] request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
-            await stream.WriteAsync(request, 0, request.Length, this.tokenSource.Token);
+            await stream
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
+                .ConfigureAwait(false);
 
             byte[] buffer = new byte[stream.MinReadSize];
 
             var response = new HttpResponseAccumulator();
             int bytesRead;
-            while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)) > 0)
+            while ((bytesRead = await stream
+                .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
+                .ConfigureAwait(false)) > 0)
             {
                 response.Accumulate(buffer, 0, bytesRead);
             }
 
-            await stream.CloseAsync(this.tokenSource.Token);
+            await stream
+                .CloseAsync(this.tokenSource.Token)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(response.ExpectedBytes, response.TotalBytesRead);
         }
@@ -115,13 +121,17 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             {
                 byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET /?_={i} HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
-                await stream.WriteAsync(request, 0, request.Length, this.tokenSource.Token);
+                await stream
+                    .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
+                    .ConfigureAwait(false);
 
                 byte[] buffer = new byte[stream.MinReadSize];
 
                 var response = new HttpResponseAccumulator();
                 int bytesRead;
-                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)) > 0)
+                while ((bytesRead = await stream
+                    .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
+                    .ConfigureAwait(false)) > 0)
                 {
                     response.Accumulate(buffer, 0, bytesRead);
 
@@ -135,7 +145,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 Assert.AreEqual(response.ExpectedBytes, response.TotalBytesRead);
             }
 
-            await stream.CloseAsync(this.tokenSource.Token);
+            await stream
+                .CloseAsync(this.tokenSource.Token)
+                .ConfigureAwait(false);
         }
 
         [Test, Repeat(RepeatCount)]
@@ -150,16 +162,22 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
-            await stream.WriteAsync(request, 0, request.Length, this.tokenSource.Token);
+            await stream
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
+                .ConfigureAwait(false);
 
             byte[] buffer = new byte[stream.MinReadSize];
 
             // Read a bit.
             var response = new HttpResponseAccumulator();
-            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token);
+            int bytesRead = await stream
+                .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
+                .ConfigureAwait(false);
             response.Accumulate(buffer, 0, bytesRead);
 
-            await stream.CloseAsync(this.tokenSource.Token);
+            await stream
+                .CloseAsync(this.tokenSource.Token)
+                .ConfigureAwait(false);
         }
     }
 }

@@ -55,11 +55,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
             node.SetupGet(n => n.DisplayName).Returns("zone-1");
 
-            var model = await PackageInventoryModel.LoadAsync(
-                inventoryService.Object,
-                PackageInventoryType.AvailablePackages,
-                node.Object,
-                CancellationToken.None);
+            var model = await PackageInventoryModel
+                .LoadAsync(
+                    inventoryService.Object,
+                    PackageInventoryType.AvailablePackages,
+                    node.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(model.IsInventoryDataAvailable);
             Assert.IsNotNull(model.Packages);

@@ -161,7 +161,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
 
             var node = new Mock<IProjectModelCloudNode>();
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(CommandState.Unavailable, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsFalse(viewModel.IsPackageListEnabled);
@@ -183,10 +185,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             node.SetupGet(n => n.DisplayName).Returns("project-1");
 
             var viewModel = CreateViewModel(type);
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
@@ -208,10 +214,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             node.SetupGet(n => n.DisplayName).Returns("zone-1");
 
             var viewModel = CreateViewModel(type);
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
@@ -234,10 +244,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             var viewModel = CreateViewModel(type);
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
@@ -260,10 +274,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 new InstanceLocator("project-1", "zone-1", "instance-3"));
 
             var viewModel = CreateViewModel(type);
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
@@ -285,7 +303,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(4, viewModel.FilteredPackages.Count);
         }
@@ -297,7 +317,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             viewModel.Filter = "PACKAGE \t Arch-2   ver-3";
 
