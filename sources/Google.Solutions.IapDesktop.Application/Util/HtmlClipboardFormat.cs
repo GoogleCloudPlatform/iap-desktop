@@ -24,7 +24,7 @@ using System.Text;
 
 namespace Google.Solutions.IapDesktop.Application.Util
 {
-    public class HtmlClipboardFormat
+    public static class HtmlClipboardFormat
     {
         private const string Prolog = "<!DOCTYPE><html><body><!--StartFragment -->";
         private const string Epilog = "<!--EndFragment --></body></html>";

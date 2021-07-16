@@ -65,14 +65,14 @@ namespace Google.Solutions.Common.Test
         {
             var callbacks = 0;
 
-            PropertyChangedEventHandler handler = (sender, args) =>
+            void handler(object sender, PropertyChangedEventArgs args)
             {
                 Assert.AreSame(obj, sender);
                 if (property == args.PropertyName)
                 {
                     callbacks++;
                 }
-            };
+            }
 
             obj.PropertyChanged += handler;
             action();

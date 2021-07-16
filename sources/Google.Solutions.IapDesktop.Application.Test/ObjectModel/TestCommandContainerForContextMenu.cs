@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 new Command<string>(
                     "test",
                     ctx => CommandState.Unavailable,
-                    ctx => new InvalidOperationException()));
+                    ctx => throw new InvalidOperationException()));
 
             var menuItem = this.contextMenu.Items
                 .OfType<ToolStripMenuItem>()
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 new Command<string>(
                     "test",
                     ctx => CommandState.Disabled,
-                    ctx => new InvalidOperationException()));
+                    ctx => throw new InvalidOperationException()));
 
             var menuItem = this.contextMenu.Items
                 .OfType<ToolStripMenuItem>()
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 new Command<string>(
                     "test",
                     ctx => CommandState.Enabled,
-                    ctx => new InvalidOperationException()));
+                    ctx => throw new InvalidOperationException()));
 
             var menuItem = this.contextMenu.Items
                 .OfType<ToolStripMenuItem>()
