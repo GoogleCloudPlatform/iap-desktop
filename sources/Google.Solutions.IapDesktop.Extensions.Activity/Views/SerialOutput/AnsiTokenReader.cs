@@ -29,6 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 #pragma warning disable CA1032 // Implement standard exception constructors
+#pragma warning disable CA1051 // Do not declare visible instance fields
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
 {

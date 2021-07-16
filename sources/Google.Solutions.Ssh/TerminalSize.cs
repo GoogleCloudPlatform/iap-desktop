@@ -19,6 +19,8 @@
 // under the License.
 //
 
+#pragma warning disable CA1051 // Do not declare visible instance fields
+
 namespace Google.Solutions.Ssh
 {
     public struct TerminalSize

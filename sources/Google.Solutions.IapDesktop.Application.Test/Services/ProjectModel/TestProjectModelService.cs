@@ -409,13 +409,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
             var zones = await modelService.GetZoneNodesAsync(
-                new ProjectLocator(SampleProjectId),
-                true,
-                CancellationToken.None);
+                    new ProjectLocator(SampleProjectId),
+                    true,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
             var zonesSecondLoad = await modelService.GetZoneNodesAsync(
-                new ProjectLocator(SampleProjectId),
-                true,
-                CancellationToken.None);
+                    new ProjectLocator(SampleProjectId),
+                    true,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.AreNotSame(zones, zonesSecondLoad);
 
@@ -429,7 +431,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         public async Task WhenInstanceHasNoDisk_ThenGetZoneNodesAsyncSkipsInstance()
         {
             var serviceRegistry = new ServiceRegistry();
-            var eventService = serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock(SampleProjectId).Object);
 
             var computeAdapter = CreateComputeEngineAdapterMock(
@@ -441,9 +443,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
             var zones = await modelService.GetZoneNodesAsync(
-                new ProjectLocator(SampleProjectId),
-                false,
-                CancellationToken.None);
+                    new ProjectLocator(SampleProjectId),
+                    false,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(1, zones.Count);
             var zone1 = zones.First();
@@ -470,9 +473,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
             var zones = await modelService.GetZoneNodesAsync(
-                new ProjectLocator(SampleProjectId),
-                false,
-                CancellationToken.None);
+                    new ProjectLocator(SampleProjectId),
+                    false,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(1, zones.Count);
             var zone1 = zones.First();
@@ -503,7 +507,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            await modelService.GetRootNodeAsync(false, CancellationToken.None);
+            await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
 
             AssertEx.ThrowsAggregateException<ArgumentException>(() => modelService.GetNodeAsync(
                 new DiskTypeLocator(SampleProjectId, "zone-1", "type-1"),
@@ -520,15 +526,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            await modelService.GetRootNodeAsync(false, CancellationToken.None);
+            await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.IsNull(await modelService.GetNodeAsync(
-                new ProjectLocator("nonexisting-1"),
-                CancellationToken.None));
+                    new ProjectLocator("nonexisting-1"),
+                    CancellationToken.None)
+                .ConfigureAwait(true));
 
             var project = await modelService.GetNodeAsync(
-                new ProjectLocator(SampleProjectId),
-                CancellationToken.None);
+                    new ProjectLocator(SampleProjectId),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
             Assert.IsInstanceOf(typeof(IProjectModelProjectNode), project);
             Assert.IsNotNull(project);
         }
@@ -546,13 +556,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
 
-            Assert.IsNull(await modelService.GetNodeAsync(
-                new ZoneLocator("nonexisting-1", "zone-1"),
-                CancellationToken.None));
+            Assert.IsNull(await modelService
+                .GetNodeAsync(
+                    new ZoneLocator("nonexisting-1", "zone-1"),
+                    CancellationToken.None)
+                .ConfigureAwait(true));
 
-            var zone = await modelService.GetNodeAsync(
-                new ZoneLocator(SampleProjectId, "zone-1"),
-                CancellationToken.None);
+            var zone = await modelService
+                .GetNodeAsync(
+                    new ZoneLocator(SampleProjectId, "zone-1"),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
             Assert.IsInstanceOf(typeof(IProjectModelZoneNode), zone);
             Assert.IsNotNull(zone);
         }
@@ -570,13 +584,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
 
-            Assert.IsNull(await modelService.GetNodeAsync(
-                new InstanceLocator("nonexisting-1", "zone-1", SampleWindowsInstanceInZone1.Name),
-                CancellationToken.None));
+            Assert.IsNull(await modelService
+                .GetNodeAsync(
+                    new InstanceLocator("nonexisting-1", "zone-1", SampleWindowsInstanceInZone1.Name),
+                    CancellationToken.None)
+                .ConfigureAwait(true));
 
-            var instance = await modelService.GetNodeAsync(
-                new InstanceLocator(SampleProjectId, "zone-1", SampleWindowsInstanceInZone1.Name),
-                CancellationToken.None);
+            var instance = await modelService
+                .GetNodeAsync(
+                    new InstanceLocator(SampleProjectId, "zone-1", SampleWindowsInstanceInZone1.Name),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
             Assert.IsInstanceOf(typeof(IProjectModelInstanceNode), instance);
             Assert.IsNotNull(instance);
         }
@@ -594,9 +612,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
 
-            Assert.IsNull(await modelService.GetNodeAsync(
-                new ZoneLocator(SampleProjectId, "zone-1"),
-                CancellationToken.None));
+            Assert.IsNull(await modelService
+                .GetNodeAsync(
+                    new ZoneLocator(SampleProjectId, "zone-1"),
+                    CancellationToken.None)
+                .ConfigureAwait(true));
         }
 
         [Test]
@@ -612,9 +632,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
 
-            Assert.IsNull(await modelService.GetNodeAsync(
-                new InstanceLocator(SampleProjectId, "zone-1", SampleWindowsInstanceInZone1.Name),
-                CancellationToken.None));
+            Assert.IsNull(await modelService
+                .GetNodeAsync(
+                    new InstanceLocator(SampleProjectId, "zone-1", SampleWindowsInstanceInZone1.Name),
+                    CancellationToken.None)
+                .ConfigureAwait(true));
         }
 
         //---------------------------------------------------------------------
@@ -631,10 +653,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var activeNode = await modelService.GetActiveNodeAsync(CancellationToken.None);
+            var activeNode = await modelService
+                .GetActiveNodeAsync(CancellationToken.None)
+                .ConfigureAwait(true);
+
             Assert.IsNotNull(activeNode);
             Assert.AreSame(
-                await modelService.GetRootNodeAsync(false, CancellationToken.None),
+                await modelService
+                    .GetRootNodeAsync(false, CancellationToken.None)
+                    .ConfigureAwait(true),
                 activeNode);
         }
 
@@ -651,15 +678,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
 
-            var root = await modelService.GetRootNodeAsync(
-                false,
-                CancellationToken.None);
+            await modelService
+                .GetRootNodeAsync(
+                    false,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
-            await modelService.SetActiveNodeAsync(
-                new ProjectLocator(SampleProjectId),
-                CancellationToken.None);
+            await modelService
+                .SetActiveNodeAsync(
+                    new ProjectLocator(SampleProjectId),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
-            var activeNode = await modelService.GetActiveNodeAsync(CancellationToken.None);
+            var activeNode = await modelService
+                .GetActiveNodeAsync(CancellationToken.None)
+                .ConfigureAwait(true);
             Assert.IsNotNull(activeNode);
             Assert.IsInstanceOf(typeof(IProjectModelProjectNode), activeNode);
         }
@@ -676,13 +709,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var modelService = new ProjectModelService(serviceRegistry);
             var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
 
-            var root = await modelService.GetRootNodeAsync(
-                false,
-                CancellationToken.None);
+            var root = await modelService
+                .GetRootNodeAsync(
+                    false,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
-            await modelService.SetActiveNodeAsync(
-                root.Projects.First(),
-                CancellationToken.None);
+            await modelService
+                .SetActiveNodeAsync(
+                    root.Projects.First(),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             eventService.Verify(s => s.FireAsync<ActiveProjectChangedEvent>(
                     It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode == root.Projects.First())),
@@ -699,14 +736,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
+            var model = await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
 
             // Pre-warm cache.
-            await modelService.GetRootNodeAsync(
-                false,
-                CancellationToken.None);
+            await modelService
+                .GetRootNodeAsync(
+                    false,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
-            await modelService.SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None);
+            await modelService
+                .SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None)
+                .ConfigureAwait(true);
 
             eventService.Verify(s => s.FireAsync<ActiveProjectChangedEvent>(
                     It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode is IProjectModelCloudNode)),
@@ -723,16 +766,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
+            var model = await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
 
             // Pre-warm cache.
-            await modelService.GetRootNodeAsync(
-                false,
-                CancellationToken.None);
+            await modelService
+                .GetRootNodeAsync(
+                    false,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
-            await modelService.SetActiveNodeAsync(
-                new ProjectLocator("nonexisting-1"), 
-                CancellationToken.None);
+            await modelService
+                .SetActiveNodeAsync(
+                    new ProjectLocator("nonexisting-1"), 
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             eventService.Verify(s => s.FireAsync<ActiveProjectChangedEvent>(
                     It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode is IProjectModelCloudNode)),
@@ -750,7 +799,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
 
-            await modelService.SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None);
+            await modelService
+                .SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None)
+                .ConfigureAwait(true);
 
             eventService.Verify(s => s.FireAsync<ActiveProjectChangedEvent>(
                     It.IsAny<ActiveProjectChangedEvent>()),

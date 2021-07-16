@@ -21,6 +21,8 @@
 
 using System;
 
+#pragma warning disable CA1051 // Do not declare visible instance fields
+
 namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 {
     public struct DataPoint : IEquatable<DataPoint>
