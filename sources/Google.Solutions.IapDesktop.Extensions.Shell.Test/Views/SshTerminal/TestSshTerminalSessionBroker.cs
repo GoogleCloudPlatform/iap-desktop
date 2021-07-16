@@ -104,7 +104,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         new IPEndPoint(instance.PublicAddress(), 22),
                         authorizedKey,
                         null,
-                        TimeSpan.FromSeconds(10)));
+                        TimeSpan.FromSeconds(10))
+                    .ConfigureAwait(true))
+                    .ConfigureAwait(true);
 
                 Assert.IsNull(this.ExceptionShown);
 

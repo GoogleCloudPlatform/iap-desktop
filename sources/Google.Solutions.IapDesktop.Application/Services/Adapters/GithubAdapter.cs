@@ -30,6 +30,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 #pragma warning disable CA1822 // Mark members as static
+#pragma warning disable CA1056 // Uri properties should not be strings
+#pragma warning disable CA2227 // Collection properties should be read only
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {

@@ -162,7 +162,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             // Write first request.
             byte[] request = new byte[] { 1 };
-            await relay.WriteAsync(request, 0, request.Length, tokenSource.Token);
+            await relay
+                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .ConfigureAwait(false);
 
             // Write another request - this should fail.
             AssertEx.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>

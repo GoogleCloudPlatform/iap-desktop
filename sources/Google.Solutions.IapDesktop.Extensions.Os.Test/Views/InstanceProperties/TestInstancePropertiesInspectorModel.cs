@@ -90,11 +90,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                     }
                 });
 
-            var model = await InstancePropertiesInspectorModel.LoadAsync(
-                await testInstance,
-                gceAdapter,
-                inventoryService.Object,
-                CancellationToken.None);
+            var model = await InstancePropertiesInspectorModel
+                .LoadAsync(
+                    await testInstance,
+                    gceAdapter,
+                    inventoryService.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(locator.Name, model.InstanceName);
             Assert.AreEqual("RUNNING", model.Status);

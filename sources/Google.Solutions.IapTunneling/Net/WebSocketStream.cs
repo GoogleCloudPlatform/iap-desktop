@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 #pragma warning disable CA1032 // Implement standard exception constructors
+#pragma warning disable CA2201 // Do not raise reserved exception types
 
 namespace Google.Solutions.IapTunneling.Net
 {
