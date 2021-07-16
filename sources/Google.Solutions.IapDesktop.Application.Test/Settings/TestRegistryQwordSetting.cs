@@ -30,6 +30,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
     public class TestRegistryQwordSetting
     {
         private const string TestKeyPath = @"Software\Google\__Test";
+        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
+
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
             RegistryView.Default);
@@ -38,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         public void SetUp()
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
         }
 
         //---------------------------------------------------------------------
@@ -528,6 +531,110 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreEqual(10, effective.Value);
                 Assert.AreEqual(42, effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Policy.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenPolicyKeyIsNull_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+
+                var setting = RegistryQwordSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    key,
+                    0, 100);
+
+                var settingWithPolicy = setting.ApplyPolicy(null);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicyValueIsMissing_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            {
+                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+
+                var setting = RegistryQwordSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    17,
+                    key,
+                    0, 100);
+
+                var settingWithPolicy = setting.ApplyPolicy(policyKey);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicyInvalid_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            {
+                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+                policyKey.SetValue("test", 101, RegistryValueKind.QWord);
+
+                var setting = RegistryQwordSetting.FromKey(
+                        "test",
+                        "title",
+                        "description",
+                        "category",
+                        17,
+                        key,
+                        0, 100)
+                    .ApplyPolicy(policyKey);
+
+                var settingWithPolicy = setting.ApplyPolicy(policyKey);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicySet_ThenApplyPolicyReturnsReadOnlySettingWithPolicyApplied()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            {
+                key.SetValue("test", 420000000000001L, RegistryValueKind.QWord);
+                policyKey.SetValue("test", 880000000000001L, RegistryValueKind.QWord);
+
+                var setting = RegistryQwordSetting.FromKey(
+                        "test",
+                        "title",
+                        "description",
+                        "category",
+                        17,
+                        key,
+                        0L, long.MaxValue)
+                    .ApplyPolicy(policyKey);
+
+                Assert.AreEqual("test", setting.Key);
+                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("description", setting.Description);
+                Assert.AreEqual("category", setting.Category);
+                Assert.AreEqual(880000000000001L, setting.LongValue);
+                Assert.IsFalse(setting.IsDefault);
+                Assert.IsFalse(setting.IsDirty);
+                Assert.IsTrue(setting.IsReadOnly);
             }
         }
     }

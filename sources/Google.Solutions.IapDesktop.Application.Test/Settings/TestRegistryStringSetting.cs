@@ -30,6 +30,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
     public class TestRegistryStringSetting
     {
         private const string TestKeyPath = @"Software\Google\__Test";
+        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
+
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
             RegistryView.Default);
@@ -38,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         public void SetUp()
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
         }
 
         //---------------------------------------------------------------------
@@ -472,6 +475,110 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreEqual("black", effective.Value);
                 Assert.AreEqual("red", effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Policy.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenPolicyKeyIsNull_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                key.SetValue("test", "red");
+
+                var setting = RegistryStringSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    "blue",
+                    key,
+                    _ => true);
+
+                var settingWithPolicy = setting.ApplyPolicy(null);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicyValueIsMissing_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            {
+                key.SetValue("test", "red");
+
+                var setting = RegistryStringSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    "blue",
+                    key,
+                    _ => true);
+
+                var settingWithPolicy = setting.ApplyPolicy(policyKey);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicyInvalid_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            {
+                key.SetValue("test", "red");
+                policyKey.SetValue("test", "BLUE");
+
+                var setting = RegistryStringSetting.FromKey(
+                        "test",
+                        "title",
+                        "description",
+                        "category",
+                        "black",
+                        key,
+                        v => v.ToLower() == v)
+                    .ApplyPolicy(policyKey);
+
+                var settingWithPolicy = setting.ApplyPolicy(policyKey);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicySet_ThenApplyPolicyReturnsReadOnlySettingWithPolicyApplied()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            {
+                key.SetValue("test", "red");
+                policyKey.SetValue("test", "BLUE");
+
+                var setting = RegistryStringSetting.FromKey(
+                        "test",
+                        "title",
+                        "description",
+                        "category",
+                        "black",
+                        key,
+                        _ => true)
+                    .ApplyPolicy(policyKey);
+
+                Assert.AreEqual("test", setting.Key);
+                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("description", setting.Description);
+                Assert.AreEqual("category", setting.Category);
+                Assert.AreEqual("BLUE", setting.StringValue);
+                Assert.IsFalse(setting.IsDefault);
+                Assert.IsFalse(setting.IsDirty);
+                Assert.IsTrue(setting.IsReadOnly);
             }
         }
     }

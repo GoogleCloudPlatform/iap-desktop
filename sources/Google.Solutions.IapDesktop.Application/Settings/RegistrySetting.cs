@@ -111,6 +111,17 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             get => (string)this.Value;
             set => this.Value = value;
         }
+
+        public RegistryStringSetting ApplyPolicy(RegistryKey policyKey)
+        {
+            var policyValue = (string)policyKey?.GetValue(this.Key);
+            return policyValue == null || !IsValid(policyValue)
+                ? this
+                : (RegistryStringSetting)CreateNew(
+                    policyValue,
+                    this.DefaultValue,
+                    true);
+        }
     }
 
     public class RegistrySecureStringSetting : SettingBase<SecureString>, IRegistrySetting
@@ -386,7 +397,19 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             get => (int)this.Value;
             set => this.Value = value;
         }
+
+        public RegistryDwordSetting ApplyPolicy(RegistryKey policyKey)
+        {
+            var policyValue = (int?)policyKey?.GetValue(this.Key);
+            return policyValue == null || !IsValid(policyValue.Value)
+                ? this
+                : (RegistryDwordSetting)CreateNew(
+                    policyValue.Value,
+                    this.DefaultValue,
+                    true);
+        }
     }
+
     public class RegistryQwordSetting : SettingBase<long>, IRegistrySetting
     {
         private readonly long minInclusive;
@@ -462,6 +485,17 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             get => (long)this.Value;
             set => this.Value = value;
         }
+
+        public RegistryQwordSetting ApplyPolicy(RegistryKey policyKey)
+        {
+            var policyValue = (long?)policyKey?.GetValue(this.Key);
+            return policyValue == null || !IsValid(policyValue.Value)
+                ? this
+                : (RegistryQwordSetting)CreateNew(
+                    policyValue.Value,
+                    this.DefaultValue,
+                    true);
+        }
     }
 
     public class RegistryEnumSetting<TEnum> : SettingBase<TEnum>, IRegistrySetting
@@ -536,6 +570,17 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         {
             get => (TEnum)this.Value;
             set => this.Value = value;
+        }
+
+        public RegistryEnumSetting<TEnum> ApplyPolicy(RegistryKey policyKey)
+        {
+            var policyValue = (int?)policyKey?.GetValue(this.Key);
+            return policyValue == null || !IsValid((TEnum)(object)policyValue.Value)
+                ? this
+                : (RegistryEnumSetting<TEnum>)CreateNew(
+                    (TEnum)(object)policyValue.Value,
+                    this.DefaultValue,
+                    true);
         }
     }
 

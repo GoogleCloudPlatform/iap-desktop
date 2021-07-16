@@ -39,6 +39,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         }
 
         private const string TestKeyPath = @"Software\Google\__Test";
+        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
+
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
             RegistryView.Default);
@@ -47,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         public void SetUp()
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
         }
 
         //---------------------------------------------------------------------
@@ -310,6 +313,126 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     key);
 
                 Assert.Throws<FormatException>(() => setting.Value = "");
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Policy.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenPolicyKeyIsNull_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                key.SetValue(
+                    "test",
+                    (int)(Toppings.Cheese | Toppings.Chocolate),
+                    RegistryValueKind.DWord);
+
+                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    Toppings.None,
+                    null);
+
+                var settingWithPolicy = setting.ApplyPolicy(null);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicyValueIsMissing_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            {
+                key.SetValue(
+                    "test",
+                    (int)(Toppings.Cheese | Toppings.Chocolate),
+                    RegistryValueKind.DWord);
+
+                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    Toppings.None,
+                    null);
+
+                var settingWithPolicy = setting.ApplyPolicy(policyKey);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicyInvalid_ThenApplyPolicyReturnsThis()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            {
+                key.SetValue(
+                    "test",
+                    (int)(Toppings.Cheese | Toppings.Chocolate),
+                    RegistryValueKind.DWord);
+
+                policyKey.SetValue(
+                    "test",
+                    -123,
+                    RegistryValueKind.DWord);
+
+                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                        "test",
+                        "title",
+                        "description",
+                        "category",
+                        Toppings.None,
+                        null)
+                    .ApplyPolicy(policyKey);
+
+                var settingWithPolicy = setting.ApplyPolicy(policyKey);
+
+                Assert.AreSame(setting, settingWithPolicy);
+            }
+        }
+
+        [Test]
+        public void WhenPolicySet_ThenApplyPolicyReturnsReadOnlySettingWithPolicyApplied()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath))
+            {
+                key.SetValue(
+                    "test",
+                    (int)(Toppings.Cheese | Toppings.Chocolate),
+                    RegistryValueKind.DWord);
+
+                policyKey.SetValue(
+                    "test",
+                    (int)(Toppings.Cream),
+                    RegistryValueKind.DWord);
+
+                var setting = RegistryEnumSetting<Toppings>.FromKey(
+                        "test",
+                        "title",
+                        "description",
+                        "category",
+                        Toppings.None,
+                        null)
+                    .ApplyPolicy(policyKey);
+
+                Assert.AreEqual("test", setting.Key);
+                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("description", setting.Description);
+                Assert.AreEqual("category", setting.Category);
+                Assert.AreEqual(Toppings.Cream, setting.EnumValue);
+                Assert.IsFalse(setting.IsDefault);
+                Assert.IsFalse(setting.IsDirty);
+                Assert.IsTrue(setting.IsReadOnly);
             }
         }
     }
