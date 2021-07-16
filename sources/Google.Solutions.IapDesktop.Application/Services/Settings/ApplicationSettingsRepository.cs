@@ -34,13 +34,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     /// </summary>
     public class ApplicationSettingsRepository : SettingsRepositoryBase<ApplicationSettings>
     {
-        public ApplicationSettingsRepository(RegistryKey baseKey) : base(baseKey)
+        private readonly RegistryKey groupPolicyBaseKey;
+
+        public ApplicationSettingsRepository(
+            RegistryKey baseKey,
+            RegistryKey groupPolicyBaseKey) : base(baseKey)
         {
             Utilities.ThrowIfNull(baseKey, nameof(baseKey));
+
+            this.groupPolicyBaseKey = groupPolicyBaseKey;
         }
 
         protected override ApplicationSettings LoadSettings(RegistryKey key)
-            => ApplicationSettings.FromKey(key);
+            => ApplicationSettings.FromKey(key, this.groupPolicyBaseKey);
     }
 
     public class ApplicationSettings : IRegistrySettingsCollection
@@ -93,24 +99,70 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         private ApplicationSettings()
         { }
 
-        public static ApplicationSettings FromKey(RegistryKey registryKey)
+        public static ApplicationSettings FromKey(
+            RegistryKey key,
+            RegistryKey groupPolicyKey)
         {
             return new ApplicationSettings()
             {
+                //
+                // Settings that can be overriden by policy.
+                //
+                IsPreviewFeatureSetEnabled = RegistryBoolSetting.FromKey(
+                    "IsPreviewFeatureSetEnabled",
+                    "IsPreviewFeatureSetEnabled",
+                    null,
+                    null,
+                    false,
+                    key),
+                IsUpdateCheckEnabled = RegistryBoolSetting.FromKey(
+                    "IsUpdateCheckEnabled",
+                    "IsUpdateCheckEnabled",
+                    null,
+                    null,
+                    true,
+                    key),
+                IsDeviceCertificateAuthenticationEnabled = RegistryBoolSetting.FromKey(
+                    "IsDeviceCertificateAuthenticationEnabled",
+                    "IsDeviceCertificateAuthenticationEnabled",
+                    null,
+                    null,
+                    false,
+                    key),
+                ProxyUrl = RegistryStringSetting.FromKey(
+                    "ProxyUrl",
+                    "ProxyUrl",
+                    null,
+                    null,
+                    null,
+                    key,
+                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _)),
+                ProxyPacUrl = RegistryStringSetting.FromKey(
+                    "ProxyPacUrl",
+                    "ProxyPacUrl",
+                    null,
+                    null,
+                    null,
+                    key,
+                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _)),
+
+                //
+                // User preferences. These cannot be overriden by policy.
+                //
                 IsMainWindowMaximized = RegistryBoolSetting.FromKey(
                     "IsMainWindowMaximized",
                     "IsMainWindowMaximized",
                     null,
                     null,
                     false,
-                    registryKey),
+                    key),
                 MainWindowHeight = RegistryDwordSetting.FromKey(
                     "MainWindowHeight",
                     "MainWindowHeight",
                     null,
                     null,
                     0,
-                    registryKey,
+                    key,
                     0,
                     ushort.MaxValue),
                 MainWindowWidth = RegistryDwordSetting.FromKey(
@@ -119,77 +171,40 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     0,
-                    registryKey,
+                    key,
                     0,
                     ushort.MaxValue),
-                IsUpdateCheckEnabled = RegistryBoolSetting.FromKey(
-                    "IsUpdateCheckEnabled",
-                    "IsUpdateCheckEnabled",
-                    null,
-                    null,
-                    true,
-                    registryKey),
                 LastUpdateCheck = RegistryQwordSetting.FromKey(
                     "LastUpdateCheck",
                     "LastUpdateCheck",
                     null,
                     null,
                     0,
-                    registryKey,
+                    key,
                     0,
                     long.MaxValue),
-                IsPreviewFeatureSetEnabled = RegistryBoolSetting.FromKey(
-                    "IsPreviewFeatureSetEnabled",
-                    "IsPreviewFeatureSetEnabled",
-                    null,
-                    null,
-                    false,
-                    registryKey),
-                ProxyUrl = RegistryStringSetting.FromKey(
-                    "ProxyUrl",
-                    "ProxyUrl",
-                    null,
-                    null,
-                    null,
-                    registryKey,
-                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _)),
-                ProxyPacUrl = RegistryStringSetting.FromKey(
-                    "ProxyPacUrl",
-                    "ProxyPacUrl",
-                    null,
-                    null,
-                    null,
-                    registryKey,
-                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _)),
                 ProxyUsername = RegistryStringSetting.FromKey(
                     "ProxyUsername",
                     "ProxyUsername",
                     null,
                     null,
                     null,
-                    registryKey,
+                    key,
                     _ => true),
                 ProxyPassword = RegistrySecureStringSetting.FromKey(
                     "ProxyPassword",
                     "ProxyPassword",
                     null,
                     null,
-                    registryKey,
+                    key,
                     DataProtectionScope.CurrentUser),
-                IsDeviceCertificateAuthenticationEnabled = RegistryBoolSetting.FromKey(
-                    "IsDeviceCertificateAuthenticationEnabled",
-                    "IsDeviceCertificateAuthenticationEnabled",
-                    null,
-                    null,
-                    false,
-                    registryKey),
                 FullScreenDevices = RegistryStringSetting.FromKey(
                     "FullScreenDevices",
                     "FullScreenDevices",
                     null,
                     null,
                     null,
-                    registryKey,
+                    key,
                     _ => true),
                 IncludeOperatingSystems = RegistryEnumSetting<OperatingSystems>.FromKey(
                     "IncludeOperatingSystems",
@@ -197,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     OperatingSystems.Windows | OperatingSystems.Linux,
-                    registryKey)
+                    key)
             };
         }
     }

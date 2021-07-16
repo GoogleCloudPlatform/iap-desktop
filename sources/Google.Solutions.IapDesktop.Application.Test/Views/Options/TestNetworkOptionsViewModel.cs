@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             this.settingsKey = hkcu.CreateSubKey(TestKeyPath);
 
-            this.settingsRepository = new ApplicationSettingsRepository(this.settingsKey);
+            this.settingsRepository = new ApplicationSettingsRepository(this.settingsKey, null); // TODO: Test policy
             this.proxyAdapterMock = new Mock<IHttpProxyAdapter>();
         }
 

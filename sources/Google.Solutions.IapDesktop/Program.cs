@@ -196,17 +196,19 @@ namespace Google.Solutions.IapDesktop
             var windowAndWorkflowLayer = new ServiceRegistry(integrationLayer);
 
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+            var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default);
 
             // 
             // Persistence layer.
             //
             persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
             persistenceLayer.AddSingleton(new ApplicationSettingsRepository(
-                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Application")));
+                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Application"),
+                hklm.OpenSubKey($@"{Globals.PoliciesKeyPath}\Application")));
             persistenceLayer.AddSingleton(new ToolWindowStateRepository(
-                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\ToolWindows")));
+                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\ToolWindows")));
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
-                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Auth"),
+                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Auth"),
                 GoogleAuthAdapter.StoreUserId));
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
@@ -245,7 +247,7 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IEventService>(eventService);
             integrationLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
             integrationLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
-                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Inventory")));
+                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Inventory")));
 
             //
             // Window & workflow layer.

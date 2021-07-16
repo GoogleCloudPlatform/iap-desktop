@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public TerminalSettingsRepository()
             : this(RegistryKey
                 .OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default)
-                .CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Terminal"))
+                .CreateSubKey($@"{Globals.SettingsKeyPath}\Terminal"))
         {
         }
 

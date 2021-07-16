@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public SshSettingsRepository()
             : this(RegistryKey
                 .OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default)
-                .CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Ssh"))
+                .CreateSubKey($@"{Globals.SettingsKeyPath}\Ssh"))
         {
         }
 
