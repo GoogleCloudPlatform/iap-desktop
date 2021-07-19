@@ -98,7 +98,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public void SetUp()
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.settingsRepository = new ApplicationSettingsRepository(hkcu.CreateSubKey(TestKeyPath));
+            this.settingsRepository = new ApplicationSettingsRepository(
+                hkcu.CreateSubKey(TestKeyPath),
+                null);
             this.projectRepository = new ProjectRepository(
                 hkcu.CreateSubKey(TestKeyPath));
 

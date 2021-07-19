@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Options;
@@ -26,6 +27,7 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 {
@@ -33,20 +35,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
     public class TestNetworkOptionsViewModel : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
+        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
         private RegistryKey settingsKey;
 
-        private ApplicationSettingsRepository settingsRepository;
         private Mock<IHttpProxyAdapter> proxyAdapterMock;
 
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.settingsKey = hkcu.CreateSubKey(TestKeyPath);
-
-            this.settingsRepository = new ApplicationSettingsRepository(this.settingsKey);
             this.proxyAdapterMock = new Mock<IHttpProxyAdapter>();
+
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.settingsKey = this.hkcu.CreateSubKey(TestKeyPath);
+        }
+
+        private ApplicationSettingsRepository CreateSettingsRepository(
+            IDictionary<string, object> policies = null)
+        {
+            this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
+
+            var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath);
+            foreach (var policy in policies.EnsureNotNull())
+            {
+                policyKey.SetValue(policy.Key, policy.Value);
+            }
+
+            return new ApplicationSettingsRepository(this.settingsKey, policyKey);
         }
 
         //---------------------------------------------------------------------
@@ -56,8 +71,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenNoProxyConfigured_ThenPropertiesAreInitializedCorrectly()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object);
 
             Assert.IsTrue(viewModel.IsSystemProxyServerEnabled);
@@ -71,6 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsNull(viewModel.ProxyPassword);
 
             Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsSystemProxyServerEnabled);
         }
 
         //---------------------------------------------------------------------
@@ -80,14 +97,65 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenCustomProxyConfigured_ThenPropertiesAreInitializedCorrectly()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
             settings.ProxyUrl.StringValue = "http://proxy-server";
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object);
 
+            Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
+            Assert.IsFalse(viewModel.IsProxyAutoConfigurationEnabled);
+            Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);
+            Assert.AreEqual("proxy-server", viewModel.ProxyServer);
+            Assert.AreEqual("80", viewModel.ProxyPort);
+            Assert.IsNull(viewModel.ProxyAutoconfigurationAddress);
+            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
+            Assert.IsNull(viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
+            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsProxyEditable);
+        }
+
+        [Test]
+        public void WhenCustomProxyConfiguredButInvalid_ThenDefaultsAreUsed()
+        {
+            // Store an invalid URL.
+            this.settingsKey.SetValue("ProxyUrl", "123", RegistryValueKind.String);
+
+            var settingsRepository = CreateSettingsRepository();
+            var viewModel = new NetworkOptionsViewModel(
+                settingsRepository,
+                this.proxyAdapterMock.Object);
+
+            Assert.IsTrue(viewModel.IsSystemProxyServerEnabled);
+            Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
+            Assert.IsFalse(viewModel.IsProxyAutoConfigurationEnabled);
+            Assert.IsNull(viewModel.ProxyServer);
+            Assert.IsNull(viewModel.ProxyPort);
+            Assert.IsNull(viewModel.ProxyAutoconfigurationAddress);
+            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
+            Assert.IsNull(viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
+            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsProxyEditable);
+        }
+
+        [Test]
+        public void WhenCustomProxyConfiguredByPolicy_ThenIsProxyEditableIsFalse()
+        {
+            var settingsRepository = CreateSettingsRepository(
+                new Dictionary<string, object>
+                {
+                    { "ProxyUrl", "http://proxy-server"}
+                });
+            var viewModel = new NetworkOptionsViewModel(
+                settingsRepository,
+                this.proxyAdapterMock.Object);
+
+            Assert.IsFalse(viewModel.IsProxyEditable);
             Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
             Assert.IsFalse(viewModel.IsProxyAutoConfigurationEnabled);
             Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);
@@ -101,32 +169,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         [Test]
-        public void WhenCustomProxyConfiguredButInvalid_ThenDefaultsAreUsed()
-        {
-            // Store an invalid URL.
-            this.settingsKey.SetValue("ProxyUrl", "123", RegistryValueKind.String);
-
-            var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            Assert.IsTrue(viewModel.IsSystemProxyServerEnabled);
-            Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
-            Assert.IsFalse(viewModel.IsProxyAutoConfigurationEnabled);
-            Assert.IsNull(viewModel.ProxyServer);
-            Assert.IsNull(viewModel.ProxyPort);
-            Assert.IsNull(viewModel.ProxyAutoconfigurationAddress);
-            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
-            Assert.IsNull(viewModel.ProxyUsername);
-            Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsFalse(viewModel.IsDirty);
-        }
-
-        [Test]
         public void WhenEnablingCustomProxy_ThenProxyHostAndPortSetToDefaults()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsCustomProxyServerEnabled = true
@@ -147,8 +194,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenDisablingCustomProxy_ThenProxyHostAndPortAreCleared()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsCustomProxyServerEnabled = true,
@@ -176,13 +224,65 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenProxyAutoconfigConfigured_ThenPropertiesAreInitializedCorrectly()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
             settings.ProxyPacUrl.StringValue = "http://proxy-server/proxy.pac";
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object);
+
+            Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
+            Assert.IsTrue(viewModel.IsProxyAutoConfigurationEnabled);
+            Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
+            Assert.IsNull(viewModel.ProxyServer);
+            Assert.IsNull(viewModel.ProxyPort);
+            Assert.AreEqual("http://proxy-server/proxy.pac", viewModel.ProxyAutoconfigurationAddress);
+            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
+            Assert.IsNull(viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
+            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsProxyEditable);
+        }
+
+        [Test]
+        public void WhenProxyAutoconfigConfiguredButInvalid_ThenDefaultsAreUsed()
+        {
+            // Store an invalid URL.
+            this.settingsKey.SetValue("ProxyPacUrl", "123", RegistryValueKind.String);
+
+            var settingsRepository = CreateSettingsRepository();
+            var viewModel = new NetworkOptionsViewModel(
+                settingsRepository,
+                this.proxyAdapterMock.Object);
+
+            Assert.IsTrue(viewModel.IsSystemProxyServerEnabled);
+            Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
+            Assert.IsFalse(viewModel.IsProxyAutoConfigurationEnabled);
+            Assert.IsNull(viewModel.ProxyServer);
+            Assert.IsNull(viewModel.ProxyPort);
+            Assert.IsNull(viewModel.ProxyAutoconfigurationAddress);
+            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
+            Assert.IsNull(viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
+            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsProxyEditable);
+        }
+
+        [Test]
+        public void WhenProxyAutoconfigConfiguredByPolicy_ThenIsProxyEditableIsFalse()
+        {
+            var settingsRepository = CreateSettingsRepository(
+                new Dictionary<string, object>
+                {
+                    { "ProxyPacUrl", "http://proxy-server/proxy.pac"}
+                });
+            var viewModel = new NetworkOptionsViewModel(
+                settingsRepository,
+                this.proxyAdapterMock.Object);
+
+            Assert.IsFalse(viewModel.IsProxyEditable);
 
             Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
             Assert.IsTrue(viewModel.IsProxyAutoConfigurationEnabled);
@@ -197,32 +297,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         [Test]
-        public void WhenProxyAutoconfigConfiguredButInvalid_ThenDefaultsAreUsed()
-        {
-            // Store an invalid URL.
-            this.settingsKey.SetValue("ProxyPacUrl", "123", RegistryValueKind.String);
-
-            var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            Assert.IsTrue(viewModel.IsSystemProxyServerEnabled);
-            Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
-            Assert.IsFalse(viewModel.IsProxyAutoConfigurationEnabled);
-            Assert.IsNull(viewModel.ProxyServer);
-            Assert.IsNull(viewModel.ProxyPort);
-            Assert.IsNull(viewModel.ProxyAutoconfigurationAddress);
-            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
-            Assert.IsNull(viewModel.ProxyUsername);
-            Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsFalse(viewModel.IsDirty);
-        }
-
-        [Test]
         public void WhenEnablingProxyAutoconfig_ThenProxyHostAndPortSetToDefaults()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsProxyAutoConfigurationEnabled = true
@@ -243,8 +322,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenDisablingProxyAutoconfig_ThenProxyHostAndPortAreCleared()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsProxyAutoConfigurationEnabled = true,
@@ -271,14 +351,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenProxyAuthConfigured_ThenPropertiesAreInitializedCorrectly()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
             settings.ProxyUrl.StringValue = "http://proxy-server";
             settings.ProxyUsername.StringValue = "user";
             settings.ProxyPassword.ClearTextValue = "pass";
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object);
 
             Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
@@ -294,8 +375,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenEnablingProxyAuth_ThenProxyUsernameSetToDefault()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsCustomProxyServerEnabled = true,
@@ -310,8 +392,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenDisablingProxyAuth_ThenProxyUsernameAndPasswordAreCleared()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsCustomProxyServerEnabled = true,
@@ -333,8 +416,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenProxyServerInvalid_ThenApplyChangesThrowsArgumentException()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsCustomProxyServerEnabled = true,
@@ -348,8 +432,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenProxyPortIsZero_ThenApplyChangesThrowsArgumentException()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsCustomProxyServerEnabled = true,
@@ -363,8 +448,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenProxyPortIsOutOfBounds_ThenApplyChangesThrowsArgumentException()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsCustomProxyServerEnabled = true,
@@ -378,8 +464,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenProxyAutoconfigUrlInvalid_ThenApplyChangesThrowsArgumentException()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsProxyAutoConfigurationEnabled = true,
@@ -392,8 +479,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenProxyAuthIncomplete_ThenApplyChangesThrowsArgumentException()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsCustomProxyServerEnabled = true,
@@ -408,8 +496,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenEnablingCustomProxy_ThenProxyAdapterIsUpdated()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsCustomProxyServerEnabled = true
@@ -423,8 +512,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenEnablingOrDisablingCustomProxy_ThenSettingsAreSaved()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
 
@@ -437,7 +527,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             };
             viewModel.ApplyChanges();
 
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             Assert.AreEqual("http://prx:123", settings.ProxyUrl.StringValue);
             Assert.AreEqual("user", settings.ProxyUsername.StringValue);
             Assert.AreEqual("pass", settings.ProxyPassword.ClearTextValue);
@@ -446,7 +536,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             viewModel.IsProxyAuthenticationEnabled = false;
             viewModel.ApplyChanges();
 
-            settings = this.settingsRepository.GetSettings();
+            settings = settingsRepository.GetSettings();
             Assert.AreEqual("http://prx:123", settings.ProxyUrl.StringValue);
             Assert.IsNull(settings.ProxyUsername.StringValue);
             Assert.IsNull(settings.ProxyPassword.ClearTextValue);
@@ -455,7 +545,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             viewModel.IsSystemProxyServerEnabled = true;
             viewModel.ApplyChanges();
 
-            settings = this.settingsRepository.GetSettings();
+            settings = settingsRepository.GetSettings();
             Assert.IsNull(settings.ProxyUrl.StringValue);
             Assert.IsNull(settings.ProxyUsername.StringValue);
             Assert.IsNull(settings.ProxyPassword.ClearTextValue);
@@ -465,8 +555,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenEnablingOrDisablingProxyAutoconfig_ThenSettingsAreSaved()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
 
@@ -478,7 +569,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             };
             viewModel.ApplyChanges();
 
-            var settings = this.settingsRepository.GetSettings();
+            var settings = settingsRepository.GetSettings();
             Assert.AreEqual("https://www/proxy.pac", settings.ProxyPacUrl.StringValue);
             Assert.AreEqual("user", settings.ProxyUsername.StringValue);
             Assert.AreEqual("pass", settings.ProxyPassword.ClearTextValue);
@@ -487,7 +578,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             viewModel.IsProxyAuthenticationEnabled = false;
             viewModel.ApplyChanges();
 
-            settings = this.settingsRepository.GetSettings();
+            settings = settingsRepository.GetSettings();
             Assert.AreEqual("https://www/proxy.pac", settings.ProxyPacUrl.StringValue);
             Assert.IsNull(settings.ProxyUsername.StringValue);
             Assert.IsNull(settings.ProxyPassword.ClearTextValue);
@@ -496,7 +587,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             viewModel.IsSystemProxyServerEnabled = true;
             viewModel.ApplyChanges();
 
-            settings = this.settingsRepository.GetSettings();
+            settings = settingsRepository.GetSettings();
             Assert.IsNull(settings.ProxyUrl.StringValue);
             Assert.IsNull(settings.ProxyUsername.StringValue);
             Assert.IsNull(settings.ProxyPassword.ClearTextValue);
@@ -505,8 +596,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenChangesApplied_ThenDirtyFlagIsCleared()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.proxyAdapterMock.Object)
             {
                 IsCustomProxyServerEnabled = true

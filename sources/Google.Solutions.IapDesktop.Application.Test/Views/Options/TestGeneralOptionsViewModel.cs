@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -26,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Views.Options;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 {
@@ -33,19 +35,31 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
     public class TestGeneralOptionsViewModel : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
+        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-        private ApplicationSettingsRepository settingsRepository;
         private Mock<IAppProtocolRegistry> protocolRegistryMock;
 
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
-
-            this.settingsRepository = new ApplicationSettingsRepository(baseKey);
             this.protocolRegistryMock = new Mock<IAppProtocolRegistry>();
+        }
+
+        private ApplicationSettingsRepository CreateSettingsRepository(
+            IDictionary<string, object> policies = null)
+        {
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
+
+            var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
+            var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath);
+            foreach (var policy in policies.EnsureNotNull())
+            {
+                policyKey.SetValue(policy.Key, policy.Value);
+            }
+
+            return new ApplicationSettingsRepository(baseKey, policyKey);
         }
 
         //---------------------------------------------------------------------
@@ -55,42 +69,69 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenSettingEnabled_ThenIsUpdateCheckEnabledIsTrue()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
             settings.IsUpdateCheckEnabled.BoolValue = true;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
 
             Assert.IsTrue(viewModel.IsUpdateCheckEnabled);
+            Assert.IsTrue(viewModel.IsUpdateCheckEditable);
         }
 
         [Test]
         public void WhenSettingDisabled_ThenIsUpdateCheckEnabledIsTrue()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
             settings.IsUpdateCheckEnabled.BoolValue = false;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
 
             Assert.IsFalse(viewModel.IsUpdateCheckEnabled);
+            Assert.IsTrue(viewModel.IsUpdateCheckEditable);
+        }
+
+        [Test]
+        public void WhenSettingDisabledByPolicy_ThenIsUpdateCheckEditableIsFalse()
+        {
+            var settingsRepository = CreateSettingsRepository(
+                new Dictionary<string, object>
+                {
+                    { "IsUpdateCheckEnabled", 0 }
+                });
+
+            var settings = settingsRepository.GetSettings();
+            settings.IsUpdateCheckEnabled.BoolValue = false;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
+            Assert.IsFalse(viewModel.IsUpdateCheckEnabled);
+            Assert.IsFalse(viewModel.IsUpdateCheckEditable);
         }
 
         [Test]
         public void WhenDisablingUpdateCheck_ThenChangeIsApplied()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
             settings.IsUpdateCheckEnabled.BoolValue = true;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService())
             {
@@ -98,15 +139,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             };
             viewModel.ApplyChanges();
 
-            settings = this.settingsRepository.GetSettings();
+            settings = settingsRepository.GetSettings();
             Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
         }
 
         [Test]
         public void WhenUpdateCheckChanged_ThenIsDirtyIsTrueUntilApplied()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
 
@@ -120,8 +162,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenLastCheckIsZero_ThenLastUpdateCheckReturnsNever()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
 
@@ -131,12 +174,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenLastCheckIsNonZero_ThenLastUpdateCheckReturnsNever()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
             settings.LastUpdateCheck.LongValue = 1234567L;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
 
@@ -150,12 +194,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenSettingEnabled_ThenIsDeviceCertificateAuthenticationEnabledIsTrue()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
 
@@ -165,12 +210,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenSettingDisabled_ThenIsDeviceCertificateAuthenticationEnabledIsTrue()
         {
-            var settings = this.settingsRepository.GetSettings();
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
-            this.settingsRepository.SetSettings(settings);
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
 
@@ -178,14 +224,37 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         [Test]
-        public void WhenDisablingDca_ThenChangeIsApplied()
+        public void WhenSettingEnabledByPolicy_ThenIsDeviceCertificateAuthenticationEeditableIsFalse()
         {
-            var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            this.settingsRepository.SetSettings(settings);
+            var settingsRepository = CreateSettingsRepository(
+                new Dictionary<string, object>
+                {
+                    { "IsDeviceCertificateAuthenticationEnabled", 1 }
+                });
+
+            var settings = settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
+            settingsRepository.SetSettings(settings);
 
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
+            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled);
+            Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEditable);
+        }
+
+        [Test]
+        public void WhenDisablingDca_ThenChangeIsApplied()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var settings = settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService())
             {
@@ -193,15 +262,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             };
             viewModel.ApplyChanges();
 
-            settings = this.settingsRepository.GetSettings();
+            settings = settingsRepository.GetSettings();
             Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
         }
 
         [Test]
         public void WhenDcaChanged_ThenIsDirtyIsTrueUntilApplied()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
 
@@ -219,8 +289,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenBrowserIntegrationChanged_ThenIsDirtyIsTrueUntilApplied()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
 
@@ -234,8 +305,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenBrowserIntegrationEnabled_ThenApplyChangesRegistersProtocol()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService())
             {
@@ -253,8 +325,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenBrowserIntegrationDisabled_ThenApplyChangesUnregistersProtocol()
         {
+            var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
+                settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService())
             {

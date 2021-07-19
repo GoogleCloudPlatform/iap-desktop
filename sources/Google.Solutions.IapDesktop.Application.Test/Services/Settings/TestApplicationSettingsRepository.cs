@@ -43,65 +43,73 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new ApplicationSettingsRepository(baseKey);
+            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(baseKey, null);
 
-            var settings = repository.GetSettings();
+                var settings = repository.GetSettings();
 
-            Assert.AreEqual(false, settings.IsMainWindowMaximized.Value);
-            Assert.AreEqual(0, settings.MainWindowHeight.Value);
-            Assert.AreEqual(0, settings.MainWindowWidth.Value);
-            Assert.AreEqual(true, settings.IsUpdateCheckEnabled.Value);
-            Assert.AreEqual(0, settings.LastUpdateCheck.Value);
+                Assert.AreEqual(false, settings.IsMainWindowMaximized.Value);
+                Assert.AreEqual(0, settings.MainWindowHeight.Value);
+                Assert.AreEqual(0, settings.MainWindowWidth.Value);
+                Assert.AreEqual(true, settings.IsUpdateCheckEnabled.Value);
+                Assert.AreEqual(0, settings.LastUpdateCheck.Value);
+            }
         }
 
         [Test]
         public void WhenSettingsSaved_ThenSettingsCanBeRead()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new ApplicationSettingsRepository(baseKey);
+            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(baseKey, null);
 
-            var settings = repository.GetSettings();
-            settings.IsMainWindowMaximized.BoolValue = true;
-            settings.MainWindowHeight.IntValue = 480;
-            settings.MainWindowWidth.IntValue = 640;
-            settings.IsUpdateCheckEnabled.BoolValue = false;
-            settings.LastUpdateCheck.LongValue = 123L;
-            repository.SetSettings(settings);
+                var settings = repository.GetSettings();
+                settings.IsMainWindowMaximized.BoolValue = true;
+                settings.MainWindowHeight.IntValue = 480;
+                settings.MainWindowWidth.IntValue = 640;
+                settings.IsUpdateCheckEnabled.BoolValue = false;
+                settings.LastUpdateCheck.LongValue = 123L;
+                repository.SetSettings(settings);
 
-            settings = repository.GetSettings();
+                settings = repository.GetSettings();
 
-            Assert.AreEqual(true, settings.IsMainWindowMaximized.BoolValue);
-            Assert.AreEqual(480, settings.MainWindowHeight.IntValue);
-            Assert.AreEqual(640, settings.MainWindowWidth.IntValue);
-            Assert.AreEqual(false, settings.IsUpdateCheckEnabled.BoolValue);
-            Assert.AreEqual(123, settings.LastUpdateCheck.LongValue);
+                Assert.AreEqual(true, settings.IsMainWindowMaximized.BoolValue);
+                Assert.AreEqual(480, settings.MainWindowHeight.IntValue);
+                Assert.AreEqual(640, settings.MainWindowWidth.IntValue);
+                Assert.AreEqual(false, settings.IsUpdateCheckEnabled.BoolValue);
+                Assert.AreEqual(123, settings.LastUpdateCheck.LongValue);
+            }
         }
 
         [Test]
         public void WhenProxyUrlInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new ApplicationSettingsRepository(baseKey);
+            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(baseKey, null);
 
-            var settings = repository.GetSettings();
-            settings.ProxyUrl.Value = null;
+                var settings = repository.GetSettings();
+                settings.ProxyUrl.Value = null;
 
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => settings.ProxyUrl.Value = "thisisnotanurl");
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    () => settings.ProxyUrl.Value = "thisisnotanurl");
+            }
         }
 
         [Test]
         public void WhenProxyPacUrlInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new ApplicationSettingsRepository(baseKey);
+            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(baseKey, null);
 
-            var settings = repository.GetSettings();
-            settings.ProxyPacUrl.Value = null;
+                var settings = repository.GetSettings();
+                settings.ProxyPacUrl.Value = null;
 
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => settings.ProxyPacUrl.Value = "thisisnotanurl");
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    () => settings.ProxyPacUrl.Value = "thisisnotanurl");
+            }
         }
     }
 }

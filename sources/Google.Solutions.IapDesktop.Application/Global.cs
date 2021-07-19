@@ -30,7 +30,9 @@ namespace Google.Solutions.IapDesktop.Application
 {
     public static class Globals
     {
-        public const string BaseRegistryKeyPath = @"Software\Google\IapDesktop\1.0";
+        public const string SettingsKeyPath = @"Software\Google\IapDesktop\1.0";
+        
+        public const string PoliciesKeyPath = @"Software\Policies\Google\IapDesktop\1.0";
 
         public static UserAgent UserAgent { get; }
 

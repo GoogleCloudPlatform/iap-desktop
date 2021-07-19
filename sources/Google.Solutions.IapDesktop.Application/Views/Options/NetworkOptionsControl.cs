@@ -36,6 +36,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             InitializeComponent();
 
+            this.proxyBox.BindProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsProxyEditable,
+                this.Container);
+
             this.useSystemRadioButton.BindProperty(
                 c => c.Checked,
                 this.viewModel,
