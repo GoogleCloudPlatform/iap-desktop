@@ -40,6 +40,7 @@ MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
 INSTALLER_SNAPSHOT = installer\bin\$(CONFIGURATION)\InstallerSnapshot-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
 INSTALLER_PACKAGE  = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).msi
 SYMBOLS_PACKAGE    = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
+POLICIES_PACKAGE   = installer\bin\$(CONFIGURATION)\PolicyTemplates-$(BINARY_VERSION)-$(PLATFORM)-$(CONFIGURATION).zip
 
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
@@ -181,6 +182,14 @@ $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 $(SYMBOLS_PACKAGE) \
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\symbols\*
+        
+$(POLICIES_PACKAGE):
+	@echo "========================================================"
+	@echo "=== Packaging policy templates                       ==="
+	@echo "========================================================"
+
+	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 $(POLICIES_PACKAGE) \
+		$(MAKEDIR)\installer\policies*
 
 #------------------------------------------------------------------------------
 # Main targets
@@ -241,6 +250,7 @@ test: $(NUNIT_ASSEMBLIES)
 installer: $(INSTALLER_PACKAGE)
 installer-snapshot: $(INSTALLER_SNAPSHOT) 
 symbols: $(SYMBOLS_PACKAGE)
+policies: $(POLICIES_PACKAGE)
 
 #------------------------------------------------------------------------------
 # Kokoro specific targets
@@ -270,6 +280,7 @@ kokoro-continuous-integration: \
 	installer \
 	installer-snapshot \
 	symbols \
+    policies \
 	test
 
 kokoro-sign: installer
