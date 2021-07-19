@@ -50,7 +50,7 @@
       <supportedOn ref="windows:SUPPORTED_Windows8" />
       
       <enabledValue>
-        <delete/>
+        <decimal value="1" />
       </enabledValue>
       <disabledValue>
         <decimal value="0" />
@@ -72,7 +72,7 @@
         <decimal value="1" />
       </enabledValue>
       <disabledValue>
-        <delete/>
+        <decimal value="0" />
       </disabledValue>
     </policy>
 
@@ -82,7 +82,6 @@
         displayName="$(string.ProxyUrl)"
         explainText="$(string.ProxyUrl_Description)"
         key="Software\Policies\Google\IapDesktop\1.0\Application"
-        valueName="ProxyUrl"
         presentation="$(presentation.ProxyUrl)" >
 
       <parentCategory ref="iapdesktop" />
@@ -99,7 +98,6 @@
         displayName="$(string.ProxyPacUrl)"
         explainText="$(string.ProxyPacUrl_Description)"
         key="Software\Policies\Google\IapDesktop\1.0\Application"
-        valueName="ProxyPacUrl"
         presentation="$(presentation.ProxyPacUrl)" >
 
       <parentCategory ref="iapdesktop" />
