@@ -29,11 +29,21 @@ namespace Google.Solutions.Common.Test.Net
     public class TestUserAgent : CommonFixtureBase
     {
         [Test]
-        public void ToHeaderValueReturnsProperString()
+        public void WhenNoExtensionProvided_ToHeaderValueReturnsProperString()
         {
             var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
 
             Assert.AreEqual("WidgetTool/1.0 (Windows 95)", ua.ToHeaderValue());
+            Assert.AreEqual(ua.ToHeaderValue(), ua.ToString());
+        }
+
+        [Test]
+        public void WhenExtensionProvided_ToHeaderValueReturnsProperString()
+        {
+            var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
+            ua.Extensions = "on-steroids";
+
+            Assert.AreEqual("WidgetTool/1.0 (Windows 95; on-steroids)", ua.ToHeaderValue());
             Assert.AreEqual(ua.ToHeaderValue(), ua.ToString());
         }
     }

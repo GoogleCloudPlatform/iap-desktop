@@ -30,6 +30,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
     public class TestApplicationSettingsRepository : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
+        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
+
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
             RegistryView.Default);
@@ -109,6 +111,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 
                 Assert.Throws<ArgumentOutOfRangeException>(
                     () => settings.ProxyPacUrl.Value = "thisisnotanurl");
+            }
+        }
+
+        [Test]
+        public void WhenPoliyKeyIsNull_ThenIsPolicyPresentReturnsFalse()
+        {
+            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(baseKey, null);
+
+                Assert.IsFalse(repository.IsPolicyPresent);
+            }
+        }
+
+        [Test]
+        public void WhenPoliyKeyNotNull_ThenIsPolicyPresentReturnsTrue()
+        {
+            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = hkcu.CreateSubKey(TestPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(baseKey, policyKey);
+
+                Assert.IsTrue(repository.IsPolicyPresent);
             }
         }
     }

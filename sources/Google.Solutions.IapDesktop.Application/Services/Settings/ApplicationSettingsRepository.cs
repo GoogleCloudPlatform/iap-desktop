@@ -47,6 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         protected override ApplicationSettings LoadSettings(RegistryKey key)
             => ApplicationSettings.FromKey(key, this.groupPolicyBaseKey);
+
+        public bool IsPolicyPresent => this.groupPolicyBaseKey != null;
     }
 
     public class ApplicationSettings : IRegistrySettingsCollection

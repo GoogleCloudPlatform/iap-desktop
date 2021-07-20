@@ -201,10 +201,20 @@ namespace Google.Solutions.IapDesktop
             // 
             // Persistence layer.
             //
-            persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
-            persistenceLayer.AddSingleton(new ApplicationSettingsRepository(
+            var appSettingsRepository = new ApplicationSettingsRepository(
                 hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Application"),
-                hklm.OpenSubKey($@"{Globals.PoliciesKeyPath}\Application")));
+                hklm.OpenSubKey($@"{Globals.PoliciesKeyPath}\Application"));
+            if (appSettingsRepository.IsPolicyPresent)
+            {
+                //
+                // If there are policies in place, mark the UA as
+                // Enterprise-managed.
+                //
+                Globals.UserAgent.Extensions = "Enterprise";
+            }
+
+            persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
+            persistenceLayer.AddSingleton(appSettingsRepository);
             persistenceLayer.AddSingleton(new ToolWindowStateRepository(
                 hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\ToolWindows")));
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
