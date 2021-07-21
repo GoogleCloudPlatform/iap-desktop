@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.Diagnostics;
 
 namespace Google.Solutions.Common.Net
 {
@@ -27,31 +28,33 @@ namespace Google.Solutions.Common.Net
     {
         public string Product { get; }
         public Version Version { get; }
-        public string Platform { get; }
+        public string OsVersion { get; }
 
-        private static string OsVersion
+        /// <summary>
+        /// Application-specific features/extensions to be added to header.
+        /// </summary>
+        public string Extensions{ get; set; }
+
+        private static string GetOsVersion()
         {
-            get
+            var version = Environment.OSVersion.VersionString;
+            if (!Environment.Is64BitOperatingSystem)
             {
-                var version = Environment.OSVersion.VersionString;
-                if (!Environment.Is64BitOperatingSystem)
-                {
-                    version += " 32-bit";
-                }
-
-                return version;
+                version += " 32-bit";
             }
+
+            return version;
         }
 
         internal UserAgent(string product, Version version, string platform)
         {
             this.Product = product;
             this.Version = version;
-            this.Platform = platform;
+            this.OsVersion = platform;
         }
 
         public UserAgent(string product, Version version)
-            : this(product, version, OsVersion)
+            : this(product, version, GetOsVersion())
         {
         }
 
@@ -67,7 +70,17 @@ namespace Google.Solutions.Common.Net
         /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
         /// </summary>
         public string ToHeaderValue()
-            => $"{this.Product}/{this.Version} ({this.Platform})";
+        {
+            var platform = this.OsVersion;
+
+            if (!string.IsNullOrEmpty(this.Extensions))
+            {
+                Debug.Assert(this.Extensions.IndexOf(';') < 0);
+                platform += "; " + this.Extensions;
+            }
+
+            return $"{this.Product}/{this.Version} ({platform})";
+        }
 
         public override string ToString() => ToHeaderValue();
     }
