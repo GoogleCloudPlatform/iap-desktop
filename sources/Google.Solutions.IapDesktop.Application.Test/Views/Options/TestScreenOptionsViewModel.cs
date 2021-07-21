@@ -32,7 +32,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
     public class TestScreenOptionsViewModel : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
+            RegistryHive.CurrentUser, 
+            RegistryView.Default);
 
         private ApplicationSettingsRepository settingsRepository;
 
@@ -42,7 +44,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
 
-            this.settingsRepository = new ApplicationSettingsRepository(baseKey, null);
+            this.settingsRepository = new ApplicationSettingsRepository(
+                baseKey, 
+                null, 
+                null);
         }
 
         //---------------------------------------------------------------------

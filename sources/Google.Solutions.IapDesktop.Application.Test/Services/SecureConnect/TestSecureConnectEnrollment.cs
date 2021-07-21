@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var settingsKey = hkcu.CreateSubKey(TestKeyPath);
 
-            this.settingsRepository = new ApplicationSettingsRepository(settingsKey, null);
+            this.settingsRepository = new ApplicationSettingsRepository(settingsKey, null, null);
         }
 
         [Test]

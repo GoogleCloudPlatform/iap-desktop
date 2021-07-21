@@ -30,7 +30,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
     public class TestApplicationSettingsRepository : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
+        private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
+        private const string TestUserPolicyKeyPath = @"Software\Google\__TestUserPolicy";
 
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
@@ -40,14 +41,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         public void SetUp()
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
+            hkcu.DeleteSubKeyTree(TestUserPolicyKeyPath, false);
         }
 
         [Test]
         public void WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(baseKey, null);
+                var repository = new ApplicationSettingsRepository(settingsKey, null, null);
 
                 var settings = repository.GetSettings();
 
@@ -62,9 +65,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenSettingsSaved_ThenSettingsCanBeRead()
         {
-            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(baseKey, null);
+                var repository = new ApplicationSettingsRepository(settingsKey, null, null);
 
                 var settings = repository.GetSettings();
                 settings.IsMainWindowMaximized.BoolValue = true;
@@ -84,12 +87,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             }
         }
 
+        //---------------------------------------------------------------------
+        // ProxyUrl.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenProxyUrlInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
-            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(baseKey, null);
+                var repository = new ApplicationSettingsRepository(settingsKey, null, null);
 
                 var settings = repository.GetSettings();
                 settings.ProxyUrl.Value = null;
@@ -100,11 +107,79 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         }
 
         [Test]
+        public void WhenProxyUrlValidAndUserPolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey, 
+                    userPolicyKey);
+
+                settingsKey.SetValue("ProxyUrl", "http://setting");
+                userPolicyKey.SetValue("ProxyUrl", "http://userpolicy");
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual("http://userpolicy", settings.ProxyUrl.StringValue);
+            }
+        }
+
+        [Test]
+        public void WhenProxyUrlValidAndMachinePolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("ProxyUrl", "http://setting");
+                machinePolicyKey.SetValue("ProxyUrl", "http://machinepolicy");
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual("http://machinepolicy", settings.ProxyUrl.StringValue);
+            }
+        }
+
+        [Test]
+        public void WhenProxyUrlValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("ProxyUrl", "http://setting");
+                userPolicyKey.SetValue("ProxyUrl", "http://userpolicy");
+                machinePolicyKey.SetValue("ProxyUrl", "http://machinepolicy");
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual("http://machinepolicy", settings.ProxyUrl.StringValue);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // ProxyPacUrl.
+        //---------------------------------------------------------------------
+
+        [Test]
         public void WhenProxyPacUrlInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
-            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(baseKey, null);
+                var repository = new ApplicationSettingsRepository(settingsKey, null, null);
 
                 var settings = repository.GetSettings();
                 settings.ProxyPacUrl.Value = null;
@@ -115,23 +190,275 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         }
 
         [Test]
-        public void WhenPoliyKeyIsNull_ThenIsPolicyPresentReturnsFalse()
+        public void WhenProxyPacUrlValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(baseKey, null);
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("ProxyPacUrl", "http://setting");
+                userPolicyKey.SetValue("ProxyPacUrl", "http://userpolicy");
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual("http://userpolicy", settings.ProxyPacUrl.StringValue);
+            }
+        }
+
+        [Test]
+        public void WhenProxyPacUrlValidAndMachinePolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("ProxyPacUrl", "http://setting");
+                machinePolicyKey.SetValue("ProxyPacUrl", "http://machinepolicy");
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual("http://machinepolicy", settings.ProxyPacUrl.StringValue);
+            }
+        }
+
+        [Test]
+        public void WhenProxyPacUrlValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("ProxyPacUrl", "http://setting");
+                userPolicyKey.SetValue("ProxyPacUrl", "http://userpolicy");
+                machinePolicyKey.SetValue("ProxyPacUrl", "http://machinepolicy");
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual("http://machinepolicy", settings.ProxyPacUrl.StringValue);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IsUpdateCheckEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenIsUpdateCheckEnabledValid_ThenSettingWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    null,
+                    null);
+
+                settingsKey.SetValue("IsUpdateCheckEnabled", 0);
+
+                var settings = repository.GetSettings();
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenIsUpdateCheckEnabledValidAndUserPolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("IsUpdateCheckEnabled", 1);
+                userPolicyKey.SetValue("IsUpdateCheckEnabled", 0);
+
+                var settings = repository.GetSettings();
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenIsUpdateCheckEnabledValidAndMachinePolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("IsUpdateCheckEnabled", 1);
+                machinePolicyKey.SetValue("IsUpdateCheckEnabled", 0);
+
+                var settings = repository.GetSettings();
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenIsUpdateCheckEnabledValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("IsUpdateCheckEnabled", 1);
+                userPolicyKey.SetValue("IsUpdateCheckEnabled", 1);
+                machinePolicyKey.SetValue("IsUpdateCheckEnabled", 0);
+
+                var settings = repository.GetSettings();
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
+                Assert.IsFalse(settings.IsUpdateCheckEnabled.IsDefault);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IsDeviceCertificateAuthenticationEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenIsDeviceCertificateAuthenticationEnabledValid_ThenSettingWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    null,
+                    null);
+
+                settingsKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
+
+                var settings = repository.GetSettings();
+                Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
+                Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenIsDeviceCertificateAuthenticationEnabledValidAndUserPolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
+                userPolicyKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
+
+                var settings = repository.GetSettings();
+                Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
+                Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenIsDeviceCertificateAuthenticationEnabledValidAndMachinePolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
+                machinePolicyKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
+
+                var settings = repository.GetSettings();
+                Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
+                Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenIsDeviceCertificateAuthenticationEnabledValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
+                userPolicyKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 0);
+                machinePolicyKey.SetValue("IsDeviceCertificateAuthenticationEnabled", 1);
+
+                var settings = repository.GetSettings();
+                Assert.IsTrue(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
+                Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.IsDefault);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IsPolicyPresent.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenMachineAndUserPolicyKeysAreNull_ThenIsPolicyPresentReturnsFalse()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(settingsKey, null, null);
 
                 Assert.IsFalse(repository.IsPolicyPresent);
             }
         }
 
         [Test]
-        public void WhenPoliyKeyNotNull_ThenIsPolicyPresentReturnsTrue()
+        public void WhenMachinePolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
         {
-            using (var baseKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = hkcu.CreateSubKey(TestPolicyKeyPath))
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
             {
-                var repository = new ApplicationSettingsRepository(baseKey, policyKey);
+                var repository = new ApplicationSettingsRepository(settingsKey, policyKey, null);
+
+                Assert.IsTrue(repository.IsPolicyPresent);
+            }
+        }
+
+        [Test]
+        public void WhenUserPolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new ApplicationSettingsRepository(settingsKey, null, policyKey);
 
                 Assert.IsTrue(repository.IsPolicyPresent);
             }

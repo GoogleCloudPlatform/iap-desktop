@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
     public class TestGeneralOptionsViewModel : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
+        private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
         private Mock<IAppProtocolRegistry> protocolRegistryMock;
@@ -50,16 +50,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             IDictionary<string, object> policies = null)
         {
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
 
             var baseKey = this.hkcu.CreateSubKey(TestKeyPath);
-            var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath);
+            var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath);
             foreach (var policy in policies.EnsureNotNull())
             {
                 policyKey.SetValue(policy.Key, policy.Value);
             }
 
-            return new ApplicationSettingsRepository(baseKey, policyKey);
+            return new ApplicationSettingsRepository(baseKey, policyKey, null);
         }
 
         //---------------------------------------------------------------------
