@@ -188,8 +188,16 @@ $(POLICIES_PACKAGE):
 	@echo "=== Packaging policy templates                       ==="
 	@echo "========================================================"
 
+	if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies\en-us \
+		md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies\en-us
+
+	copy $(MAKEDIR)\installer\policies\*.admx \
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies
+	copy $(MAKEDIR)\installer\policies\*.adml \
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies\en-us
+
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 $(POLICIES_PACKAGE) \
-		$(MAKEDIR)\installer\policies*
+		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)\policies\*
 
 #------------------------------------------------------------------------------
 # Main targets
