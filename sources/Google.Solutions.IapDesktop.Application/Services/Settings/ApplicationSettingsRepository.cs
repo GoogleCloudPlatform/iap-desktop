@@ -34,21 +34,28 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     /// </summary>
     public class ApplicationSettingsRepository : SettingsRepositoryBase<ApplicationSettings>
     {
-        private readonly RegistryKey groupPolicyBaseKey;
+        private readonly RegistryKey machinePolicyKey;
+        private readonly RegistryKey userPolicyKey;
 
         public ApplicationSettingsRepository(
-            RegistryKey baseKey,
-            RegistryKey groupPolicyBaseKey) : base(baseKey)
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey) : base(settingsKey)
         {
-            Utilities.ThrowIfNull(baseKey, nameof(baseKey));
+            Utilities.ThrowIfNull(settingsKey, nameof(settingsKey));
 
-            this.groupPolicyBaseKey = groupPolicyBaseKey;
+            this.machinePolicyKey = machinePolicyKey;
+            this.userPolicyKey = userPolicyKey;
         }
 
         protected override ApplicationSettings LoadSettings(RegistryKey key)
-            => ApplicationSettings.FromKey(key, this.groupPolicyBaseKey);
+            => ApplicationSettings.FromKey(
+                key, 
+                this.machinePolicyKey, 
+                this.userPolicyKey);
 
-        public bool IsPolicyPresent => this.groupPolicyBaseKey != null;
+        public bool IsPolicyPresent
+            => this.machinePolicyKey != null || this.userPolicyKey != null;
     }
 
     public class ApplicationSettings : IRegistrySettingsCollection
@@ -102,8 +109,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         { }
 
         public static ApplicationSettings FromKey(
-            RegistryKey key,
-            RegistryKey groupPolicyKey)
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey)
         {
             return new ApplicationSettings()
             {
@@ -114,44 +122,52 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                 // ADMX policy templates!
                 //
                 IsPreviewFeatureSetEnabled = RegistryBoolSetting.FromKey(
-                    "IsPreviewFeatureSetEnabled",
-                    "IsPreviewFeatureSetEnabled",
-                    null,
-                    null,
-                    false,
-                    key).ApplyPolicy(groupPolicyKey),
+                        "IsPreviewFeatureSetEnabled",
+                        "IsPreviewFeatureSetEnabled",
+                        null,
+                        null,
+                        false,
+                        settingsKey)
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey),
                 IsUpdateCheckEnabled = RegistryBoolSetting.FromKey(
-                    "IsUpdateCheckEnabled",
-                    "IsUpdateCheckEnabled",
-                    null,
-                    null,
-                    true,
-                    key).ApplyPolicy(groupPolicyKey),
+                        "IsUpdateCheckEnabled",
+                        "IsUpdateCheckEnabled",
+                        null,
+                        null,
+                        true,
+                        settingsKey)
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey),
                 IsDeviceCertificateAuthenticationEnabled = RegistryBoolSetting.FromKey(
-                    "IsDeviceCertificateAuthenticationEnabled",
-                    "IsDeviceCertificateAuthenticationEnabled",
-                    null,
-                    null,
-                    false,
-                    key).ApplyPolicy(groupPolicyKey),
+                        "IsDeviceCertificateAuthenticationEnabled",
+                        "IsDeviceCertificateAuthenticationEnabled",
+                        null,
+                        null,
+                        false,
+                        settingsKey)
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey),
                 ProxyUrl = RegistryStringSetting.FromKey(
-                    "ProxyUrl",
-                    "ProxyUrl",
-                    null,
-                    null,
-                    null,
-                    key,
-                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _))
-                    .ApplyPolicy(groupPolicyKey),
+                        "ProxyUrl",
+                        "ProxyUrl",
+                        null,
+                        null,
+                        null,
+                        settingsKey,
+                        url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _))
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey),
                 ProxyPacUrl = RegistryStringSetting.FromKey(
-                    "ProxyPacUrl",
-                    "ProxyPacUrl",
-                    null,
-                    null,
-                    null,
-                    key,
-                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _))
-                    .ApplyPolicy(groupPolicyKey),
+                        "ProxyPacUrl",
+                        "ProxyPacUrl",
+                        null,
+                        null,
+                        null,
+                        settingsKey,
+                        url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _))
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey),
 
                 //
                 // User preferences. These cannot be overriden by policy.
@@ -162,14 +178,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     false,
-                    key),
+                    settingsKey),
                 MainWindowHeight = RegistryDwordSetting.FromKey(
                     "MainWindowHeight",
                     "MainWindowHeight",
                     null,
                     null,
                     0,
-                    key,
+                    settingsKey,
                     0,
                     ushort.MaxValue),
                 MainWindowWidth = RegistryDwordSetting.FromKey(
@@ -178,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     0,
-                    key,
+                    settingsKey,
                     0,
                     ushort.MaxValue),
                 LastUpdateCheck = RegistryQwordSetting.FromKey(
@@ -187,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     0,
-                    key,
+                    settingsKey,
                     0,
                     long.MaxValue),
                 ProxyUsername = RegistryStringSetting.FromKey(
@@ -196,14 +212,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     null,
-                    key,
+                    settingsKey,
                     _ => true),
                 ProxyPassword = RegistrySecureStringSetting.FromKey(
                     "ProxyPassword",
                     "ProxyPassword",
                     null,
                     null,
-                    key,
+                    settingsKey,
                     DataProtectionScope.CurrentUser),
                 FullScreenDevices = RegistryStringSetting.FromKey(
                     "FullScreenDevices",
@@ -211,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     null,
-                    key,
+                    settingsKey,
                     _ => true),
                 IncludeOperatingSystems = RegistryEnumSetting<OperatingSystems>.FromKey(
                     "IncludeOperatingSystems",
@@ -219,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     OperatingSystems.Windows | OperatingSystems.Linux,
-                    key)
+                    settingsKey)
             };
         }
     }

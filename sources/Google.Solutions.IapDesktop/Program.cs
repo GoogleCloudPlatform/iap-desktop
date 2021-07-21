@@ -203,7 +203,8 @@ namespace Google.Solutions.IapDesktop
             //
             var appSettingsRepository = new ApplicationSettingsRepository(
                 hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Application"),
-                hklm.OpenSubKey($@"{Globals.PoliciesKeyPath}\Application"));
+                hklm.OpenSubKey($@"{Globals.PoliciesKeyPath}\Application"),
+                hkcu.OpenSubKey($@"{Globals.PoliciesKeyPath}\Application"));
             if (appSettingsRepository.IsPolicyPresent)
             {
                 //

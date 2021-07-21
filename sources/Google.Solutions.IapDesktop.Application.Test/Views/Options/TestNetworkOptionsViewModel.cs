@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
     public class TestNetworkOptionsViewModel : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
-        private const string TestPolicyKeyPath = @"Software\Google\__TestPolicy";
+        private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
         private RegistryKey settingsKey;
 
@@ -53,15 +53,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         private ApplicationSettingsRepository CreateSettingsRepository(
             IDictionary<string, object> policies = null)
         {
-            this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
 
-            var policyKey = this.hkcu.CreateSubKey(TestPolicyKeyPath);
+            var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath);
             foreach (var policy in policies.EnsureNotNull())
             {
                 policyKey.SetValue(policy.Key, policy.Value);
             }
 
-            return new ApplicationSettingsRepository(this.settingsKey, policyKey);
+            return new ApplicationSettingsRepository(this.settingsKey, policyKey, null);
         }
 
         //---------------------------------------------------------------------

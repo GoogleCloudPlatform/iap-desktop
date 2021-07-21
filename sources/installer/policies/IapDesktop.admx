@@ -40,7 +40,7 @@
   <policies>
     <policy 
         name="IsUpdateCheckEnabled" 
-        class="Machine" 
+        class="Both" 
         displayName="$(string.IsUpdateCheckEnabled)" 
         explainText="$(string.IsUpdateCheckEnabled_Description)" 
         key="Software\Policies\Google\IapDesktop\1.0\Application" 
@@ -59,7 +59,7 @@
     
     <policy
         name="IsDeviceCertificateAuthenticationEnabled"
-        class="Machine"
+        class="Both"
         displayName="$(string.IsDeviceCertificateAuthenticationEnabled)"
         explainText="$(string.IsDeviceCertificateAuthenticationEnabled_Description)"
         key="Software\Policies\Google\IapDesktop\1.0\Application"
@@ -78,7 +78,7 @@
 
     <policy
         name="ProxyUrl"
-        class="Machine"
+        class="Both"
         displayName="$(string.ProxyUrl)"
         explainText="$(string.ProxyUrl_Description)"
         key="Software\Policies\Google\IapDesktop\1.0\Application"
@@ -94,7 +94,7 @@
 
     <policy
         name="ProxyPacUrl"
-        class="Machine"
+        class="Both"
         displayName="$(string.ProxyPacUrl)"
         explainText="$(string.ProxyPacUrl_Description)"
         key="Software\Policies\Google\IapDesktop\1.0\Application"
