@@ -28,18 +28,18 @@
       
       <string id="IapDesktop">Google IAP Desktop</string>
 
-      <string id="IsUpdateCheckEnabled">Update Check</string>
+      <string id="IsUpdateCheckEnabled">Enable update checks</string>
       <string id="IsUpdateCheckEnabled_Description">Periodically check for updates on exit</string>
 
       <string id="IsDeviceCertificateAuthenticationEnabled">Enable endpoint verification</string>
       <string id="IsDeviceCertificateAuthenticationEnabled_Description">Secure connections to Google Cloud by using device certificate authentication if possible. Device Certificate authentication requires the computer to be enrolled and the Endpoint Verfification native helper to be installed.
       </string>
 
-      <string id="ProxyUrl">HTTPS proxy</string>
-      <string id="ProxyUrl_Description">Proxy URL, in format http://proxy.example.com:3128/.</string>
+      <string id="ProxyUrl">Enable HTTPS proxy</string>
+      <string id="ProxyUrl_Description">By default, IAP Desktop uses the proxy server configured in Windows to connect to the internet. Use this policy to explicitly specify a proxy server to use. The proxy server must be specified in the following format: http://proxy.example.com:3128/ </string>
 
-      <string id="ProxyPacUrl">HTTPS proxy autoconfiguration</string>
-      <string id="ProxyPacUrl_Description">Proxy autoconfiguration URL, in format http://proxy.example.com:3128/proxy.pac.</string>
+      <string id="ProxyPacUrl">Enable HTTPS proxy autoconfiguration</string>
+      <string id="ProxyPacUrl_Description">By default, IAP Desktop uses the proxy server configured in Windows to connect to the internet. Use this policy to explicitly specify a proxy autoconfiguration URL (PAC) to use. The proxy autoconfiguration URL must be specified in the following format: http://proxy.example.com:3128/proxy.pac </string>
     </stringTable>
     <presentationTable>
       <presentation id="ProxyUrl">
