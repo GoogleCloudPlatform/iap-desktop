@@ -119,7 +119,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                 // Settings that can be overriden by policy.
                 //
                 // NB. Default values must be kept consistent with the
-                // ADMX policy templates!
+                //     ADMX policy templates!
+                // NB. Machine policies override user policies, and
+                //     user policies override settings.
                 //
                 IsPreviewFeatureSetEnabled = RegistryBoolSetting.FromKey(
                         "IsPreviewFeatureSetEnabled",
