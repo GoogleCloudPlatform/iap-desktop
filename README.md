@@ -34,6 +34,7 @@ Desktop connection manager with the security and flexibility of Identity-Aware-P
 * [Viewing instance details](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Viewing-instance-details)
 * [Viewing instance activity](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Viewing-instance-activity)
 * [Analyzing VM instance usage](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Analyzing-usage)
+* [Managing IAP Desktop using group policies](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Managing-IAP-Desktop-using-group-policies)
 * [Troubleshooting](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Troubleshooting)
 
 
