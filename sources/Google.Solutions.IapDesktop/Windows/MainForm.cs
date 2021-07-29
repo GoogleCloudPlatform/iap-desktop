@@ -220,6 +220,15 @@ namespace Google.Solutions.IapDesktop.Windows
                     // NB. If the user cancels, no exception is thrown.
                     this.viewModel.Authorize();
                 }
+                catch (AuthorizationFailedException e)
+                {
+                    //
+                    // Authorization failed for reasons not related to networking.
+                    //
+                    this.serviceProvider
+                        .GetService<IExceptionDialog>()
+                        .Show(this, "Authorization failed", e);
+                }
                 catch (Exception e)
                 {
                     //

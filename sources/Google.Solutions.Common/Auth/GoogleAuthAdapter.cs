@@ -92,14 +92,30 @@ namespace Google.Solutions.Common.Auth
         {
             try
             {
-                return await this.installedApp.AuthorizeAsync(
+                var userCredential = await this.installedApp.AuthorizeAsync(
                     StoreUserId,
                     token);
+
+                //
+                // NB. If an admin changes the access level for the app (in the Admin Console),
+                // then it's possible that some of the requested scopes haven't been granted.
+                //
+                var grantedScopes = userCredential.Token.Scope?.Split(' ');
+                if (this.initializer.Scopes.Any(
+                    requestedScope => !grantedScopes.Contains(requestedScope)))
+                {
+                    throw new AuthorizationFailedException(
+                        "Authorization failed because you have denied access to a " +
+                        "required resource. Sign in again and make sure " + 
+                        "to grant access to all requested resources.");
+                }
+
+                return userCredential;
             }
             catch (PlatformNotSupportedException)
             {
                 // Convert this into an exception with more actionable information.
-                throw new SystemException(
+                throw new AuthorizationFailedException(
                     "Authorization failed because the HTTP Server API is not enabled " +
                     "on your computer. This API is required to complete the OAuth authorization flow.\n\n" +
                     "To enable the API, open an elevated command prompt and run 'sc config http start= auto'.");
@@ -151,6 +167,13 @@ namespace Google.Solutions.Common.Auth
         {
             [JsonProperty("userinfo_endpoint")]
             public string UserInfoEndpoint { get; set; }
+        }
+    }
+
+    public class AuthorizationFailedException : Exception
+    {
+        public AuthorizationFailedException(string message) : base(message)
+        {
         }
     }
 }
