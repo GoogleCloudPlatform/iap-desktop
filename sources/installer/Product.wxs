@@ -51,7 +51,7 @@
       -->
       <![CDATA[Installed OR (VersionNT >= 602)]]>
     </Condition>
-    <Condition Message="On Windows Server, you need administrative privileges to install IAP Desktop. Open an elevated command prompt and run the installer from the command prompt.">
+    <Condition Message="You need administrative privileges to install IAP Desktop on Windows Server. For more details, see https://bit.ly/iapdesktop-install.">
       <!-- 
         On Workstation SKU, non-elevated installs are fine, but on Server, they
         are disallowed by policy (by default, anyway).
