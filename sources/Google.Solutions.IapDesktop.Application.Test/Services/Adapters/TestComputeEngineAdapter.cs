@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
             AssertEx.ThrowsAggregateException<GoogleApiException>(
                 () => adapter.GetProjectAsync(
-                    "invalid",
+                    TestProject.InvalidProjectId,
                     CancellationToken.None).Wait());
         }
 

@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             {
                 ResourceNames = new[]
                 {
-                    "projects/invalid"
+                    $"projects/{TestProject.InvalidProjectId}"
                 },
                 Filter = $"resource.type=\"gce_instance\" " +
                     $"AND protoPayload.methodName:{InsertInstanceEvent.Method} " +
