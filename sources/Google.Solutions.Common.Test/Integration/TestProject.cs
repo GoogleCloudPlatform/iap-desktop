@@ -37,6 +37,7 @@ namespace Google.Solutions.Common.Test.Integration
     {
         internal const string CloudPlatformScope = "https://www.googleapis.com/auth/cloud-platform";
 
+        public static readonly string InvalidProjectId = "invalid-0000";
         public static readonly string ProjectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
         public static readonly string Zone = "us-central1-a";
 
