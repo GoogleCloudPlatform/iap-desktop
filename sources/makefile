@@ -60,7 +60,7 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.IapDesktop.Extensions.Os]* \
 	+[Google.Solutions.IapDesktop.Extensions.Shell]*
 	
-SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /i SHA2 /fd sha256 /td sha256
+SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /n Google /a /fd sha256 /td sha256
 
 #------------------------------------------------------------------------------
 # Ancillary variables
