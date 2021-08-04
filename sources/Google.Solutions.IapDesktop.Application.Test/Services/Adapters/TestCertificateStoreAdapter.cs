@@ -104,30 +104,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         [Test]
-        public void WhenSubjectUnknown_ThenListCertificatesReturnsEmptyEnumeration()
-        {
-            var adapter = new CertificateStoreAdapter();
-            var certificates = adapter.ListUserCertitficates(
-                "unknown-issuer", "unknown-subject");
-
-            Assert.IsNotNull(certificates);
-            CollectionAssert.IsEmpty(certificates);
-        }
-
-        [Test]
-        public void WhenSubjectMatches_ThenListCertificatesReturnsEnumeration()
+        public void ListUserCertificatesReturnsUserCertificate()
         {
             var adapter = new CertificateStoreAdapter();
             adapter.AddUserCertitficate(ExampleCertificate);
 
-            var certificates = adapter.ListUserCertitficates(
-                ExampleCertitficateSubject, ExampleCertitficateSubject);
+            var certificates = adapter.ListUserCertitficates()
+                .Where(cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
             Assert.IsNotNull(certificates);
             Assert.AreEqual(1, certificates.Count());
             Assert.AreEqual(
                 TestCertificateStoreAdapter.ExampleCertificate.Thumbprint,
                 certificates.First().Thumbprint);
+        }
+
+        [Test]
+        public void ListComputerCertificatesDoesNotReturnUserCertificate()
+        {
+            var adapter = new CertificateStoreAdapter();
+            adapter.AddUserCertitficate(ExampleCertificate);
+
+            var certificates = adapter.ListComputerCertitficates()
+                .Where(cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
+
+            Assert.IsNotNull(certificates);
+            Assert.IsFalse(certificates.Any());
         }
     }
 }

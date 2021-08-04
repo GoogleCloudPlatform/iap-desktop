@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using System;
@@ -88,6 +89,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public RegistryEnumSetting<OperatingSystems> IncludeOperatingSystems { get; private set; }
 
+        public RegistryStringSetting DeviceCertificateSelector { get; private set; }
+
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             this.IsMainWindowMaximized,
@@ -102,7 +105,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.ProxyPassword,
             this.IsDeviceCertificateAuthenticationEnabled,
             this.FullScreenDevices,
-            this.IncludeOperatingSystems
+            this.IncludeOperatingSystems,
+            this.DeviceCertificateSelector
         };
 
         private ApplicationSettings()
@@ -170,6 +174,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                         url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _))
                     .ApplyPolicy(userPolicyKey)
                     .ApplyPolicy(machinePolicyKey),
+                DeviceCertificateSelector = RegistryStringSetting.FromKey(
+                        "DeviceCertificateSelector",
+                        "DeviceCertificateSelector",
+                        null,
+                        null,
+                        SecureConnectEnrollment.DefaultDeviceCertificateSelector,
+                        settingsKey,
+                        selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _))
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey), // TODO: extend ADMX
 
                 //
                 // User preferences. These cannot be overriden by policy.

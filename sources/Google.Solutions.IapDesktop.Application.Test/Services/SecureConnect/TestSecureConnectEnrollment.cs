@@ -26,6 +26,7 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -36,73 +37,99 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
     public class TestSecureConnectEnrollment : ApplicationFixtureBase
     {
         //
-        // Self-signed certificate, created using:
-        //   New-SelfSignedCertificate -Subject "Example" `
-        //     -CertStoreLocation Cert:\CurrentUser\My\ -NotAfter 01/01/2030
-        // then exported as PFX, and base64-encoded:
-        //   & certutil.exe -encode .\cert.pfx cert.pfx.txt
+        // New-SelfSignedCertificate `
+        //   -Type Custom `
+        //   -Subject "CN=Example" `
+        //   -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.2") `
+        //   -KeyUsage DigitalSignature `
+        //   -KeyAlgorithm RSA `
+        //   -KeyLength 1024 `
+        //   -CertStoreLocation Cert:\CurrentUser\My\ `
+        //   -NotAfter 01/01/2030
         //
-        private const string ExampleCertitficateSubject = "CN=Example";
-        private readonly X509Certificate2 ExampleCertificate =
-            new X509Certificate2(Convert.FromBase64String(
-                    @"MIIJwAIBAzCCCXwGCSqGSIb3DQEHAaCCCW0EgglpMIIJZTCCBgAGCSqGSIb3DQEH
-                    AaCCBfEEggXtMIIF6TCCBeUGCyqGSIb3DQEMCgECoIIE/jCCBPowHAYKKoZIhvcN
-                    AQwBAzAOBAhGyxG118BUAAICB9AEggTYsa/K6uD5Toq8F7bbP+7JGzFdWMSagnwA
-                    YO8Gh3Y4tSlugypot+V8YXZnB6rYpn/7OCPytfzgt5p6J70dZFENd7DGZq8EFuU+
-                    bsRT0U1kmEltuUUiQgjOvgQQI/I+2rKXLwa1iSJG+/Hf9ag6/YCSQWj8njaIyyyo
-                    P2OP8NB3spAdBQVE76Miekj6NJ66cgTFkHEzJBz4Du8g14ZoQwr+RWcPYEbszTJC
-                    H0A2MGSbhbbhSo/ujUc8C3JSBkj8uC9b7RMBbM6sCnKzZSqRsQzzM8xUkRGFyrAX
-                    duB4XniiguEfTI16/gasz8fhcVt+tQdU7MM/fDenZShsUSefiofMJxP9w6lWflO7
-                    FBeyDK+yIhx/IQbKD7Z8mFmS+siVBqv8LmtSV3kqe0ymnpi7tOdDFqluGgpg7nmt
-                    K5kqRe1BhKIARrOxP59r3tF2dsdcALZBIR1ThbUBrxXsHozFSqR7R0yrroTeaip8
-                    +9XtT31Ueu//nc8IgD1C6vC5my54N26/XGuqettXb+UfggADCgMApkiETtUyG2l7
-                    0DhEj5EgO00mca03c3Cj6zN6bZZN1AX29ZgEAZNIYi2acZpTHJWjFzrQ3zX9+Bh5
-                    V6TgG4GDRrCylg6YsppPtlIxxe5aiU/wXxo6NzKOWi4rCXZT9DbFmFqU8XR9GPaQ
-                    zSAbvx1BZ4K+kxC/MyEgAILLYTzln/UY6WFms4uwytXJ0IAJoGPXhKj8IvaV0vhd
-                    FtzB6K6KknNzh0uIKYDrHdlOgeydFSdmFlmKFqmyc+91GWutZxAqQhlncuyNs2hk
-                    pdjSU+QjYBdHS5ScNiU63ynrrcLxmp6B1J100Bfk5OdflGBOo0FGguyKHx5anmNH
-                    8YjyN9v4VaxXnbSxsdVe4rfLM5PLpnjyS53HnVXbEFl4XdZYfDdZEM9hHMm14ThL
-                    JWhJHM/PlBaxkNMHVdRS8D02e6IsWoEqXNtSIjaEnSvbQHptt4MnEQrLOgdZi0co
-                    MPkOZCX7aZzYO6GI98NEFYoz859Zfx6tdPnPvdsTr20EB131ieRE6pU0n3golv0Q
-                    /QqbOsCUJErKsrBmgFfMhpaczy6X6mnksfZp6KS/QDcEg/TZqwZWJ1sz6ETp0U/V
-                    GSEKkuXy6pwoIIefPJNzGGCxoorGZLjaVs1K8mcT1q/arrCSND5EPQPFdSY87eId
-                    AhUPcNJYOCShhKlkjyCITq0xfgz7etNyBoPTlTgwAwoEX2To7OTu427YL4hv89LY
-                    hrNbB6zXQDw35w2R2MhBsGR7gjvVrApZiZxrD06jCdadXlP2JXWxIHtlcx0/P8/x
-                    ZSPuRrrFfj5pDqI8pQunZ6p5lp4WrMYWD/EhxeGWueE5oYRDgNxlzkafQgUkTQMD
-                    CusRjjY0fRaNEP3P5F97rcoPkoFt83yVDI/Arw9360nW1tZVsnf1zTBxF4yEV1xF
-                    y5NZFypMYxhRcFh/tS1vwVx29c39EvkNCmDkLw7J3Db4xsEjsHZGILRCJBhMW1FO
-                    7dBbO0FYXrCzFCXEDpxstHB0FQi4dgIIw1dnRV3Cj4aPHX9bTrrtdqVB1p2xgqkE
-                    dY5IyuB58luKa18zdfuCkwTKvdwGmTyUx36pTVq6crIP65kHSuc+TBrGQK2xZqNy
-                    i76ouRCN4EgxwukIBaCFOzGB0zATBgkqhkiG9w0BCRUxBgQEAQAAADBdBgkqhkiG
-                    9w0BCRQxUB5OAHQAZQAtADYAZgBmADMAZABlADkANgAtAGUANAAzADAALQA0ADYA
-                    NAAyAC0AYgA1ADgAZAAtADcANgAxADgAMABjAGIAMABkAGIAYgA2MF0GCSsGAQQB
-                    gjcRATFQHk4ATQBpAGMAcgBvAHMAbwBmAHQAIABTAG8AZgB0AHcAYQByAGUAIABL
-                    AGUAeQAgAFMAdABvAHIAYQBnAGUAIABQAHIAbwB2AGkAZABlAHIwggNdBgkqhkiG
-                    9w0BBwGgggNOBIIDSjCCA0YwggNCBgsqhkiG9w0BDAoBA6CCAxowggMWBgoqhkiG
-                    9w0BCRYBoIIDBgSCAwIwggL+MIIB5qADAgECAhB6xUcyIjnGlk0xkWpVALOuMA0G
-                    CSqGSIb3DQEBCwUAMBIxEDAOBgNVBAMMB0V4YW1wbGUwHhcNMjAxMDE1MTE0NTI1
-                    WhcNMjkxMjMxMjIwMDAwWjASMRAwDgYDVQQDDAdFeGFtcGxlMIIBIjANBgkqhkiG
-                    9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0wDpFeh1jTX1xkLPm44VRKzXy0oy5V+U3p8c
-                    O1vB1fXyCHRZO/SDDGG8DQBIbyvchjpFL0dn3mLBuFx0DbdGROuLtJsnAdPNOV4x
-                    wCy66BfbJLKK37SzxO+KlyOubailwSXkeyN+zcdlJvzkJ/hmwR7qCgFfJTtamKcy
-                    +0yW/hBufsxoybOc2qhO+Bh2RdDJpoxUaAFYw/I7LqdG7mv2XRTIdnc2qPMZJ8+7
-                    U+0uUbin3KH2QBSRTUfo+UtfUNg2UYMPKwWvTeiuNnwECKqvFyrZ7qCAndD15dHi
-                    7bZNfJvvpU3EHYSjDsQXCzIrlBvY11ShiWkSDjUHZL7qUZRLoQIDAQABo1AwTjAO
-                    BgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMB0G
-                    A1UdDgQWBBT+w3X6UQ3WW5kTGzAMCiq1CpV1uDANBgkqhkiG9w0BAQsFAAOCAQEA
-                    RJj/54ctBdSqFNODIPiZad+pMqoACRmSznfKT6bt8ocfk326eXnRGN/BObw+Yr33
-                    z1TKRjEaPYPBzyzhcxg/VRndW4yGV1zNUU7DtRBP+0iY6JpvoBPA15Qlcc1wu0kx
-                    Ijj2bfwWvTPTZuHk2fc9jYp4Hi9jmxs+vcDhSPYWoD8GqA9ltg+rOJXvdiLOGVP6
-                    A29li216Vl94XtxmSWHZHqyrMDUDRBMkCjOaT/CZDmwfvlTY/BTODwpsq45Pbbpm
-                    kKe5HxLPBf2IlNugltuGHJ9BDrhx2b8Bg7+L+B+4qdnC2mr538HoHZs2XDTryB2c
-                    5QcupsOHJ9hOby6TKkN1LDEVMBMGCSqGSIb3DQEJFTEGBAQBAAAAMDswHzAHBgUr
-                    DgMCGgQUvB5xKdRFL/tU9CwlmVl0ULzjVOIEFOWQVSDrZgZyO7TlwcQK+GEH5G16
-                    AgIH0A=="),
-                "example");
+        private readonly X509Certificate2 CustomCertificateForClientAuth =
+            CertificateFromPem(
+                @"-----BEGIN CERTIFICATE-----
+                MIIB7zCCAVigAwIBAgIQGZbilgXuAIBAGsCHQmoLUzANBgkqhkiG9w0BAQsFADAS
+                MRAwDgYDVQQDDAdFeGFtcGxlMB4XDTIxMDgwNDE0MDYzN1oXDTI5MTIzMTIyMDAw
+                MFowEjEQMA4GA1UEAwwHRXhhbXBsZTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkC
+                gYEAyiSVqIQQHnp2eWXeMk9b99mI1uaLezmEDxLfpRKfmYjmCk6vxSEfP3X0Yjn/
+                GtpUa6i2QteFFRlXa6fakQ/+624N4de1h6ivfHYLYt3aQ8kQzGZdbDZKOx5H6hOg
+                nJxxwj/1gKG21zggIU12OISLOCqQTRUOV4w7TT6jT2fh0zECAwEAAaNGMEQwDgYD
+                VR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMCMB0GA1UdDgQWBBRpFdCK
+                bmk/vmNypIFu+LX80eG9+zANBgkqhkiG9w0BAQsFAAOBgQAFPZflBc8PM7ti6peY
+                sC750w9kZatTWU3R2Aog/8cxgT0Gqmw5YoykwoteH79QhuRbl+vBJWV7/5EIf08p
+                H/hTi2UiUx9pdTdSBU+ZWx518igf6asXyAHkE7xCCbtyTIw86T7NDSFSzjf2r755
+                xCeL91zP2UUgSWkYWzJFxHXsuQ==
+                -----END CERTIFICATE-----");
+
+        //
+        // New-SelfSignedCertificate `
+        //     -Type Custom `
+        //     -Subject "CN=Example" `
+        //     -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.1") `
+        //     -KeyUsage DigitalSignature `
+        //     -KeyAlgorithm RSA `
+        //     -KeyLength 1024 `
+        //     -CertStoreLocation Cert:\CurrentUser\My\ `
+        //     -NotAfter 01/01/2030
+        //
+        private readonly X509Certificate2 CustomCertificateForServerAuth =
+            CertificateFromPem(
+                @"-----BEGIN CERTIFICATE-----
+                MIIB7zCCAVigAwIBAgIQFZEofVzvrbBEPLoXkVQdTDANBgkqhkiG9w0BAQsFADAS
+                MRAwDgYDVQQDDAdFeGFtcGxlMB4XDTIxMDgwNDE0MTAwNFoXDTI5MTIzMTIyMDAw
+                MFowEjEQMA4GA1UEAwwHRXhhbXBsZTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkC
+                gYEAwEpyeVqiki6PPvNTx269ht1Re0tDjpLSKshC2s010D/vL9Lz8eI1AKHwcjr3
+                8SLFaQLHMUYzOycNytlucklVrzZeqAS2VDXTPld7MvqBCF/Yzdp/LQIuNBFhBmPs
+                /eRRQIHLxeHcrkgxIhfqPLMB+JyuLbV7gYwSIuoysEMhTzUCAwEAAaNGMEQwDgYD
+                VR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMBMB0GA1UdDgQWBBTgsp6E
+                gohGE7Q9f/KXWpVKUXVATzANBgkqhkiG9w0BAQsFAAOBgQCD2qd//Vb+jIuZUnON
+                GfddhRoj8T8P1m0f1INtimGLgCadzE3MSx6sh62jvoX4om8pA3SBwwSgTvcu7ykS
+                POfcworiaxQhTawWnXI+YrtzlgEUtgWDux6mbQyg0cY//qkDfJ9SxkljW02AQrjU
+                dMXBlI/FWQFjjIr4X/oGqwEijA==
+                -----END CERTIFICATE-----");
+        
+        //
+        // New-SelfSignedCertificate `
+        //     -Type Custom `
+        //     -Subject "CN=Google Endpoint Verification" `
+        //     -DnsName "CN=Google Endpoint Verification" `
+        //     -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.2") `
+        //     -KeyUsage DigitalSignature `
+        //     -KeyAlgorithm RSA `
+        //     -KeyLength 1024 `
+        //     -CertStoreLocation Cert:\CurrentUser\My\ `
+        //     -NotAfter 01/01/2030
+        //
+        private readonly X509Certificate2 EndpointVerificationCertificate =
+            CertificateFromPem(
+                @"-----BEGIN CERTIFICATE-----
+                MIICRTCCAa6gAwIBAgIQHCcsk4KAQYZMDN2kkJHX3jANBgkqhkiG9w0BAQsFADAn
+                MSUwIwYDVQQDDBxHb29nbGUgRW5kcG9pbnQgVmVyaWZpY2F0aW9uMB4XDTIxMDgw
+                NDE0MTIzMVoXDTI5MTIzMTIyMDAwMFowJzElMCMGA1UEAwwcR29vZ2xlIEVuZHBv
+                aW50IFZlcmlmaWNhdGlvbjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAyQ+3
+                2Ikn6lvjbvPjRZOhXnugVqal8b4ik6th1C+1Pdr2G58CQ5ukQujLbgndAYU4Nzu3
+                NOjMyoDRHL4VgdnlX88THLh9UGVn/djOg5eclmxKFrHV6C3YumnwA3q4RrTsQZNl
+                E7PoOkXT0rBah9mROgYnKM5apH1ukqCWIGLXMcUCAwEAAaNyMHAwDgYDVR0PAQH/
+                BAQDAgeAMCoGA1UdEQQjMCGCH0NOPUdvb2dsZSBFbmRwb2ludCBWZXJpZmljYXRp
+                b24wEwYDVR0lBAwwCgYIKwYBBQUHAwIwHQYDVR0OBBYEFLcmz0PgiP2nhXhIPsV1
+                Jar6VRHIMA0GCSqGSIb3DQEBCwUAA4GBADa0ecz9BxKAI5a6kQ0IkU748qO8++9/
+                mPFMXNPy6T5aJu6lUVSkWk3h8za4d2usrHijFkBSB9aZJpUTfQm/M4KfCsXs2Ww5
+                Jj6M3Q4DyrRWuPMHjm0LWfF9bd7AcMfSW/to+NEICmAm6FHCKQLxmJK4tGunirSm
+                QMtVvGZ0U6Ra
+                -----END CERTIFICATE-----");
 
         private const string TestKeyPath = @"Software\Google\__Test";
         private ApplicationSettingsRepository settingsRepository;
         private const string SampleUserId = "unused";
+
+        private static X509Certificate2 CertificateFromPem(string pem)
+        {
+            var tempFile = Path.GetTempFileName();
+            File.WriteAllText(tempFile, pem);
+            return new X509Certificate2(tempFile);
+        }
 
         [SetUp]
         public void SetUp()
@@ -114,6 +141,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository = new ApplicationSettingsRepository(settingsKey, null, null);
         }
 
+        //---------------------------------------------------------------------
+        // DCA disabled.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenDcaIsDisabledInSettings_ThenStateIsNotInstalled()
         {
@@ -124,65 +155,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                certificateStore.Object,
-                this.settingsRepository,
-                SampleUserId);
+                    certificateStore.Object,
+                    this.settingsRepository,
+                    SampleUserId)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
 
-            certificateStore.Verify(s => s.ListUserCertitficates(
-                    It.IsAny<string>(),
-                    It.IsAny<string>()),
-                Times.Never);
+            certificateStore.Verify(s => s.ListComputerCertitficates(), Times.Never);
+            certificateStore.Verify(s => s.ListUserCertitficates(), Times.Never);
         }
 
-        [Test]
-        public async Task WhenDcaEnabledButNoCertificateInStore_ThenStateIsNotEnrolled()
-        {
-            // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            this.settingsRepository.SetSettings(settings);
-
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListUserCertitficates(
-                    It.IsAny<string>(),
-                    It.IsAny<string>()))
-                .Returns(Enumerable.Empty<X509Certificate2>());
-
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                certificateStore.Object,
-                this.settingsRepository,
-                SampleUserId);
-
-            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
-            Assert.IsNull(enrollment.Certificate);
-        }
-
-        [Test]
-        public async Task WhenDcaEnabledAndCertificateFoundInStore_ThenStateIsEnrolled()
-        {
-            // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            this.settingsRepository.SetSettings(settings);
-
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListUserCertitficates(
-                    It.IsAny<string>(),
-                    It.IsAny<string>()))
-                .Returns(new[] { ExampleCertificate });
-
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                certificateStore.Object,
-                this.settingsRepository,
-                SampleUserId);
-
-            Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
-            Assert.IsNotNull(enrollment.Certificate);
-            Assert.AreEqual(ExampleCertitficateSubject, enrollment.Certificate.Subject);
-        }
 
         [Test]
         public async Task WhenDisablingDca_ThenRefreshUpdatesStateToDisabled()
@@ -193,29 +177,207 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListUserCertitficates(
-                    It.IsAny<string>(),
-                    It.IsAny<string>()))
-                .Returns(new[] { ExampleCertificate });
+            certificateStore.Setup(s => s.ListUserCertitficates())
+                .Returns(new[] { EndpointVerificationCertificate });
 
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                certificateStore.Object,
-                this.settingsRepository,
-                SampleUserId);
+                    certificateStore.Object,
+                    this.settingsRepository,
+                    SampleUserId)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
             Assert.IsNotNull(enrollment.Certificate);
-            Assert.AreEqual(ExampleCertitficateSubject, enrollment.Certificate.Subject);
-
+            Assert.AreEqual("CN=Google Endpoint Verification", enrollment.Certificate.Subject);
 
             // Disable DCA.
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            await enrollment.RefreshAsync(SampleUserId);
+            await enrollment.RefreshAsync(SampleUserId)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
+        }
+
+        //---------------------------------------------------------------------
+        // Default certificate selector.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUsingDefaultCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
+        {
+            // Enable DCA.
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            certificateStore.Setup(s => s.ListUserCertitficates())
+                .Returns(Enumerable.Empty<X509Certificate2>());
+            certificateStore.Setup(s => s.ListComputerCertitficates())
+                .Returns(Enumerable.Empty<X509Certificate2>());
+
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
+                    certificateStore.Object,
+                    this.settingsRepository,
+                    SampleUserId)
+                .ConfigureAwait(true);
+
+            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
+            Assert.IsNull(enrollment.Certificate);
+        }
+
+        [Test]
+        public async Task WhenUsingDefaultCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
+        {
+            // Enable DCA.
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            certificateStore.Setup(s => s.ListComputerCertitficates())
+                .Returns(Enumerable.Empty<X509Certificate2>());
+            certificateStore.Setup(s => s.ListUserCertitficates())
+                .Returns(new[] { EndpointVerificationCertificate });
+
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
+                    certificateStore.Object,
+                    this.settingsRepository,
+                    SampleUserId)
+                .ConfigureAwait(true);
+
+            Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
+            Assert.IsNotNull(enrollment.Certificate);
+            Assert.AreEqual("CN=Google Endpoint Verification", enrollment.Certificate.Subject);
+        }
+
+        [Test]
+        public async Task WhenUsingDefaultCertificateSelectorAndCertificateFoundInComputerStore_ThenStateIsEnrolled()
+        {
+            // Enable DCA.
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            certificateStore.Setup(s => s.ListComputerCertitficates())
+                .Returns(new[] { EndpointVerificationCertificate });
+            certificateStore.Setup(s => s.ListUserCertitficates())
+                .Returns(Enumerable.Empty<X509Certificate2>());
+
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
+                    certificateStore.Object,
+                    this.settingsRepository,
+                    SampleUserId)
+                .ConfigureAwait(true);
+
+            Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
+            Assert.IsNotNull(enrollment.Certificate);
+            Assert.AreEqual("CN=Google Endpoint Verification", enrollment.Certificate.Subject);
+        }
+
+        //---------------------------------------------------------------------
+        // Custom certificate selector.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUsingCustomCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
+        {
+            // Enable DCA.
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.DeviceCertificateSelector.StringValue =
+                @"{
+                    'filter':{
+                        'SUBJECT': {
+                            'CN': 'Foo'
+                        }
+                    }
+                }";
+            this.settingsRepository.SetSettings(settings);
+
+            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            certificateStore.Setup(s => s.ListUserCertitficates())
+                .Returns(Enumerable.Empty<X509Certificate2>());
+            certificateStore.Setup(s => s.ListComputerCertitficates())
+                .Returns(Enumerable.Empty<X509Certificate2>());
+
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
+                    certificateStore.Object,
+                    this.settingsRepository,
+                    SampleUserId)
+                .ConfigureAwait(true);
+
+            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
+            Assert.IsNull(enrollment.Certificate);
+        }
+
+        [Test]
+        public async Task WhenUsingCustomCertificateSelectorButCertificateDoesNotPermitClientAuth_ThenStateIsNotEnrolled()
+        {
+            // Enable DCA.
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.DeviceCertificateSelector.StringValue =
+                @"{
+                    'filter':{
+                        'SUBJECT': {
+                            'CN': 'Example'
+                        }
+                    }
+                }";
+            this.settingsRepository.SetSettings(settings);
+
+            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            certificateStore.Setup(s => s.ListUserCertitficates())
+                .Returns(new[] { CustomCertificateForServerAuth });
+            certificateStore.Setup(s => s.ListComputerCertitficates())
+                .Returns(Enumerable.Empty<X509Certificate2>());
+
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
+                    certificateStore.Object,
+                    this.settingsRepository,
+                    SampleUserId)
+                .ConfigureAwait(true);
+
+            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
+            Assert.IsNull(enrollment.Certificate);
+        }
+
+        [Test]
+        public async Task WhenUsingCustomCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
+        {
+            // Enable DCA.
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            settings.DeviceCertificateSelector.StringValue =
+                @"{
+                    'filter':{
+                        'SUBJECT': {
+                            'CN': 'Example'
+                        }
+                    }
+                }";
+            this.settingsRepository.SetSettings(settings);
+
+            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            certificateStore.Setup(s => s.ListComputerCertitficates())
+                .Returns(Enumerable.Empty<X509Certificate2>());
+            certificateStore.Setup(s => s.ListUserCertitficates())
+                .Returns(new[] { CustomCertificateForClientAuth });
+
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
+                    certificateStore.Object,
+                    this.settingsRepository,
+                    SampleUserId)
+                .ConfigureAwait(true);
+
+            Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
+            Assert.IsNotNull(enrollment.Certificate);
+            Assert.AreEqual("CN=Example", enrollment.Certificate.Subject);
         }
     }
 }

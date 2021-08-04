@@ -23,6 +23,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             new X500DistinguishedName("CN=Subject");
 
         //---------------------------------------------------------------------
+        // TryParse.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenJsonMalformed_ThenTryParseReturnsFalse()
+        {
+            Assert.IsFalse(ChromeCertificateSelector.TryParse(
+                "{asd'", 
+                out var _));
+        }
+
+        //---------------------------------------------------------------------
         // URL match.
         //---------------------------------------------------------------------
 

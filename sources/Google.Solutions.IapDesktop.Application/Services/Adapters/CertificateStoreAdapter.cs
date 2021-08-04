@@ -28,9 +28,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface ICertificateStoreAdapter
     {
-        IEnumerable<X509Certificate2> ListUserCertitficates(
-            string issuer,
-            string subject);
+        IEnumerable<X509Certificate2> ListComputerCertitficates();
+
+        IEnumerable<X509Certificate2> ListUserCertitficates();
     }
 
     public class CertificateStoreAdapter : ICertificateStoreAdapter
@@ -56,19 +56,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public IEnumerable<X509Certificate2> ListUserCertitficates(
-            string issuer,
-            string subject)
+        private IEnumerable<X509Certificate2> ListCertitficates(
+            StoreLocation storeLocation)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(issuer, subject))
-            using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(storeLocation))
+            using (var store = new X509Store(StoreName.My, storeLocation))
             {
                 store.Open(OpenFlags.ReadOnly);
                 return store.Certificates
-                    .Cast<X509Certificate2>()
-                    .Where(c => c.Issuer == issuer)
-                    .Where(c => c.Subject == subject);
+                    .Cast<X509Certificate2>();
             }
         }
+
+        public IEnumerable<X509Certificate2> ListUserCertitficates()
+            => ListCertitficates(StoreLocation.CurrentUser);
+
+        public IEnumerable<X509Certificate2> ListComputerCertitficates()
+            => ListCertitficates(StoreLocation.LocalMachine);
     }
 }

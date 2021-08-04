@@ -36,6 +36,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             return JsonConvert.DeserializeObject<ChromeCertificateSelector>(json);
         }
 
+        public static bool TryParse(string json, out ChromeCertificateSelector selector)
+        {
+            try
+            {
+                selector = Parse(json);
+                return true;
+            }
+            catch
+            {
+                selector = null;
+                return false;
+            }
+        }
+
         public bool IsMatch(
             Uri uri,
             X500DistinguishedName issuer,
