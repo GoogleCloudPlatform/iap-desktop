@@ -121,6 +121,8 @@
     <Compile Include="Services\Integration\TestSessionBroker.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelService.cs" />
+    <Compile Include="Services\SecureConnect\TestChromeCertificateSelector.cs" />
+    <Compile Include="Services\SecureConnect\TestChromeMatchPattern.cs" />
     <Compile Include="Services\Settings\TestToolWindowStateRepository.cs" />
     <Compile Include="Services\Settings\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestAppProtocolRegistry.cs" />
