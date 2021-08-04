@@ -288,8 +288,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var selector = ChromeCertificateSelector.Parse(
                 @"{
                     'pattern': 'https://*.google.com/', 
-                    'THUMBPRINT': 'abcd',
                     'filter':{
+                        'THUMBPRINT': 'abcd',
                         'SUBJECT': {
                             'CN': 'Somethingelse'
                         }
