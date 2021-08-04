@@ -12,6 +12,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
     /// <summary>
     /// Certificate selector as defined in
     /// https://chromeenterprise.google/policies/?policy=AutoSelectCertificateForUrls.
+    /// 
+    /// In addition to the standard SUBJECT and ISSUER filters, this implementation
+    /// supports a THUMBPRINT filter that lets you select a specific certificate.
     /// </summary>
     internal class ChromeCertificateSelector
     {
@@ -36,18 +39,25 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         public bool IsMatch(
             Uri uri,
             X500DistinguishedName issuer,
-            X500DistinguishedName subject)
+            X500DistinguishedName subject,
+            string thumbprint)
         {
             return
                 this.Pattern.IsMatch(uri) &&
                 (this.Filter.Issuer == null || this.Filter.Issuer.IsMatch(issuer)) &&
-                (this.Filter.Subject == null || this.Filter.Subject.IsMatch(subject));
+                (this.Filter.Subject == null || this.Filter.Subject.IsMatch(subject)) &&
+                (this.Filter.Thumbprint == null || this.Filter.Thumbprint.Equals(
+                        thumbprint, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool IsMatch(
             Uri uri,
             X509Certificate2 certificate)
-            => IsMatch(uri, certificate.IssuerName, certificate.SubjectName);
+            => IsMatch(
+                uri, 
+                certificate.IssuerName, 
+                certificate.SubjectName, 
+                certificate.Thumbprint);
 
         //---------------------------------------------------------------------
         // Inner classes for deserialization.
@@ -58,13 +68,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             [JsonConstructor]
             public CertificateFilter(
                 [JsonProperty("ISSUER")] DistinguishedNameFilter issuer,
-                [JsonProperty("SUBJECT")] DistinguishedNameFilter subject)
+                [JsonProperty("SUBJECT")] DistinguishedNameFilter subject,
+                [JsonProperty("THUMBPRINT")] string thumbprint)
             {
-                Issuer = issuer;
-                Subject = subject;
+                this.Issuer = issuer;
+                this.Subject = subject;
+                this.Thumbprint = thumbprint;
             }
 
-            public CertificateFilter() : this(null, null)
+            public CertificateFilter() : this(null, null, null)
             {
             }
 
@@ -73,6 +85,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             
             [JsonProperty("SUBJECT")]
             public DistinguishedNameFilter Subject { get; }
+
+            [JsonProperty("THUMBPRINT")]
+            public string Thumbprint { get; }
         }
 
         public class DistinguishedNameFilter
@@ -84,10 +99,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                 [JsonProperty("O")] string organization,
                 [JsonProperty("OU")] string orgUnit)
             {
-                CommonName = commonName;
-                Location = location;
-                Organization = organization;
-                OrgUnit = orgUnit;
+                this.CommonName = commonName;
+                this.Location = location;
+                this.Organization = organization;
+                this.OrgUnit = orgUnit;
             }
 
             [JsonProperty("CN")]

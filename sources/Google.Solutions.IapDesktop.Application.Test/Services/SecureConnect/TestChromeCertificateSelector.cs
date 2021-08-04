@@ -42,7 +42,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.IsFalse(selector.IsMatch(
                 new Uri("https://www.google.de"),
                 SimpleIssuerDn,
-                SimpleSubjectDn));
+                SimpleSubjectDn,
+                null));
         }
 
         [Test]
@@ -59,7 +60,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.IsTrue(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
-                SimpleSubjectDn));
+                SimpleSubjectDn,
+                null));
         }
 
         [Test]
@@ -78,7 +80,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.IsTrue(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
-                SimpleSubjectDn));
+                SimpleSubjectDn,
+                null));
         }
 
         //---------------------------------------------------------------------
@@ -105,12 +108,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.IsTrue(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 ComplexIssuerDn,
-                ComplexSubjectDn));
+                ComplexSubjectDn,
+                null));
 
             Assert.IsTrue(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
-                ComplexSubjectDn));
+                ComplexSubjectDn,
+                null));
         }
 
         [Test]
@@ -138,12 +143,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.IsTrue(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 ComplexIssuerDn,
-                SimpleSubjectDn));
+                SimpleSubjectDn,
+                null));
 
             Assert.IsFalse(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
-                SimpleSubjectDn));
+                SimpleSubjectDn,
+                null));
         }
 
         [Test]
@@ -169,7 +176,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.IsFalse(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 ComplexIssuerDn,
-                ComplexSubjectDn));
+                ComplexSubjectDn,
+                null));
         }
 
         //---------------------------------------------------------------------
@@ -196,12 +204,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.IsTrue(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
-                SimpleSubjectDn));
+                SimpleSubjectDn,
+                null));
 
             Assert.IsTrue(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
-                ComplexSubjectDn));
+                ComplexSubjectDn,
+                null));
         }
 
         [Test]
@@ -229,12 +239,73 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.IsTrue(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
-                ComplexSubjectDn));
+                ComplexSubjectDn,
+                null));
 
             Assert.IsFalse(selector.IsMatch(
                 new Uri("https://www.google.com"),
                 SimpleIssuerDn,
-                SimpleSubjectDn));
+                SimpleSubjectDn,
+                null));
+        }
+
+        //---------------------------------------------------------------------
+        // Thumbprint match.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenThumbprintMatches_ThenIsMatchReturnsTrue()
+        {
+            var selector = ChromeCertificateSelector.Parse(
+                @"{
+                    'pattern': 'https://*.google.com/', 
+                    'filter':{
+                        'THUMBPRINT': 'abcd'
+                    }
+                }");
+
+            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNull(selector.Filter.Issuer);
+            Assert.IsNull(selector.Filter.Subject);
+            Assert.IsNotNull(selector.Filter.Thumbprint);
+
+            Assert.IsTrue(selector.IsMatch(
+                new Uri("https://www.google.com"),
+                SimpleIssuerDn,
+                SimpleSubjectDn,
+                "ABCD"));
+
+            Assert.IsFalse(selector.IsMatch(
+                new Uri("https://www.google.com"),
+                SimpleIssuerDn,
+                SimpleSubjectDn,
+                "0123"));
+        }
+
+        [Test]
+        public void WhenThumbprintMatchesButSubjectDoesnt_ThenIsMatchReturnsFalse()
+        {
+            var selector = ChromeCertificateSelector.Parse(
+                @"{
+                    'pattern': 'https://*.google.com/', 
+                    'THUMBPRINT': 'abcd',
+                    'filter':{
+                        'SUBJECT': {
+                            'CN': 'Somethingelse'
+                        }
+                    }
+                }");
+
+            Assert.IsNotNull(selector.Pattern);
+            Assert.IsNull(selector.Filter.Issuer);
+            Assert.IsNotNull(selector.Filter.Subject);
+            Assert.IsNotNull(selector.Filter.Thumbprint);
+
+            Assert.IsFalse(selector.IsMatch(
+                new Uri("https://www.google.com"),
+                SimpleIssuerDn,
+                ComplexSubjectDn,
+                "abcd"));
         }
     }
 }
