@@ -317,7 +317,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             this.protocolRegistryMock.Verify(r => r.Register(
                     It.Is<string>(s => s == IapRdpUrl.Scheme),
-                    It.Is<string>(s => s == GeneralOptionsViewModel.FriendlyName),
+                    It.Is<string>(s => s == Globals.FriendlyName),
                     It.IsAny<string>()),
                 Times.Once);
         }
