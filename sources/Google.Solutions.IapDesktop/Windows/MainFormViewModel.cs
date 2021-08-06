@@ -21,11 +21,13 @@
 
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Auth;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapTunneling.Iap;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,6 +50,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly LinkedList<BackgroundJob> backgroundJobs
             = new LinkedList<BackgroundJob>();
 
+        private string windowTitle = Globals.FriendlyName;
         private bool isBackgroundJobStatusVisible = false;
         private string signInState = null;
         private string deviceState = null;
@@ -70,6 +73,16 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public string WindowTitle
+        {
+            get => this.windowTitle;
+            private set
+            {
+                this.windowTitle = value;
+                RaisePropertyChange();
+            }
+        }
 
         public bool IsLoggingEnabled
         {
@@ -262,6 +275,20 @@ namespace Google.Solutions.IapDesktop.Windows
         public bool IsAuthorized =>
             this.Authorization != null &&
             this.DeviceEnrollment != null;
+
+        //---------------------------------------------------------------------
+        // Other actions.
+        //---------------------------------------------------------------------
+
+        public void SwitchToDocument(string title)
+        {
+            //
+            // Update window title so that it shows the current document.
+            //
+            this.WindowTitle = title == null
+                ? Globals.FriendlyName
+                : $"{title} - {Globals.FriendlyName}";
+        }
 
         //---------------------------------------------------------------------
         // Helper classes.

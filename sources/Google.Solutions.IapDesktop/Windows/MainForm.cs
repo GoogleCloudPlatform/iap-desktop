@@ -39,6 +39,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -95,7 +96,6 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Bind controls.
             //
-            this.Text = GeneralOptionsViewModel.FriendlyName;
             this.ViewMenu = new CommandContainer<IMainForm>(
                 this,
                 this.viewToolStripMenuItem.DropDownItems,
@@ -111,6 +111,11 @@ namespace Google.Solutions.IapDesktop.Windows
                 bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
                 bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
 
+            this.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.WindowTitle,
+                this.components);
             this.reportInternalIssueToolStripMenuItem.BindProperty(
                 c => c.Visible,
                 this.viewModel,
@@ -355,6 +360,28 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        private void dockPanel_ActiveContentChanged(object sender, EventArgs e)
+        {
+            if (this.dockPanel.ActiveContent is ToolWindow toolWindow &&
+                toolWindow.DockState == DockState.Document)
+            {
+                //
+                // Focus switched to a document (we're not interested in
+                // any other windows).
+                //
+                this.viewModel.SwitchToDocument(toolWindow.Text);
+            }
+            else if (
+                this.dockPanel.ActiveContent == null ||
+                !this.dockPanel.Documents.EnsureNotNull().Any())
+            {
+                //
+                // All documents closed.
+                //
+                this.viewModel.SwitchToDocument(null);
+            }
+        }
+
         //---------------------------------------------------------------------
         // IMainForm.
         //---------------------------------------------------------------------
@@ -400,6 +427,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             return commandContainer;
         }
+
         public void Minimize()
         {
             this.WindowState = FormWindowState.Minimized;
