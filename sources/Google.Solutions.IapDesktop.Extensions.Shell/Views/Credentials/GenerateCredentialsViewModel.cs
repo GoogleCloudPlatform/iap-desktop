@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,12 +33,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
     {
         // SAM usernames do not permit these characters, see
         // https://docs.microsoft.com/en-us/windows/desktop/adschema/a-samaccountname
-        private readonly string DisallowsCharactersInUsername = "\"/\\[]:;|=,+*?<>";
+        private const string DisallowedCharactersInUsername = "\"/\\[]:;|=,+*?<>";
+
+        private static readonly string[] ReservedUsernames = new[]
+        {
+            "administrator",
+            "guest",
+            "defaultaccount",
+            "wdagutilityaccount"
+        };
+        static GenerateCredentialsViewModel()
+        {
+            Debug.Assert(ReservedUsernames.All(u => u == u.ToLower()));
+        }
 
         private string username = string.Empty;
 
         public bool IsAllowedCharacterForUsername(char c)
-            => !DisallowsCharactersInUsername.Contains(c);
+            => !DisallowedCharactersInUsername.Contains(c);
 
         //---------------------------------------------------------------------
         // Observable "output" properties.
@@ -50,11 +63,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             {
                 this.username = value;
                 RaisePropertyChange();
+                RaisePropertyChange((GenerateCredentialsViewModel m) => m.IsUsernameReserved);
                 RaisePropertyChange((GenerateCredentialsViewModel m) => m.IsOkButtonEnabled);
             }
         }
 
+        public bool IsUsernameReserved
+            => ReservedUsernames.Contains(this.username.ToLower());
+
         public bool IsOkButtonEnabled
-            => !string.IsNullOrWhiteSpace(this.username);
+            => !string.IsNullOrWhiteSpace(this.username) &&
+               !ReservedUsernames.Contains(this.username.ToLower());
     }
 }

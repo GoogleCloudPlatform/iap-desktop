@@ -57,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.savePwdNote = new System.Windows.Forms.Label();
             this.statusIcon = new System.Windows.Forms.PictureBox();
             this.headlineLabel = new System.Windows.Forms.Label();
+            this.usernameReservedLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.statusIcon)).BeginInit();
             this.SuspendLayout();
             // 
@@ -105,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // savePwdNote
             // 
             this.savePwdNote.AutoSize = true;
-            this.savePwdNote.Location = new System.Drawing.Point(37, 137);
+            this.savePwdNote.Location = new System.Drawing.Point(37, 144);
             this.savePwdNote.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.savePwdNote.Name = "savePwdNote";
             this.savePwdNote.Size = new System.Drawing.Size(238, 13);
@@ -115,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // statusIcon
             // 
             this.statusIcon.Image = ((System.Drawing.Image)(resources.GetObject("statusIcon.Image")));
-            this.statusIcon.Location = new System.Drawing.Point(22, 136);
+            this.statusIcon.Location = new System.Drawing.Point(22, 143);
             this.statusIcon.Margin = new System.Windows.Forms.Padding(2);
             this.statusIcon.Name = "statusIcon";
             this.statusIcon.Size = new System.Drawing.Size(23, 24);
@@ -132,6 +133,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.headlineLabel.TabIndex = 8;
             this.headlineLabel.Text = "Generate logon credentials";
             // 
+            // usernameReservedLabel
+            // 
+            this.usernameReservedLabel.AutoSize = true;
+            this.usernameReservedLabel.ForeColor = System.Drawing.Color.Red;
+            this.usernameReservedLabel.Location = new System.Drawing.Point(37, 125);
+            this.usernameReservedLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.usernameReservedLabel.Name = "usernameReservedLabel";
+            this.usernameReservedLabel.Size = new System.Drawing.Size(228, 13);
+            this.usernameReservedLabel.TabIndex = 5;
+            this.usernameReservedLabel.Text = "This username is reserved and cannot be used";
+            // 
             // GenerateCredentialsDialog
             // 
             this.AcceptButton = this.okButton;
@@ -141,6 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(320, 215);
             this.ControlBox = false;
+            this.Controls.Add(this.usernameReservedLabel);
             this.Controls.Add(this.savePwdNote);
             this.Controls.Add(this.headlineLabel);
             this.Controls.Add(this.statusIcon);
@@ -173,5 +186,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         private System.Windows.Forms.Label savePwdNote;
         private System.Windows.Forms.PictureBox statusIcon;
         private System.Windows.Forms.Label headlineLabel;
+        private System.Windows.Forms.Label usernameReservedLabel;
     }
 }

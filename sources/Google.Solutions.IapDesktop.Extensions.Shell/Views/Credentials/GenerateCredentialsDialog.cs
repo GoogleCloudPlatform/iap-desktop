@@ -50,6 +50,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 this.viewModel,
                 m => m.Username,
                 this.components);
+            this.usernameReservedLabel.BindReadonlyProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsUsernameReserved,
+                this.components);
 
             // Bind buttons.
             this.okButton.BindReadonlyProperty(
