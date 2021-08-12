@@ -162,11 +162,23 @@ namespace Google.Solutions.IapDesktop
             ApplicationTraceSources.Default.Switch.Level = SourceLevels.Verbose;
             //SshTraceSources.Default.Switch.Level = SourceLevels.Verbose;
 #endif
+            try
+            {
+                // Use 1.3 if possible.
+                System.Net.ServicePointManager.SecurityProtocol =
+                    SecurityProtocolType.Tls12 |
+                    SecurityProtocolType.Tls11 |
+                    (SecurityProtocolType)0x3000; // TLS 1.3
+            }
+            catch (NotSupportedException)
+            {
+                Debug.Assert(false, "Enabling TLS 1.3 failed");
+                // Use 1.2 if possible.
+                System.Net.ServicePointManager.SecurityProtocol =
+                    SecurityProtocolType.Tls12 |
+                    SecurityProtocolType.Tls11;
+            }
 
-            // Use TLS 1.2 if possible.
-            System.Net.ServicePointManager.SecurityProtocol =
-                SecurityProtocolType.Tls12 |
-                SecurityProtocolType.Tls11;
 
             // Lift limit on concurrent HTTP connections to same endpoint,
             // relevant for GCS downloads.
