@@ -992,5 +992,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.SelectWord(4, 0);
             Assert.AreEqual("first", this.terminal.TextSelection);
         }
+
+        //---------------------------------------------------------------------
+        // Unicode
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenReceivedDataContainsSingleHighReversed9QuotationMark_ThenCharacterIsIgnored()
+        {
+            // NB. \u201b "embeds" \u1b, which is the Escape character.
+            var text = $"abc\u201bxyz";
+            this.terminal.ReceiveData(text);
+            var buffer = this.terminal.GetBuffer();
+
+            Assert.AreEqual("abcxyz", buffer.Trim());
+        }
+
+        [Test]
+        public void WhenReceivedDataContainsInvalidUnicodeSequence_ThenCharacterIsIgnored()
+        {
+            var text = $"abc{Esc}\u0090\u0091xyz";
+            this.terminal.ReceiveData(text);
+            var buffer = this.terminal.GetBuffer();
+
+            Assert.AreEqual("abc\u0091xyz", buffer.Trim());
+        }
     }
 }
