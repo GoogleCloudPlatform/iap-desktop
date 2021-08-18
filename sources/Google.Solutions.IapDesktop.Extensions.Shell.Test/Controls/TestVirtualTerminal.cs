@@ -998,14 +998,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenReceivedDataContainsSingleHighReversed9QuotationMark_ThenCharacterIsIgnored()
+        public void WhenReceivedDataContainsSingleHighReversed9QuotationMark_ThenCharacterIsKept()
         {
             // NB. \u201b "embeds" \u1b, which is the Escape character.
             var text = $"abc\u201bxyz";
             this.terminal.ReceiveData(text);
             var buffer = this.terminal.GetBuffer();
 
-            Assert.AreEqual("abcxyz", buffer.Trim());
+            Assert.AreEqual(text, buffer.Trim());
         }
 
         [Test]
