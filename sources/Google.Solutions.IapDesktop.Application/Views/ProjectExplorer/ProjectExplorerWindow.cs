@@ -366,6 +366,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 var projects = await this.viewModel.ExpandRootAsync()
                     .ConfigureAwait(true);
 
+                //
+                // Force-select the root node to update menus.
+                //
+                this.ContextMenuCommands.Context = this.viewModel.RootNode.ModelNode;
+                this.ToolbarCommands.Context = this.viewModel.RootNode.ModelNode;
+
                 if (!projects.Any())
                 {
                     // No projects in inventory yet - pop open the 'Add Project'
