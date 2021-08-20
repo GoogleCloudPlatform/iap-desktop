@@ -58,6 +58,9 @@ namespace Google.Solutions.IapDesktop
 {
     class Program : SingletonApplicationBase
     {
+        private static readonly Version Windows11 = new Version(10, 0, 22000, 0);
+        private static readonly Version WindowsServer2022 = new Version(10, 0, 20348, 0);
+
         private static bool tracingEnabled = false;
 
         private static readonly TraceSource[] Traces = new[]
@@ -163,13 +166,32 @@ namespace Google.Solutions.IapDesktop
             //SshTraceSources.Default.Switch.Level = SourceLevels.Verbose;
 #endif
 
-            // Use TLS 1.2 if possible.
-            System.Net.ServicePointManager.SecurityProtocol =
-                SecurityProtocolType.Tls12 |
-                SecurityProtocolType.Tls11;
+            if (Environment.OSVersion.Version >= Windows11 ||
+                Environment.OSVersion.Version >= WindowsServer2022)
+            {
+                //
+                // Windows 2022 and Windows 11 fully support TLS 1.3:
+                // https://docs.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp-
+                //
+                System.Net.ServicePointManager.SecurityProtocol =
+                    SecurityProtocolType.Tls12 |
+                    SecurityProtocolType.Tls11 |
+                    (SecurityProtocolType)0x3000; // TLS 1.3
+            }
+            else
+            {
+                //
+                // Windows 10 and below don't properly support TLS 1.3 yet.
+                //
+                System.Net.ServicePointManager.SecurityProtocol =
+                    SecurityProtocolType.Tls12 |
+                    SecurityProtocolType.Tls11;
+            }
 
+            //
             // Lift limit on concurrent HTTP connections to same endpoint,
             // relevant for GCS downloads.
+            //
             ServicePointManager.DefaultConnectionLimit = 16;
 
             // Allow custom User-Agent headers.
