@@ -293,6 +293,19 @@ namespace Google.Solutions.IapTunneling.Net
     }
 
     [Serializable]
+    public class WebSocketConnectionDeniedException : Exception
+    {
+        protected WebSocketConnectionDeniedException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
+        public WebSocketConnectionDeniedException()
+        {
+        }
+    }
+
+    [Serializable]
     public class WebSocketStreamClosedByServerException : NetworkStreamClosedException
     {
         public WebSocketCloseStatus CloseStatus { get; private set; }

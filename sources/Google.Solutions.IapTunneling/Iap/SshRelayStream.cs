@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.WebSockets;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -253,6 +254,9 @@ namespace Google.Solutions.IapTunneling.Iap
             catch (WebSocketStreamClosedByServerException e)
                 when ((CloseCode)e.CloseStatus == CloseCode.NOT_AUTHORIZED)
             {
+                //
+                // Request was rejected by access level or IAM policy.
+                //
                 throw new UnauthorizedException(e.CloseStatusDescription);
             }
             catch (OperationCanceledException)
