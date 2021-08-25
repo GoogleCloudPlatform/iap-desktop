@@ -159,11 +159,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     catch (WebSocketConnectionDeniedException)
                     {
                         throw new ConnectionFailedException(
-                            "Failed to establish an IAP connection to the VM instance.\n\n" +
-                            "This error might be caused by a proxy server disallowing " +
-                            "WebSocket connections.",
+                            "Establishing an IAP tunnel failed because the server " +
+                            "denied access.\n\n" +
+                            "If you are using a proxy server, make sure that the proxy " +
+                            "server allows WebSocket connections.",
                             HelpTopics.ProxyConfiguration);
-
                     }
                 });
 
