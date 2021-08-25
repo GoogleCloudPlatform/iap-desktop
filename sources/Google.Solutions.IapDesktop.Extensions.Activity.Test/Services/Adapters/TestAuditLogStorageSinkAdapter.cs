@@ -150,9 +150,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 auditLogAdapter.Object);
 
             var bucket = await service.FindCloudStorageExportBucketForAuditLogsAsync(
-                TestProject.ProjectId,
-                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc), // Before sink creation
-                CancellationToken.None);
+                    TestProject.ProjectId,
+                    new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc), // Before sink creation
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNull(bucket);
         }
@@ -272,8 +273,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new AuditLogAdapter(await credential));
 
             var events = await service.ListInstanceEventsAsync(
-                EmptyLocator,
-                CancellationToken.None);
+                    EmptyLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
             CollectionAssert.IsEmpty(events);
         }
 
@@ -286,8 +289,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new AuditLogAdapter(await credential));
 
             var events = await service.ListInstanceEventsAsync(
-                ValidLocator_Jan1_00,
-                CancellationToken.None);
+                    ValidLocator_Jan1_00,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
             Assert.AreEqual(3, events.Count());
         }
 
@@ -318,8 +323,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new AuditLogAdapter(await credential));
 
             var events = await service.ListInstanceEventsAsync(
-                new[] { EmptyLocator, ValidLocator_Jan1_00 },
-                CancellationToken.None);
+                    new[] { EmptyLocator, ValidLocator_Jan1_00 },
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+            
             Assert.AreEqual(3, events.Count());
         }
 
@@ -355,7 +362,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                     GcsTestData.Bucket,
                     new DateTime(2020, 2, 1, 0, 0, 0, DateTimeKind.Utc),
                     new DateTime(2020, 2, 2, 0, 0, 0, DateTimeKind.Utc),
-                    CancellationToken.None);
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+            
             CollectionAssert.IsEmpty(locators);
         }
 
@@ -374,7 +383,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                     GcsTestData.Bucket,
                     jan1,
                     jan2,
-                    CancellationToken.None);
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
             Assert.AreEqual(2, locators.Count()); // 2 days
             Assert.AreEqual(2, locators[jan1].Count());
             Assert.AreEqual(1, locators[jan2].Count());
@@ -404,11 +415,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                GcsTestData.Bucket,
-                    jan1,
-                jan1.AddMonths(1),
-                processor.Object,
-                CancellationToken.None);
+                    GcsTestData.Bucket,
+                        jan1,
+                    jan1.AddMonths(1),
+                    processor.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(5, eventsProcessed.Count);
 
@@ -439,11 +451,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                GcsTestData.Bucket,
-                jan1,
-                jan1.AddMonths(1),
-                processor.Object,
-                CancellationToken.None);
+                    GcsTestData.Bucket,
+                    jan1,
+                    jan1.AddMonths(1),
+                    processor.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(5, eventsProcessed.Count);
 
@@ -474,11 +487,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                GcsTestData.Bucket,
-                jan1,
-                jan1.AddMonths(1),
-                processor.Object,
-                CancellationToken.None);
+                    GcsTestData.Bucket,
+                    jan1,
+                    jan1.AddMonths(1),
+                    processor.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(0, eventsProcessed.Count);
         }
@@ -503,11 +517,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                GcsTestData.Bucket,
-                jan1,
-                jan1.AddMonths(1),
-                processor.Object,
-                CancellationToken.None);
+                    GcsTestData.Bucket,
+                    jan1,
+                    jan1.AddMonths(1),
+                    processor.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(0, eventsProcessed.Count);
         }

@@ -40,8 +40,9 @@ namespace Google.Solutions.Common.Test.Auth
                 .Returns(Task.FromResult<TokenResponse>(null));
 
             var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-                adapter.Object,
-                CancellationToken.None);
+                    adapter.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNull(authz);
         }
@@ -64,8 +65,9 @@ namespace Google.Solutions.Common.Test.Auth
                 .Returns(new[] { "one", "two", "email" });
 
             var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-                adapter.Object,
-                CancellationToken.None);
+                    adapter.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNull(authz);
 
@@ -90,8 +92,9 @@ namespace Google.Solutions.Common.Test.Auth
                 .Returns(new[] { "one", "two", "email" });
 
             var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-                adapter.Object,
-                CancellationToken.None);
+                    adapter.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(authz);
 

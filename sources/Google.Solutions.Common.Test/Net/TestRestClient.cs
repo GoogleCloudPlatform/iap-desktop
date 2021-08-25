@@ -50,8 +50,9 @@ namespace Google.Solutions.Common.Test.Net
         {
             var client = new RestClient();
             var result = await client.GetAsync<SampleResource>(
-                SampleRestUrl,
-                CancellationToken.None);
+                    SampleRestUrl,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(result.Issuer);
         }

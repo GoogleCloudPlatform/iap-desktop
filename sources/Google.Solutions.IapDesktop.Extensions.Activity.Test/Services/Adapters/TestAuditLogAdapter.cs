@@ -78,14 +78,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             for (int retry = 0; retry < 4 && !events.Any(); retry++)
             {
                 await adapter.ListEventsAsync(
-                    request,
-                    events.Add,
-                    new Apis.Util.ExponentialBackOff(),
-                    CancellationToken.None);
+                        request,
+                        events.Add,
+                        new Apis.Util.ExponentialBackOff(),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 if (!events.Any())
                 {
-                    await Task.Delay(20 * 1000);
+                    await Task.Delay(20 * 1000).ConfigureAwait(false);
                 }
             }
 
@@ -114,20 +115,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             var computeAdapter = new ComputeEngineAdapter(await credential);
             instanceBuilder.AddExistingInstances(
-                await computeAdapter.ListInstancesAsync(TestProject.ProjectId, CancellationToken.None),
-                await computeAdapter.ListNodesAsync(TestProject.ProjectId, CancellationToken.None),
-                await computeAdapter.ListDisksAsync(TestProject.ProjectId, CancellationToken.None),
+                await computeAdapter.ListInstancesAsync(
+                        TestProject.ProjectId, 
+                        CancellationToken.None)
+                    .ConfigureAwait(false),
+                await computeAdapter.ListNodesAsync
+                        (TestProject.ProjectId, 
+                        CancellationToken.None)
+                    .ConfigureAwait(false),
+                await computeAdapter.ListDisksAsync(
+                        TestProject.ProjectId, 
+                        CancellationToken.None)
+                    .ConfigureAwait(false),
                 TestProject.ProjectId);
 
             var adapter = new AuditLogAdapter(await credential);
 
             await adapter.ProcessInstanceEventsAsync(
-                new[] { TestProject.ProjectId },
-                null,  // all zones.
-                null,  // all instances.
-                instanceBuilder.StartDate,
-                instanceBuilder,
-                CancellationToken.None);
+                    new[] { TestProject.ProjectId },
+                    null,  // all zones.
+                    null,  // all instances.
+                    instanceBuilder.StartDate,
+                    instanceBuilder,
+                    CancellationToken.None)
+                .ConfigureAwait(false)
 
             var set = instanceBuilder.Build();
             var testInstanceHistory = set.Instances.FirstOrDefault(i => i.Reference == instanceRef);

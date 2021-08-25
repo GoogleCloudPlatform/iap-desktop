@@ -105,10 +105,11 @@ namespace Google.Solutions.Common.Test.Net
                     this.connectionTargets.AddLast(matchConnect.Groups[1].Value);
 
                     await DispatchRequestAsync(
-                        matchConnect.Groups[1].Value,
-                        ushort.Parse(matchConnect.Groups[2].Value),
-                        headers,
-                        clientStream);
+                            matchConnect.Groups[1].Value,
+                            ushort.Parse(matchConnect.Groups[2].Value),
+                            headers,
+                            clientStream)
+                        .ConfigureAwait(true);
                 }
                 else if (GetRequestPattern.Match(firstLine) is Match getMatch &&
                     getMatch.Success &&
@@ -236,7 +237,8 @@ namespace Google.Solutions.Common.Test.Net
                 }
                 else
                 {
-                    await base.DispatchRequestAsync(server, serverPort, headers, clientStream);
+                    await base.DispatchRequestAsync(server, serverPort, headers, clientStream)
+                        .ConfigureAwait(true);
                 }
             }
             else
