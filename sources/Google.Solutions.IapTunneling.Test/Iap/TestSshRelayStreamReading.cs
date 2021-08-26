@@ -634,5 +634,24 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 bytesRead = relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token).Result;
             });
         }
+
+        [Test]
+        public void WhenServerClosesConnectionWithNotAuthorized_ThenTestConnectionAsyncThrowsUnauthorizedException()
+        {
+            var stream = new MockStream()
+            {
+                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)CloseCode.NOT_AUTHORIZED
+            };
+            var endpoint = new MockSshRelayEndpoint()
+            {
+                ExpectedStream = stream
+            };
+            var relay = new SshRelayStream(endpoint);
+
+            AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                () => relay
+                    .TestConnectionAsync(TimeSpan.FromSeconds(2))
+                    .Wait());
+        }
     }
 }

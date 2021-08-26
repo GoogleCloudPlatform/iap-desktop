@@ -158,11 +158,25 @@ namespace Google.Solutions.IapTunneling.Iap
                 websocket.Options.ClientCertificates.Add(this.clientCertificate);
             }
 
-            await websocket.ConnectAsync(
-                CreateUri(sid, ack),
-                token).ConfigureAwait(false);
+            try
+            {
+                await websocket.ConnectAsync(
+                    CreateUri(sid, ack),
+                    token).ConfigureAwait(false);
 
-            return new WebSocketStream(websocket, (int)DataMessage.MaxTotalLength);
+                return new WebSocketStream(websocket, (int)DataMessage.MaxTotalLength);
+            }
+            catch (WebSocketException e)
+                when (e.InnerException is WebException webException &&
+                      webException?.Response is HttpWebResponse httpResponse &&
+                      httpResponse.StatusCode == HttpStatusCode.Forbidden)
+            {
+                //
+                // Connection rejected for reasons unrelated to IAM/access levels,
+                // such as a proxy rejecting WebSocket connections.
+                //
+                throw new WebSocketConnectionDeniedException();
+            }
         }
     }
 }

@@ -80,6 +80,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             "Granting OS Login IAM roles",
             "https://cloud.google.com/compute/docs/instances/managing-instance-access#grant-iam-roles");
 
+        public static readonly IHelpTopic ProxyConfiguration = new HelpTopic(
+            "Proxy Configuration",
+            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Proxy-Configuration");
+
         private class HelpTopic : IHelpTopic
         {
             public string Title { get; }

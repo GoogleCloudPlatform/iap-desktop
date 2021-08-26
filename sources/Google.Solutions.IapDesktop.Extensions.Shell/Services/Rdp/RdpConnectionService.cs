@@ -114,6 +114,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                             "and that your user has the 'IAP-secured Tunnel User' role.",
                             HelpTopics.IapAccess);
                     }
+                    catch (WebSocketConnectionDeniedException)
+                    {
+                        throw new ConnectionFailedException(
+                            "Establishing an IAP tunnel failed because the server " +
+                            "denied access.\n\n" +
+                            "If you are using a proxy server, make sure that the proxy " +
+                            "server allows WebSocket connections.",
+                            HelpTopics.ProxyConfiguration);
+                    }
                 }).ConfigureAwait(true);
 
             this.sessionBroker.Connect(
