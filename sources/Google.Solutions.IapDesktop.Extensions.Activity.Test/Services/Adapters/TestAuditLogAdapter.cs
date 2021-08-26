@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                     instanceBuilder.StartDate,
                     instanceBuilder,
                     CancellationToken.None)
-                .ConfigureAwait(false)
+                .ConfigureAwait(false);
 
             var set = instanceBuilder.Build();
             var testInstanceHistory = set.Instances.FirstOrDefault(i => i.Reference == instanceRef);
