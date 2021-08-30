@@ -137,6 +137,7 @@
     <Compile Include="Services\ProjectModel\ProjectModelEvents.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelService.cs" />
+    <Compile Include="Services\SecureConnect\ChromeAutoSelectCertificateForUrlsPolicy.cs" />
     <Compile Include="Services\SecureConnect\ChromeCertificateSelector.cs" />
     <Compile Include="Services\SecureConnect\ChromePolicyUrlPattern.cs" />
     <Compile Include="Services\SecureConnect\SecureConnectEnrollment.cs" />

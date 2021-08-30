@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         //   -NotAfter 01/01/2030
         //
         private readonly X509Certificate2 CustomCertificateForClientAuth =
-            CertificateFromPem(
+            CertificateUtil.CertificateFromPem(
                 @"-----BEGIN CERTIFICATE-----
                 MIIB7zCCAVigAwIBAgIQGZbilgXuAIBAGsCHQmoLUzANBgkqhkiG9w0BAQsFADAS
                 MRAwDgYDVQQDDAdFeGFtcGxlMB4XDTIxMDgwNDE0MDYzN1oXDTI5MTIzMTIyMDAw
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         //     -NotAfter 01/01/2030
         //
         private readonly X509Certificate2 CustomCertificateForServerAuth =
-            CertificateFromPem(
+            CertificateUtil.CertificateFromPem(
                 @"-----BEGIN CERTIFICATE-----
                 MIIB7zCCAVigAwIBAgIQFZEofVzvrbBEPLoXkVQdTDANBgkqhkiG9w0BAQsFADAS
                 MRAwDgYDVQQDDAdFeGFtcGxlMB4XDTIxMDgwNDE0MTAwNFoXDTI5MTIzMTIyMDAw
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         //     -NotAfter 01/01/2030
         //
         private readonly X509Certificate2 EndpointVerificationCertificate =
-            CertificateFromPem(
+            CertificateUtil.CertificateFromPem(
                 @"-----BEGIN CERTIFICATE-----
                 MIICRTCCAa6gAwIBAgIQHCcsk4KAQYZMDN2kkJHX3jANBgkqhkiG9w0BAQsFADAn
                 MSUwIwYDVQQDDBxHb29nbGUgRW5kcG9pbnQgVmVyaWZpY2F0aW9uMB4XDTIxMDgw
@@ -123,13 +123,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         private const string TestKeyPath = @"Software\Google\__Test";
         private ApplicationSettingsRepository settingsRepository;
         private const string SampleUserId = "unused";
-
-        private static X509Certificate2 CertificateFromPem(string pem)
-        {
-            var tempFile = Path.GetTempFileName();
-            File.WriteAllText(tempFile, pem);
-            return new X509Certificate2(tempFile);
-        }
 
         [SetUp]
         public void SetUp()

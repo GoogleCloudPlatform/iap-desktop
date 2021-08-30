@@ -94,6 +94,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CertificateUtil.cs" />
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
     <Compile Include="Controls\TestFontExtensions.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Services\Integration\TestSessionBroker.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelService.cs" />
+    <Compile Include="Services\SecureConnect\TestChromeAutoSelectCertificateForUrlsPolicy.cs" />
     <Compile Include="Services\SecureConnect\TestChromeCertificateSelector.cs" />
     <Compile Include="Services\SecureConnect\TestChromePolicyUrlPattern.cs" />
     <Compile Include="Services\Settings\TestToolWindowStateRepository.cs" />
