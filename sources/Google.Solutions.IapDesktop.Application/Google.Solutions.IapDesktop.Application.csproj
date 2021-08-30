@@ -138,7 +138,7 @@
     <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelService.cs" />
     <Compile Include="Services\SecureConnect\ChromeCertificateSelector.cs" />
-    <Compile Include="Services\SecureConnect\ChromeMatchPattern.cs" />
+    <Compile Include="Services\SecureConnect\ChromePolicyUrlPattern.cs" />
     <Compile Include="Services\SecureConnect\SecureConnectEnrollment.cs" />
     <Compile Include="Services\Integration\SessionBroker.cs" />
     <Compile Include="Services\Integration\EventService.cs" />
