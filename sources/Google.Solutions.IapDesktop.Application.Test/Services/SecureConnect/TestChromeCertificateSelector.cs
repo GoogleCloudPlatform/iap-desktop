@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
-                    'pattern': 'https://*.google.com/', 
+                    'pattern': 'https://[*.]google.com/', 
                     'filter':{}
                 }");
 
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
-                    'pattern': 'https://*.google.com/', 
+                    'pattern': 'https://[*.]google.com/', 
                     'filter':{}
                 }");
 
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
-                    'pattern': 'https://*.google.com/', 
+                    'pattern': 'https://[*.]google.com/', 
                     'filter':{
                         'ISSUER': {
                             'CN': 'Issuer'
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
-                    'pattern': 'https://*.google.com/', 
+                    'pattern': 'https://[*.]google.com/', 
                     'filter':{
                         'ISSUER': {
                             'CN': 'Issuer',
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
-                    'pattern': 'https://*.google.com/', 
+                    'pattern': 'https://[*.]google.com/', 
                     'filter':{
                         'ISSUER': {
                             'CN': 'Issuer'
@@ -222,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
-                    'pattern': 'https://*.google.com/', 
+                    'pattern': 'https://[*.]google.com/', 
                     'filter':{
                         'SUBJECT': {
                             'CN': 'Subject'
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
-                    'pattern': 'https://*.google.com/', 
+                    'pattern': 'https://[*.]google.com/', 
                     'filter':{
                         'SUBJECT': {
                             'CN': 'Subject',
@@ -291,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
-                    'pattern': 'https://*.google.com/', 
+                    'pattern': 'https://[*.]google.com/', 
                     'filter':{
                         'THUMBPRINT': 'abcd'
                     }
@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var selector = ChromeCertificateSelector.Parse(
                 @"{
-                    'pattern': 'https://*.google.com/', 
+                    'pattern': 'https://[*.]google.com/', 
                     'filter':{
                         'THUMBPRINT': 'abcd',
                         'SUBJECT': {
