@@ -1,7 +1,7 @@
 # Dependencies
 
 This folder contains scripts and configuration to build
-dependenices requires by IAP Desktop. The dependencies
+dependencies requires by IAP Desktop. The dependencies
 are built into NuGet packages and published to a NuGet feed.
 
 ## Building
