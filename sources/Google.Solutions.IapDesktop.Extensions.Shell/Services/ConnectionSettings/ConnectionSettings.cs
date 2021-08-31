@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
             this.RdpUsername = RegistryStringSetting.FromKey(
                 "Username",
                 "Username",
-                "Windows logon username",
+                "Username of a local user, SAM account name of a domain user, or UPN (user@domain).",
                 Categories.RdpCredentials,
                 null,
                 key,
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
             this.RdpDomain = RegistryStringSetting.FromKey(
                 "Domain",
                 "Domain",
-                "Windows logon domain",
+                "NetBIOS domain name or computer name. Leave blank when using UPN as username.",
                 Categories.RdpCredentials,
                 null,
                 key,
