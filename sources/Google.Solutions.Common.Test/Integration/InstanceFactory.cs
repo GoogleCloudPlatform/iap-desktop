@@ -53,7 +53,8 @@ namespace Google.Solutions.Common.Test.Integration
                             locator.ProjectId,
                             locator.Zone,
                             locator.Name)
-                        .ExecuteAsync();
+                        .ExecuteAsync()
+                        .ConfigureAwait(true);
 
                     // Determine the name of the guest attribute we need to await. 
                     var guestAttributeToAwait = instance.Metadata.Items
@@ -138,51 +139,55 @@ namespace Google.Solutions.Common.Test.Integration
                     {
                         new ServiceAccount()
                         {
-                            Email = await GetComputeEngineDefaultServiceAccount(),
+                            Email = await GetComputeEngineDefaultServiceAccount()
+                                .ConfigureAwait(true),
                             Scopes = new [] { "https://www.googleapis.com/auth/cloud-platform" }
                         }
                     };
                 }
 
                 await computeEngine.Instances.Insert(
-                    new Apis.Compute.v1.Data.Instance()
-                    {
-                        Name = name,
-                        MachineType = $"zones/{locator.Zone}/machineTypes/{machineType}",
-                        Disks = new[]
+                        new Apis.Compute.v1.Data.Instance()
                         {
-                            new AttachedDisk()
+                            Name = name,
+                            MachineType = $"zones/{locator.Zone}/machineTypes/{machineType}",
+                            Disks = new[]
                             {
-                                AutoDelete = true,
-                                Boot = true,
-                                InitializeParams = new AttachedDiskInitializeParams()
+                                new AttachedDisk()
                                 {
-                                    SourceImage = imageFamily
+                                    AutoDelete = true,
+                                    Boot = true,
+                                    InitializeParams = new AttachedDiskInitializeParams()
+                                    {
+                                        SourceImage = imageFamily
+                                    }
                                 }
-                            }
-                        },
-                        Metadata = metadata,
-                        NetworkInterfaces = new[]
-                        {
-                            new NetworkInterface()
+                            },
+                            Metadata = metadata,
+                            NetworkInterfaces = new[]
                             {
-                                AccessConfigs = publicIp
-                                    ? new [] { new AccessConfig() }
-                                    : null
-                            }
+                                new NetworkInterface()
+                                {
+                                    AccessConfigs = publicIp
+                                        ? new [] { new AccessConfig() }
+                                        : null
+                                }
+                            },
+                            Scheduling = new Scheduling()
+                            {
+                                Preemptible = true
+                            },
+                            ServiceAccounts = serviceAccounts
                         },
-                        Scheduling = new Scheduling()
-                        {
-                            Preemptible = true
-                        },
-                        ServiceAccounts = serviceAccounts
-                    },
-                    locator.ProjectId,
-                    locator.Zone).ExecuteAsync();
+                        locator.ProjectId,
+                        locator.Zone)
+                    .ExecuteAsync()
+                    .ConfigureAwait(true);
 
                 await AwaitInstanceCreatedAndReady(
-                    computeEngine.Instances,
-                    locator);
+                        computeEngine.Instances,
+                        locator)
+                    .ConfigureAwait(true);
 
                 return locator;
             }
@@ -194,7 +199,8 @@ namespace Google.Solutions.Common.Test.Integration
                         locator.ProjectId,
                         locator.Zone,
                         locator.Name)
-                    .ExecuteAsync();
+                    .ExecuteAsync()
+                    .ConfigureAwait(true);
 
                 if (instance.Status == "RUNNING" ||
                     instance.Status == "PROVISIONING" ||
@@ -204,8 +210,9 @@ namespace Google.Solutions.Common.Test.Integration
                         "Instance {0} exists and is running...", locator.Name);
 
                     await AwaitInstanceCreatedAndReady(
-                        computeEngine.Instances,
-                        locator);
+                            computeEngine.Instances,
+                            locator)
+                        .ConfigureAwait(true);
                     return locator;
                 }
                 else if (instance.Status == "TERMINATED")
@@ -217,17 +224,20 @@ namespace Google.Solutions.Common.Test.Integration
                     await computeEngine.Instances.AddMetadataAsync(
                             locator,
                             metadata,
-                            CancellationToken.None);
+                            CancellationToken.None)
+                        .ConfigureAwait(true);
 
                     await computeEngine.Instances.Start(
                             locator.ProjectId,
                             locator.Zone,
                             locator.Name)
-                        .ExecuteAsync();
+                        .ExecuteAsync()
+                        .ConfigureAwait(true);
 
                     await AwaitInstanceCreatedAndReady(
-                        computeEngine.Instances,
-                        locator);
+                            computeEngine.Instances,
+                            locator)
+                        .ConfigureAwait(true);
                     return locator;
                 }
                 else

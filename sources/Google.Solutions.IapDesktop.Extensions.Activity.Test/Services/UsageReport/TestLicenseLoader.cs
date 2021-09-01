@@ -67,9 +67,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             var computeEngineAdapter = new ComputeEngineAdapter(
                 await credential);
             await LicenseLoader.LoadLicenseAnnotationsAsync(
-                annotatedSet,
-                computeEngineAdapter,
-                CancellationToken.None);
+                    annotatedSet,
+                    computeEngineAdapter,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(1, annotatedSet.LicenseAnnotations.Count());
 
@@ -90,9 +91,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             var computeEngineAdapter = new ComputeEngineAdapter(
                 await credential);
             await LicenseLoader.LoadLicenseAnnotationsAsync(
-                annotatedSet,
-                computeEngineAdapter,
-                CancellationToken.None);
+                    annotatedSet,
+                    computeEngineAdapter,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(1, annotatedSet.LicenseAnnotations.Count());
 
@@ -113,9 +115,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             var computeEngineAdapter = new ComputeEngineAdapter(
                 await credential);
             await LicenseLoader.LoadLicenseAnnotationsAsync(
-                annotatedSet,
-                computeEngineAdapter,
-                CancellationToken.None);
+                    annotatedSet,
+                    computeEngineAdapter,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
         }

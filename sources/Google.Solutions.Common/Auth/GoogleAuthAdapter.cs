@@ -93,8 +93,9 @@ namespace Google.Solutions.Common.Auth
             try
             {
                 var userCredential = await this.installedApp.AuthorizeAsync(
-                    StoreUserId,
-                    token);
+                        StoreUserId,
+                        token)
+                    .ConfigureAwait(true);
 
                 //
                 // NB. If an admin changes the access level for the app (in the Admin Console),

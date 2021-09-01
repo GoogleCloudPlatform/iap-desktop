@@ -460,6 +460,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         public void Dispose()
         {
             this.settingsRepository.Dispose();
+            this.projectModelService.Dispose();
         }
 
         //---------------------------------------------------------------------

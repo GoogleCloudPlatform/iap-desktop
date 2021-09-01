@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
         public void Dispose()
         {
-            this.semaphore.Release();
+            this.semaphore.Dispose();
         }
 
         public async Task<IDisposable> AcquireAsync(CancellationToken token)

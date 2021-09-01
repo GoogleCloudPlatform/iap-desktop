@@ -140,13 +140,16 @@ namespace Google.Solutions.Common.Test.Integration
                 try
                 {
                     // Create a service account.
-                    var serviceAccount = await CreateOrGetServiceAccountAsync(name);
+                    var serviceAccount = await CreateOrGetServiceAccountAsync(name)
+                        .ConfigureAwait(true);
 
                     // Assign roles.
-                    await GrantRolesToServiceAccountAsync(serviceAccount, roles);
+                    await GrantRolesToServiceAccountAsync(serviceAccount, roles)
+                        .ConfigureAwait(true);
 
                     // Create a token.
-                    return await CreateTemporaryCredentialsAsync(serviceAccount.Email);
+                    return await CreateTemporaryCredentialsAsync(serviceAccount.Email)
+                        .ConfigureAwait(true);
                 }
                 catch (Exception e)
                 {

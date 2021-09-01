@@ -78,8 +78,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var adapter = new StorageAdapter(await credential);
 
             var buckets = await adapter.ListBucketsAsync(
-                TestProject.ProjectId,
-                CancellationToken.None);
+                    TestProject.ProjectId,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(buckets);
             CollectionAssert.Contains(
@@ -143,8 +144,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var adapter = new StorageAdapter(await credential);
 
             var stream = await adapter.DownloadObjectToMemoryAsync(
-                SampleLocator,
-                CancellationToken.None);
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(
                 SampleData,
