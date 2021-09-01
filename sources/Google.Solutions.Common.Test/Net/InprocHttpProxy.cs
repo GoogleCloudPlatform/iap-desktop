@@ -152,8 +152,9 @@ namespace Google.Solutions.Common.Test.Net
                 var serverStream = client.GetStream();
 
                 await Task.WhenAll(
-                    clientStream.CopyToAsync(serverStream),
-                    serverStream.CopyToAsync(clientStream));
+                        clientStream.CopyToAsync(serverStream),
+                        serverStream.CopyToAsync(clientStream))
+                    .ConfigureAwait(false);
             }
         }
 

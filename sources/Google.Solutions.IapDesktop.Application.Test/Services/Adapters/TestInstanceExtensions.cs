@@ -59,8 +59,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
             var instance = await adapter.GetInstanceAsync(
-                await testInstance,
-                CancellationToken.None);
+                    await testInstance,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(instance.InternalAddress());
             CollectionAssert.Contains(
@@ -76,8 +77,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
             var instance = await adapter.GetInstanceAsync(
-                await testInstance,
-                CancellationToken.None);
+                    await testInstance,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNull(instance.PublicAddress());
         }
@@ -89,8 +91,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
             var instance = await adapter.GetInstanceAsync(
-                await testInstance,
-                CancellationToken.None);
+                    await testInstance,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(instance.PublicAddress());
             CollectionAssert.DoesNotContain(

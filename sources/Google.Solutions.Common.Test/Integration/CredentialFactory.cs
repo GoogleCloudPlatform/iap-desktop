@@ -42,7 +42,8 @@ namespace Google.Solutions.Common.Test.Integration
             {
                 return await service.Projects.ServiceAccounts
                     .Get($"projects/{TestProject.ProjectId}/serviceAccounts/{email}")
-                    .ExecuteAsync();
+                    .ExecuteAsync()
+                    .ConfigureAwait(true);
             }
             catch (Exception)
             {

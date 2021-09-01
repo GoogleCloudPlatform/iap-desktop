@@ -159,9 +159,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         private async Task<ObservableCollection<ProjectExplorerViewModel.ViewModelNode>> GetInstancesAsync(
             ProjectExplorerViewModel viewModel)
         {
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
-            var zones = await projects[0].GetFilteredNodesAsync(false);
-            return await zones[0].GetFilteredNodesAsync(false);
+            var projects = await viewModel.RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(false);
+            
+            var zones = await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(false);
+
+            return await zones[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -209,17 +217,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenOsFilterChanged_ThenViewModelIsUpdated()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(false);
 
-            var instances = await GetInstancesAsync(viewModel);
+            var instances = await GetInstancesAsync(viewModel)
+                .ConfigureAwait(false);
             Assert.AreEqual(2, instances.Count);
 
             viewModel.OperatingSystemsFilter = OperatingSystems.Linux;
-            instances = await GetInstancesAsync(viewModel);
+            instances = await GetInstancesAsync(viewModel)
+                .ConfigureAwait(false);
             Assert.AreEqual(1, instances.Count);
 
             viewModel.OperatingSystemsFilter = OperatingSystems.All;
-            instances = await GetInstancesAsync(viewModel);
+            instances = await GetInstancesAsync(viewModel)
+                .ConfigureAwait(false);
             Assert.AreEqual(2, instances.Count);
 
             // Reapplying filter must not cause reload.
@@ -333,13 +346,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenProjectAdded_ThenViewModelIsUpdated()
         {
             var viewModel = CreateViewModel();
-            var initialProjectsList = await viewModel.ExpandRootAsync();
+            var initialProjectsList = await viewModel
+                .ExpandRootAsync()
+                .ConfigureAwait(false);
 
             Assert.IsFalse(initialProjectsList.Any());
 
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(false);
 
-            var updatedProjectsList = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var updatedProjectsList = await viewModel.RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(false);
+
             Assert.AreEqual(1, updatedProjectsList.Count);
         }
 
@@ -349,13 +369,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             this.projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
             var viewModel = CreateViewModel();
-            var initialProjectsList = await viewModel.ExpandRootAsync();
+            var initialProjectsList = await viewModel
+                .ExpandRootAsync()
+                .ConfigureAwait(false);
 
             Assert.AreEqual(1, initialProjectsList.Count());
 
-            await viewModel.RemoveProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .RemoveProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(false);
 
-            var updatedProjectsList = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var updatedProjectsList = await viewModel.RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(false);
+
             Assert.IsFalse(updatedProjectsList.Any());
         }
 
