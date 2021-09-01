@@ -97,7 +97,9 @@ namespace Google.Solutions.IapTunneling.Iap
         DESTINATION_READ_FAILED = 4010,
 
         INVALID_DATA = 4013,
-        NOT_AUTHORIZED = 4033
+        NOT_AUTHORIZED = 4033,
+        LOOKUP_FAILED = 4047,
+        LOOKUP_FAILED_RECONNECT = 4051
     }
 
     /// <summary>

@@ -252,7 +252,9 @@ namespace Google.Solutions.IapTunneling.Iap
                 }
             }
             catch (WebSocketStreamClosedByServerException e)
-                when ((CloseCode)e.CloseStatus == CloseCode.NOT_AUTHORIZED)
+                when ((CloseCode)e.CloseStatus == CloseCode.NOT_AUTHORIZED ||
+                      (CloseCode)e.CloseStatus == CloseCode.LOOKUP_FAILED ||
+                      (CloseCode)e.CloseStatus == CloseCode.LOOKUP_FAILED_RECONNECT)
             {
                 //
                 // Request was rejected by access level or IAM policy.
