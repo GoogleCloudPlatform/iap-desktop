@@ -147,7 +147,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(It.IsAny<Uri>()))
+            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
+                    It.IsAny<Uri>()))
                 .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
@@ -175,7 +176,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(It.IsAny<Uri>()))
+            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
+                    It.IsAny<Uri>()))
                 .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
@@ -217,7 +219,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(It.IsAny<Uri>()))
+            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
+                    It.IsAny<Uri>()))
                 .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
@@ -246,7 +249,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(It.IsAny<Uri>()))
+            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
+                    It.IsAny<Uri>()))
                 .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
@@ -268,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         }
 
         [Test]
-        public async Task WhenUsingDefaultCertificateSelectorAndCertificateFoundInComputerStore_ThenStateIsEnrolled()
+        public async Task WhenUsingDefaultCertificateSelectorAndCertificateOnlyInComputerStore_ThenStateIsNotEnrolled()
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
@@ -276,7 +280,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(It.IsAny<Uri>()))
+            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
+                    It.IsAny<Uri>()))
                 .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
@@ -292,9 +297,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                     SampleUserId)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
-            Assert.IsNotNull(enrollment.Certificate);
-            Assert.AreEqual("CN=Google Endpoint Verification", enrollment.Certificate.Subject);
+            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
+            Assert.IsNull(enrollment.Certificate);
         }
 
         //---------------------------------------------------------------------
@@ -318,7 +322,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(It.IsAny<Uri>()))
+            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
+                    It.IsAny<Uri>()))
                 .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
@@ -355,7 +360,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(It.IsAny<Uri>()))
+            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
+                    It.IsAny<Uri>()))
                 .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
@@ -392,7 +398,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(It.IsAny<Uri>()))
+            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
+                    It.IsAny<Uri>()))
                 .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();

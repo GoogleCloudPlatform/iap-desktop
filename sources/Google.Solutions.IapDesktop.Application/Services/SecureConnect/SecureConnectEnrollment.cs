@@ -86,10 +86,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             this.Certificate = null;
         }
 
-        private X509Certificate2 TryGetDeviceCertificate(Func<X509Certificate2, bool> filter)
+        private X509Certificate2 TryGetClientCertificateForCurrentUser(
+            Func<X509Certificate2, bool> filter)
         {
-            return this.certificateStore.ListComputerCertitficates()
-                .Concat(this.certificateStore.ListUserCertitficates())
+            return this.certificateStore.ListUserCertitficates()
                 .Where(IsCertificateUsableForClientAuthentication)
                 .Where(filter)
                 .FirstOrDefault();
@@ -111,28 +111,37 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                 // Find the right client certificate for mTLS.
                 //
                 // Candidates are:
-                //  - a custom certificate (=> inspect settings)
-                //  - a enterprise certificate (=> inspect Chrome policy)
-                //  - the EV default certificate (=> default)
+                //  - custom certificate (=> from settings)
+                //  - enterprise certificate (=> from Chrome policy)
+                //  - EV default certificate
                 // 
                 // Priorities are (highest to lowest):
                 //  1. Custom certiticate
-                //  2. Default EV certiticate
-                //  3. Enterprise certificate (based on Chrome policy)
+                //  2. EV default certiticate
+                //  3. Enterprise certificate
                 //
                 // NB. Even if we find a certificiate, it might not be
                 // associated with the signed-on user. But finding out
                 // would require interacting with the undocumented APIs
-                // of the native helper. 
+                // of the native helper. False positives are harmless,
+                // so err on assuming that the device is enrolled.
                 //
-                // False positives are harmless, so err on assuming that
-                // the device is enrolled.
+                // NB. When looking for client certificates, Chrome only
+                // considers the current user's certificate store:
+                // https://source.chromium.org/chromium/chromium/src/+/main:net/ssl/client_cert_store_win.cc;l=252?q=certopenstore&ss=chromium.
+                // 
+                // A client certificate that only exists in the machine
+                // certificate store won't be picked up by Chrome and the
+                // EV extension, and thus won'e be usuable for mTLS.
+                //
+                // EV-provisioned certificates are also placed in the user's
+                // certificate store. 
                 //
 
                 if (ChromeCertificateSelector.TryParse(
                         this.applicationSettingsRepository.GetSettings().DeviceCertificateSelector.StringValue,
                         out var selector) &&
-                    TryGetDeviceCertificate(
+                    TryGetClientCertificateForCurrentUser(
                         cert => selector.IsMatch(CertificateSelectorUrl, cert)) is var customCertificate &&
                     customCertificate != null)
                 {
@@ -143,16 +152,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                     this.State = DeviceEnrollmentState.Enrolled;
                     this.Certificate = customCertificate;
                 }
-                else if (TryGetDeviceCertificate(
-                    this.chromePolicy.GetAutoSelectCertificateForUrlsPolicy(CertificateSelectorUrl))
-                        is var chromeMachineCertificate && chromeMachineCertificate != null)
+                else if (TryGetClientCertificateForCurrentUser(
+                    this.chromePolicy.GetAutoSelectCertificateForUrlsPolicy(
+                        CertificateSelectorUrl)) is var chromeClientCertificate && 
+                    chromeClientCertificate != null)
                 {
                     ApplicationTraceSources.Default.TraceInformation(
                         "Device certificate found based on Chrome policy, " +
                         "assuming device is enrolled");
 
                     this.State = DeviceEnrollmentState.Enrolled;
-                    this.Certificate = chromeMachineCertificate;
+                    this.Certificate = chromeClientCertificate;
                 }
                 else
                 {

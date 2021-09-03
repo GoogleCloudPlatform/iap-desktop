@@ -39,12 +39,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
     {
         public Func<X509Certificate2, bool> GetAutoSelectCertificateForUrlsPolicy(Uri url)
         {
+            //
+            // Consider machine- and user-based policies.
+            //
             var machinePolicyMatcher = ChromeAutoSelectCertificateForUrlsPolicy
                 .FromKey(RegistryHive.LocalMachine)
                 .CreateMatcher(url);
 
             var userPolicyMatcher = ChromeAutoSelectCertificateForUrlsPolicy
-                .FromKey(RegistryHive.LocalMachine)
+                .FromKey(RegistryHive.CurrentUser)
                 .CreateMatcher(url);
 
             return cert => machinePolicyMatcher(cert) || userPolicyMatcher(cert);
