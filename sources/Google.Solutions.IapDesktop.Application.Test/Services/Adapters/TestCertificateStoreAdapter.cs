@@ -117,6 +117,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             Assert.AreEqual(
                 TestCertificateStoreAdapter.ExampleCertificate.Thumbprint,
                 certificates.First().Thumbprint);
+            Assert.AreEqual(
+                ExampleCertitficateSubject,
+                certificates.First().Subject);
         }
 
         [Test]

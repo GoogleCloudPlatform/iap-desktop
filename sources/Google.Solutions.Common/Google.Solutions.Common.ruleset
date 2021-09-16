@@ -91,7 +91,6 @@
     <Rule Id="CA1067" Action="Info" />
     <Rule Id="CA1502" Action="Info" />
     <Rule Id="CA1505" Action="Info" />
-    <Rule Id="CA1506" Action="Warning" />
     <Rule Id="CA1714" Action="Warning" />
     <Rule Id="CA1717" Action="Warning" />
     <Rule Id="CA1801" Action="Info" />

@@ -24,6 +24,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+#pragma warning disable CA2227 // Collection properties should be read only
+
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Logs
 {
     /// <summary>

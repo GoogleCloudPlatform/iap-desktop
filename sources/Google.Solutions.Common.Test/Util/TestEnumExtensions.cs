@@ -29,7 +29,7 @@ namespace Google.Solutions.Common.Test.Util
     public class TestEnumExtensions : CommonFixtureBase
     {
         [Flags]
-        public enum SomeEnum
+        public enum SampleFlags
         {
             Zero = 0,
             One = 1,
@@ -40,7 +40,7 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void WhenZero_ThenIsSingleFlagReturnsFalse()
         {
-            var e = SomeEnum.Zero;
+            var e = SampleFlags.Zero;
             Assert.IsFalse(e.IsSingleFlag());
             Assert.IsFalse(e.IsFlagCombination());
         }
@@ -48,7 +48,7 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void WhenOneFlagSet_ThenIsSingleFlagReturnsTrue()
         {
-            var e = SomeEnum.Four;
+            var e = SampleFlags.Four;
             Assert.IsTrue(e.IsSingleFlag());
             Assert.IsFalse(e.IsFlagCombination());
         }
@@ -56,7 +56,7 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void WhenTwoFlagsSet_ThenIsSingleFlagReturnsFalse()
         {
-            var e = SomeEnum.One | SomeEnum.Four;
+            var e = SampleFlags.One | SampleFlags.Four;
             Assert.IsFalse(e.IsSingleFlag());
             Assert.IsTrue(e.IsFlagCombination());
         }

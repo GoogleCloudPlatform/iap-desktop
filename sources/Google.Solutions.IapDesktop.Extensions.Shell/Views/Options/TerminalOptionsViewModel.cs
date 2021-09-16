@@ -28,6 +28,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
+#pragma warning disable CA1822 // Mark members as static
+
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
     public interface ITerminalDialogPane : IOptionsDialogPane

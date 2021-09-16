@@ -45,16 +45,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
         {
             this.parent = parent;
         }
-
-        //---------------------------------------------------------------------
-        // Observable "output" properties.
-        //---------------------------------------------------------------------
-
-        public string NodeTypeWarning =>
-            $"All nod";
-
-        //---------------------------------------------------------------------
-        // "Input" properties.
-        //---------------------------------------------------------------------
     }
 }
