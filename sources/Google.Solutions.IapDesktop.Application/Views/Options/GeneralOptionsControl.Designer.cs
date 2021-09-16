@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.updateBox.Controls.Add(this.lastCheckLabel);
             this.updateBox.Controls.Add(this.lastCheckHeaderLabel);
             this.updateBox.Controls.Add(this.enableUpdateCheckBox);
-            this.updateBox.Location = new System.Drawing.Point(4, 272);
+            this.updateBox.Location = new System.Drawing.Point(4, 261);
             this.updateBox.Name = "updateBox";
             this.updateBox.Size = new System.Drawing.Size(336, 83);
             this.updateBox.TabIndex = 1;
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.secureConnectBox.Controls.Add(this.enableDcaCheckBox);
             this.secureConnectBox.Location = new System.Drawing.Point(4, 101);
             this.secureConnectBox.Name = "secureConnectBox";
-            this.secureConnectBox.Size = new System.Drawing.Size(336, 164);
+            this.secureConnectBox.Size = new System.Drawing.Size(336, 154);
             this.secureConnectBox.TabIndex = 1;
             this.secureConnectBox.TabStop = false;
             this.secureConnectBox.Text = "Endpoint Verification:";
@@ -184,15 +184,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(73, 62);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(218, 39);
+            this.label2.Size = new System.Drawing.Size(229, 26);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Device certificate authentication requires the\r\ncomputer to be enrolled and the E" +
-    "ndpoint \r\nVerification native helper to be installed";
+            this.label2.Text = "Device certificate authentication requires the\r\ncomputer to be enrolled in Endpoi" +
+    "nt Verification";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(74, 136);
+            this.label1.Location = new System.Drawing.Point(74, 124);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(236, 13);
             this.label1.TabIndex = 4;
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // secureConnectLink
             // 
             this.secureConnectLink.AutoSize = true;
-            this.secureConnectLink.Location = new System.Drawing.Point(73, 111);
+            this.secureConnectLink.Location = new System.Drawing.Point(73, 99);
             this.secureConnectLink.Name = "secureConnectLink";
             this.secureConnectLink.Size = new System.Drawing.Size(85, 13);
             this.secureConnectLink.TabIndex = 3;

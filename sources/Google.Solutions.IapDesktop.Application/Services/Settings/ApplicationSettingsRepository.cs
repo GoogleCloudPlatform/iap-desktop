@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                         settingsKey,
                         selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _))
                     .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey), // TODO: extend ADMX
+                    .ApplyPolicy(machinePolicyKey),
 
                 //
                 // User preferences. These cannot be overriden by policy.

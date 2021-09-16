@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
     /// </summary>
     internal class ChromeCertificateSelector
     {
-        public ChromeMatchPattern Pattern { get; }
+        public ChromePolicyUrlPattern Pattern { get; }
         public CertificateFilter Filter { get; }
 
         [JsonConstructor]
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             [JsonProperty("pattern")] string pattern,
             [JsonProperty("filter")] CertificateFilter filter)
         {
-            this.Pattern = ChromeMatchPattern.Parse(pattern ?? ChromeMatchPattern.AllUrls);
+            this.Pattern = ChromePolicyUrlPattern.Parse(pattern ?? ChromePolicyUrlPattern.All);
             this.Filter = filter ?? new CertificateFilter();
         }
 

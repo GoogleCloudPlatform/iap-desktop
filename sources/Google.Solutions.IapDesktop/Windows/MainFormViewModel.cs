@@ -235,6 +235,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             this.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
                 new CertificateStoreAdapter(),
+                new ChromePolicy(),
                 this.applicationSettings,
                 this.Authorization.UserInfo.Subject).Result;
 
