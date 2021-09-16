@@ -48,7 +48,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
             var project = await adapter.GetProjectAsync(
                     TestProject.ProjectId,
-                    CancellationToken.None);
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(project);
             Assert.AreEqual(TestProject.ProjectId, project.Name);
@@ -95,7 +96,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
             var instances = await adapter.ListInstancesAsync(
                     TestProject.ProjectId,
-                    CancellationToken.None);
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.Greater(instances.Count(), 1);
             Assert.IsNotNull(instances.FirstOrDefault(i => i.Name == instanceRef.Name));
@@ -114,7 +116,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
             var instances = await adapter.ListInstancesAsync(
                     new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
-                    CancellationToken.None);
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.Greater(instances.Count(), 1);
             Assert.IsNotNull(instances.FirstOrDefault(i => i.Name == instanceRef.Name));
@@ -281,8 +284,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var adapter = new ComputeEngineAdapter(await credential);
 
             var result = await adapter.IsGrantedPermission(
-                locator,
-                Permissions.ComputeInstancesGet);
+                    locator,
+                    Permissions.ComputeInstancesGet)
+                .ConfigureAwait(false);
 
             Assert.IsTrue(result);
         }
@@ -296,8 +300,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var adapter = new ComputeEngineAdapter(await credential);
 
             var result = await adapter.IsGrantedPermission(
-                locator,
-                Permissions.ComputeInstancesSetMetadata);
+                    locator,
+                    Permissions.ComputeInstancesSetMetadata)
+                .ConfigureAwait(false);
 
             Assert.IsFalse(result);
         }
@@ -311,8 +316,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var adapter = new ComputeEngineAdapter(await credential);
 
             var result = await adapter.IsGrantedPermission(
-                locator,
-                Permissions.ComputeInstancesSetMetadata);
+                    locator,
+                    Permissions.ComputeInstancesSetMetadata)
+                .ConfigureAwait(false);
 
             Assert.IsTrue(result);
         }

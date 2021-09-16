@@ -85,7 +85,7 @@ namespace Google.Solutions.Common.Test.Integration
                 CommonTraceSources.Default.TraceVerbose(
                     "Waiting for instance {0} to become ready...", locator.Name);
 
-                await Task.Delay(5 * 1000);
+                await Task.Delay(5 * 1000).ConfigureAwait(true);
             }
 
             throw new TimeoutException($"Timeout waiting for {locator} to become ready");

@@ -41,9 +41,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
                 var result = await adapter.IsGrantedPermissionAsync(
-                    TestProject.ProjectId,
-                    Permissions.ComputeInstancesGet,
-                    CancellationToken.None);
+                        TestProject.ProjectId,
+                        Permissions.ComputeInstancesGet,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsTrue(result);
             }
@@ -60,9 +61,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
                 var result = await adapter.IsGrantedPermissionAsync(
-                    TestProject.ProjectId,
-                    "compute.disks.create",
-                    CancellationToken.None);
+                        TestProject.ProjectId,
+                        "compute.disks.create",
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsFalse(result);
             }
@@ -79,8 +81,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
                 var project = await adapter.GetProjectAsync(
-                    TestProject.ProjectId,
-                    CancellationToken.None);
+                        TestProject.ProjectId,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(project);
                 Assert.AreEqual(TestProject.ProjectId, project.ProjectId);
@@ -124,9 +127,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
                 var result = await adapter.ListProjectsAsync(
-                    ProjectFilter.ByProjectId(TestProject.ProjectId),
-                    null,
-                    CancellationToken.None);
+                        ProjectFilter.ByProjectId(TestProject.ProjectId),
+                        null,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(result);
                 Assert.IsFalse(result.IsTruncated);
@@ -145,9 +149,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 var prefix = TestProject.ProjectId.Substring(0, TestProject.ProjectId.Length - 1);
 
                 var result = await adapter.ListProjectsAsync(
-                    ProjectFilter.ByPrefix(prefix),
-                    10,
-                    CancellationToken.None);
+                        ProjectFilter.ByPrefix(prefix),
+                        10,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(result);
                 Assert.IsTrue(result.Projects.Any());

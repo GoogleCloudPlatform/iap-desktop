@@ -62,10 +62,11 @@ namespace Google.Solutions.Common.Test.Extensions
             var value = "metadata value";
 
             await this.instancesResource.AddMetadataAsync(
-                locator,
-                key,
-                value,
-                CancellationToken.None);
+                    locator,
+                    key,
+                    value,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             var instance = await this.instancesResource.Get(
                     locator.ProjectId,

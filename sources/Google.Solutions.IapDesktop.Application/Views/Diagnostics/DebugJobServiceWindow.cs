@@ -99,12 +99,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                     async token =>
                     {
                         Debug.WriteLine("Starting delay...");
-                        await this.eventService.FireAsync(new StatusUpdatedEvent("Starting delay..."));
+                        await this.eventService
+                            .FireAsync(new StatusUpdatedEvent("Starting delay..."))
+                            .ConfigureAwait(true);
 
-                        await Task.Delay(5000, token);
+                        await Task
+                        .Delay(5000, token)
+                            .ConfigureAwait(true);
 
                         Debug.WriteLine("Delay over");
-                        await this.eventService.FireAsync(new StatusUpdatedEvent("Done"));
+                        
+                        await this.eventService
+                            .FireAsync(new StatusUpdatedEvent("Done"))
+                            .ConfigureAwait(true);
 
                         return null;
                     }).ConfigureAwait(true);
@@ -130,12 +137,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                     async token =>
                     {
                         Debug.WriteLine("Starting delay...");
-                        await this.eventService.FireAsync(new StatusUpdatedEvent("Starting delay..."));
+                        await this.eventService
+                            .FireAsync(new StatusUpdatedEvent("Starting delay..."))
+                            .ConfigureAwait(true);
 
-                        await Task.Delay(5000);
+                        await Task
+                            .Delay(5000)
+                            .ConfigureAwait(true);
 
                         Debug.WriteLine("Delay over");
-                        await this.eventService.FireAsync(new StatusUpdatedEvent("Done"));
+
+                        await this.eventService
+                            .FireAsync(new StatusUpdatedEvent("Done"))
+                            .ConfigureAwait(true);
 
                         return null;
                     }).ConfigureAwait(true);

@@ -59,7 +59,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             {
                 try
                 {
-                    await Task.Delay(100, token);
+                    await Task.Delay(100, token)
+                        .ConfigureAwait(true);
                 }
                 catch (TaskCanceledException)
                 {
@@ -67,7 +68,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                     throw;
                 }
 
-                return await base.LoadModelAsync(key, token);
+                return await base.LoadModelAsync(key, token)
+                    .ConfigureAwait(true);
             }
         }
 
@@ -80,7 +82,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         {
             var viewModel = new SlowViewModel();
             var t = viewModel.SwitchToModelAsync("one");
-            await viewModel.SwitchToModelAsync("two");
+            await viewModel.SwitchToModelAsync("two")
+                .ConfigureAwait(false);
 
             Assert.AreEqual(1, viewModel.LoadModelCalls);
             Assert.AreEqual(1, viewModel.ApplyCalls);
@@ -93,7 +96,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public async Task WhenSwitchToModelFirstTime_ThenLoadModelAsyncAndApplyModelCalled()
         {
             var viewModel = new SampleViewModel();
-            await viewModel.SwitchToModelAsync("one");
+            await viewModel.SwitchToModelAsync("one")
+                .ConfigureAwait(false);
 
             Assert.AreEqual(1, viewModel.LoadModelCalls);
             Assert.AreEqual(1, viewModel.ApplyCalls);
@@ -103,12 +107,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public async Task WhenSwitchToModelSecondTime_ThenOnlyApplyModelCalled()
         {
             var viewModel = new SampleViewModel();
-            await viewModel.SwitchToModelAsync("one");
+            await viewModel.SwitchToModelAsync("one")
+                .ConfigureAwait(false);
 
             Assert.AreEqual(1, viewModel.LoadModelCalls);
             Assert.AreEqual(1, viewModel.ApplyCalls);
 
-            await viewModel.SwitchToModelAsync("one");
+            await viewModel.SwitchToModelAsync("one")
+                .ConfigureAwait(false);
 
             Assert.AreEqual(1, viewModel.LoadModelCalls);
 
@@ -124,12 +130,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public async Task WhenInvalidated_ThenLoadModelAsyncAndApplyModelCalled()
         {
             var viewModel = new SampleViewModel();
-            await viewModel.SwitchToModelAsync("one");
+            await viewModel.SwitchToModelAsync("one")
+                .ConfigureAwait(false);
 
             Assert.AreEqual(1, viewModel.LoadModelCalls);
             Assert.AreEqual(1, viewModel.ApplyCalls);
 
-            await viewModel.Reload();
+            await viewModel.Reload()
+                .ConfigureAwait(false);
 
             Assert.AreEqual(2, viewModel.LoadModelCalls);
 

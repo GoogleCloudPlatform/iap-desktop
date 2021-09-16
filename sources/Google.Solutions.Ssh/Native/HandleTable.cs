@@ -40,6 +40,9 @@ namespace Google.Solutions.Ssh.Native
 #if DEBUG
             handlesLock = new object();
             handles = new Dictionary<SafeHandle, string>();
+#else
+            handlesLock = null;
+            handles = null;
 #endif
         }
 

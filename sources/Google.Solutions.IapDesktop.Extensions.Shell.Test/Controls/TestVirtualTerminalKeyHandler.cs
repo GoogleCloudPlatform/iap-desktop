@@ -31,8 +31,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
     [TestFixture]
     public class TestVirtualTerminalKeyHandler
     {
-        private static readonly string Esc = "\u001b";
-        private static readonly string Ss3 = Esc + "O";
+        private const string Esc = "\u001b";
+        private const string Ss3 = Esc + "O";
 
         private VirtualTerminalController controller;
         private VirtualTerminalKeyHandler keyHandler;

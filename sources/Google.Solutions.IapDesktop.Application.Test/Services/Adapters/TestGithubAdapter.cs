@@ -33,7 +33,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public async Task WhenFindingLatestRelease_OneReleaseIsReturned()
         {
             var adapter = new GithubAdapter();
-            var release = await adapter.FindLatestReleaseAsync(CancellationToken.None);
+            var release = await adapter
+                .FindLatestReleaseAsync(CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(release);
             Assert.IsTrue(release.TagVersion.Major >= 1);
