@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Common.Util
 {
     public sealed class Disposable : IDisposable
     {

@@ -169,7 +169,6 @@
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
-    <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Util\StringExtensions.cs" />
     <Compile Include="Util\TypographicQuotes.cs" />

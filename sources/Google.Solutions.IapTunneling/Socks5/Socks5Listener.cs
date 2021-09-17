@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Collections.Generic;
@@ -111,9 +112,21 @@ namespace Google.Solutions.IapTunneling.Socks5
                 .ReadConnectionRequestAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            if (connectionRequest.Version == Socks5Stream.ProtocolVersion &&
-                connectionRequest.Command == Command.Connect && 
-                connectionRequest.AddressType == AddressType.DomainName)
+            if (connectionRequest.Version != Socks5Stream.ProtocolVersion ||
+                connectionRequest.Command != Command.Connect)
+            {
+                await stream
+                    .WriteConnectionResponseAsync(
+                        new ConnectionResponse(
+                            Socks5Stream.ProtocolVersion,
+                            ConnectionReply.CommandNotSupported,
+                            AddressType.IPv4,
+                            InvalidAddress,
+                            InvalidPort),
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            else if (connectionRequest.AddressType == AddressType.DomainName)
             {
                 try
                 {
@@ -145,10 +158,10 @@ namespace Google.Solutions.IapTunneling.Socks5
                         .ConfigureAwait(false);
 
                 }
-                catch (UnauthorizedAccessException)
+                catch (UnauthorizedException)
                 {
                     IapTraceSources.Default.TraceWarning(
-                        "Socks5Listener: Connection refused for client {0} to {1}",
+                        "Socks5Listener: Connection refused from client {0}",
                         clientEndpoint);
 
                     await stream
@@ -185,7 +198,7 @@ namespace Google.Solutions.IapTunneling.Socks5
                     .WriteConnectionResponseAsync(
                         new ConnectionResponse(
                             Socks5Stream.ProtocolVersion,
-                            ConnectionReply.CommandNotSupported,
+                            ConnectionReply.AddressTypeNotSupported,
                             AddressType.IPv4,
                             InvalidAddress,
                             InvalidPort),

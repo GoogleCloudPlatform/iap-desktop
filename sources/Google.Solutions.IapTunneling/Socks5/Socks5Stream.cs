@@ -223,6 +223,39 @@ namespace Google.Solutions.IapTunneling.Socks5
                 BigEndian.DecodeUInt16(secondPart, addressLength));
         }
 
+
+        public async Task WriteConnectionRequestAsync(
+            ConnectionRequest request,
+            CancellationToken cancellationToken)
+        {
+            //
+            // +----+-----+-------+------+----------+----------+
+            // |VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |
+            // +----+-----+-------+------+----------+----------+
+            // | 1  |  1  | X'00' |  1   | Variable |    2     |
+            // +----+-----+-------+------+----------+----------+
+            //
+
+            int addressLength = AddressLengthFromAddressType(
+                request.AddressType,
+                request.DestinationAddress[0]);
+
+            var buffer = new byte[6 + addressLength];
+            buffer[0] = request.Version;
+            buffer[1] = (byte)request.Command;
+            buffer[2] = 0;
+            buffer[3] = (byte)request.AddressType;
+            Array.Copy(request.DestinationAddress, 0, buffer, 4, addressLength);
+            BigEndian.EncodeUInt16(request.DestinationPort, buffer, buffer.Length - 2);
+
+            await this.stream.WriteAsync(
+                    buffer,
+                    0,
+                    buffer.Length,
+                    cancellationToken)
+                .ConfigureAwait(false);
+        }
+        
         public async Task WriteConnectionResponseAsync(
             ConnectionResponse response,
             CancellationToken cancellationToken)
@@ -257,6 +290,68 @@ namespace Google.Solutions.IapTunneling.Socks5
                     buffer.Length,
                     cancellationToken)
                 .ConfigureAwait(false);
+        }
+
+
+        public async Task<ConnectionResponse> ReadConnectionResponseAsync(
+            CancellationToken cancellationToken)
+        {
+            //
+            // +----+-----+-------+------+----------+----------+
+            // |VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
+            // +----+-----+-------+------+----------+----------+
+            // | 1  |  1  | X'00' |  1   | Variable |    2     |
+            // +----+-----+-------+------+----------+----------+
+            //
+
+            //
+            // Read first part.
+            //
+            var firstPart = new byte[5];
+            if (await this.stream.ReadAsync(
+                    firstPart,
+                    0,
+                    firstPart.Length,
+                    cancellationToken)
+                .ConfigureAwait(false) != firstPart.Length)
+            {
+                throw new SocksProtocolException(
+                    "Connection closed before completing ConnectionResponse");
+            }
+
+            var version = firstPart[0];
+            var reply = (ConnectionReply)firstPart[1];
+            var addressType = (AddressType)firstPart[3];
+
+            int addressLength = AddressLengthFromAddressType(
+                addressType,
+                firstPart[4]);
+
+            //
+            // Read the second (dynamic-length) part.
+            //
+            var secondPart = new byte[addressLength + 2];
+            secondPart[0] = firstPart[4];
+            if (await this.stream.ReadAsync(
+                    secondPart,
+                    1,
+                    secondPart.Length - 1,
+                    cancellationToken)
+                .ConfigureAwait(false) != secondPart.Length - 1)
+            {
+                throw new SocksProtocolException(
+                    "Connection closed before completing ConnectionResponse");
+            }
+
+            var address = new byte[addressLength];
+            Array.Copy(secondPart, 0, address, 0, address.Length);
+
+            return new ConnectionResponse(
+                version,
+                reply,
+                addressType,
+                address,
+                BigEndian.DecodeUInt16(secondPart, addressLength));
         }
 
         private static byte AddressLengthFromAddressType(

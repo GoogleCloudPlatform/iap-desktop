@@ -99,6 +99,23 @@ namespace Google.Solutions.IapTunneling.Socks5
             this.DestinationAddress = destinationAddress;
             this.DestinationPort = destinationPort;
         }
+
+        public ConnectionRequest(
+            byte version,
+            Command command,
+            string domain,
+            ushort destinationPort)
+        {
+            this.Version = version;
+            this.Command = command;
+            this.AddressType = AddressType.DomainName;
+            this.DestinationPort = destinationPort;
+
+            var address = new byte[domain.Length + 1];
+            address[0] = (byte)domain.Length;
+            Encoding.ASCII.GetBytes(domain, 0, domain.Length, address, 1);
+            this.DestinationAddress = address;
+        }
     }
 
     internal enum ConnectionReply : byte

@@ -300,12 +300,89 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                     .Wait());
         }
 
+        [Test]
+        public async Task WhenAddressIsIpv4_ThenWriteConnectionRequestSucceeds()
+        {
+            var stream = new StaticStream();
+            var socksStream = new Socks5Stream(stream);
+
+            await socksStream
+                .WriteConnectionRequestAsync(
+                    new ConnectionRequest(
+                        Socks5Stream.ProtocolVersion,
+                        Command.Connect,
+                        AddressType.IPv4,
+                        new byte[] { 0x0A, 0x0B, 0x0C, 0x0D },
+                        0xFAFB),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var data = stream.WriteData.Dequeue();
+            CollectionAssert.AreEqual(new byte[] {
+                5, 1, 0, 1, 
+                0x0A, 0x0B, 0x0C, 0x0D, 
+                0xFA, 0xFB },
+                data);
+        }
+
+        [Test]
+        public async Task WhenAddressIsIPv6_ThenWriteConnectionRequestSucceeds()
+        {
+            var stream = new StaticStream();
+            var socksStream = new Socks5Stream(stream);
+
+            await socksStream
+                .WriteConnectionRequestAsync(
+                    new ConnectionRequest(
+                        Socks5Stream.ProtocolVersion,
+                        Command.Connect,
+                        AddressType.IPv6,
+                        new byte[] { 0x0A, 0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D,
+                                     0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D },
+                        0xFAFB),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var data = stream.WriteData.Dequeue();
+            CollectionAssert.AreEqual(new byte[] {
+                5, 1, 0, 4,
+                0x0A, 0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D,
+                0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D,
+                0xFA, 0xFB },
+                data);
+        }
+
+        [Test]
+        public async Task WhenAddressIsDomainName_ThenWriteConnectionRequestSucceeds()
+        {
+            var stream = new StaticStream();
+            var socksStream = new Socks5Stream(stream);
+
+            await socksStream
+                .WriteConnectionRequestAsync(
+                    new ConnectionRequest(
+                        Socks5Stream.ProtocolVersion,
+                        Command.Connect,
+                        AddressType.DomainName,
+                        new byte[] { 3, (byte)'b', (byte)'a', (byte)'r' },
+                        0xFAFB),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var data = stream.WriteData.Dequeue();
+            CollectionAssert.AreEqual(new byte[] {
+                5, 1, 0, 3, 3,
+                (byte)'b', (byte)'a', (byte)'r',
+                0xFA, 0xFB },
+                data);
+        }
+
         //---------------------------------------------------------------------
         // ConnectionResponse
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenAddressIsIpv4_ThenConnectionResponseSucceeds()
+        public async Task WhenAddressIsIpv4_ThenWriteConnectionResponseSucceeds()
         {
             var stream = new StaticStream();
             var socksStream = new Socks5Stream(stream);
@@ -334,7 +411,7 @@ namespace Google.Solutions.IapTunneling.Test.Socks
         }
 
         [Test]
-        public async Task WhenAddressIsIpv6_ThenConnectionResponseSucceeds()
+        public async Task WhenAddressIsIpv6_ThenWriteConnectionResponseSucceeds()
         {
             var stream = new StaticStream();
             var socksStream = new Socks5Stream(stream);
@@ -365,7 +442,7 @@ namespace Google.Solutions.IapTunneling.Test.Socks
         }
 
         [Test]
-        public async Task WhenAddressIsDomainName_ThenConnectionResponseSucceeds()
+        public async Task WhenAddressIsDomainName_ThenWriteConnectionResponseSucceeds()
         {
             var stream = new StaticStream();
             var socksStream = new Socks5Stream(stream);
@@ -391,6 +468,103 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                     0xFA, 0xFB
                 },
                 stream.WriteData.Peek());
+        }
+
+        [Test]
+        public async Task WhenAddressIsIpv4_ThenReadConnectionResponseSucceeds()
+        {
+            var stream = new StaticStream();
+            stream.ReadData.Enqueue(
+                new byte[] {
+                    Socks5Stream.ProtocolVersion,
+                    (byte)ConnectionReply.Succeeded,
+                    0,
+                    (byte)AddressType.IPv4,
+                    0xA,
+                });
+            stream.ReadData.Enqueue(
+                new byte[] {
+                    0xB, 0xC, 0xD,
+                    0xFA, 0xFB
+                });
+
+            var socksStream = new Socks5Stream(stream);
+
+            var response = await socksStream.ReadConnectionResponseAsync(
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
+            Assert.AreEqual(ConnectionReply.Succeeded, response.Reply);
+            Assert.AreEqual(AddressType.IPv4, response.AddressType);
+            CollectionAssert.AreEqual(new byte[] { 0xA, 0xB, 0xC, 0xD }, response.ServerAddress);
+            Assert.AreEqual(0xFAFB, response.ServerPort);
+        }
+
+        [Test]
+        public async Task WhenAddressIsIpv6_ThenReadConnectionResponseSucceeds()
+        {
+            var stream = new StaticStream();
+            stream.ReadData.Enqueue(
+                new byte[] {
+                    Socks5Stream.ProtocolVersion,
+                    (byte)ConnectionReply.Succeeded,
+                    0,
+                    (byte)AddressType.IPv6,
+                    0x0A
+                });
+            stream.ReadData.Enqueue(
+                new byte[] {
+                    0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D,
+                    0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D,
+                    0xFA, 0xFB
+                });
+            var socksStream = new Socks5Stream(stream);
+
+            var response = await socksStream.ReadConnectionResponseAsync(
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
+            Assert.AreEqual(ConnectionReply.Succeeded, response.Reply);
+            Assert.AreEqual(AddressType.IPv6, response.AddressType);
+            CollectionAssert.AreEqual(
+                new byte[] { 0x0A, 0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D,
+                             0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D }, 
+                response.ServerAddress);
+            Assert.AreEqual(0xFAFB, response.ServerPort);
+        }
+
+        [Test]
+        public async Task WhenAddressIsDomainName_ThenReadConnectionResponseSucceeds()
+        {
+            var stream = new StaticStream();
+            stream.ReadData.Enqueue(
+                new byte[] {
+                    Socks5Stream.ProtocolVersion,
+                    (byte)ConnectionReply.Succeeded,
+                    0,
+                    (byte)AddressType.DomainName,
+                    3
+                });
+            stream.ReadData.Enqueue(
+                new byte[] {
+                    (byte)'b', (byte)'a', (byte)'r',
+                    0xFA, 0xFB
+                });
+            var socksStream = new Socks5Stream(stream);
+
+            var response = await socksStream.ReadConnectionResponseAsync(
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
+            Assert.AreEqual(ConnectionReply.Succeeded, response.Reply);
+            Assert.AreEqual(AddressType.DomainName, response.AddressType);
+            CollectionAssert.AreEqual(
+                new byte[] { 3, (byte)'b', (byte)'a', (byte)'r' },
+                response.ServerAddress);
+            Assert.AreEqual(0xFAFB, response.ServerPort);
         }
     }
 }
