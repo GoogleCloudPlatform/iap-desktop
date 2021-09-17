@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline
+
 namespace Google.Solutions.Ssh.Native
 {
     /// <summary>

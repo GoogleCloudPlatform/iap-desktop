@@ -65,7 +65,7 @@ namespace Google.Solutions.Common.Test.Net
             }
         }
 
-        private string ReadLine(Stream stream)
+        private static string ReadLine(Stream stream)
         {
             var buffer = new StringBuilder();
             while (true)

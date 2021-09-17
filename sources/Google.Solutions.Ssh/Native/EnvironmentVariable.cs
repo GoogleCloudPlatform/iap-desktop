@@ -20,10 +20,11 @@
 //
 
 using Google.Apis.Util;
+using System;
 
 namespace Google.Solutions.Ssh.Native
 {
-    public struct EnvironmentVariable
+    public struct EnvironmentVariable : IEquatable<EnvironmentVariable>
     {
         public string Name { get; set; }
         public string Value { get; set; }
@@ -40,7 +41,12 @@ namespace Google.Solutions.Ssh.Native
 
         public override bool Equals(object obj)
         {
-            return obj is EnvironmentVariable var &&
+            return obj is EnvironmentVariable var && Equals(var);
+        }
+
+        public bool Equals(EnvironmentVariable var)
+        {
+            return
                 var.Name == this.Name &&
                 var.Value == this.Value &&
                 var.Required == this.Required;
