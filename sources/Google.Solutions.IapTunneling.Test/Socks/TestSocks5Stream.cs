@@ -42,8 +42,10 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             public Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
                 var data = this.ReadData.Dequeue();
-                Array.Copy(data, 0, buffer, offset, count);
-                return Task.FromResult(count);
+
+                var read = Math.Min(data.Length, count);
+                Array.Copy(data, 0, buffer, offset, read);
+                return Task.FromResult(read);
             }
         }
 
@@ -88,6 +90,27 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             var stream = new StaticStream();
             stream.ReadData.Enqueue(new byte[] { 5, 2 });
             stream.ReadData.Enqueue(new byte[] { 1, 2 });
+
+            var socksStream = new Socks5Stream(stream);
+
+            var request = await socksStream
+                .ReadNegotiateMethodRequestAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(5, request.Version);
+            Assert.AreEqual(2, request.Methods.Length);
+            Assert.AreEqual(AuthenticationMethod.GssApi, request.Methods[0]);
+            Assert.AreEqual(AuthenticationMethod.UsernamePassword, request.Methods[1]);
+        }
+
+        [Test]
+        public async Task WhenReadsSplit_ThenReadNegotiateMethodRequestSucceeds()
+        {
+            var stream = new StaticStream();
+            stream.ReadData.Enqueue(new byte[] { 5 });
+            stream.ReadData.Enqueue(new byte[] { 2 });
+            stream.ReadData.Enqueue(new byte[] { 1 });
+            stream.ReadData.Enqueue(new byte[] { 2 });
 
             var socksStream = new Socks5Stream(stream);
 

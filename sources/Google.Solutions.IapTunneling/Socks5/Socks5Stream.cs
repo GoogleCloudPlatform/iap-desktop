@@ -13,7 +13,7 @@ namespace Google.Solutions.IapTunneling.Socks5
     /// Stream for reading and writing SOCKS5 protocol messages.
     /// The class only peforms minimal validation.
     /// </summary>
-    internal class Socks5Stream
+    internal class Socks5Stream : IDisposable
     {
         public const byte ProtocolVersion = 5;
 
@@ -22,13 +22,13 @@ namespace Google.Solutions.IapTunneling.Socks5
         /// that we'll get N bytes, even if it requires multiple reads
         /// to actually get the data.
         /// </summary>
-        private readonly FragmentingStream stream;
+        private readonly BufferedNetworkStream stream;
 
-        public Socks5Stream(INetworkStream stream) : this(new FragmentingStream(stream))
+        public Socks5Stream(INetworkStream stream) : this(new BufferedNetworkStream(stream))
         {
         }
 
-        public Socks5Stream(FragmentingStream stream)
+        public Socks5Stream(BufferedNetworkStream stream)
         {
             this.stream = stream;
         }
@@ -228,6 +228,11 @@ namespace Google.Solutions.IapTunneling.Socks5
                 default:
                     throw new SocksProtocolException("Unknown address type " + addressType);
             }
+        }
+
+        public void Dispose()
+        {
+            this.stream.Dispose();
         }
     }
 
