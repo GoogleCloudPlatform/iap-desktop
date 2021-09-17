@@ -1,4 +1,25 @@
-﻿using Google.Solutions.Common.Test;
+﻿//
+// Copyright 2021 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Common.Test;
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.IapTunneling.Socks5;
 using Moq;
@@ -54,7 +75,7 @@ namespace Google.Solutions.IapTunneling.Test.Socks
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProtocolInvalid_ThenReadNegotiateMethodRequestThrowsException()
+        public async Task WhenProtocolInvalid_ThenReadNegotiateMethodRequestSucceeds()
         {
             var stream = new StaticStream();
             stream.ReadData.Enqueue(new byte[] { 4, 1 });
@@ -62,10 +83,11 @@ namespace Google.Solutions.IapTunneling.Test.Socks
 
             var socksStream = new Socks5Stream(stream);
 
-            AssertEx.ThrowsAggregateException<UnsupportedSocksVersionException>(
-                () => socksStream
-                    .ReadNegotiateMethodRequestAsync(CancellationToken.None)
-                    .Wait());
+            var request = await socksStream
+                .ReadNegotiateMethodRequestAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(4, request.Version);
         }
 
         [Test]
@@ -124,6 +146,29 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             Assert.AreEqual(AuthenticationMethod.UsernamePassword, request.Methods[1]);
         }
 
+        [Test]
+        public async Task WhenMultipleMethodSelected_ThenWriteNegotiateMethodRequestSucceeds()
+        {
+            var stream = new StaticStream();
+
+            var socksStream = new Socks5Stream(stream);
+            await socksStream.WriteNegotiateMethodRequestAsync(
+                    new NegotiateMethodRequest(
+                        5,
+                        new[] {
+                            AuthenticationMethod.NoAuthenticationRequired,
+                            AuthenticationMethod.GssApi}),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(1, stream.WriteData.Count);
+            
+            var data = stream.WriteData.Dequeue();
+            CollectionAssert.AreEqual(
+                new byte[] { 5, 2, 0, 1 }, 
+                data);
+        }
+
         //---------------------------------------------------------------------
         // NegotiateMethodResponse
         //---------------------------------------------------------------------
@@ -135,7 +180,9 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             var socksStream = new Socks5Stream(stream);
 
             await socksStream.WriteNegotiateMethodResponseAsync(
-                    new NegotiateMethodResponse(AuthenticationMethod.UsernamePassword),
+                    new NegotiateMethodResponse(
+                        Socks5Stream.ProtocolVersion,
+                        AuthenticationMethod.UsernamePassword),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -143,6 +190,22 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             CollectionAssert.AreEqual(
                 new byte[] { Socks5Stream.ProtocolVersion, (byte)AuthenticationMethod.UsernamePassword },
                 stream.WriteData.Peek());
+        }
+
+        [Test]
+        public async Task WhenMethodSelected_ThenReadNegotiateMethodResponseSucceeds()
+        {
+            var stream = new StaticStream();
+            stream.ReadData.Enqueue(new byte[] { 5, 2 });
+
+            var socksStream = new Socks5Stream(stream);
+
+            var response = await socksStream.ReadNegotiateMethodResponseAsync(
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
+            Assert.AreEqual(AuthenticationMethod.UsernamePassword, response.Method);
         }
 
         //---------------------------------------------------------------------
@@ -179,7 +242,8 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             var stream = new StaticStream();
             stream.ReadData.Enqueue(new byte[] { 5, 1, 0, 4, 0x0A });
             stream.ReadData.Enqueue(new byte[] { 
-                0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D, 0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D,
+                0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D, 
+                0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D,
                 0xFA, 0xFB });
 
             var socksStream = new Socks5Stream(stream);
@@ -192,7 +256,8 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             Assert.AreEqual(Command.Connect, request.Command);
             Assert.AreEqual(AddressType.IPv6, request.AddressType);
             CollectionAssert.AreEqual(
-                new byte[] { 0x0A, 0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D, 0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D },
+                new byte[] { 0x0A, 0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D, 
+                             0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D },
                 request.DestinationAddress);
             Assert.AreEqual(0xFAFB, request.DestinationPort);
         }
@@ -279,7 +344,8 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                         Socks5Stream.ProtocolVersion,
                         ConnectionReply.Succeeded,
                         AddressType.IPv6,
-                        new byte[] { 0x0A, 0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D, 0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D },
+                        new byte[] { 0x0A, 0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D, 
+                                     0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D },
                         0xFAFB),
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -291,7 +357,8 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                     (byte)ConnectionReply.Succeeded,
                     0,
                     (byte)AddressType.IPv6,
-                    0x0A, 0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D, 0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D,
+                    0x0A, 0x0B, 0x0C, 0x0D, 0x1A, 0x1B, 0x1C, 0x1D, 
+                    0x2A, 0x2B, 0x2C, 0x2D, 0x3A, 0x3B, 0x3C, 0x3D,
                     0xFA, 0xFB
                 },
                 stream.WriteData.Peek());

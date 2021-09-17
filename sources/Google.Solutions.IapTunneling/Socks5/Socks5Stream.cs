@@ -1,4 +1,25 @@
-﻿using Google.Solutions.IapTunneling.Net;
+﻿//
+// Copyright 2021 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -58,11 +79,6 @@ namespace Google.Solutions.IapTunneling.Socks5
             }
 
             var version = buffer[0];
-            if (version != ProtocolVersion)
-            {
-                throw new UnsupportedSocksVersionException("Unsupported SOCKS version " + version);
-            }
-
             var nMethods = buffer[1];
             if (nMethods != 0)
             {
@@ -88,6 +104,31 @@ namespace Google.Solutions.IapTunneling.Socks5
                 methods);
         }
 
+        public async Task WriteNegotiateMethodRequestAsync(
+            NegotiateMethodRequest request,
+            CancellationToken cancellationToken)
+        {
+            //
+            // +----+----------+----------+
+            // |VER | NMETHODS | METHODS  |
+            // +----+----------+----------+
+            // | 1  | 1        | 1 to 255 |
+            // +----+----------+----------+
+            //
+            var buffer = new byte[2 + request.Methods.Length];
+            buffer[0] = request.Version;
+            buffer[1] = (byte)request.Methods.Length;
+            
+            for (int i = 0; i < request.Methods.Length; i++)
+            {
+                buffer[2 + i] = (byte)request.Methods[i];
+            }
+
+            await this.stream
+                .WriteAsync(buffer, 0, buffer.Length, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
         public async Task WriteNegotiateMethodResponseAsync(
             NegotiateMethodResponse response,
             CancellationToken cancellationToken)
@@ -99,13 +140,26 @@ namespace Google.Solutions.IapTunneling.Socks5
             //  | 1  |   1    |
             //  +----+--------+
             //
-            var message = new byte[] { ProtocolVersion, (byte)response.Method };
+            var message = new byte[] { (byte)response.Version, (byte)response.Method };
             await this.stream.WriteAsync(
                     message,
                     0,
                     message.Length,
                     cancellationToken)
                 .ConfigureAwait(false);
+        }
+
+        public async Task<NegotiateMethodResponse> ReadNegotiateMethodResponseAsync(
+            CancellationToken cancellationToken)
+        {
+            var buffer = new byte[2];
+            await this.stream.ReadAsync(
+                    buffer,
+                    0,
+                    buffer.Length,
+                    cancellationToken)
+                .ConfigureAwait(false);
+            return new NegotiateMethodResponse(buffer[0], (AuthenticationMethod)buffer[1]);
         }
 
         public async Task<ConnectionRequest> ReadConnectionRequestAsync(
@@ -135,11 +189,6 @@ namespace Google.Solutions.IapTunneling.Socks5
             }
 
             var version = firstPart[0];
-            if (version != ProtocolVersion)
-            {
-                throw new UnsupportedSocksVersionException("Unsupported SOCKS version " + version);
-            }
-
             var command = (Command)firstPart[1];
             var addressType = (AddressType)firstPart[3];
 
@@ -246,13 +295,6 @@ namespace Google.Solutions.IapTunneling.Socks5
     public class SocksProtocolException : SocksException
     {
         public SocksProtocolException(string message) : base(message)
-        {
-        }
-    }
-
-    public class UnsupportedSocksVersionException : SocksProtocolException
-    {
-        public UnsupportedSocksVersionException(string message) : base(message)
         {
         }
     }

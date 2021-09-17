@@ -88,6 +88,7 @@
     <Compile Include="Net\PortFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Socks5\Socks5Listener.cs" />
+    <Compile Include="Socks5\Socks5SshRelay.cs" />
     <Compile Include="Socks5\Socks5Stream.cs" />
     <Compile Include="Socks5\Socks5Messages.cs" />
   </ItemGroup>
