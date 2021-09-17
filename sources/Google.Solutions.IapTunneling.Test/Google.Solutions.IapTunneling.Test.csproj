@@ -99,6 +99,7 @@
     <Compile Include="Iap\TestSshRelayStreamWriting.cs" />
     <Compile Include="Net\TestRestrictedHeaderConfigPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Socks\TestSocks5Stream.cs" />
     <Compile Include="TestBigEndian.cs" />
   </ItemGroup>
   <ItemGroup>

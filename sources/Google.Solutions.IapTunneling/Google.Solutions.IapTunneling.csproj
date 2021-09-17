@@ -76,7 +76,7 @@
     <Compile Include="Iap\IapTunnelingEndpoint.cs" />
     <Compile Include="Net\FragmentingStream.cs" />
     <Compile Include="Net\INetworkStream.cs" />
-    <Compile Include="Iap\Messages.cs" />
+    <Compile Include="Iap\IapMessages.cs" />
     <Compile Include="Net\NetworkStream.cs" />
     <Compile Include="Net\OneTimeUseStream.cs" />
     <Compile Include="Net\SingleReaderSingleWriterStream.cs" />
@@ -86,6 +86,8 @@
     <Compile Include="Net\WebSocketStream.cs" />
     <Compile Include="Net\PortFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Socks5\Socks5Stream.cs" />
+    <Compile Include="Socks5\SocksMessages.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig">
