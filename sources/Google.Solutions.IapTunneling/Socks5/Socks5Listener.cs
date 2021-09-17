@@ -49,7 +49,8 @@ namespace Google.Solutions.IapTunneling.Socks5
 
         private const int BacklogLength = 32;
 
-        private readonly ISocks5Relay relay;
+        private readonly ISshRelayEndpointResolver resolver;
+        private readonly ISshRelayPolicy policy;
         private readonly TcpListener listener;
 
         public int ListenPort { get; }
@@ -60,10 +61,12 @@ namespace Google.Solutions.IapTunneling.Socks5
         //---------------------------------------------------------------------
 
         public Socks5Listener(
-            ISocks5Relay relay,
+            ISshRelayEndpointResolver resolver,
+            ISshRelayPolicy policy,
             int listenPort)
         {
-            this.relay = relay;
+            this.resolver = resolver;
+            this.policy = policy;
             this.ListenPort = listenPort;
             this.listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, listenPort));
         }
@@ -128,41 +131,32 @@ namespace Google.Solutions.IapTunneling.Socks5
             }
             else if (connectionRequest.AddressType == AddressType.DomainName)
             {
-                try
-                {
-                    var domainName = Encoding.ASCII.GetString(
-                        connectionRequest.DestinationAddress, 
-                        1, 
-                        connectionRequest.DestinationAddress.Length - 1);
+                var domainName = Encoding.ASCII.GetString(
+                    connectionRequest.DestinationAddress, 
+                    1, 
+                    connectionRequest.DestinationAddress.Length - 1);
 
-                    IapTraceSources.Default.TraceVerbose(
-                        "Socks5Listener: Connect from {0} to {1}",
+                IapTraceSources.Default.TraceVerbose(
+                    "Socks5Listener: Connection request from {0} to {1}",
+                    clientEndpoint,
+                    domainName);
+
+                //
+                // Check if the client is allowed at all.
+                //
+                if (this.policy.IsClientAllowed(clientEndpoint))
+                {
+                    IapTraceSources.Default.TraceInformation(
+                        "Connection from {0} to {1} allowed by policy",
                         clientEndpoint,
                         domainName);
-
-                    var relayPort = await this.relay.CreateRelayPortAsync(
-                            clientEndpoint,
-                            domainName,
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-                    await stream
-                        .WriteConnectionResponseAsync(
-                            new ConnectionResponse(
-                                Socks5Stream.ProtocolVersion,
-                                ConnectionReply.GeneralServerFailure,
-                                AddressType.IPv4,
-                                LoopbackAddress,
-                                relayPort),
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
                 }
-                catch (UnauthorizedException)
+                else
                 {
                     IapTraceSources.Default.TraceWarning(
-                        "Socks5Listener: Connection refused from client {0}",
-                        clientEndpoint);
+                        "Connection from {0} to {1} rejected by policy",
+                        clientEndpoint,
+                        domainName);
 
                     await stream
                         .WriteConnectionResponseAsync(
@@ -174,23 +168,71 @@ namespace Google.Solutions.IapTunneling.Socks5
                                 InvalidPort),
                             cancellationToken)
                         .ConfigureAwait(false);
+                    return;
+                }
 
+                //
+                // Resolve the SOCKS-style domain name to an actual endpoint.
+                // 
+                ISshRelayEndpoint endpoint;
+                try
+                {
+                    endpoint = await this.resolver
+                        .ResolveEndpointAsync(domainName, cancellationToken)
+                        .ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
-                    IapTraceSources.Default.TraceError("Socks5Listener: Connection failed", e);
+                    IapTraceSources.Default.TraceWarning(
+                        "Endpoint {0} cannot be resolved",
+                        domainName);
 
                     await stream
                         .WriteConnectionResponseAsync(
                             new ConnectionResponse(
                                 Socks5Stream.ProtocolVersion,
-                                ConnectionReply.GeneralServerFailure,
+                                ConnectionReply.NetworkUnreachable,
                                 AddressType.IPv4,
                                 InvalidAddress,
                                 InvalidPort),
                             cancellationToken)
                         .ConfigureAwait(false);
+                    return;
                 }
+
+                //
+                // Create a new listener and keep it alive for a single connection.
+                //
+                // Use the same policy so that the client is checked again
+                // when connecting to the listener.
+                //
+                var relayListener = SshRelayListener.CreateLocalListener(
+                    endpoint,
+                    this.policy);
+                relayListener.ClientAcceptLimit = 1;
+
+                #pragma warning disable CS4014 // Call not awaited
+                relayListener.ListenAsync(cancellationToken)
+                    .ContinueWith(t =>
+                    {
+                        if (t.IsFaulted)
+                        {
+                            IapTraceSources.Default.TraceError(
+                                "Socks5SshRelay: Connection failed", t.Exception);
+                        }
+                    });
+                #pragma warning restore CS4014
+
+                await stream
+                    .WriteConnectionResponseAsync(
+                        new ConnectionResponse(
+                            Socks5Stream.ProtocolVersion,
+                            ConnectionReply.GeneralServerFailure,
+                            AddressType.IPv4,
+                            LoopbackAddress,
+                            (ushort)relayListener.LocalPort),
+                        cancellationToken)
+                    .ConfigureAwait(false);
             }
             else
             {

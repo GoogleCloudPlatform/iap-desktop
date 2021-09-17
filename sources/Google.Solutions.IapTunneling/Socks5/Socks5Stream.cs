@@ -374,6 +374,24 @@ namespace Google.Solutions.IapTunneling.Socks5
             }
         }
 
+        public async Task<bool> ConfirmClosedAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var bytesRead = await this.stream.ReadAsync(
+                        new byte[1],
+                        0,
+                        1,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+                return bytesRead == 0;
+            }
+            catch (NetworkStreamClosedException)
+            {
+                return true;
+            }
+        }
+
         public void Dispose()
         {
             this.stream.Dispose();

@@ -64,9 +64,9 @@ namespace Google.Solutions.IapTunneling.Test.Socks
         [Test]
         public async Task WhenProtocolVersionInvalid_ThenServerSendsNoAcceptableMethods()
         {
-            var relay = new Mock<ISocks5Relay>();
             var listener = new Socks5Listener(
-                relay.Object,
+                new Mock<ISshRelayEndpointResolver>().Object,
+                new Mock<ISshRelayPolicy>().Object,
                 PortFinder.FindFreeLocalPort());
 
             using (RunListener(listener))
@@ -83,6 +83,10 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
                 Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
                 Assert.AreEqual(AuthenticationMethod.NoAcceptableMethods, response.Method);
             }
@@ -91,9 +95,9 @@ namespace Google.Solutions.IapTunneling.Test.Socks
         [Test]
         public async Task WhenAuthenticationMethodsUnsupported_ThenServerSendsNoAcceptableMethods()
         {
-            var relay = new Mock<ISocks5Relay>();
             var listener = new Socks5Listener(
-                relay.Object,
+                new Mock<ISshRelayEndpointResolver>().Object,
+                new Mock<ISshRelayPolicy>().Object,
                 PortFinder.FindFreeLocalPort());
 
             using (RunListener(listener))
@@ -110,6 +114,10 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
                 Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
                 Assert.AreEqual(AuthenticationMethod.NoAcceptableMethods, response.Method);
             }
@@ -118,9 +126,9 @@ namespace Google.Solutions.IapTunneling.Test.Socks
         [Test]
         public async Task WhenConnectionCommandUnsupported_ThenServerSendsCommandNotSupported()
         {
-            var relay = new Mock<ISocks5Relay>();
             var listener = new Socks5Listener(
-                relay.Object,
+                new Mock<ISshRelayEndpointResolver>().Object,
+                new Mock<ISshRelayPolicy>().Object,
                 PortFinder.FindFreeLocalPort());
 
             using (RunListener(listener))
@@ -151,6 +159,10 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
                 Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
                 Assert.AreEqual(ConnectionReply.CommandNotSupported, response.Reply);
             }
@@ -159,15 +171,9 @@ namespace Google.Solutions.IapTunneling.Test.Socks
         [Test]
         public async Task WhenAddressIsIpv4_ThenServerSendsAddressTypeNotSupported()
         {
-            var relay = new Mock<ISocks5Relay>();
-            relay.Setup(r => r.CreateRelayPortAsync(
-                    It.IsAny<IPEndPoint>(),
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new UnauthorizedException("mock"));
-
             var listener = new Socks5Listener(
-                relay.Object,
+                new Mock<ISshRelayEndpointResolver>().Object,
+                new Mock<ISshRelayPolicy>().Object,
                 PortFinder.FindFreeLocalPort());
 
             using (RunListener(listener))
@@ -198,23 +204,26 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
                 Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
                 Assert.AreEqual(ConnectionReply.AddressTypeNotSupported, response.Reply);
             }
         }
 
         [Test]
-        public async Task WhenClientUnauthorized_ThenServerSendsConnectionNotAllowed()
+        public async Task WhenClientNotAllowed_ThenServerSendsConnectionNotAllowed()
         {
-            var relay = new Mock<ISocks5Relay>();
-            relay.Setup(r => r.CreateRelayPortAsync(
-                    It.IsAny<IPEndPoint>(),
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new UnauthorizedException("mock"));
+            var policy = new Mock<ISshRelayPolicy>();
+            policy.Setup(r => r.IsClientAllowed(
+                    It.IsAny<IPEndPoint>()))
+                .Returns(false);
 
             var listener = new Socks5Listener(
-                relay.Object,
+                new Mock<ISshRelayEndpointResolver>().Object,
+                policy.Object,
                 PortFinder.FindFreeLocalPort());
 
             using (RunListener(listener))
@@ -244,8 +253,75 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
                 Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
                 Assert.AreEqual(ConnectionReply.ConnectionNotAllowed, response.Reply);
+            }
+        }
+
+        [Test]
+        public async Task WhenDestinationNotResolvable_ThenServerSendsNetworkUnreachable()
+        {
+            var policy = new Mock<ISshRelayPolicy>();
+            policy.Setup(r => r.IsClientAllowed(
+                    It.IsAny<IPEndPoint>()))
+                .Returns(true);
+
+            var resolver = new Mock<ISshRelayEndpointResolver>();
+            resolver.Setup(r => r.ResolveEndpointAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ArgumentException("mock!"));
+
+            var listener = new Socks5Listener(
+                resolver.Object,
+                policy.Object,
+                PortFinder.FindFreeLocalPort());
+
+            using (RunListener(listener))
+            using (var clientStream = ConnectToListener(listener))
+            {
+                await clientStream.WriteNegotiateMethodRequestAsync(
+                        new NegotiateMethodRequest(
+                            Socks5Stream.ProtocolVersion,
+                            new[] { AuthenticationMethod.NoAuthenticationRequired }),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                await clientStream.ReadNegotiateMethodResponseAsync(
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                await clientStream.WriteConnectionRequestAsync(
+                        new ConnectionRequest(
+                            Socks5Stream.ProtocolVersion,
+                            Command.Connect,
+                            "unresolvable.example.com",
+                            8080),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                var response = await clientStream.ReadConnectionResponseAsync(
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
+                Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
+                Assert.AreEqual(ConnectionReply.NetworkUnreachable, response.Reply);
             }
         }
     }
