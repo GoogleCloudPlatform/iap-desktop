@@ -71,6 +71,7 @@
     <Compile Include="Iap\ISshRelayPolicy.cs" />
     <Compile Include="Iap\AllowAllRelayPolicy.cs" />
     <Compile Include="Net\BufferedNetworkStream.cs" />
+    <Compile Include="Net\InternalDns.cs" />
     <Compile Include="Net\RestrictedHeaderConfigPatch.cs" />
     <Compile Include="Net\ConnectionStatistics.cs" />
     <Compile Include="IapTraceSources.cs" />

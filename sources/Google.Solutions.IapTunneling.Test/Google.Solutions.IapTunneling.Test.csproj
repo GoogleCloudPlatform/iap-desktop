@@ -98,6 +98,7 @@
     <Compile Include="Iap\TestHttpOverIapDirectTunnel.cs" />
     <Compile Include="Iap\TestSshRelayStreamWriting.cs" />
     <Compile Include="Net\TestBufferedNetworkStream.cs" />
+    <Compile Include="Net\TestInternalDns.cs" />
     <Compile Include="Net\TestRestrictedHeaderConfigPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Socks\TestSocks5Listener.cs" />
