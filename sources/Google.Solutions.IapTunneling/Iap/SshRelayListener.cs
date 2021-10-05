@@ -191,6 +191,9 @@ namespace Google.Solutions.IapTunneling.Iap
                                     }
 
                                     OnClientDisconnected(clientStream.ToString());
+
+                                    clientStream.Dispose();
+                                    serverStream.Dispose();
                                 });
                         }
                         catch (SocketException e) when (e.SocketErrorCode == SocketError.Interrupted)
