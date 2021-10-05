@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 {
                     //
                     // Likely reason: The user account is a consumer account or
-                    // an administrator has disable POSIX account/SSH key information
+                    // an administrator has disabled POSIX account/SSH key information
                     // updates in the Admin Console.
                     //
                     throw new ResourceAccessDeniedException(
