@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,13 +84,30 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                 .OrderBy(name => name)
                 .ToList();
 
+            var selectors = new LinkedList<ChromeCertificateSelector>();
+
             foreach (var valueName in sortedValueNames)
             {
                 if (registryKey.GetValue(valueName.ToString(), null) is string value)
                 {
-                    yield return ChromeCertificateSelector.Parse(value);
+                    try
+                    {
+                        selectors.AddLast(ChromeCertificateSelector.Parse(value));
+                    }
+                    catch (JsonException e)
+                    {
+                        //
+                        // Malformed entry, ignore.
+                        //
+                        ApplicationTraceSources.Default.TraceVerbose(
+                            "Encountered malformed AutoSelectCertificateForUrls policy entry '{0}': {1}",
+                            value,
+                            e.Message);
+                    }
                 }
             }
+
+            return selectors;
         }
 
         public static ChromeAutoSelectCertificateForUrlsPolicy FromKey(RegistryKey registryKey)
