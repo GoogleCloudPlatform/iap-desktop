@@ -110,6 +110,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         }
 
         [Test]
+        public void WhenKeyContainsMalformedValues_ThenFromKeyIgnoresJunkValues()
+        {
+            this.key.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
+            this.key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{"); // Syntax error.
+
+            var policy = ChromeAutoSelectCertificateForUrlsPolicy.FromKey(this.key);
+            Assert.AreEqual(1, policy.Entries.Count);
+        }
+
+        [Test]
         public void WhenKeyContainsSelectors_ThenCreateMatchersEvaluatesSelectors()
         {
             this.key.SetValue("11", 
