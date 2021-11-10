@@ -24,31 +24,39 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
 {
-    public class StartOsLoginSession : EventBase
+    /// <summary>
+    /// Event that indicates a continuation of an authentication session. 
+    /// The client completes the challenge proposed by the server on the 
+    /// previous StartSession call or requests and completes a different 
+    /// challenge type. Then, the ContinueSession method accepts the 
+    /// response to the challenge or method and either authenticates or 
+    /// rejects the authentication attempt.
+    /// </summary>
+    public class OsLoginContinueSessionEvent : InstanceEventBase
     {
         public const string ServiceName = "oslogin.googleapis.com";
-        public const string Method = "google.cloud.oslogin.v1.OsLoginService.StartSession";
+        public const string Method = "google.cloud.oslogin.v1.OsLoginService.ContinueSession";
 
         public override EventCategory Category => EventCategory.Access;
 
-        internal StartOsLoginSession(LogRecord logRecord) : base(logRecord)
+        internal OsLoginContinueSessionEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsStartOsLoginSessionEvent(logRecord));
+            Debug.Assert(IsStartOsLoginContinueSessionEvent(logRecord));
         }
 
-        public static bool IsStartOsLoginSessionEvent(LogRecord record)
+        public static bool IsStartOsLoginContinueSessionEvent(LogRecord record)
         {
             return record.IsDataAccessEvent &&
                 record.ProtoPayload.MethodName == Method;
         }
 
+        public override ulong InstanceId => 0;  // Not present in log, b/186845475.
+
+        public string ChallengeStatus => this.LogRecord.ProtoPayload.Response?.Value<string>("status");
+
         public override string Message =>
-            base.LogRecord.ProtoPayload.Response?.Value<string>("status");
-
-        public ulong InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource.Labels["instance_id"])
-            ? 0
-            : ulong.Parse(base.LogRecord.Resource.Labels["instance_id"]);
-
-        public string ProjectId => base.LogRecord.Resource.Labels["project_id"];
+            string.Format("Continue OS Login 2FA session for {0}: {1}",
+                this.LogRecord.ProtoPayload.AuthenticationInfo.PrincipalEmail,
+                this.ChallengeStatus);
     }
 }

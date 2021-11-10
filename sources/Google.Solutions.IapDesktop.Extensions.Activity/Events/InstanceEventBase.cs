@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
             }
         }
 
-        public ulong InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource.Labels["instance_id"])
+        public virtual ulong InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource.Labels["instance_id"])
             ? 0
             : ulong.Parse(base.LogRecord.Resource.Labels["instance_id"]);
 

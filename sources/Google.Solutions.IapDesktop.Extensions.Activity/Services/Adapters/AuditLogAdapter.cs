@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
             // NB. Some instance-related events use project scope, for example
             // setCommonInstanceMetadata events.
-            criteria.AddLast($"resource.type=(\"gce_instance\" OR \"gce_project\")");
+            criteria.AddLast($"resource.type=(\"gce_instance\" OR \"gce_project\" OR \"audited_resource\")");
             criteria.AddLast($"timestamp > \"{startTime:o}\"");
 
             return string.Join(" AND ", criteria);

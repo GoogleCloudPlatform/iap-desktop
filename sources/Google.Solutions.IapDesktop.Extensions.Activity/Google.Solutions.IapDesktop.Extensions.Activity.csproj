@@ -108,8 +108,11 @@
   <ItemGroup>
     <Compile Include="DateTimeUtil.cs" />
     <Compile Include="Events\Access\AuthorizeUserTunnelEvent.cs" />
+    <Compile Include="Events\Access\OsLoginContinueSessionEvent.cs" />
+    <Compile Include="Events\Access\OsLoginStartSessionEvent.cs" />
     <Compile Include="Events\Access\SetCommonInstanceMetadataEvent.cs" />
     <Compile Include="Events\Access\SetMetadataEvent.cs" />
+    <Compile Include="Events\Access\OsLoginCheckPolicyEvent.cs" />
     <Compile Include="Events\IEventProcessor.cs" />
     <Compile Include="Events\IInstanceStateChangeEvent.cs" />
     <Compile Include="Events\ProjectOperationEventBase.cs" />
