@@ -113,9 +113,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\Access\TestOsLoginContinueSessionEvent.cs" />
+    <Compile Include="Events\Access\TestOsLoginStartSessionEvent.cs" />
     <Compile Include="Events\Access\TestSetCommonInstanceMetadataEvent.cs" />
     <Compile Include="Events\Access\TestSetMetadataEvent.cs" />
     <Compile Include="Events\Access\TestAuthorizeUserTunnelEvent.cs" />
+    <Compile Include="Events\Access\TestOsLoginCheckPolicyEvent.cs" />
     <Compile Include="Events\Lifecycle\TestResumeInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\TestSuspendInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\TestResetInstanceEvent.cs" />
