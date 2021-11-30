@@ -253,8 +253,6 @@ test: $(NUNIT_ASSEMBLIES)
 		-targetdir:coveragereport \
 		-reporttypes:HTML
 
-    $(POWERSHELL) $(MAKEDIR)\scripts\strip-bom.ps1 sponge_log.xml
-    
 installer: $(INSTALLER_PACKAGE)
 installer-snapshot: $(INSTALLER_SNAPSHOT) 
 symbols: $(SYMBOLS_PACKAGE)
