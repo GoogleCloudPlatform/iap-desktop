@@ -32,8 +32,9 @@ namespace Google.Solutions.Common.Test.Auth
         [Test]
         public async Task WhenCalled_ThenQueryOpenIdConfigurationAsyncReturnsInfo()
         {
-            var config = await GoogleAuthAdapter.QueryOpenIdConfigurationAsync(
-                CancellationToken.None);
+            var config = await GoogleAuthAdapter
+                .QueryOpenIdConfigurationAsync(CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(config.UserInfoEndpoint);
         }

@@ -301,17 +301,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenInstanceFilterChanged_ThenViewModelIsUpdated()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
 
-            var instances = await GetInstancesAsync(viewModel);
+            var instances = await GetInstancesAsync(viewModel).ConfigureAwait(true);
             Assert.AreEqual(2, instances.Count);
 
             viewModel.InstanceFilter = SampleLinuxInstanceInZone1.Name.Substring(4);
-            instances = await GetInstancesAsync(viewModel);
+            instances = await GetInstancesAsync(viewModel).ConfigureAwait(true);
             Assert.AreEqual(1, instances.Count);
 
             viewModel.InstanceFilter = null;
-            instances = await GetInstancesAsync(viewModel);
+            instances = await GetInstancesAsync(viewModel).ConfigureAwait(true);
             Assert.AreEqual(2, instances.Count);
 
             // Reapplying filter must not cause reload.
@@ -412,7 +414,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
             var viewModel = CreateViewModel();
 
-            var projects = (await viewModel.ExpandRootAsync()).ToList();
+            var projects = (await viewModel
+                .ExpandRootAsync()
+                .ConfigureAwait(true)).ToList();
 
             Assert.AreEqual("[project-1] (project-1)", projects[0].Text);
             Assert.AreEqual("inaccessible project (inaccessible-1)", projects[1].Text);
@@ -427,31 +431,48 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenReloadProjectsIsTrue_ThenRefreshReloadsProjects()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
 
             int nofifications = 0;
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
                 Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
                 nofifications++;
             };
 
-            await viewModel.RefreshAsync(true);
+            await viewModel
+                .RefreshAsync(true)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
         }
 
         [Test]
         public async Task WhenReloadProjectsIsFalse_ThenRefreshReloadsZones()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
 
             int nofifications = 0;
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
-            var zones = await projects[0].GetFilteredNodesAsync(false);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+            var zones = await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
                 Assert.Fail("Projects should not be reloaded");
@@ -462,21 +483,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 nofifications++;
             };
 
-            await viewModel.RefreshAsync(false);
+            await viewModel
+                .RefreshAsync(false)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
-            Assert.AreEqual(1, (await projects[0].GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
+            Assert.AreEqual(1, (await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
         }
 
         [Test]
         public async Task WhenSelectedNodeIsNull_ThenRefreshSelectedNodeAsyncReloadsProjects()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
 
             int nofifications = 0;
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
                 Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
@@ -484,20 +517,30 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             };
 
             viewModel.SelectedNode = null;
-            await viewModel.RefreshSelectedNodeAsync();
+            await viewModel
+                .RefreshSelectedNodeAsync()
+                .ConfigureAwait(true);
 
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
         }
 
         [Test]
         public async Task WhenSelectedNodeIsRoot_ThenRefreshSelectedNodeAsyncReloadsProjects()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
 
             int nofifications = 0;
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
                 Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
@@ -505,21 +548,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             };
 
             viewModel.SelectedNode = viewModel.RootNode;
-            await viewModel.RefreshSelectedNodeAsync();
+            await viewModel
+                .RefreshSelectedNodeAsync()
+                .ConfigureAwait(true);
 
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
         }
 
         [Test]
         public async Task WhenSelectedNodeIsProject_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
 
             int nofifications = 0;
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
-            var zones = await projects[0].GetFilteredNodesAsync(false);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+            var zones = await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
                 Assert.Fail("Projects should not be reloaded");
@@ -531,22 +586,36 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             };
 
             viewModel.SelectedNode = projects[0];
-            await viewModel.RefreshSelectedNodeAsync();
+            await viewModel
+                .RefreshSelectedNodeAsync()
+                .ConfigureAwait(true);
 
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
-            Assert.AreEqual(1, (await projects[0].GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
+            Assert.AreEqual(1, (await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
         }
 
         [Test]
         public async Task WhenSelectedNodeIsZone_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
 
             int nofifications = 0;
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
-            var zones = await projects[0].GetFilteredNodesAsync(false);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+            var zones = await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
                 Assert.Fail("Projects should not be reloaded");
@@ -558,23 +627,39 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             };
 
             viewModel.SelectedNode = zones[0];
-            await viewModel.RefreshSelectedNodeAsync();
+            await viewModel
+                .RefreshSelectedNodeAsync()
+                .ConfigureAwait(true);
 
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
-            Assert.AreEqual(1, (await projects[0].GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
+            Assert.AreEqual(1, (await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
         }
 
         [Test]
         public async Task WhenSelectedNodeIsInstance_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
 
             int nofifications = 0;
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
-            var zones = await projects[0].GetFilteredNodesAsync(false);
-            var instances = await zones[0].GetFilteredNodesAsync(false);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+            var zones = await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+            var instances = await zones[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
             projects.CollectionChanged += (sender, args) =>
             {
                 Assert.Fail("Projects should not be reloaded");
@@ -586,11 +671,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             };
 
             viewModel.SelectedNode = instances[0];
-            await viewModel.RefreshSelectedNodeAsync();
+            await viewModel
+                .RefreshSelectedNodeAsync()
+                .ConfigureAwait(true);
 
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
-            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
-            Assert.AreEqual(1, (await projects[0].GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
+            Assert.AreEqual(1, (await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true)).Count);
         }
 
         //---------------------------------------------------------------------
@@ -605,8 +697,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .Returns(true);
 
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var instances = (await GetInstancesAsync(viewModel))
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var instances = (await GetInstancesAsync(viewModel).ConfigureAwait(true))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
 
@@ -629,8 +723,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .Callback<Func<SessionEndedEvent, Task>>(e => sessionEndedEventHandler = e);
 
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var instances = (await GetInstancesAsync(viewModel))
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var instances = (await GetInstancesAsync(viewModel).ConfigureAwait(true))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
 
@@ -641,19 +737,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Assert.IsFalse(instances[1].IsConnected);
 
             await sessionStartedEventHandler(
-                new SessionStartedEvent((InstanceLocator)instances[0].Locator));
+                    new SessionStartedEvent((InstanceLocator)instances[0].Locator))
+                .ConfigureAwait(true);
 
             Assert.IsTrue(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
 
             await sessionEndedEventHandler(
-                new SessionEndedEvent((InstanceLocator)instances[0].Locator));
+                    new SessionEndedEvent((InstanceLocator)instances[0].Locator))
+                .ConfigureAwait(true);
 
             Assert.IsFalse(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
 
             await sessionStartedEventHandler(
-                new SessionStartedEvent(new InstanceLocator(SampleProjectId, "zone-1", "unknown-1")));
+                    new SessionStartedEvent(new InstanceLocator(SampleProjectId, "zone-1", "unknown-1")))
+                .ConfigureAwait(true);
 
             Assert.IsFalse(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
@@ -671,8 +770,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .Returns(true);
 
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var instances = (await GetInstancesAsync(viewModel))
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var instances = (await GetInstancesAsync(viewModel).ConfigureAwait(true))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
 
@@ -692,8 +793,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .Returns(false);
 
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var instances = (await GetInstancesAsync(viewModel))
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var instances = (await GetInstancesAsync(viewModel).ConfigureAwait(true))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
 
@@ -713,13 +816,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsProject_ThenUnloadSelectedProjectAsyncUnloadsProject()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = projects[0];
 
             Assert.AreEqual(1, projects.Count);
-            await viewModel.UnloadSelectedProjectAsync();
+            await viewModel
+                .UnloadSelectedProjectAsync()
+                .ConfigureAwait(true);
             Assert.AreEqual(0, projects.Count);
         }
 
@@ -727,13 +837,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectAsyncDoesNothing()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var instances = await GetInstancesAsync(viewModel);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var instances = await GetInstancesAsync(viewModel)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = instances[0];
 
             Assert.AreEqual(2, instances.Count);
-            await viewModel.UnloadSelectedProjectAsync();
+            await viewModel
+                .UnloadSelectedProjectAsync()
+                .ConfigureAwait(true);
             Assert.AreEqual(2, instances.Count);
         }
 
@@ -745,8 +860,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsProject_ThenOpenInCloudConsoleOpensInstancesList()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = projects[0];
             viewModel.OpenInCloudConsole();
@@ -760,9 +880,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsZone_ThenUnloadSelectedProjectOpensInstancesList()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
-            var zones = await projects[0].GetFilteredNodesAsync(false);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+            var zones = await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = zones[0];
             viewModel.OpenInCloudConsole();
@@ -776,8 +903,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectOpensInstanceDetails()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var instances = await GetInstancesAsync(viewModel);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var instances = await GetInstancesAsync(viewModel)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = instances[0];
             viewModel.OpenInCloudConsole();
@@ -795,8 +925,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsProject_ThenConfigureIapAccessOpensProjectConfig()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = projects[0];
             viewModel.ConfigureIapAccess();
@@ -810,9 +945,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsZone_ThenConfigureIapAccessOpensProjectConfig()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
-            var zones = await projects[0].GetFilteredNodesAsync(false);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+            var zones = await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = zones[0];
             viewModel.ConfigureIapAccess();
@@ -826,8 +968,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsInstance_ThenConfigureIapAccessOpensProjectConfig()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var instances = await GetInstancesAsync(viewModel);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var instances = await GetInstancesAsync(viewModel)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = instances[0];
             viewModel.ConfigureIapAccess();
@@ -857,8 +1002,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsProject_ThenCommandVisiblityIsUpdated()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = projects[0];
 
@@ -872,9 +1022,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsZone_ThenCommandVisiblityIsUpdated()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
-            var zones = await projects[0].GetFilteredNodesAsync(false);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var projects = await viewModel
+                .RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+            var zones = await projects[0]
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = zones[0];
 
@@ -888,8 +1045,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsInstance_ThenCommandVisiblityIsUpdated()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
-            var instances = await GetInstancesAsync(viewModel);
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+            var instances = await GetInstancesAsync(viewModel)
+                .ConfigureAwait(true);
 
             viewModel.SelectedNode = instances[0];
 

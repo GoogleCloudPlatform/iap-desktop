@@ -102,23 +102,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
             int funcCall = 0;
-            var result = await this.jobService.RunInBackground<string>(
-                new JobDescription("test"),
-                token =>
-                {
-                    if (funcCall++ == 0)
+            var result = await this.jobService
+                .RunInBackground<string>(
+                    new JobDescription("test"),
+                    token =>
                     {
-                        throw new TokenResponseException(
-                            new TokenErrorResponse()
-                            {
-                                Error = "invalid_grant"
-                            });
-                    }
-                    else
-                    {
-                        return Task.FromResult("data");
-                    }
-                });
+                        if (funcCall++ == 0)
+                        {
+                            throw new TokenResponseException(
+                                new TokenErrorResponse()
+                                {
+                                    Error = "invalid_grant"
+                                });
+                        }
+                        else
+                        {
+                            return Task.FromResult("data");
+                        }
+                    })
+                .ConfigureAwait(true);
 
             Assert.AreEqual("data", result);
 
@@ -131,23 +133,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
             int funcCall = 0;
-            var result = await this.jobService.RunInBackground<string>(
-                new JobDescription("test"),
-                token =>
-                {
-                    if (funcCall++ == 0)
+            var result = await this.jobService
+                .RunInBackground<string>(
+                    new JobDescription("test"),
+                    token =>
                     {
-                        throw new TokenResponseException(
-                            new TokenErrorResponse()
-                            {
-                                Error = "invalid_grant"
-                            });
-                    }
-                    else
-                    {
-                        return Task.FromResult("data");
-                    }
-                });
+                        if (funcCall++ == 0)
+                        {
+                            throw new TokenResponseException(
+                                new TokenErrorResponse()
+                                {
+                                    Error = "invalid_grant"
+                                });
+                        }
+                        else
+                        {
+                            return Task.FromResult("data");
+                        }
+                    })
+                .ConfigureAwait(true);
 
             Assert.AreEqual("data", result);
             Assert.AreEqual(2, funcCall);
@@ -207,24 +211,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
             int funcCall = 0;
-            var result = await this.jobService.RunInBackground<string>(
-                new JobDescription("test"),
-                token =>
-                {
-                    if (funcCall++ == 0)
+            var result = await this.jobService
+                .RunInBackground<string>(
+                    new JobDescription("test"),
+                    token =>
                     {
-                        throw new AggregateException(
-                            new TokenResponseException(
-                                new TokenErrorResponse()
-                                {
-                                    Error = "invalid_grant"
-                                }));
-                    }
-                    else
-                    {
-                        return Task.FromResult("data");
-                    }
-                });
+                        if (funcCall++ == 0)
+                        {
+                            throw new AggregateException(
+                                new TokenResponseException(
+                                    new TokenErrorResponse()
+                                    {
+                                        Error = "invalid_grant"
+                                    }));
+                        }
+                        else
+                        {
+                            return Task.FromResult("data");
+                        }
+                    })
+                .ConfigureAwait(true);
 
             Assert.AreEqual("data", result);
 
@@ -237,24 +243,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
             int funcCall = 0;
-            var result = await this.jobService.RunInBackground<string>(
-                new JobDescription("test"),
-                token =>
-                {
-                    if (funcCall++ == 0)
+            var result = await this.jobService
+                .RunInBackground<string>(
+                    new JobDescription("test"),
+                    token =>
                     {
-                        throw new AggregateException(
-                            new TokenResponseException(
-                                new TokenErrorResponse()
-                                {
-                                    Error = "invalid_grant"
-                                }));
-                    }
-                    else
-                    {
-                        return Task.FromResult("data");
-                    }
-                });
+                        if (funcCall++ == 0)
+                        {
+                            throw new AggregateException(
+                                new TokenResponseException(
+                                    new TokenErrorResponse()
+                                    {
+                                        Error = "invalid_grant"
+                                    }));
+                        }
+                        else
+                        {
+                            return Task.FromResult("data");
+                        }
+                    })
+                .ConfigureAwait(true);
 
             Assert.AreEqual("data", result);
             Assert.AreEqual(2, funcCall);

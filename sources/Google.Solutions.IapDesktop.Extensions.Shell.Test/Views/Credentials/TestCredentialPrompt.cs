@@ -103,11 +103,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Allow;
 
-            await credentialPrompt.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
+            await credentialPrompt
+                .ShowCredentialsPromptAsync(
+                    null,
+                    SampleInstance,
+                    settings,
+                    true)
+                .ConfigureAwait(true);
 
             Assert.AreEqual("bob", settings.RdpUsername.Value);
             Assert.AreEqual("secret", settings.RdpPassword.ClearTextValue);
@@ -150,11 +152,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpUsername.StringValue = "alice";
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
-            await credentialPrompt.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
+            await credentialPrompt
+                .ShowCredentialsPromptAsync(
+                    null,
+                    SampleInstance,
+                    settings,
+                    true)
+                .ConfigureAwait(true);
 
             Assert.AreEqual("bob", settings.RdpUsername.Value);
             Assert.AreEqual("secret", settings.RdpPassword.ClearTextValue);
@@ -285,11 +289,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpUsername.StringValue = "alice";
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
-            await credentialPrompt.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
+            await credentialPrompt
+                .ShowCredentialsPromptAsync(
+                    null,
+                    SampleInstance,
+                    settings,
+                    true)
+                .ConfigureAwait(true);
 
             Assert.AreEqual("alice", settings.RdpUsername.Value);
             Assert.AreEqual("alicespassword", settings.RdpPassword.ClearTextValue);
@@ -372,11 +378,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
 
-            await credentialPrompt.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                false);
+            await credentialPrompt
+                .ShowCredentialsPromptAsync(
+                    null,
+                    SampleInstance,
+                    settings,
+                    false)
+                .ConfigureAwait(true);
 
             Assert.IsNull(settings.RdpUsername.Value);
             Assert.IsNull(settings.RdpPassword.Value);
@@ -416,11 +424,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpUsername.StringValue = "alice";
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
-            await credentialPrompt.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
+            await credentialPrompt
+                .ShowCredentialsPromptAsync(
+                    null,
+                    SampleInstance,
+                    settings,
+                    true)
+                .ConfigureAwait(true);
 
             Assert.AreEqual("alice", settings.RdpUsername.Value);
             Assert.AreEqual("alicespassword", settings.RdpPassword.ClearTextValue);
@@ -452,11 +462,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Force;
 
-            await credentialPrompt.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
+            await credentialPrompt
+                .ShowCredentialsPromptAsync(
+                    null,
+                    SampleInstance,
+                    settings,
+                    true)
+                .ConfigureAwait(true);
 
             Assert.AreEqual("bob", settings.RdpUsername.StringValue);
             Assert.AreEqual("secret", settings.RdpPassword.ClearTextValue);

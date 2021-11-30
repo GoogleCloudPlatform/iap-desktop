@@ -115,11 +115,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
-            await repository.StoreAsync<string>(repository.CredentialStoreKey, "test");
+            await repository
+                .StoreAsync<string>(repository.CredentialStoreKey, "test")
+                .ConfigureAwait(false);
 
             Assert.AreEqual(
                 "test",
-                await repository.GetAsync<string>(repository.CredentialStoreKey));
+                await repository
+                    .GetAsync<string>(repository.CredentialStoreKey)
+                    .ConfigureAwait(false));
         }
 
         [Test]
@@ -128,10 +132,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
-            await repository.StoreAsync<string>(repository.CredentialStoreKey, "test");
-            await repository.ClearAsync();
+            await repository
+                .StoreAsync<string>(repository.CredentialStoreKey, "test")
+                .ConfigureAwait(false);
+            await repository
+                .ClearAsync()
+                .ConfigureAwait(false);
 
-            Assert.IsNull(await repository.GetAsync<string>(repository.CredentialStoreKey));
+            Assert.IsNull(await repository
+                .GetAsync<string>(repository.CredentialStoreKey)
+                .ConfigureAwait(false));
         }
     }
 }

@@ -47,12 +47,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         {
             await testInstance;
 
-            var model = await SerialOutputModel.LoadAsync(
-                "display-name",
-                new ComputeEngineAdapter(await credential),
-                await testInstance,
-                ConsolePort,
-                CancellationToken.None);
+            var model = await SerialOutputModel
+                .LoadAsync(
+                    "display-name",
+                    new ComputeEngineAdapter(await credential),
+                    await testInstance,
+                    ConsolePort,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(string.IsNullOrWhiteSpace(model.Output));
             Assert.AreEqual("display-name", model.DisplayName);
@@ -73,12 +75,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                 1)).Returns(stream.Object);
 
             // Let it load successfully...
-            var model = await SerialOutputModel.LoadAsync(
-                "display-name",
-                adapter.Object,
-                new InstanceLocator("project-1", "zone-1", "instance-1"),
-                ConsolePort,
-                CancellationToken.None);
+            var model = await SerialOutputModel
+                .LoadAsync(
+                    "display-name",
+                    adapter.Object,
+                    new InstanceLocator("project-1", "zone-1", "instance-1"),
+                    ConsolePort,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             using (var cts = new CancellationTokenSource())
             {
@@ -89,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                 cts.Cancel();
 
                 // Now the task should finish quickly.
-                await tailTask;
+                await tailTask.ConfigureAwait(true);
             }
         }
 
@@ -129,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                     cts.Token);
 
                 // The exception should cause the task should finish.
-                await tailTask;
+                await tailTask.ConfigureAwait(true);
 
                 StringAssert.Contains("session timed out", newOutput.ToString());
                 StringAssert.DoesNotContain("session timed out", model.Output);

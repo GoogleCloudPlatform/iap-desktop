@@ -201,10 +201,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
             var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await this.viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await this.viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsTrue(this.viewModel.IsEventListEnabled);
             StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
@@ -219,10 +223,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
             var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
 
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await this.viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await this.viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsTrue(this.viewModel.IsEventListEnabled);
             StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
@@ -238,10 +246,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await this.viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await this.viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsTrue(this.viewModel.IsEventListEnabled);
             StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
@@ -261,7 +273,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await this.viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(2, this.viewModel.Events.Count);
 
@@ -277,7 +291,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await this.viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(2, this.viewModel.Events.Count);
 
@@ -293,7 +309,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await this.viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.AreEqual(1, this.jobServiceMock.Calls);
 

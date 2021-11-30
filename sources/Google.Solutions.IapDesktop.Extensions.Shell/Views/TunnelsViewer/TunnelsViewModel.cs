@@ -112,7 +112,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
                     this.selectedTunnel.Destination.Instance + "?",
                 "Terminate tunnel") == DialogResult.Yes)
             {
-                await this.tunnelBrokerService.DisconnectAsync(this.selectedTunnel.Destination);
+                await this
+                    .tunnelBrokerService
+                    .DisconnectAsync(this.selectedTunnel.Destination)
+                    .ConfigureAwait(true);
 
                 // Reset selection.
                 this.SelectedTunnel = null;

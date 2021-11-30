@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.AreEqual(1, viewModel.ApplyCalls);
             Assert.AreEqual(1, viewModel.CancelCount);
 
-            await t;
+            await t.ConfigureAwait(true);
         }
 
         [Test]
