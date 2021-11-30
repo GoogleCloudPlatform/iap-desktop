@@ -116,7 +116,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
             var service = new RdpConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(vmNode.Object, false);
+            await service
+                .ActivateOrConnectInstanceAsync(vmNode.Object, false)
+                .ConfigureAwait(false);
 
             remoteDesktopService.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
@@ -160,7 +162,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
             var service = new RdpConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(vmNode.Object, true);
+            await service
+                .ActivateOrConnectInstanceAsync(vmNode.Object, true)
+                .ConfigureAwait(false);
 
             remoteDesktopService.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
@@ -203,8 +207,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
             var service = new RdpConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(
-                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"));
+            await service
+                .ActivateOrConnectInstanceAsync(
+                    IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"))
+                .ConfigureAwait(false);
 
             remoteDesktopService.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
@@ -292,8 +298,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
             var service = new RdpConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(
-                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe"));
+            await service
+                .ActivateOrConnectInstanceAsync(
+                    IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe"))
+                .ConfigureAwait(false);
 
             remoteDesktopService.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),

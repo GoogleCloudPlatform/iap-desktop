@@ -200,11 +200,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
 
-            await credentialPrompt.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
+            await credentialPrompt
+                .ShowCredentialsPromptAsync(
+                    null,
+                    SampleInstance,
+                    settings,
+                    true)
+                .ConfigureAwait(true);
 
             Assert.AreEqual("bob", settings.RdpUsername.Value);
             Assert.AreEqual("secret", settings.RdpPassword.ClearTextValue);

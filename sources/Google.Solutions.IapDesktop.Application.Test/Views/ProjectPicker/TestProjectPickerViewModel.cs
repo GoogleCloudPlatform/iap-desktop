@@ -159,7 +159,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             Assert.IsTrue(viewModel.IsProjectSelected);
             Assert.IsNotNull(viewModel.SelectedProject);
 
-            await viewModel.FilterAsync("fail");
+            await viewModel
+                .FilterAsync("fail")
+                .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsLoading);
             Assert.IsNotNull(viewModel.LoadingError);

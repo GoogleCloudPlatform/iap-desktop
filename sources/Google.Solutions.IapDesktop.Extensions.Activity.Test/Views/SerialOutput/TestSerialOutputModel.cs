@@ -111,12 +111,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                 1)).Returns(stream.Object);
 
             // Let it load successfully...
-            var model = await SerialOutputModel.LoadAsync(
-                "display-name",
-                adapter.Object,
-                new InstanceLocator("project-1", "zone-1", "instance-1"),
-                ConsolePort,
-                CancellationToken.None);
+            var model = await SerialOutputModel
+                .LoadAsync(
+                    "display-name",
+                    adapter.Object,
+                    new InstanceLocator("project-1", "zone-1", "instance-1"),
+                    ConsolePort,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             // ...but fail the tailing.
             stream.Setup(s => s.ReadAsync(

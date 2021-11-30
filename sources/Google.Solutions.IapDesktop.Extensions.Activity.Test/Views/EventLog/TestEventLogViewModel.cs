@@ -187,7 +187,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         public async Task WhenSwitchingToCloudNode_ThenListIsDisabled()
         {
             var node = new Mock<IProjectModelCloudNode>();
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await this.viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(this.viewModel.IsEventListEnabled);
             Assert.AreEqual(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
