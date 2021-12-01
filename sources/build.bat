@@ -29,8 +29,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File build.ps1 %*
 
 rem Remove BOM to make file compatible with Sponge.
 set RETURNVALUE=%ERRORLEVEL%
+
+echo "Build exited with %ERRORLEVEL%"
 if exist sponge_log.xml (
+    echo "Sponge_log.xml exists"
     powershell -NoProfile -ExecutionPolicy Bypass -File scripts\strip-bom.ps1 sponge_log.xml
+) else (
+    echo "No sponge_log.xml found"
 )
 
 exit /b %RETURNVALUE%
