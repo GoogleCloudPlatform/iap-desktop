@@ -100,7 +100,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
                 new[] { "project-1" },
                 DateTime.UtcNow.AddYears(-1));
 
-            await reportBuilder.BuildAsync(CancellationToken.None);
+            await reportBuilder
+                .BuildAsync(CancellationToken.None)
+                .ConfigureAwait(false);
 
             auditExportAdapter.Verify(
                 a => a.ProcessInstanceEventsAsync(

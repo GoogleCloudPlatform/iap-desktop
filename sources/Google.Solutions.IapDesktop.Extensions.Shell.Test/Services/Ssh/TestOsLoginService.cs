@@ -121,12 +121,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 });
             var service = new OsLoginService(adapter.Object);
 
-            var key = await service.AuthorizeKeyAsync(
-                "project-1",
-                OsLoginSystemType.Linux,
-                new Mock<ISshKey>().Object,
-                TimeSpan.FromDays(1),
-                CancellationToken.None);
+            var key = await service
+                .AuthorizeKeyAsync(
+                    "project-1",
+                    OsLoginSystemType.Linux,
+                    new Mock<ISshKey>().Object,
+                    TimeSpan.FromDays(1),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual("joe3", key.Username);
             Assert.AreEqual(AuthorizeKeyMethods.Oslogin, key.AuthorizationMethod);

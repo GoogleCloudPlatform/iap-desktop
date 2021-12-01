@@ -114,8 +114,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         {
             var input = new string[] { null };
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -124,10 +128,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             var input = new string[] { "" };
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = await reader.ReadAsync(CancellationToken.None);
+            var result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(0, result.Count());
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -136,12 +144,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             var input = new string[] { "sample" };
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = await reader.ReadAsync(CancellationToken.None);
+            var result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result.First().Type);
             Assert.AreEqual("sample", result.First().Value);
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -156,25 +169,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = await reader.ReadAsync(CancellationToken.None);
+            var result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result.First().Type);
             Assert.AreEqual("text", result.First().Value);
 
-            result = await reader.ReadAsync(CancellationToken.None);
+            result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(0, result.Count());
 
-            result = await reader.ReadAsync(CancellationToken.None);
+            result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(AnsiTextToken.TokenType.Command, result.First().Type);
             Assert.AreEqual("N", result.First().Value);
 
-            result = await reader.ReadAsync(CancellationToken.None);
+            result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result.First().Type);
             Assert.AreEqual("text", result.First().Value);
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -187,15 +210,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = await reader.ReadAsync(CancellationToken.None);
+            var result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(0, result.Count());
 
-            result = await reader.ReadAsync(CancellationToken.None);
+            result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(AnsiTextToken.TokenType.Command, result.First().Type);
             Assert.AreEqual("N", result.First().Value);
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -208,18 +237,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = await reader.ReadAsync(CancellationToken.None);
+            var result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(0, result.Count());
 
-            result = await reader.ReadAsync(CancellationToken.None);
+            result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(0, result.Count());
 
-            result = await reader.ReadAsync(CancellationToken.None);
+            result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result.First().Type);
             Assert.AreEqual("\u001B[", result.First().Value);
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -234,25 +271,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = await reader.ReadAsync(CancellationToken.None);
+            var result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result.First().Type);
             Assert.AreEqual("text", result.First().Value);
 
-            result = await reader.ReadAsync(CancellationToken.None);
+            result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(0, result.Count());
 
-            result = await reader.ReadAsync(CancellationToken.None);
+            result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(AnsiTextToken.TokenType.Command, result.First().Type);
             Assert.AreEqual("[2J", result.First().Value);
 
-            result = await reader.ReadAsync(CancellationToken.None);
+            result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result.First().Type);
             Assert.AreEqual("text", result.First().Value);
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -265,15 +312,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = await reader.ReadAsync(CancellationToken.None);
+            var result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(0, result.Count());
 
-            result = await reader.ReadAsync(CancellationToken.None);
+            result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(AnsiTextToken.TokenType.Command, result.First().Type);
             Assert.AreEqual("[2J", result.First().Value);
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         //---------------------------------------------------------------------
@@ -290,7 +343,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = (await reader.ReadAsync(CancellationToken.None)).ToList();
+            var result = (await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false)).ToList();
             Assert.AreEqual(6, result.Count());
 
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result[0].Type);
@@ -311,7 +366,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result[5].Type);
             Assert.AreEqual("c", result[5].Value);
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -324,7 +381,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = (await reader.ReadAsync(CancellationToken.None)).ToList();
+            var result = (await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false)).ToList();
             Assert.AreEqual(5, result.Count());
 
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result[0].Type);
@@ -342,7 +401,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             Assert.AreEqual(AnsiTextToken.TokenType.Command, result[4].Type);
             Assert.AreEqual("N", result[4].Value);
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -355,7 +416,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = (await reader.ReadAsync(CancellationToken.None)).ToList();
+            var result = (await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false)).ToList();
             Assert.AreEqual(6, result.Count());
 
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result[0].Type);
@@ -376,7 +439,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result[5].Type);
             Assert.AreEqual("c", result[5].Value);
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -389,7 +454,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = (await reader.ReadAsync(CancellationToken.None)).ToList();
+            var result = (await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false)).ToList();
             Assert.AreEqual(5, result.Count());
 
             Assert.AreEqual(AnsiTextToken.TokenType.Text, result[0].Type);
@@ -407,7 +474,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             Assert.AreEqual(AnsiTextToken.TokenType.Command, result[4].Type);
             Assert.AreEqual("[1C", result[4].Value);
 
-            Assert.IsNull(await reader.ReadAsync(CancellationToken.None));
+            Assert.IsNull(await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false));
         }
 
         [Test]
@@ -417,7 +486,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var reader = new AnsiTokenReader(new EnumerationReader<string>(input));
 
-            var result = await reader.ReadAsync(CancellationToken.None);
+            var result = await reader
+                .ReadAsync(CancellationToken.None)
+                .ConfigureAwait(false);
             Assert.AreEqual(AnsiSequences.Length, result.Count());
             Assert.IsTrue(result.All(t => t.Type == AnsiTextToken.TokenType.Command));
             CollectionAssert.AreEqual(

@@ -247,8 +247,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
             var service = new RdpConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(
-                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"));
+            await service
+                .ActivateOrConnectInstanceAsync(
+                    IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"))
+                .ConfigureAwait(false);
 
             remoteDesktopService.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),

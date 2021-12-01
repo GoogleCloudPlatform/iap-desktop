@@ -66,15 +66,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                 await testInstance,
                 3389);
 
-            using (var tunnel = await service.CreateTunnelAsync(
-                destination,
-                new SameProcessRelayPolicy()))
+            using (var tunnel = await service
+                .CreateTunnelAsync(
+                    destination,
+                    new SameProcessRelayPolicy())
+                .ConfigureAwait(false))
             {
 
                 Assert.AreEqual(destination, tunnel.Destination);
                 Assert.IsFalse(tunnel.IsMutualTlsEnabled);
 
-                await tunnel.Probe(TimeSpan.FromSeconds(20));
+                await tunnel
+                    .Probe(TimeSpan.FromSeconds(20))
+                    .ConfigureAwait(false);
             }
         }
 
@@ -92,9 +96,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     "nonexistinginstance"),
                 3389);
 
-            using (var tunnel = await service.CreateTunnelAsync(
-                destination,
-                new SameProcessRelayPolicy()))
+            using (var tunnel = await service
+                .CreateTunnelAsync(
+                    destination,
+                    new SameProcessRelayPolicy())
+                .ConfigureAwait(false))
             {
                 Assert.AreEqual(destination, tunnel.Destination);
 
@@ -115,9 +121,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                 await testInstance,
                 3389);
 
-            using (var tunnel = await service.CreateTunnelAsync(
-                destination,
-                new SameProcessRelayPolicy()))
+            using (var tunnel = await service
+                .CreateTunnelAsync(
+                    destination,
+                    new SameProcessRelayPolicy())
+                .ConfigureAwait(false))
             {
                 Assert.AreEqual(destination, tunnel.Destination);
 
@@ -138,12 +146,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                 await testInstance,
                 3389);
 
-            using (var tunnel = await service.CreateTunnelAsync(
-                destination,
-                new DenyAllPolicy()))
+            using (var tunnel = await service
+                .CreateTunnelAsync(
+                    destination,
+                    new DenyAllPolicy())
+                .ConfigureAwait(false))
             {
                 // The Probe should still succeed.
-                await tunnel.Probe(TimeSpan.FromSeconds(20));
+                await tunnel
+                    .Probe(TimeSpan.FromSeconds(20))
+                    .ConfigureAwait(false);
 
                 // Trying to send ot receive anything should cause a connection reset.
                 var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

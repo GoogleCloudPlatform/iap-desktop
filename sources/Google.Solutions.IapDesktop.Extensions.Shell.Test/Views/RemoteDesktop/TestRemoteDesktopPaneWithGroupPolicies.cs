@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator);
+                var session = await Connect(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionAbortedEvent>(TimeSpan.FromSeconds(90));
                 Assert.IsNotNull(this.ExceptionShown);
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator);
+                var session = await Connect(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator);
+                var session = await Connect(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator);
+                var session = await Connect(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator);
+                var session = await Connect(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator);
+                var session = await Connect(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator);
+                var session = await Connect(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator);
+                var session = await Connect(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);

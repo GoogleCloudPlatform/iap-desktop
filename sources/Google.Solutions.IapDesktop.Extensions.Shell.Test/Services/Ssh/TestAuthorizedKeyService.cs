@@ -196,13 +196,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            var authorizedKey = await service.AuthorizeKeyAsync(
-                SampleLocator,
-                new Mock<ISshKey>().Object,
-                TimeSpan.FromMinutes(1),
-                null,
-                AuthorizeKeyMethods.All,
-                CancellationToken.None);
+            var authorizedKey = await service
+                .AuthorizeKeyAsync(
+                    SampleLocator,
+                    new Mock<ISshKey>().Object,
+                    TimeSpan.FromMinutes(1),
+                    null,
+                    AuthorizeKeyMethods.All,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(authorizedKey);
             Assert.AreEqual(AuthorizeKeyMethods.Oslogin, authorizedKey.AuthorizationMethod);
@@ -224,13 +226,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            var authorizedKey = await service.AuthorizeKeyAsync(
-                SampleLocator,
-                new Mock<ISshKey>().Object,
-                TimeSpan.FromMinutes(1),
-                null,
-                AuthorizeKeyMethods.All,
-                CancellationToken.None);
+            var authorizedKey = await service
+                .AuthorizeKeyAsync(
+                    SampleLocator,
+                    new Mock<ISshKey>().Object,
+                    TimeSpan.FromMinutes(1),
+                    null,
+                    AuthorizeKeyMethods.All,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(authorizedKey);
             Assert.AreEqual(AuthorizeKeyMethods.Oslogin, authorizedKey.AuthorizationMethod);
@@ -252,13 +256,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            var authorizedKey = await service.AuthorizeKeyAsync(
-                SampleLocator,
-                new Mock<ISshKey>().Object,
-                TimeSpan.FromMinutes(1),
-                null,
-                AuthorizeKeyMethods.All,
-                CancellationToken.None);
+            var authorizedKey = await service
+                .AuthorizeKeyAsync(
+                    SampleLocator,
+                    new Mock<ISshKey>().Object,
+                    TimeSpan.FromMinutes(1),
+                    null,
+                    AuthorizeKeyMethods.All,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(authorizedKey);
             Assert.AreEqual(AuthorizeKeyMethods.Oslogin, authorizedKey.AuthorizationMethod);
@@ -283,13 +289,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             using (var key = RsaSshKey.NewEphemeralKey())
             {
-                var authorizedKey = await service.AuthorizeKeyAsync(
-                    SampleLocator,
-                    key,
-                    TimeSpan.FromMinutes(1),
-                    null,
-                    AuthorizeKeyMethods.All,
-                    CancellationToken.None);
+                var authorizedKey = await service
+                    .AuthorizeKeyAsync(
+                        SampleLocator,
+                        key,
+                        TimeSpan.FromMinutes(1),
+                        null,
+                        AuthorizeKeyMethods.All,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
                 Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
@@ -409,13 +417,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     CreateResourceManagerAdapterMock(true).Object,
                     CreateOsLoginServiceMock().Object);
 
-                var authorizedKey = await service.AuthorizeKeyAsync(
-                    SampleLocator,
-                    key,
-                    TimeSpan.FromMinutes(1),
-                    "bob",
-                    AuthorizeKeyMethods.All,
-                    CancellationToken.None);
+                var authorizedKey = await service
+                    .AuthorizeKeyAsync(
+                        SampleLocator,
+                        key,
+                        TimeSpan.FromMinutes(1),
+                        "bob",
+                        AuthorizeKeyMethods.All,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
                 Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
@@ -461,13 +471,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     CreateResourceManagerAdapterMock(true).Object,
                     CreateOsLoginServiceMock().Object);
 
-                var authorizedKey = await service.AuthorizeKeyAsync(
-                    SampleLocator,
-                    key,
-                    TimeSpan.FromMinutes(1),
-                    "bob",
-                    AuthorizeKeyMethods.All,
-                    CancellationToken.None);
+                var authorizedKey = await service
+                    .AuthorizeKeyAsync(
+                        SampleLocator,
+                        key,
+                        TimeSpan.FromMinutes(1),
+                        "bob",
+                        AuthorizeKeyMethods.All,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
                 Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
@@ -513,13 +525,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     CreateResourceManagerAdapterMock(true).Object,
                     CreateOsLoginServiceMock().Object);
 
-                var authorizedKey = await service.AuthorizeKeyAsync(
-                    SampleLocator,
-                    key,
-                    TimeSpan.FromMinutes(1),
-                    "bob",
-                    AuthorizeKeyMethods.All,
-                    CancellationToken.None);
+                var authorizedKey = await service
+                    .AuthorizeKeyAsync(
+                        SampleLocator,
+                        key,
+                        TimeSpan.FromMinutes(1),
+                        "bob",
+                        AuthorizeKeyMethods.All,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
                 Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
@@ -559,13 +573,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             using (var key = RsaSshKey.NewEphemeralKey())
             {
-                var authorizedKey = await service.AuthorizeKeyAsync(
-                    SampleLocator,
-                    key,
-                    TimeSpan.FromMinutes(1),
-                    null,
-                    AuthorizeKeyMethods.All,
-                    CancellationToken.None);
+                var authorizedKey = await service
+                    .AuthorizeKeyAsync(
+                        SampleLocator,
+                        key,
+                        TimeSpan.FromMinutes(1),
+                        null,
+                        AuthorizeKeyMethods.All,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
                 Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
@@ -596,13 +612,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             using (var key = RsaSshKey.NewEphemeralKey())
             {
-                var authorizedKey = await service.AuthorizeKeyAsync(
-                    SampleLocator,
-                    key,
-                    TimeSpan.FromMinutes(1),
-                    null,
-                    AuthorizeKeyMethods.All,
-                    CancellationToken.None);
+                var authorizedKey = await service
+                    .AuthorizeKeyAsync(
+                        SampleLocator,
+                        key,
+                        TimeSpan.FromMinutes(1),
+                        null,
+                        AuthorizeKeyMethods.All,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
                 Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
@@ -633,13 +651,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             using (var key = RsaSshKey.NewEphemeralKey())
             {
-                var authorizedKey = await service.AuthorizeKeyAsync(
-                    SampleLocator,
-                    key,
-                    TimeSpan.FromMinutes(1),
-                    null,
-                    AuthorizeKeyMethods.All,
-                    CancellationToken.None);
+                var authorizedKey = await service
+                    .AuthorizeKeyAsync(
+                        SampleLocator,
+                        key,
+                        TimeSpan.FromMinutes(1),
+                        null,
+                        AuthorizeKeyMethods.All,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
                 Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
@@ -696,13 +716,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             using (var key = RsaSshKey.NewEphemeralKey())
             {
-                var authorizedKey = await service.AuthorizeKeyAsync(
-                    SampleLocator,
-                    key,
-                    TimeSpan.FromMinutes(1),
-                    null,
-                    AuthorizeKeyMethods.InstanceMetadata,
-                    CancellationToken.None);
+                var authorizedKey = await service
+                    .AuthorizeKeyAsync(
+                        SampleLocator,
+                        key,
+                        TimeSpan.FromMinutes(1),
+                        null,
+                        AuthorizeKeyMethods.InstanceMetadata,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
                 Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
@@ -733,13 +755,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             using (var key = RsaSshKey.NewEphemeralKey())
             {
-                var authorizedKey = await service.AuthorizeKeyAsync(
-                    SampleLocator,
-                    key,
-                    TimeSpan.FromMinutes(1),
-                    null,
-                    AuthorizeKeyMethods.All,
-                    CancellationToken.None);
+                var authorizedKey = await service
+                    .AuthorizeKeyAsync(
+                        SampleLocator,
+                        key,
+                        TimeSpan.FromMinutes(1),
+                        null,
+                        AuthorizeKeyMethods.All,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
                 Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);

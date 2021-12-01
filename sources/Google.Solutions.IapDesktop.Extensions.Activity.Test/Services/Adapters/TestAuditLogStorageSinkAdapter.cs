@@ -187,10 +187,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 storageAdapter.Object,
                 auditLogAdapter.Object);
 
-            var bucket = await service.FindCloudStorageExportBucketForAuditLogsAsync(
-                TestProject.ProjectId,
-                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                CancellationToken.None);
+            var bucket = await service
+                .FindCloudStorageExportBucketForAuditLogsAsync(
+                    TestProject.ProjectId,
+                    new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNull(bucket);
         }
@@ -224,10 +226,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 storageAdapter.Object,
                 auditLogAdapter.Object);
 
-            var bucket = await service.FindCloudStorageExportBucketForAuditLogsAsync(
-                TestProject.ProjectId,
-                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                CancellationToken.None);
+            var bucket = await service
+                .FindCloudStorageExportBucketForAuditLogsAsync(
+                    TestProject.ProjectId,
+                    new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNull(bucket);
         }
@@ -240,10 +244,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new StorageAdapter(await credential),
                 new AuditLogAdapter(await credential));
 
-            var bucket = await service.FindCloudStorageExportBucketForAuditLogsAsync(
-                TestProject.ProjectId,
-                DateTime.Now.AddDays(-1),
-                CancellationToken.None);
+            var bucket = await service
+                .FindCloudStorageExportBucketForAuditLogsAsync(
+                    TestProject.ProjectId,
+                    DateTime.Now.AddDays(-1),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNull(bucket, "Bucket not accessible, if if it existed");
         }

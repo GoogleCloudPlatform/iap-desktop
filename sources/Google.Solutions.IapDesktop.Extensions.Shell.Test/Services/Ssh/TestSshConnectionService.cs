@@ -131,7 +131,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+            await service
+                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConfigureAwait(false);
 
             sessionBroker.Verify(b => b.TryActivate(
                 It.Is<InstanceLocator>(l => l == SampleLocator)), Times.Once);
@@ -150,7 +152,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+            await service
+                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConfigureAwait(false);
 
             this.keyStore.Verify(k => k.CreateRsaKey(
                 It.Is<string>(name => name == "IAPDESKTOP_" + SampleEmail),
@@ -177,7 +181,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+            await service
+                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConfigureAwait(false);
 
             this.tunnelBrokerService.Verify(s => s.ConnectAsync(
                 It.Is<TunnelDestination>(d => d.RemotePort == 22),
@@ -199,7 +205,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+            await service
+                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConfigureAwait(false);
 
             this.tunnelBrokerService.Verify(s => s.ConnectAsync(
                 It.Is<TunnelDestination>(d => d.RemotePort == 2222),
@@ -222,7 +230,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+            await service
+                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConfigureAwait(false);
 
             this.authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
                 It.Is<InstanceLocator>(l => l == SampleLocator),
@@ -253,7 +263,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+            await service
+                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConfigureAwait(false);
 
             this.authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
                 It.Is<InstanceLocator>(l => l == SampleLocator),
@@ -279,7 +291,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
-            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+            await service
+                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConfigureAwait(false);
 
             this.tunnelBrokerService.Verify(s => s.ConnectAsync(
                 It.Is<TunnelDestination>(d => d.RemotePort == 2222),
