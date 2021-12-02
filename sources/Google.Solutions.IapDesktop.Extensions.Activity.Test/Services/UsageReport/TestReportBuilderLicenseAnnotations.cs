@@ -57,7 +57,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
                 AuditLogSources.Api,
                 new[] { TestProject.ProjectId },
                 startDate);
-            var report = await builder.BuildAsync(CancellationToken.None);
+            var report = await builder
+                .BuildAsync(CancellationToken.None)
+                .ConfigureAwait(false);
 
             var instance = report.History.Instances.First(i => i.Reference == instanceRef);
             Assert.IsTrue(report.IsInstanceAnnotatedAs(

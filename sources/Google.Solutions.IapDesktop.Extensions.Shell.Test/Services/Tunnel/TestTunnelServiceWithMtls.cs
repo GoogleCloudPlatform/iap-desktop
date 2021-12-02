@@ -69,14 +69,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             // Logs take some time to show up, so retry a few times.
             for (int retry = 0; retry < 20; retry++)
             {
-                var entries = await loggingService.Entries.List(request).ExecuteAsync();
+                var entries = await loggingService
+                    .Entries
+                    .List(request)
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
 
                 if (entries.Entries.EnsureNotNull().Any())
                 {
                     return entries.Entries;
                 }
 
-                await Task.Delay(1000);
+                await Task.Delay(1000).ConfigureAwait(false);
             }
 
             return new List<LogEntry>();
@@ -98,9 +102,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                 await testInstance,
                 randomPort);
 
-            using (var tunnel = await service.CreateTunnelAsync(
-                destination,
-                new SameProcessRelayPolicy()))
+            using (var tunnel = await service
+                .CreateTunnelAsync(
+                    destination,
+                    new SameProcessRelayPolicy())
+                .ConfigureAwait(false))
             {
                 Assert.AreEqual(destination, tunnel.Destination);
                 Assert.IsTrue(tunnel.IsMutualTlsEnabled);
@@ -108,13 +114,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                 // The probe will fail, but it will leave a record in the audit log.
                 try
                 {
-                    await tunnel.Probe(TimeSpan.FromSeconds(5));
+                    await tunnel
+                        .Probe(TimeSpan.FromSeconds(5))
+                        .ConfigureAwait(false);
                 }
                 catch (UnauthorizedException)
                 { }
             }
 
-            var logs = await GetIapAccessLogsForPortAsync(randomPort);
+            var logs = await GetIapAccessLogsForPortAsync(randomPort)
+                .ConfigureAwait(false);
             Assert.IsTrue(logs.Any(), "data access log emitted");
 
             var metadata = (JToken)logs.First().ProtoPayload["metadata"];

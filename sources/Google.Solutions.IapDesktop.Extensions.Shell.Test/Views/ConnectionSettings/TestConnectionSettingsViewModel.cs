@@ -83,7 +83,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
 
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsTrue(viewModel.IsInformationBarVisible);
         }
@@ -104,7 +106,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
 
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
         }
@@ -125,7 +129,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 broker.Object);
 
             var node = new Mock<IProjectModelCloudNode>();
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
             Assert.IsNull(viewModel.InspectedObject);
@@ -147,10 +153,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             node.SetupGet(n => n.Project).Returns(new ProjectLocator(SampleProjectId));
             node.SetupGet(n => n.DisplayName).Returns("display");
 
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsNotNull(viewModel.InspectedObject);
             StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
@@ -172,10 +182,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProjectId, "zone-1"));
             node.SetupGet(n => n.DisplayName).Returns("display");
 
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsNotNull(viewModel.InspectedObject);
             StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
@@ -199,10 +213,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             node.SetupGet(n => n.DisplayName).Returns("display");
             node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
 
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             // Switch again.
-            await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
 
             Assert.IsNotNull(viewModel.InspectedObject);
             StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);

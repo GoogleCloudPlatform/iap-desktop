@@ -67,7 +67,9 @@ namespace Google.Solutions.Common.Test.Integration
                         locator.Zone,
                         locator.Name);
                     request.QueryPath = GuestAttributeNamespace + "/";
-                    var guestAttributes = await request.ExecuteAsync();
+                    var guestAttributes = await request
+                        .ExecuteAsync()
+                        .ConfigureAwait(true);
 
                     if (guestAttributes
                         .QueryValue
@@ -94,9 +96,12 @@ namespace Google.Solutions.Common.Test.Integration
         private static async Task<string> GetComputeEngineDefaultServiceAccount()
         {
             var iamService = TestProject.CreateIamService();
-            var allServiceAccounts = await iamService.Projects.ServiceAccounts
+            var allServiceAccounts = await iamService
+                .Projects
+                .ServiceAccounts
                 .List($"projects/{TestProject.ProjectId}")
-                .ExecuteAsync();
+                .ExecuteAsync()
+                .ConfigureAwait(true);
             return allServiceAccounts
                 .Accounts
                 .First(sa => sa.Email.EndsWith("compute@developer.gserviceaccount.com"))

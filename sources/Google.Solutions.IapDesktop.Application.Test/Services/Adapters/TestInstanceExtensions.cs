@@ -39,9 +39,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var adapter = new ComputeEngineAdapter(await credential);
-            var instance = await adapter.GetInstanceAsync(
-                await testInstance,
-                CancellationToken.None);
+            var instance = await adapter
+                .GetInstanceAsync(
+                    await testInstance,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             var zoneLocator = instance.GetZoneLocator();
             var instanceLocator = instance.GetInstanceLocator();

@@ -157,7 +157,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.TunnelsViewer
 
             Assert.AreEqual(1, viewModel.Tunnels.Count);
 
-            await viewModel.DisconnectSelectedTunnelAsync();
+            await viewModel
+                .DisconnectSelectedTunnelAsync()
+                .ConfigureAwait(true);
 
             Assert.AreEqual(1, viewModel.Tunnels.Count);
         }
@@ -175,7 +177,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.TunnelsViewer
 
             Assert.AreEqual(1, viewModel.Tunnels.Count);
 
-            await viewModel.DisconnectSelectedTunnelAsync();
+            await viewModel
+                .DisconnectSelectedTunnelAsync()
+                .ConfigureAwait(true);
 
             broker.Verify(b => b.DisconnectAsync(It.IsAny<TunnelDestination>()), Times.Once);
             Assert.IsNull(viewModel.SelectedTunnel);
@@ -194,7 +198,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.TunnelsViewer
 
             Assert.AreEqual(1, viewModel.Tunnels.Count);
 
-            await viewModel.DisconnectSelectedTunnelAsync();
+            await viewModel
+                .DisconnectSelectedTunnelAsync()
+                .ConfigureAwait(true);
 
             broker.Verify(b => b.DisconnectAsync(It.IsAny<TunnelDestination>()), Times.Never);
             Assert.IsNotNull(viewModel.SelectedTunnel);

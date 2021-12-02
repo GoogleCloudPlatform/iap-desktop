@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.eventService.BindAsyncHandler<StatusUpdatedEvent>(
                 async e =>
                 {
-                    await Task.Delay(10);
+                    await Task.Delay(10).ConfigureAwait(true);
                     Debug.WriteLine("Delayed in event handler");
                 });
 

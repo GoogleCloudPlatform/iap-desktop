@@ -261,7 +261,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
             while (DateTime.Now < startTime.AddMinutes(3))
             {
-                var log = await stream.ReadAsync(CancellationToken.None);
+                var log = await stream
+                    .ReadAsync(CancellationToken.None)
+                    .ConfigureAwait(false);
                 if (log.Contains("Finished running startup scripts"))
                 {
                     return;

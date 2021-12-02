@@ -111,10 +111,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         {
             var adapter = new StorageAdapter(await credential);
 
-            var objects = await adapter.ListObjectsAsync(
-                GcsTestData.Bucket,
-                null,
-                CancellationToken.None);
+            var objects = await adapter
+                .ListObjectsAsync(
+                    GcsTestData.Bucket,
+                    null,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             var objectNames = objects.Select(o => o.Name).ToList();
 

@@ -56,10 +56,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(
-                destination,
-                new AllowAllRelayPolicy(),
-                TimeSpan.FromMinutes(1));
+            var tunnel = await broker
+                .ConnectAsync(
+                    destination,
+                    new AllowAllRelayPolicy(),
+                    TimeSpan.FromMinutes(1))
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(tunnel);
             Assert.AreEqual(1, broker.OpenTunnels.Count());
@@ -89,10 +91,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(
-                destination,
-                new AllowAllRelayPolicy(),
-                TimeSpan.FromMinutes(1));
+            var tunnel = await broker
+                .ConnectAsync(
+                    destination,
+                    new AllowAllRelayPolicy(),
+                    TimeSpan.FromMinutes(1))
+                .ConfigureAwait(false);
 
             mockEventService.Verify(s => s.FireAsync(It.IsAny<TunnelOpenedEvent>()), Times.Once);
         }
@@ -118,14 +122,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel1 = await broker.ConnectAsync(
-                destination,
-                new AllowAllRelayPolicy(),
-                TimeSpan.FromMinutes(1));
-            var tunnel2 = await broker.ConnectAsync(
-                destination,
-                new AllowAllRelayPolicy(),
-                TimeSpan.FromMinutes(1));
+            var tunnel1 = await broker
+                .ConnectAsync(
+                    destination,
+                    new AllowAllRelayPolicy(),
+                    TimeSpan.FromMinutes(1))
+                .ConfigureAwait(false);
+
+            var tunnel2 = await broker
+                .ConnectAsync(
+                    destination,
+                    new AllowAllRelayPolicy(),
+                    TimeSpan.FromMinutes(1))
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(tunnel1);
             Assert.IsNotNull(tunnel2);
@@ -215,14 +224,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(
-                destination,
-                new AllowAllRelayPolicy(),
-                TimeSpan.FromMinutes(1));
+            var tunnel = await broker
+                .ConnectAsync(
+                    destination,
+                    new AllowAllRelayPolicy(),
+                    TimeSpan.FromMinutes(1))
+                .ConfigureAwait(false);
 
             Assert.AreEqual(1, broker.OpenTunnels.Count());
 
-            await broker.DisconnectAsync(destination);
+            await broker
+                .DisconnectAsync(destination)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(0, broker.OpenTunnels.Count());
         }
@@ -249,14 +262,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(
-                destination,
-                new AllowAllRelayPolicy(),
-                TimeSpan.FromMinutes(1));
+            var tunnel = await broker
+                .ConnectAsync(
+                    destination,
+                    new AllowAllRelayPolicy(),
+                    TimeSpan.FromMinutes(1))
+                .ConfigureAwait(false);
 
             Assert.AreEqual(1, broker.OpenTunnels.Count());
 
-            await broker.DisconnectAllAsync();
+            await broker
+                .DisconnectAllAsync()
+                .ConfigureAwait(false);
 
             Assert.AreEqual(0, broker.OpenTunnels.Count());
         }
@@ -285,11 +302,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(
-                destination,
-                new AllowAllRelayPolicy(),
-                TimeSpan.FromMinutes(1));
-            await broker.DisconnectAsync(destination);
+            var tunnel = await broker
+                .ConnectAsync(
+                    destination,
+                    new AllowAllRelayPolicy(),
+                    TimeSpan.FromMinutes(1))
+                .ConfigureAwait(false);
+            await broker
+                .DisconnectAsync(destination)
+                .ConfigureAwait(false);
 
             mockEventService.Verify(s => s.FireAsync(It.IsAny<TunnelClosedEvent>()), Times.Once);
         }
@@ -318,11 +339,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(
-                destination,
-                new AllowAllRelayPolicy(),
-                TimeSpan.FromMinutes(1));
-            await broker.DisconnectAllAsync();
+            var tunnel = await broker
+                .ConnectAsync(
+                    destination,
+                    new AllowAllRelayPolicy(),
+                    TimeSpan.FromMinutes(1))
+                .ConfigureAwait(false);
+            await broker
+                .DisconnectAllAsync()
+                .ConfigureAwait(false);
 
             mockEventService.Verify(s => s.FireAsync(It.IsAny<TunnelClosedEvent>()), Times.Once);
         }

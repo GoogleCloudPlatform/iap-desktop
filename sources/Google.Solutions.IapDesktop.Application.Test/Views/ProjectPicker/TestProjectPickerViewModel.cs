@@ -89,7 +89,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
 
             CollectionAssert.IsEmpty(viewModel.FilteredProjects);
 
-            await viewModel.FilterAsync(null);
+            await viewModel
+                .FilterAsync(null)
+                .ConfigureAwait(true);
 
             CollectionAssert.IsNotEmpty(viewModel.FilteredProjects);
             Assert.AreEqual(3, viewModel.FilteredProjects.Count);
@@ -101,7 +103,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             var resourceManagerMock = CreateResourceManagerAdapterMock();
             var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
 
-            await viewModel.FilterAsync(null);
+            await viewModel
+                .FilterAsync(null)
+                .ConfigureAwait(true);
 
             Assert.IsTrue(viewModel.IsStatusTextVisible);
             StringAssert.Contains("Over 3", viewModel.StatusText);
@@ -113,7 +117,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             var resourceManagerMock = CreateResourceManagerAdapterMock();
             var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
 
-            await viewModel.FilterAsync("project-1");
+            await viewModel
+                .FilterAsync("project-1")
+                .ConfigureAwait(true);
 
             Assert.IsTrue(viewModel.IsStatusTextVisible);
             StringAssert.Contains("1 project", viewModel.StatusText);
@@ -125,13 +131,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             var resourceManagerMock = CreateResourceManagerAdapterMock();
             var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
 
-            await viewModel.FilterAsync(null);
+            await viewModel
+                .FilterAsync(null)
+                .ConfigureAwait(true);
             viewModel.SelectedProject = ProjectOne;
 
             Assert.IsTrue(viewModel.IsProjectSelected);
             Assert.IsNotNull(viewModel.SelectedProject);
 
-            await viewModel.FilterAsync("project-1");
+            await viewModel
+                .FilterAsync("project-1")
+                .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsProjectSelected);
             Assert.IsNull(viewModel.SelectedProject);
@@ -149,7 +159,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             Assert.IsTrue(viewModel.IsProjectSelected);
             Assert.IsNotNull(viewModel.SelectedProject);
 
-            await viewModel.FilterAsync("fail");
+            await viewModel
+                .FilterAsync("fail")
+                .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsLoading);
             Assert.IsNotNull(viewModel.LoadingError);
