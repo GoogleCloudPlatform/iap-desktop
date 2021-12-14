@@ -87,8 +87,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
         }
 
         [Test]
-        // TODO: b/208681979 - update credentials and reenable
-        [Ignore("b/208681979")]
         public async Task WhenDeviceEnrolled_ThenAuditLogIndicatesDevice(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
