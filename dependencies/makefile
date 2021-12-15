@@ -74,7 +74,8 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj:
 	git am $(MAKEDIR)\vtnetcore-patches\0002-Fix-escape-sequences-for-bracketed-text-mode.patch
 	git am $(MAKEDIR)\vtnetcore-patches\0003-Detect-key-modifier-options-XTMODKEYS.patch
 	git am $(MAKEDIR)\vtnetcore-patches\0004-Handle-single-parameter-OSC-sequences.patch
-	git am $(MAKEDIR)\vtnetcore-patches\0005-Fix-throw-statement-to-avoid-cascading-exception.patch 
+	git am $(MAKEDIR)\vtnetcore-patches\0005-Fix-throw-statement-to-avoid-cascading-exception.patch
+	git am $(MAKEDIR)\vtnetcore-patches\0006-Use-TraceSource-for-logging.patch    
 
 	cd $(MAKEDIR)
 
