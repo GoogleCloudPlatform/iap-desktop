@@ -50,24 +50,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         private void InitializeComponent()
         {
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.SuspendLayout();
             // 
             // dockPanel
             // 
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dockPanel.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
             this.dockPanel.Location = new System.Drawing.Point(0, 0);
             this.dockPanel.Name = "dockPanel";
+            this.dockPanel.Padding = new System.Windows.Forms.Padding(6);
+            this.dockPanel.ShowAutoHideContentOnHover = false;
             this.dockPanel.Size = new System.Drawing.Size(800, 450);
             this.dockPanel.TabIndex = 0;
+            this.dockPanel.Theme = this.vs2015LightTheme;
             // 
-            // MockMainForm
+            // TestMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.dockPanel);
             this.IsMdiContainer = true;
-            this.Name = "MockMainForm";
+            this.Name = "TestMainForm";
             this.Text = "MockMainForm";
             this.ResumeLayout(false);
 
@@ -76,5 +81,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         #endregion
 
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
+        private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme vs2015LightTheme;
     }
 }
