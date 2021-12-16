@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 21
+TAG = 22
 
 VTNETCORE_TAG = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
@@ -33,9 +33,9 @@ VTNETCORE_VERSION = 1.0.30.$(TAG)
 # - libssh2: vcpkg-ports\libssh2\portfile.cmake
 # - openssl: https://github.com/microsoft/vcpkg/blob/master/ports/openssl/portfile.cmake
 #
-VCPKG_TAG = 2021.05.12
+VCPKG_TAG = 2021.12.01
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
-LIBSSH2_VERSION = 1.9.0.$(TAG)
+LIBSSH2_VERSION = 1.10.0.$(TAG)
 
 # GCS bucket used for storing results
 PACKAGES_BUCKET = iap-windows-rdc-plugin
