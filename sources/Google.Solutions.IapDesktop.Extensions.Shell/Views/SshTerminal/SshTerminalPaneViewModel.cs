@@ -212,9 +212,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 RecordReceivedData(data);
 
                 this.ViewInvoker?.InvokeAndForget(
-                    () => this.DataReceived?.Invoke(
-                        this,
-                        new DataReceivedEventArgs(data)));
+                    () =>
+                    {
+                        try
+                        {
+                            this.DataReceived?.Invoke(
+                                this,
+                                new DataReceivedEventArgs(data));
+                        }
+                        catch (Exception e)
+                        {
+                            //
+                            // A fatal error occured while processing data,
+                            // possibly because of malformed or unsupported
+                            // xterm data.
+                            //
+                            this.ConnectionFailed?.Invoke(
+                                this,
+                                new ConnectionErrorEventArgs(e));
+                        }
+                    });
             }
 
             string OnAuthenticationPrompt(
