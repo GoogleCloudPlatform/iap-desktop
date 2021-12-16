@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
@@ -114,9 +115,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             this.controllerSink = new DataConsumer(this.controller);
             this.keyHandler = new VirtualTerminalKeyHandler(this.controller);
 
-#if DEBUG
-            this.controller.Debugging = true;
-#endif
+            //
+            // Forward all logs to common trace source so that they
+            // can be controlled using the UI.
+            //
+            this.controller.Trace.ForwardTo(ApplicationTraceSources.Default);
 
             //
             // Use double-buffering to reduce flicker - unless we're in an
