@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         {
             var adapter = new StorageAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListBucketsAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         {
             var adapter = new StorageAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListObjectsAsync(
                     GcsTestData.Bucket,
                     null,
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         {
             var adapter = new StorageAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.DownloadObjectToMemoryAsync(
                     SampleLocator,
                     CancellationToken.None).Wait());

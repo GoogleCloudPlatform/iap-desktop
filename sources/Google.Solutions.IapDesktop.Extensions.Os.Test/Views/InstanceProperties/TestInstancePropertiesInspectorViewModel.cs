@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             deniedNode.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "denied-1"));
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => viewModel.SwitchToModelAsync(deniedNode.Object).Wait());
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);

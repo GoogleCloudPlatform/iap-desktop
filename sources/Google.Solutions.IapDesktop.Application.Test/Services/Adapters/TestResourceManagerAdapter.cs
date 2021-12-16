@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
-                AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                     () => adapter.GetProjectAsync(
                         TestProject.ProjectId,
                         CancellationToken.None).Wait());
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
-                AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                     () => adapter.GetProjectAsync(
                         "invalid",
                         CancellationToken.None).Wait());

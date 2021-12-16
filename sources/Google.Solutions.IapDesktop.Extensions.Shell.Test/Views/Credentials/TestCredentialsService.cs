@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpUsername.Value = "alice";
 
             var credentialsService = new CredentialsService(serviceRegistry);
-            AssertEx.ThrowsAggregateException<TaskCanceledException>(
+            ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialsService.GenerateCredentialsAsync(
                     null,
                     SampleInstance,
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
 
             var credentialsService = new CredentialsService(serviceRegistry);
-            AssertEx.ThrowsAggregateException<TaskCanceledException>(
+            ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialsService.GenerateCredentialsAsync(
                     null,
                     SampleInstance,
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpUsername.Value = "";
 
             var credentialsService = new CredentialsService(serviceRegistry);
-            AssertEx.ThrowsAggregateException<TaskCanceledException>(
+            ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialsService.GenerateCredentialsAsync(
                     null,
                     SampleInstance,

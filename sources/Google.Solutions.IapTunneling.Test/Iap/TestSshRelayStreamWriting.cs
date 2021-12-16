@@ -167,7 +167,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
-            AssertEx.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
+            ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
             {
                 request = new byte[] { 2 };
                 relay.WriteAsync(request, 0, request.Length, tokenSource.Token).Wait();
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
-            AssertEx.ThrowsAggregateException<NetworkStreamClosedException>(() =>
+            ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
             {
                 request = new byte[] { 2 };
                 relay.WriteAsync(request, 0, request.Length, tokenSource.Token).Wait();
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
-            AssertEx.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
+            ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
             {
                 request = new byte[] { 2 };
                 relay.WriteAsync(request, 0, request.Length, tokenSource.Token).Wait();
@@ -393,7 +393,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             var relay = new SshRelayStream(endpoint);
 
             // Write first request - this should fail.
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
+            ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
             {
                 var request = new byte[] { 2 };
                 relay.WriteAsync(request, 0, request.Length, tokenSource.Token).Wait();

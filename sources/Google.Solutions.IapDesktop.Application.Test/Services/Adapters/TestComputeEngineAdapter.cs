@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.GetProjectAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<GoogleApiException>(
+            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
                 () => adapter.GetProjectAsync(
                     TestProject.InvalidProjectId,
                     CancellationToken.None).Wait());
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListInstancesAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListInstancesAsync(
                     new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
                     CancellationToken.None).Wait());
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var locator = await testInstance;
             var adapter = new ComputeEngineAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.GetInstanceAsync(
                     locator,
                     CancellationToken.None).Wait());
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var locator = await testInstance;
             var adapter = new ComputeEngineAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.GetGuestAttributesAsync(
                     locator,
                     "somepath/",
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListNodeGroupsAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
@@ -202,12 +202,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListNodesAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListNodesAsync(
                     new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
                     "group-1",
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListDisksAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
@@ -236,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new ComputeEngineAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.GetImageAsync(
                     new ImageLocator(TestProject.ProjectId, "someimage"),
                     CancellationToken.None).Wait());

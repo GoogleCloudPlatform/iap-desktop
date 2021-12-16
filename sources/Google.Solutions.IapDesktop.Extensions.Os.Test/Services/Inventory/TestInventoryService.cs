@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.GetInstanceInventoryAsync(
                     instanceRef,
                     CancellationToken.None).Wait());
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListProjectInventoryAsync(
                     TestProject.ProjectId,
                     OperatingSystems.All,
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListZoneInventoryAsync(
                     new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
                     OperatingSystems.All,

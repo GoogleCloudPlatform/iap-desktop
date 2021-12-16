@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
 
             var service = new SshConnectionService(this.serviceRegistry);
-            AssertEx.ThrowsAggregateException<ConnectionFailedException>(
+            ExceptionAssert.ThrowsAggregateException<ConnectionFailedException>(
                 () => service.ActivateOrConnectInstanceAsync(vmNode.Object).Wait());
         }
 
@@ -346,7 +346,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
-            AssertEx.ThrowsAggregateException<SshKeyPushFailedException>(
+            ExceptionAssert.ThrowsAggregateException<SshKeyPushFailedException>(
                 () => service.ActivateOrConnectInstanceAsync(vmNode.Object).Wait());
         }
     }

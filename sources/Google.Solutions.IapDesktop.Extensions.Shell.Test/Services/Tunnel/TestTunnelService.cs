@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             {
                 Assert.AreEqual(destination, tunnel.Destination);
 
-                AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(
                     () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
             }
         }
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             {
                 Assert.AreEqual(destination, tunnel.Destination);
 
-                AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(
                     () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
             }
         }

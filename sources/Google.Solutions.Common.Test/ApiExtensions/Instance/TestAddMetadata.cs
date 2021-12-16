@@ -165,7 +165,7 @@ namespace Google.Solutions.Common.Test.Extensions
             var key = Guid.NewGuid().ToString();
 
             int callbacks = 0;
-            AssertEx.ThrowsAggregateException<GoogleApiException>(
+            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
                 () => this.instancesResource.UpdateMetadataAsync(
                     locator,
                     metadata =>
@@ -279,7 +279,7 @@ namespace Google.Solutions.Common.Test.Extensions
             var key = Guid.NewGuid().ToString();
 
             int callbacks = 0;
-            AssertEx.ThrowsAggregateException<GoogleApiException>(
+            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
                 () => this.projectsResource.UpdateMetadataAsync(
                     TestProject.ProjectId,
                     metadata =>

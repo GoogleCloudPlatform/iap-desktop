@@ -334,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
 
-            AssertEx.ThrowsAggregateException<TokenResponseException>(
+            ExceptionAssert.ThrowsAggregateException<TokenResponseException>(
                 () => modelService.GetRootNodeAsync(false, CancellationToken.None).Wait());
         }
 
@@ -533,7 +533,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 .GetRootNodeAsync(false, CancellationToken.None)
                 .ConfigureAwait(true);
 
-            AssertEx.ThrowsAggregateException<ArgumentException>(() => modelService.GetNodeAsync(
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => modelService.GetNodeAsync(
                 new DiskTypeLocator(SampleProjectId, "zone-1", "type-1"),
                 CancellationToken.None).Wait());
         }
@@ -843,7 +843,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var modelService = new ProjectModelService(serviceRegistry);
 
-            AssertEx.ThrowsAggregateException<ArgumentException>(
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(
                 () => modelService.SetActiveNodeAsync(
                     new DiskTypeLocator(SampleProjectId, "zone-1", "type-1"),
                     CancellationToken.None).Wait());

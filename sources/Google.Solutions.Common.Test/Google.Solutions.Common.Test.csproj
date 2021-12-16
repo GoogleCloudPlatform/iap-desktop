@@ -96,7 +96,7 @@
     <Compile Include="ApiExtensions\Instance\TestAddMetadata.cs" />
     <Compile Include="ApiExtensions\Instance\TestMetadataExtensions.cs" />
     <Compile Include="ApiExtensions\Request\TestExecuteAsStreamExtensions.cs" />
-    <Compile Include="AssertEx.cs" />
+    <Compile Include="Assert.cs" />
     <Compile Include="Auth\TestAuthorization.cs" />
     <Compile Include="Auth\TestGoogleAuthAdapter.cs" />
     <Compile Include="Diagnostics\TestClrVersion.cs" />

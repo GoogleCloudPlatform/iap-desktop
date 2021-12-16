@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
-            AssertEx.ThrowsAggregateException<KeyNotFoundException>(() =>
+            ExceptionAssert.ThrowsAggregateException<KeyNotFoundException>(() =>
             {
                 repository.DeleteAsync<string>("invalidkey");
             });
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
-            AssertEx.ThrowsAggregateException<KeyNotFoundException>(() =>
+            ExceptionAssert.ThrowsAggregateException<KeyNotFoundException>(() =>
             {
                 repository.GetAsync<string>("invalidkey");
             });
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
-            AssertEx.ThrowsAggregateException<KeyNotFoundException>(() =>
+            ExceptionAssert.ThrowsAggregateException<KeyNotFoundException>(() =>
             {
                 repository.StoreAsync<string>("invalidkey", null);
             });

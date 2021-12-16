@@ -87,7 +87,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             byte[] buffer = new byte[relay.MinReadSize - 1];
 
-            AssertEx.ThrowsAggregateException<IndexOutOfRangeException>(() =>
+            ExceptionAssert.ThrowsAggregateException<IndexOutOfRangeException>(() =>
             {
                 relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token).Wait();
             });
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             byte[] buffer = new byte[relay.MinReadSize];
 
-            AssertEx.ThrowsAggregateException<InvalidServerResponseException>(() =>
+            ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(() =>
             {
                 relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token).Wait();
             });
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             Assert.AreEqual(0, endpoint.ConnectCount);
 
-            AssertEx.ThrowsAggregateException<InvalidServerResponseException>(() =>
+            ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(() =>
             {
                 byte[] buffer = new byte[relay.MinReadSize];
                 relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token).Wait();
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ConfigureAwait(false);
 
             // Receive invalid ACK.
-            AssertEx.ThrowsAggregateException<InvalidServerResponseException>(() =>
+            ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(() =>
             {
                 byte[] buffer = new byte[relay.MinReadSize];
                 int bytesRead = relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token).Result;
@@ -290,7 +290,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ConfigureAwait(false);
 
             // Receive invalid ACK for byte 10.
-            AssertEx.ThrowsAggregateException<InvalidServerResponseException>(() =>
+            ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(() =>
             {
                 byte[] buffer = new byte[relay.MinReadSize];
                 int bytesRead = relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token).Result;
@@ -461,7 +461,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             Assert.AreEqual(1, bytesRead);
 
             // connection breaks, triggering a reconnect that will fail.
-            AssertEx.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
+            ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
             {
                 relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token).Wait();
             });
@@ -629,7 +629,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .CloseAsync(tokenSource.Token)
                 .ConfigureAwait(false);
 
-            AssertEx.ThrowsAggregateException<NetworkStreamClosedException>(() =>
+            ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
             {
                 bytesRead = relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token).Result;
             });
@@ -648,7 +648,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             };
             var relay = new SshRelayStream(endpoint);
 
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(
+            ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(
                 () => relay
                     .TestConnectionAsync(TimeSpan.FromSeconds(2))
                     .Wait());

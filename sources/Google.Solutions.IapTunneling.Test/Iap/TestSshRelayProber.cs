@@ -51,7 +51,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
+                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
             }
         }
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
+                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
             }
         }
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
+                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
             }
         }
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                AssertEx.ThrowsAggregateException<NetworkStreamClosedException>(() =>
+                ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(5)).Wait());
             }
         }
