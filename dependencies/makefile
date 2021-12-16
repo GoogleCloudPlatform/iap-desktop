@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 20
+TAG = 21
 
 VTNETCORE_TAG = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
@@ -77,6 +77,7 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj:
 	git am $(MAKEDIR)\vtnetcore-patches\0005-Fix-throw-statement-to-avoid-cascading-exception.patch
 	git am $(MAKEDIR)\vtnetcore-patches\0006-Use-TraceSource-for-logging.patch    
     git am $(MAKEDIR)\vtnetcore-patches\0007-Include-symbols-in-NuGet-package.patch
+    git am $(MAKEDIR)\vtnetcore-patches\0008-Handle-xterm-input-errors-more-gracefully.patch
 
 	cd $(MAKEDIR)
 
@@ -105,6 +106,7 @@ vtnetcore: $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(V
 
 clean-vtnetcore:
     msbuild /t:Clean "$(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj"
+    -rd /S /Q $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin
     -rd /S /Q $(MAKEDIR)\NuGetPackages\vtnetcore\$(VTNETCORE_VERSION)
     -rd /S /Q $(MAKEDIR)\..\sources\packages\vtnetcore.$(VTNETCORE_VERSION)
     
