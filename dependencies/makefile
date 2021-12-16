@@ -76,6 +76,7 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj:
 	git am $(MAKEDIR)\vtnetcore-patches\0004-Handle-single-parameter-OSC-sequences.patch
 	git am $(MAKEDIR)\vtnetcore-patches\0005-Fix-throw-statement-to-avoid-cascading-exception.patch
 	git am $(MAKEDIR)\vtnetcore-patches\0006-Use-TraceSource-for-logging.patch    
+    git am $(MAKEDIR)\vtnetcore-patches\0007-Include-symbols-in-NuGet-package.patch
 
 	cd $(MAKEDIR)
 
@@ -102,6 +103,11 @@ vtnetcore: $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(V
 		$(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nupkg \
 		-Source $(MAKEDIR)\NuGetPackages
 
+clean-vtnetcore:
+    msbuild /t:Clean "$(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj"
+    -rd /S /Q $(MAKEDIR)\NuGetPackages\vtnetcore\$(VTNETCORE_VERSION)
+    -rd /S /Q $(MAKEDIR)\..\sources\packages\vtnetcore.$(VTNETCORE_VERSION)
+    
 #------------------------------------------------------------------------------
 # vcpkg
 #------------------------------------------------------------------------------
