@@ -45,7 +45,7 @@ namespace Google.Solutions.Common.Test.Extensions
                 HttpClientInitializer = await credential
             });
 
-            AssertEx.ThrowsAggregateException<GoogleApiException>(
+            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
                 () => computeService.Instances.Get("invalid", "invalid", "invalid")
                     .ExecuteAsStreamOrThrowAsync(CancellationToken.None).Wait());
         }

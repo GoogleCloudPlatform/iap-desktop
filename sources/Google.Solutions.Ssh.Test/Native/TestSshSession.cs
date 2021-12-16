@@ -300,7 +300,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 12);
             using (var session = CreateSession())
             {
-                AssertEx.ThrowsAggregateException<SocketException>(
+                ExceptionAssert.ThrowsAggregateException<SocketException>(
                     () => session.Connect(endpoint));
             }
         }

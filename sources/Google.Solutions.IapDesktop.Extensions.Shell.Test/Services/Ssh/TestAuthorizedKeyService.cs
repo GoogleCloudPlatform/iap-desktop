@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            AssertEx.ThrowsAggregateException<InvalidOperationException>(
+            ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
                     new Mock<ISshKey>().Object,
@@ -350,7 +350,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            AssertEx.ThrowsAggregateException<InvalidOperationException>(
+            ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
                     new Mock<ISshKey>().Object,
@@ -379,7 +379,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            AssertEx.ThrowsAggregateException<UnsupportedLegacySshKeyEncounteredException>(
+            ExceptionAssert.ThrowsAggregateException<UnsupportedLegacySshKeyEncounteredException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
                     new Mock<ISshKey>().Object,
@@ -688,7 +688,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            AssertEx.ThrowsAggregateException<InvalidOperationException>(
+            ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
                     new Mock<ISshKey>().Object,
@@ -807,7 +807,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             using (var key = RsaSshKey.NewEphemeralKey())
             {
-                AssertEx.ThrowsAggregateException<SshKeyPushFailedException>(
+                ExceptionAssert.ThrowsAggregateException<SshKeyPushFailedException>(
                     () => service.AuthorizeKeyAsync(
                         SampleLocator,
                         key,

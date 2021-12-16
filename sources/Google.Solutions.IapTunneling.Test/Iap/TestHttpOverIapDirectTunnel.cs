@@ -67,7 +67,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             byte[] buffer = new byte[64];
 
-            AssertEx.ThrowsAggregateException<IndexOutOfRangeException>(() =>
+            ExceptionAssert.ThrowsAggregateException<IndexOutOfRangeException>(() =>
             {
                 stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Wait();
             });
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .WriteAsync(request, 0, request.Length, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
+            ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
             {
                 byte[] buffer = new byte[64 * 1024];
                 stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Wait();
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .WriteAsync(request, 0, request.Length, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            AssertEx.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
+            ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
             {
                 byte[] buffer = new byte[stream.MinReadSize];
                 stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Wait();

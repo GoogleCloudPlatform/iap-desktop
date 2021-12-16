@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromException<ITunnel>(new ApplicationException()));
 
-            AssertEx.ThrowsAggregateException<ApplicationException>(() =>
+            ExceptionAssert.ThrowsAggregateException<ApplicationException>(() =>
             {
                 broker.ConnectAsync(
                     destination,
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                     It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            AssertEx.ThrowsAggregateException<ApplicationException>(() =>
+            ExceptionAssert.ThrowsAggregateException<ApplicationException>(() =>
             {
                 broker.ConnectAsync(
                     destination,

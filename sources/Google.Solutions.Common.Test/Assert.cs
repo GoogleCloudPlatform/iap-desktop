@@ -29,7 +29,7 @@ using System.Reflection;
 
 namespace Google.Solutions.Common.Test
 {
-    public static class AssertEx
+    public static class ExceptionAssert
     {
         public static TActual ThrowsAggregateException<TActual>(TestDelegate code) where TActual : Exception
         {
@@ -45,7 +45,10 @@ namespace Google.Solutions.Common.Test
                 }
             });
         }
+    }
 
+    public static class PropertyAssert
+    { 
         public static void ArePropertiesEqual<T>(T expected, T actual)
         {
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);

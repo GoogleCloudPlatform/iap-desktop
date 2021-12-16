@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(false);
 
-            AssertEx.ThrowsAggregateException<TaskCanceledException>(() =>
+            ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(() =>
             {
                 this.jobService.RunInBackground<string>(
                     new JobDescription("test"),
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             this.authService.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromException(new ApplicationException()));
 
-            AssertEx.ThrowsAggregateException<ApplicationException>(() =>
+            ExceptionAssert.ThrowsAggregateException<ApplicationException>(() =>
             {
                 this.jobService.RunInBackground<string>(
                     new JobDescription("test"),
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(false);
 
-            AssertEx.ThrowsAggregateException<TaskCanceledException>(() =>
+            ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(() =>
             {
                 this.jobService.RunInBackground<string>(
                     new JobDescription("test"),
@@ -298,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             this.authService.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromException(new ApplicationException()));
 
-            AssertEx.ThrowsAggregateException<ApplicationException>(() =>
+            ExceptionAssert.ThrowsAggregateException<ApplicationException>(() =>
             {
                 this.jobService.RunInBackground<string>(
                     new JobDescription("test"),

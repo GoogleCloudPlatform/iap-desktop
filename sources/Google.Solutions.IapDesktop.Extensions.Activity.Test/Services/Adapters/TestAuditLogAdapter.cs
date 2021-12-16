@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             var adapter = new AuditLogAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ProcessInstanceEventsAsync(
                     new[] { TestProject.ProjectId },
                     null,  // all zones.
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             };
 
             var adapter = new AuditLogAdapter(await credential);
-            AssertEx.ThrowsAggregateException<GoogleApiException>(
+            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
                 () => adapter.ListEventsAsync(
                     request,
                     _ => { },
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         {
             var adapter = new AuditLogAdapter(await credential);
 
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListCloudStorageSinksAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());

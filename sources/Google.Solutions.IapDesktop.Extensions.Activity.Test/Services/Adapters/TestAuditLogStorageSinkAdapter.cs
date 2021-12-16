@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new StorageAdapter(await credential),
                 new AuditLogAdapter(await credential));
 
-            AssertEx.ThrowsAggregateException<JsonReaderException>(
+            ExceptionAssert.ThrowsAggregateException<JsonReaderException>(
                 () => service.ListInstanceEventsAsync(GarbageLocator, CancellationToken.None).Wait());
         }
 
@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new StorageAdapter(await credential),
                 new AuditLogAdapter(await credential));
 
-            AssertEx.ThrowsAggregateException<JsonReaderException>(
+            ExceptionAssert.ThrowsAggregateException<JsonReaderException>(
                 () => service.ListInstanceEventsAsync(
                     new[] { ValidLocator_Jan1_00, GarbageLocator },
                     CancellationToken.None).Wait());
@@ -348,7 +348,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new StorageAdapter(await credential),
                 new AuditLogAdapter(await credential));
 
-            AssertEx.ThrowsAggregateException<ArgumentException>(
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(
                 () => service.FindAuditLogExportObjectsGroupedByDay(
                     GcsTestData.Bucket,
                     new DateTime(2020, 1, 2, 0, 0, 0, DateTimeKind.Utc),

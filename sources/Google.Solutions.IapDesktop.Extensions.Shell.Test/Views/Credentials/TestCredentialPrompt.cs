@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
 
-            AssertEx.ThrowsAggregateException<TaskCanceledException>(
+            ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.ShowCredentialsPromptAsync(
                 null,
                 SampleInstance,
@@ -340,7 +340,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
 
-            AssertEx.ThrowsAggregateException<TaskCanceledException>(
+            ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.ShowCredentialsPromptAsync(
                 null,
                 SampleInstance,
@@ -510,7 +510,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Force;
 
-            AssertEx.ThrowsAggregateException<TaskCanceledException>(
+            ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.ShowCredentialsPromptAsync(
                 null,
                 SampleInstance,

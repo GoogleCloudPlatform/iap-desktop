@@ -116,7 +116,7 @@ namespace Google.Solutions.Ssh.Test
                 {
                     await connection.ConnectAsync().ConfigureAwait(false);
 
-                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
+                    ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                         () => connection.ConnectAsync().Wait());
 
                     await connection.SendAsync("whoami\n").ConfigureAwait(false);
@@ -216,7 +216,7 @@ namespace Google.Solutions.Ssh.Test
                         .ConnectAsync()
                         .ConfigureAwait(false);
 
-                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
+                    ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                         () => connection.ConnectAsync().Wait());
 
                     await connection
@@ -282,7 +282,7 @@ namespace Google.Solutions.Ssh.Test
                         .ConnectAsync()
                         .ConfigureAwait(false);
 
-                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
+                    ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                         () => connection.ConnectAsync().Wait());
 
                     await connection
@@ -346,7 +346,7 @@ namespace Google.Solutions.Ssh.Test
                         .ConnectAsync()
                         .ConfigureAwait(false);
 
-                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
+                    ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                         () => connection.ConnectAsync().Wait());
 
                     await connection

@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public void WhenTitleSet_ThenNotificationIsRaised()
         {
             var viewModel = new SshAuthenticationPromptViewModel();
-            AssertEx.RaisesPropertyChangedNotification(
+            PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
                 () => viewModel.Title = "test",
                 v => v.Title);
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public void WhenDescriptionSet_ThenNotificationIsRaised()
         {
             var viewModel = new SshAuthenticationPromptViewModel();
-            AssertEx.RaisesPropertyChangedNotification(
+            PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
                 () => viewModel.Description = "test",
                 v => v.Description);
@@ -62,12 +62,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public void WhenInputSet_ThenNotificationIsRaised()
         {
             var viewModel = new SshAuthenticationPromptViewModel();
-            AssertEx.RaisesPropertyChangedNotification(
+            PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
                 () => viewModel.Input = "test",
                 v => v.Input);
-            
-            AssertEx.RaisesPropertyChangedNotification(
+
+            PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
                 () => viewModel.Input = "test",
                 v => v.IsOkButtonEnabled);
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public void WhenIsPasswordMaskedSet_ThenNotificationIsRaised()
         {
             var viewModel = new SshAuthenticationPromptViewModel();
-            AssertEx.RaisesPropertyChangedNotification(
+            PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
                 () => viewModel.IsPasswordMasked = true,
                 v => v.IsPasswordMasked);

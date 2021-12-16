@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             {
                 cts.Cancel();
 
-                AssertEx.ThrowsAggregateException<TaskCanceledException>(
+                ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
                     () => adapter.CreateWindowsCredentialsAsync(
                     instanceLocator,
                     "test" + Guid.NewGuid().ToString().Substring(20),
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var instanceLocator = await testInstance;
             using (var cts = new CancellationTokenSource())
             {
-                AssertEx.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
+                ExceptionAssert.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
                     () => adapter.CreateWindowsCredentialsAsync(
                     instanceLocator,
                     "test" + Guid.NewGuid().ToString().Substring(20),
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString();
 
-            AssertEx.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
+            ExceptionAssert.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
                 () => adapter.CreateWindowsCredentialsAsync(
                     locator,
                     username,
@@ -282,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString();
 
-            AssertEx.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
+            ExceptionAssert.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
                 () => adapter.CreateWindowsCredentialsAsync(
                     locator,
                     username,
