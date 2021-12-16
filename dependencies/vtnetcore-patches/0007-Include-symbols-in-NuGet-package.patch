@@ -1,7 +1,7 @@
 From a83d897751e1eb935fe3e32d6179f8f8b8cca16a Mon Sep 17 00:00:00 2001
 From: IAP Desktop Build <iap-desktop+build@google.com>
 Date: Thu, 16 Dec 2021 08:13:32 +0100
-Subject: [PATCH 7/7] Include symbols in NuGet package
+Subject: [PATCH 7/8] Include symbols in NuGet package
 
 ---
  VtNetCore/VtNetCore.csproj | 1 +
