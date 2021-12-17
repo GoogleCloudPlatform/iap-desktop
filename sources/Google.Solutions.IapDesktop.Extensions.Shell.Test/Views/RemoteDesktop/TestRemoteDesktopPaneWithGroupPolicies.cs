@@ -61,6 +61,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpAuthenticationLevel.Value = RdpAuthenticationLevel.NoServerAuthentication;
                 settings.RdpBitmapPersistence.Value = RdpBitmapPersistence.Disabled;
                 settings.RdpDesktopSize.Value = RdpDesktopSize.ClientSize;
+                settings.RdpRedirectClipboard.Value = RdpRedirectClipboard.Enabled;
+                settings.RdpRedirectPrinter.Value = RdpRedirectPrinter.Enabled;
+                settings.RdpRedirectPort.Value = RdpRedirectPort.Enabled;
+                settings.RdpRedirectSmartCard.Value = RdpRedirectSmartCard.Enabled;
+                settings.RdpRedirectDrive.Value = RdpRedirectDrive.Enabled;
+                settings.RdpRedirectDevice.Value = RdpRedirectDevice.Enabled;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
                 return rdpService.Connect(
@@ -296,6 +302,45 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         public async Task WhenRequireUserAuthenticationForRemoteConnectionsByNlaEnabled_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 1 /f | Out-Default
+            ")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+
+            using (var tunnel = IapTunnel.ForRdp(
+                locator,
+                await credential))
+            {
+                var session = await Connect(tunnel, locator).ConfigureAwait(true);
+
+                AwaitEvent<SessionStartedEvent>();
+                Assert.IsNull(this.ExceptionShown);
+
+                SessionEndedEvent expectedEvent = null;
+
+                this.serviceProvider.GetService<IEventService>()
+                    .BindHandler<SessionEndedEvent>(e =>
+                    {
+                        expectedEvent = e;
+                    });
+
+                Delay(TimeSpan.FromSeconds(5));
+                session.Close();
+
+                Assert.IsNotNull(expectedEvent);
+            }
+        }
+
+        [Test]
+        public async Task WhenLocalResourceRedirectionDisabled_ThenConnectionSucceeds(
+            [WindowsInstance(InitializeScript = @"
+                & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDisableClip /d 1 /f | Out-Default
+                & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDisableLPT /d 1 /f | Out-Default
+                & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDisableCcm /d 1 /f | Out-Default
+                & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDisableCdm /d 1 /f | Out-Default
+                & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fEnableSmartCard /d 1 /f | Out-Default
+                & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDisablePNPRedir /d 1 /f | Out-Default
+                & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDisableCpm /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
