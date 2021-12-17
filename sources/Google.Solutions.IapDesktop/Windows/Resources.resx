@@ -136,34 +136,59 @@
     &lt;head&gt;
         &lt;title&gt;Authorization successful&lt;/title&gt;
         &lt;style&gt;
-            #banner {
-                height: 200px;
-                width: 300px;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                margin-top: -100px;
-                margin-left: -200px;
-                font-family: Arial, Helvetica, sans-serif;
-                text-align: center
+            body {
+                font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+                font-size: 14px;
+                color: #5f6368;
+                text-align: center;
+            }
+            
+            h1 {
+                font-size: 24px;
+                font-weight: normal;
+                color: #202124;
+                font-weight: 400;
+            }
+            
+            .product {
+                color: #1a73e8;
+            }
+            
+            .container-outer {
+                display: table;
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
             }
 
-            img {
+            .container-middle {
+                display: table-cell;
                 vertical-align: middle;
             }
 
-            .header {
-                font-weight: bold;
+            .container-content {
+                margin-left: auto;
+                margin-right: auto;
+                width: 420px;
+                padding: 30px;
+                border-radius: 10px;
+                border: 1px solid lightgray;
             }
         &lt;/style&gt;
     &lt;/head&gt;
 
     &lt;body&gt;
-        &lt;div id="banner"&gt;
-            &lt;img src="data:image/gif;base64,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" alt="OK"/&gt;
-            &lt;br /&gt;&lt;br /&gt;
-            &lt;span class="header"&gt;You're all set.&lt;/span&gt; &lt;br /&gt;&lt;br /&gt;
-            &lt;span&gt;You can now close this browser tab.&lt;/span&gt;
+        &lt;div class="container-outer"&gt;
+            &lt;div class="container-middle"&gt;
+                &lt;div class="container-content"&gt;
+                    &lt;h1&gt;&lt;span class='product'&gt;IAP Desktop&lt;/span&gt; is ready to use&lt;/h1&gt;
+                    &lt;p&gt;
+                        You can now use IAP Desktop to access your VMs.
+                    &lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
         &lt;/div&gt;
     &lt;/body&gt;
 &lt;/html&gt;</value>

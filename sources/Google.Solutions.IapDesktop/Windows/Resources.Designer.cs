@@ -66,20 +66,20 @@ namespace Google.Solutions.IapDesktop.Windows {
         ///    &lt;head&gt;
         ///        &lt;title&gt;Authorization successful&lt;/title&gt;
         ///        &lt;style&gt;
-        ///            #banner {
-        ///                height: 200px;
-        ///                width: 300px;
-        ///                position: fixed;
-        ///                top: 50%;
-        ///                left: 50%;
-        ///                margin-top: -100px;
-        ///                margin-left: -200px;
-        ///                font-family: Arial, Helvetica, sans-serif;
-        ///                text-align: center
+        ///            body {
+        ///                font-family: &apos;Roboto&apos;, &apos;Helvetica&apos;, &apos;Arial&apos;, sans-serif;
+        ///                font-size: 14px;
+        ///                color: #5f6368;
+        ///                text-align: center;
         ///            }
-        ///
-        ///            img {
-        ///                vertical-al [rest of string was truncated]&quot;;.
+        ///            
+        ///            h1 {
+        ///                font-size: 24px;
+        ///                font-weight: normal;
+        ///                color: #202124;
+        ///                font-weight: 400;
+        ///            }
+        ///          [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AuthorizationSuccessful {
             get {
