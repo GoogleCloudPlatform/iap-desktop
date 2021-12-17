@@ -232,11 +232,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
             Assert.IsTrue(settings.RdpAuthenticationLevel.IsDefault);
             Assert.IsTrue(settings.RdpColorDepth.IsDefault);
             Assert.IsTrue(settings.RdpAudioMode.IsDefault);
-            Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
             Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
             Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
             Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
             Assert.IsTrue(settings.RdpCredentialGenerationBehavior.IsDefault);
+            Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
+            Assert.IsTrue(settings.RdpRedirectPrinter.IsDefault);
+            Assert.IsTrue(settings.RdpRedirectSmartCard.IsDefault);
+            Assert.IsTrue(settings.RdpRedirectPort.IsDefault);
+            Assert.IsTrue(settings.RdpRedirectDrive.IsDefault);
+            Assert.IsTrue(settings.RdpRedirectDevice.IsDefault);
         }
 
         [Test]
@@ -251,6 +256,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
             originalSettings.RdpColorDepth.Value = RdpColorDepth.DeepColor;
             originalSettings.RdpAudioMode.Value = RdpAudioMode.DoNotPlay;
             originalSettings.RdpRedirectClipboard.Value = RdpRedirectClipboard.Enabled;
+            originalSettings.RdpRedirectPrinter.Value = RdpRedirectPrinter.Enabled;
+            originalSettings.RdpRedirectSmartCard.Value = RdpRedirectSmartCard.Enabled;
+            originalSettings.RdpRedirectPort.Value = RdpRedirectPort.Enabled;
+            originalSettings.RdpRedirectDrive.Value = RdpRedirectDrive.Enabled;
+            originalSettings.RdpRedirectDevice.Value = RdpRedirectDevice.Enabled;
 
             this.repository.SetVmInstanceSettings(originalSettings);
 
@@ -264,6 +274,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
             Assert.AreEqual(RdpColorDepth.DeepColor, settings.RdpColorDepth.Value);
             Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.RdpAudioMode.Value);
             Assert.AreEqual(RdpRedirectClipboard.Enabled, settings.RdpRedirectClipboard.Value);
+            Assert.AreEqual(RdpRedirectPrinter.Enabled, settings.RdpRedirectPrinter.Value);
+            Assert.AreEqual(RdpRedirectSmartCard.Enabled, settings.RdpRedirectSmartCard.Value);
+            Assert.AreEqual(RdpRedirectPort.Enabled, settings.RdpRedirectPort.Value);
+            Assert.AreEqual(RdpRedirectDrive.Enabled, settings.RdpRedirectDrive.Value);
+            Assert.AreEqual(RdpRedirectDevice.Enabled, settings.RdpRedirectDevice.Value);
         }
 
         [Test]

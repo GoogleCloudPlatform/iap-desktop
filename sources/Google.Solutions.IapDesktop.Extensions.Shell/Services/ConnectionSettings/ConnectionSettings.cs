@@ -135,6 +135,51 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         _Default = AllowIfNoCredentialsFound
     }
 
+    public enum RdpRedirectPrinter
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Disabled
+    }
+
+    public enum RdpRedirectSmartCard
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Disabled
+    }
+
+    public enum RdpRedirectPort
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Disabled
+    }
+
+    public enum RdpRedirectDrive
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Disabled
+    }
+
+    public enum RdpRedirectDevice
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Disabled
+    }
+
     public abstract class ConnectionSettingsBase : IRegistrySettingsCollection
     {
         //---------------------------------------------------------------------
@@ -149,12 +194,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         public RegistryEnumSetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; private set; }
         public RegistryEnumSetting<RdpColorDepth> RdpColorDepth { get; private set; }
         public RegistryEnumSetting<RdpAudioMode> RdpAudioMode { get; private set; }
-        public RegistryEnumSetting<RdpRedirectClipboard> RdpRedirectClipboard { get; private set; }
         public RegistryEnumSetting<RdpUserAuthenticationBehavior> RdpUserAuthenticationBehavior { get; private set; }
         public RegistryEnumSetting<RdpBitmapPersistence> RdpBitmapPersistence { get; private set; }
         public RegistryDwordSetting RdpConnectionTimeout { get; private set; }
         public RegistryEnumSetting<RdpCredentialGenerationBehavior> RdpCredentialGenerationBehavior { get; private set; }
         public RegistryDwordSetting RdpPort { get; private set; }
+        public RegistryEnumSetting<RdpRedirectClipboard> RdpRedirectClipboard { get; private set; }
+        public RegistryEnumSetting<RdpRedirectPrinter> RdpRedirectPrinter { get; private set; }
+        public RegistryEnumSetting<RdpRedirectSmartCard> RdpRedirectSmartCard { get; private set; }
+        public RegistryEnumSetting<RdpRedirectPort> RdpRedirectPort { get; private set; }
+        public RegistryEnumSetting<RdpRedirectDrive> RdpRedirectDrive { get; private set; }
+        public RegistryEnumSetting<RdpRedirectDevice> RdpRedirectDevice { get; private set; }
 
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {
@@ -166,12 +216,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
             this.RdpAuthenticationLevel,
             this.RdpColorDepth,
             this.RdpAudioMode,
-            this.RdpRedirectClipboard,
             this.RdpUserAuthenticationBehavior,
             this.RdpBitmapPersistence,
             this.RdpConnectionTimeout,
             this.RdpCredentialGenerationBehavior,
-            this.RdpPort
+            this.RdpPort,
+            this.RdpRedirectClipboard,
+            this.RdpRedirectPrinter,
+            this.RdpRedirectSmartCard,
+            this.RdpRedirectPort,
+            this.RdpRedirectDrive,
+            this.RdpRedirectDevice
         };
 
         internal bool IsRdpSetting(ISetting setting) => this.RdpSettings.Contains(setting);
@@ -273,13 +328,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 Categories.RdpResources,
                 ConnectionSettings.RdpAudioMode._Default,
                 key);
-            this.RdpRedirectClipboard = RegistryEnumSetting<RdpRedirectClipboard>.FromKey(
-                "RedirectClipboard",
-                "Redirect clipboard",
-                "Allow clipboard contents to be shared with remote desktop",
-                Categories.RdpResources,
-                ConnectionSettings.RdpRedirectClipboard._Default,
-                key);
             this.RdpUserAuthenticationBehavior = RegistryEnumSetting<RdpUserAuthenticationBehavior>.FromKey(
                 "RdpUserAuthenticationBehavior",
                 null, // Hidden.
@@ -318,6 +366,48 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 key,
                 1,
                 ushort.MaxValue);
+            this.RdpRedirectClipboard = RegistryEnumSetting<RdpRedirectClipboard>.FromKey(
+                "RedirectClipboard",
+                "Redirect clipboard",
+                "Allow clipboard contents to be shared with remote desktop",
+                Categories.RdpResources,
+                ConnectionSettings.RdpRedirectClipboard._Default,
+                key);
+            this.RdpRedirectPrinter = RegistryEnumSetting<RdpRedirectPrinter>.FromKey(
+                "RdpRedirectPrinter",
+                "Redirect printers",
+                "Share local printers with remote desktop",
+                Categories.RdpResources,
+                ConnectionSettings.RdpRedirectPrinter._Default,
+                key);
+            this.RdpRedirectSmartCard = RegistryEnumSetting<RdpRedirectSmartCard>.FromKey(
+                "RdpRedirectSmartCard",
+                "Redirect smart cards",
+                "Share local smart carrds with remote desktop",
+                Categories.RdpResources,
+                ConnectionSettings.RdpRedirectSmartCard._Default,
+                key);
+            this.RdpRedirectPort = RegistryEnumSetting<RdpRedirectPort>.FromKey(
+                "RdpRedirectPort",
+                "Redirect local ports",
+                "Share local ports (COM, LPT) with remote desktop",
+                Categories.RdpResources,
+                ConnectionSettings.RdpRedirectPort._Default,
+                key);
+            this.RdpRedirectDrive = RegistryEnumSetting<RdpRedirectDrive>.FromKey(
+                "RdpRedirectDrive",
+                "Redirect drives",
+                "Share local drives with remote desktop",
+                Categories.RdpResources,
+                ConnectionSettings.RdpRedirectDrive._Default,
+                key);
+            this.RdpRedirectDevice = RegistryEnumSetting<RdpRedirectDevice>.FromKey(
+                "RdpRedirectDevice",
+                "Redirect devices",
+                "Share local devices with remote desktop",
+                Categories.RdpResources,
+                ConnectionSettings.RdpRedirectDevice._Default,
+                key);
 
             //
             // SSH Settings.
@@ -374,8 +464,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 baseSettings.RdpColorDepth.OverlayBy(overlaySettings.RdpColorDepth);
             prototype.RdpAudioMode = (RegistryEnumSetting<RdpAudioMode>)
                 baseSettings.RdpAudioMode.OverlayBy(overlaySettings.RdpAudioMode);
-            prototype.RdpRedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
-                baseSettings.RdpRedirectClipboard.OverlayBy(overlaySettings.RdpRedirectClipboard);
             prototype.RdpUserAuthenticationBehavior = (RegistryEnumSetting<RdpUserAuthenticationBehavior>)
                 baseSettings.RdpUserAuthenticationBehavior.OverlayBy(overlaySettings.RdpUserAuthenticationBehavior);
             prototype.RdpBitmapPersistence = (RegistryEnumSetting<RdpBitmapPersistence>)
@@ -386,6 +474,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 baseSettings.RdpCredentialGenerationBehavior.OverlayBy(overlaySettings.RdpCredentialGenerationBehavior);
             prototype.RdpPort = (RegistryDwordSetting)
                 baseSettings.RdpPort.OverlayBy(overlaySettings.RdpPort);
+            prototype.RdpRedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
+                baseSettings.RdpRedirectClipboard.OverlayBy(overlaySettings.RdpRedirectClipboard);
+            prototype.RdpRedirectPrinter = (RegistryEnumSetting<RdpRedirectPrinter>)
+                baseSettings.RdpRedirectPrinter.OverlayBy(overlaySettings.RdpRedirectPrinter);
+            prototype.RdpRedirectSmartCard = (RegistryEnumSetting<RdpRedirectSmartCard>)
+                baseSettings.RdpRedirectSmartCard.OverlayBy(overlaySettings.RdpRedirectSmartCard);
+            prototype.RdpRedirectPort = (RegistryEnumSetting<RdpRedirectPort>)
+                baseSettings.RdpRedirectPort.OverlayBy(overlaySettings.RdpRedirectPort);
+            prototype.RdpRedirectDrive = (RegistryEnumSetting<RdpRedirectDrive>)
+                baseSettings.RdpRedirectDrive.OverlayBy(overlaySettings.RdpRedirectDrive);
+            prototype.RdpRedirectDevice = (RegistryEnumSetting<RdpRedirectDevice>)
+                baseSettings.RdpRedirectDevice.OverlayBy(overlaySettings.RdpRedirectDevice);
 
             prototype.SshPort = (RegistryDwordSetting)
                 baseSettings.SshPort.OverlayBy(overlaySettings.SshPort);

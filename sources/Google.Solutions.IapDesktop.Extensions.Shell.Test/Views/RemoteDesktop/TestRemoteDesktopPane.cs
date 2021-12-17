@@ -163,6 +163,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var locator = await testInstance;
 
+            // To avoid excessive combinations, combine some settings.
+            var redirectPrinter = (RdpRedirectPrinter)(int)redirectClipboard;
+            var redirectSmartCard = (RdpRedirectSmartCard)(int)redirectClipboard;
+            var redirectPort = (RdpRedirectPort)(int)redirectClipboard;
+            var redirectDrive = (RdpRedirectDrive)(int)redirectClipboard;
+            var redirectDevice = (RdpRedirectDevice)(int)redirectClipboard;
+
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
@@ -188,6 +195,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpRedirectClipboard.EnumValue = redirectClipboard;
                 settings.RdpAuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
                 settings.RdpBitmapPersistence.EnumValue = RdpBitmapPersistence.Disabled;
+                settings.RdpRedirectClipboard.EnumValue = redirectClipboard;
+                settings.RdpRedirectPrinter.EnumValue = redirectPrinter;
+                settings.RdpRedirectSmartCard.EnumValue = redirectSmartCard;
+                settings.RdpRedirectPort.EnumValue = redirectPort;
+                settings.RdpRedirectDrive.EnumValue = redirectDrive;
+                settings.RdpRedirectDevice.EnumValue = redirectDevice;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
                 var session = rdpService.Connect(

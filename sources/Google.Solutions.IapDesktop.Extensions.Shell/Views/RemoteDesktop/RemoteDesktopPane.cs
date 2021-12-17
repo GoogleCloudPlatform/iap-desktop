@@ -253,6 +253,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 //
                 advancedSettings.RedirectClipboard =
                     settings.RdpRedirectClipboard.EnumValue == RdpRedirectClipboard.Enabled;
+                advancedSettings.RedirectPrinters =
+                    settings.RdpRedirectPrinter.EnumValue == RdpRedirectPrinter.Enabled;
+                advancedSettings.RedirectSmartCards =
+                    settings.RdpRedirectSmartCard.EnumValue == RdpRedirectSmartCard.Enabled;
+                advancedSettings.RedirectPorts =
+                    settings.RdpRedirectPort.EnumValue == RdpRedirectPort.Enabled;
+                advancedSettings.RedirectDrives =
+                    settings.RdpRedirectDrive.EnumValue == RdpRedirectDrive.Enabled;
+                advancedSettings.RedirectDevices =
+                    settings.RdpRedirectDevice.EnumValue == RdpRedirectDevice.Enabled;
 
                 switch (settings.RdpAudioMode.EnumValue)
                 {
