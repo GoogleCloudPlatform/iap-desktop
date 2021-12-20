@@ -39,5 +39,14 @@ namespace Google.Solutions.Ssh.Test.Native
             "EOF\n" +
             "\n" +
             "service xinetd restart";
+
+        internal const string AllowNeitherEcdsaNorRsaForHostKey =
+            "echo HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com >> /etc/ssh/sshd_config\n" +
+            "echo HostbasedAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com >> /etc/ssh/sshd_config\n" +
+            "service sshd restart";
+
+        internal const string AllowEcdsaOnlyForPubkey =
+            "echo PubkeyAcceptedKeyTypes ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521 >> /etc/ssh/sshd_config\n" +
+            "service sshd restart";
     }
 }

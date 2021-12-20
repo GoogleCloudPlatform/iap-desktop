@@ -148,5 +148,38 @@ namespace Google.Solutions.Ssh.Test.Native
                 channel.Dispose();
             }
         }
+
+        [Test]
+        public async Task WhenUsingRsaKeyButOnlyEcdsaAllowed_ThenAuthenticateThrowsException(
+            [LinuxInstance(InitializeScript = InitializeScripts.AllowEcdsaOnlyForPubkey)] 
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instanceLocator = await instanceLocatorTask;
+            var endpoint = new IPEndPoint(
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
+                22);
+            using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                        instanceLocator,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
+
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                {
+                    SshAssert.ThrowsNativeExceptionWithError(
+                        session,
+                        LIBSSH2_ERROR.PUBLICKEY_UNRECOGNIZED,
+                        () => connection.Authenticate(
+                            "testuser",
+                            key,
+                            UnexpectedAuthenticationCallback));
+                }
+            }
+        }
     }
 }
