@@ -403,7 +403,7 @@ namespace Google.Solutions.Ssh.Native
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
                     this.session.Handle,
                     username,
-                    key.PublicKey,
+                    publicKey,
                     new IntPtr(publicKey.Length),
                     Sign,
                     IntPtr.Zero);

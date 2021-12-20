@@ -31,7 +31,7 @@ namespace Google.Solutions.Ssh
         /// Return public key in a format compliant with
         /// https://tools.ietf.org/html/rfc4253#section-6.6
         /// </summary>
-        byte[] PublicKey { get; }
+        byte[] PublicKey { get; } // TODO: Convert to method
 
         byte[] SignData(byte[] data);
 

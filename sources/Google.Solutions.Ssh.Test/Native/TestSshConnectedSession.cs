@@ -371,7 +371,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
+        public async Task WhenRsaPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
@@ -380,6 +380,37 @@ namespace Google.Solutions.Ssh.Test.Native
                     .ConfigureAwait(false),
                 22);
             using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(
+                        await instanceLocatorTask,
+                        "testuser",
+                        key)
+                    .ConfigureAwait(false);
+
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                {
+                    var authSession = connection.Authenticate(
+                        "testuser",
+                        key,
+                        this.UnexpectedAuthenticationCallback);
+                    Assert.IsNotNull(authSession);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenEcdsaPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Values(256, 384, 521)] int keyLength)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
+                22);
+            using (var key = EcdsaSshKey.NewEphemeralKey(keyLength))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(

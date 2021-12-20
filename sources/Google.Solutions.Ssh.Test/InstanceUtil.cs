@@ -59,19 +59,10 @@ namespace Google.Solutions.Ssh.Test
             }
         }
 
-        public static Task AddPublicKeyToMetadata(
+        public async static Task AddPublicKeyToMetadata(
             InstanceLocator instanceLocator,
             string username,
             ISshKey key)
-            => AddPublicKeyToMetadata(
-                instanceLocator,
-                username,
-                Convert.ToBase64String(key.PublicKey));
-
-        public static async Task AddPublicKeyToMetadata(
-            InstanceLocator instanceLocator,
-            string username,
-            string rsaPublicKey)
         {
             using (var service = TestProject.CreateComputeService())
             {
@@ -85,7 +76,7 @@ namespace Google.Solutions.Ssh.Test
                                 new Metadata.ItemsData()
                                 {
                                     Key = "ssh-keys",
-                                    Value = $"{username}:ssh-rsa {rsaPublicKey} {username}"
+                                    Value = $"{username}:{key.Type} {key.PublicKeyString} {username}"
                                 }
                             }
                         },

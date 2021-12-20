@@ -72,7 +72,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cryptography\RSACngExtensions.cs" />
+    <Compile Include="Cryptography\ECDsaExtensions.cs" />
+    <Compile Include="Cryptography\SshKeyWriter.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ISshKey.cs" />
     <Compile Include="Native\Disposable.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Native\SshException.cs" />
     <Compile Include="Native\SshSession.cs" />
     <Compile Include="Native\UnsafeNativeMethods.cs" />
+    <Compile Include="EcdsaSshKey.cs" />
     <Compile Include="RsaSshKey.cs" />
     <Compile Include="SshConnectionBase.cs" />
     <Compile Include="SshShellConnection.cs" />

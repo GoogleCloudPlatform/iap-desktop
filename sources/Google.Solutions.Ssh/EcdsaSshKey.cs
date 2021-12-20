@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -22,27 +22,62 @@
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
-using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh
 {
-    public sealed class RsaSshKey : ISshKey
+    public sealed class EcdsaSshKey : ISshKey
     {
 #if DEBUG
         private bool disposed = false;
 #endif
 
-        private readonly RSA key;
+        private readonly ECDsaCng key;
 
-        public RsaSshKey(RSA key)
+        public EcdsaSshKey(ECDsaCng key)
         {
+            Debug.Assert(key.KeySize == 256 ||
+                         key.KeySize == 384 ||
+                         key.KeySize == 521);
+
             this.key = key;
         }
 
-        public static RsaSshKey NewEphemeralKey()
+        public static EcdsaSshKey NewEphemeralKey(int keySize)
         {
-            return new RsaSshKey(new RSACng());
+            return new EcdsaSshKey(new ECDsaCng(keySize));
+        }
+
+        private HashAlgorithmName HashAlgorithm
+        {
+            get
+            {
+                //
+                // The hashing algorithm to use depends on the key size,
+                // cf rfc5656 6.2.1:
+                //
+                // +----------------+----------------+
+                // |   Curve Size   | Hash Algorithm |
+                // +----------------+----------------+
+                // |    b <= 256    |     SHA-256    |
+                // | 256 < b <= 384 |     SHA-384    |
+                // |     384 < b    |     SHA-512    |
+                // +----------------+----------------+
+                //
+                if (key.KeySize <= 256)
+                {
+                    return HashAlgorithmName.SHA256;
+                }
+                else if (key.KeySize <= 384)
+                {
+                    return HashAlgorithmName.SHA384;
+                }
+                else
+                {
+                    return HashAlgorithmName.SHA512;
+                }
+            }
         }
 
         //---------------------------------------------------------------------
@@ -56,21 +91,12 @@ namespace Google.Solutions.Ssh
                 using (var writer = new SshKeyWriter())
                 {
                     //
-                    // Encode public key according to R4253 section 6.6.
+                    // Encode public key according to RFC5656 section 3.1.
                     //
-                    var parameters = key.ExportParameters(false);
-
-                    //
-                    // Pad modulus with a leading zero, 
-                    // cf https://www.cameronmoten.com/2017/12/21/rsacryptoserviceprovider-create-a-ssh-rsa-public-key/
-                    //
-                    var paddedModulus = (new byte[] { 0 })
-                        .Concat(parameters.Modulus)
-                        .ToArray();
 
                     writer.Write(this.Type);
-                    writer.Write(parameters.Exponent);
-                    writer.Write(paddedModulus);
+                    writer.Write("nistp" + this.key.KeySize);
+                    writer.Write(this.key.EncodePublicKey());
                     return writer.ToArray();
                 }
             }
@@ -78,20 +104,10 @@ namespace Google.Solutions.Ssh
 
         public string PublicKeyString => Convert.ToBase64String(this.PublicKey);
 
-        public string Type => "ssh-rsa";
+        public string Type => "ecdsa-sha2-nistp" + this.key.KeySize;
 
         public byte[] SignData(byte[] data)
-        {
-            //
-            // NB. Since we are using RSA, signing always needs to use
-            // SHA-1 and PKCS#1, 
-            // cf. https://tools.ietf.org/html/rfc4253#section-6.6
-            //
-            return this.key.SignData(
-                data,
-                HashAlgorithmName.SHA1,
-                RSASignaturePadding.Pkcs1);
-        }
+            => this.key.SignData(data, this.HashAlgorithm);
 
         //---------------------------------------------------------------------
         // IDisposable.
