@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -90,11 +91,60 @@ namespace Google.Solutions.Ssh.Cryptography
             // Encode point, see sun/security/util/ECUtil.java
             // for reference.
             //
+            // TODO: This misses the 2^m case.
+            // TODO: Trim zeros
+            //
             var buffer = new byte[keySizeInBytes * 2 + 1];
             buffer[0] = 4; // Uncompressed
             Array.Copy(qX, 0, buffer, keySizeInBytes - qX.Length + 1, qX.Length);
             Array.Copy(qY, 0, buffer, buffer.Length - qY.Length, qY.Length);
             return buffer;
+        }
+
+    }
+
+    internal struct EcdsaSignature
+    {
+        public readonly byte[] R;
+        public readonly byte[] S;
+
+        public EcdsaSignature(byte[] r, byte[] s)
+        {
+            Debug.Assert(r.Length == s.Length);
+
+            this.R = r;
+            this.S = s;
+        }
+
+        public static EcdsaSignature FromIeee1363(byte[] signature)
+        {
+            // Input is (r, s), each of them exactly half of the array.
+            Debug.Assert(signature.Length % 2 == 0);
+            Debug.Assert(signature.Length > 1);
+            int halfLength = signature.Length / 2;
+
+            return new EcdsaSignature(
+                signature.Take(halfLength).ToArray(),
+                signature.Skip(halfLength).ToArray());
+        }
+
+        public byte[] ToSshBlob()
+        {
+
+            // SSH expects a different encoding (see rfc5656, section-3.1.2):
+            //   
+            //   The ecdsa_signature_blob value has the following specific encoding:
+            //   
+            //     mpint r
+            //     mpint s
+            //
+            // (mpint is defined in rfc4251 section-5)
+            using (var buffer = new SshDataBuffer())
+            {
+                buffer.WriteMpint(this.R);
+                buffer.WriteMpint(this.S);
+                return buffer.ToArray();
+            }
         }
     }
 }

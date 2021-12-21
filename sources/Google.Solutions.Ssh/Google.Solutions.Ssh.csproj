@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cryptography\ECDsaExtensions.cs" />
-    <Compile Include="Cryptography\SshKeyWriter.cs" />
+    <Compile Include="Cryptography\SshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ISshKey.cs" />
     <Compile Include="Native\Disposable.cs" />

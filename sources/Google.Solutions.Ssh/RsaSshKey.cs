@@ -53,10 +53,10 @@ namespace Google.Solutions.Ssh
         {
             get
             {
-                using (var writer = new SshKeyWriter())
+                using (var writer = new SshDataBuffer())
                 {
                     //
-                    // Encode public key according to R4253 section 6.6.
+                    // Encode public key according to RFC4253 section 6.6.
                     //
                     var parameters = key.ExportParameters(false);
 
@@ -68,9 +68,9 @@ namespace Google.Solutions.Ssh
                         .Concat(parameters.Modulus)
                         .ToArray();
 
-                    writer.Write(this.Type);
-                    writer.Write(parameters.Exponent);
-                    writer.Write(paddedModulus);
+                    writer.WriteString(this.Type);
+                    writer.WriteMpint(parameters.Exponent);
+                    writer.WriteMpint(paddedModulus);
                     return writer.ToArray();
                 }
             }

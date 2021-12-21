@@ -21,16 +21,20 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
-    public sealed class SshKeyWriter : IDisposable
+    /// <summary>
+    /// rfc4251 section 5.
+    /// </summary>
+    public sealed class SshDataBuffer : IDisposable
     {
         private readonly MemoryStream buffer = new MemoryStream();
 
-        private void Write(int i)
+        private void WriteRaw(int i)
         {
             var bytes = BitConverter.GetBytes(i);
             if (BitConverter.IsLittleEndian)
@@ -41,15 +45,40 @@ namespace Google.Solutions.Ssh.Cryptography
             this.buffer.Write(bytes, 0, 4);
         }
 
-        public void Write(byte[] bytes)
+        public void WriteBytes(byte[] bytes)
         {
-            Write(bytes.Length);
+            WriteRaw(bytes.Length);
             this.buffer.Write(bytes, 0, bytes.Length);
         }
 
-        public void Write(string s)
+        public void WriteString(string s)
         {
-            Write(Encoding.ASCII.GetBytes(s));
+            WriteBytes(Encoding.ASCII.GetBytes(s));
+        }
+
+        public void WriteMpint(byte[] bigEndian, bool trimZeros = false)
+        {
+            int totalLength = 0;
+            if ((bigEndian[0] & 0x80) == 128)
+            {
+                // If the most significant bit would be set for
+                // a positive number, the number MUST be preceded
+                // by a zero byte.
+                this.buffer.Write(new byte[] { 0 }, 0, 1);
+                totalLength += 1;
+            }
+
+            // Unnecessary leading bytes with the value 0 or 255 MUST NOT be
+            // included.
+            int offset = 0;
+            while (trimZeros && bigEndian[offset] == 0 || bigEndian[offset] == 255)
+            {
+                offset += 1;
+            }
+
+            totalLength += bigEndian.Length - offset;
+            WriteRaw(totalLength);
+            this.buffer.Write(bigEndian, offset, bigEndian.Length - offset);
         }
 
         public byte[] ToArray()

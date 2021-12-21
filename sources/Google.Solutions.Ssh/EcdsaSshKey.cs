@@ -88,15 +88,15 @@ namespace Google.Solutions.Ssh
         {
             get
             {
-                using (var writer = new SshKeyWriter())
+                using (var writer = new SshDataBuffer())
                 {
                     //
                     // Encode public key according to RFC5656 section 3.1.
                     //
 
-                    writer.Write(this.Type);
-                    writer.Write("nistp" + this.key.KeySize);
-                    writer.Write(this.key.EncodePublicKey());
+                    writer.WriteString(this.Type);
+                    writer.WriteString("nistp" + this.key.KeySize);
+                    writer.WriteBytes(this.key.EncodePublicKey());
                     return writer.ToArray();
                 }
             }
@@ -107,7 +107,18 @@ namespace Google.Solutions.Ssh
         public string Type => "ecdsa-sha2-nistp" + this.key.KeySize;
 
         public byte[] SignData(byte[] data)
-            => this.key.SignData(data, this.HashAlgorithm);
+        {
+            //
+            // NB. The signature returned by CNG is formatted according to
+            // ISO/IEC 7816-8 / IEEE P1363. This is not the format SSH expects.
+            //
+            var signature = EcdsaSignature.FromIeee1363(
+                this.key.SignData(
+                    data, 
+                    this.HashAlgorithm));
+
+            return signature.ToSshBlob();
+        }
 
         //---------------------------------------------------------------------
         // IDisposable.
