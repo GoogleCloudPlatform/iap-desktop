@@ -116,6 +116,9 @@ namespace Google.Solutions.Ssh.Cryptography
             this.S = s;
         }
 
+        /// <summary>
+        /// Parse IEEE-1363 formatted signature.
+        /// </summary>
         public static EcdsaSignature FromIeee1363(byte[] signature)
         {
             // Input is (r, s), each of them exactly half of the array.
@@ -128,17 +131,12 @@ namespace Google.Solutions.Ssh.Cryptography
                 signature.Skip(halfLength).ToArray());
         }
 
+        /// <summary>
+        /// Format signature according to RFC5656 section 3.1.2).
+        /// </summary>
+        /// <returns></returns>
         public byte[] ToSshBlob()
         {
-
-            // SSH expects a different encoding (see rfc5656, section-3.1.2):
-            //   
-            //   The ecdsa_signature_blob value has the following specific encoding:
-            //   
-            //     mpint r
-            //     mpint s
-            //
-            // (mpint is defined in rfc4251 section-5)
             using (var buffer = new SshDataBuffer())
             {
                 buffer.WriteMpint(this.R);

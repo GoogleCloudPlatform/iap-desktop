@@ -30,7 +30,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Google.Solutions.Ssh.Test.Cryptography
+namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
     public class TestSshDataBuffer

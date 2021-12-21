@@ -25,13 +25,13 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Google.Solutions.Ssh.Cryptography
+namespace Google.Solutions.Ssh
 {
     /// <summary>
     /// Buffer for writing SSH-structured data,
     /// see RFC4251 section 5.
     /// </summary>
-    public sealed class SshDataBuffer : IDisposable
+    internal sealed class SshDataBuffer : IDisposable
     {
         private readonly MemoryStream buffer = new MemoryStream();
 

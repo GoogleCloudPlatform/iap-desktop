@@ -110,7 +110,7 @@ namespace Google.Solutions.Ssh
         {
             //
             // NB. The signature returned by CNG is formatted according to
-            // ISO/IEC 7816-8 / IEEE P1363. This is not the format SSH expects.
+            // ISO/IEC 7816-8 / IEEE P1363. This is not the format SSH uses.
             //
             var signature = EcdsaSignature.FromIeee1363(
                 this.key.SignData(

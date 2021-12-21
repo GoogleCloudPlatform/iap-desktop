@@ -97,7 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cryptography\TestSshDataBuffer.cs" />
+    <Compile Include="TestSshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="InstanceUtil.cs" />
     <Compile Include="Native\InitializeScripts.cs" />
@@ -132,6 +132,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Cryptography\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\libssh2.1.9.0\build\libssh2.targets" Condition="Exists('..\packages\libssh2.1.9.0\build\libssh2.targets')" />
