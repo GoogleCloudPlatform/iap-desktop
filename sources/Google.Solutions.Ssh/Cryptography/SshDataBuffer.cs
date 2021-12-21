@@ -28,7 +28,8 @@ using System.Text;
 namespace Google.Solutions.Ssh.Cryptography
 {
     /// <summary>
-    /// rfc4251 section 5.
+    /// Buffer for writing SSH-structured data,
+    /// see RFC4251 section 5.
     /// </summary>
     public sealed class SshDataBuffer : IDisposable
     {
@@ -45,6 +46,11 @@ namespace Google.Solutions.Ssh.Cryptography
             this.buffer.Write(bytes, 0, 4);
         }
 
+        private void WriteRaw(byte b)
+        {
+            this.buffer.Write(new byte[] { b }, 0, 1);
+        }
+
         public void WriteBytes(byte[] bytes)
         {
             WriteRaw(bytes.Length);
@@ -56,29 +62,31 @@ namespace Google.Solutions.Ssh.Cryptography
             WriteBytes(Encoding.ASCII.GetBytes(s));
         }
 
-        public void WriteMpint(byte[] bigEndian, bool trimZeros = false)
+        public void WriteMpint(byte[] bigEndian)
         {
-            int totalLength = 0;
-            if ((bigEndian[0] & 0x80) == 128)
+            if (bigEndian.All(b => b == 0))
             {
-                // If the most significant bit would be set for
-                // a positive number, the number MUST be preceded
-                // by a zero byte.
-                this.buffer.Write(new byte[] { 0 }, 0, 1);
-                totalLength += 1;
+                WriteRaw(0);
             }
-
-            // Unnecessary leading bytes with the value 0 or 255 MUST NOT be
-            // included.
-            int offset = 0;
-            while (trimZeros && bigEndian[offset] == 0 || bigEndian[offset] == 255)
+            else
             {
-                offset += 1;
-            }
+                if ((bigEndian[0] & 0x80) == 128)
+                {
+                    //
+                    // If the most significant bit would be set for
+                    // a positive number, the number MUST be preceded
+                    // by a zero byte.
+                    //
+                    WriteRaw(bigEndian.Length + 1);
+                    WriteRaw((byte)0);
+                }
+                else
+                {
+                    WriteRaw(bigEndian.Length);
+                }
 
-            totalLength += bigEndian.Length - offset;
-            WriteRaw(totalLength);
-            this.buffer.Write(bigEndian, offset, bigEndian.Length - offset);
+                this.buffer.Write(bigEndian, 0, bigEndian.Length);
+            }
         }
 
         public byte[] ToArray()

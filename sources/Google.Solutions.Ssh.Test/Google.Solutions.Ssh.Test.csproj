@@ -97,6 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cryptography\TestSshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="InstanceUtil.cs" />
     <Compile Include="Native\InitializeScripts.cs" />
