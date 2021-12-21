@@ -84,25 +84,22 @@ namespace Google.Solutions.Ssh
         // ISshKey.
         //---------------------------------------------------------------------
 
-        public byte[] PublicKey
+        public byte[] GetPublicKey()
         {
-            get
+            using (var writer = new SshDataBuffer())
             {
-                using (var writer = new SshDataBuffer())
-                {
-                    //
-                    // Encode public key according to RFC5656 section 3.1.
-                    //
+                //
+                // Encode public key according to RFC5656 section 3.1.
+                //
 
-                    writer.WriteString(this.Type);
-                    writer.WriteString("nistp" + this.key.KeySize);
-                    writer.WriteBytes(this.key.EncodePublicKey());
-                    return writer.ToArray();
-                }
+                writer.WriteString(this.Type);
+                writer.WriteString("nistp" + this.key.KeySize);
+                writer.WriteBytes(this.key.EncodePublicKey());
+                return writer.ToArray();
             }
         }
 
-        public string PublicKeyString => Convert.ToBase64String(this.PublicKey);
+        public string PublicKeyString => Convert.ToBase64String(GetPublicKey());
 
         public string Type => "ecdsa-sha2-nistp" + this.key.KeySize;
 
@@ -112,7 +109,10 @@ namespace Google.Solutions.Ssh
             // NB. The signature returned by CNG is formatted according to
             // ISO/IEC 7816-8 / IEEE P1363. This is not the format SSH uses.
             //
-            var signature = EcdsaSignature.FromIeee1363(
+            // Later .NET versions support alternate signature formats,
+            // but in .NET 4.x, we must convert the format ourselves.
+            //
+            var signature = ECDsaSignature.FromIeee1363(
                 this.key.SignData(
                     data, 
                     this.HashAlgorithm));

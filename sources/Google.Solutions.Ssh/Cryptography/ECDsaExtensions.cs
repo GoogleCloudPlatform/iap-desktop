@@ -88,14 +88,11 @@ namespace Google.Solutions.Ssh.Cryptography
             }
 
             //
-            // Encode point, see sun/security/util/ECUtil.java
-            // for reference.
-            //
-            // TODO: This misses the 2^m case.
-            // TODO: Trim zeros
+            // Encode point, see sun/security/util/ECUtil.java or
+            // java/org/bouncycastle/math/ec/ECPoint.java for reference.
             //
             var buffer = new byte[keySizeInBytes * 2 + 1];
-            buffer[0] = 4; // Uncompressed
+            buffer[0] = 4; // Tag for 'uncompressed'.
             Array.Copy(qX, 0, buffer, keySizeInBytes - qX.Length + 1, qX.Length);
             Array.Copy(qY, 0, buffer, buffer.Length - qY.Length, qY.Length);
             return buffer;
@@ -103,12 +100,12 @@ namespace Google.Solutions.Ssh.Cryptography
 
     }
 
-    internal struct EcdsaSignature
+    internal struct ECDsaSignature
     {
-        public readonly byte[] R;
-        public readonly byte[] S;
+        private readonly byte[] R;
+        private readonly byte[] S;
 
-        public EcdsaSignature(byte[] r, byte[] s)
+        public ECDsaSignature(byte[] r, byte[] s)
         {
             Debug.Assert(r.Length == s.Length);
 
@@ -119,14 +116,14 @@ namespace Google.Solutions.Ssh.Cryptography
         /// <summary>
         /// Parse IEEE-1363 formatted signature.
         /// </summary>
-        public static EcdsaSignature FromIeee1363(byte[] signature)
+        public static ECDsaSignature FromIeee1363(byte[] signature)
         {
             // Input is (r, s), each of them exactly half of the array.
             Debug.Assert(signature.Length % 2 == 0);
             Debug.Assert(signature.Length > 1);
             int halfLength = signature.Length / 2;
 
-            return new EcdsaSignature(
+            return new ECDsaSignature(
                 signature.Take(halfLength).ToArray(),
                 signature.Skip(halfLength).ToArray());
         }

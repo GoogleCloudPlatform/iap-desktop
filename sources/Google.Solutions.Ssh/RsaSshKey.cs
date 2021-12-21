@@ -49,34 +49,31 @@ namespace Google.Solutions.Ssh
         // ISshKey.
         //---------------------------------------------------------------------
 
-        public byte[] PublicKey
+        public byte[] GetPublicKey()
         {
-            get
+            using (var writer = new SshDataBuffer())
             {
-                using (var writer = new SshDataBuffer())
-                {
-                    //
-                    // Encode public key according to RFC4253 section 6.6.
-                    //
-                    var parameters = key.ExportParameters(false);
+                //
+                // Encode public key according to RFC4253 section 6.6.
+                //
+                var parameters = key.ExportParameters(false);
 
-                    //
-                    // Pad modulus with a leading zero, 
-                    // cf https://www.cameronmoten.com/2017/12/21/rsacryptoserviceprovider-create-a-ssh-rsa-public-key/
-                    //
-                    var paddedModulus = (new byte[] { 0 })
-                        .Concat(parameters.Modulus)
-                        .ToArray();
+                //
+                // Pad modulus with a leading zero, 
+                // cf https://www.cameronmoten.com/2017/12/21/rsacryptoserviceprovider-create-a-ssh-rsa-public-key/
+                //
+                var paddedModulus = (new byte[] { 0 })
+                    .Concat(parameters.Modulus)
+                    .ToArray();
 
-                    writer.WriteString(this.Type);
-                    writer.WriteMpint(parameters.Exponent);
-                    writer.WriteMpint(paddedModulus);
-                    return writer.ToArray();
-                }
+                writer.WriteString(this.Type);
+                writer.WriteMpint(parameters.Exponent);
+                writer.WriteMpint(paddedModulus);
+                return writer.ToArray();
             }
         }
 
-        public string PublicKeyString => Convert.ToBase64String(this.PublicKey);
+        public string PublicKeyString => Convert.ToBase64String(GetPublicKey());
 
         public string Type => "ssh-rsa";
 

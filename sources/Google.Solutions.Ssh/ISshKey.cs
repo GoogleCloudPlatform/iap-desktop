@@ -21,21 +21,32 @@
 
 using System;
 
-#pragma warning disable CS1819 // Properties should not return arrays
-
 namespace Google.Solutions.Ssh
 {
+    /// <summary>
+    /// Public/private key pair that can be used for public key 
+    /// authentication.
+    /// </summary>
     public interface ISshKey : IDisposable
     {
         /// <summary>
-        /// Return public key in a format compliant with
-        /// https://tools.ietf.org/html/rfc4253#section-6.6
+        /// Key type (for ex, 'ssh-rsa').
         /// </summary>
-        byte[] PublicKey { get; } // TODO: Convert to method
-
-        byte[] SignData(byte[] data);
-
-        string PublicKeyString { get; }
         string Type { get; }
+
+        /// <summary>
+        /// Return public key in SSH format.
+        /// </summary>
+        byte[] GetPublicKey();
+
+        /// <summary>
+        /// Return base64-encoded public key.
+        /// </summary>
+        string PublicKeyString { get; }
+
+        /// <summary>
+        /// Sign data and return signature in SSH format.
+        /// </summary>
+        byte[] SignData(byte[] data);
     }
 }
