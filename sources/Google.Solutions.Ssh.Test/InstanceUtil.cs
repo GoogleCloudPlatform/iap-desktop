@@ -24,6 +24,7 @@ using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Ssh.Auth;
 using System;
 using System.Linq;
 using System.Net;

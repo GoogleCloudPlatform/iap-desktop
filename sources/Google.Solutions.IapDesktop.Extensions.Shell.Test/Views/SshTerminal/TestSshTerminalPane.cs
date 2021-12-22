@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using Microsoft.Win32;
 using Moq;

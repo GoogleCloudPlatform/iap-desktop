@@ -72,10 +72,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auth\SshKey.cs" />
     <Compile Include="Cryptography\ECDsaExtensions.cs" />
     <Compile Include="SshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="ISshKey.cs" />
+    <Compile Include="Auth\ISshKey.cs" />
     <Compile Include="Native\Disposable.cs" />
     <Compile Include="Native\EnvironmentVariable.cs" />
     <Compile Include="Native\HandleTable.cs" />
@@ -87,8 +88,8 @@
     <Compile Include="Native\SshException.cs" />
     <Compile Include="Native\SshSession.cs" />
     <Compile Include="Native\UnsafeNativeMethods.cs" />
-    <Compile Include="ECDsaSshKey.cs" />
-    <Compile Include="RsaSshKey.cs" />
+    <Compile Include="Auth\ECDsaSshKey.cs" />
+    <Compile Include="Auth\RsaSshKey.cs" />
     <Compile Include="SshConnectionBase.cs" />
     <Compile Include="SshShellConnection.cs" />
     <Compile Include="SshWorkerThread.cs" />

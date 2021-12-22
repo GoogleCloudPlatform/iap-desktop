@@ -33,6 +33,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using System;
 using System.Diagnostics;
 using System.Globalization;

@@ -40,6 +40,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;

@@ -24,6 +24,7 @@ using Google.Apis.Util;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using System;
 using System.Diagnostics;
 using System.Linq;

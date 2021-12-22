@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -21,40 +21,8 @@
 
 using System;
 
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.Ssh.Auth
 {
-    /// <summary>
-    /// Public/private key pair that can be used for public key 
-    /// authentication.
-    /// </summary>
-    public interface ISshKey : IDisposable
-    {
-        /// <summary>
-        /// Key type (for ex, 'ssh-rsa').
-        /// </summary>
-        string Type { get; }
-
-        /// <summary>
-        /// Return public key in SSH format.
-        /// </summary>
-        byte[] GetPublicKey();
-
-        /// <summary>
-        /// Return base64-encoded public key.
-        /// </summary>
-        string PublicKeyString { get; }
-
-        /// <summary>
-        /// Sign data and return signature in SSH format.
-        /// </summary>
-        byte[] SignData(byte[] data);
-
-        /// <summary>
-        /// Size of underlying key.
-        /// </summary>
-        uint KeySize { get; }
-    }
-
     public enum SshKeyType
     {
         Rsa3072,
@@ -63,7 +31,7 @@ namespace Google.Solutions.Ssh
         EcdsaNistp521
     }
 
-    public static class SshKey
+    public static class SshKey // TODO: rename to factory
     {
         public static ISshKey NewEphemeralKey(SshKeyType sshKeyType)
         {
@@ -74,10 +42,10 @@ namespace Google.Solutions.Ssh
 
                 case SshKeyType.EcdsaNistp256:
                     return ECDsaSshKey.NewEphemeralKey(256);
-                
+
                 case SshKeyType.EcdsaNistp384:
                     return ECDsaSshKey.NewEphemeralKey(384);
-                
+
                 case SshKeyType.EcdsaNistp521:
                     return ECDsaSshKey.NewEphemeralKey(521);
 

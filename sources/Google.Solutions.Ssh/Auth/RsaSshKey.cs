@@ -25,7 +25,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.Ssh.Auth
 {
     public sealed class RsaSshKey : ISshKey
     {

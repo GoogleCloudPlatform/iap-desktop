@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

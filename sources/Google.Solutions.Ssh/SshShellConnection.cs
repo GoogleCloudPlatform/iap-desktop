@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System.Collections.Generic;
 using System.Globalization;
