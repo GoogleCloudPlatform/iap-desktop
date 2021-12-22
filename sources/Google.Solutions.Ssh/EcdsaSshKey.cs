@@ -27,13 +27,6 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh
 {
-    public enum ECDsaSshKeyType : int
-    {
-        Nistp256 = 256,
-        Nistp384 = 384,
-        NIstp521 = 521
-    }
-
     public sealed class ECDsaSshKey : ISshKey
     {
 #if DEBUG
@@ -55,9 +48,8 @@ namespace Google.Solutions.Ssh
             return new ECDsaSshKey(key);
         }
 
-        public static ECDsaSshKey NewEphemeralKey(ECDsaSshKeyType keyType)
+        public static ECDsaSshKey NewEphemeralKey(int keySize)
         {
-            var keySize = (int)keyType;
             return new ECDsaSshKey(new ECDsaCng(keySize));
         }
 
