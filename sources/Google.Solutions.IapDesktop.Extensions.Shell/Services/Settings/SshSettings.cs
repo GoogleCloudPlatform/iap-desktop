@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.Ssh;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -58,11 +59,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
     {
         public RegistryBoolSetting IsPropagateLocaleEnabled { get; private set; }
         public RegistryDwordSetting PublicKeyValidity { get; private set; }
+        public RegistryEnumSetting<SshKeyType> PublicKeyType { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             IsPropagateLocaleEnabled,
-            PublicKeyValidity
+            PublicKeyValidity,
+            PublicKeyType
         };
 
         private SshSettings()
@@ -88,7 +91,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                     (int)TimeSpan.FromDays(30).TotalSeconds,
                     registryKey,
                     (int)TimeSpan.FromMinutes(1).TotalSeconds,
-                    int.MaxValue)
+                    int.MaxValue),
+                PublicKeyType = RegistryEnumSetting<SshKeyType>.FromKey(
+                    "PublicKeyType",
+                    "PublicKeyType",
+                    "Key type for public key authentication",
+                    null,
+                    SshKeyType.Rsa3072,
+                    registryKey)
             };
         }
     }

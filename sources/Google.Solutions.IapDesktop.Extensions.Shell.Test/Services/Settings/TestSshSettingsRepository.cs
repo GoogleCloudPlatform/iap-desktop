@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.Ssh;
 using Microsoft.Win32;
 using NUnit.Framework;
 
@@ -44,13 +45,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
         [Test]
         public void WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new SshSettingsRepository(baseKey);
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new SshSettingsRepository(settingsKey);
+                var settings = repository.GetSettings();
 
-            var settings = repository.GetSettings();
+                Assert.IsTrue(settings.IsPropagateLocaleEnabled.BoolValue);
+                Assert.AreEqual(60 * 60 * 24 * 30, settings.PublicKeyValidity.IntValue);
+                Assert.AreEqual(SshKeyType.Rsa3072, settings.PublicKeyType.EnumValue);
+            }
+        }
 
-            Assert.IsTrue(settings.IsPropagateLocaleEnabled.BoolValue);
-            Assert.AreEqual(60 * 60 * 24 * 30, settings.PublicKeyValidity.IntValue);
+        [Test]
+        public void WhenSettingsSaved_ThenSettingsCanBeRead()
+        {
+            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new SshSettingsRepository(settingsKey);
+
+                var settings = repository.GetSettings();
+                settings.IsPropagateLocaleEnabled.BoolValue = false;
+                settings.PublicKeyValidity.IntValue = 3600;
+                settings.PublicKeyType.EnumValue = SshKeyType.EcdsaNistp256;
+                repository.SetSettings(settings);
+
+                settings = repository.GetSettings();
+                Assert.IsFalse(settings.IsPropagateLocaleEnabled.BoolValue);
+                Assert.AreEqual(3600, settings.PublicKeyValidity.IntValue);
+                Assert.AreEqual(SshKeyType.EcdsaNistp256, settings.PublicKeyType.EnumValue);
+            }
         }
     }
 }
