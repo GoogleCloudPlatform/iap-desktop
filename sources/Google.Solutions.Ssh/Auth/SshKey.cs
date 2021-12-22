@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh.Auth
         EcdsaNistp521
     }
 
-    public static class SshKey // TODO: rename to factory
+    public static class SshKey
     {
         private static CngKey OpenPersistentKey(
             string name,

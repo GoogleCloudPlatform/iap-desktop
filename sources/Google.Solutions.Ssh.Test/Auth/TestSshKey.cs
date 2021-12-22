@@ -155,10 +155,10 @@ namespace Google.Solutions.Ssh.Test.Auth
         }
 
         [Test]
-        public void WhenKeyFoundAndCreateNewIsFalse_ThenOpenPersistentKeyReturnsNull(
+        public void WhenKeyFoundAndCreateNewIsFalse_ThenOpenPersistentKeyReturnsKey(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            SshKey.OpenPersistentKey(
+            var createdKey = SshKey.OpenPersistentKey(
                 KeyName,
                 keyType,
                 KeyStoragePovider,
@@ -175,6 +175,7 @@ namespace Google.Solutions.Ssh.Test.Auth
                 IntPtr.Zero);
 
             Assert.IsNotNull(openedKey);
+            Assert.Equals(createdKey.PublicKeyString, openedKey.PublicKeyString);
         }
 
         [Test]

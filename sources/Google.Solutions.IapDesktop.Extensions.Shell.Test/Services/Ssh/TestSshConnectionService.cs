@@ -89,12 +89,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .Returns(authz.Object);
 
             this.keyStore = this.serviceRegistry.AddMock<IKeyStoreAdapter>();
-            this.keyStore.Setup(k => k.CreateRsaKey(
+            this.keyStore.Setup(k => k.OpenSshKey(
                     It.IsAny<string>(),
                     It.IsAny<CngKeyUsages>(),
                     It.IsAny<bool>(),
                     It.IsAny<IWin32Window>()))
-                .Returns(new RSACng());
+                .Returns(RsaSshKey.NewEphemeralKey(1024));
 
             this.sessionBroker = this.serviceRegistry.AddMock<ISshTerminalSessionBroker>();
             this.authorizedKeyService = this.serviceRegistry.AddMock<IAuthorizedKeyService>();
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .ActivateOrConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
-            this.keyStore.Verify(k => k.CreateRsaKey(
+            this.keyStore.Verify(k => k.OpenSshKey(
                 It.Is<string>(name => name == "IAPDESKTOP_" + SampleEmail),
                 It.Is<CngKeyUsages>(u => u == CngKeyUsages.Signing),
                 It.Is<bool>(create => create),

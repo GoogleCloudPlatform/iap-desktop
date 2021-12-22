@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.Ssh.Auth;
 using System;
 using System.Security.Cryptography;
 using System.Windows.Forms;
@@ -30,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 {
     public interface IKeyStoreAdapter
     {
-        RSA CreateRsaKey(
+        ISshKey OpenSshKey(
             string name,
             CngKeyUsages usage,
             bool createNewIfNotExists,
@@ -40,10 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     [Service(typeof(IKeyStoreAdapter))]
     public class KeyStoreAdapter : IKeyStoreAdapter
     {
-        private const int DefaultKeySize = 3072;
-
         private readonly CngProvider provider = CngProvider.MicrosoftSoftwareKeyStorageProvider;
-        private readonly int keySize = DefaultKeySize;
 
         public KeyStoreAdapter()
         {
@@ -53,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         // IKeyStoreAdapter
         //---------------------------------------------------------------------
 
-        public RSA CreateRsaKey(
+        public ISshKey OpenSshKey(
             string name,
             CngKeyUsages usage,
             bool createNewIfNotExists,
@@ -61,88 +59,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                //
-                // Create or open CNG key in the user profile.
-                //
-                // NB. Keys are stored in %APPDATA%\Microsoft\Crypto\Keys when using
-                // the default Microsoft Software Key Storage Provider.
-                // (see https://docs.microsoft.com/en-us/windows/win32/seccng/key-storage-and-retrieval)
-                //
-                // For testing, you can list CNG keys using
-                // certutil -csp "Microsoft Software Key Storage Provider" -key -user
-                //
-
-                if (CngKey.Exists(name))
-                {
-                    var key = CngKey.Open(name);
-                    if (key.Algorithm != CngAlgorithm.Rsa)
-                    {
-                        key.Dispose();
-                        throw new CryptographicException(
-                            $"Key {name} is not an RSA key");
-                    }
-
-                    if ((key.KeyUsage & usage) == 0)
-                    {
-                        key.Dispose();
-                        throw new CryptographicException(
-                            $"Key {name} exists, but does not support requested usage");
-
-                    }
-
-                    ApplicationTraceSources.Default.TraceInformation(
-                        "Found existing CNG key {0} in {1}", name, this.provider);
-
-                    return new RSACng(key);
-                }
-
-                if (createNewIfNotExists)
-                {
-                    var keyParams = new CngKeyCreationParameters
-                    {
-                        // Do not overwrite, store in user profile.
-                        KeyCreationOptions = CngKeyCreationOptions.None,
-
-                        // Do not allow exporting.
-                        ExportPolicy = CngExportPolicies.None,
-
-                        Provider = this.provider,
-                        KeyUsage = usage
-                    };
-
-                    //
-                    // NB. If we're using the Smart Card provider, the key store
-                    // might show a UI dialog. Therefore, this method must
-                    // be run on the UI thread.
-                    //
-                    if (window != null && window.Handle != null)
-                    {
-                        keyParams.ParentWindowHandle = window.Handle;
-                    }
-
-                    keyParams.Parameters.Add(
-                        new CngProperty(
-                            "Length",
-                            BitConverter.GetBytes(this.keySize),
-                            CngPropertyOptions.None));
-
-                    //
-                    // Create the key. 
-                    //
-                    var key = new RSACng(CngKey.Create(
-                        CngAlgorithm.Rsa,
-                        name,
-                        keyParams));
-
-                    ApplicationTraceSources.Default.TraceInformation(
-                        "Created new CNG key {0} in {1}", name, this.provider);
-
-                    return key;
-                }
-                else
-                {
-                    return null;
-                }
+                return SshKey.OpenPersistentKey(
+                    name,
+                    SshKeyType.Rsa3072,
+                    this.provider,
+                    usage,
+                    createNewIfNotExists,
+                    window != null ? window.Handle : IntPtr.Zero);
             }
         }
     }

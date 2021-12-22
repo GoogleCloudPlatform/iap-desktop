@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
+using Google.Solutions.Ssh.Auth;
 using NUnit.Framework;
 using System.Security.Cryptography;
 
@@ -48,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var adapter = new KeyStoreAdapter();
 
-            Assert.IsNull(adapter.CreateRsaKey(
+            Assert.IsNull(adapter.OpenSshKey(
                 KeyName,
                 CngKeyUsages.Signing,
                 false,
@@ -60,14 +61,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var adapter = new KeyStoreAdapter();
 
-            var key = adapter.CreateRsaKey(
+            var key = adapter.OpenSshKey(
                 KeyName,
                 CngKeyUsages.Signing,
                 true,
                 null);
 
             Assert.IsNotNull(key);
-            Assert.AreEqual("RSA", key.SignatureAlgorithm);
+            Assert.IsInstanceOf<RsaSshKey>(key);
         }
 
         [Test]
@@ -75,21 +76,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var adapter = new KeyStoreAdapter();
 
-            var key1 = adapter.CreateRsaKey(
+            var key1 = adapter.OpenSshKey(
                 KeyName,
                 CngKeyUsages.Signing,
                 true,
                 null);
 
-            var key2 = adapter.CreateRsaKey(
+            var key2 = adapter.OpenSshKey(
                 KeyName,
                 CngKeyUsages.Signing,
                 false,
                 null);
 
             Assert.IsNotNull(key2);
-            Assert.AreEqual(key1.ExportParameters(false).Modulus, key2.ExportParameters(false).Modulus);
-            Assert.AreEqual(key1.ExportParameters(false).Exponent, key2.ExportParameters(false).Exponent);
+            Assert.AreEqual(key1.PublicKeyString, key2.PublicKeyString);
         }
 
         [Test]
@@ -97,14 +97,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var adapter = new KeyStoreAdapter();
 
-            var key1 = adapter.CreateRsaKey(
+            var key1 = adapter.OpenSshKey(
                 KeyName,
                 CngKeyUsages.Signing,
                 true,
                 null);
 
             Assert.Throws<CryptographicException>(
-                () => adapter.CreateRsaKey(
+                () => adapter.OpenSshKey(
                     KeyName,
                     CngKeyUsages.Decryption,
                     false,

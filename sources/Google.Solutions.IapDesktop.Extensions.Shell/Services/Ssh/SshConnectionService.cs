@@ -173,19 +173,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             // Load persistent CNG key. This must be done on the UI thread.
             //
             var email = this.authorizationAdapter.Authorization.Email;
-            var rsaKey = this.keyStoreAdapter.CreateRsaKey(
+            var sshKey = this.keyStoreAdapter.OpenSshKey(
                     $"IAPDESKTOP_{email}",
                     CngKeyUsages.Signing,
                     true,
                     this.window);
-            Debug.Assert(rsaKey != null);
+            Debug.Assert(sshKey != null);
 
             //
             // Start job to publish key, using whatever mechanism is appropriate
             // for this instance.
             //
 
-            var sshKey = RsaSshKey.FromKey(rsaKey);
             try
             {
                 var sshSettings = this.sshSettingsRepository.GetSettings();
