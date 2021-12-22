@@ -19,20 +19,25 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.Ssh.Auth;
 using System;
 using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 {
     public interface IKeyStoreAdapter
     {
-        RSA CreateRsaKey(
-            string name,
-            CngKeyUsages usage,
+        ISshKey OpenSshKey(
+            SshKeyType keyType,
+            IAuthorization authorization,
             bool createNewIfNotExists,
             IWin32Window window);
     }
@@ -40,109 +45,73 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     [Service(typeof(IKeyStoreAdapter))]
     public class KeyStoreAdapter : IKeyStoreAdapter
     {
-        private const int DefaultKeySize = 3072;
+        private static readonly CngProvider Provider = CngProvider.MicrosoftSoftwareKeyStorageProvider;
 
-        private readonly CngProvider provider = CngProvider.MicrosoftSoftwareKeyStorageProvider;
-        private readonly int keySize = DefaultKeySize;
-
-        public KeyStoreAdapter()
+        internal static string CreateKeyName(
+            IAuthorization authorization,
+            SshKeyType keyType,
+            CngProvider provider)
         {
+            if (keyType == SshKeyType.Rsa3072 &&
+                provider == CngProvider.MicrosoftSoftwareKeyStorageProvider)
+            {
+                //
+                // Use backwards-compatible name.
+                //
+                return $"IAPDESKTOP_{authorization.Email}";
+            }
+            else
+            {
+                //
+                // Embed the key type and provider in the name. This ensures
+                // that varying these parameters will yield a different name.
+                //
+                using (var sha = new SHA256Managed())
+                {
+                    //
+                    // Instead of using the full provider name (which can be
+                    // very long), hash the name and use the prefix.
+                    //
+                    var providerToken = BitConverter.ToString(
+                        sha.ComputeHash(Encoding.UTF8.GetBytes(provider.Provider)), 
+                        0, 
+                        4).Replace("-", string.Empty);
+                
+                    return $"IAPDESKTOP_{authorization.Email}_{keyType:x}_{providerToken}";
+                }
+            }
+        }
+
+        internal void DeleteSshKey(
+            SshKeyType keyType,
+            IAuthorization authorization)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(keyType))
+            {
+                SshKey.DeletePersistentKey(
+                    CreateKeyName(authorization, keyType, Provider));
+            }
         }
 
         //---------------------------------------------------------------------
         // IKeyStoreAdapter
         //---------------------------------------------------------------------
 
-        public RSA CreateRsaKey(
-            string name,
-            CngKeyUsages usage,
+        public ISshKey OpenSshKey(
+            SshKeyType keyType,
+            IAuthorization authorization,
             bool createNewIfNotExists,
             IWin32Window window)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(keyType))
             {
-                //
-                // Create or open CNG key in the user profile.
-                //
-                // NB. Keys are stored in %APPDATA%\Microsoft\Crypto\Keys when using
-                // the default Microsoft Software Key Storage Provider.
-                // (see https://docs.microsoft.com/en-us/windows/win32/seccng/key-storage-and-retrieval)
-                //
-                // For testing, you can list CNG keys using
-                // certutil -csp "Microsoft Software Key Storage Provider" -key -user
-                //
-
-                if (CngKey.Exists(name))
-                {
-                    var key = CngKey.Open(name);
-                    if (key.Algorithm != CngAlgorithm.Rsa)
-                    {
-                        key.Dispose();
-                        throw new CryptographicException(
-                            $"Key {name} is not an RSA key");
-                    }
-
-                    if ((key.KeyUsage & usage) == 0)
-                    {
-                        key.Dispose();
-                        throw new CryptographicException(
-                            $"Key {name} exists, but does not support requested usage");
-
-                    }
-
-                    ApplicationTraceSources.Default.TraceInformation(
-                        "Found existing CNG key {0} in {1}", name, this.provider);
-
-                    return new RSACng(key);
-                }
-
-                if (createNewIfNotExists)
-                {
-                    var keyParams = new CngKeyCreationParameters
-                    {
-                        // Do not overwrite, store in user profile.
-                        KeyCreationOptions = CngKeyCreationOptions.None,
-
-                        // Do not allow exporting.
-                        ExportPolicy = CngExportPolicies.None,
-
-                        Provider = this.provider,
-                        KeyUsage = usage
-                    };
-
-                    //
-                    // NB. If we're using the Smart Card provider, the key store
-                    // might show a UI dialog. Therefore, this method must
-                    // be run on the UI thread.
-                    //
-                    if (window != null && window.Handle != null)
-                    {
-                        keyParams.ParentWindowHandle = window.Handle;
-                    }
-
-                    keyParams.Parameters.Add(
-                        new CngProperty(
-                            "Length",
-                            BitConverter.GetBytes(this.keySize),
-                            CngPropertyOptions.None));
-
-                    //
-                    // Create the key. 
-                    //
-                    var key = new RSACng(CngKey.Create(
-                        CngAlgorithm.Rsa,
-                        name,
-                        keyParams));
-
-                    ApplicationTraceSources.Default.TraceInformation(
-                        "Created new CNG key {0} in {1}", name, this.provider);
-
-                    return key;
-                }
-                else
-                {
-                    return null;
-                }
+                return SshKey.OpenPersistentKey(
+                    CreateKeyName(authorization, keyType, Provider),
+                    keyType,
+                    Provider,
+                    CngKeyUsages.Signing,
+                    createNewIfNotExists,
+                    window != null ? window.Handle : IntPtr.Zero);
             }
         }
     }

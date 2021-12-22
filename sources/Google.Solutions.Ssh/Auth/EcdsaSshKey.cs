@@ -25,7 +25,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.Ssh.Auth
 {
     public sealed class ECDsaSshKey : ISshKey
     {

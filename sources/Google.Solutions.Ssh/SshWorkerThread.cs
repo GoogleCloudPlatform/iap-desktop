@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.ComponentModel;

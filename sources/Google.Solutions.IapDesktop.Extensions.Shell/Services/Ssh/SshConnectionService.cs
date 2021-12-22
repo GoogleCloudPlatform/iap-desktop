@@ -33,6 +33,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -171,20 +172,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             //
             // Load persistent CNG key. This must be done on the UI thread.
             //
-            var email = this.authorizationAdapter.Authorization.Email;
-            var rsaKey = this.keyStoreAdapter.CreateRsaKey(
-                    $"IAPDESKTOP_{email}",
-                    CngKeyUsages.Signing,
-                    true,
-                    this.window);
-            Debug.Assert(rsaKey != null);
+            var sshKey = this.keyStoreAdapter.OpenSshKey(
+                SshKeyType.Rsa3072,
+                this.authorizationAdapter.Authorization,
+                true,
+                this.window);
+            Debug.Assert(sshKey != null);
 
             //
             // Start job to publish key, using whatever mechanism is appropriate
             // for this instance.
             //
 
-            var sshKey = RsaSshKey.FromKey(rsaKey);
             try
             {
                 var sshSettings = this.sshSettingsRepository.GetSettings();

@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using System;
 using System.Linq;
 using System.Threading;

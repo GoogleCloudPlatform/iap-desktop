@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Ssh.Auth;
 using NUnit.Framework;
 using System;
 using System.Globalization;

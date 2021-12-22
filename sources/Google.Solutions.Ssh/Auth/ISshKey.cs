@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.Ssh.Auth
 {
     /// <summary>
     /// Public/private key pair that can be used for public key 
@@ -53,37 +53,5 @@ namespace Google.Solutions.Ssh
         /// Size of underlying key.
         /// </summary>
         uint KeySize { get; }
-    }
-
-    public enum SshKeyType
-    {
-        Rsa3072,
-        EcdsaNistp256,
-        EcdsaNistp384,
-        EcdsaNistp521
-    }
-
-    public static class SshKey
-    {
-        public static ISshKey NewEphemeralKey(SshKeyType sshKeyType)
-        {
-            switch (sshKeyType)
-            {
-                case SshKeyType.Rsa3072:
-                    return RsaSshKey.NewEphemeralKey(3072);
-
-                case SshKeyType.EcdsaNistp256:
-                    return ECDsaSshKey.NewEphemeralKey(256);
-                
-                case SshKeyType.EcdsaNistp384:
-                    return ECDsaSshKey.NewEphemeralKey(384);
-                
-                case SshKeyType.EcdsaNistp521:
-                    return ECDsaSshKey.NewEphemeralKey(521);
-
-                default:
-                    throw new ArgumentException("Unsupported key type");
-            }
-        }
     }
 }

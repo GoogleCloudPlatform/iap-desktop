@@ -110,9 +110,9 @@
     <Compile Include="Native\TestSshConnectedSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Native\TestSshSession.cs" />
-    <Compile Include="TestRsaSshKey.cs" />
-    <Compile Include="TestEcdsaSshKey.cs" />
-    <Compile Include="TestSshKey.cs" />
+    <Compile Include="Auth\TestRsaSshKey.cs" />
+    <Compile Include="Auth\TestEcdsaSshKey.cs" />
+    <Compile Include="Auth\TestSshKey.cs" />
     <Compile Include="TestSshShellConnection.cs" />
     <Compile Include="TestStreamingDecoder.cs" />
   </ItemGroup>

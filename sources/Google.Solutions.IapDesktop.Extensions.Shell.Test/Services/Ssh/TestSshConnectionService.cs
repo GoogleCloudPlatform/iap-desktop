@@ -40,6 +40,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
@@ -88,12 +89,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .Returns(authz.Object);
 
             this.keyStore = this.serviceRegistry.AddMock<IKeyStoreAdapter>();
-            this.keyStore.Setup(k => k.CreateRsaKey(
-                    It.IsAny<string>(),
-                    It.IsAny<CngKeyUsages>(),
+            this.keyStore.Setup(k => k.OpenSshKey(
+                    It.IsAny<SshKeyType>(),
+                    It.IsAny<IAuthorization>(),
                     It.IsAny<bool>(),
                     It.IsAny<IWin32Window>()))
-                .Returns(new RSACng());
+                .Returns(RsaSshKey.NewEphemeralKey(1024));
 
             this.sessionBroker = this.serviceRegistry.AddMock<ISshTerminalSessionBroker>();
             this.authorizedKeyService = this.serviceRegistry.AddMock<IAuthorizedKeyService>();
@@ -140,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
-        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncCreatesRsaKey()
+        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncOpensSshKey()
         {
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
@@ -156,10 +157,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .ActivateOrConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
-            this.keyStore.Verify(k => k.CreateRsaKey(
-                It.Is<string>(name => name == "IAPDESKTOP_" + SampleEmail),
-                It.Is<CngKeyUsages>(u => u == CngKeyUsages.Signing),
-                It.Is<bool>(create => create),
+            this.keyStore.Verify(k => k.OpenSshKey(
+                It.Is<SshKeyType>(t => t == SshKeyType.Rsa3072),
+                It.IsAny<IAuthorization>(),
+                It.Is<bool>(create => true),
                 It.IsAny<IWin32Window>()), Times.Once);
         }
 
