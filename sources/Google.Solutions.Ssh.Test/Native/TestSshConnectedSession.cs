@@ -375,40 +375,10 @@ namespace Google.Solutions.Ssh.Test.Native
         [Test]
         public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
-        {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKey.NewEphemeralKey(keyType))
-            {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
-                    .ConfigureAwait(false);
-
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    var authSession = connection.Authenticate(
-                        "testuser",
-                        key,
-                        this.UnexpectedAuthenticationCallback);
-                    Assert.IsNotNull(authSession);
-                }
-            }
-        }
-
-        [Test]
-        public async Task WhenEcdsaPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(
-                SshKeyType.EcdsaNistp256, 
-                SshKeyType.EcdsaNistp384, 
+                SshKeyType.Rsa3072, 
+                SshKeyType.EcdsaNistp256,
+                SshKeyType.EcdsaNistp384,
                 SshKeyType.EcdsaNistp521)] SshKeyType keyType)
         {
             var endpoint = new IPEndPoint(
