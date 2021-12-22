@@ -182,6 +182,36 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
+        [Test]
+        public async Task WhenNeitherEcdsaNorRsaHostKeyAlgorithmAllowed_ThenConnectThrowsException(
+            [LinuxInstance(InitializeScript = InitializeScripts.AllowNeitherEcdsaNorRsaForHostKey)] 
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
+                    .ConfigureAwait(false),
+                22);
+            using (var session = CreateSession())
+            {
+                //
+                // NB. Connect should throw an exception, but libssh doesn't
+                // set the last error. So we have to check the exception
+                // message.
+                //
+
+                try
+                {
+                    session.Connect(endpoint);
+                    Assert.Fail("Expected exception");
+                }
+                catch (SshNativeException e)
+                {
+                    Assert.AreEqual("Unable to exchange encryption keys", e.Message);
+                }
+            }
+        }
+
         //---------------------------------------------------------------------
         // Banner.
         //---------------------------------------------------------------------
