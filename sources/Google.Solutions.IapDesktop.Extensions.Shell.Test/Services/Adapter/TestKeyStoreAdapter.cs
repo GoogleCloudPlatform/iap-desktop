@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.Ssh.Auth;
+using Moq;
 using NUnit.Framework;
 using System.Security.Cryptography;
 
@@ -44,26 +46,141 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
             { }
         }
 
+        //---------------------------------------------------------------------
+        // CreateKeyName
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenKeyNotFoundAndCreateNewIsFalse_ThenGetRsaKeyAsyncReturnsNull()
+        public void WhenUsingRsa3072AndMicrosoftSoftwareKsp_ThenCreateKeyNameReturnsLegacyName()
         {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("bob@example.com");
+
+            var keyName = KeyStoreAdapter.CreateKeyName(
+                authorization.Object,
+                SshKeyType.Rsa3072,
+                CngProvider.MicrosoftSoftwareKeyStorageProvider);
+
+            Assert.AreEqual("IAPDESKTOP_bob@example.com", keyName);
+        }
+
+        [Test]
+        public void WhenUsingRsa3072AndMicrosoftSmartCardKsp_ThenCreateKeyNameReturnsLegacyName()
+        {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("bob@example.com");
+
+            var keyName = KeyStoreAdapter.CreateKeyName(
+                authorization.Object,
+                SshKeyType.Rsa3072,
+                CngProvider.MicrosoftSmartCardKeyStorageProvider);
+
+            Assert.AreEqual("IAPDESKTOP_bob@example.com_0001_E7909B75", keyName);
+        }
+
+        [Test]
+        public void WhenUsingEcdsaNistp256AndMicrosoftSoftwareKsp_ThenCreateKeyNameReturnsLegacyName()
+        {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("bob@example.com");
+
+            var keyName = KeyStoreAdapter.CreateKeyName(
+                authorization.Object,
+                SshKeyType.EcdsaNistp256,
+                CngProvider.MicrosoftSoftwareKeyStorageProvider);
+
+            Assert.AreEqual("IAPDESKTOP_bob@example.com_0011_094FE673", keyName);
+        }
+
+        [Test]
+        public void WhenUsingEcdsaNistp256AndMicrosoftSmartCardKsp_ThenCreateKeyNameReturnsLegacyName()
+        {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("bob@example.com");
+
+            var keyName = KeyStoreAdapter.CreateKeyName(
+                authorization.Object,
+                SshKeyType.EcdsaNistp256,
+                CngProvider.MicrosoftSmartCardKeyStorageProvider);
+
+            Assert.AreEqual("IAPDESKTOP_bob@example.com_0011_E7909B75", keyName);
+        }
+
+        [Test]
+        public void WhenUsingEcdsaNistp521AndMicrosoftSoftwareKsp_ThenCreateKeyNameReturnsLegacyName()
+        {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("bob@example.com");
+
+            var keyName = KeyStoreAdapter.CreateKeyName(
+                authorization.Object,
+                SshKeyType.EcdsaNistp521,
+                CngProvider.MicrosoftSoftwareKeyStorageProvider);
+
+            Assert.AreEqual("IAPDESKTOP_bob@example.com_0013_094FE673", keyName);
+        }
+
+        [Test]
+        public void WhenUsingEcdsaNistp521AndMicrosoftSmartCardKsp_ThenCreateKeyNameReturnsLegacyName()
+        {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("bob@example.com");
+
+            var keyName = KeyStoreAdapter.CreateKeyName(
+                authorization.Object,
+                SshKeyType.EcdsaNistp521,
+                CngProvider.MicrosoftSmartCardKeyStorageProvider);
+
+            Assert.AreEqual("IAPDESKTOP_bob@example.com_0013_E7909B75", keyName);
+        }
+
+        //---------------------------------------------------------------------
+        // OpenSshKey
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenKeyNotFoundAndCreateNewIsFalse_ThenOpenSshKeyReturnsNull()
+        {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("notfound@example.com");
+
             var adapter = new KeyStoreAdapter();
 
             Assert.IsNull(adapter.OpenSshKey(
-                KeyName,
-                CngKeyUsages.Signing,
+                SshKeyType.Rsa3072,
+                authorization.Object,
                 false,
                 null));
         }
 
         [Test]
-        public void WhenKeyNotFoundAndCreateNewIsTrue_ThenGetRsaKeyAsyncReturnsNewKey()
+        public void WhenKeyNotFoundAndCreateNewIsTrue_ThenOpenSshKeyReturnsNewKey()
         {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("bob@example.com");
+
             var adapter = new KeyStoreAdapter();
+            adapter.DeleteSshKey(SshKeyType.Rsa3072, authorization.Object);
 
             var key = adapter.OpenSshKey(
-                KeyName,
-                CngKeyUsages.Signing,
+                SshKeyType.Rsa3072,
+                authorization.Object,
                 true,
                 null);
 
@@ -72,19 +189,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         }
 
         [Test]
-        public void WhenKeyExists_ThenGetRsaKeyAsyncReturnsKey()
+        public void WhenKeyExists_ThenOpenSshKeyReturnsKey()
         {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("bob@example.com");
+
             var adapter = new KeyStoreAdapter();
 
             var key1 = adapter.OpenSshKey(
-                KeyName,
-                CngKeyUsages.Signing,
+                SshKeyType.Rsa3072,
+                authorization.Object,
                 true,
                 null);
 
             var key2 = adapter.OpenSshKey(
-                KeyName,
-                CngKeyUsages.Signing,
+                SshKeyType.Rsa3072,
+                authorization.Object,
                 false,
                 null);
 
@@ -93,22 +215,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         }
 
         [Test]
-        public void WhenKeyExistsButUsageDoesNotMatch_ThenGetRsaKeyAsyncReturnsKey()
+        public void WhenKeyExistsButKeyTypeDifferent_ThenOpenSshKeyReturnsNewKey()
         {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("bob@example.com");
+
             var adapter = new KeyStoreAdapter();
 
-            var key1 = adapter.OpenSshKey(
-                KeyName,
-                CngKeyUsages.Signing,
+            var rsaKey = adapter.OpenSshKey(
+                SshKeyType.Rsa3072,
+                authorization.Object,
                 true,
                 null);
+            Assert.IsNotNull(rsaKey);
 
-            Assert.Throws<CryptographicException>(
-                () => adapter.OpenSshKey(
-                    KeyName,
-                    CngKeyUsages.Decryption,
-                    false,
-                    null));
+            var ecdsaKey = adapter.OpenSshKey(
+                SshKeyType.EcdsaNistp256,
+                authorization.Object,
+                true,
+                null);
+            Assert.IsNotNull(ecdsaKey);
+
+            Assert.AreNotEqual(rsaKey.PublicKeyString, ecdsaKey.PublicKeyString);
         }
     }
 }

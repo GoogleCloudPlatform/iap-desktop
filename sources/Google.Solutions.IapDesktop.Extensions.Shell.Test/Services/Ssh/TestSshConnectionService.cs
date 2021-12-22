@@ -90,8 +90,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             this.keyStore = this.serviceRegistry.AddMock<IKeyStoreAdapter>();
             this.keyStore.Setup(k => k.OpenSshKey(
-                    It.IsAny<string>(),
-                    It.IsAny<CngKeyUsages>(),
+                    It.IsAny<SshKeyType>(),
+                    It.IsAny<IAuthorization>(),
                     It.IsAny<bool>(),
                     It.IsAny<IWin32Window>()))
                 .Returns(RsaSshKey.NewEphemeralKey(1024));
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
-        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncCreatesRsaKey()
+        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncOpensSshKey()
         {
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
@@ -158,9 +158,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .ConfigureAwait(false);
 
             this.keyStore.Verify(k => k.OpenSshKey(
-                It.Is<string>(name => name == "IAPDESKTOP_" + SampleEmail),
-                It.Is<CngKeyUsages>(u => u == CngKeyUsages.Signing),
-                It.Is<bool>(create => create),
+                It.Is<SshKeyType>(t => t == SshKeyType.Rsa3072),
+                It.IsAny<IAuthorization>(),
+                It.Is<bool>(create => true),
                 It.IsAny<IWin32Window>()), Times.Once);
         }
 

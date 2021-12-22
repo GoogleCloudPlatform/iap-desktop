@@ -175,7 +175,7 @@ namespace Google.Solutions.Ssh.Test.Auth
                 IntPtr.Zero);
 
             Assert.IsNotNull(openedKey);
-            Assert.Equals(createdKey.PublicKeyString, openedKey.PublicKeyString);
+            Assert.AreEqual(createdKey.PublicKeyString, openedKey.PublicKeyString);
         }
 
         [Test]
@@ -232,6 +232,33 @@ namespace Google.Solutions.Ssh.Test.Auth
                     CngKeyUsages.KeyAgreement,
                     false,
                     IntPtr.Zero));
+        }
+
+        //---------------------------------------------------------------------
+        // DeletePersistentKey.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenKeyExists_ThenDeletePersistentKeyDeletesKey()
+        {
+            SshKey.OpenPersistentKey(
+                KeyName,
+                SshKeyType.Rsa3072,
+                KeyStoragePovider,
+                CngKeyUsages.Signing,
+                true,
+                IntPtr.Zero);
+
+            SshKey.DeletePersistentKey(KeyName);
+            SshKey.DeletePersistentKey(KeyName);
+
+            Assert.IsNull(SshKey.OpenPersistentKey(
+                KeyName,
+                SshKeyType.Rsa3072,
+                KeyStoragePovider,
+                CngKeyUsages.Signing,
+                false,
+                IntPtr.Zero));
         }
     }
 }

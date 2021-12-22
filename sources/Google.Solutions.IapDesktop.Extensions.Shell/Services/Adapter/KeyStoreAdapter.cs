@@ -19,12 +19,16 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
@@ -32,8 +36,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     public interface IKeyStoreAdapter
     {
         ISshKey OpenSshKey(
-            string name,
-            CngKeyUsages usage,
+            SshKeyType keyType,
+            IAuthorization authorization,
             bool createNewIfNotExists,
             IWin32Window window);
     }
@@ -41,10 +45,52 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     [Service(typeof(IKeyStoreAdapter))]
     public class KeyStoreAdapter : IKeyStoreAdapter
     {
-        private readonly CngProvider provider = CngProvider.MicrosoftSoftwareKeyStorageProvider;
+        private static readonly CngProvider Provider = CngProvider.MicrosoftSoftwareKeyStorageProvider;
 
-        public KeyStoreAdapter()
+        internal static string CreateKeyName(
+            IAuthorization authorization,
+            SshKeyType keyType,
+            CngProvider provider)
         {
+            if (keyType == SshKeyType.Rsa3072 &&
+                provider == CngProvider.MicrosoftSoftwareKeyStorageProvider)
+            {
+                //
+                // Use backwards-compatible name.
+                //
+                return $"IAPDESKTOP_{authorization.Email}";
+            }
+            else
+            {
+                //
+                // Embed the key type and provider in the name. This ensures
+                // that varying these parameters will yield a different name.
+                //
+                using (var sha = new SHA256Managed())
+                {
+                    //
+                    // Instead of using the full provider name (which can be
+                    // very long), hash the name and use the prefix.
+                    //
+                    var providerToken = BitConverter.ToString(
+                        sha.ComputeHash(Encoding.UTF8.GetBytes(provider.Provider)), 
+                        0, 
+                        4).Replace("-", string.Empty);
+                
+                    return $"IAPDESKTOP_{authorization.Email}_{keyType:x}_{providerToken}";
+                }
+            }
+        }
+
+        internal void DeleteSshKey(
+            SshKeyType keyType,
+            IAuthorization authorization)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(keyType))
+            {
+                SshKey.DeletePersistentKey(
+                    CreateKeyName(authorization, keyType, Provider));
+            }
         }
 
         //---------------------------------------------------------------------
@@ -52,18 +98,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         //---------------------------------------------------------------------
 
         public ISshKey OpenSshKey(
-            string name,
-            CngKeyUsages usage,
+            SshKeyType keyType,
+            IAuthorization authorization,
             bool createNewIfNotExists,
             IWin32Window window)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(keyType))
             {
                 return SshKey.OpenPersistentKey(
-                    name,
-                    SshKeyType.Rsa3072,
-                    this.provider,
-                    usage,
+                    CreateKeyName(authorization, keyType, Provider),
+                    keyType,
+                    Provider,
+                    CngKeyUsages.Signing,
                     createNewIfNotExists,
                     window != null ? window.Handle : IntPtr.Zero);
             }

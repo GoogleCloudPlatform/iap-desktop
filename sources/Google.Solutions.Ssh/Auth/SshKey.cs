@@ -26,12 +26,12 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Auth
 {
-    public enum SshKeyType
+    public enum SshKeyType : ushort
     {
-        Rsa3072,
-        EcdsaNistp256,
-        EcdsaNistp384,
-        EcdsaNistp521
+        Rsa3072       = 0x01,
+        EcdsaNistp256 = 0x11,
+        EcdsaNistp384 = 0x12,
+        EcdsaNistp521 = 0x13
     }
 
     public static class SshKey
@@ -145,6 +145,9 @@ namespace Google.Solutions.Ssh.Auth
             }
         }
 
+        /// <summary>
+        /// Create or open a key in the key storage provider.
+        /// </summary>
         public static ISshKey OpenPersistentKey(
             string name,
             SshKeyType sshKeyType,
@@ -223,6 +226,24 @@ namespace Google.Solutions.Ssh.Auth
                     throw new ArgumentException("Unsupported key type");
             }
         }
+
+        /// <summary>
+        /// Delete a key from the key storage provider.
+        /// </summary>
+        public static void DeletePersistentKey(string name)
+        {
+            using (SshTraceSources.Default.TraceMethod().WithParameters(name))
+            {
+                if (CngKey.Exists(name))
+                {
+                    CngKey.Open(name).Delete();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create a new in-memory key for testing purposes.
+        /// </summary>
         public static ISshKey NewEphemeralKey(SshKeyType sshKeyType)
         {
             switch (sshKeyType)
@@ -243,6 +264,5 @@ namespace Google.Solutions.Ssh.Auth
                     throw new ArgumentException("Unsupported key type");
             }
         }
-
     }
 }

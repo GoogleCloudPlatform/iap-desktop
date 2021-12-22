@@ -172,12 +172,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             //
             // Load persistent CNG key. This must be done on the UI thread.
             //
-            var email = this.authorizationAdapter.Authorization.Email;
             var sshKey = this.keyStoreAdapter.OpenSshKey(
-                    $"IAPDESKTOP_{email}",
-                    CngKeyUsages.Signing,
-                    true,
-                    this.window);
+                SshKeyType.Rsa3072,
+                this.authorizationAdapter.Authorization,
+                true,
+                this.window);
             Debug.Assert(sshKey != null);
 
             //
