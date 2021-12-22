@@ -82,6 +82,8 @@ namespace Google.Solutions.Ssh
 
         public string Type => "ssh-rsa";
 
+        public uint KeySize => (uint)this.key.KeySize;
+
         public byte[] SignData(byte[] data)
         {
             //

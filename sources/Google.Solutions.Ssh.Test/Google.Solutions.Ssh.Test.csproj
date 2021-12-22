@@ -112,6 +112,7 @@
     <Compile Include="Native\TestSshSession.cs" />
     <Compile Include="TestRsaSshKey.cs" />
     <Compile Include="TestEcdsaSshKey.cs" />
+    <Compile Include="TestSshKey.cs" />
     <Compile Include="TestSshShellConnection.cs" />
     <Compile Include="TestStreamingDecoder.cs" />
   </ItemGroup>

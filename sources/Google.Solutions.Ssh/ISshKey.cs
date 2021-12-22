@@ -48,6 +48,11 @@ namespace Google.Solutions.Ssh
         /// Sign data and return signature in SSH format.
         /// </summary>
         byte[] SignData(byte[] data);
+
+        /// <summary>
+        /// Size of underlying key.
+        /// </summary>
+        uint KeySize { get; }
     }
 
     public enum SshKeyType

@@ -315,7 +315,8 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsAuthenticationFailed(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var endpoint = new IPEndPoint(
                 await InstanceUtil
@@ -324,7 +325,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 22);
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKey.NewEphemeralKey(keyType))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -338,14 +339,15 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task WhenSessionDisconnected_ThenAuthenticateThrowsSocketSend(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var endpoint = new IPEndPoint(
                 await InstanceUtil
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKey.NewEphemeralKey(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -371,15 +373,16 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenRsaPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var endpoint = new IPEndPoint(
                 await InstanceUtil
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKey.NewEphemeralKey(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -451,14 +454,15 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task When2faRequiredAndPromptReturnsWrongValue_ThenPromptIsRetried(
-            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask)
+            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var endpoint = new IPEndPoint(
                 await InstanceUtil
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKey.NewEphemeralKey(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -494,14 +498,15 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task When2faRequiredAndPromptReturnsNull_ThenPromptIsRetried(
-            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask)
+            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var endpoint = new IPEndPoint(
                 await InstanceUtil
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKey.NewEphemeralKey(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -537,14 +542,15 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task When2faRequiredAndPromptThrowsException_ThenAuthenticationFailsWithoutRetry(
-            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask)
+            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var endpoint = new IPEndPoint(
                 await InstanceUtil
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKey.NewEphemeralKey(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(

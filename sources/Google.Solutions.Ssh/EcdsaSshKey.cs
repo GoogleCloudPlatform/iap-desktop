@@ -107,6 +107,8 @@ namespace Google.Solutions.Ssh
 
         public string Type => "ecdsa-sha2-nistp" + this.key.KeySize;
 
+        public uint KeySize => (uint)this.key.KeySize;
+
         public byte[] SignData(byte[] data)
         {
             //
