@@ -87,7 +87,7 @@
     <Compile Include="Native\SshException.cs" />
     <Compile Include="Native\SshSession.cs" />
     <Compile Include="Native\UnsafeNativeMethods.cs" />
-    <Compile Include="EcdsaSshKey.cs" />
+    <Compile Include="ECDsaSshKey.cs" />
     <Compile Include="RsaSshKey.cs" />
     <Compile Include="SshConnectionBase.cs" />
     <Compile Include="SshShellConnection.cs" />

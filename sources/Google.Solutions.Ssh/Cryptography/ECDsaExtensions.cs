@@ -129,7 +129,7 @@ namespace Google.Solutions.Ssh.Cryptography
         }
 
         /// <summary>
-        /// Format signature according to RFC5656 section 3.1.2).
+        /// Format signature according to RFC5656 section 3.1.2.
         /// </summary>
         /// <returns></returns>
         public byte[] ToSshBlob()

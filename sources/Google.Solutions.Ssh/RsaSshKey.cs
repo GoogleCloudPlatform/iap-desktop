@@ -27,6 +27,11 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh
 {
+    public enum RsaSshKeyType : int
+    {
+        Rsa3072 = 3072
+    }
+
     public sealed class RsaSshKey : ISshKey
     {
 #if DEBUG
@@ -35,14 +40,20 @@ namespace Google.Solutions.Ssh
 
         private readonly RSA key;
 
-        public RsaSshKey(RSA key)
+        private RsaSshKey(RSA key)
         {
             this.key = key;
         }
 
-        public static RsaSshKey NewEphemeralKey()
+        public static RsaSshKey FromKey(RSA key)
         {
-            return new RsaSshKey(new RSACng());
+            return new RsaSshKey(key);
+        }
+
+        public static RsaSshKey NewEphemeralKey(RsaSshKeyType keyType)
+        {
+            var keySize = (int)keyType;
+            return new RsaSshKey(new RSACng(keySize));
         }
 
         //---------------------------------------------------------------------

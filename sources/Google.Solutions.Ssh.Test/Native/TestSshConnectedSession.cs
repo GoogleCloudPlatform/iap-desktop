@@ -324,7 +324,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 22);
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = RsaSshKey.NewEphemeralKey(RsaSshKeyType.Rsa3072))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -345,7 +345,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = RsaSshKey.NewEphemeralKey(RsaSshKeyType.Rsa3072))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -379,7 +379,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = RsaSshKey.NewEphemeralKey(RsaSshKeyType.Rsa3072))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -403,14 +403,17 @@ namespace Google.Solutions.Ssh.Test.Native
         [Test]
         public async Task WhenEcdsaPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Values(256, 384, 521)] int keyLength)
+            [Values(
+                ECDsaSshKeyType.Nistp256, 
+                ECDsaSshKeyType.Nistp384, 
+                ECDsaSshKeyType.NIstp521)] ECDsaSshKeyType keyType)
         {
             var endpoint = new IPEndPoint(
                 await InstanceUtil
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = EcdsaSshKey.NewEphemeralKey(keyLength))
+            using (var key = ECDsaSshKey.NewEphemeralKey(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -455,7 +458,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = RsaSshKey.NewEphemeralKey(RsaSshKeyType.Rsa3072))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -498,7 +501,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = RsaSshKey.NewEphemeralKey(RsaSshKeyType.Rsa3072))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -541,7 +544,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = RsaSshKey.NewEphemeralKey(RsaSshKeyType.Rsa3072))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
