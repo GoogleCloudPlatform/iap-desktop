@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             // for this instance.
             //
 
-            var sshKey = new RsaSshKey(rsaKey);
+            var sshKey = RsaSshKey.FromKey(rsaKey);
             try
             {
                 var sshSettings = this.sshSettingsRepository.GetSettings();

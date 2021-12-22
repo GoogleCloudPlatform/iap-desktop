@@ -398,12 +398,12 @@ namespace Google.Solutions.Ssh.Native
                 // NB. The public key must be passed in OpenSSH format, not PEM.
                 // cf. https://tools.ietf.org/html/rfc4253#section-6.6
                 //
-                var publicKey = key.PublicKey;
+                var publicKey = key.GetPublicKey();
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
                     this.session.Handle,
                     username,
-                    key.PublicKey,
+                    publicKey,
                     new IntPtr(publicKey.Length),
                     Sign,
                     IntPtr.Zero);

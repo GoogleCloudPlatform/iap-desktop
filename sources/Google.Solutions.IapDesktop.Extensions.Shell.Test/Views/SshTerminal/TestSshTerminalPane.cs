@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             {
                 var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
                         instanceLocator,
-                        new RsaSshKey(new RSACng()),
+                        SshKey.NewEphemeralKey(SshKeyType.Rsa3072),
                         TimeSpan.FromMinutes(10),
                         null,
                         AuthorizeKeyMethods.InstanceMetadata,
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         [Test]
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
         {
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
             {
                 SessionAbortedEvent deliveredEvent = null;
                 this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         [Test]
         public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
         {
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
             {
                 SessionAbortedEvent deliveredEvent = null;
                 this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var instanceLocator = await instanceLocatorTask;
 
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
             {
                 SessionAbortedEvent deliveredEvent = null;
                 this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);

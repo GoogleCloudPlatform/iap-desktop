@@ -97,6 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestSshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="InstanceUtil.cs" />
     <Compile Include="Native\InitializeScripts.cs" />
@@ -109,6 +110,9 @@
     <Compile Include="Native\TestSshConnectedSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Native\TestSshSession.cs" />
+    <Compile Include="TestRsaSshKey.cs" />
+    <Compile Include="TestEcdsaSshKey.cs" />
+    <Compile Include="TestSshKey.cs" />
     <Compile Include="TestSshShellConnection.cs" />
     <Compile Include="TestStreamingDecoder.cs" />
   </ItemGroup>
@@ -129,6 +133,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Cryptography\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\libssh2.1.9.0\build\libssh2.targets" Condition="Exists('..\packages\libssh2.1.9.0\build\libssh2.targets')" />

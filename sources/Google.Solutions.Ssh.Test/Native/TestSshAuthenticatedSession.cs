@@ -56,7 +56,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
                     instanceLocator,
@@ -82,8 +82,9 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenConnected_ThenOpenShellChannelAsyncChannelSucceeds(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        public async Task WhenConnected_ThenOpenShellChannelAsyncSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             var instanceLocator = await instanceLocatorTask;
             var endpoint = new IPEndPoint(
@@ -91,7 +92,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = SshKey.NewEphemeralKey(keyType))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
                         instanceLocator,
@@ -124,7 +125,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
                     instanceLocator,
@@ -160,7 +161,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = new RsaSshKey(new RSACng()))
+            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
                         instanceLocator,

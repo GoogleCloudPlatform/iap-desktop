@@ -21,21 +21,69 @@
 
 using System;
 
-#pragma warning disable CS1819 // Properties should not return arrays
-
 namespace Google.Solutions.Ssh
 {
+    /// <summary>
+    /// Public/private key pair that can be used for public key 
+    /// authentication.
+    /// </summary>
     public interface ISshKey : IDisposable
     {
         /// <summary>
-        /// Return public key in a format compliant with
-        /// https://tools.ietf.org/html/rfc4253#section-6.6
+        /// Key type (for ex, 'ssh-rsa').
         /// </summary>
-        byte[] PublicKey { get; }
+        string Type { get; }
 
+        /// <summary>
+        /// Return public key in SSH format.
+        /// </summary>
+        byte[] GetPublicKey();
+
+        /// <summary>
+        /// Return base64-encoded public key.
+        /// </summary>
+        string PublicKeyString { get; }
+
+        /// <summary>
+        /// Sign data and return signature in SSH format.
+        /// </summary>
         byte[] SignData(byte[] data);
 
-        string PublicKeyString { get; }
-        string Type { get; }
+        /// <summary>
+        /// Size of underlying key.
+        /// </summary>
+        uint KeySize { get; }
+    }
+
+    public enum SshKeyType
+    {
+        Rsa3072,
+        EcdsaNistp256,
+        EcdsaNistp384,
+        EcdsaNistp521
+    }
+
+    public static class SshKey
+    {
+        public static ISshKey NewEphemeralKey(SshKeyType sshKeyType)
+        {
+            switch (sshKeyType)
+            {
+                case SshKeyType.Rsa3072:
+                    return RsaSshKey.NewEphemeralKey(3072);
+
+                case SshKeyType.EcdsaNistp256:
+                    return ECDsaSshKey.NewEphemeralKey(256);
+                
+                case SshKeyType.EcdsaNistp384:
+                    return ECDsaSshKey.NewEphemeralKey(384);
+                
+                case SshKeyType.EcdsaNistp521:
+                    return ECDsaSshKey.NewEphemeralKey(521);
+
+                default:
+                    throw new ArgumentException("Unsupported key type");
+            }
+        }
     }
 }

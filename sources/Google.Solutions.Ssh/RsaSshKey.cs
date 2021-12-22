@@ -22,6 +22,7 @@
 using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh
@@ -34,25 +35,54 @@ namespace Google.Solutions.Ssh
 
         private readonly RSA key;
 
-        public RsaSshKey(RSA key)
+        private RsaSshKey(RSA key)
         {
             this.key = key;
         }
 
-        public static RsaSshKey NewEphemeralKey()
+        public static RsaSshKey FromKey(RSA key)
         {
-            return new RsaSshKey(new RSACng());
+            return new RsaSshKey(key);
+        }
+
+        public static RsaSshKey NewEphemeralKey(int keySize)
+        {
+            return new RsaSshKey(new RSACng(keySize));
         }
 
         //---------------------------------------------------------------------
         // ISshKey.
         //---------------------------------------------------------------------
 
-        public byte[] PublicKey => this.key.ToSshRsaPublicKey();
+        public byte[] GetPublicKey()
+        {
+            using (var writer = new SshDataBuffer())
+            {
+                //
+                // Encode public key according to RFC4253 section 6.6.
+                //
+                var parameters = key.ExportParameters(false);
 
-        public string PublicKeyString => Convert.ToBase64String(this.PublicKey);
+                //
+                // Pad modulus with a leading zero, 
+                // cf https://www.cameronmoten.com/2017/12/21/rsacryptoserviceprovider-create-a-ssh-rsa-public-key/
+                //
+                var paddedModulus = (new byte[] { 0 })
+                    .Concat(parameters.Modulus)
+                    .ToArray();
+
+                writer.WriteString(this.Type);
+                writer.WriteMpint(parameters.Exponent);
+                writer.WriteMpint(paddedModulus);
+                return writer.ToArray();
+            }
+        }
+
+        public string PublicKeyString => Convert.ToBase64String(GetPublicKey());
 
         public string Type => "ssh-rsa";
+
+        public uint KeySize => (uint)this.key.KeySize;
 
         public byte[] SignData(byte[] data)
         {
