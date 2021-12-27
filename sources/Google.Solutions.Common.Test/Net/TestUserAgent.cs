@@ -40,8 +40,10 @@ namespace Google.Solutions.Common.Test.Net
         [Test]
         public void WhenExtensionProvided_ToHeaderValueReturnsProperString()
         {
-            var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
-            ua.Extensions = "on-steroids";
+            var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95")
+            {
+                Extensions = "on-steroids"
+            };
 
             Assert.AreEqual("WidgetTool/1.0 (Windows 95; on-steroids)", ua.ToHeaderValue());
             Assert.AreEqual(ua.ToHeaderValue(), ua.ToString());

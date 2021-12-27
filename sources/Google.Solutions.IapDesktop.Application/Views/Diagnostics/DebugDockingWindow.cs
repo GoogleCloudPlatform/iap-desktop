@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
         private void OnDockStateUpdated([CallerMemberName] string eventName = null)
         {
-            WriteOutput($"\r\n--[{eventId++}]: {eventName}--\r\n");
+            WriteOutput($"\r\n--[{this.eventId++}]: {eventName}--\r\n");
 
             WriteOutput($"{this.IsActivated}\r\n");
             WriteOutput($"{this.IsHidden}\r\n");
@@ -67,22 +67,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 WriteOutput($"IsActivated: {this.snapshot.IsActivated} -> {this.IsActivated}\r\n");
             }
+
             if (this.IsHidden != this.snapshot.IsHidden)
             {
                 WriteOutput($"IsHidden: {this.snapshot.IsHidden} -> {this.IsHidden}\r\n");
             }
+            
             if (this.IsFloat != this.snapshot.IsFloat)
             {
                 WriteOutput($"IsFloat: {this.snapshot.IsFloat} -> {this.IsFloat}\r\n");
             }
+            
             if (this.VisibleState != this.snapshot.VisibleState)
             {
                 WriteOutput($"VisibleState: {this.snapshot.VisibleState} -> {this.VisibleState}\r\n");
             }
+            
             if (this.DockState != this.snapshot.DockState)
             {
                 WriteOutput($"DockState: {this.snapshot.DockState} -> {this.DockState}\r\n");
             }
+            
             if (this.IsUserVisible != this.snapshot.IsUserVisible)
             {
                 WriteOutput($"IsUserVisible: {this.snapshot.IsUserVisible} -> {this.IsUserVisible}\r\n");

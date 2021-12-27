@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 ObserveItem(item);
             }
 
-            Items.AddRange(items
+            this.Items.AddRange(items
                 .Select(item => new ListViewItem(
                     Columns.OfType<ColumnHeader>().Select(c => ExtractColumnValue(c.Index, item)).ToArray())
                 {
@@ -225,6 +225,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                             this.Items.Remove(oldViewItem);
                         }
                     }
+
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
@@ -244,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
                                 viewItem.Tag = newModelItem;
 
-                                foreach (ColumnHeader column in Columns)
+                                foreach (ColumnHeader column in this.Columns)
                                 {
                                     viewItem.SubItems[column.Index].Text =
                                         ExtractColumnValue(column.Index, newModelItem);
@@ -252,6 +253,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                             }
                         }
                     }
+
                     break;
 
                 case NotifyCollectionChangedAction.Move:
@@ -264,6 +266,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                             this.Items.Insert(e.NewStartingIndex, viewItem);
                         }
                     }
+
                     break;
 
                 case NotifyCollectionChangedAction.Reset:

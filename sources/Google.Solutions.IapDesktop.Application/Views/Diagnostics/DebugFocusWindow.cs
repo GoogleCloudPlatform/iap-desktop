@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 control = container.ActiveControl;
                 container = control as IContainerControl;
             }
+            
             return control;
         }
 

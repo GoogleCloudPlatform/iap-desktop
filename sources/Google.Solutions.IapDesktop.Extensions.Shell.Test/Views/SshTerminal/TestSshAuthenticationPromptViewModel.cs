@@ -52,8 +52,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         [Test]
         public void WhenDescriptionSetToMultipleSentences_ThenLineBreaksAreAdded()
         {
-            var viewModel = new SshAuthenticationPromptViewModel();
-            viewModel.Description = "first. second. third.";
+            var viewModel = new SshAuthenticationPromptViewModel
+            {
+                Description = "first. second. third."
+            };
 
             Assert.AreEqual("first.\nsecond.\nthird.", viewModel.Description);
         }

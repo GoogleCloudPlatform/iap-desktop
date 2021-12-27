@@ -124,6 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 MessageBox.Show(this, ex.Message);
             }
+            
             this.spinner.Visible = false;
         }
 
@@ -162,6 +163,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 MessageBox.Show(this, ex.Message);
             }
+
             this.spinner.Visible = false;
         }
 
@@ -185,6 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 MessageBox.Show(this, ex.Message);
             }
+            
             this.spinner.Visible = false;
         }
 
@@ -212,6 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 MessageBox.Show(this, ex.Message);
             }
+            
             this.spinner.Visible = false;
         }
     }
