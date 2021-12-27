@@ -51,9 +51,8 @@ namespace Google.Solutions.Common.Locator
             }
 
 		    public <#= className #>Locator(ProjectLocator project, string zone, string name)
-                : base(project.ProjectId, name)
+                : this(project.ProjectId, zone, name)
             {
-                this.Zone = zone;
             }
 
             public static <#= className #>Locator FromString(string resourceReference)
