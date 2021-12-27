@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                 hkcu.CreateSubKey(TestKeyPath)));
             registry.AddSingleton(new ApplicationSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath),
-                null, 
+                null,
                 null));
 
             registry.AddSingleton<IMainForm>(mainForm);

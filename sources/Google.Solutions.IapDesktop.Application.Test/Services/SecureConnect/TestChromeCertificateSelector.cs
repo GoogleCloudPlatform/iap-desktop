@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
     [TestFixture]
     public class TestChromeCertificateSelector : ApplicationFixtureBase
     {
-        private static readonly X500DistinguishedName ComplexIssuerDn = 
+        private static readonly X500DistinguishedName ComplexIssuerDn =
             new X500DistinguishedName("C=US,S=CA,L=MTV,O=Acme,OU=Sales,CN=Issuer");
         private static readonly X500DistinguishedName ComplexSubjectDn =
             new X500DistinguishedName("C=US,S=CA,L=MTV,O=Acme,OU=Sales,CN=Subject");
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         public void WhenJsonMalformed_ThenTryParseReturnsFalse()
         {
             Assert.IsFalse(ChromeCertificateSelector.TryParse(
-                "{asd'", 
+                "{asd'",
                 out var _));
         }
 

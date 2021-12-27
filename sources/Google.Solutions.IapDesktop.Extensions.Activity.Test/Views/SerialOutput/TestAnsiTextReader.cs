@@ -44,17 +44,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             var reader = new AnsiTextReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
-                "some text", 
+                "some text",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                "", 
+                "",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                " and more text", 
+                " and more text",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
@@ -73,17 +73,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             var reader = new AnsiTextReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
-                "some text", 
+                "some text",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                "", 
+                "",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                " and more text", 
+                " and more text",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
@@ -103,22 +103,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             var reader = new AnsiTextReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
-                "some text", 
+                "some text",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                "", 
+                "",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                "", 
+                "",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                " and more text", 
+                " and more text",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             var reader = new AnsiTextReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
-                "[2Jsome text", 
+                "[2Jsome text",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));

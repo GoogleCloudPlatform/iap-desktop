@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                             .ConfigureAwait(true);
 
                         Debug.WriteLine("Delay over");
-                        
+
                         await this.eventService
                             .FireAsync(new StatusUpdatedEvent("Done"))
                             .ConfigureAwait(true);
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 MessageBox.Show(this, ex.Message);
             }
-            
+
             this.spinner.Visible = false;
         }
 
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 MessageBox.Show(this, ex.Message);
             }
-            
+
             this.spinner.Visible = false;
         }
 
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 MessageBox.Show(this, ex.Message);
             }
-            
+
             this.spinner.Visible = false;
         }
     }

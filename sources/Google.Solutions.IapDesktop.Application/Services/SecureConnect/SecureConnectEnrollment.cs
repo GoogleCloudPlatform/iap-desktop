@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         //
         // URL to select a device certificate, cf. go/ec-sc-design.
         //
-        private static readonly Uri CertificateSelectorUrl 
+        private static readonly Uri CertificateSelectorUrl
             = new Uri("https://secureconnect-pa.mtls.clients6.google.com/");
 
         private const string EnhancedKeyUsageOid = "2.5.29.37";
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                 }
                 else if (TryGetClientCertificateForCurrentUser(
                     this.chromePolicy.GetAutoSelectCertificateForUrlsPolicy(
-                        CertificateSelectorUrl)) is var chromeClientCertificate && 
+                        CertificateSelectorUrl)) is var chromeClientCertificate &&
                     chromeClientCertificate != null)
                 {
                     ApplicationTraceSources.Default.TraceInformation(

@@ -95,14 +95,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public TerminalFont NextSmallerFont()
         {
             return new TerminalFont(
-                this.Font.FontFamily.Name, 
+                this.Font.FontFamily.Name,
                 Math.Max(MinimumSize, this.Font.Size - 1));
         }
 
         public TerminalFont NextLargerFont()
         {
             return new TerminalFont(
-                this.Font.FontFamily.Name, 
+                this.Font.FontFamily.Name,
                 Math.Min(MaximumSize, this.Font.Size + 1));
         }
 

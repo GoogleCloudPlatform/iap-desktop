@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                     safeLocalFree.SetHandleAsInvalid();
                     throw new OutOfMemoryException();
                 }
-                
+
                 return safeLocalFree;
             }
 

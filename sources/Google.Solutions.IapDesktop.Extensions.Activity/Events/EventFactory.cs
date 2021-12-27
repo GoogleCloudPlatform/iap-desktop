@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
                 Debug.Assert(e.Category == EventCategory.System);
                 return e;
             }
-            
+
             if (accessEvents.TryGetValue(record.ProtoPayload.MethodName, out var accessFunc))
             {
                 var e = accessFunc(record);

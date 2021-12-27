@@ -33,7 +33,7 @@ namespace Google.Solutions.Common.Net
         /// <summary>
         /// Application-specific features/extensions to be added to header.
         /// </summary>
-        public string Extensions{ get; set; }
+        public string Extensions { get; set; }
 
         private static string GetOsVersion()
         {

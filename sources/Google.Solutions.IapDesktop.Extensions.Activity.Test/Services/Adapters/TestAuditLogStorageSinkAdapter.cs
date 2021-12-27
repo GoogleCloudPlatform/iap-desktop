@@ -332,7 +332,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                     new[] { EmptyLocator, ValidLocator_Jan1_00 },
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            
+
             Assert.AreEqual(3, events.Count());
         }
 
@@ -370,7 +370,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                     new DateTime(2020, 2, 2, 0, 0, 0, DateTimeKind.Utc),
                     CancellationToken.None)
                 .ConfigureAwait(false);
-            
+
             CollectionAssert.IsEmpty(locators);
         }
 

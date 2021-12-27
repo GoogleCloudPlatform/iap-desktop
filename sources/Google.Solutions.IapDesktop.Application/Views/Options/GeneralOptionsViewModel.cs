@@ -59,12 +59,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             //
 
             var settings = this.settingsRepository.GetSettings();
-            
+
             this.isUpdateCheckEnabled = settings.IsUpdateCheckEnabled.BoolValue;
             this.IsUpdateCheckEditable = !settings.IsUpdateCheckEnabled.IsReadOnly;
 
             this.isDcaEnabled = settings.IsDeviceCertificateAuthenticationEnabled.BoolValue;
-            this.IsDeviceCertificateAuthenticationEditable = 
+            this.IsDeviceCertificateAuthenticationEditable =
                 !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly;
 
             this.lastUpdateCheck = settings.LastUpdateCheck.IsDefault

@@ -48,7 +48,7 @@ namespace Google.Solutions.Common.Test
     }
 
     public static class PropertyAssert
-    { 
+    {
         public static void ArePropertiesEqual<T>(T expected, T actual)
         {
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -82,8 +82,8 @@ namespace Google.Solutions.Common.Test
             obj.PropertyChanged -= handler;
 
             Assert.AreEqual(
-                1, 
-                callbacks, 
+                1,
+                callbacks,
                 $"Expected PropertyChanged callback for {property}");
         }
 

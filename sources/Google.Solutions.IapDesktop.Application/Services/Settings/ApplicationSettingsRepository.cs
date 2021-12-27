@@ -51,8 +51,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         protected override ApplicationSettings LoadSettings(RegistryKey key)
             => ApplicationSettings.FromKey(
-                key, 
-                this.machinePolicyKey, 
+                key,
+                this.machinePolicyKey,
                 this.userPolicyKey);
 
         public bool IsPolicyPresent

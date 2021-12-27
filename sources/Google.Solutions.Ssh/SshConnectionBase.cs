@@ -129,9 +129,9 @@ namespace Google.Solutions.Ssh
             bool echo)
         {
             return this.authenticationPromptHandler(
-                name, 
-                instruction, 
-                prompt, 
+                name,
+                instruction,
+                prompt,
                 echo);
         }
 

@@ -107,7 +107,7 @@ namespace Google.Solutions.Common.Auth
                 {
                     throw new AuthorizationFailedException(
                         "Authorization failed because you have denied access to a " +
-                        "required resource. Sign in again and make sure " + 
+                        "required resource. Sign in again and make sure " +
                         "to grant access to all requested resources.");
                 }
 

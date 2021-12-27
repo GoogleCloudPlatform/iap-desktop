@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             CancellationToken token)
         {
             using (await this.cacheLock.AcquireAsync(token).ConfigureAwait(false))
-            { 
+            {
                 if (this.cachedRoot == null || forceReload)
                 {
                     //

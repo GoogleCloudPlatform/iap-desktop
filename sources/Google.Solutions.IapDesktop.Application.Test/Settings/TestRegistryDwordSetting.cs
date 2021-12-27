@@ -591,7 +591,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
             {
                 key.SetValue("test", 42);
                 policyKey.SetValue("test", 101, RegistryValueKind.DWord);
-                
+
                 var setting = RegistryDwordSetting.FromKey(
                         "test",
                         "title",

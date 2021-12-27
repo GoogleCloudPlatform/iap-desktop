@@ -316,8 +316,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             return policyValue == null
                 ? this
                 : (RegistryBoolSetting)CreateNew(
-                    policyValue == 1, 
-                    this.DefaultValue, 
+                    policyValue == 1,
+                    this.DefaultValue,
                     true);
         }
     }

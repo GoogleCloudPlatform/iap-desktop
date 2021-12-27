@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         {
             private readonly ScreenOptionsViewModel model;
             private readonly Screen screen;
-            
+
             private bool isSelected;
 
             public string DeviceName => this.screen.DeviceName;

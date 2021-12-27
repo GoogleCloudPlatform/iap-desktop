@@ -28,7 +28,7 @@ namespace Google.Solutions.Ssh.Auth
 {
     public enum SshKeyType : ushort
     {
-        Rsa3072       = 0x01,
+        Rsa3072 = 0x01,
         EcdsaNistp256 = 0x11,
         EcdsaNistp384 = 0x12,
         EcdsaNistp521 = 0x13
@@ -191,7 +191,7 @@ namespace Google.Solutions.Ssh.Auth
                     }
 
                 case SshKeyType.EcdsaNistp384:
-                    { 
+                    {
                         var key = OpenPersistentKey(
                             name,
                             CngAlgorithm.ECDsaP384,

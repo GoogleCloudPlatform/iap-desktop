@@ -67,7 +67,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
                 using (var authSession = connection.Authenticate(
-                    "testuser", 
+                    "testuser",
                     key,
                     UnexpectedAuthenticationCallback))
                 {
@@ -104,7 +104,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
                 using (var authSession = connection.Authenticate(
-                    "testuser", 
+                    "testuser",
                     key,
                     UnexpectedAuthenticationCallback))
                 using (var channel = authSession.OpenExecChannel(
@@ -136,7 +136,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 var session = CreateSession();
                 var connection = session.Connect(endpoint);
                 var authSession = connection.Authenticate(
-                    "testuser", 
+                    "testuser",
                     key,
                     UnexpectedAuthenticationCallback);
                 var channel = authSession.OpenExecChannel(
@@ -153,7 +153,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task WhenUsingRsaKeyButOnlyEcdsaAllowed_ThenAuthenticateThrowsException(
-            [LinuxInstance(InitializeScript = InitializeScripts.AllowEcdsaOnlyForPubkey)] 
+            [LinuxInstance(InitializeScript = InitializeScripts.AllowEcdsaOnlyForPubkey)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instanceLocator = await instanceLocatorTask;

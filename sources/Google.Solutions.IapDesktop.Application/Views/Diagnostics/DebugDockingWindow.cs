@@ -72,22 +72,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 WriteOutput($"IsHidden: {this.snapshot.IsHidden} -> {this.IsHidden}\r\n");
             }
-            
+
             if (this.IsFloat != this.snapshot.IsFloat)
             {
                 WriteOutput($"IsFloat: {this.snapshot.IsFloat} -> {this.IsFloat}\r\n");
             }
-            
+
             if (this.VisibleState != this.snapshot.VisibleState)
             {
                 WriteOutput($"VisibleState: {this.snapshot.VisibleState} -> {this.VisibleState}\r\n");
             }
-            
+
             if (this.DockState != this.snapshot.DockState)
             {
                 WriteOutput($"DockState: {this.snapshot.DockState} -> {this.DockState}\r\n");
             }
-            
+
             if (this.IsUserVisible != this.snapshot.IsUserVisible)
             {
                 WriteOutput($"IsUserVisible: {this.snapshot.IsUserVisible} -> {this.IsUserVisible}\r\n");

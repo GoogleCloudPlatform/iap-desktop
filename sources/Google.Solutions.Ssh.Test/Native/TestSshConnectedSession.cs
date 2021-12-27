@@ -185,7 +185,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
         [Test]
         public async Task WhenNeitherEcdsaNorRsaHostKeyAlgorithmAllowed_ThenConnectThrowsException(
-            [LinuxInstance(InitializeScript = InitializeScripts.AllowNeitherEcdsaNorRsaForHostKey)] 
+            [LinuxInstance(InitializeScript = InitializeScripts.AllowNeitherEcdsaNorRsaForHostKey)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
@@ -377,7 +377,7 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(
-                SshKeyType.Rsa3072, 
+                SshKeyType.Rsa3072,
                 SshKeyType.EcdsaNistp256,
                 SshKeyType.EcdsaNistp384,
                 SshKeyType.EcdsaNistp521)] SshKeyType keyType)
@@ -418,8 +418,8 @@ namespace Google.Solutions.Ssh.Test.Native
         //
         private const string RequireSshPassword =
             "cat << EOF > /etc/ssh/sshd_config\n" +
-            "UsePam yes\n"+
-            "AuthenticationMethods publickey,keyboard-interactive\n" + 
+            "UsePam yes\n" +
+            "AuthenticationMethods publickey,keyboard-interactive\n" +
             "EOF\n" +
             "systemctl restart sshd";
 
@@ -446,7 +446,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var connection = session.Connect(endpoint))
                 {
                     var callbackCount = 0;
-                    
+
                     SshAssert.ThrowsNativeExceptionWithError(
                         session,
                         LIBSSH2_ERROR.AUTHENTICATION_FAILED,

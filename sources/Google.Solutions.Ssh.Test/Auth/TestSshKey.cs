@@ -37,7 +37,7 @@ namespace Google.Solutions.Ssh.Test.Auth
     public class TestSshKey
     {
         private static readonly string KeyName = "test-" + typeof(TestSshKey).Name;
-        private readonly CngProvider KeyStoragePovider 
+        private readonly CngProvider KeyStoragePovider
             = CngProvider.MicrosoftSoftwareKeyStorageProvider;
 
         [SetUp]

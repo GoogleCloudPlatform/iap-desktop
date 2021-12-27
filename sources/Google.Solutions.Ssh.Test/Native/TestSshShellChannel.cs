@@ -112,7 +112,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
                 using (var authSession = connection.Authenticate(
-                    "testuser", 
+                    "testuser",
                     key,
                     UnexpectedAuthenticationCallback))
                 using (var channel = authSession.OpenShellChannel(
@@ -160,7 +160,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
                 using (var authSession = connection.Authenticate(
-                    "testuser", 
+                    "testuser",
                     key,
                     UnexpectedAuthenticationCallback))
                 using (var channel = authSession.OpenShellChannel(
@@ -212,7 +212,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
                 using (var authSession = connection.Authenticate(
-                    "testuser", 
+                    "testuser",
                     key,
                     UnexpectedAuthenticationCallback))
                 {
@@ -254,7 +254,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
                 using (var authSession = connection.Authenticate(
-                    "testuser", 
+                    "testuser",
                     key,
                     UnexpectedAuthenticationCallback))
                 using (var channel = authSession.OpenShellChannel(

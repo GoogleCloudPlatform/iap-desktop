@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         protected abstract T Parse(string value);
 
         protected abstract SettingBase<T> CreateNew(
-            T value, 
+            T value,
             T defaultValue,
             bool readOnly);
     }

@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
     internal class ChromePolicyUrlPattern
     {
         public const string All = "*";
-        
+
         private const string SubdomainWilcard = "[*.]";
 
         private readonly string scheme;
@@ -58,9 +58,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         {
             switch (scheme)
             {
-                case "http":    return 80;
-                case "https":   return 443;
-                default:        return null; // any.
+                case "http": return 80;
+                case "https": return 443;
+                default: return null; // any.
             }
         }
 
@@ -140,19 +140,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             }
 
             var slashIndex = patternWithoutScheme.IndexOf('/');
-            var domainAndPort = slashIndex >= 0 
-                ? patternWithoutScheme.Substring(0, slashIndex) 
+            var domainAndPort = slashIndex >= 0
+                ? patternWithoutScheme.Substring(0, slashIndex)
                 : patternWithoutScheme;
 
             var ipv6endBracket = domainAndPort.IndexOf(']');
             var colonIndex = domainAndPort.IndexOf(':', ipv6endBracket + 1);
             var port = colonIndex >= 0
-                ? domainAndPort.Substring(colonIndex + 1) == "*" 
+                ? domainAndPort.Substring(colonIndex + 1) == "*"
                     ? null
-                    : (ushort?)ushort.Parse(domainAndPort.Substring(colonIndex + 1)) 
+                    : (ushort?)ushort.Parse(domainAndPort.Substring(colonIndex + 1))
                 : DefaultPortForScheme(scheme);
-            var domain = colonIndex >= 0 
-                ? domainAndPort.Substring(0, colonIndex) 
+            var domain = colonIndex >= 0
+                ? domainAndPort.Substring(0, colonIndex)
                 : domainAndPort;
 
             if (domain == string.Empty)

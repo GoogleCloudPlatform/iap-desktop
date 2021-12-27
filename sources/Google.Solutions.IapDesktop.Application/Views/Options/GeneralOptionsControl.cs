@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 viewModel,
                 m => m.IsDeviceCertificateAuthenticationEditable,
                 this.Container);
-            
+
             this.enableUpdateCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,

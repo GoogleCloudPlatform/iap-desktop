@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             var settings = terminalSettingsRepository.GetSettings();
             ApplyTerminalSettings(settings);
 
-            void reapplyTerminalSettings(object s, EventArgs<TerminalSettings> e) 
+            void reapplyTerminalSettings(object s, EventArgs<TerminalSettings> e)
                 => ApplyTerminalSettings(e.Data);
 
             terminalSettingsRepository.SettingsChanged += reapplyTerminalSettings;

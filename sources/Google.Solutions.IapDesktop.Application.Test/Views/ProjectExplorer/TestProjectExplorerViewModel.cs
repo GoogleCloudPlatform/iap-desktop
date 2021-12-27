@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             this.settingsRepository = new ApplicationSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath),
-                null, 
+                null,
                 null);
             this.projectRepository = new ProjectRepository(
                 hkcu.CreateSubKey(TestKeyPath));
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             var projects = await viewModel.RootNode
                 .GetFilteredNodesAsync(false)
                 .ConfigureAwait(false);
-            
+
             var zones = await projects[0]
                 .GetFilteredNodesAsync(false)
                 .ConfigureAwait(false);
@@ -778,7 +778,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .ToList();
 
             Assert.AreEqual(
-                ProjectExplorerViewModel.InstanceViewModelNode.LinuxConnectedIconIndex, 
+                ProjectExplorerViewModel.InstanceViewModelNode.LinuxConnectedIconIndex,
                 instances[0].ImageIndex);
             Assert.AreEqual(
                 ProjectExplorerViewModel.InstanceViewModelNode.WindowsConnectedIconIndex,
