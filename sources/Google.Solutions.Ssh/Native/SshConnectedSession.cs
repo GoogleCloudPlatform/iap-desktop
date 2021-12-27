@@ -310,12 +310,12 @@ namespace Google.Solutions.Ssh.Native
                 IntPtr context)
             {
                 var name = UnsafeNativeMethods.PtrToString(
-                    namePtr, 
-                    nameLength, 
+                    namePtr,
+                    nameLength,
                     Encoding.UTF8);
                 var instruction = UnsafeNativeMethods.PtrToString(
-                    instructionPtr, 
-                    nameLength, 
+                    instructionPtr,
+                    nameLength,
                     Encoding.UTF8);
                 var prompts = UnsafeNativeMethods.PtrToStructureArray<
                         UnsafeNativeMethods.LIBSSH2_USERAUTH_KBDINT_PROMPT>(
@@ -335,7 +335,7 @@ namespace Google.Solutions.Ssh.Native
                 {
                     var promptText = UnsafeNativeMethods.PtrToString(
                         prompts[i].TextPtr,
-                        prompts[i].TextLength, 
+                        prompts[i].TextLength,
                         Encoding.UTF8);
 
                     SshTraceSources.Default.TraceVerbose("Keyboard/interactive prompt: {0}", promptText);
@@ -374,16 +374,16 @@ namespace Google.Solutions.Ssh.Native
                         responses[i].TextPtr = IntPtr.Zero;
                     }
                     else
-                    { 
+                    {
                         var responseTextBytes = Encoding.UTF8.GetBytes(responseText);
                         responses[i].TextLength = responseTextBytes.Length;
                         responses[i].TextPtr = SshSession.Alloc(
-                            new IntPtr(responseTextBytes.Length), 
+                            new IntPtr(responseTextBytes.Length),
                             IntPtr.Zero);
                         Marshal.Copy(
-                            responseTextBytes, 
-                            0, 
-                            responses[i].TextPtr, 
+                            responseTextBytes,
+                            0,
+                            responses[i].TextPtr,
                             responseTextBytes.Length);
                     }
                 }

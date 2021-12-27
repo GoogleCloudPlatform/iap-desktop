@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.IsScrollingUsingCtrlUpDownEnabled;
             settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue =
                 this.IsScrollingUsingCtrlHomeEndEnabled;
-            settings.FontFamily.StringValue = 
+            settings.FontFamily.StringValue =
                 this.terminalFont.FontFamily.Name;
             settings.FontSizeAsDword.IntValue =
                 TerminalSettings.DwordFromFontSize(this.terminalFont.Size);

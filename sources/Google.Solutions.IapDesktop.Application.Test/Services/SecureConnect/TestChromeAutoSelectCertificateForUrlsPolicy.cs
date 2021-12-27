@@ -122,9 +122,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         [Test]
         public void WhenKeyContainsSelectors_ThenCreateMatchersEvaluatesSelectors()
         {
-            this.key.SetValue("11", 
+            this.key.SetValue("11",
                 "{'pattern': 'https://[*.]example.org', 'filter':{'SUBJECT': {'CN': 'example.org'}}}");
-            this.key.SetValue("20", 
+            this.key.SetValue("20",
                 "{'pattern': 'https://[*.]example.com', 'filter':{'SUBJECT': {'CN': 'example.com'}}}");
 
             var policy = ChromeAutoSelectCertificateForUrlsPolicy

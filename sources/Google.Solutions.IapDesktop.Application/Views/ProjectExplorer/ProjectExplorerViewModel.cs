@@ -104,9 +104,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.sessionBroker = sessionBroker;
             this.projectModelService = projectModelService;
             this.cloudConsoleService = cloudConsoleService;
-            
+
             this.RootNode = new CloudViewModelNode(this);
-            
+
             //
             // Read current settings.
             //
@@ -296,8 +296,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             get
             {
                 Debug.Assert(
-                    this.selectedNode == null || 
-                        this.RootNode.DebugIsValidNode(this.selectedNode), 
+                    this.selectedNode == null ||
+                        this.RootNode.DebugIsValidNode(this.selectedNode),
                     "Node detached");
 
                 return this.selectedNode;
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             set
             {
                 Debug.Assert(
-                    this.selectedNode == null || 
+                    this.selectedNode == null ||
                         this.RootNode.DebugIsValidNode(this.selectedNode),
                     "Node detached");
 
@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
                 this.IsUnloadProjectCommandVisible = value is ProjectViewModelNode;
                 this.IsRefreshAllProjectsCommandVisible = value is CloudViewModelNode;
-                this.IsRefreshProjectsCommandVisible = 
+                this.IsRefreshProjectsCommandVisible =
                     value is ProjectViewModelNode ||
                     value is ZoneViewModelNode ||
                     value is InstanceViewModelNode;
@@ -489,7 +489,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             public ResourceLocator Locator { get; }
             public string Text { get; }
             public bool IsLeaf { get; }
-            
+
             public virtual int ImageIndex => this.defaultImageIndex;
 
             public bool IsExpanded
@@ -832,8 +832,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             public override bool CanReload => false;
 
-            public override int ImageIndex 
-            { 
+            public override int ImageIndex
+            {
                 get
                 {
                     if (this.IsConnected)

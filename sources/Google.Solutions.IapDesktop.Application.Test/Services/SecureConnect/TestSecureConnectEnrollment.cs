@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 POfcworiaxQhTawWnXI+YrtzlgEUtgWDux6mbQyg0cY//qkDfJ9SxkljW02AQrjU
                 dMXBlI/FWQFjjIr4X/oGqwEijA==
                 -----END CERTIFICATE-----");
-        
+
         //
         // New-SelfSignedCertificate `
         //     -Type Custom `

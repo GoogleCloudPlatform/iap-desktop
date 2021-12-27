@@ -80,9 +80,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             // vtnetcore's).
             //
             var translation = VirtualTerminalKeyTranslation.ForKey(
-                keyCode, 
-                alt, 
-                control, 
+                keyCode,
+                alt,
+                control,
                 shift,
                 this.controller.CursorState.ApplicationCursorKeysMode,
                 this.controller.ModifyOtherKeys);

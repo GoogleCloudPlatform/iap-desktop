@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
-                    machinePolicyKey, 
+                    machinePolicyKey,
                     userPolicyKey);
 
                 settingsKey.SetValue("ProxyUrl", "http://setting");

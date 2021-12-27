@@ -116,15 +116,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var computeAdapter = new ComputeEngineAdapter(await credential);
             instanceBuilder.AddExistingInstances(
                 await computeAdapter.ListInstancesAsync(
-                        TestProject.ProjectId, 
+                        TestProject.ProjectId,
                         CancellationToken.None)
                     .ConfigureAwait(false),
                 await computeAdapter.ListNodesAsync
-                        (TestProject.ProjectId, 
+                        (TestProject.ProjectId,
                         CancellationToken.None)
                     .ConfigureAwait(false),
                 await computeAdapter.ListDisksAsync(
-                        TestProject.ProjectId, 
+                        TestProject.ProjectId,
                         CancellationToken.None)
                     .ConfigureAwait(false),
                 TestProject.ProjectId);

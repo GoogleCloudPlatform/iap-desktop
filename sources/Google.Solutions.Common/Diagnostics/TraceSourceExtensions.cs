@@ -128,10 +128,10 @@ namespace Google.Solutions.Common.Diagnostics
                 => this.destination.TraceEvent(eventType, id);
 
             public override void TraceEvent(
-                TraceEventCache eventCache, 
-                string source, 
-                TraceEventType eventType, 
-                int id, 
+                TraceEventCache eventCache,
+                string source,
+                TraceEventType eventType,
+                int id,
                 string message)
                 => this.destination.TraceEvent(eventType, id, message);
 

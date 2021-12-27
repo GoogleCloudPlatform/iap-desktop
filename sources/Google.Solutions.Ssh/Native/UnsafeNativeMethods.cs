@@ -563,7 +563,7 @@ namespace Google.Solutions.Ssh.Native
             int count) where T : struct
         {
             var size = Marshal.SizeOf(typeof(T));
-            var array  = new T[count];
+            var array = new T[count];
 
             for (int i = 0; i < count; i++)
             {

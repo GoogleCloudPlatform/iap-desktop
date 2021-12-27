@@ -47,22 +47,23 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
         public V Lookup(K key)
         {
-            if (cacheMap.TryGetValue(key, out LinkedListNode<KeyValuePair<K, V>> node))
+            if (this.cacheMap.TryGetValue(key, out LinkedListNode<KeyValuePair<K, V>> node))
             {
                 V value = node.Value.Value;
 
                 // Track this as most recently accessed.
-                lruList.Remove(node);
-                lruList.AddLast(node);
+                this.lruList.Remove(node);
+                this.lruList.AddLast(node);
 
                 return value;
             }
+
             return default(V);
         }
 
         public void Add(K key, V val)
         {
-            if (cacheMap.Count >= capacity)
+            if (this.cacheMap.Count >= this.capacity)
             {
                 PurgeLeastRecentlyUsed();
             }
@@ -73,15 +74,15 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 new KeyValuePair<K, V>(key, val));
 
             // Track this as most recently accessed.
-            lruList.AddLast(node);
-            cacheMap[key] = node;
+            this.lruList.AddLast(node);
+            this.cacheMap[key] = node;
 
             Debug.Assert(this.cacheMap.Count == this.lruList.Count);
         }
 
         public void Remove(K key)
         {
-            if (cacheMap.TryGetValue(key, out LinkedListNode<KeyValuePair<K, V>> node))
+            if (this.cacheMap.TryGetValue(key, out LinkedListNode<KeyValuePair<K, V>> node))
             {
                 this.cacheMap.Remove(key);
                 this.lruList.Remove(node);
@@ -92,9 +93,9 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
         private void PurgeLeastRecentlyUsed()
         {
-            var node = lruList.First;
-            lruList.RemoveFirst();
-            cacheMap.Remove(node.Value.Key);
+            var node = this.lruList.First;
+            this.lruList.RemoveFirst();
+            this.cacheMap.Remove(node.Value.Key);
         }
     }
 }

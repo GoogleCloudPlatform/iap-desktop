@@ -89,9 +89,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             Uri uri,
             X509Certificate2 certificate)
             => IsMatch(
-                uri, 
-                certificate.IssuerName, 
-                certificate.SubjectName, 
+                uri,
+                certificate.IssuerName,
+                certificate.SubjectName,
                 certificate.Thumbprint);
 
         //---------------------------------------------------------------------
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
             [JsonProperty("ISSUER")]
             public DistinguishedNameFilter Issuer { get; }
-            
+
             [JsonProperty("SUBJECT")]
             public DistinguishedNameFilter Subject { get; }
 

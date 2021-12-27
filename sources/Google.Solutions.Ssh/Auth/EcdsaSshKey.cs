@@ -120,7 +120,7 @@ namespace Google.Solutions.Ssh.Auth
             //
             var signature = ECDsaSignature.FromIeee1363(
                 this.key.SignData(
-                    data, 
+                    data,
                     this.HashAlgorithm));
 
             return signature.ToSshBlob();

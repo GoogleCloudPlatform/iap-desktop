@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock(SampleProjectId).Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock(SampleProjectId).Object);
-            
+
             var resourceManagerAdapter = CreateResourceManagerAdapterMock();
             serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
 
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             resourceManagerAdapter.Verify(a => a.GetProjectAsync(
                     It.Is<string>(id => id == SampleProjectId),
-                    It.IsAny<CancellationToken>()), 
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock(
-                SampleProjectId, 
+                SampleProjectId,
                 "nonexisting-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock(SampleProjectId).Object);
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
@@ -330,7 +330,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 }));
 
             serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
-            
+
 
             var modelService = new ProjectModelService(serviceRegistry);
 
@@ -458,7 +458,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var computeAdapter = CreateComputeEngineAdapterMock(
                 SampleProjectId,
-                SampleLinuxInstanceInZone1, 
+                SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceWithoutDiskInZone1);
             serviceRegistry.AddSingleton(computeAdapter.Object);
             serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
@@ -475,7 +475,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             Assert.AreEqual(1, zone1.Instances.Count());
             Assert.AreEqual(
-                SampleLinuxInstanceInZone1.Name, 
+                SampleLinuxInstanceInZone1.Name,
                 zone1.Instances.First().DisplayName);
         }
 
@@ -803,7 +803,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             await modelService
                 .SetActiveNodeAsync(
-                    new ProjectLocator("nonexisting-1"), 
+                    new ProjectLocator("nonexisting-1"),
                     CancellationToken.None)
                 .ConfigureAwait(true);
 

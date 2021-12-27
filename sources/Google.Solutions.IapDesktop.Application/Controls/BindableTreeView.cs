@@ -351,6 +351,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                                 oldTreeNode.Dispose();
                             }
                         }
+
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
@@ -374,6 +375,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                                 }
                             }
                         }
+
                         break;
 
                     case NotifyCollectionChangedAction.Move:

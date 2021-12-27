@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString();
-            
+
             try
             {
                 await adapter.CreateWindowsCredentialsAsync(
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
 
             var username = "existinguser";
-            
+
             await adapter.CreateWindowsCredentialsAsync(
                     await testInstance,
                     username,

@@ -837,7 +837,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         {
             Assert.IsFalse(this.keyHandler.KeyDown(Keys.D2));
             Assert.IsFalse(this.keyHandler.KeyDown(Keys.D2 | Keys.Shift));
-            
+
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.D2 | Keys.Control));
             Assert.AreEqual($"\u0000", this.sendData.ToString());
             this.sendData.Clear();
@@ -1060,7 +1060,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         public void NumPad0()
         {
             Assert.IsFalse(this.keyHandler.KeyDown(Keys.NumPad0));
-            
+
             // NB. Skip Shift as that disables Numpad.
 
             Assert.IsTrue(this.keyHandler.KeyDown(Keys.NumPad0 | Keys.Control));
@@ -1151,7 +1151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.AreEqual($"{Esc}5", this.sendData.ToString());
             this.sendData.Clear();
         }
-        
+
         [Test]
         public void NumPad6()
         {

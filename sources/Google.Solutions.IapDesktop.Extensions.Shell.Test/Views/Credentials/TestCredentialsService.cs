@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                     It.IsAny<IWin32Window>(),
                     It.IsAny<string>()))
                 .Returns(new GenerateCredentialsDialogResult(
-                    DialogResult.Cancel, 
+                    DialogResult.Cancel,
                     null)); // Cancel dialog
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);

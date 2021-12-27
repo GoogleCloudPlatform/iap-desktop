@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
                 return volumeInBytes.ToString("0 B"); // Byte
             }
 
-            readable = (readable / 1024);
+            readable /= 1024;
             return readable.ToString("0.# ") + suffix;
         }
     }

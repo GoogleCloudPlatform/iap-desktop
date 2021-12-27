@@ -40,9 +40,8 @@ namespace Google.Solutions.Common.Locator
             }
 
 		    public DiskTypeLocator(ProjectLocator project, string zone, string name)
-                : base(project.ProjectId, name)
+                : this(project.ProjectId, zone, name)
             {
-                this.Zone = zone;
             }
 
             public static DiskTypeLocator FromString(string resourceReference)
@@ -120,9 +119,8 @@ namespace Google.Solutions.Common.Locator
             }
 
 		    public InstanceLocator(ProjectLocator project, string zone, string name)
-                : base(project.ProjectId, name)
+                : this(project.ProjectId, zone, name)
             {
-                this.Zone = zone;
             }
 
             public static InstanceLocator FromString(string resourceReference)
@@ -200,9 +198,8 @@ namespace Google.Solutions.Common.Locator
             }
 
 		    public MachineTypeLocator(ProjectLocator project, string zone, string name)
-                : base(project.ProjectId, name)
+                : this(project.ProjectId, zone, name)
             {
-                this.Zone = zone;
             }
 
             public static MachineTypeLocator FromString(string resourceReference)
@@ -280,9 +277,8 @@ namespace Google.Solutions.Common.Locator
             }
 
 		    public NodeTypeLocator(ProjectLocator project, string zone, string name)
-                : base(project.ProjectId, name)
+                : this(project.ProjectId, zone, name)
             {
-                this.Zone = zone;
             }
 
             public static NodeTypeLocator FromString(string resourceReference)

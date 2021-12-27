@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 
         public bool Equals(DataPoint other)
         {
-            return !object.ReferenceEquals(other, null) &&
+            return !ReferenceEquals(other, null) &&
                 this.Timestamp == other.Timestamp &&
                 this.Value == other.Value;
         }
@@ -63,9 +63,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 
         public static bool operator ==(DataPoint obj1, DataPoint obj2)
         {
-            if (object.ReferenceEquals(obj1, null))
+            if (ReferenceEquals(obj1, null))
             {
-                return object.ReferenceEquals(obj2, null);
+                return ReferenceEquals(obj2, null);
             }
 
             return obj1.Equals(obj2);

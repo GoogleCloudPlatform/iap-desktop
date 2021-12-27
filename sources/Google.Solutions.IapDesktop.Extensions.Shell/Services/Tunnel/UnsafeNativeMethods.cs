@@ -98,12 +98,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                     safeLocalFree.SetHandleAsInvalid();
                     throw new OutOfMemoryException();
                 }
+
                 return safeLocalFree;
             }
 
             protected override bool ReleaseHandle()
             {
-                return UnsafeNativeMethods.LocalFree(handle) == IntPtr.Zero;
+                return UnsafeNativeMethods.LocalFree(this.handle) == IntPtr.Zero;
             }
         }
     }

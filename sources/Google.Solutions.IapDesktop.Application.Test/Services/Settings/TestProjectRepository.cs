@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         }
 
         [Test]
-        public void  WhenProjectsDeleted_ListProjectsExcludesProject()
+        public void WhenProjectsDeleted_ListProjectsExcludesProject()
         {
             repository.AddProject(new ProjectLocator("test-123"));
             repository.AddProject(new ProjectLocator("test-456"));

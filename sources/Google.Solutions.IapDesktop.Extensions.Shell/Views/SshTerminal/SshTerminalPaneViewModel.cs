@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
                 var args = new AuthenticationPromptEventArgs(prompt, !echo);
                 this.ViewInvoker?.Invoke(
-                    (Action)(() => 
+                    (Action)(() =>
                     {
                         this.AuthenticationPrompt?.Invoke(this, args);
                     }),

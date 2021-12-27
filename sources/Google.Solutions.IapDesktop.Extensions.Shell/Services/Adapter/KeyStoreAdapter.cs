@@ -73,10 +73,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                     // very long), hash the name and use the prefix.
                     //
                     var providerToken = BitConverter.ToString(
-                        sha.ComputeHash(Encoding.UTF8.GetBytes(provider.Provider)), 
-                        0, 
+                        sha.ComputeHash(Encoding.UTF8.GetBytes(provider.Provider)),
+                        0,
                         4).Replace("-", string.Empty);
-                
+
                     return $"IAPDESKTOP_{authorization.Email}_{keyType:x}_{providerToken}";
                 }
             }
