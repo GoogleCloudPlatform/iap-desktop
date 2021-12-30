@@ -29,6 +29,7 @@ using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
 {
@@ -40,10 +41,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
     [Service(ServiceLifetime.Singleton, ServiceVisibility.Global)]
     public class SshSettingsRepository : PolicyEnabledSettingsRepository<SshSettings>
     {
+        private static RegistryKey WithHive(
+            RegistryHive hive,
+            Func<RegistryKey, RegistryKey> openFunc)
+        {
+            using (var hiveKey = RegistryKey.OpenBaseKey(hive, RegistryView.Default))
+            {
+                return openFunc(hiveKey);
+            }
+        }
+
         public SshSettingsRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey) : base(settingsKey, machinePolicyKey, userPolicyKey)
+        {
+        }
+
+        public SshSettingsRepository()
+            : this(
+                WithHive(RegistryHive.CurrentUser, hive => hive.CreateSubKey($@"{Globals.SettingsKeyPath}\Ssh")),
+                WithHive(RegistryHive.LocalMachine, hive => hive.OpenSubKey($@"{Globals.PoliciesKeyPath}\Ssh")),
+                WithHive(RegistryHive.CurrentUser, hive => hive.OpenSubKey($@"{Globals.PoliciesKeyPath}\Ssh")))
         {
         }
 

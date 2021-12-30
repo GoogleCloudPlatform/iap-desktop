@@ -49,9 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                     .Cast<object>()
                     .ToArray());
             this.publicKeyType.BindProperty(
-                c => c.SelectedItem,
+                c => c.SelectedIndex,
                 this.viewModel,
-                m => m.PublicKeyType,
+                m => m.PublicKeyTypeIndex,
                 this.Container);
             this.publicKeyValidityUpDown.BindProperty(
                 c => c.Value,

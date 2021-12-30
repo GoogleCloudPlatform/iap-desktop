@@ -40,6 +40,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
     [ServiceCategory(typeof(IOptionsDialogPane))]
     public class SshOptionsViewModel : ViewModelBase, ISshDialogPane
     {
+        private static readonly SshKeyType[] publicKeyTypes = 
+            Enum.GetValues(typeof(SshKeyType))
+                .Cast<SshKeyType>()
+                .ToArray();
+
         private bool isPropagateLocaleEnabled;
         private int publicKeyValidityInDays;
         private SshKeyType publicKeyType;
@@ -147,6 +152,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             }
         }
 
+        public int PublicKeyTypeIndex
+        {
+            get => Array.IndexOf(publicKeyTypes, this.PublicKeyType);
+            set => this.PublicKeyType = publicKeyTypes[value];
+        }
+
         public decimal PublicKeyValidityInDays
         {
             get => this.publicKeyValidityInDays;
@@ -158,9 +169,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             }
         }
 
-        public IEnumerable<SshKeyType> AllPublicKeyTypes
-            => Enum.GetValues(typeof(SshKeyType))
-                .Cast<SshKeyType>();
-
+        public IList<SshKeyType> AllPublicKeyTypes => publicKeyTypes;
     }
 }

@@ -255,6 +255,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         }
 
         //---------------------------------------------------------------------
+        // PublicKeyTypeIndex.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenIndexSet_ThenPublicKeyTypeIsUpdated()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+
+            viewModel.PublicKeyType = viewModel.AllPublicKeyTypes[0];
+            viewModel.PublicKeyTypeIndex++;
+
+            Assert.AreEqual(1, viewModel.PublicKeyTypeIndex);
+            Assert.AreEqual(viewModel.AllPublicKeyTypes[1], viewModel.PublicKeyType);
+        }
+
+        //---------------------------------------------------------------------
         // AllPublicKeyTypes.
         //---------------------------------------------------------------------
 
