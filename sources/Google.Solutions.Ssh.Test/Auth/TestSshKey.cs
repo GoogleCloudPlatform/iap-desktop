@@ -234,6 +234,19 @@ namespace Google.Solutions.Ssh.Test.Auth
                     IntPtr.Zero));
         }
 
+        [Test]
+        public void WhenKeTypeIsInvalid_ThenOpenPersistentKeyThrowsException()
+        {
+            Assert.Throws<ArgumentException>(
+                () => SshKey.OpenPersistentKey(
+                    KeyName,
+                    (SshKeyType)0xFF,
+                    KeyStoragePovider,
+                    CngKeyUsages.KeyAgreement,
+                    false,
+                    IntPtr.Zero));
+        }
+
         //---------------------------------------------------------------------
         // DeletePersistentKey.
         //---------------------------------------------------------------------

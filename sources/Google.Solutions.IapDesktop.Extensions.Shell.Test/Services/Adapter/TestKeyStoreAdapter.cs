@@ -25,7 +25,9 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.Ssh.Auth;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Security.Cryptography;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 {
@@ -239,6 +241,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
             Assert.IsNotNull(ecdsaKey);
 
             Assert.AreNotEqual(rsaKey.PublicKeyString, ecdsaKey.PublicKeyString);
+        }
+
+        [Test]
+        public void WhenWindowPassed_ThenOpenSshKeyUsesHandle()
+        {
+            var window = new Mock<IWin32Window>();
+            window.SetupGet(w => w.Handle).Returns(IntPtr.Zero);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("bob@example.com");
+
+            var adapter = new KeyStoreAdapter();
+
+            adapter.OpenSshKey(
+                SshKeyType.Rsa3072,
+                authorization.Object,
+                true,
+                window.Object);
+
+            window.Verify(w => w.Handle, Times.Once());
         }
     }
 }
