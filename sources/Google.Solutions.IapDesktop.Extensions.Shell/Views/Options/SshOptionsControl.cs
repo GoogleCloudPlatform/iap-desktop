@@ -20,7 +20,11 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.Ssh.Auth;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
@@ -37,17 +41,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             InitializeComponent();
 
             //
+            // Authentication box.
+            //
+            this.publicKeyType.Items.AddRange(
+                this.viewModel
+                    .AllPublicKeyTypes
+                    .Cast<object>()
+                    .ToArray());
+            this.publicKeyType.BindProperty(
+                c => c.SelectedItem,
+                this.viewModel,
+                m => m.PublicKeyType,
+                this.Container);
+            this.publicKeyValidityUpDown.BindProperty(
+                c => c.Value,
+                this.viewModel,
+                m => m.PublicKeyValidityInDays,
+                this.Container);
+
+
+            this.publicKeyType.FormattingEnabled = true;
+            this.publicKeyType.Format += delegate (object sender, ListControlConvertEventArgs e)
+            {
+                var v = ((SshKeyType)e.Value);
+                e.Value = v.GetAttribute<DisplayAttribute>()?.Name ?? v.ToString();
+            };
+
+            //
             // Connection box.
             //
             this.propagateLocaleCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsPropagateLocaleEnabled,
-                this.Container);
-            this.publicKeyValidityUpDown.BindProperty(
-                c => c.Value,
-                this.viewModel,
-                m => m.PublicKeyValidityInDays,
                 this.Container);
         }
     }

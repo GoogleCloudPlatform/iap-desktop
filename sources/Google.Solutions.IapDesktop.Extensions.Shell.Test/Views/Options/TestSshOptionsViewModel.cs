@@ -26,7 +26,9 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.Options;
 using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 {
@@ -250,6 +252,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             viewModel.PublicKeyType++;
 
             Assert.IsTrue(viewModel.IsDirty);
+        }
+
+        //---------------------------------------------------------------------
+        // AllPublicKeyTypes.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void AllPublicKeyTypesReturnsList()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+
+            var keyTypes = viewModel.AllPublicKeyTypes.ToList();
+
+            Assert.Greater(keyTypes.Count, 1);
+            Assert.AreEqual(keyTypes.Count, Enum.GetValues(typeof(SshKeyType)).Length);
         }
     }
 }

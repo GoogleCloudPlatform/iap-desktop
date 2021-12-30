@@ -50,36 +50,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SshOptionsControl));
-            this.connectionBox = new System.Windows.Forms.GroupBox();
+            this.authBox = new System.Windows.Forms.GroupBox();
             this.daysLabel = new System.Windows.Forms.Label();
             this.validityNoteLabel = new System.Windows.Forms.Label();
             this.publicKeyValidityLabel = new System.Windows.Forms.Label();
             this.publicKeyValidityUpDown = new System.Windows.Forms.NumericUpDown();
-            this.propagateLocaleCheckBox = new System.Windows.Forms.CheckBox();
-            this.keyboardIcon = new System.Windows.Forms.PictureBox();
-            this.keyType = new System.Windows.Forms.ComboBox();
+            this.keyIcon = new System.Windows.Forms.PictureBox();
+            this.publicKeyType = new System.Windows.Forms.ComboBox();
             this.keyTypeLabel = new System.Windows.Forms.Label();
-            this.connectionBox.SuspendLayout();
+            this.connectionBox = new System.Windows.Forms.GroupBox();
+            this.propagateLocaleCheckBox = new System.Windows.Forms.CheckBox();
+            this.connectionIcon = new System.Windows.Forms.PictureBox();
+            this.authBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.publicKeyValidityUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.keyIcon)).BeginInit();
+            this.connectionBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.connectionIcon)).BeginInit();
             this.SuspendLayout();
             // 
-            // connectionBox
+            // authBox
             // 
-            this.connectionBox.Controls.Add(this.keyTypeLabel);
-            this.connectionBox.Controls.Add(this.keyType);
-            this.connectionBox.Controls.Add(this.daysLabel);
-            this.connectionBox.Controls.Add(this.validityNoteLabel);
-            this.connectionBox.Controls.Add(this.publicKeyValidityLabel);
-            this.connectionBox.Controls.Add(this.publicKeyValidityUpDown);
-            this.connectionBox.Controls.Add(this.propagateLocaleCheckBox);
-            this.connectionBox.Controls.Add(this.keyboardIcon);
-            this.connectionBox.Location = new System.Drawing.Point(4, 3);
-            this.connectionBox.Name = "connectionBox";
-            this.connectionBox.Size = new System.Drawing.Size(336, 140);
-            this.connectionBox.TabIndex = 0;
-            this.connectionBox.TabStop = false;
-            this.connectionBox.Text = "Connection:";
+            this.authBox.Controls.Add(this.keyTypeLabel);
+            this.authBox.Controls.Add(this.publicKeyType);
+            this.authBox.Controls.Add(this.daysLabel);
+            this.authBox.Controls.Add(this.validityNoteLabel);
+            this.authBox.Controls.Add(this.publicKeyValidityLabel);
+            this.authBox.Controls.Add(this.publicKeyValidityUpDown);
+            this.authBox.Controls.Add(this.keyIcon);
+            this.authBox.Location = new System.Drawing.Point(4, 3);
+            this.authBox.Name = "authBox";
+            this.authBox.Size = new System.Drawing.Size(336, 111);
+            this.authBox.TabIndex = 0;
+            this.authBox.TabStop = false;
+            this.authBox.Text = "Public key authentication:";
             // 
             // daysLabel
             // 
@@ -130,33 +133,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             0,
             0});
             // 
-            // propagateLocaleCheckBox
+            // keyIcon
             // 
-            this.propagateLocaleCheckBox.AutoSize = true;
-            this.propagateLocaleCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.propagateLocaleCheckBox.Location = new System.Drawing.Point(58, 111);
-            this.propagateLocaleCheckBox.Name = "propagateLocaleCheckBox";
-            this.propagateLocaleCheckBox.Size = new System.Drawing.Size(266, 17);
-            this.propagateLocaleCheckBox.TabIndex = 1;
-            this.propagateLocaleCheckBox.Text = "Use Windows display &language as locale (LC_ALL)";
-            this.propagateLocaleCheckBox.UseVisualStyleBackColor = true;
+            this.keyIcon.Image = ((System.Drawing.Image)(resources.GetObject("keyIcon.Image")));
+            this.keyIcon.Location = new System.Drawing.Point(10, 21);
+            this.keyIcon.Name = "keyIcon";
+            this.keyIcon.Size = new System.Drawing.Size(36, 36);
+            this.keyIcon.TabIndex = 3;
+            this.keyIcon.TabStop = false;
             // 
-            // keyboardIcon
+            // publicKeyType
             // 
-            this.keyboardIcon.Image = ((System.Drawing.Image)(resources.GetObject("keyboardIcon.Image")));
-            this.keyboardIcon.Location = new System.Drawing.Point(10, 21);
-            this.keyboardIcon.Name = "keyboardIcon";
-            this.keyboardIcon.Size = new System.Drawing.Size(36, 36);
-            this.keyboardIcon.TabIndex = 3;
-            this.keyboardIcon.TabStop = false;
-            // 
-            // keyType
-            // 
-            this.keyType.FormattingEnabled = true;
-            this.keyType.Location = new System.Drawing.Point(112, 21);
-            this.keyType.Name = "keyType";
-            this.keyType.Size = new System.Drawing.Size(154, 21);
-            this.keyType.TabIndex = 5;
+            this.publicKeyType.FormattingEnabled = true;
+            this.publicKeyType.Location = new System.Drawing.Point(112, 21);
+            this.publicKeyType.Name = "publicKeyType";
+            this.publicKeyType.Size = new System.Drawing.Size(154, 21);
+            this.publicKeyType.TabIndex = 5;
             // 
             // keyTypeLabel
             // 
@@ -167,31 +159,68 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.keyTypeLabel.TabIndex = 6;
             this.keyTypeLabel.Text = "Key type:";
             // 
+            // connectionBox
+            // 
+            this.connectionBox.Controls.Add(this.connectionIcon);
+            this.connectionBox.Controls.Add(this.propagateLocaleCheckBox);
+            this.connectionBox.Location = new System.Drawing.Point(4, 119);
+            this.connectionBox.Name = "connectionBox";
+            this.connectionBox.Size = new System.Drawing.Size(336, 73);
+            this.connectionBox.TabIndex = 1;
+            this.connectionBox.TabStop = false;
+            this.connectionBox.Text = "Connection:";
+            // 
+            // propagateLocaleCheckBox
+            // 
+            this.propagateLocaleCheckBox.AutoSize = true;
+            this.propagateLocaleCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.propagateLocaleCheckBox.Location = new System.Drawing.Point(55, 24);
+            this.propagateLocaleCheckBox.Name = "propagateLocaleCheckBox";
+            this.propagateLocaleCheckBox.Size = new System.Drawing.Size(266, 17);
+            this.propagateLocaleCheckBox.TabIndex = 2;
+            this.propagateLocaleCheckBox.Text = "Use Windows display &language as locale (LC_ALL)";
+            this.propagateLocaleCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // connectionIcon
+            // 
+            this.connectionIcon.Image = ((System.Drawing.Image)(resources.GetObject("connectionIcon.Image")));
+            this.connectionIcon.Location = new System.Drawing.Point(10, 21);
+            this.connectionIcon.Name = "connectionIcon";
+            this.connectionIcon.Size = new System.Drawing.Size(36, 36);
+            this.connectionIcon.TabIndex = 4;
+            this.connectionIcon.TabStop = false;
+            // 
             // SshOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.connectionBox);
+            this.Controls.Add(this.authBox);
             this.Name = "SshOptionsControl";
             this.Size = new System.Drawing.Size(343, 369);
+            this.authBox.ResumeLayout(false);
+            this.authBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.publicKeyValidityUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.keyIcon)).EndInit();
             this.connectionBox.ResumeLayout(false);
             this.connectionBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.publicKeyValidityUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.connectionIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.GroupBox connectionBox;
-        private System.Windows.Forms.PictureBox keyboardIcon;
-        private System.Windows.Forms.CheckBox propagateLocaleCheckBox;
+        private System.Windows.Forms.GroupBox authBox;
+        private System.Windows.Forms.PictureBox keyIcon;
         private System.Windows.Forms.NumericUpDown publicKeyValidityUpDown;
         private System.Windows.Forms.Label daysLabel;
         private System.Windows.Forms.Label validityNoteLabel;
         private System.Windows.Forms.Label publicKeyValidityLabel;
         private System.Windows.Forms.Label keyTypeLabel;
-        private System.Windows.Forms.ComboBox keyType;
+        private System.Windows.Forms.ComboBox publicKeyType;
+        private System.Windows.Forms.GroupBox connectionBox;
+        private System.Windows.Forms.PictureBox connectionIcon;
+        private System.Windows.Forms.CheckBox propagateLocaleCheckBox;
     }
 }

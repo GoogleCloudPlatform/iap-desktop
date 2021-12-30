@@ -19,12 +19,16 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Ssh.Auth;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
@@ -153,5 +157,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 RaisePropertyChange();
             }
         }
+
+        public IEnumerable<SshKeyType> AllPublicKeyTypes
+            => Enum.GetValues(typeof(SshKeyType))
+                .Cast<SshKeyType>();
+
     }
 }
