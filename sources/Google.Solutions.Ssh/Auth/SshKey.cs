@@ -21,6 +21,8 @@
 
 using Google.Solutions.Common.Diagnostics;
 using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Security.Cryptography;
 
@@ -33,9 +35,16 @@ namespace Google.Solutions.Ssh.Auth
         // must be kept constant.
         //
 
+        [Display(Name = "RSA (3072 bit)")]
         Rsa3072       = 0x01,
+
+        [Display(Name = "ECDSA NIST P-256")]
         EcdsaNistp256 = 0x11,
+
+        [Display(Name = "ECDSA NIST P-384")]
         EcdsaNistp384 = 0x12,
+
+        [Display(Name = "ECDSA NIST P-521")]
         EcdsaNistp521 = 0x13
     }
 

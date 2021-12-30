@@ -22,12 +22,17 @@
 using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Google.Solutions.Common.Test.Util
 {
     [TestFixture]
     public class TestEnumExtensions : CommonFixtureBase
     {
+        //---------------------------------------------------------------------
+        // IsSingleFlag
+        //---------------------------------------------------------------------
+
         [Flags]
         public enum SampleFlags
         {
@@ -59,6 +64,33 @@ namespace Google.Solutions.Common.Test.Util
             var e = SampleFlags.One | SampleFlags.Four;
             Assert.IsFalse(e.IsSingleFlag());
             Assert.IsTrue(e.IsFlagCombination());
+        }
+
+        //---------------------------------------------------------------------
+        // GetAttribute
+        //---------------------------------------------------------------------
+
+        public enum SampleEnumWithAttributes
+        {
+            NoAttribute,
+
+            [Display(Name = "With attribute")]
+            WithAttribute
+        }
+
+        [Test]
+        public void WhenValueHasAttribute_ThenGetAttributeReturnsValue()
+        {
+            var a = SampleEnumWithAttributes.WithAttribute.GetAttribute<DisplayAttribute>();
+            Assert.IsNotNull(a);
+            Assert.AreEqual("With attribute", a.Name);
+        }
+
+        [Test]
+        public void WhenValueHasNoAttribute_ThenGetAttributeReturnsNull()
+        {
+            var a = SampleEnumWithAttributes.NoAttribute.GetAttribute<DisplayAttribute>();
+            Assert.IsNull(a);
         }
     }
 }

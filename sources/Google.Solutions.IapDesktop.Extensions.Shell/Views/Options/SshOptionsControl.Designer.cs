@@ -51,19 +51,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SshOptionsControl));
             this.connectionBox = new System.Windows.Forms.GroupBox();
-            this.propagateLocaleCheckBox = new System.Windows.Forms.CheckBox();
-            this.keyboardIcon = new System.Windows.Forms.PictureBox();
-            this.publicKeyValidityUpDown = new System.Windows.Forms.NumericUpDown();
-            this.publicKeyValidityLabel = new System.Windows.Forms.Label();
             this.daysLabel = new System.Windows.Forms.Label();
             this.validityNoteLabel = new System.Windows.Forms.Label();
+            this.publicKeyValidityLabel = new System.Windows.Forms.Label();
+            this.publicKeyValidityUpDown = new System.Windows.Forms.NumericUpDown();
+            this.propagateLocaleCheckBox = new System.Windows.Forms.CheckBox();
+            this.keyboardIcon = new System.Windows.Forms.PictureBox();
+            this.keyType = new System.Windows.Forms.ComboBox();
+            this.keyTypeLabel = new System.Windows.Forms.Label();
             this.connectionBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.publicKeyValidityUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // connectionBox
             // 
+            this.connectionBox.Controls.Add(this.keyTypeLabel);
+            this.connectionBox.Controls.Add(this.keyType);
             this.connectionBox.Controls.Add(this.daysLabel);
             this.connectionBox.Controls.Add(this.validityNoteLabel);
             this.connectionBox.Controls.Add(this.publicKeyValidityLabel);
@@ -72,30 +76,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.connectionBox.Controls.Add(this.keyboardIcon);
             this.connectionBox.Location = new System.Drawing.Point(4, 3);
             this.connectionBox.Name = "connectionBox";
-            this.connectionBox.Size = new System.Drawing.Size(336, 109);
+            this.connectionBox.Size = new System.Drawing.Size(336, 140);
             this.connectionBox.TabIndex = 0;
             this.connectionBox.TabStop = false;
             this.connectionBox.Text = "Connection:";
             // 
-            // propagateLocaleCheckBox
+            // daysLabel
             // 
-            this.propagateLocaleCheckBox.AutoSize = true;
-            this.propagateLocaleCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.propagateLocaleCheckBox.Location = new System.Drawing.Point(58, 22);
-            this.propagateLocaleCheckBox.Name = "propagateLocaleCheckBox";
-            this.propagateLocaleCheckBox.Size = new System.Drawing.Size(266, 17);
-            this.propagateLocaleCheckBox.TabIndex = 1;
-            this.propagateLocaleCheckBox.Text = "Use Windows display &language as locale (LC_ALL)";
-            this.propagateLocaleCheckBox.UseVisualStyleBackColor = true;
+            this.daysLabel.AutoSize = true;
+            this.daysLabel.Location = new System.Drawing.Point(268, 57);
+            this.daysLabel.Name = "daysLabel";
+            this.daysLabel.Size = new System.Drawing.Size(29, 13);
+            this.daysLabel.TabIndex = 4;
+            this.daysLabel.Text = "days";
             // 
-            // keyboardIcon
+            // validityNoteLabel
             // 
-            this.keyboardIcon.Image = ((System.Drawing.Image)(resources.GetObject("keyboardIcon.Image")));
-            this.keyboardIcon.Location = new System.Drawing.Point(10, 21);
-            this.keyboardIcon.Name = "keyboardIcon";
-            this.keyboardIcon.Size = new System.Drawing.Size(36, 36);
-            this.keyboardIcon.TabIndex = 3;
-            this.keyboardIcon.TabStop = false;
+            this.validityNoteLabel.AutoSize = true;
+            this.validityNoteLabel.Location = new System.Drawing.Point(55, 79);
+            this.validityNoteLabel.Name = "validityNoteLabel";
+            this.validityNoteLabel.Size = new System.Drawing.Size(274, 13);
+            this.validityNoteLabel.TabIndex = 4;
+            this.validityNoteLabel.Text = "IAP Desktop automatically re-publishes keys if necessary";
+            // 
+            // publicKeyValidityLabel
+            // 
+            this.publicKeyValidityLabel.AutoSize = true;
+            this.publicKeyValidityLabel.Location = new System.Drawing.Point(55, 57);
+            this.publicKeyValidityLabel.Name = "publicKeyValidityLabel";
+            this.publicKeyValidityLabel.Size = new System.Drawing.Size(149, 13);
+            this.publicKeyValidityLabel.TabIndex = 4;
+            this.publicKeyValidityLabel.Text = "Let metadata keys expire after";
             // 
             // publicKeyValidityUpDown
             // 
@@ -119,32 +130,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             0,
             0});
             // 
-            // publicKeyValidityLabel
+            // propagateLocaleCheckBox
             // 
-            this.publicKeyValidityLabel.AutoSize = true;
-            this.publicKeyValidityLabel.Location = new System.Drawing.Point(55, 57);
-            this.publicKeyValidityLabel.Name = "publicKeyValidityLabel";
-            this.publicKeyValidityLabel.Size = new System.Drawing.Size(154, 13);
-            this.publicKeyValidityLabel.TabIndex = 4;
-            this.publicKeyValidityLabel.Text = "Let authorized keys expire after";
+            this.propagateLocaleCheckBox.AutoSize = true;
+            this.propagateLocaleCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.propagateLocaleCheckBox.Location = new System.Drawing.Point(58, 111);
+            this.propagateLocaleCheckBox.Name = "propagateLocaleCheckBox";
+            this.propagateLocaleCheckBox.Size = new System.Drawing.Size(266, 17);
+            this.propagateLocaleCheckBox.TabIndex = 1;
+            this.propagateLocaleCheckBox.Text = "Use Windows display &language as locale (LC_ALL)";
+            this.propagateLocaleCheckBox.UseVisualStyleBackColor = true;
             // 
-            // daysLabel
+            // keyboardIcon
             // 
-            this.daysLabel.AutoSize = true;
-            this.daysLabel.Location = new System.Drawing.Point(268, 57);
-            this.daysLabel.Name = "daysLabel";
-            this.daysLabel.Size = new System.Drawing.Size(29, 13);
-            this.daysLabel.TabIndex = 4;
-            this.daysLabel.Text = "days";
+            this.keyboardIcon.Image = ((System.Drawing.Image)(resources.GetObject("keyboardIcon.Image")));
+            this.keyboardIcon.Location = new System.Drawing.Point(10, 21);
+            this.keyboardIcon.Name = "keyboardIcon";
+            this.keyboardIcon.Size = new System.Drawing.Size(36, 36);
+            this.keyboardIcon.TabIndex = 3;
+            this.keyboardIcon.TabStop = false;
             // 
-            // validityNoteLabel
+            // keyType
             // 
-            this.validityNoteLabel.AutoSize = true;
-            this.validityNoteLabel.Location = new System.Drawing.Point(55, 79);
-            this.validityNoteLabel.Name = "validityNoteLabel";
-            this.validityNoteLabel.Size = new System.Drawing.Size(274, 13);
-            this.validityNoteLabel.TabIndex = 4;
-            this.validityNoteLabel.Text = "IAP Desktop automatically re-publishes keys if necessary";
+            this.keyType.FormattingEnabled = true;
+            this.keyType.Location = new System.Drawing.Point(112, 21);
+            this.keyType.Name = "keyType";
+            this.keyType.Size = new System.Drawing.Size(154, 21);
+            this.keyType.TabIndex = 5;
+            // 
+            // keyTypeLabel
+            // 
+            this.keyTypeLabel.AutoSize = true;
+            this.keyTypeLabel.Location = new System.Drawing.Point(55, 24);
+            this.keyTypeLabel.Name = "keyTypeLabel";
+            this.keyTypeLabel.Size = new System.Drawing.Size(51, 13);
+            this.keyTypeLabel.TabIndex = 6;
+            this.keyTypeLabel.Text = "Key type:";
             // 
             // SshOptionsControl
             // 
@@ -155,8 +176,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.Size = new System.Drawing.Size(343, 369);
             this.connectionBox.ResumeLayout(false);
             this.connectionBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.publicKeyValidityUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -170,5 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         private System.Windows.Forms.Label daysLabel;
         private System.Windows.Forms.Label validityNoteLabel;
         private System.Windows.Forms.Label publicKeyValidityLabel;
+        private System.Windows.Forms.Label keyTypeLabel;
+        private System.Windows.Forms.ComboBox keyType;
     }
 }
