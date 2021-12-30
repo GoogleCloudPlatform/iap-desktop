@@ -19,12 +19,16 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using System;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Settings
 {
+    /// <summary>
+    /// Base class for all settings repositories.
+    /// </summary>
     public abstract class SettingsRepositoryBase<TSettings> : IDisposable
         where TSettings : IRegistrySettingsCollection
     {
@@ -73,5 +77,37 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                 this.baseKey.Dispose();
             }
         }
+    }
+
+    /// <summary>
+    /// Base class for settings repositories that support group policies.
+    /// </summary>
+    public abstract class PolicyEnabledSettingsRepository<TSettings>
+        : SettingsRepositoryBase<TSettings>
+        where TSettings : IRegistrySettingsCollection
+    {
+        private readonly RegistryKey machinePolicyKey;
+        private readonly RegistryKey userPolicyKey;
+
+        public PolicyEnabledSettingsRepository(
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey) : base(settingsKey)
+        {
+            Utilities.ThrowIfNull(settingsKey, nameof(settingsKey));
+
+            this.machinePolicyKey = machinePolicyKey;
+            this.userPolicyKey = userPolicyKey;
+        }
+        protected override TSettings LoadSettings(RegistryKey key)
+            => LoadSettings(key, this.machinePolicyKey, this.userPolicyKey);
+
+        protected abstract TSettings LoadSettings(
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey);
+
+        public bool IsPolicyPresent
+            => this.machinePolicyKey != null || this.userPolicyKey != null;
     }
 }

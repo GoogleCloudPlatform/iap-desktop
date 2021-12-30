@@ -19,6 +19,10 @@
 // under the License.
 //
 
+using System;
+using System.Linq;
+using System.Reflection;
+
 namespace Google.Solutions.Common.Util
 {
     public static class EnumExtensions
@@ -39,6 +43,15 @@ namespace Google.Solutions.Common.Util
         {
             var v = (int)(object)enumValue;
             return v != 0 && !IsPowerOfTwo(v);
+        }
+        public static TAttribute GetAttribute<TAttribute>(this Enum enumValue)
+                where TAttribute : Attribute
+        {
+            return enumValue
+                .GetType()
+                .GetMember(enumValue.ToString())
+                .FirstOrDefault()?
+                .GetCustomAttribute<TAttribute>();
         }
     }
 }

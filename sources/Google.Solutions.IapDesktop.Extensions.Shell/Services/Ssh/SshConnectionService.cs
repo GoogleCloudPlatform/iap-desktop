@@ -172,8 +172,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             //
             // Load persistent CNG key. This must be done on the UI thread.
             //
+            var sshSettings = this.sshSettingsRepository.GetSettings();
             var sshKey = this.keyStoreAdapter.OpenSshKey(
-                SshKeyType.Rsa3072,
+                sshSettings.PublicKeyType.EnumValue,
                 this.authorizationAdapter.Authorization,
                 true,
                 this.window);
@@ -186,7 +187,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
             try
             {
-                var sshSettings = this.sshSettingsRepository.GetSettings();
                 var authorizedKeyTask = this.jobService.RunInBackground(
                     new JobDescription(
                         $"Publishing SSH key for {instance.Name}...",

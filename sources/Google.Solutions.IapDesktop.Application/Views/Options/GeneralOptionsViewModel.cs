@@ -111,11 +111,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         {
             Debug.Assert(this.IsDirty);
 
-
             //
             // Save changed settings.
             //
-
             var settings = this.settingsRepository.GetSettings();
             settings.IsUpdateCheckEnabled.BoolValue = this.isUpdateCheckEnabled;
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = this.isDcaEnabled;

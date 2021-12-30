@@ -24,9 +24,12 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
 {
@@ -36,59 +39,106 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
     /// Service is a singleton so that objects can subscribe to events.
     /// </summary>
     [Service(ServiceLifetime.Singleton, ServiceVisibility.Global)]
-    public class SshSettingsRepository : SettingsRepositoryBase<SshSettings>
+    public class SshSettingsRepository : PolicyEnabledSettingsRepository<SshSettings>
     {
-        public SshSettingsRepository(RegistryKey baseKey) : base(baseKey)
+        private static RegistryKey WithHive(
+            RegistryHive hive,
+            Func<RegistryKey, RegistryKey> openFunc)
         {
-            Utilities.ThrowIfNull(baseKey, nameof(baseKey));
+            using (var hiveKey = RegistryKey.OpenBaseKey(hive, RegistryView.Default))
+            {
+                return openFunc(hiveKey);
+            }
+        }
+
+        public SshSettingsRepository(
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey) : base(settingsKey, machinePolicyKey, userPolicyKey)
+        {
         }
 
         public SshSettingsRepository()
-            : this(RegistryKey
-                .OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default)
-                .CreateSubKey($@"{Globals.SettingsKeyPath}\Ssh"))
+            : this(
+                WithHive(RegistryHive.CurrentUser, hive => hive.CreateSubKey($@"{Globals.SettingsKeyPath}\Ssh")),
+                WithHive(RegistryHive.LocalMachine, hive => hive.OpenSubKey($@"{Globals.PoliciesKeyPath}\Ssh")),
+                WithHive(RegistryHive.CurrentUser, hive => hive.OpenSubKey($@"{Globals.PoliciesKeyPath}\Ssh")))
         {
         }
 
-        protected override SshSettings LoadSettings(RegistryKey key)
-            => SshSettings.FromKey(key);
+        protected override SshSettings LoadSettings(
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey)
+            => SshSettings.FromKey(
+                settingsKey,
+                machinePolicyKey,
+                userPolicyKey);
     }
 
     public class SshSettings : IRegistrySettingsCollection
     {
         public RegistryBoolSetting IsPropagateLocaleEnabled { get; private set; }
         public RegistryDwordSetting PublicKeyValidity { get; private set; }
+        public RegistryEnumSetting<SshKeyType> PublicKeyType { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             IsPropagateLocaleEnabled,
-            PublicKeyValidity
+            PublicKeyValidity,
+            PublicKeyType
         };
 
         private SshSettings()
         {
         }
 
-        public static SshSettings FromKey(RegistryKey registryKey)
+        public static SshSettings FromKey(
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey)
         {
             return new SshSettings()
             {
+                //
+                // Settings that can be overriden by policy.
+                //
+                // NB. Default values must be kept consistent with the
+                //     ADMX policy templates!
+                // NB. Machine policies override user policies, and
+                //     user policies override settings.
+                //
+                PublicKeyType = RegistryEnumSetting<SshKeyType>.FromKey(
+                        "PublicKeyType",
+                        "PublicKeyType",
+                        "Key type for public key authentication",
+                        null,
+                        SshKeyType.Rsa3072,
+                        settingsKey)
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey), // TODO: Extend ADMX
+                PublicKeyValidity = RegistryDwordSetting.FromKey(
+                        "PublicKeyValidity",
+                        "PublicKeyValidity",
+                        "Validity of (OS Login/Metadata) keys in seconds",
+                        null,
+                        (int)TimeSpan.FromDays(30).TotalSeconds,
+                        settingsKey,
+                        (int)TimeSpan.FromMinutes(1).TotalSeconds,
+                        int.MaxValue)
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey), // TODO: Extend ADMX
+
+                //
+                // User preferences. These cannot be overriden by policy.
+                //
                 IsPropagateLocaleEnabled = RegistryBoolSetting.FromKey(
                     "IsPropagateLocaleEnabled",
                     "IsPropagateLocaleEnabled",
                     null,
                     null,
                     true,
-                    registryKey),
-                PublicKeyValidity = RegistryDwordSetting.FromKey(
-                    "PublicKeyValidity",
-                    "PublicKeyValidity",
-                    "Validity of (OS Login/Metadata) keys in seconds",
-                    null,
-                    (int)TimeSpan.FromDays(30).TotalSeconds,
-                    registryKey,
-                    (int)TimeSpan.FromMinutes(1).TotalSeconds,
-                    int.MaxValue)
+                    settingsKey)
             };
         }
     }

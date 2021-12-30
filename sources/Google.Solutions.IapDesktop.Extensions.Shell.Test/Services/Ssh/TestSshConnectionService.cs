@@ -109,7 +109,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             this.serviceRegistry.AddSingleton(new SshSettingsRepository(
-                hkcu.CreateSubKey(@"Software\Google\__Test")));
+                hkcu.CreateSubKey(@"Software\Google\__Test"),
+                null,
+                null));
         }
 
         private Mock<IProjectModelInstanceNode> CreateInstanceNodeMock()

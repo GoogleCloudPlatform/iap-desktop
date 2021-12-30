@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Settings
@@ -33,30 +34,23 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     /// <summary>
     /// Registry-backed repository for app settings.
     /// </summary>
-    public class ApplicationSettingsRepository : SettingsRepositoryBase<ApplicationSettings>
+    public class ApplicationSettingsRepository : PolicyEnabledSettingsRepository<ApplicationSettings>
     {
-        private readonly RegistryKey machinePolicyKey;
-        private readonly RegistryKey userPolicyKey;
-
         public ApplicationSettingsRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey) : base(settingsKey)
+            RegistryKey userPolicyKey) : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
-            Utilities.ThrowIfNull(settingsKey, nameof(settingsKey));
-
-            this.machinePolicyKey = machinePolicyKey;
-            this.userPolicyKey = userPolicyKey;
         }
 
-        protected override ApplicationSettings LoadSettings(RegistryKey key)
+        protected override ApplicationSettings LoadSettings(
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey)
             => ApplicationSettings.FromKey(
-                key,
-                this.machinePolicyKey,
-                this.userPolicyKey);
-
-        public bool IsPolicyPresent
-            => this.machinePolicyKey != null || this.userPolicyKey != null;
+                settingsKey, 
+                machinePolicyKey, 
+                userPolicyKey);
     }
 
     public class ApplicationSettings : IRegistrySettingsCollection
