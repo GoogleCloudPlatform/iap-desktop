@@ -129,7 +129,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             this.serviceRegistry.AddSingleton(new TerminalSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath)));
             this.serviceRegistry.AddSingleton(new SshSettingsRepository(
-                hkcu.CreateSubKey(TestKeyPath)));
+                hkcu.CreateSubKey(TestKeyPath),
+                null,
+                null));
         }
 
         //---------------------------------------------------------------------

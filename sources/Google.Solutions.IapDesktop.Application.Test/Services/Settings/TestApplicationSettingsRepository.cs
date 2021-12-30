@@ -40,15 +40,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
-            hkcu.DeleteSubKeyTree(TestUserPolicyKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestUserPolicyKeyPath, false);
         }
 
         [Test]
         public void WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(settingsKey, null, null);
 
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenSettingsSaved_ThenSettingsCanBeRead()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(settingsKey, null, null);
 
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProxyUrlInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(settingsKey, null, null);
 
@@ -109,9 +109,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProxyUrlValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -130,9 +130,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProxyUrlValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -151,9 +151,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProxyUrlValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProxyPacUrlInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(settingsKey, null, null);
 
@@ -192,9 +192,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProxyPacUrlValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -213,9 +213,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProxyPacUrlValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -234,9 +234,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenProxyPacUrlValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenIsUpdateCheckEnabledValid_ThenSettingWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -278,9 +278,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenIsUpdateCheckEnabledValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -299,9 +299,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenIsUpdateCheckEnabledValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -320,9 +320,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenIsUpdateCheckEnabledValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -346,7 +346,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenIsDeviceCertificateAuthenticationEnabledValid_ThenSettingWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -364,9 +364,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenIsDeviceCertificateAuthenticationEnabledValidAndUserPolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -385,9 +385,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenIsDeviceCertificateAuthenticationEnabledValidAndMachinePolicySet_ThenPolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -406,9 +406,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenIsDeviceCertificateAuthenticationEnabledValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var machinePolicyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
-            using (var userPolicyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(
                     settingsKey,
@@ -432,7 +432,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenMachineAndUserPolicyKeysAreNull_ThenIsPolicyPresentReturnsFalse()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(settingsKey, null, null);
 
@@ -443,8 +443,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenMachinePolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(settingsKey, policyKey, null);
 
@@ -455,8 +455,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         [Test]
         public void WhenUserPolicyKeyExists_ThenIsPolicyPresentReturnsTrue()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
-            using (var policyKey = hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var policyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
             {
                 var repository = new ApplicationSettingsRepository(settingsKey, null, policyKey);
 

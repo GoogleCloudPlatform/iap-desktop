@@ -22,8 +22,10 @@
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
 {
@@ -32,6 +34,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
     public class TestSshSettingsRepository : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
+        private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";
+        private const string TestUserPolicyKeyPath = @"Software\Google\__TestUserPolicy";
+
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
             RegistryView.Default);
@@ -39,15 +44,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestMachinePolicyKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestUserPolicyKeyPath, false);
         }
 
         [Test]
         public void WhenKeyEmpty_ThenDefaultsAreProvided()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new SshSettingsRepository(settingsKey);
+                var repository = new SshSettingsRepository(settingsKey, null, null);
                 var settings = repository.GetSettings();
 
                 Assert.IsTrue(settings.IsPropagateLocaleEnabled.BoolValue);
@@ -59,9 +66,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
         [Test]
         public void WhenSettingsSaved_ThenSettingsCanBeRead()
         {
-            using (var settingsKey = hkcu.CreateSubKey(TestKeyPath))
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new SshSettingsRepository(settingsKey);
+                var repository = new SshSettingsRepository(settingsKey, null, null);
 
                 var settings = repository.GetSettings();
                 settings.IsPropagateLocaleEnabled.BoolValue = false;
@@ -73,6 +80,172 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
                 Assert.IsFalse(settings.IsPropagateLocaleEnabled.BoolValue);
                 Assert.AreEqual(3600, settings.PublicKeyValidity.IntValue);
                 Assert.AreEqual(SshKeyType.EcdsaNistp256, settings.PublicKeyType.EnumValue);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // PublicKeyType.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenPublicKeyTypeInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new SshSettingsRepository(settingsKey, null, null);
+
+                var settings = repository.GetSettings();
+                settings.PublicKeyType.Reset();
+
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    () => settings.PublicKeyType.EnumValue = (SshKeyType)0xFF);
+            }
+        }
+
+        [Test]
+        public void WhenPublicKeyTypeValidAndUserPolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
+                userPolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp384, RegistryValueKind.DWord);
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.EnumValue);
+            }
+        }
+
+        [Test]
+        public void WhenPublicKeyTypeValidAndMachinePolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
+                machinePolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp521, RegistryValueKind.DWord);
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.EnumValue);
+            }
+        }
+
+        [Test]
+        public void WhenPublicKeyTypeValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
+                userPolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp384, RegistryValueKind.DWord);
+                machinePolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp521, RegistryValueKind.DWord);
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual(SshKeyType.EcdsaNistp521, settings.PublicKeyType.EnumValue);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // PublicKeyValidity.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenPublicKeyValidityInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new SshSettingsRepository(settingsKey, null, null);
+
+                var settings = repository.GetSettings();
+                settings.PublicKeyValidity.Reset();
+
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    () => settings.PublicKeyValidity.IntValue = 5);
+            }
+        }
+
+        [Test]
+        public void WhenPublicKeyValidityValidAndUserPolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("PublicKeyValidity", 60);
+                userPolicyKey.SetValue("PublicKeyValidity", 2 * 60);
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual(2 * 60, settings.PublicKeyValidity.IntValue);
+            }
+        }
+
+        [Test]
+        public void WhenPublicKeyValidityValidAndMachinePolicySet_ThenPolicyWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("PublicKeyValidity", 60);
+                machinePolicyKey.SetValue("PublicKeyValidity", 3 * 60);
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual(3 * 60, settings.PublicKeyValidity.IntValue);
+            }
+        }
+
+        [Test]
+        public void WhenPublicKeyValidityValidAndUserAndMachinePolicySet_ThenMachinePolicyWins()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            using (var machinePolicyKey = this.hkcu.CreateSubKey(TestMachinePolicyKeyPath))
+            using (var userPolicyKey = this.hkcu.CreateSubKey(TestUserPolicyKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    machinePolicyKey,
+                    userPolicyKey);
+
+                settingsKey.SetValue("PublicKeyValidity", 60);
+                userPolicyKey.SetValue("PublicKeyValidity", 2 * 60);
+                machinePolicyKey.SetValue("PublicKeyValidity", 3 * 60);
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual(3 * 60, settings.PublicKeyValidity.IntValue);
             }
         }
     }

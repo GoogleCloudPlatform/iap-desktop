@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -37,22 +38,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
     /// Service is a singleton so that objects can subscribe to events.
     /// </summary>
     [Service(ServiceLifetime.Singleton, ServiceVisibility.Global)]
-    public class SshSettingsRepository : SettingsRepositoryBase<SshSettings>
+    public class SshSettingsRepository : PolicyEnabledSettingsRepository<SshSettings>
     {
-        public SshSettingsRepository(RegistryKey baseKey) : base(baseKey)
-        {
-            Utilities.ThrowIfNull(baseKey, nameof(baseKey));
-        }
-
-        public SshSettingsRepository()
-            : this(RegistryKey
-                .OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default)
-                .CreateSubKey($@"{Globals.SettingsKeyPath}\Ssh"))
+        public SshSettingsRepository(
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey) : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
         }
 
-        protected override SshSettings LoadSettings(RegistryKey key)
-            => SshSettings.FromKey(key);
+        protected override SshSettings LoadSettings(
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey)
+            => SshSettings.FromKey(
+                settingsKey,
+                machinePolicyKey,
+                userPolicyKey);
     }
 
     public class SshSettings : IRegistrySettingsCollection
@@ -72,33 +74,52 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         {
         }
 
-        public static SshSettings FromKey(RegistryKey registryKey)
+        public static SshSettings FromKey(
+            RegistryKey settingsKey,
+            RegistryKey machinePolicyKey,
+            RegistryKey userPolicyKey)
         {
             return new SshSettings()
             {
+                //
+                // Settings that can be overriden by policy.
+                //
+                // NB. Default values must be kept consistent with the
+                //     ADMX policy templates!
+                // NB. Machine policies override user policies, and
+                //     user policies override settings.
+                //
+                PublicKeyType = RegistryEnumSetting<SshKeyType>.FromKey(
+                        "PublicKeyType",
+                        "PublicKeyType",
+                        "Key type for public key authentication",
+                        null,
+                        SshKeyType.Rsa3072,
+                        settingsKey)
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey), // TODO: Extend ADMX
+                PublicKeyValidity = RegistryDwordSetting.FromKey(
+                        "PublicKeyValidity",
+                        "PublicKeyValidity",
+                        "Validity of (OS Login/Metadata) keys in seconds",
+                        null,
+                        (int)TimeSpan.FromDays(30).TotalSeconds,
+                        settingsKey,
+                        (int)TimeSpan.FromMinutes(1).TotalSeconds,
+                        int.MaxValue)
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey), // TODO: Extend ADMX
+
+                //
+                // User preferences. These cannot be overriden by policy.
+                //
                 IsPropagateLocaleEnabled = RegistryBoolSetting.FromKey(
                     "IsPropagateLocaleEnabled",
                     "IsPropagateLocaleEnabled",
                     null,
                     null,
                     true,
-                    registryKey),
-                PublicKeyValidity = RegistryDwordSetting.FromKey(
-                    "PublicKeyValidity",
-                    "PublicKeyValidity",
-                    "Validity of (OS Login/Metadata) keys in seconds",
-                    null,
-                    (int)TimeSpan.FromDays(30).TotalSeconds,
-                    registryKey,
-                    (int)TimeSpan.FromMinutes(1).TotalSeconds,
-                    int.MaxValue),
-                PublicKeyType = RegistryEnumSetting<SshKeyType>.FromKey(
-                    "PublicKeyType",
-                    "PublicKeyType",
-                    "Key type for public key authentication",
-                    null,
-                    SshKeyType.Rsa3072,
-                    registryKey)
+                    settingsKey)
             };
         }
     }

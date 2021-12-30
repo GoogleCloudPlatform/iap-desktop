@@ -205,6 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 new HelpService());
 
             Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled);
+            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable);
         }
 
         [Test]
@@ -221,10 +222,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 new HelpService());
 
             Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEnabled);
+            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable);
         }
 
         [Test]
-        public void WhenSettingEnabledByPolicy_ThenIsDeviceCertificateAuthenticationEeditableIsFalse()
+        public void WhenSettingEnabledByPolicy_ThenIsDeviceCertificateAuthenticationEditableIsFalse()
         {
             var settingsRepository = CreateSettingsRepository(
                 new Dictionary<string, object>

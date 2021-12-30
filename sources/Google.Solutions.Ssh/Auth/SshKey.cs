@@ -26,9 +26,14 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Auth
 {
-    public enum SshKeyType : ushort
+    public enum SshKeyType : int
     {
-        Rsa3072 = 0x01,
+        //
+        // NB. These values are used for persistance and
+        // must be kept constant.
+        //
+
+        Rsa3072       = 0x01,
         EcdsaNistp256 = 0x11,
         EcdsaNistp384 = 0x12,
         EcdsaNistp521 = 0x13

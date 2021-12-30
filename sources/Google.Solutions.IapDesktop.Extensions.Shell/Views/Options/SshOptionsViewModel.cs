@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.Ssh.Auth;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -37,6 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
     {
         private bool isPropagateLocaleEnabled;
         private int publicKeyValidityInDays;
+        private SshKeyType publicKeyType;
 
         private readonly SshSettingsRepository settingsRepository;
 
@@ -57,8 +59,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 
             this.IsPropagateLocaleEnabled =
                 settings.IsPropagateLocaleEnabled.BoolValue;
+
             this.PublicKeyValidityInDays =
                 (int)TimeSpan.FromSeconds(settings.PublicKeyValidity.IntValue).TotalDays;
+            this.IsPublicKeyValidityInDaysEditable = !settings.PublicKeyValidity.IsReadOnly;
+
+            this.publicKeyType = settings.PublicKeyType.EnumValue;
+            this.IsPublicKeyTypeEditable = !settings.PublicKeyType.IsReadOnly;
 
             this.isDirty = false;
         }
@@ -100,6 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.IsPropagateLocaleEnabled;
             settings.PublicKeyValidity.IntValue =
                 (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays).TotalSeconds;
+            settings.PublicKeyType.EnumValue = this.PublicKeyType;
 
             this.settingsRepository.SetSettings(settings);
 
@@ -110,6 +118,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         // Observable properties.
         //---------------------------------------------------------------------
 
+        public bool IsPublicKeyValidityInDaysEditable { get; }
+        public bool IsPublicKeyTypeEditable { get; }
+
         public bool IsPropagateLocaleEnabled
         {
             get => this.isPropagateLocaleEnabled;
@@ -117,6 +128,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             {
                 this.IsDirty = true;
                 this.isPropagateLocaleEnabled = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public SshKeyType PublicKeyType
+        {
+            get => this.publicKeyType;
+            set
+            {
+                this.IsDirty = true;
+                this.publicKeyType = value;
                 RaisePropertyChange();
             }
         }
