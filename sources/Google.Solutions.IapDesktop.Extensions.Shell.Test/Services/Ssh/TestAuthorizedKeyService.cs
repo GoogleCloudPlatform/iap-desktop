@@ -499,7 +499,61 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
-        public async Task WhenExistingInvalidManagedKeyFound_ThenNewKeyIsPushed()
+        public async Task WhenExistingManagedKeyOfDifferentTypeFound_ThenNewKeyIsPushed()
+        {
+            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            {
+                var existingProjectKeySet = MetadataAuthorizedKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(new ManagedMetadataAuthorizedKey(
+                        "bob",
+                        "ecdsa-sha2-nistp384",
+                        key.PublicKeyString,
+                        new ManagedKeyMetadata(SampleEmailAddress, DateTime.UtcNow.AddMinutes(5))));
+
+                var computeEngineAdapter = CreateComputeEngineAdapterMock(
+                    osLoginEnabledForProject: false,
+                    osLoginEnabledForInstance: false,
+                    osLogin2fa: false,
+                    legacySshKeyPresent: false,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false,
+                    existingProjectKeySet: existingProjectKeySet,
+                    existingInstanceKeySet: null);
+                var service = new AuthorizedKeyService(
+                    CreateAuthorizationAdapterMock().Object,
+                    computeEngineAdapter.Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    CreateOsLoginServiceMock().Object);
+
+                var authorizedKey = await service
+                    .AuthorizeKeyAsync(
+                        SampleLocator,
+                        key,
+                        TimeSpan.FromMinutes(1),
+                        "bob",
+                        AuthorizeKeyMethods.All,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Assert.IsNotNull(authorizedKey);
+                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual("bob", authorizedKey.Username);
+
+                computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Never);
+
+                computeEngineAdapter.Verify(a => a.UpdateCommonInstanceMetadataAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
+            }
+        }
+
+        [Test]
+        public async Task WhenExpiredManagedKeyFound_ThenNewKeyIsPushed()
         {
             using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
             {
@@ -778,7 +832,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
-        public void WhenMetadataUpdatesFails_ThenAuthorizeKeyAsyncThrowsSshKeyPushFailedException(
+        public void WhenMetadataUpdateFails_ThenAuthorizeKeyAsyncThrowsSshKeyPushFailedException(
             [Values(
                 HttpStatusCode.Forbidden,
             HttpStatusCode.BadRequest)] HttpStatusCode httpStatus)

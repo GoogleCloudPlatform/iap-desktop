@@ -74,6 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         private async Task<SshTerminalPane> ConnectSshTerminalPane(
             InstanceLocator instanceLocator,
             ICredential credential,
+            SshKeyType keyType,
             CultureInfo language = null)
         {
             var authorization = new Mock<IAuthorization>();
@@ -93,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             {
                 var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
                         instanceLocator,
-                        SshKey.NewEphemeralKey(SshKeyType.Rsa3072),
+                        SshKey.NewEphemeralKey(keyType),
                         TimeSpan.FromMinutes(10),
                         null,
                         AuthorizeKeyMethods.InstanceMetadata,
@@ -136,88 +137,88 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
+        public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)]SshKeyType keyType)
         {
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
-            {
-                SessionAbortedEvent deliveredEvent = null;
-                this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
+            SessionAbortedEvent deliveredEvent = null;
+            this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
 
-                var broker = new SshTerminalSessionBroker(
-                    this.serviceProvider);
-                await broker.ConnectAsync(
-                        new InstanceLocator("project-1", "zone-1", "instance-1"),
-                        UnboundEndpoint,
-                        AuthorizedKey.ForMetadata(key, "test", true, null),
-                        null,
-                        TimeSpan.FromSeconds(10))
-                    .ConfigureAwait(true);
+            var key = SshKey.NewEphemeralKey(keyType);
 
-                Assert.IsNotNull(deliveredEvent, "Event fired");
-                Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
-                Assert.AreEqual(
-                    SocketError.ConnectionRefused,
-                    ((SocketException)this.ExceptionShown).SocketErrorCode);
-            }
+            var broker = new SshTerminalSessionBroker(
+                this.serviceProvider);
+            await broker.ConnectAsync(
+                    new InstanceLocator("project-1", "zone-1", "instance-1"),
+                    UnboundEndpoint,
+                    AuthorizedKey.ForMetadata(key, "test", true, null),
+                    null,
+                    TimeSpan.FromSeconds(10))
+                .ConfigureAwait(true);
+
+            Assert.IsNotNull(deliveredEvent, "Event fired");
+            Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
+            Assert.AreEqual(
+                SocketError.ConnectionRefused,
+                ((SocketException)this.ExceptionShown).SocketErrorCode);
         }
 
         [Test]
-        public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
+        public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
-            {
-                SessionAbortedEvent deliveredEvent = null;
-                this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
+            SessionAbortedEvent deliveredEvent = null;
+            this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
 
-                var broker = new SshTerminalSessionBroker(
-                    this.serviceProvider);
-                await broker.ConnectAsync(
-                        new InstanceLocator("project-1", "zone-1", "instance-1"),
-                        NonSshEndpoint,
-                        AuthorizedKey.ForMetadata(key, "test", true, null),
-                        null,
-                        TimeSpan.FromSeconds(10))
-                    .ConfigureAwait(true);
+            var key = SshKey.NewEphemeralKey(keyType);
+            var broker = new SshTerminalSessionBroker(
+                this.serviceProvider);
+            await broker.ConnectAsync(
+                    new InstanceLocator("project-1", "zone-1", "instance-1"),
+                    NonSshEndpoint,
+                    AuthorizedKey.ForMetadata(key, "test", true, null),
+                    null,
+                    TimeSpan.FromSeconds(10))
+                .ConfigureAwait(true);
 
-                Assert.IsNotNull(deliveredEvent, "Event fired");
-                Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
-                Assert.AreEqual(
-                    SocketError.ConnectionRefused,
-                    ((SocketException)this.ExceptionShown).SocketErrorCode);
-            }
+            Assert.IsNotNull(deliveredEvent, "Event fired");
+            Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
+            Assert.AreEqual(
+                SocketError.ConnectionRefused,
+                ((SocketException)this.ExceptionShown).SocketErrorCode);
         }
 
         [Test]
         public async Task WhenKeyUnknown_ThenErrorIsShownAndWindowIsClosed(
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instanceLocator = await instanceLocatorTask;
+            
+            SessionAbortedEvent deliveredEvent = null;
+            this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
 
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
-            {
-                SessionAbortedEvent deliveredEvent = null;
-                this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
+            var key = SshKey.NewEphemeralKey(keyType);
 
-                var broker = new SshTerminalSessionBroker(
-                    this.serviceProvider);
-                await broker.ConnectAsync(
-                        instanceLocator,
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator).ConfigureAwait(true), 22),
-                        AuthorizedKey.ForMetadata(key, "test", true, null),
-                        null,
-                        TimeSpan.FromSeconds(10))
-                    .ConfigureAwait(true);
+            var broker = new SshTerminalSessionBroker(
+                this.serviceProvider);
+            await broker.ConnectAsync(
+                    instanceLocator,
+                    new IPEndPoint(await PublicAddressFromLocator(instanceLocator).ConfigureAwait(true), 22),
+                    AuthorizedKey.ForMetadata(key, "test", true, null),
+                    null,
+                    TimeSpan.FromSeconds(10))
+                .ConfigureAwait(true);
 
-                Assert.IsNotNull(deliveredEvent, "Event fired");
-                Assert.IsInstanceOf(typeof(SshNativeException), this.ExceptionShown);
-                Assert.AreEqual(
-                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    ((SshNativeException)this.ExceptionShown).ErrorCode);
-            }
+            Assert.IsNotNull(deliveredEvent, "Event fired");
+            Assert.IsInstanceOf(typeof(SshNativeException), this.ExceptionShown);
+            Assert.AreEqual(
+                LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                ((SshNativeException)this.ExceptionShown).ErrorCode);
         }
 
         [Test]
         public async Task WhenAuthenticationSucceeds_ThenConnectionSuceededEventEventIsFired(
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
@@ -226,7 +227,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential,
+                    keyType)
                 .ConfigureAwait(true))
             {
                 // Close the pane (not the window).
@@ -242,12 +244,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
         [Test]
         public async Task WhenSendingExit_ThenDisconnectedEventIsFiredAndWindowIsClosed(
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential,
+                    keyType)
                 .ConfigureAwait(true))
             {
                 await Task.Delay(50).ConfigureAwait(true);
@@ -260,12 +264,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
         [Test]
         public async Task WhenSendingCtrlD_ThenDisconnectedEventIsFiredAndWindowIsClosed(
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential, 
+                    keyType)
                 .ConfigureAwait(true))
             {
                 await Task.Delay(50).ConfigureAwait(true);
@@ -278,12 +284,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
         [Test]
         public async Task WhenClosingPane_ThenDisposeDoesNotHang(
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential,
+                    keyType)
                 .ConfigureAwait(true))
             {
                 pane.Terminal.SimulateKey(Keys.A);
@@ -305,7 +313,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential,
+                    SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
                 // Copy command with a line continuation.
@@ -332,7 +341,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential,
+                    SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
                 // Measure initial window.
@@ -358,6 +368,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
                     await credential,
+                    SshKeyType.EcdsaNistp384,
                     new CultureInfo("en-AU"))
                 .ConfigureAwait(true))
             {
@@ -385,7 +396,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential,
+                    SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
                 pane.Terminal.SimulateKey(Keys.A);
@@ -411,7 +423,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential,
+                    SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
                 pane.Terminal.SimulateKey(Keys.A);
@@ -445,7 +458,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential,
+                    SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
                 pane.Terminal.SimulateKey(Keys.A);
@@ -479,7 +493,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential,
+                    SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
                 pane.Terminal.SimulateKey(Keys.A);
@@ -508,7 +523,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential)
+                    await credential,
+                    SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
                 Assert.IsFalse(pane.Terminal.EnableCtrlC);
