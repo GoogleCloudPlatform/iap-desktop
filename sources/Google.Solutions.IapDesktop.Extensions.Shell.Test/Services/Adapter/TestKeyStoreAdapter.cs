@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                 SshKeyType.Rsa3072,
                 CngProvider.MicrosoftSmartCardKeyStorageProvider);
 
-            Assert.AreEqual("IAPDESKTOP_bob@example.com_0001_E7909B75", keyName);
+            Assert.AreEqual("IAPDESKTOP_bob@example.com_00000001_E7909B75", keyName);
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                 SshKeyType.EcdsaNistp256,
                 CngProvider.MicrosoftSoftwareKeyStorageProvider);
 
-            Assert.AreEqual("IAPDESKTOP_bob@example.com_0011_094FE673", keyName);
+            Assert.AreEqual("IAPDESKTOP_bob@example.com_00000011_094FE673", keyName);
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                 SshKeyType.EcdsaNistp256,
                 CngProvider.MicrosoftSmartCardKeyStorageProvider);
 
-            Assert.AreEqual("IAPDESKTOP_bob@example.com_0011_E7909B75", keyName);
+            Assert.AreEqual("IAPDESKTOP_bob@example.com_00000011_E7909B75", keyName);
         }
 
         [Test]
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                 SshKeyType.EcdsaNistp521,
                 CngProvider.MicrosoftSoftwareKeyStorageProvider);
 
-            Assert.AreEqual("IAPDESKTOP_bob@example.com_0013_094FE673", keyName);
+            Assert.AreEqual("IAPDESKTOP_bob@example.com_00000013_094FE673", keyName);
         }
 
         [Test]
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                 SshKeyType.EcdsaNistp521,
                 CngProvider.MicrosoftSmartCardKeyStorageProvider);
 
-            Assert.AreEqual("IAPDESKTOP_bob@example.com_0013_E7909B75", keyName);
+            Assert.AreEqual("IAPDESKTOP_bob@example.com_00000013_E7909B75", keyName);
         }
 
         //---------------------------------------------------------------------
