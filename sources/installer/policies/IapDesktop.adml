@@ -19,7 +19,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<policyDefinitionResources revision="1.0" schemaVersion="1.0">
+<policyDefinitionResources revision="2.23" schemaVersion="1.0">
   <displayName/>
   <description/>
   <resources>
@@ -40,6 +40,17 @@
 
       <string id="ProxyPacUrl">Enable HTTPS proxy autoconfiguration</string>
       <string id="ProxyPacUrl_Description">By default, IAP Desktop uses the proxy server configured in Windows to connect to the internet. Use this policy to explicitly specify a proxy autoconfiguration URL (PAC) to use. The proxy autoconfiguration URL must be specified in the following format: http://proxy.example.com:3128/proxy.pac </string>
+
+      <string id="PublicKeyType">SSH key type</string>
+      <string id="PublicKeyType_Description">Key type to use for SSH public key authentication</string>
+      <string id="PublicKeyType_Rsa3072">RSA (3072 bit)</string>
+      <string id="PublicKeyType_EcdsaNistp256">ECDSA NIST P-256</string>
+      <string id="PublicKeyType_EcdsaNistp384">ECDSA NIST P-384</string>
+      <string id="PublicKeyType_EcdsaNistp521">ECDSA NIST P-521</string>
+
+
+      <string id="PublicKeyValidity">SSH metadata key validity</string>
+      <string id="PublicKeyValidity_Description">Lifetime (in seconds) for SSH keys published to Compute Engine instance metadata. This setting does not apply when using OS Login.</string>
     </stringTable>
     <presentationTable>
       <presentation id="ProxyUrl">
@@ -51,6 +62,12 @@
         <textBox refId="ProxyPacUrl">
           <label>URL:</label>
         </textBox>
+      </presentation>
+      <presentation id="PublicKeyType">
+        <dropdownList refId="PublicKeyType" noSort="true" defaultItem="0"/>
+      </presentation>
+      <presentation id="PublicKeyValidity">
+        <decimalTextBox refId="PublicKeyValidity" defaultValue="2592000">Validity (in seconds):</decimalTextBox>
       </presentation>
     </presentationTable>
   </resources>

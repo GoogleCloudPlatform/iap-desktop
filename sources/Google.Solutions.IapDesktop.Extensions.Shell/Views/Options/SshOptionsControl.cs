@@ -53,12 +53,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.viewModel,
                 m => m.PublicKeyTypeIndex,
                 this.Container);
+            this.publicKeyType.BindReadonlyProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsPublicKeyTypeEditable,
+                this.Container);
+
             this.publicKeyValidityUpDown.BindProperty(
                 c => c.Value,
                 this.viewModel,
                 m => m.PublicKeyValidityInDays,
                 this.Container);
-
+            this.publicKeyValidityUpDown.BindReadonlyProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsPublicKeyValidityInDaysEditable,
+                this.Container);
 
             this.publicKeyType.FormattingEnabled = true;
             this.publicKeyType.Format += delegate (object sender, ListControlConvertEventArgs e)

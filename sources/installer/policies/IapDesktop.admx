@@ -22,7 +22,7 @@
 <policyDefinitions 
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    revision="1.0" 
+    revision="2.23" 
     schemaVersion="1.0" 
     xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
 
@@ -31,13 +31,19 @@
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   
-  <resources minRequiredRevision="1.0" />
+  <resources minRequiredRevision="2.23" />
   
   <categories>
     <category name="iapdesktop" displayName="$(string.IapDesktop)"/>
   </categories>
   
   <policies>
+    <!-- 
+    ===========================================================================
+    = Application
+    ===========================================================================
+    -->
+    
     <policy 
         name="IsUpdateCheckEnabled" 
         class="Both" 
@@ -105,6 +111,65 @@
 
       <elements>
         <text id="ProxyPacUrl" valueName="ProxyPacUrl" required="true" />
+      </elements>
+    </policy>
+
+    <!-- 
+    ===========================================================================
+    = SSH
+    ===========================================================================
+    -->
+
+    <policy
+        name="PublicKeyType"
+        class="Both"
+        displayName="$(string.PublicKeyType)"
+        explainText="$(string.PublicKeyType_Description)"
+        key="Software\Policies\Google\IapDesktop\1.0\Ssh"
+        presentation="$(presentation.PublicKeyType)" >
+
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+
+      <elements>
+        <enum id="PublicKeyType" valueName="PublicKeyType">
+          <item displayName="$(string.PublicKeyType_Rsa3072)">
+            <value>
+              <decimal value="1" />
+            </value>
+          </item>
+          <item displayName="$(string.PublicKeyType_EcdsaNistp256)">
+            <value>
+              <decimal value="17" />
+            </value>
+          </item>
+          <item displayName="$(string.PublicKeyType_EcdsaNistp384)">
+            <value>
+              <decimal value="18" />
+            </value>
+          </item>
+          <item displayName="$(string.PublicKeyType_EcdsaNistp521)">
+            <value>
+              <decimal value="19" />
+            </value>
+          </item>
+        </enum>
+      </elements>
+    </policy>
+
+    <policy
+        name="PublicKeyValidity"
+        class="Both"
+        displayName="$(string.PublicKeyValidity)"
+        explainText="$(string.PublicKeyValidity_Description)"
+        key="Software\Policies\Google\IapDesktop\1.0\Ssh"
+        presentation="$(presentation.PublicKeyValidity)" >
+
+      <parentCategory ref="iapdesktop" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+
+      <elements>
+        <decimal id="PublicKeyValidity" valueName="PublicKeyValidity" minValue="300" maxValue="31536000" spinStep="60"/>
       </elements>
     </policy>
   </policies>

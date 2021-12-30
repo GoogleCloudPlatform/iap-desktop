@@ -36,12 +36,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             InitializeComponent();
 
-            this.updateBox.BindProperty(
+            this.updateBox.BindReadonlyProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsUpdateCheckEditable,
                 this.Container);
-            this.secureConnectBox.BindProperty(
+            this.secureConnectBox.BindReadonlyProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsDeviceCertificateAuthenticationEditable,
