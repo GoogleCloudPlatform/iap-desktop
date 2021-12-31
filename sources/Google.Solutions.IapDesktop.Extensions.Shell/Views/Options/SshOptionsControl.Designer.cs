@@ -78,9 +78,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.authBox.Controls.Add(this.publicKeyValidityUpDown);
             this.authBox.Controls.Add(this.keyIcon);
             this.authBox.Location = new System.Drawing.Point(5, 4);
-            this.authBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.authBox.Margin = new System.Windows.Forms.Padding(4);
             this.authBox.Name = "authBox";
-            this.authBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.authBox.Padding = new System.Windows.Forms.Padding(4);
             this.authBox.Size = new System.Drawing.Size(448, 137);
             this.authBox.TabIndex = 0;
             this.authBox.TabStop = false;
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.publicKeyType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.publicKeyType.FormattingEnabled = true;
             this.publicKeyType.Location = new System.Drawing.Point(149, 26);
-            this.publicKeyType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.publicKeyType.Margin = new System.Windows.Forms.Padding(4);
             this.publicKeyType.Name = "publicKeyType";
             this.publicKeyType.Size = new System.Drawing.Size(204, 24);
             this.publicKeyType.TabIndex = 5;
@@ -132,14 +132,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.publicKeyValidityLabel.Location = new System.Drawing.Point(73, 70);
             this.publicKeyValidityLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.publicKeyValidityLabel.Name = "publicKeyValidityLabel";
-            this.publicKeyValidityLabel.Size = new System.Drawing.Size(186, 16);
+            this.publicKeyValidityLabel.Size = new System.Drawing.Size(191, 16);
             this.publicKeyValidityLabel.TabIndex = 4;
-            this.publicKeyValidityLabel.Text = "Let metadata keys expire after";
+            this.publicKeyValidityLabel.Text = "Let authorized keys expire after";
             // 
             // publicKeyValidityUpDown
             // 
             this.publicKeyValidityUpDown.Location = new System.Drawing.Point(279, 68);
-            this.publicKeyValidityUpDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.publicKeyValidityUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.publicKeyValidityUpDown.Maximum = new decimal(new int[] {
             3650,
             0,
@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             this.keyIcon.Image = ((System.Drawing.Image)(resources.GetObject("keyIcon.Image")));
             this.keyIcon.Location = new System.Drawing.Point(13, 26);
-            this.keyIcon.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.keyIcon.Margin = new System.Windows.Forms.Padding(4);
             this.keyIcon.Name = "keyIcon";
             this.keyIcon.Size = new System.Drawing.Size(48, 44);
             this.keyIcon.TabIndex = 3;
@@ -174,9 +174,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.connectionBox.Controls.Add(this.connectionIcon);
             this.connectionBox.Controls.Add(this.propagateLocaleCheckBox);
             this.connectionBox.Location = new System.Drawing.Point(5, 146);
-            this.connectionBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.connectionBox.Margin = new System.Windows.Forms.Padding(4);
             this.connectionBox.Name = "connectionBox";
-            this.connectionBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.connectionBox.Padding = new System.Windows.Forms.Padding(4);
             this.connectionBox.Size = new System.Drawing.Size(448, 90);
             this.connectionBox.TabIndex = 1;
             this.connectionBox.TabStop = false;
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             this.connectionIcon.Image = ((System.Drawing.Image)(resources.GetObject("connectionIcon.Image")));
             this.connectionIcon.Location = new System.Drawing.Point(13, 26);
-            this.connectionIcon.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.connectionIcon.Margin = new System.Windows.Forms.Padding(4);
             this.connectionIcon.Name = "connectionIcon";
             this.connectionIcon.Size = new System.Drawing.Size(48, 44);
             this.connectionIcon.TabIndex = 4;
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.propagateLocaleCheckBox.AutoSize = true;
             this.propagateLocaleCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.propagateLocaleCheckBox.Location = new System.Drawing.Point(73, 30);
-            this.propagateLocaleCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.propagateLocaleCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.propagateLocaleCheckBox.Name = "propagateLocaleCheckBox";
             this.propagateLocaleCheckBox.Size = new System.Drawing.Size(331, 20);
             this.propagateLocaleCheckBox.TabIndex = 2;
@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.connectionBox);
             this.Controls.Add(this.authBox);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SshOptionsControl";
             this.Size = new System.Drawing.Size(457, 454);
             this.authBox.ResumeLayout(false);

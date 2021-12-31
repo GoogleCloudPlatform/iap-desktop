@@ -50,7 +50,7 @@
 
 
       <string id="PublicKeyValidity">SSH metadata key validity</string>
-      <string id="PublicKeyValidity_Description">Lifetime (in seconds) for SSH keys published to Compute Engine instance metadata. This setting does not apply when using OS Login.</string>
+      <string id="PublicKeyValidity_Description">Lifetime (in seconds) for SSH keys published to Compute Engine instance metadata and OS Login.</string>
     </stringTable>
     <presentationTable>
       <presentation id="ProxyUrl">

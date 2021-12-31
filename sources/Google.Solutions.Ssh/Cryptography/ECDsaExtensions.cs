@@ -55,8 +55,7 @@ namespace Google.Solutions.Ssh.Cryptography
             if (exportMethod == null)
             {
                 throw new PlatformNotSupportedException(
-                    "Installed version of .NET framework does not " +
-                    "support ECDSA");
+                    "You neet .NET framework 4.7 or newer to use ECDSA keys");
             }
 
             var ecParameters = exportMethod.Invoke(
