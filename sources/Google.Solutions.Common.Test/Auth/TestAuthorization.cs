@@ -32,20 +32,140 @@ namespace Google.Solutions.Common.Test.Auth
     [TestFixture]
     public class TestAuthorization : CommonFixtureBase
     {
-        // TODO: restore tests
-        //[Test]
-        //public async Task WhenNoExistingAuthPresent_TryLoadExistingAuthorizationAsyncReturnsNull()
-        //{
-        //    var adapter = new Mock<IAuthAdapter>();
-        //    adapter.Setup(a => a.GetStoredRefreshTokenAsync(It.IsAny<CancellationToken>()))
-        //        .Returns(Task.FromResult<TokenResponse>(null));
+        //---------------------------------------------------------------------
+        // RevokeAsync.
+        //---------------------------------------------------------------------
 
-        //    var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-        //            adapter.Object,
-        //            CancellationToken.None)
-        //        .ConfigureAwait(false);
+        [Test]
+        public async Task RevokeAsyncDeletesRefreshToken()
+        {
+            var adapter = new Mock<IAuthAdapter>();
 
-        //    Assert.IsNull(authz);
-        //}
+            var authorization = await OAuthAuthorization.CreateAuthorizationAsync(
+                    adapter.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            await authorization.RevokeAsync();
+
+            adapter.Verify(a => a.DeleteStoredRefreshToken(), Times.Once);
+        }
+
+        //---------------------------------------------------------------------
+        // TryAuthorizeUsingRefreshTokenAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenRefreshTokenValid_ThenTryLoadExistingAuthorizationAsyncReturnsObject()
+        {
+            var adapter = new Mock<IAuthAdapter>();
+            adapter.Setup(a => a.TryAuthorizeUsingRefreshTokenAsync(
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Mock<ICredential>().Object);
+            adapter.Setup(a => a.QueryUserInfoAsync(
+                    It.IsAny<ICredential>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UserInfo()
+                {
+                    Email = "bob@example.com"
+                });
+
+            var authorization = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
+                    adapter.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(authorization);
+            Assert.AreEqual("bob@example.com", authorization.Email);
+            Assert.AreEqual("bob@example.com", authorization.UserInfo.Email);
+        }
+
+        [Test]
+        public async Task WhenUsingRefreshTokenFails_ThenTryLoadExistingAuthorizationAsyncReturnsNull()
+        {
+            var adapter = new Mock<IAuthAdapter>();
+            adapter.Setup(a => a.TryAuthorizeUsingRefreshTokenAsync(
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync((ICredential)null);
+
+            var authorization = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
+                    adapter.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(authorization);
+        }
+
+        //---------------------------------------------------------------------
+        // CreateAuthorizationAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task CreateAuthorizationAsyncReturnsObject()
+        {
+            var adapter = new Mock<IAuthAdapter>();
+            adapter.Setup(a => a.AuthorizeUsingBrowserAsync(
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Mock<ICredential>().Object);
+            adapter.Setup(a => a.QueryUserInfoAsync(
+                    It.IsAny<ICredential>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UserInfo()
+                {
+                    Email = "bob@example.com"
+                });
+
+            var authorization = await OAuthAuthorization.CreateAuthorizationAsync(
+                    adapter.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(authorization);
+            Assert.AreEqual("bob@example.com", authorization.Email);
+            Assert.AreEqual("bob@example.com", authorization.UserInfo.Email);
+        }
+
+        //---------------------------------------------------------------------
+        // ReauthorizeAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenReauthorizeUsesDifferentUser_ThenReauthorizeAsyncSwapsCredential()
+        {
+            var adapter = new Mock<IAuthAdapter>();
+            adapter.Setup(a => a.AuthorizeUsingBrowserAsync(
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Mock<ICredential>().Object);
+            adapter.Setup(a => a.QueryUserInfoAsync(
+                    It.IsAny<ICredential>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UserInfo()
+                {
+                    Email = "alice@example.com"
+                });
+
+            var authorization = await OAuthAuthorization.CreateAuthorizationAsync(
+                    adapter.Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(authorization);
+            Assert.AreEqual("alice@example.com", authorization.Email);
+            Assert.AreEqual("alice@example.com", authorization.UserInfo.Email);
+
+            adapter.Setup(a => a.QueryUserInfoAsync(
+                    It.IsAny<ICredential>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UserInfo()
+                {
+                    Email = "bob@example.com"
+                });
+
+            await authorization.ReauthorizeAsync(CancellationToken.None);
+
+            Assert.IsNotNull(authorization);
+            Assert.AreEqual("bob@example.com", authorization.Email);
+            Assert.AreEqual("bob@example.com", authorization.UserInfo.Email);
+        }
     }
 }

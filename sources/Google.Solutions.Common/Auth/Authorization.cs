@@ -92,6 +92,7 @@ namespace Google.Solutions.Common.Auth
             {
                 //
                 // No token found, or it was invalid.
+                //
                 return null;
             }
         }
