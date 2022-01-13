@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.Util.Store;
 using Google.Solutions.Common.Net;
 using Newtonsoft.Json;
 using System;
@@ -49,15 +50,17 @@ namespace Google.Solutions.Common.Auth
         private readonly AuthorizationCodeInstalledApp installedApp;
 
         public GoogleAuthAdapter(
-            GoogleAuthorizationCodeFlow.Initializer initializer,
+            ClientSecrets clientSecrets,
+            IEnumerable<string> scopes,
+            IDataStore dataStore,
             string closePageReponse)
         {
             // Add email scope.
             this.initializer = new GoogleAuthorizationCodeFlow.Initializer
             {
-                ClientSecrets = initializer.ClientSecrets,
-                Scopes = initializer.Scopes.Concat(new[] { GoogleAuthAdapter.EmailScope }),
-                DataStore = initializer.DataStore
+                ClientSecrets = clientSecrets,
+                Scopes = scopes.Concat(new[] { GoogleAuthAdapter.EmailScope }),
+                DataStore = dataStore
             };
 
             this.flow = new GoogleAuthorizationCodeFlow(this.initializer);
@@ -128,20 +131,6 @@ namespace Google.Solutions.Common.Auth
             return !this.installedApp.ShouldRequestAuthorizationCode(tokenResponse);
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        // Protected implementation of Dispose pattern.
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.flow.Dispose();
-            }
-        }
 
         public static async Task<OpenIdConfiguration> QueryOpenIdConfigurationAsync(
             CancellationToken token)
@@ -163,6 +152,29 @@ namespace Google.Solutions.Common.Auth
                 configuration.UserInfoEndpoint,
                 token).ConfigureAwait(false);
         }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // Protected implementation of Dispose pattern.
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.flow.Dispose();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
 
         public class OpenIdConfiguration
         {

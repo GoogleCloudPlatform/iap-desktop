@@ -59,12 +59,9 @@ namespace Google.Solutions.IapDesktop.Windows
             // N.B. Do not dispose the adapter (and embedded GoogleAuthorizationCodeFlow)
             // as it might be needed for token refreshes later.
             var oauthAdapter = new GoogleAuthAdapter(
-                new GoogleAuthorizationCodeFlow.Initializer
-                {
-                    ClientSecrets = clientSecrets,
-                    Scopes = scopes,
-                    DataStore = dataStore
-                },
+                clientSecrets,
+                scopes,
+                dataStore,
                 Resources.AuthorizationSuccessful);
 
             Exception caughtException = null;
