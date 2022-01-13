@@ -39,6 +39,9 @@ namespace Google.Solutions.Common.Auth
 
         Task DeleteStoredRefreshToken();
 
+        Task<ICredential> TryAuthorizeUsingRefreshTokenAsync(
+            CancellationToken token);
+
         ICredential AuthorizeUsingRefreshToken(TokenResponse tokenResponse);
 
         Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token);

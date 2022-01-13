@@ -72,41 +72,27 @@ namespace Google.Solutions.Common.Auth
             IAuthAdapter oauthAdapter,
             CancellationToken token)
         {
-            var existingTokenResponse = await oauthAdapter
-                .GetStoredRefreshTokenAsync(token)
+            var credential = await oauthAdapter
+                .TryAuthorizeUsingRefreshTokenAsync(token)
                 .ConfigureAwait(false);
-
-            if (oauthAdapter.IsRefreshTokenValid(existingTokenResponse))
+            if (credential != null)
             {
-                CommonTraceSources.Default.TraceVerbose("Found existing credentials");
+                //
+                // Authorize worked, so the token was still valid.
+                //
+                var userInfo = await oauthAdapter.QueryUserInfoAsync(
+                    credential,
+                    token).ConfigureAwait(false);
 
-                var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
-                if (!scopesOfExistingTokenResponse.ContainsAll(oauthAdapter.Scopes))
-                {
-                    CommonTraceSources.Default.TraceVerbose(
-                        "Dropping existing credential as it lacks one or more scopes");
-
-                    // The existing auth might be fine, but it lacks a scope.
-                    // Delete it so that it does not cause harm later.
-                    await oauthAdapter.DeleteStoredRefreshToken().ConfigureAwait(false);
-                    return null;
-                }
-                else
-                {
-                    var credential = oauthAdapter.AuthorizeUsingRefreshToken(existingTokenResponse);
-
-                    var userInfo = await oauthAdapter.QueryUserInfoAsync(
-                        credential,
-                        token).ConfigureAwait(false);
-
-                    return new OAuthAuthorization(
-                        oauthAdapter,
-                        credential,
-                        userInfo);
-                }
+                return new OAuthAuthorization(
+                    oauthAdapter,
+                    credential,
+                    userInfo);
             }
             else
             {
+                //
+                // No token found, or it was invalid.
                 return null;
             }
         }
@@ -115,9 +101,6 @@ namespace Google.Solutions.Common.Auth
             IAuthAdapter oauthAdapter,
             CancellationToken token)
         {
-            CommonTraceSources.Default.TraceVerbose("Authorizing");
-
-            // Pop up browser window.
             var credential = await oauthAdapter
                 .AuthorizeUsingBrowserAsync(token)
                 .ConfigureAwait(false);

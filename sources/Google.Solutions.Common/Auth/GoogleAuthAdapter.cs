@@ -23,7 +23,9 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Net;
+using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -39,7 +41,6 @@ namespace Google.Solutions.Common.Auth
     {
         // Scope required to query email from UserInfo endpoint.
         public const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
-
 
         public const string StoreUserId = "oauth";
 
@@ -87,6 +88,38 @@ namespace Google.Solutions.Common.Auth
                 this.flow,
                 StoreUserId,
                 tokenResponse);
+        }
+
+        public async Task<ICredential> TryAuthorizeUsingRefreshTokenAsync(
+            CancellationToken token)
+        {
+            var existingTokenResponse = await GetStoredRefreshTokenAsync(token)
+                .ConfigureAwait(false);
+
+            if (IsRefreshTokenValid(existingTokenResponse))
+            {
+                CommonTraceSources.Default.TraceVerbose("Found existing credentials");
+
+                var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
+                if (!scopesOfExistingTokenResponse.ContainsAll(this.Scopes))
+                {
+                    CommonTraceSources.Default.TraceVerbose(
+                        "Dropping existing credential as it lacks one or more scopes");
+
+                    // The existing auth might be fine, but it lacks a scope.
+                    // Delete it so that it does not cause harm later.
+                    await DeleteStoredRefreshToken().ConfigureAwait(false);
+                    return null;
+                }
+                else
+                {
+                    return AuthorizeUsingRefreshToken(existingTokenResponse);
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token)
