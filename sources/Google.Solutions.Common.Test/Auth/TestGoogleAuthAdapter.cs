@@ -45,5 +45,64 @@ namespace Google.Solutions.Common.Test.Auth
 
             Assert.IsNotNull(config.UserInfoEndpoint);
         }
+
+        
+        // TODO: restore tests
+        //[Test]
+        //public async Task WhenExistingAuthLacksScopes_TryLoadExistingAuthorizationAsyncReturnsNullAndExistingAuthzIsDeleted()
+        //{
+        //    var tokenResponse = new TokenResponse()
+        //    {
+        //        RefreshToken = "rt",
+        //        Scope = "one two"
+        //    };
+
+        //    var adapter = new Mock<IAuthAdapter>();
+        //    adapter.Setup(a => a.GetStoredRefreshTokenAsync(It.IsAny<CancellationToken>()))
+        //        .Returns(Task.FromResult(tokenResponse));
+        //    adapter.Setup(a => a.IsRefreshTokenValid(tokenResponse))
+        //        .Returns(true);
+        //    adapter.SetupGet(a => a.Scopes)
+        //        .Returns(new[] { "one", "two", "email" });
+
+        //    var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
+        //            adapter.Object,
+        //            CancellationToken.None)
+        //        .ConfigureAwait(false);
+
+        //    Assert.IsNull(authz);
+
+        //    adapter.Verify(a => a.DeleteStoredRefreshToken(), Times.Once);
+        //}
+
+        //[Test]
+        //public async Task WhenExistingAuthIsOk_TryLoadExistingAuthorizationAsyncReturnsAuthorization()
+        //{
+        //    var tokenResponse = new TokenResponse()
+        //    {
+        //        RefreshToken = "rt",
+        //        Scope = "email one two"
+        //    };
+
+        //    var adapter = new Mock<IAuthAdapter>();
+        //    adapter.Setup(a => a.GetStoredRefreshTokenAsync(It.IsAny<CancellationToken>()))
+        //        .Returns(Task.FromResult(tokenResponse));
+        //    adapter.Setup(a => a.IsRefreshTokenValid(tokenResponse))
+        //        .Returns(true);
+        //    adapter.SetupGet(a => a.Scopes)
+        //        .Returns(new[] { "one", "two", "email" });
+
+        //    var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
+        //            adapter.Object,
+        //            CancellationToken.None)
+        //        .ConfigureAwait(false);
+
+        //    Assert.IsNotNull(authz);
+
+        //    adapter.Verify(a => a.AuthorizeUsingRefreshToken(tokenResponse), Times.Once);
+        //    adapter.Verify(a => a.QueryUserInfoAsync(
+        //        It.IsAny<ICredential>(),
+        //        It.IsAny<CancellationToken>()), Times.Once);
+        //}
     }
 }

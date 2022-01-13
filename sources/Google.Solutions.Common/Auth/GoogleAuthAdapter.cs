@@ -45,7 +45,7 @@ namespace Google.Solutions.Common.Auth
         public const string StoreUserId = "oauth";
 
         private readonly OAuthInitializer initializer;
-        private readonly GoogleAuthorizationCodeFlow flow;
+        private readonly IAuthorizationCodeFlow flow;
         private readonly AuthorizationCodeInstalledApp installedApp;
 
         public GoogleAuthAdapter(
@@ -68,40 +68,25 @@ namespace Google.Solutions.Common.Auth
                 new LocalServerCodeReceiver(closePageReponse));
         }
 
-        public IEnumerable<string> Scopes => this.initializer.Scopes;
-
-        public Task<TokenResponse> GetStoredRefreshTokenAsync(CancellationToken token)
-        {
-            return this.flow.LoadTokenAsync(
-                StoreUserId,
-                token);
-        }
-
         public Task DeleteStoredRefreshToken()
         {
             return this.initializer.DataStore.DeleteAsync<TokenResponse>(StoreUserId);
         }
 
-        public ICredential AuthorizeUsingRefreshToken(TokenResponse tokenResponse)
-        {
-            return new UserCredential(
-                this.flow,
-                StoreUserId,
-                tokenResponse);
-        }
-
         public async Task<ICredential> TryAuthorizeUsingRefreshTokenAsync(
             CancellationToken token)
         {
-            var existingTokenResponse = await GetStoredRefreshTokenAsync(token)
+            var existingTokenResponse = await this.flow.LoadTokenAsync(
+                    StoreUserId,
+                    token)
                 .ConfigureAwait(false);
 
-            if (IsRefreshTokenValid(existingTokenResponse))
+            if (!this.installedApp.ShouldRequestAuthorizationCode(existingTokenResponse))
             {
                 CommonTraceSources.Default.TraceVerbose("Found existing credentials");
 
                 var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
-                if (!scopesOfExistingTokenResponse.ContainsAll(this.Scopes))
+                if (!scopesOfExistingTokenResponse.ContainsAll(this.initializer.Scopes))
                 {
                     CommonTraceSources.Default.TraceVerbose(
                         "Dropping existing credential as it lacks one or more scopes");
@@ -113,7 +98,10 @@ namespace Google.Solutions.Common.Auth
                 }
                 else
                 {
-                    return AuthorizeUsingRefreshToken(existingTokenResponse);
+                    return new UserCredential(
+                        this.flow,
+                        StoreUserId,
+                        existingTokenResponse);
                 }
             }
             else
@@ -156,12 +144,6 @@ namespace Google.Solutions.Common.Auth
                     "To enable the API, open an elevated command prompt and run 'sc config http start= auto'.");
             }
         }
-
-        public bool IsRefreshTokenValid(TokenResponse tokenResponse)
-        {
-            return !this.installedApp.ShouldRequestAuthorizationCode(tokenResponse);
-        }
-
 
         public async Task<OpenIdConfiguration> QueryOpenIdConfigurationAsync(
             CancellationToken token)

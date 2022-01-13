@@ -43,7 +43,6 @@ namespace Google.Solutions.Common.Auth
 
     public class OAuthAuthorization : IAuthorization
     {
-
         private readonly IAuthAdapter adapter;
 
         // The OAuth credential changes after each reauth. Therefore, use

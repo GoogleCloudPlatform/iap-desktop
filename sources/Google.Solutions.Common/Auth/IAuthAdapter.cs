@@ -31,18 +31,10 @@ namespace Google.Solutions.Common.Auth
 {
     public interface IAuthAdapter : IDisposable
     {
-        IEnumerable<string> Scopes { get; }
-
-        Task<TokenResponse> GetStoredRefreshTokenAsync(CancellationToken token);
-
-        bool IsRefreshTokenValid(TokenResponse tokenResponse);
-
         Task DeleteStoredRefreshToken();
 
         Task<ICredential> TryAuthorizeUsingRefreshTokenAsync(
             CancellationToken token);
-
-        ICredential AuthorizeUsingRefreshToken(TokenResponse tokenResponse);
 
         Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token);
 
