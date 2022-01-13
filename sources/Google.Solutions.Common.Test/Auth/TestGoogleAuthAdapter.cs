@@ -19,8 +19,12 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Google.Solutions.Common.Auth;
+using Moq;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,63 +50,90 @@ namespace Google.Solutions.Common.Test.Auth
             Assert.IsNotNull(config.UserInfoEndpoint);
         }
 
-        
-        // TODO: restore tests
-        //[Test]
-        //public async Task WhenExistingAuthLacksScopes_TryLoadExistingAuthorizationAsyncReturnsNullAndExistingAuthzIsDeleted()
-        //{
-        //    var tokenResponse = new TokenResponse()
-        //    {
-        //        RefreshToken = "rt",
-        //        Scope = "one two"
-        //    };
+        [Test]
+        public async Task WhenRefreshTokenValidAndAllScopesCovered_ThenTryAuthorizeUsingRefreshTokenAsyncReturnsCredential()
+        {
+            var flow = new Mock<IAuthorizationCodeFlow>();
+            flow.Setup(f => f.LoadTokenAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TokenResponse()
+                {
+                    RefreshToken = "refresh-token-1",
+                    Scope = "scope-1 " + GoogleAuthAdapter.EmailScope
+                });
+            flow.Setup(f => f.ShouldForceTokenRetrieval())
+                .Returns(false);
 
-        //    var adapter = new Mock<IAuthAdapter>();
-        //    adapter.Setup(a => a.GetStoredRefreshTokenAsync(It.IsAny<CancellationToken>()))
-        //        .Returns(Task.FromResult(tokenResponse));
-        //    adapter.Setup(a => a.IsRefreshTokenValid(tokenResponse))
-        //        .Returns(true);
-        //    adapter.SetupGet(a => a.Scopes)
-        //        .Returns(new[] { "one", "two", "email" });
+            var dataStore = new Mock<IDataStore>();
 
-        //    var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-        //            adapter.Object,
-        //            CancellationToken.None)
-        //        .ConfigureAwait(false);
+            var adapter = new GoogleAuthAdapter(
+                new Apis.Auth.OAuth2.ClientSecrets(),
+                new[] { "scope-1" },
+                dataStore.Object,
+                string.Empty,
+                _ => flow.Object);
 
-        //    Assert.IsNull(authz);
+            var credential = await adapter
+                .TryAuthorizeUsingRefreshTokenAsync(CancellationToken.None)
+                .ConfigureAwait(false);
 
-        //    adapter.Verify(a => a.DeleteStoredRefreshToken(), Times.Once);
-        //}
+            Assert.IsNotNull(credential);
+            Assert.IsInstanceOf<UserCredential>(credential);
+        }
 
-        //[Test]
-        //public async Task WhenExistingAuthIsOk_TryLoadExistingAuthorizationAsyncReturnsAuthorization()
-        //{
-        //    var tokenResponse = new TokenResponse()
-        //    {
-        //        RefreshToken = "rt",
-        //        Scope = "email one two"
-        //    };
+        [Test]
+        public async Task WhenRefreshTokenValidButLacksScopes_ThenTryAuthorizeUsingRefreshTokenAsyncReturnsNull()
+        {
+            var flow = new Mock<IAuthorizationCodeFlow>();
+            flow.Setup(f => f.LoadTokenAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TokenResponse()
+                {
+                    RefreshToken = "refresh-token-1",
+                    Scope = "scope-1 scope-2"
+                });
+            flow.Setup(f => f.ShouldForceTokenRetrieval())
+                .Returns(false);
 
-        //    var adapter = new Mock<IAuthAdapter>();
-        //    adapter.Setup(a => a.GetStoredRefreshTokenAsync(It.IsAny<CancellationToken>()))
-        //        .Returns(Task.FromResult(tokenResponse));
-        //    adapter.Setup(a => a.IsRefreshTokenValid(tokenResponse))
-        //        .Returns(true);
-        //    adapter.SetupGet(a => a.Scopes)
-        //        .Returns(new[] { "one", "two", "email" });
+            var dataStore = new Mock<IDataStore>();
 
-        //    var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-        //            adapter.Object,
-        //            CancellationToken.None)
-        //        .ConfigureAwait(false);
+            var adapter = new GoogleAuthAdapter(
+                new Apis.Auth.OAuth2.ClientSecrets(),
+                new[] { "scope-1" },
+                dataStore.Object,
+                string.Empty,
+                _ => flow.Object);
 
-        //    Assert.IsNotNull(authz);
+            var credential = await adapter
+                .TryAuthorizeUsingRefreshTokenAsync(CancellationToken.None)
+                .ConfigureAwait(false);
 
-        //    adapter.Verify(a => a.AuthorizeUsingRefreshToken(tokenResponse), Times.Once);
-        //    adapter.Verify(a => a.QueryUserInfoAsync(
-        //        It.IsAny<ICredential>(),
-        //        It.IsAny<CancellationToken>()), Times.Once);
-        //}
+            Assert.IsNull(credential);
+        }
+
+        [Test]
+        public async Task WhenRefreshTokenInvalid_ThenTryAuthorizeUsingRefreshTokenAsyncReturnsNull()
+        {
+            var flow = new Mock<IAuthorizationCodeFlow>();
+            flow.Setup(f => f.ShouldForceTokenRetrieval())
+                .Returns(true);
+
+            var dataStore = new Mock<IDataStore>();
+
+            var adapter = new GoogleAuthAdapter(
+                new Apis.Auth.OAuth2.ClientSecrets(),
+                new[] { "scope-1" },
+                dataStore.Object,
+                string.Empty,
+                _ => flow.Object);
+
+            var credential = await adapter
+                .TryAuthorizeUsingRefreshTokenAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(credential);
+        }
     }
 }

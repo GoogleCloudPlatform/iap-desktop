@@ -46,13 +46,14 @@ namespace Google.Solutions.Common.Auth
 
         private readonly OAuthInitializer initializer;
         private readonly IAuthorizationCodeFlow flow;
-        private readonly AuthorizationCodeInstalledApp installedApp;
+        private readonly ICodeReceiver codeReceiver;
 
         public GoogleAuthAdapter(
             ClientSecrets clientSecrets,
             IEnumerable<string> scopes,
             IDataStore dataStore,
-            string closePageReponse)
+            string closePageReponse,
+            Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow = null)
         {
             // Add email scope.
             this.initializer = new OAuthInitializer
@@ -62,16 +63,28 @@ namespace Google.Solutions.Common.Auth
                 DataStore = dataStore
             };
 
-            this.flow = new GoogleAuthorizationCodeFlow(this.initializer);
-            this.installedApp = new AuthorizationCodeInstalledApp(
-                this.flow,
-                new LocalServerCodeReceiver(closePageReponse));
+            this.codeReceiver = new LocalServerCodeReceiver(closePageReponse);
+            if (createCodeFlow != null)
+            {
+                this.flow = createCodeFlow(this.initializer);
+            }
+            else
+            {
+                this.flow = new GoogleAuthorizationCodeFlow(this.initializer);
+            }
         }
+
+        private AuthorizationCodeInstalledApp InstalledApp
+            => new AuthorizationCodeInstalledApp(this.flow, this.codeReceiver);
 
         public Task DeleteStoredRefreshToken()
         {
             return this.initializer.DataStore.DeleteAsync<TokenResponse>(StoreUserId);
         }
+
+        //---------------------------------------------------------------------
+        // Authorize.
+        //---------------------------------------------------------------------
 
         public async Task<ICredential> TryAuthorizeUsingRefreshTokenAsync(
             CancellationToken token)
@@ -81,7 +94,7 @@ namespace Google.Solutions.Common.Auth
                     token)
                 .ConfigureAwait(false);
 
-            if (!this.installedApp.ShouldRequestAuthorizationCode(existingTokenResponse))
+            if (!this.InstalledApp.ShouldRequestAuthorizationCode(existingTokenResponse))
             {
                 CommonTraceSources.Default.TraceVerbose("Found existing credentials");
 
@@ -114,7 +127,7 @@ namespace Google.Solutions.Common.Auth
         {
             try
             {
-                var userCredential = await this.installedApp.AuthorizeAsync(
+                var userCredential = await this.InstalledApp.AuthorizeAsync(
                         StoreUserId,
                         token)
                     .ConfigureAwait(true);
@@ -144,6 +157,10 @@ namespace Google.Solutions.Common.Auth
                     "To enable the API, open an elevated command prompt and run 'sc config http start= auto'.");
             }
         }
+
+        //---------------------------------------------------------------------
+        // User info.
+        //---------------------------------------------------------------------
 
         public async Task<OpenIdConfiguration> QueryOpenIdConfigurationAsync(
             CancellationToken token)
