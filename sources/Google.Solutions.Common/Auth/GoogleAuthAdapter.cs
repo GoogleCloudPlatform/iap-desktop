@@ -40,12 +40,10 @@ namespace Google.Solutions.Common.Auth
         // Scope required to query email from UserInfo endpoint.
         public const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
 
-        private const string ConfigurationEndpoint =
-            "https://accounts.google.com/.well-known/openid-configuration";
 
         public const string StoreUserId = "oauth";
 
-        private readonly GoogleAuthorizationCodeFlow.Initializer initializer;
+        private readonly OAuthInitializer initializer;
         private readonly GoogleAuthorizationCodeFlow flow;
         private readonly AuthorizationCodeInstalledApp installedApp;
 
@@ -56,7 +54,7 @@ namespace Google.Solutions.Common.Auth
             string closePageReponse)
         {
             // Add email scope.
-            this.initializer = new GoogleAuthorizationCodeFlow.Initializer
+            this.initializer = new OAuthInitializer
             {
                 ClientSecrets = clientSecrets,
                 Scopes = scopes.Concat(new[] { GoogleAuthAdapter.EmailScope }),
@@ -132,11 +130,11 @@ namespace Google.Solutions.Common.Auth
         }
 
 
-        public static async Task<OpenIdConfiguration> QueryOpenIdConfigurationAsync(
+        public async Task<OpenIdConfiguration> QueryOpenIdConfigurationAsync(
             CancellationToken token)
         {
             return await new RestClient().GetAsync<OpenIdConfiguration>(
-                ConfigurationEndpoint,
+                this.initializer.MetadataUrl,
                 token).ConfigureAwait(false);
         }
 
@@ -175,6 +173,16 @@ namespace Google.Solutions.Common.Auth
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
+
+        private class OAuthInitializer : GoogleAuthorizationCodeFlow.Initializer
+        {
+            public const string DefaultMetadataUrl =
+                "https://accounts.google.com/.well-known/openid-configuration";
+
+
+            public string MetadataUrl { get; set; } = DefaultMetadataUrl;
+
+        }
 
         public class OpenIdConfiguration
         {

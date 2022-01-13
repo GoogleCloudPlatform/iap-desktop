@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util.Store;
 using Google.Solutions.Common.Auth;
 using NUnit.Framework;
 using System.Threading;
@@ -32,7 +33,13 @@ namespace Google.Solutions.Common.Test.Auth
         [Test]
         public async Task WhenCalled_ThenQueryOpenIdConfigurationAsyncReturnsInfo()
         {
-            var config = await GoogleAuthAdapter
+            var adapter = new GoogleAuthAdapter(
+                new Apis.Auth.OAuth2.ClientSecrets(),
+                new[] { "openid" },
+                new NullDataStore(),
+                string.Empty);
+
+            var config = await adapter
                 .QueryOpenIdConfigurationAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
