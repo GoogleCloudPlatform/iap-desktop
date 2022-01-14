@@ -35,8 +35,37 @@ using System.Threading.Tasks;
 
 #pragma warning disable CA1034 // Class nesting
 
-namespace Google.Solutions.Common.Auth
-{
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+{   //TODO: Rename to SignInAdapter
+
+    public interface IAuthAdapter : IDisposable
+    {
+        Task DeleteStoredRefreshToken();
+
+        Task<ICredential> TryAuthorizeUsingRefreshTokenAsync(
+            CancellationToken token);
+
+        Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token);
+
+        Task<UserInfo> QueryUserInfoAsync(ICredential credential, CancellationToken token);
+    }
+
+    // TODO: Make interface
+    public class UserInfo
+    {
+        [JsonProperty("email")]
+        public string Email { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("hd")]
+        public string HostedDomain { get; set; }
+
+        [JsonProperty("sub")]
+        public string Subject { get; set; }
+    }
+
     public class GoogleAuthAdapter : IAuthAdapter
     {
         // Scope required to query email from UserInfo endpoint.
@@ -96,12 +125,12 @@ namespace Google.Solutions.Common.Auth
 
             if (!this.InstalledApp.ShouldRequestAuthorizationCode(existingTokenResponse))
             {
-                CommonTraceSources.Default.TraceVerbose("Found existing credentials");
+                ApplicationTraceSources.Default.TraceVerbose("Found existing credentials");
 
                 var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
                 if (!scopesOfExistingTokenResponse.ContainsAll(this.initializer.Scopes))
                 {
-                    CommonTraceSources.Default.TraceVerbose(
+                    ApplicationTraceSources.Default.TraceVerbose(
                         "Dropping existing credential as it lacks one or more scopes");
 
                     // The existing auth might be fine, but it lacks a scope.

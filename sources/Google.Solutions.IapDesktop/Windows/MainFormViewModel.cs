@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.CloudIap;
-using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;

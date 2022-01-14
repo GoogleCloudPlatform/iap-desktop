@@ -22,7 +22,8 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Util.Store;
-using Google.Solutions.Common.Auth;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

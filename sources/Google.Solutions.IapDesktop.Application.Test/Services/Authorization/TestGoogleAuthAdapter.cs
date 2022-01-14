@@ -23,16 +23,16 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
-using Google.Solutions.Common.Auth;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Moq;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Test.Auth
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 {
     [TestFixture]
-    public class TestGoogleAuthAdapter : CommonFixtureBase
+    public class TestGoogleAuthAdapter : ApplicationFixtureBase
     {
         [Test]
         public async Task WhenCalled_ThenQueryOpenIdConfigurationAsyncReturnsInfo()

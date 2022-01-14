@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 {

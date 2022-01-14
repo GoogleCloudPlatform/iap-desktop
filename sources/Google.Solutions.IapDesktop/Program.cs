@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common;
-using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;

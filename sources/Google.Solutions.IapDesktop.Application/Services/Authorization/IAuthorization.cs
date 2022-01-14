@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,39 +20,41 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Responses;
-using Newtonsoft.Json;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Auth
+namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 {
-    public interface IAuthAdapter : IDisposable
+    public interface IAuthorization
     {
-        Task DeleteStoredRefreshToken();
+        ICredential Credential { get; }
 
-        Task<ICredential> TryAuthorizeUsingRefreshTokenAsync(
-            CancellationToken token);
+        Task RevokeAsync();
 
-        Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token);
+        Task ReauthorizeAsync(CancellationToken token);
 
-        Task<UserInfo> QueryUserInfoAsync(ICredential credential, CancellationToken token);
+        string Email { get; }
+
+        UserInfo UserInfo { get; }
     }
 
-    public class UserInfo
+    public interface IDeviceEnrollment
     {
-        [JsonProperty("email")]
-        public string Email { get; set; }
+        DeviceEnrollmentState State { get; }
+        X509Certificate2 Certificate { get; }
+        Task RefreshAsync(string userId);
+    }
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("hd")]
-        public string HostedDomain { get; set; }
-
-        [JsonProperty("sub")]
-        public string Subject { get; set; }
+    public enum DeviceEnrollmentState
+    {
+        Disabled,
+        NotEnrolled,
+        Enrolled
     }
 }

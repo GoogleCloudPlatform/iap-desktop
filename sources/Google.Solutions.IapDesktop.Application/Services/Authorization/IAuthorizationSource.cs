@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Auth;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,19 +31,5 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
         IDeviceEnrollment DeviceEnrollment { get; }
 
         Task ReauthorizeAsync(CancellationToken token);
-    }
-
-    public interface IDeviceEnrollment
-    {
-        DeviceEnrollmentState State { get; }
-        X509Certificate2 Certificate { get; }
-        Task RefreshAsync(string userId);
-    }
-
-    public enum DeviceEnrollmentState
-    {
-        Disabled,
-        NotEnrolled,
-        Enrolled
     }
 }

@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Test;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Moq;
 using NUnit.Framework;
