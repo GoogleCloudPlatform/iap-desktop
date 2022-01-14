@@ -19,40 +19,35 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.Common.Diagnostics;
+using System;
+using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Authentication
+namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
-    public class UserFlyoutViewModel : ViewModelBase
+    [SkipCodeCoverage("UI code")]
+    public partial class UserFlyoutWindow : FlyoutWindow
     {
-        private readonly ICloudConsoleService cloudConsole;
+        private readonly UserFlyoutViewModel viewModel;
 
-        public string Email { get; }
-        public string ManagedBy { get; }
-
-        public UserFlyoutViewModel(
-            IAuthorization authorization,
-            ICloudConsoleService cloudConsole)
+        public UserFlyoutWindow(UserFlyoutViewModel viewModel) : base()
         {
-            this.cloudConsole = cloudConsole;
-            this.Email = authorization.Email ?? string.Empty;
+            this.viewModel = viewModel;
 
-            //
-            // Indicate if this is a managed (i.e Cloud Identity/Workspace) 
-            // user account.
-            //
-            var hd = authorization.UserInfo?.HostedDomain;
-            this.ManagedBy = (hd != null)
-                ? $"(managed by {hd})"
-                : string.Empty;
+            InitializeComponent();
+
+            this.emailLabel.Text = viewModel.Email;
+            this.managedByLabel.Text = viewModel.ManagedBy;
         }
 
         //---------------------------------------------------------------------
-        // Actions.
+        // Window events.
         //---------------------------------------------------------------------
 
-        public void OpenMyAccountPage()
-            => this.cloudConsole.OpenMyAccount();
+        private void manageLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+            => this.viewModel.OpenMyAccountPage();
+
+        private void closeButton_Click(object sender, EventArgs e)
+            => Close();
     }
 }

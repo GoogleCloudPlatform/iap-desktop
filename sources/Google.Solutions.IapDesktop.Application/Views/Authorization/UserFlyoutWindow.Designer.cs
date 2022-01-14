@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Views.Authentication
+namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
     partial class UserFlyoutWindow
     {

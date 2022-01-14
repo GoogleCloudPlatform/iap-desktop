@@ -28,7 +28,7 @@ using System.Windows.Forms;
 
 #pragma warning disable CA1822 // Mark members as static
 
-namespace Google.Solutions.IapDesktop.Application.Views.Authentication
+namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
     public class DeviceFlyoutViewModel : ViewModelBase
     {
