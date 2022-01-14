@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             Debug.Assert(Globals.IsTestCase);
         }
 
-        public AuditLogAdapter(IAuthorizationService authService)
+        public AuditLogAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
                   authService.DeviceEnrollment)
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         }
 
         public AuditLogAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationService>())
+            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 

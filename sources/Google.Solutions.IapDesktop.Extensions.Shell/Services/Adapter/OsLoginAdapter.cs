@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     {
         private const string MtlsBaseUri = "https://oslogin.mtls.googleapis.com/";
 
-        private readonly IAuthorizationService authorizationService;
+        private readonly IAuthorizationSource authorizationSource;
         private readonly CloudOSLoginService service;
 
 
@@ -62,23 +62,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         // Ctor.
         //---------------------------------------------------------------------
 
-        public OsLoginAdapter(IAuthorizationService authorizationService)
+        public OsLoginAdapter(IAuthorizationSource authorizationSource)
         {
-            this.authorizationService = authorizationService;
+            this.authorizationSource = authorizationSource;
             this.service = new CloudOSLoginService(
                 ClientServiceFactory.ForMtlsEndpoint(
-                    authorizationService.Authorization.Credential,
-                    authorizationService.DeviceEnrollment,
+                    authorizationSource.Authorization.Credential,
+                    authorizationSource.DeviceEnrollment,
                     MtlsBaseUri));
 
             Debug.Assert(
-                (authorizationService.DeviceEnrollment?.Certificate != null &&
+                (authorizationSource.DeviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
                     == IsDeviceCertiticateAuthenticationEnabled);
         }
 
         public OsLoginAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationService>())
+            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 var expiryTimeUsec = new DateTimeOffset(DateTime.UtcNow.Add(validity))
                     .ToUnixTimeMilliseconds() * 1000;
 
-                var userEmail = this.authorizationService.Authorization.Email;
+                var userEmail = this.authorizationSource.Authorization.Email;
                 Debug.Assert(userEmail != null);
 
                 var request = this.service.Users.ImportSshPublicKey(

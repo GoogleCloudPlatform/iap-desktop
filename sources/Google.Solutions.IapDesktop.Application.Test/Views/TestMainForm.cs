@@ -37,7 +37,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views
 {
-    public partial class TestMainForm : Form, IMainForm, IAuthorizationService, IJobService
+    public partial class TestMainForm : Form, IMainForm, IAuthorizationSource, IJobService
     {
         public TestMainForm()
         {
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         }
 
         //---------------------------------------------------------------------
-        // IAuthorizationService.
+        // IAuthorizationSource.
         //---------------------------------------------------------------------
 
         private class SimpleAuthorization : IAuthorization

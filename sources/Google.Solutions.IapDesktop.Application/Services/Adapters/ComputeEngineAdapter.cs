@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Debug.Assert(Globals.IsTestCase);
         }
 
-        public ComputeEngineAdapter(IAuthorizationService authService)
+        public ComputeEngineAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
                   authService.DeviceEnrollment)
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public ComputeEngineAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationService>())
+            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 

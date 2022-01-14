@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             using (var credentialAdapter = new WindowsCredentialAdapter(
-                new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationService>())))
+                new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationSource>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                         locator,
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             using (var credentialAdapter = new WindowsCredentialAdapter(
-                new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationService>())))
+                new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationSource>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                        locator,

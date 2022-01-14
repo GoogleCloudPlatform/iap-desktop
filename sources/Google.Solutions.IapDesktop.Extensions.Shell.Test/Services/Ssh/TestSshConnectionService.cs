@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var authz = new Mock<IAuthorization>();
             authz.SetupGet(a => a.Email).Returns(SampleEmail);
 
-            var authzAdapter = this.serviceRegistry.AddMock<IAuthorizationService>();
+            var authzAdapter = this.serviceRegistry.AddMock<IAuthorizationSource>();
             authzAdapter.SetupGet(a => a.Authorization)
                 .Returns(authz.Object);
 

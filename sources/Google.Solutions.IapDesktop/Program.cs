@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop
             //
             // Adapter layer.
             //
-            adapterLayer.AddSingleton<IAuthorizationService>(mainForm);
+            adapterLayer.AddSingleton<IAuthorizationSource>(mainForm);
             adapterLayer.AddSingleton<IJobHost>(mainForm);
             adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
             adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();

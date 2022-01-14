@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         [Test]
         public void WhenEnrollmentProvided_ThenDeviceCertiticateAuthenticationIsOn()
         {
-            var adapter = new ComputeEngineAdapter(CreateAuthorizationServiceForSecureConnectUser());
+            var adapter = new ComputeEngineAdapter(CreateAuthorizationSourceForSecureConnectUser());
             Assert.IsTrue(adapter.IsDeviceCertiticateAuthenticationEnabled);
         }
     }

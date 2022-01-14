@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly IConnectionSettingsService settingsService;
         private readonly IAuthorizedKeyService authorizedKeyService;
         private readonly IKeyStoreAdapter keyStoreAdapter;
-        private readonly IAuthorizationService authorizationService;
+        private readonly IAuthorizationSource authorizationSource;
         private readonly SshSettingsRepository sshSettingsRepository;
         private readonly IProjectModelService projectModelService;
 
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             this.authorizedKeyService = serviceProvider.GetService<IAuthorizedKeyService>();
             this.keyStoreAdapter = serviceProvider.GetService<IKeyStoreAdapter>();
-            this.authorizationService = serviceProvider.GetService<IAuthorizationService>();
+            this.authorizationSource = serviceProvider.GetService<IAuthorizationSource>();
             this.sshSettingsRepository = serviceProvider.GetService<SshSettingsRepository>();
             this.projectModelService = serviceProvider.GetService<IProjectModelService>();
             this.window = serviceProvider.GetService<IMainForm>().Window;
@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             var sshSettings = this.sshSettingsRepository.GetSettings();
             var sshKey = this.keyStoreAdapter.OpenSshKey(
                 sshSettings.PublicKeyType.EnumValue,
-                this.authorizationService.Authorization,
+                this.authorizationSource.Authorization,
                 true,
                 this.window);
             Debug.Assert(sshKey != null);

@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             InstanceLocator vmInstanceReference)
         {
             using (var credentialAdapter = new WindowsCredentialAdapter(
-                new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationService>())))
+                new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationSource>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                         vmInstanceReference,

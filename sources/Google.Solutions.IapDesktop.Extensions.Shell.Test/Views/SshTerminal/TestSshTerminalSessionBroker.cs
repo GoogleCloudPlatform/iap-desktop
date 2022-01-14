@@ -75,9 +75,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
             using (var gceAdapter = new ComputeEngineAdapter(
-                this.serviceProvider.GetService<IAuthorizationService>()))
+                this.serviceProvider.GetService<IAuthorizationSource>()))
             using (var keyAdapter = new AuthorizedKeyService(
-                this.serviceProvider.GetService<IAuthorizationService>(),
+                this.serviceProvider.GetService<IAuthorizationSource>(),
                 new ComputeEngineAdapter(await credential),
                 new ResourceManagerAdapter(await credential),
                 new Mock<IOsLoginService>().Object))

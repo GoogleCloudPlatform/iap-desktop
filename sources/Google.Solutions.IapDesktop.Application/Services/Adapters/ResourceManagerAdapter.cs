@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Debug.Assert(Globals.IsTestCase);
         }
 
-        public ResourceManagerAdapter(IAuthorizationService authService)
+        public ResourceManagerAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
                   authService.DeviceEnrollment)
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public ResourceManagerAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationService>())
+            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 

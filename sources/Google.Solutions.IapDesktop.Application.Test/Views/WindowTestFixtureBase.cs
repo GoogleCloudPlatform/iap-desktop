@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             registry.AddSingleton<IMainForm>(mainForm);
             registry.AddSingleton<IJobService>(mainForm);
-            registry.AddSingleton<IAuthorizationService>(mainForm);
+            registry.AddSingleton<IAuthorizationSource>(mainForm);
             registry.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
 
             registry.AddSingleton<IEventService>(this.eventService);

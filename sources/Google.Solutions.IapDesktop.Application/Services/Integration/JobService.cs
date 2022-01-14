@@ -69,9 +69,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     public class JobService : IJobService
     {
         private readonly IJobHost host;
-        private readonly IAuthorizationService authService;
+        private readonly IAuthorizationSource authService;
 
-        public JobService(IAuthorizationService authService, IJobHost host)
+        public JobService(IAuthorizationSource authService, IJobHost host)
         {
             this.authService = authService;
             this.host = host;
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
         public JobService(IServiceProvider serviceProvider)
             : this(
-                  serviceProvider.GetService<IAuthorizationService>(),
+                  serviceProvider.GetService<IAuthorizationSource>(),
                   serviceProvider.GetService<IJobHost>())
         {
         }

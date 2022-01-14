@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             Debug.Assert(Globals.IsTestCase);
         }
 
-        public StorageAdapter(IAuthorizationService authService)
+        public StorageAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
                   authService.DeviceEnrollment)
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         }
 
         public StorageAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationService>())
+            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 

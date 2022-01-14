@@ -51,7 +51,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationService
+    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationSource
     {
         private readonly MainFormViewModel viewModel;
 
@@ -630,7 +630,7 @@ namespace Google.Solutions.IapDesktop.Windows
 #pragma warning restore IDE0067 // Dispose objects before losing scope
 
         //---------------------------------------------------------------------
-        // IAuthorizationService.
+        // IAuthorizationSource.
         //---------------------------------------------------------------------
 
         public IAuthorization Authorization => this.viewModel.Authorization;

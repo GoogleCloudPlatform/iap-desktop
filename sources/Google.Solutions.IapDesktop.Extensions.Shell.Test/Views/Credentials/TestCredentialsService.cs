@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var auth = new Mock<IAuthorization>();
             auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 
-            serviceRegistry.AddMock<IAuthorizationService>()
+            serviceRegistry.AddMock<IAuthorizationSource>()
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
             var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 
             var auth = new Mock<IAuthorization>();
             auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-            serviceRegistry.AddMock<IAuthorizationService>()
+            serviceRegistry.AddMock<IAuthorizationSource>()
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
             var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 
             var auth = new Mock<IAuthorization>();
             auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-            serviceRegistry.AddMock<IAuthorizationService>()
+            serviceRegistry.AddMock<IAuthorizationSource>()
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 
             var auth = new Mock<IAuthorization>();
             auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-            serviceRegistry.AddMock<IAuthorizationService>()
+            serviceRegistry.AddMock<IAuthorizationSource>()
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 
             var auth = new Mock<IAuthorization>();
             auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-            serviceRegistry.AddMock<IAuthorizationService>()
+            serviceRegistry.AddMock<IAuthorizationSource>()
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();

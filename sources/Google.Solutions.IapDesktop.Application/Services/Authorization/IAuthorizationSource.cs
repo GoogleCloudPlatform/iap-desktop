@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 {
-    public interface IAuthorizationService
+    public interface IAuthorizationSource
     {
         IAuthorization Authorization { get; }
         IDeviceEnrollment DeviceEnrollment { get; }

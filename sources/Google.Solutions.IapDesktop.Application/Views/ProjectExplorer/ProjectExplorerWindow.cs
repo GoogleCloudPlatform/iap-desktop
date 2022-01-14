@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         private readonly IMainForm mainForm;
         private readonly IJobService jobService;
-        private readonly IAuthorizationService authService;
+        private readonly IAuthorizationSource authService;
         private readonly IServiceProvider serviceProvider;
 
         private readonly ProjectExplorerViewModel viewModel;
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             this.mainForm = serviceProvider.GetService<IMainForm>();
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.authService = serviceProvider.GetService<IAuthorizationService>();
+            this.authService = serviceProvider.GetService<IAuthorizationSource>();
 
             this.ContextMenuCommands = new CommandContainer<IProjectModelNode>(
                 this,
