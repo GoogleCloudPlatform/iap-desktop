@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 {
-    public class Authorization : IAuthorization
+    public class AppAuthorization : IAuthorization
     {
         private readonly ISignInAdapter adapter;
 
@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
         // a SwappableCredential as indirection.
         private readonly SwappableCredential credential;
 
-        private Authorization(
+        private AppAuthorization(
             ISignInAdapter adapter,
             ICredential initialCredential,
             UserInfo userInfo)
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             return this.adapter.DeleteStoredRefreshToken();
         }
 
-        public static async Task<Authorization> TryLoadExistingAuthorizationAsync(
+        public static async Task<AppAuthorization> TryLoadExistingAuthorizationAsync(
             ISignInAdapter oauthAdapter,
             CancellationToken token)
         {
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
                     credential,
                     token).ConfigureAwait(false);
 
-                return new Authorization(
+                return new AppAuthorization(
                     oauthAdapter,
                     credential,
                     userInfo);
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             }
         }
 
-        public static async Task<Authorization> CreateAuthorizationAsync(
+        public static async Task<AppAuthorization> CreateAuthorizationAsync(
             ISignInAdapter oauthAdapter,
             CancellationToken token)
         {
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
                 credential,
                 token).ConfigureAwait(false);
 
-            return new Authorization(
+            return new AppAuthorization(
                 oauthAdapter,
                 credential,
                 userInfo);
