@@ -25,6 +25,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,15 +34,23 @@ namespace Google.Solutions.Common.Net
     public class RestClient
     {
         public UserAgent UserAgent { get; set; }
-        public ICredential Credential { get; }
 
-        public RestClient() : this(null)
-        {
-        }
+        public X509Certificate2 ClientCertificate { get; set; }
+        
+        public ICredential Credential { get; set; }
 
-        public RestClient(ICredential credential)
+        private HttpClient CreateClient()
         {
-            this.Credential = credential;
+            if (this.ClientCertificate != null)
+            {
+                var handler = new HttpClientHandler();
+                handler.TryAddClientCertificate(this.ClientCertificate);
+                return new HttpClient(handler);
+            }
+            else
+            {
+                return new HttpClient();
+            }
         }
 
         public async Task<TModel> GetAsync<TModel>(
@@ -49,7 +58,7 @@ namespace Google.Solutions.Common.Net
             CancellationToken cancellationToken)
         {
             using (CommonTraceSources.Default.TraceMethod().WithParameters(url))
-            using (var client = new HttpClient())
+            using (var client = CreateClient())
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
                 if (this.UserAgent != null)

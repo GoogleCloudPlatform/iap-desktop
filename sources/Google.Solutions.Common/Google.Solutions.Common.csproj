@@ -92,6 +92,7 @@
     </Compile>
     <Compile Include="Locator\ProjectLocator.cs" />
     <Compile Include="Locator\ZoneLocator.cs" />
+    <Compile Include="Net\HttpClientHandlerExtensions.cs" />
     <Compile Include="Text\IAsyncReader.cs" />
     <Compile Include="Net\RestClient.cs" />
     <Compile Include="Net\UserAgent.cs" />

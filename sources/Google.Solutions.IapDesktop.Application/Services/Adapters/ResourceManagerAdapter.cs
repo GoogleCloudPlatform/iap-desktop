@@ -25,6 +25,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;

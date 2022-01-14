@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.CloudIap;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -222,10 +223,11 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.applicationSettings).Result;
 
             var signInAdapter = new SignInAdapter(
+                deviceEnrollment.Certificate,
                 OAuthClient.Secrets,
                 new[] { IapTunnelingEndpoint.RequiredScope },
                 this.authSettings,
-                Resources.AuthorizationSuccessful);
+                new LocalServerCodeReceiver(Resources.AuthorizationSuccessful));
 
             //
             // Get the user authorization, either by using stored

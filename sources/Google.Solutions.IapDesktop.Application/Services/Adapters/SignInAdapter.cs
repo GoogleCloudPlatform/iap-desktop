@@ -30,6 +30,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -75,6 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public const string StoreUserId = "oauth";
 
+        private readonly X509Certificate2 deviceCertificate;
         private readonly ICodeReceiver codeReceiver;
         private readonly ClientSecrets clientSecrets;
         private readonly IEnumerable<string> scopes;
@@ -82,13 +84,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         private readonly Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow;
 
         public SignInAdapter(
+            X509Certificate2 deviceCertificate,
             ClientSecrets clientSecrets,
             IEnumerable<string> scopes,
             IDataStore dataStore,
-            string closePageReponse,
+            ICodeReceiver codeReceiver,
             Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow = null)
         {
-            this.codeReceiver = new LocalServerCodeReceiver(closePageReponse);
+            this.deviceCertificate = deviceCertificate;
+            this.codeReceiver = codeReceiver;
             this.clientSecrets = clientSecrets;
             this.scopes = scopes;
             this.dataStore = dataStore;
@@ -101,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             // Add email scope to requested scope so that we can query
             // user info.
             //
-            return new OAuthInitializer
+            return new OAuthInitializer(this.deviceCertificate)
             {
                 ClientSecrets = clientSecrets,
                 Scopes = scopes.Concat(new[] { SignInAdapter.EmailScope }),
@@ -226,25 +230,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // User info.
         //---------------------------------------------------------------------
 
-        public async Task<OpenIdConfiguration> QueryOpenIdConfigurationAsync(
-            CancellationToken token)
-        {
-            return await new RestClient().GetAsync<OpenIdConfiguration>(
-                    CreateInitializer().MetadataUrl,
-                    token)
-                .ConfigureAwait(false);
-        }
-
         public async Task<UserInfo> QueryUserInfoAsync(
             ICredential credential,
             CancellationToken token)
         {
-            var configuration = await QueryOpenIdConfigurationAsync(token).ConfigureAwait(false);
-
-            var client = new RestClient(credential);
+            var client = new RestClient()
+            {
+                ClientCertificate = this.deviceCertificate,
+                Credential = credential,
+            };
 
             return await client.GetAsync<UserInfo>(
-                    configuration.UserInfoEndpoint,
+                    CreateInitializer().UserInfoUrl,
                     token)
                 .ConfigureAwait(false);
         }
@@ -255,11 +252,36 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private class OAuthInitializer : GoogleAuthorizationCodeFlow.Initializer
         {
-            public const string DefaultMetadataUrl =
-                "https://accounts.google.com/.well-known/openid-configuration";
+            public string UserInfoUrl { get; } 
 
-            public string MetadataUrl { get; set; } = DefaultMetadataUrl;
+            private static string FixupUrl(
+                string url,
+                X509Certificate2 certificate)
+            {
+                //
+                // Switch to mTLS endpoint if there is a device certificate.
+                //
+                return certificate == null
+                    ? url
+                    : url.Replace(".googleapis.com", ".mtls.googleapis.com");
+            }
 
+            public OAuthInitializer(X509Certificate2 certificate)
+                : base(FixupUrl("https://accounts.google.com/o/oauth2/v2/auth", certificate), 
+                       FixupUrl("https://oauth2.googleapis.com/token", certificate), 
+                       FixupUrl("https://oauth2.googleapis.com/revoke", certificate))
+            {
+                this.UserInfoUrl = FixupUrl(
+                    "https://openidconnect.googleapis.com/v1/userinfo", certificate);
+
+                if (certificate != null)
+                {
+                    //
+                    // Inject the certificate into all HTTP communication.
+                    //
+                    this.HttpClientFactory = new MtlsHttpClientFactory(certificate);
+                }
+            }
         }
 
         public class OpenIdConfiguration
