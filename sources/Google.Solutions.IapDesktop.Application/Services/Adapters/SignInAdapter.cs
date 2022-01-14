@@ -37,7 +37,6 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-
     public interface ISignInAdapter : IDisposable
     {
         Task DeleteStoredRefreshToken();
@@ -238,7 +237,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             public const string DefaultMetadataUrl =
                 "https://accounts.google.com/.well-known/openid-configuration";
-
 
             public string MetadataUrl { get; set; } = DefaultMetadataUrl;
 

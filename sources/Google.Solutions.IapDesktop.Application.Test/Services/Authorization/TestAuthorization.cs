@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         {
             var adapter = new Mock<ISignInAdapter>();
 
-            var authorization = await OAuthAuthorization.CreateAuthorizationAsync(
+            var authorization = await Authorization.CreateAuthorizationAsync(
                     adapter.Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     Email = "bob@example.com"
                 });
 
-            var authorization = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
+            var authorization = await Authorization.TryLoadExistingAuthorizationAsync(
                     adapter.Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((ICredential)null);
 
-            var authorization = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
+            var authorization = await Authorization.TryLoadExistingAuthorizationAsync(
                     adapter.Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     Email = "bob@example.com"
                 });
 
-            var authorization = await OAuthAuthorization.CreateAuthorizationAsync(
+            var authorization = await Authorization.CreateAuthorizationAsync(
                     adapter.Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     Email = "alice@example.com"
                 });
 
-            var authorization = await OAuthAuthorization.CreateAuthorizationAsync(
+            var authorization = await Authorization.CreateAuthorizationAsync(
                     adapter.Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);

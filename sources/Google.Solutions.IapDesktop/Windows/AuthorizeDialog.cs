@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     try
                     {
                         // Try to authorize using OAuth.
-                        dialog.authorization = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
+                        dialog.authorization = await Authorization.TryLoadExistingAuthorizationAsync(
                                 oauthAdapter,
                                 CancellationToken.None)
                             .ConfigureAwait(true);
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
                     try
                     {
-                        dialog.authorization = await OAuthAuthorization.CreateAuthorizationAsync(
+                        dialog.authorization = await Authorization.CreateAuthorizationAsync(
                                 oauthAdapter,
                                 CancellationToken.None)
                             .ConfigureAwait(true);

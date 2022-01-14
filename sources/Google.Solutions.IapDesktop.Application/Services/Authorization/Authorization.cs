@@ -29,8 +29,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 {
-    // TODO: Rename
-    public class OAuthAuthorization : IAuthorization
+    public class Authorization : IAuthorization
     {
         private readonly ISignInAdapter adapter;
 
@@ -38,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
         // a SwappableCredential as indirection.
         private readonly SwappableCredential credential;
 
-        private OAuthAuthorization(
+        private Authorization(
             ISignInAdapter adapter,
             ICredential initialCredential,
             UserInfo userInfo)
@@ -56,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             return this.adapter.DeleteStoredRefreshToken();
         }
 
-        public static async Task<OAuthAuthorization> TryLoadExistingAuthorizationAsync(
+        public static async Task<Authorization> TryLoadExistingAuthorizationAsync(
             ISignInAdapter oauthAdapter,
             CancellationToken token)
         {
@@ -72,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
                     credential,
                     token).ConfigureAwait(false);
 
-                return new OAuthAuthorization(
+                return new Authorization(
                     oauthAdapter,
                     credential,
                     userInfo);
@@ -86,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             }
         }
 
-        public static async Task<OAuthAuthorization> CreateAuthorizationAsync(
+        public static async Task<Authorization> CreateAuthorizationAsync(
             ISignInAdapter oauthAdapter,
             CancellationToken token)
         {
@@ -98,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
                 credential,
                 token).ConfigureAwait(false);
 
-            return new OAuthAuthorization(
+            return new Authorization(
                 oauthAdapter,
                 credential,
                 userInfo);
