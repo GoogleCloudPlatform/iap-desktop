@@ -171,7 +171,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         [Test]
         public void WhenSignInLacksScopes_ThenSignInWithBrowserAsyncThrowsException()
         {
-
             var receiver = new Mock<ICodeReceiver>();
             receiver.Setup(r => r.ReceiveCodeAsync(
                     It.IsAny<AuthorizationCodeRequestUrl>(),
@@ -194,6 +193,46 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     AccessToken = "token-1",
                     RefreshToken = "refreshtoken-1"
                 });
+
+            var adapter = new SignInAdapter(
+                null,
+                new Apis.Auth.OAuth2.ClientSecrets(),
+                new[] { "scope-1" },
+                new Mock<IDataStore>().Object,
+                receiver.Object,
+                _ => flow.Object);
+
+            ExceptionAssert.ThrowsAggregateException<AuthorizationFailedException>(
+                () => adapter.SignInWithBrowserAsync(
+                    "bob@example.com",
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public void WhenSignInFailsBecauseOfConditionalAccess_ThenSignInWithBrowserAsyncThrowsException()
+        {
+            var receiver = new Mock<ICodeReceiver>();
+            receiver.Setup(r => r.ReceiveCodeAsync(
+                    It.IsAny<AuthorizationCodeRequestUrl>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new AuthorizationCodeResponseUrl()
+                {
+                    Code = "123"
+                });
+
+            var flow = new Mock<IAuthorizationCodeFlow>();
+            flow.Setup(f => f.ShouldForceTokenRetrieval()).Returns(true);
+            flow.Setup(f => f.ExchangeCodeForTokenAsync(
+                    It.IsAny<string>(),
+                    It.Is<string>(code => code == "123"),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new TokenResponseException(new TokenErrorResponse()
+                    {
+                        Error = "access_denied",
+                        ErrorDescription = "Account restricted",
+                        ErrorUri = "https://accounts.google.com/info/servicerestricted?es\u003d..."
+                    }));
 
             var adapter = new SignInAdapter(
                 null,

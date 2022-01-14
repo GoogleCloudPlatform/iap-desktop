@@ -29,6 +29,7 @@ using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
@@ -105,7 +106,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             // Add email scope to requested scope so that we can query
             // user info.
             //
-            return new OAuthInitializer(this.deviceCertificate)
+            return new OAuthInitializer(
+                HttpClientHandlerExtensions.IsClientCertificateSupported ? 
+                    this.deviceCertificate 
+                    : null)
             {
                 ClientSecrets = clientSecrets,
                 Scopes = scopes.Concat(new[] { SignInAdapter.EmailScope }),
@@ -115,9 +119,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private IAuthorizationCodeFlow CreateFlow(OAuthInitializer initializer)
         {
-            return this.createCodeFlow != null
-                ? this.createCodeFlow(initializer)
-                :new GoogleAuthorizationCodeFlow(initializer);
+            if (this.createCodeFlow != null)
+            {
+                return this.createCodeFlow(initializer);
+            }
+            else
+            {
+                var flow = new GoogleAuthorizationCodeFlow(initializer);
+
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "mTLS supported: {0}", HttpClientHandlerExtensions.IsClientCertificateSupported);
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "mTLS certificate: {0}", this.deviceCertificate?.Subject);
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "TokenServerUrl: {0}", flow.TokenServerUrl);
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "RevokeTokenUrl: {0}", flow.RevokeTokenUrl);
+
+                Debug.Assert(
+                    flow.TokenServerUrl.Contains("mtls.") ==
+                    (HttpClientHandlerExtensions.IsClientCertificateSupported && this.deviceCertificate != null));
+
+                return flow;
+            }
         }
 
         public Task DeleteStoredRefreshToken()
@@ -180,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public async Task<ICredential> SignInWithBrowserAsync(
-            String loginHint, 
+            string loginHint, 
             CancellationToken token)
         {
             try
@@ -215,6 +239,25 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
 
                 return userCredential;
+            }
+            catch (TokenResponseException e) when (
+                e.Error?.ErrorUri != null && 
+                e.Error.ErrorUri.StartsWith("https://accounts.google.com/info/servicerestricted"))
+            {
+                if (this.deviceCertificate != null)
+                {
+                    throw new AuthorizationFailedException(
+                        "Authorization failed because your computer's device certificate is " +
+                        "is invalid or unrecognized. Use the Endpoint Verification extension " +
+                        "to verify that your computer is enrolled and try again.\n\n" + e.Error.ErrorDescription);
+                }
+                else
+                {
+                    throw new AuthorizationFailedException(
+                        "Authorization failed because your computer is not enrolled in Endpoint " + 
+                        "Verification.\n\n" + e.Error.ErrorDescription);
+
+                }
             }
             catch (PlatformNotSupportedException)
             {
@@ -280,6 +323,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     // Inject the certificate into all HTTP communication.
                     //
                     this.HttpClientFactory = new MtlsHttpClientFactory(certificate);
+
+                    ApplicationTraceSources.Default.TraceVerbose("Using OAuth mTLS endpoints");
+                }
+                else
+                {
+                    ApplicationTraceSources.Default.TraceVerbose("Using OAuth TLS endpoints");
                 }
             }
         }
