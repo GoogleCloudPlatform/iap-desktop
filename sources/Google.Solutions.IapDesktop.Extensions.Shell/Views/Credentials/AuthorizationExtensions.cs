@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Auth;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials

@@ -22,10 +22,10 @@
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.ApiExtensions.Instance;
-using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
@@ -47,14 +47,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         private readonly static InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private static Mock<IAuthorizationAdapter> CreateAuthorizationAdapterMock()
+        private static Mock<IAuthorizationSource> CreateAuthorizationSourceMock()
         {
             var authorization = new Mock<IAuthorization>();
             authorization
                 .SetupGet(a => a.Email)
                 .Returns(SampleEmailAddress);
 
-            var adapter = new Mock<IAuthorizationAdapter>();
+            var adapter = new Mock<IAuthorizationSource>();
             adapter
                 .SetupGet(a => a.Authorization)
                 .Returns(authorization.Object);
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public async Task WhenOsLoginEnabledForProject_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
                     osLoginEnabledForInstance: null,
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public async Task WhenOsLoginEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public async Task WhenOsLoginDisabledForProjectButEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: false,
                     osLoginEnabledForInstance: true,
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
@@ -315,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public void WhenOsLoginEnabledForProjectButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
                     osLoginEnabledForInstance: null,
@@ -340,7 +340,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public void WhenOsLoginEnabledForInstanceButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
@@ -369,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public void WhenLegacySshKeyPresent_ThenAuthorizeKeyAsyncThrowsUnsupportedLegacySshKeyEncounteredException()
         {
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: null,
@@ -413,7 +413,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
                 var service = new AuthorizedKeyService(
-                    CreateAuthorizationAdapterMock().Object,
+                    CreateAuthorizationSourceMock().Object,
                     computeEngineAdapter.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     CreateOsLoginServiceMock().Object);
@@ -467,7 +467,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
                 var service = new AuthorizedKeyService(
-                    CreateAuthorizationAdapterMock().Object,
+                    CreateAuthorizationSourceMock().Object,
                     computeEngineAdapter.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     CreateOsLoginServiceMock().Object);
@@ -521,7 +521,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
                 var service = new AuthorizedKeyService(
-                    CreateAuthorizationAdapterMock().Object,
+                    CreateAuthorizationSourceMock().Object,
                     computeEngineAdapter.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     CreateOsLoginServiceMock().Object);
@@ -575,7 +575,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
                 var service = new AuthorizedKeyService(
-                    CreateAuthorizationAdapterMock().Object,
+                    CreateAuthorizationSourceMock().Object,
                     computeEngineAdapter.Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     CreateOsLoginServiceMock().Object);
@@ -621,7 +621,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 projectWideKeysBlockedForProject: true,
                 projectWideKeysBlockedForInstance: false);
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
@@ -660,7 +660,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: true);
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
@@ -699,7 +699,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(false).Object,
                 CreateOsLoginServiceMock().Object);
@@ -738,7 +738,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 projectWideKeysBlockedForProject: true,
                 projectWideKeysBlockedForInstance: false);
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
@@ -764,7 +764,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
@@ -803,7 +803,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
@@ -855,7 +855,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 });
 
             var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
+                CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);

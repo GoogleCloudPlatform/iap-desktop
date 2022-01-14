@@ -20,13 +20,13 @@
 //
 
 using Google.Solutions.Common;
-using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop
                 hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\ToolWindows")));
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
                 hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Auth"),
-                GoogleAuthAdapter.StoreUserId));
+                SignInAdapter.StoreUserId));
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
             {
@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop
             //
             // Adapter layer.
             //
-            adapterLayer.AddSingleton<IAuthorizationAdapter>(mainForm);
+            adapterLayer.AddSingleton<IAuthorizationSource>(mainForm);
             adapterLayer.AddSingleton<IJobHost>(mainForm);
             adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
             adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();

@@ -29,6 +29,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
@@ -95,15 +96,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             Debug.Assert(Globals.IsTestCase);
         }
 
-        public AuditLogAdapter(IAuthorizationAdapter authService)
+        public AuditLogAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
-                  authService.DeviceEnrollment)
+                  authService.Authorization.DeviceEnrollment)
         {
         }
 
         public AuditLogAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationAdapter>())
+            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 

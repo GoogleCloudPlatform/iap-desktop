@@ -28,6 +28,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -88,15 +89,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             Debug.Assert(Globals.IsTestCase);
         }
 
-        public StorageAdapter(IAuthorizationAdapter authService)
+        public StorageAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
-                  authService.DeviceEnrollment)
+                  authService.Authorization.DeviceEnrollment)
         {
         }
 
         public StorageAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationAdapter>())
+            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
 using System.Linq;
@@ -186,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         public DeviceEnrollmentState State { get; private set; }
         public X509Certificate2 Certificate { get; private set; }
 
-        public Task RefreshAsync(string userId)
+        public Task RefreshAsync()
         {
             return Task.Run(() => Refresh());
         }
@@ -198,14 +199,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         public static async Task<SecureConnectEnrollment> GetEnrollmentAsync(
             ICertificateStoreAdapter certificateStore,
             IChromePolicy chromePolicy,
-            ApplicationSettingsRepository applicationSettingsRepository,
-            string userId)
+            ApplicationSettingsRepository applicationSettingsRepository)
         {
             var enrollment = new SecureConnectEnrollment(
                 certificateStore,
                 chromePolicy,
                 applicationSettingsRepository);
-            await enrollment.RefreshAsync(userId)
+            await enrollment.RefreshAsync()
                 .ConfigureAwait(false);
             return enrollment;
         }

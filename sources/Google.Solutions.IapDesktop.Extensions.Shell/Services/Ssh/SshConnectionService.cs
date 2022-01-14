@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -64,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly IConnectionSettingsService settingsService;
         private readonly IAuthorizedKeyService authorizedKeyService;
         private readonly IKeyStoreAdapter keyStoreAdapter;
-        private readonly IAuthorizationAdapter authorizationAdapter;
+        private readonly IAuthorizationSource authorizationSource;
         private readonly SshSettingsRepository sshSettingsRepository;
         private readonly IProjectModelService projectModelService;
 
@@ -78,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             this.authorizedKeyService = serviceProvider.GetService<IAuthorizedKeyService>();
             this.keyStoreAdapter = serviceProvider.GetService<IKeyStoreAdapter>();
-            this.authorizationAdapter = serviceProvider.GetService<IAuthorizationAdapter>();
+            this.authorizationSource = serviceProvider.GetService<IAuthorizationSource>();
             this.sshSettingsRepository = serviceProvider.GetService<SshSettingsRepository>();
             this.projectModelService = serviceProvider.GetService<IProjectModelService>();
             this.window = serviceProvider.GetService<IMainForm>().Window;
@@ -175,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             var sshSettings = this.sshSettingsRepository.GetSettings();
             var sshKey = this.keyStoreAdapter.OpenSshKey(
                 sshSettings.PublicKeyType.EnumValue,
-                this.authorizationAdapter.Authorization,
+                this.authorizationSource.Authorization,
                 true,
                 this.window);
             Debug.Assert(sshKey != null);

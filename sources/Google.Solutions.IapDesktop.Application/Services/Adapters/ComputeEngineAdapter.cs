@@ -30,6 +30,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Collections.Generic;
@@ -81,15 +82,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Debug.Assert(Globals.IsTestCase);
         }
 
-        public ComputeEngineAdapter(IAuthorizationAdapter authService)
+        public ComputeEngineAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
-                  authService.DeviceEnrollment)
+                  authService.Authorization.DeviceEnrollment)
         {
         }
 
         public ComputeEngineAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationAdapter>())
+            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 

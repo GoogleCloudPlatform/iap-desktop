@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
 using Google.Apis.Services;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

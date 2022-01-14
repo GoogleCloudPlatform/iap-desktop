@@ -20,10 +20,10 @@
 //
 
 using Google.Solutions.CloudIap;
-using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -208,12 +208,24 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
 
         public IAuthorization Authorization { get; private set; }
-        public IDeviceEnrollment DeviceEnrollment { get; private set; }
 
         public void Authorize()
         {
             Debug.Assert(this.Authorization == null);
-            Debug.Assert(this.DeviceEnrollment == null);
+
+            //
+            // Determine enrollment state of this device.
+            //
+            var deviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
+                new CertificateStoreAdapter(),
+                new ChromePolicy(),
+                this.applicationSettings).Result;
+
+            var signInAdapter = new SignInAdapter(
+                OAuthClient.Secrets,
+                new[] { IapTunnelingEndpoint.RequiredScope },
+                this.authSettings,
+                Resources.AuthorizationSuccessful);
 
             //
             // Get the user authorization, either by using stored
@@ -221,45 +233,30 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             this.Authorization = AuthorizeDialog.Authorize(
                 (Control)this.View,
-                OAuthClient.Secrets,
-                new[] { IapTunnelingEndpoint.RequiredScope },
-                this.authSettings);
+                signInAdapter,
+                deviceEnrollment);
             if (this.Authorization == null)
             {
                 // Aborted.
                 return;
             }
 
-            //
-            // Determine enrollment state of this device.
-            //
-            this.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
-                new CertificateStoreAdapter(),
-                new ChromePolicy(),
-                this.applicationSettings,
-                this.Authorization.UserInfo.Subject).Result;
-
             this.SignInStateCaption = this.Authorization.Email;
             this.DeviceStateCaption = "Endpoint Verification";
-            this.IsDeviceStateVisible = this.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
+            this.IsDeviceStateVisible = this.Authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
             this.IsReportInternalIssueVisible = this.Authorization.UserInfo?.HostedDomain == "google.com";
 
             Debug.Assert(this.SignInStateCaption != null);
-            Debug.Assert(this.DeviceEnrollment != null);
+            Debug.Assert(this.Authorization.DeviceEnrollment != null);
         }
 
         public async Task ReauthorizeAsync(CancellationToken token)
         {
             Debug.Assert(this.Authorization != null);
-            Debug.Assert(this.DeviceEnrollment != null);
+            Debug.Assert(this.Authorization.DeviceEnrollment != null);
 
             // Reauthorize, this might cause another OAuth code flow.
             await this.Authorization.ReauthorizeAsync(token)
-                .ConfigureAwait(true);
-
-            // Refresh enrollment info as the user might have switched identities.
-            await this.DeviceEnrollment
-                .RefreshAsync(this.Authorization.UserInfo.Subject)
                 .ConfigureAwait(true);
 
             this.SignInStateCaption = this.Authorization.Email;
@@ -268,14 +265,14 @@ namespace Google.Solutions.IapDesktop.Windows
         public Task RevokeAuthorizationAsync()
         {
             Debug.Assert(this.Authorization != null);
-            Debug.Assert(this.DeviceEnrollment != null);
+            Debug.Assert(this.Authorization.DeviceEnrollment != null);
 
             return this.Authorization.RevokeAsync();
         }
 
         public bool IsAuthorized =>
             this.Authorization != null &&
-            this.DeviceEnrollment != null;
+            this.Authorization.DeviceEnrollment != null;
 
         //---------------------------------------------------------------------
         // Other actions.

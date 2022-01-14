@@ -19,24 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Auth;
-using NUnit.Framework;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Test.Auth
+namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 {
-    [TestFixture]
-    public class TestGoogleAuthAdapter : CommonFixtureBase
+    public interface IAuthorizationSource
     {
-        [Test]
-        public async Task WhenCalled_ThenQueryOpenIdConfigurationAsyncReturnsInfo()
-        {
-            var config = await GoogleAuthAdapter
-                .QueryOpenIdConfigurationAsync(CancellationToken.None)
-                .ConfigureAwait(false);
+        IAuthorization Authorization { get; }
 
-            Assert.IsNotNull(config.UserInfoEndpoint);
-        }
+        Task ReauthorizeAsync(CancellationToken token);
     }
 }

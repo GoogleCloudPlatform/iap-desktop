@@ -22,7 +22,8 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Util.Store;
-using Google.Solutions.Common.Auth;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,21 +53,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public static IAuthorization Authorize(
             Control parent,
-            ClientSecrets clientSecrets,
-            string[] scopes,
-            IDataStore dataStore)
+            ISignInAdapter signInAdapter,
+            IDeviceEnrollment deviceEnrollment)
         {
-            // N.B. Do not dispose the adapter (and embedded GoogleAuthorizationCodeFlow)
-            // as it might be needed for token refreshes later.
-            var oauthAdapter = new GoogleAuthAdapter(
-                new GoogleAuthorizationCodeFlow.Initializer
-                {
-                    ClientSecrets = clientSecrets,
-                    Scopes = scopes,
-                    DataStore = dataStore
-                },
-                Resources.AuthorizationSuccessful);
-
             Exception caughtException = null;
             using (var dialog = new AuthorizeDialog())
             {
@@ -75,8 +64,9 @@ namespace Google.Solutions.IapDesktop.Windows
                     try
                     {
                         // Try to authorize using OAuth.
-                        dialog.authorization = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-                                oauthAdapter,
+                        dialog.authorization = await AppAuthorization.TryLoadExistingAuthorizationAsync(
+                                signInAdapter,
+                                deviceEnrollment,
                                 CancellationToken.None)
                             .ConfigureAwait(true);
 
@@ -107,8 +97,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
                     try
                     {
-                        dialog.authorization = await OAuthAuthorization.CreateAuthorizationAsync(
-                                oauthAdapter,
+                        dialog.authorization = await AppAuthorization.CreateAuthorizationAsync(
+                                signInAdapter,
+                                deviceEnrollment,
                                 CancellationToken.None)
                             .ConfigureAwait(true);
                     }

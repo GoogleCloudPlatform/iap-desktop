@@ -19,13 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Auth;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Authentication;
+using Google.Solutions.IapDesktop.Application.Views.Authorization;
 using Moq;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
+namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
 {
     [TestFixture]
     public class TestUserFlyoutViewModel : ApplicationFixtureBase

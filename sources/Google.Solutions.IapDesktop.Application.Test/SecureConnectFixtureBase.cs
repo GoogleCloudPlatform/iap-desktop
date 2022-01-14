@@ -19,29 +19,29 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Moq;
 
 namespace Google.Solutions.IapDesktop.Application.Test
 {
     public class SecureConnectFixtureBase : ApplicationFixtureBase
     {
-        protected static IAuthorizationAdapter CreateAuthorizationAdapterForSecureConnectUser()
-        {
-            var authz = new Mock<IAuthorization>();
-            authz.SetupGet(a => a.Credential).Returns(TestProject.GetSecureConnectCredential());
-
+        protected static IAuthorizationSource CreateAuthorizationSourceForSecureConnectUser()
+        {   
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State)
                 .Returns(DeviceEnrollmentState.Enrolled);
             enrollment.SetupGet(e => e.Certificate)
                 .Returns(TestProject.GetDeviceCertificate());
 
-            var adapter = new Mock<IAuthorizationAdapter>();
+            var authz = new Mock<IAuthorization>();
+            authz.SetupGet(a => a.Credential).Returns(TestProject.GetSecureConnectCredential());
+            authz.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+
+            var adapter = new Mock<IAuthorizationSource>();
             adapter.SetupGet(a => a.Authorization).Returns(authz.Object);
-            adapter.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
 
             return adapter.Object;
         }

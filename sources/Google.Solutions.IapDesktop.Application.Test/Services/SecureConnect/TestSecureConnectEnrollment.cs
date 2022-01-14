@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Microsoft.Win32;
@@ -122,7 +123,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 
         private const string TestKeyPath = @"Software\Google\__Test";
         private ApplicationSettingsRepository settingsRepository;
-        private const string SampleUserId = "unused";
 
         [SetUp]
         public void SetUp()
@@ -155,8 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                     certificateStore.Object,
                     chromePolicy.Object,
-                    this.settingsRepository,
-                    SampleUserId)
+                    this.settingsRepository)
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
@@ -187,8 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                     certificateStore.Object,
                     chromePolicy.Object,
-                    this.settingsRepository,
-                    SampleUserId)
+                    this.settingsRepository)
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
@@ -199,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            await enrollment.RefreshAsync(SampleUserId)
+            await enrollment.RefreshAsync()
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
@@ -232,8 +230,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                     certificateStore.Object,
                     chromePolicy.Object,
-                    this.settingsRepository,
-                    SampleUserId)
+                    this.settingsRepository)
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
@@ -262,8 +259,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                     certificateStore.Object,
                     chromePolicy.Object,
-                    this.settingsRepository,
-                    SampleUserId)
+                    this.settingsRepository)
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
@@ -293,8 +289,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                     certificateStore.Object,
                     chromePolicy.Object,
-                    this.settingsRepository,
-                    SampleUserId)
+                    this.settingsRepository)
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
@@ -335,8 +330,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                     certificateStore.Object,
                     chromePolicy.Object,
-                    this.settingsRepository,
-                    SampleUserId)
+                    this.settingsRepository)
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
@@ -373,8 +367,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                     certificateStore.Object,
                     chromePolicy.Object,
-                    this.settingsRepository,
-                    SampleUserId)
+                    this.settingsRepository)
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
@@ -411,8 +404,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                     certificateStore.Object,
                     chromePolicy.Object,
-                    this.settingsRepository,
-                    SampleUserId)
+                    this.settingsRepository)
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
@@ -446,8 +438,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                     certificateStore.Object,
                     chromePolicy.Object,
-                    this.settingsRepository,
-                    SampleUserId)
+                    this.settingsRepository)
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
@@ -477,8 +468,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                     certificateStore.Object,
                     chromePolicy.Object,
-                    this.settingsRepository,
-                    SampleUserId)
+                    this.settingsRepository)
                 .ConfigureAwait(true);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);

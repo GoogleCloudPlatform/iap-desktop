@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -68,9 +69,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     public class JobService : IJobService
     {
         private readonly IJobHost host;
-        private readonly IAuthorizationAdapter authService;
+        private readonly IAuthorizationSource authService;
 
-        public JobService(IAuthorizationAdapter authService, IJobHost host)
+        public JobService(IAuthorizationSource authService, IJobHost host)
         {
             this.authService = authService;
             this.host = host;
@@ -78,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
         public JobService(IServiceProvider serviceProvider)
             : this(
-                  serviceProvider.GetService<IAuthorizationAdapter>(),
+                  serviceProvider.GetService<IAuthorizationSource>(),
                   serviceProvider.GetService<IJobHost>())
         {
         }

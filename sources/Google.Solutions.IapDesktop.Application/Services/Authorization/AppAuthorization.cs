@@ -23,125 +23,119 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Auth
+namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 {
-    public interface IAuthorization
+    public class AppAuthorization : IAuthorization
     {
-        ICredential Credential { get; }
+        private readonly ISignInAdapter adapter;
 
-        Task RevokeAsync();
-
-        Task ReauthorizeAsync(CancellationToken token);
-
-        string Email { get; }
-
-        UserInfo UserInfo { get; }
-    }
-
-    public class OAuthAuthorization : IAuthorization
-    {
-
-        private readonly IAuthAdapter adapter;
-
-        // The OAuth credential changes after each reauth. Therefore, use
+        //
+        // NB. The OAuth credential changes after each reauth. Therefore, use
         // a SwappableCredential as indirection.
+        //
         private readonly SwappableCredential credential;
 
-        private OAuthAuthorization(
-            IAuthAdapter adapter,
+        private AppAuthorization(
+            ISignInAdapter adapter,
+            IDeviceEnrollment deviceEnrollment,
             ICredential initialCredential,
             UserInfo userInfo)
         {
             this.adapter = adapter;
+            this.DeviceEnrollment = deviceEnrollment;
             this.credential = new SwappableCredential(initialCredential, userInfo);
         }
 
         public ICredential Credential => this.credential;
+        
         public string Email => this.credential.UserInfo.Email;
+
         public UserInfo UserInfo => this.credential.UserInfo;
+
+        public IDeviceEnrollment DeviceEnrollment { get; }
 
         public Task RevokeAsync()
         {
             return this.adapter.DeleteStoredRefreshToken();
         }
 
-        public static async Task<OAuthAuthorization> TryLoadExistingAuthorizationAsync(
-            IAuthAdapter oauthAdapter,
+        public static async Task<AppAuthorization> TryLoadExistingAuthorizationAsync(
+            ISignInAdapter oauthAdapter,
+            IDeviceEnrollment deviceEnrollment,
             CancellationToken token)
         {
-            var existingTokenResponse = await oauthAdapter
-                .GetStoredRefreshTokenAsync(token)
+            var credential = await oauthAdapter
+                .TrySignInWithRefreshTokenAsync(token)
                 .ConfigureAwait(false);
-
-            if (oauthAdapter.IsRefreshTokenValid(existingTokenResponse))
+            if (credential != null)
             {
-                CommonTraceSources.Default.TraceVerbose("Found existing credentials");
+                //
+                // Authorize worked, so the token was still valid.
+                //
+                var userInfo = await oauthAdapter.QueryUserInfoAsync(
+                    credential,
+                    token).ConfigureAwait(false);
 
-                var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
-                if (!scopesOfExistingTokenResponse.ContainsAll(oauthAdapter.Scopes))
-                {
-                    CommonTraceSources.Default.TraceVerbose(
-                        "Dropping existing credential as it lacks one or more scopes");
-
-                    // The existing auth might be fine, but it lacks a scope.
-                    // Delete it so that it does not cause harm later.
-                    await oauthAdapter.DeleteStoredRefreshToken().ConfigureAwait(false);
-                    return null;
-                }
-                else
-                {
-                    var credential = oauthAdapter.AuthorizeUsingRefreshToken(existingTokenResponse);
-
-                    var userInfo = await oauthAdapter.QueryUserInfoAsync(
-                        credential,
-                        token).ConfigureAwait(false);
-
-                    return new OAuthAuthorization(
-                        oauthAdapter,
-                        credential,
-                        userInfo);
-                }
+                return new AppAuthorization(
+                    oauthAdapter,
+                    deviceEnrollment,
+                    credential,
+                    userInfo);
             }
             else
             {
+                //
+                // No token found, or it was invalid.
+                //
                 return null;
             }
         }
 
-        public static async Task<OAuthAuthorization> CreateAuthorizationAsync(
-            IAuthAdapter oauthAdapter,
+        public static async Task<AppAuthorization> CreateAuthorizationAsync(
+            ISignInAdapter oauthAdapter,
+            IDeviceEnrollment deviceEnrollment,
             CancellationToken token)
         {
-            CommonTraceSources.Default.TraceVerbose("Authorizing");
-
-            // Pop up browser window.
             var credential = await oauthAdapter
-                .AuthorizeUsingBrowserAsync(token)
+                .SignInWithBrowserAsync(token)
                 .ConfigureAwait(false);
 
             var userInfo = await oauthAdapter.QueryUserInfoAsync(
                 credential,
                 token).ConfigureAwait(false);
 
-            return new OAuthAuthorization(
+            return new AppAuthorization(
                 oauthAdapter,
+                deviceEnrollment,
                 credential,
                 userInfo);
         }
 
         public async Task ReauthorizeAsync(CancellationToken token)
         {
-            // As this is a 3p OAuth app, we do not support Gnubby/Password-based
-            // reauth. Instead, we simply trigger a new authorization (code flow).
-            var newCredential = await this.adapter
-                .AuthorizeUsingBrowserAsync(token)
+            //
+            // Make sure we use the right certificate.
+            //
+            await this.DeviceEnrollment
+                .RefreshAsync()
                 .ConfigureAwait(false);
 
+            //
+            // As this is a 3p OAuth app, we do not support Gnubby/Password-based
+            // reauth. Instead, we simply trigger a new authorization (code flow).
+            //
+            var newCredential = await this.adapter
+                .SignInWithBrowserAsync(token)
+                .ConfigureAwait(false);
+
+            //
             // The user might have changed to a different user account,
             // so we have to re-fetch user information.
+            //
             var newUserInfo = await this.adapter.QueryUserInfoAsync(
                 newCredential,
                 token).ConfigureAwait(false);

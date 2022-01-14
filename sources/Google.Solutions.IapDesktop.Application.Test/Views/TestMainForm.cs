@@ -20,10 +20,10 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -36,7 +36,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views
 {
-    public partial class TestMainForm : Form, IMainForm, IAuthorizationAdapter, IJobService
+    public partial class TestMainForm : Form, IMainForm, IAuthorizationSource, IJobService
     {
         public TestMainForm()
         {
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         }
 
         //---------------------------------------------------------------------
-        // IAuthorizationService.
+        // IAuthorizationSource.
         //---------------------------------------------------------------------
 
         private class SimpleAuthorization : IAuthorization
@@ -105,6 +105,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 throw new NotImplementedException();
             }
+
+            public IDeviceEnrollment DeviceEnrollment => new SimpleDeviceEnrollment();
         }
 
         private class SimpleDeviceEnrollment : IDeviceEnrollment
@@ -113,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             public X509Certificate2 Certificate => null;
 
-            public Task RefreshAsync(string userId)
+            public Task RefreshAsync()
             {
                 throw new NotImplementedException();
             }

@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;
@@ -40,15 +41,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
     [Service(typeof(ITunnelService))]
     public class TunnelService : ITunnelService
     {
-        private readonly IAuthorizationAdapter authorizationService;
+        private readonly IAuthorizationSource authorizationSource;
 
-        public TunnelService(IAuthorizationAdapter authorizationService)
+        public TunnelService(IAuthorizationSource authorizationSource)
         {
-            this.authorizationService = authorizationService;
+            this.authorizationSource = authorizationSource;
         }
 
         public TunnelService(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationAdapter>())
+            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 
@@ -59,9 +60,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(tunnelEndpoint))
             {
                 var clientCertificate =
-                        (this.authorizationService.DeviceEnrollment != null &&
-                        this.authorizationService.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
-                    ? this.authorizationService.DeviceEnrollment.Certificate
+                        (this.authorizationSource.Authorization.DeviceEnrollment != null &&
+                        this.authorizationSource.Authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
+                    ? this.authorizationSource.Authorization.DeviceEnrollment.Certificate
                     : null;
 
                 if (clientCertificate != null)
@@ -71,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                 }
 
                 var iapEndpoint = new IapTunnelingEndpoint(
-                    this.authorizationService.Authorization.Credential,
+                    this.authorizationSource.Authorization.Credential,
                     tunnelEndpoint.Instance,
                     tunnelEndpoint.RemotePort,
                     IapTunnelingEndpoint.DefaultNetworkInterface,

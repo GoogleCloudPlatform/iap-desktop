@@ -122,6 +122,8 @@
     <Compile Include="Services\Adapters\TestWindowsCredentialAdapter.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapterWithMtls.cs" />
+    <Compile Include="Services\Authorization\TestAuthorization.cs" />
+    <Compile Include="Services\Authorization\TestSignInAdapter.cs" />
     <Compile Include="Services\Integration\TestSessionBroker.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelService.cs" />
@@ -151,8 +153,8 @@
     <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Util\TestStringExtensions.cs" />
     <Compile Include="Util\TestTypographicQuotes.cs" />
-    <Compile Include="Views\Authentication\TestDeviceFlyoutViewModel.cs" />
-    <Compile Include="Views\Authentication\TestUserFlyoutViewModel.cs" />
+    <Compile Include="Views\Authorization\TestDeviceFlyoutViewModel.cs" />
+    <Compile Include="Views\Authorization\TestUserFlyoutViewModel.cs" />
     <Compile Include="Views\Options\TestScreenOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestNetworkOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestGeneralOptionsViewModel.cs" />

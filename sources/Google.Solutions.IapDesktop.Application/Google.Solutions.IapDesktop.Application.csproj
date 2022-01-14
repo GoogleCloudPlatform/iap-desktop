@@ -125,6 +125,7 @@
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\BuganizerAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
+    <Compile Include="Services\Adapters\SignInAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
     <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\InstanceExtensions.cs" />
@@ -135,6 +136,8 @@
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Services\Adapters\SerialPortStream.cs" />
+    <Compile Include="Services\Authorization\AppAuthorization.cs" />
+    <Compile Include="Services\Authorization\IAuthorization.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelEvents.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelService.cs" />
@@ -170,22 +173,22 @@
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Util\StringExtensions.cs" />
     <Compile Include="Util\TypographicQuotes.cs" />
-    <Compile Include="Views\Authentication\DeviceFlyoutViewModel.cs" />
-    <Compile Include="Views\Authentication\UserFlyoutViewModel.cs" />
-    <Compile Include="Views\Authentication\DeviceFlyoutWindow.cs">
+    <Compile Include="Views\Authorization\DeviceFlyoutViewModel.cs" />
+    <Compile Include="Views\Authorization\UserFlyoutViewModel.cs" />
+    <Compile Include="Views\Authorization\DeviceFlyoutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Authentication\DeviceFlyoutWindow.Designer.cs">
+    <Compile Include="Views\Authorization\DeviceFlyoutWindow.Designer.cs">
       <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Authentication\UserFlyoutWindow.cs">
+    <Compile Include="Views\Authorization\UserFlyoutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Authentication\UserFlyoutWindow.Designer.cs">
+    <Compile Include="Views\Authorization\UserFlyoutWindow.Designer.cs">
       <DependentUpon>UserFlyoutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\CloudConsoleService.cs" />
-    <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
+    <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -368,10 +371,10 @@
     <EmbeddedResource Include="Views\About\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Authentication\DeviceFlyoutWindow.resx">
+    <EmbeddedResource Include="Views\Authorization\DeviceFlyoutWindow.resx">
       <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Authentication\UserFlyoutWindow.resx">
+    <EmbeddedResource Include="Views\Authorization\UserFlyoutWindow.resx">
       <DependentUpon>UserFlyoutWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugDockingWindow.resx">

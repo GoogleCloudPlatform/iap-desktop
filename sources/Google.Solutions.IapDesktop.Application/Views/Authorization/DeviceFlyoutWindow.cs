@@ -23,7 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Authentication
+namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
     [SkipCodeCoverage("UI")]
     public partial class DeviceFlyoutWindow : FlyoutWindow

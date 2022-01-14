@@ -20,17 +20,17 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
-using Google.Solutions.IapDesktop.Application.Views.Authentication;
+using Google.Solutions.IapDesktop.Application.Views.Authorization;
 using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
@@ -50,7 +50,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationAdapter
+    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationSource
     {
         private readonly MainFormViewModel viewModel;
 
@@ -619,7 +619,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 button.Size);
 
             new DeviceFlyoutWindow(
-                    new DeviceFlyoutViewModel(this, this.DeviceEnrollment))
+                    new DeviceFlyoutViewModel(this, this.Authorization.DeviceEnrollment))
                 .Show(
                     this,
                     screenPosition,
@@ -629,11 +629,10 @@ namespace Google.Solutions.IapDesktop.Windows
 #pragma warning restore IDE0067 // Dispose objects before losing scope
 
         //---------------------------------------------------------------------
-        // IAuthorizationAdapter.
+        // IAuthorizationSource.
         //---------------------------------------------------------------------
 
         public IAuthorization Authorization => this.viewModel.Authorization;
-        public IDeviceEnrollment DeviceEnrollment => this.viewModel.DeviceEnrollment;
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
