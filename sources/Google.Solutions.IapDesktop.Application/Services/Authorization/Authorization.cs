@@ -32,14 +32,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
     // TODO: Rename
     public class OAuthAuthorization : IAuthorization
     {
-        private readonly IAuthAdapter adapter;
+        private readonly ISignInAdapter adapter;
 
         // The OAuth credential changes after each reauth. Therefore, use
         // a SwappableCredential as indirection.
         private readonly SwappableCredential credential;
 
         private OAuthAuthorization(
-            IAuthAdapter adapter,
+            ISignInAdapter adapter,
             ICredential initialCredential,
             UserInfo userInfo)
         {
@@ -57,11 +57,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
         }
 
         public static async Task<OAuthAuthorization> TryLoadExistingAuthorizationAsync(
-            IAuthAdapter oauthAdapter,
+            ISignInAdapter oauthAdapter,
             CancellationToken token)
         {
             var credential = await oauthAdapter
-                .TryAuthorizeUsingRefreshTokenAsync(token)
+                .TrySignInWithRefreshTokenAsync(token)
                 .ConfigureAwait(false);
             if (credential != null)
             {
@@ -87,11 +87,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
         }
 
         public static async Task<OAuthAuthorization> CreateAuthorizationAsync(
-            IAuthAdapter oauthAdapter,
+            ISignInAdapter oauthAdapter,
             CancellationToken token)
         {
             var credential = await oauthAdapter
-                .AuthorizeUsingBrowserAsync(token)
+                .SignInWithBrowserAsync(token)
                 .ConfigureAwait(false);
 
             var userInfo = await oauthAdapter.QueryUserInfoAsync(
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             // As this is a 3p OAuth app, we do not support Gnubby/Password-based
             // reauth. Instead, we simply trigger a new authorization (code flow).
             var newCredential = await this.adapter
-                .AuthorizeUsingBrowserAsync(token)
+                .SignInWithBrowserAsync(token)
                 .ConfigureAwait(false);
 
             // The user might have changed to a different user account,

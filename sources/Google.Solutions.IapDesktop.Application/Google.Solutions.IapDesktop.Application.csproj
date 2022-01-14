@@ -125,7 +125,7 @@
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\BuganizerAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
-    <Compile Include="Services\Adapters\GoogleAuthAdapter.cs" />
+    <Compile Include="Services\Adapters\SignInAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
     <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\InstanceExtensions.cs" />

@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop
                 hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\ToolWindows")));
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
                 hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Auth"),
-                GoogleAuthAdapter.StoreUserId));
+                SignInAdapter.StoreUserId));
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
             {

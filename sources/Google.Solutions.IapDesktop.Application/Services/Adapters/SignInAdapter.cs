@@ -36,21 +36,20 @@ using System.Threading.Tasks;
 #pragma warning disable CA1034 // Class nesting
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
-{   //TODO: Rename to SignInAdapter
+{
 
-    public interface IAuthAdapter : IDisposable
+    public interface ISignInAdapter : IDisposable
     {
         Task DeleteStoredRefreshToken();
 
-        Task<ICredential> TryAuthorizeUsingRefreshTokenAsync(
+        Task<ICredential> TrySignInWithRefreshTokenAsync(
             CancellationToken token);
 
-        Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token);
+        Task<ICredential> SignInWithBrowserAsync(CancellationToken token);
 
         Task<UserInfo> QueryUserInfoAsync(ICredential credential, CancellationToken token);
     }
 
-    // TODO: Make interface
     public class UserInfo
     {
         [JsonProperty("email")]
@@ -66,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public string Subject { get; set; }
     }
 
-    public class GoogleAuthAdapter : IAuthAdapter
+    public class SignInAdapter : ISignInAdapter
     {
         // Scope required to query email from UserInfo endpoint.
         public const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
@@ -77,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         private readonly IAuthorizationCodeFlow flow;
         private readonly ICodeReceiver codeReceiver;
 
-        public GoogleAuthAdapter(
+        public SignInAdapter(
             ClientSecrets clientSecrets,
             IEnumerable<string> scopes,
             IDataStore dataStore,
@@ -88,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             this.initializer = new OAuthInitializer
             {
                 ClientSecrets = clientSecrets,
-                Scopes = scopes.Concat(new[] { GoogleAuthAdapter.EmailScope }),
+                Scopes = scopes.Concat(new[] { SignInAdapter.EmailScope }),
                 DataStore = dataStore
             };
 
@@ -115,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Authorize.
         //---------------------------------------------------------------------
 
-        public async Task<ICredential> TryAuthorizeUsingRefreshTokenAsync(
+        public async Task<ICredential> TrySignInWithRefreshTokenAsync(
             CancellationToken token)
         {
             var existingTokenResponse = await this.flow.LoadTokenAsync(
@@ -152,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token)
+        public async Task<ICredential> SignInWithBrowserAsync(CancellationToken token)
         {
             try
             {

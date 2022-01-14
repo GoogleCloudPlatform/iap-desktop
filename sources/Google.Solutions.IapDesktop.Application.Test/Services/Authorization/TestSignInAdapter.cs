@@ -32,12 +32,12 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 {
     [TestFixture]
-    public class TestGoogleAuthAdapter : ApplicationFixtureBase
+    public class TestSignInAdapter : ApplicationFixtureBase
     {
         [Test]
         public async Task WhenCalled_ThenQueryOpenIdConfigurationAsyncReturnsInfo()
         {
-            var adapter = new GoogleAuthAdapter(
+            var adapter = new SignInAdapter(
                 new Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "openid" },
                 new NullDataStore(),
@@ -50,8 +50,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
             Assert.IsNotNull(config.UserInfoEndpoint);
         }
 
+        //---------------------------------------------------------------------
+        // TrySignInWithRefreshTokenAsync.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenRefreshTokenValidAndAllScopesCovered_ThenTryAuthorizeUsingRefreshTokenAsyncReturnsCredential()
+        public async Task WhenRefreshTokenValidAndAllScopesCovered_ThenTrySignInWithRefreshTokenAsyncReturnsCredential()
         {
             var flow = new Mock<IAuthorizationCodeFlow>();
             flow.Setup(f => f.LoadTokenAsync(
@@ -60,14 +64,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                 .ReturnsAsync(new TokenResponse()
                 {
                     RefreshToken = "refresh-token-1",
-                    Scope = "scope-1 " + GoogleAuthAdapter.EmailScope
+                    Scope = "scope-1 " + SignInAdapter.EmailScope
                 });
             flow.Setup(f => f.ShouldForceTokenRetrieval())
                 .Returns(false);
 
             var dataStore = new Mock<IDataStore>();
 
-            var adapter = new GoogleAuthAdapter(
+            var adapter = new SignInAdapter(
                 new Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1" },
                 dataStore.Object,
@@ -75,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                 _ => flow.Object);
 
             var credential = await adapter
-                .TryAuthorizeUsingRefreshTokenAsync(CancellationToken.None)
+                .TrySignInWithRefreshTokenAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(credential);
@@ -83,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         }
 
         [Test]
-        public async Task WhenRefreshTokenValidButLacksScopes_ThenTryAuthorizeUsingRefreshTokenAsyncReturnsNull()
+        public async Task WhenRefreshTokenValidButLacksScopes_ThenTrySignInWithRefreshTokenAsyncReturnsNull()
         {
             var flow = new Mock<IAuthorizationCodeFlow>();
             flow.Setup(f => f.LoadTokenAsync(
@@ -99,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var dataStore = new Mock<IDataStore>();
 
-            var adapter = new GoogleAuthAdapter(
+            var adapter = new SignInAdapter(
                 new Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1" },
                 dataStore.Object,
@@ -107,14 +111,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                 _ => flow.Object);
 
             var credential = await adapter
-                .TryAuthorizeUsingRefreshTokenAsync(CancellationToken.None)
+                .TrySignInWithRefreshTokenAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNull(credential);
         }
 
         [Test]
-        public async Task WhenRefreshTokenInvalid_ThenTryAuthorizeUsingRefreshTokenAsyncReturnsNull()
+        public async Task WhenRefreshTokenInvalid_ThenTrySignInWithRefreshTokenAsyncReturnsNull()
         {
             var flow = new Mock<IAuthorizationCodeFlow>();
             flow.Setup(f => f.ShouldForceTokenRetrieval())
@@ -122,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var dataStore = new Mock<IDataStore>();
 
-            var adapter = new GoogleAuthAdapter(
+            var adapter = new SignInAdapter(
                 new Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1" },
                 dataStore.Object,
@@ -130,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                 _ => flow.Object);
 
             var credential = await adapter
-                .TryAuthorizeUsingRefreshTokenAsync(CancellationToken.None)
+                .TrySignInWithRefreshTokenAsync(CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNull(credential);

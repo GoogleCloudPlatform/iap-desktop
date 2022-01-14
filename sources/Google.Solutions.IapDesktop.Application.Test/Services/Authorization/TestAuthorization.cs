@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         [Test]
         public async Task RevokeAsyncDeletesRefreshToken()
         {
-            var adapter = new Mock<IAuthAdapter>();
+            var adapter = new Mock<ISignInAdapter>();
 
             var authorization = await OAuthAuthorization.CreateAuthorizationAsync(
                     adapter.Object,
@@ -59,8 +59,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         [Test]
         public async Task WhenRefreshTokenValid_ThenTryLoadExistingAuthorizationAsyncReturnsObject()
         {
-            var adapter = new Mock<IAuthAdapter>();
-            adapter.Setup(a => a.TryAuthorizeUsingRefreshTokenAsync(
+            var adapter = new Mock<ISignInAdapter>();
+            adapter.Setup(a => a.TrySignInWithRefreshTokenAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<ICredential>().Object);
             adapter.Setup(a => a.QueryUserInfoAsync(
@@ -84,8 +84,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         [Test]
         public async Task WhenUsingRefreshTokenFails_ThenTryLoadExistingAuthorizationAsyncReturnsNull()
         {
-            var adapter = new Mock<IAuthAdapter>();
-            adapter.Setup(a => a.TryAuthorizeUsingRefreshTokenAsync(
+            var adapter = new Mock<ISignInAdapter>();
+            adapter.Setup(a => a.TrySignInWithRefreshTokenAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((ICredential)null);
 
@@ -104,8 +104,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         [Test]
         public async Task CreateAuthorizationAsyncReturnsObject()
         {
-            var adapter = new Mock<IAuthAdapter>();
-            adapter.Setup(a => a.AuthorizeUsingBrowserAsync(
+            var adapter = new Mock<ISignInAdapter>();
+            adapter.Setup(a => a.SignInWithBrowserAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<ICredential>().Object);
             adapter.Setup(a => a.QueryUserInfoAsync(
@@ -133,8 +133,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         [Test]
         public async Task WhenReauthorizeUsesDifferentUser_ThenReauthorizeAsyncSwapsCredential()
         {
-            var adapter = new Mock<IAuthAdapter>();
-            adapter.Setup(a => a.AuthorizeUsingBrowserAsync(
+            var adapter = new Mock<ISignInAdapter>();
+            adapter.Setup(a => a.SignInWithBrowserAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<ICredential>().Object);
             adapter.Setup(a => a.QueryUserInfoAsync(

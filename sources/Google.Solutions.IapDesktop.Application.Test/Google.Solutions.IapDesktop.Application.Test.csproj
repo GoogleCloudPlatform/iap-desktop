@@ -123,7 +123,7 @@
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapterWithMtls.cs" />
     <Compile Include="Services\Authorization\TestAuthorization.cs" />
-    <Compile Include="Services\Authorization\TestGoogleAuthAdapter.cs" />
+    <Compile Include="Services\Authorization\TestSignInAdapter.cs" />
     <Compile Include="Services\Integration\TestSessionBroker.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelService.cs" />
