@@ -37,7 +37,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public interface ISignInAdapter : IDisposable
+    public interface ISignInAdapter
     {
         Task DeleteStoredRefreshToken();
 
@@ -72,8 +72,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public const string StoreUserId = "oauth";
 
         private readonly OAuthInitializer initializer;
-        private readonly IAuthorizationCodeFlow flow;
         private readonly ICodeReceiver codeReceiver;
+        private readonly Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow;
 
         public SignInAdapter(
             ClientSecrets clientSecrets,
@@ -91,18 +91,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             };
 
             this.codeReceiver = new LocalServerCodeReceiver(closePageReponse);
+
             if (createCodeFlow != null)
             {
-                this.flow = createCodeFlow(this.initializer);
+                this.createCodeFlow = createCodeFlow;
             }
             else
             {
-                this.flow = new GoogleAuthorizationCodeFlow(this.initializer);
+                this.createCodeFlow = i => new GoogleAuthorizationCodeFlow(i);
             }
         }
-
-        private AuthorizationCodeInstalledApp InstalledApp
-            => new AuthorizationCodeInstalledApp(this.flow, this.codeReceiver);
 
         public Task DeleteStoredRefreshToken()
         {
@@ -116,12 +114,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public async Task<ICredential> TrySignInWithRefreshTokenAsync(
             CancellationToken token)
         {
-            var existingTokenResponse = await this.flow.LoadTokenAsync(
+            //
+            // N.B. Do not dispose the flow if the sign-in succeeds as the
+            // credential object must hold on to it.
+            //
+
+            var flow = this.createCodeFlow(this.initializer);
+            var app = new AuthorizationCodeInstalledApp(flow, this.codeReceiver);
+
+            var existingTokenResponse = await flow.LoadTokenAsync(
                     StoreUserId,
                     token)
                 .ConfigureAwait(false);
 
-            if (!this.InstalledApp.ShouldRequestAuthorizationCode(existingTokenResponse))
+            if (!app.ShouldRequestAuthorizationCode(existingTokenResponse))
             {
                 ApplicationTraceSources.Default.TraceVerbose("Found existing credentials");
 
@@ -131,21 +137,26 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     ApplicationTraceSources.Default.TraceVerbose(
                         "Dropping existing credential as it lacks one or more scopes");
 
+                    //
                     // The existing auth might be fine, but it lacks a scope.
                     // Delete it so that it does not cause harm later.
+                    //
                     await DeleteStoredRefreshToken().ConfigureAwait(false);
+
+                    flow.Dispose();
                     return null;
                 }
                 else
                 {
                     return new UserCredential(
-                        this.flow,
+                        flow,
                         StoreUserId,
                         existingTokenResponse);
                 }
             }
             else
             {
+                flow.Dispose();
                 return null;
             }
         }
@@ -154,7 +165,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             try
             {
-                var userCredential = await this.InstalledApp.AuthorizeAsync(
+                //
+                // N.B. Do not dispose the flow if the sign-in succeeds as the
+                // credential object must hold on to it.
+                //
+
+                var flow = this.createCodeFlow(this.initializer);
+                var app = new AuthorizationCodeInstalledApp(flow, this.codeReceiver);
+
+                var userCredential = await app.AuthorizeAsync(
                         StoreUserId,
                         token)
                     .ConfigureAwait(true);
@@ -193,8 +212,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             CancellationToken token)
         {
             return await new RestClient().GetAsync<OpenIdConfiguration>(
-                this.initializer.MetadataUrl,
-                token).ConfigureAwait(false);
+                    this.initializer.MetadataUrl,
+                    token)
+                .ConfigureAwait(false);
         }
 
         public async Task<UserInfo> QueryUserInfoAsync(
@@ -206,27 +226,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             var client = new RestClient(credential);
 
             return await client.GetAsync<UserInfo>(
-                configuration.UserInfoEndpoint,
-                token).ConfigureAwait(false);
-        }
-
-        //---------------------------------------------------------------------
-        // IDisposable.
-        //---------------------------------------------------------------------
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        // Protected implementation of Dispose pattern.
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.flow.Dispose();
-            }
+                    configuration.UserInfoEndpoint,
+                    token)
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------

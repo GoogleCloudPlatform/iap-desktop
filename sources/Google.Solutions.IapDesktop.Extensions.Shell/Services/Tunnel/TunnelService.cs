@@ -60,9 +60,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(tunnelEndpoint))
             {
                 var clientCertificate =
-                        (this.authorizationSource.DeviceEnrollment != null &&
-                        this.authorizationSource.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
-                    ? this.authorizationSource.DeviceEnrollment.Certificate
+                        (this.authorizationSource.Authorization.DeviceEnrollment != null &&
+                        this.authorizationSource.Authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
+                    ? this.authorizationSource.Authorization.DeviceEnrollment.Certificate
                     : null;
 
                 if (clientCertificate != null)

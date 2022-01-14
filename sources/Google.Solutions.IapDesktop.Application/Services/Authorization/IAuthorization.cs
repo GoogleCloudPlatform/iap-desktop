@@ -42,13 +42,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
         string Email { get; }
 
         UserInfo UserInfo { get; }
+
+        IDeviceEnrollment DeviceEnrollment { get; }
     }
 
     public interface IDeviceEnrollment
     {
         DeviceEnrollmentState State { get; }
         X509Certificate2 Certificate { get; }
-        Task RefreshAsync(string userId);
+        Task RefreshAsync();
     }
 
     public enum DeviceEnrollmentState

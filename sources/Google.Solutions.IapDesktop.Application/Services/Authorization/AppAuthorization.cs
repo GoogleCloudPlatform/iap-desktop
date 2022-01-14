@@ -33,22 +33,30 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
     {
         private readonly ISignInAdapter adapter;
 
-        // The OAuth credential changes after each reauth. Therefore, use
+        //
+        // NB. The OAuth credential changes after each reauth. Therefore, use
         // a SwappableCredential as indirection.
+        //
         private readonly SwappableCredential credential;
 
         private AppAuthorization(
             ISignInAdapter adapter,
+            IDeviceEnrollment deviceEnrollment,
             ICredential initialCredential,
             UserInfo userInfo)
         {
             this.adapter = adapter;
+            this.DeviceEnrollment = deviceEnrollment;
             this.credential = new SwappableCredential(initialCredential, userInfo);
         }
 
         public ICredential Credential => this.credential;
+        
         public string Email => this.credential.UserInfo.Email;
+
         public UserInfo UserInfo => this.credential.UserInfo;
+
+        public IDeviceEnrollment DeviceEnrollment { get; }
 
         public Task RevokeAsync()
         {
@@ -57,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 
         public static async Task<AppAuthorization> TryLoadExistingAuthorizationAsync(
             ISignInAdapter oauthAdapter,
+            IDeviceEnrollment deviceEnrollment,
             CancellationToken token)
         {
             var credential = await oauthAdapter
@@ -73,6 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 
                 return new AppAuthorization(
                     oauthAdapter,
+                    deviceEnrollment,
                     credential,
                     userInfo);
             }
@@ -87,6 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 
         public static async Task<AppAuthorization> CreateAuthorizationAsync(
             ISignInAdapter oauthAdapter,
+            IDeviceEnrollment deviceEnrollment,
             CancellationToken token)
         {
             var credential = await oauthAdapter
@@ -99,20 +110,32 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 
             return new AppAuthorization(
                 oauthAdapter,
+                deviceEnrollment,
                 credential,
                 userInfo);
         }
 
         public async Task ReauthorizeAsync(CancellationToken token)
         {
+            //
+            // Make sure we use the right certificate.
+            //
+            await this.DeviceEnrollment
+                .RefreshAsync()
+                .ConfigureAwait(false);
+
+            //
             // As this is a 3p OAuth app, we do not support Gnubby/Password-based
             // reauth. Instead, we simply trigger a new authorization (code flow).
+            //
             var newCredential = await this.adapter
                 .SignInWithBrowserAsync(token)
                 .ConfigureAwait(false);
 
+            //
             // The user might have changed to a different user account,
             // so we have to re-fetch user information.
+            //
             var newUserInfo = await this.adapter.QueryUserInfoAsync(
                 newCredential,
                 token).ConfigureAwait(false);

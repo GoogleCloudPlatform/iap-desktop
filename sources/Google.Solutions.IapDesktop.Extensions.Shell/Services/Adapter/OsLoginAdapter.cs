@@ -68,11 +68,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             this.service = new CloudOSLoginService(
                 ClientServiceFactory.ForMtlsEndpoint(
                     authorizationSource.Authorization.Credential,
-                    authorizationSource.DeviceEnrollment,
+                    authorizationSource.Authorization.DeviceEnrollment,
                     MtlsBaseUri));
 
             Debug.Assert(
-                (authorizationSource.DeviceEnrollment?.Certificate != null &&
+                (authorizationSource.Authorization.DeviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
                     == IsDeviceCertiticateAuthenticationEnabled);
         }

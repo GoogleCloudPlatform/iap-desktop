@@ -41,9 +41,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         public async Task RevokeAsyncDeletesRefreshToken()
         {
             var adapter = new Mock<ISignInAdapter>();
+            var deviceEnrollment = new Mock<IDeviceEnrollment>();
 
             var authorization = await AppAuthorization.CreateAuthorizationAsync(
                     adapter.Object,
+                    deviceEnrollment.Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -73,6 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var authorization = await AppAuthorization.TryLoadExistingAuthorizationAsync(
                     adapter.Object,
+                    new Mock<IDeviceEnrollment>().Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -91,6 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var authorization = await AppAuthorization.TryLoadExistingAuthorizationAsync(
                     adapter.Object,
+                    new Mock<IDeviceEnrollment>().Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -118,6 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var authorization = await AppAuthorization.CreateAuthorizationAsync(
                     adapter.Object,
+                    new Mock<IDeviceEnrollment>().Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
@@ -147,6 +152,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var authorization = await AppAuthorization.CreateAuthorizationAsync(
                     adapter.Object,
+                    new Mock<IDeviceEnrollment>().Object,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 

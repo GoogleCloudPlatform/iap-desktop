@@ -29,19 +29,19 @@ namespace Google.Solutions.IapDesktop.Application.Test
     public class SecureConnectFixtureBase : ApplicationFixtureBase
     {
         protected static IAuthorizationSource CreateAuthorizationSourceForSecureConnectUser()
-        {
-            var authz = new Mock<IAuthorization>();
-            authz.SetupGet(a => a.Credential).Returns(TestProject.GetSecureConnectCredential());
-
+        {   
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State)
                 .Returns(DeviceEnrollmentState.Enrolled);
             enrollment.SetupGet(e => e.Certificate)
                 .Returns(TestProject.GetDeviceCertificate());
 
+            var authz = new Mock<IAuthorization>();
+            authz.SetupGet(a => a.Credential).Returns(TestProject.GetSecureConnectCredential());
+            authz.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+
             var adapter = new Mock<IAuthorizationSource>();
             adapter.SetupGet(a => a.Authorization).Returns(authz.Object);
-            adapter.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
 
             return adapter.Object;
         }

@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public ComputeEngineAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
-                  authService.DeviceEnrollment)
+                  authService.Authorization.DeviceEnrollment)
         {
         }
 

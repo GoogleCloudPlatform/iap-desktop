@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         public AuditLogAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
-                  authService.DeviceEnrollment)
+                  authService.Authorization.DeviceEnrollment)
         {
         }
 

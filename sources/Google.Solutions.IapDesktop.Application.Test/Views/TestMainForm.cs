@@ -105,6 +105,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 throw new NotImplementedException();
             }
+
+            public IDeviceEnrollment DeviceEnrollment => new SimpleDeviceEnrollment();
         }
 
         private class SimpleDeviceEnrollment : IDeviceEnrollment
@@ -113,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             public X509Certificate2 Certificate => null;
 
-            public Task RefreshAsync(string userId)
+            public Task RefreshAsync()
             {
                 throw new NotImplementedException();
             }

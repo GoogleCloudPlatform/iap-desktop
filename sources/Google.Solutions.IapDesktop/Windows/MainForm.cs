@@ -619,7 +619,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 button.Size);
 
             new DeviceFlyoutWindow(
-                    new DeviceFlyoutViewModel(this, this.DeviceEnrollment))
+                    new DeviceFlyoutViewModel(this, this.Authorization.DeviceEnrollment))
                 .Show(
                     this,
                     screenPosition,
@@ -633,7 +633,6 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
 
         public IAuthorization Authorization => this.viewModel.Authorization;
-        public IDeviceEnrollment DeviceEnrollment => this.viewModel.DeviceEnrollment;
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);

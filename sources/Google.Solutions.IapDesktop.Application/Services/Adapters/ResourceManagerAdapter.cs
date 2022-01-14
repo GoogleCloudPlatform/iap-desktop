@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public ResourceManagerAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
-                  authService.DeviceEnrollment)
+                  authService.Authorization.DeviceEnrollment)
         {
         }
 

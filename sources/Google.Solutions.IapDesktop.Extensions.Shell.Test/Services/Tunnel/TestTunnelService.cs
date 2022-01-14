@@ -46,10 +46,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
         {
             var authz = new Mock<IAuthorization>();
             authz.SetupGet(a => a.Credential).Returns(credential);
+            authz.SetupGet(a => a.DeviceEnrollment).Returns(enrollment);
 
             var adapter = new Mock<IAuthorizationSource>();
             adapter.SetupGet(a => a.Authorization).Returns(authz.Object);
-            adapter.SetupGet(a => a.DeviceEnrollment).Returns(enrollment);
 
             return adapter.Object;
         }

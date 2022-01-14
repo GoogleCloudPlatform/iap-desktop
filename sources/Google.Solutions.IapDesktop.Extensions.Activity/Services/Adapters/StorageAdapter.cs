@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         public StorageAdapter(IAuthorizationSource authService)
             : this(
                   authService.Authorization.Credential,
-                  authService.DeviceEnrollment)
+                  authService.Authorization.DeviceEnrollment)
         {
         }
 

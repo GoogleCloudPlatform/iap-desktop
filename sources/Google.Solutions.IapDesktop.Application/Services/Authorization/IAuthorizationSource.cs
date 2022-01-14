@@ -28,7 +28,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
     public interface IAuthorizationSource
     {
         IAuthorization Authorization { get; }
-        IDeviceEnrollment DeviceEnrollment { get; }
 
         Task ReauthorizeAsync(CancellationToken token);
     }

@@ -53,18 +53,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public static IAuthorization Authorize(
             Control parent,
-            ClientSecrets clientSecrets,
-            string[] scopes,
-            IDataStore dataStore)
+            ISignInAdapter signInAdapter,
+            IDeviceEnrollment deviceEnrollment)
         {
-            // N.B. Do not dispose the adapter (and embedded GoogleAuthorizationCodeFlow)
-            // as it might be needed for token refreshes later.
-            var oauthAdapter = new SignInAdapter(
-                clientSecrets,
-                scopes,
-                dataStore,
-                Resources.AuthorizationSuccessful);
-
             Exception caughtException = null;
             using (var dialog = new AuthorizeDialog())
             {
@@ -74,7 +65,8 @@ namespace Google.Solutions.IapDesktop.Windows
                     {
                         // Try to authorize using OAuth.
                         dialog.authorization = await AppAuthorization.TryLoadExistingAuthorizationAsync(
-                                oauthAdapter,
+                                signInAdapter,
+                                deviceEnrollment,
                                 CancellationToken.None)
                             .ConfigureAwait(true);
 
@@ -106,7 +98,8 @@ namespace Google.Solutions.IapDesktop.Windows
                     try
                     {
                         dialog.authorization = await AppAuthorization.CreateAuthorizationAsync(
-                                oauthAdapter,
+                                signInAdapter,
+                                deviceEnrollment,
                                 CancellationToken.None)
                             .ConfigureAwait(true);
                     }
