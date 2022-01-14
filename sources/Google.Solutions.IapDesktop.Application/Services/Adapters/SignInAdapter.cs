@@ -44,9 +44,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         Task<ICredential> TrySignInWithRefreshTokenAsync(
             CancellationToken token);
 
-        Task<ICredential> SignInWithBrowserAsync(CancellationToken token);
+        Task<ICredential> SignInWithBrowserAsync(
+            String loginHint,
+            CancellationToken token);
 
-        Task<UserInfo> QueryUserInfoAsync(ICredential credential, CancellationToken token);
+        Task<UserInfo> QueryUserInfoAsync(
+            ICredential credential, 
+            CancellationToken token);
     }
 
     public class UserInfo
@@ -71,8 +75,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public const string StoreUserId = "oauth";
 
-        private readonly OAuthInitializer initializer;
         private readonly ICodeReceiver codeReceiver;
+        private readonly ClientSecrets clientSecrets;
+        private readonly IEnumerable<string> scopes;
+        private readonly IDataStore dataStore;
         private readonly Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow;
 
         public SignInAdapter(
@@ -82,29 +88,37 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string closePageReponse,
             Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow = null)
         {
-            // Add email scope.
-            this.initializer = new OAuthInitializer
+            this.codeReceiver = new LocalServerCodeReceiver(closePageReponse);
+            this.clientSecrets = clientSecrets;
+            this.scopes = scopes;
+            this.dataStore = dataStore;
+            this.createCodeFlow = createCodeFlow;
+        }
+
+        private OAuthInitializer CreateInitializer()
+        {
+            //
+            // Add email scope to requested scope so that we can query
+            // user info.
+            //
+            return new OAuthInitializer
             {
                 ClientSecrets = clientSecrets,
                 Scopes = scopes.Concat(new[] { SignInAdapter.EmailScope }),
                 DataStore = dataStore
             };
+        }
 
-            this.codeReceiver = new LocalServerCodeReceiver(closePageReponse);
-
-            if (createCodeFlow != null)
-            {
-                this.createCodeFlow = createCodeFlow;
-            }
-            else
-            {
-                this.createCodeFlow = i => new GoogleAuthorizationCodeFlow(i);
-            }
+        private IAuthorizationCodeFlow CreateFlow(OAuthInitializer initializer)
+        {
+            return this.createCodeFlow != null
+                ? this.createCodeFlow(initializer)
+                :new GoogleAuthorizationCodeFlow(initializer);
         }
 
         public Task DeleteStoredRefreshToken()
         {
-            return this.initializer.DataStore.DeleteAsync<TokenResponse>(StoreUserId);
+            return this.dataStore.DeleteAsync<TokenResponse>(StoreUserId);
         }
 
         //---------------------------------------------------------------------
@@ -119,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             // credential object must hold on to it.
             //
 
-            var flow = this.createCodeFlow(this.initializer);
+            var flow = CreateFlow(CreateInitializer());
             var app = new AuthorizationCodeInstalledApp(flow, this.codeReceiver);
 
             var existingTokenResponse = await flow.LoadTokenAsync(
@@ -132,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 ApplicationTraceSources.Default.TraceVerbose("Found existing credentials");
 
                 var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
-                if (!scopesOfExistingTokenResponse.ContainsAll(this.initializer.Scopes))
+                if (!scopesOfExistingTokenResponse.ContainsAll(this.scopes))
                 {
                     ApplicationTraceSources.Default.TraceVerbose(
                         "Dropping existing credential as it lacks one or more scopes");
@@ -161,16 +175,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<ICredential> SignInWithBrowserAsync(CancellationToken token)
+        public async Task<ICredential> SignInWithBrowserAsync(
+            String loginHint, 
+            CancellationToken token)
         {
             try
             {
+                var initializer = CreateInitializer();
+                initializer.LoginHint = loginHint;
+
                 //
                 // N.B. Do not dispose the flow if the sign-in succeeds as the
                 // credential object must hold on to it.
                 //
-
-                var flow = this.createCodeFlow(this.initializer);
+                var flow = CreateFlow(initializer);
                 var app = new AuthorizationCodeInstalledApp(flow, this.codeReceiver);
 
                 var userCredential = await app.AuthorizeAsync(
@@ -183,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 // then it's possible that some of the requested scopes haven't been granted.
                 //
                 var grantedScopes = userCredential.Token.Scope?.Split(' ');
-                if (this.initializer.Scopes.Any(
+                if (this.scopes.Any(
                     requestedScope => !grantedScopes.Contains(requestedScope)))
                 {
                     throw new AuthorizationFailedException(
@@ -212,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             CancellationToken token)
         {
             return await new RestClient().GetAsync<OpenIdConfiguration>(
-                    this.initializer.MetadataUrl,
+                    CreateInitializer().MetadataUrl,
                     token)
                 .ConfigureAwait(false);
         }

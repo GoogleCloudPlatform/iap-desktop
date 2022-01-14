@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             CancellationToken token)
         {
             var credential = await oauthAdapter
-                .SignInWithBrowserAsync(token)
+                .SignInWithBrowserAsync(null, token)
                 .ConfigureAwait(false);
 
             var userInfo = await oauthAdapter.QueryUserInfoAsync(
@@ -128,8 +128,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             // As this is a 3p OAuth app, we do not support Gnubby/Password-based
             // reauth. Instead, we simply trigger a new authorization (code flow).
             //
+            // Use the current user as login hint to simplify the browser flow
+            // a little.
+            //
             var newCredential = await this.adapter
-                .SignInWithBrowserAsync(token)
+                .SignInWithBrowserAsync(this.Email, token)
                 .ConfigureAwait(false);
 
             //
