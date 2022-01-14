@@ -185,7 +185,7 @@
       <DependentUpon>UserFlyoutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\CloudConsoleService.cs" />
-    <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
+    <Compile Include="Services\Authorization\IAuthorizationService.cs" />
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>

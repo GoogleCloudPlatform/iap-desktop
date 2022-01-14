@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -252,7 +253,7 @@ namespace Google.Solutions.IapDesktop
             //
             // Adapter layer.
             //
-            adapterLayer.AddSingleton<IAuthorizationAdapter>(mainForm);
+            adapterLayer.AddSingleton<IAuthorizationService>(mainForm);
             adapterLayer.AddSingleton<IJobHost>(mainForm);
             adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
             adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();

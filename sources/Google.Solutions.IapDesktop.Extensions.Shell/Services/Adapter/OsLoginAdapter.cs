@@ -26,6 +26,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
@@ -50,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     {
         private const string MtlsBaseUri = "https://oslogin.mtls.googleapis.com/";
 
-        private readonly IAuthorizationAdapter authorizationAdapter;
+        private readonly IAuthorizationService authorizationService;
         private readonly CloudOSLoginService service;
 
 
@@ -61,23 +62,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         // Ctor.
         //---------------------------------------------------------------------
 
-        public OsLoginAdapter(IAuthorizationAdapter authAdapter)
+        public OsLoginAdapter(IAuthorizationService authorizationService)
         {
-            this.authorizationAdapter = authAdapter;
+            this.authorizationService = authorizationService;
             this.service = new CloudOSLoginService(
                 ClientServiceFactory.ForMtlsEndpoint(
-                    authAdapter.Authorization.Credential,
-                    authAdapter.DeviceEnrollment,
+                    authorizationService.Authorization.Credential,
+                    authorizationService.DeviceEnrollment,
                     MtlsBaseUri));
 
             Debug.Assert(
-                (authAdapter.DeviceEnrollment?.Certificate != null &&
+                (authorizationService.DeviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
                     == IsDeviceCertiticateAuthenticationEnabled);
         }
 
         public OsLoginAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationAdapter>())
+            : this(serviceProvider.GetService<IAuthorizationService>())
         {
         }
 
@@ -96,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 var expiryTimeUsec = new DateTimeOffset(DateTime.UtcNow.Add(validity))
                     .ToUnixTimeMilliseconds() * 1000;
 
-                var userEmail = this.authorizationAdapter.Authorization.Email;
+                var userEmail = this.authorizationService.Authorization.Email;
                 Debug.Assert(userEmail != null);
 
                 var request = this.service.Users.ImportSshPublicKey(

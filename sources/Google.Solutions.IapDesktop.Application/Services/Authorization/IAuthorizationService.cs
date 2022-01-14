@@ -24,9 +24,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 {
-    public interface IAuthorizationAdapter
+    public interface IAuthorizationService
     {
         IAuthorization Authorization { get; }
         IDeviceEnrollment DeviceEnrollment { get; }

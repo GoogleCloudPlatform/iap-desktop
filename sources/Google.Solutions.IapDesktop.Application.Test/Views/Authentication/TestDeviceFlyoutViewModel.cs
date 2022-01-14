@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views.Authentication;
 using Moq;
 using NUnit.Framework;

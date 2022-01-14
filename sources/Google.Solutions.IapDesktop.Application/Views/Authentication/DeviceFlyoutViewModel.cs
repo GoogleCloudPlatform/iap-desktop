@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;

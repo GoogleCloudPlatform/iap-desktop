@@ -24,6 +24,7 @@ using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -36,7 +37,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views
 {
-    public partial class TestMainForm : Form, IMainForm, IAuthorizationAdapter, IJobService
+    public partial class TestMainForm : Form, IMainForm, IAuthorizationService, IJobService
     {
         public TestMainForm()
         {

@@ -25,6 +25,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;
 using Moq;
@@ -40,14 +41,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
     [Category("IntegrationTest")]
     public class TestTunnelService : CommonFixtureBase
     {
-        private IAuthorizationAdapter CreateAuthorizationAdapter(
+        private IAuthorizationService CreateAuthorizationServiceMock(
             ICredential credential,
             IDeviceEnrollment enrollment)
         {
             var authz = new Mock<IAuthorization>();
             authz.SetupGet(a => a.Credential).Returns(credential);
 
-            var adapter = new Mock<IAuthorizationAdapter>();
+            var adapter = new Mock<IAuthorizationService>();
             adapter.SetupGet(a => a.Authorization).Returns(authz.Object);
             adapter.SetupGet(a => a.DeviceEnrollment).Returns(enrollment);
 
@@ -59,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var service = new TunnelService(CreateAuthorizationAdapter(
+            var service = new TunnelService(CreateAuthorizationServiceMock(
                 await credential,
                 null));
             var destination = new TunnelDestination(
@@ -86,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
         public async Task WhenInstanceNotAvailable_ThenProbeFails(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var service = new TunnelService(CreateAuthorizationAdapter(
+            var service = new TunnelService(CreateAuthorizationServiceMock(
                 await credential,
                 null));
             var destination = new TunnelDestination(
@@ -114,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var service = new TunnelService(CreateAuthorizationAdapter(
+            var service = new TunnelService(CreateAuthorizationServiceMock(
                 await credential,
                 null));
             var destination = new TunnelDestination(
@@ -139,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var service = new TunnelService(CreateAuthorizationAdapter(
+            var service = new TunnelService(CreateAuthorizationServiceMock(
                 await credential,
                 null));
             var destination = new TunnelDestination(

@@ -24,6 +24,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
@@ -74,9 +75,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
             using (var gceAdapter = new ComputeEngineAdapter(
-                this.serviceProvider.GetService<IAuthorizationAdapter>()))
+                this.serviceProvider.GetService<IAuthorizationService>()))
             using (var keyAdapter = new AuthorizedKeyService(
-                this.serviceProvider.GetService<IAuthorizationAdapter>(),
+                this.serviceProvider.GetService<IAuthorizationService>(),
                 new ComputeEngineAdapter(await credential),
                 new ResourceManagerAdapter(await credential),
                 new Mock<IOsLoginService>().Object))

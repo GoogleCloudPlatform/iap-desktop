@@ -22,13 +22,14 @@
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Moq;
 
 namespace Google.Solutions.IapDesktop.Application.Test
 {
     public class SecureConnectFixtureBase : ApplicationFixtureBase
     {
-        protected static IAuthorizationAdapter CreateAuthorizationAdapterForSecureConnectUser()
+        protected static IAuthorizationService CreateAuthorizationServiceForSecureConnectUser()
         {
             var authz = new Mock<IAuthorization>();
             authz.SetupGet(a => a.Credential).Returns(TestProject.GetSecureConnectCredential());
@@ -39,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
             enrollment.SetupGet(e => e.Certificate)
                 .Returns(TestProject.GetDeviceCertificate());
 
-            var adapter = new Mock<IAuthorizationAdapter>();
+            var adapter = new Mock<IAuthorizationService>();
             adapter.SetupGet(a => a.Authorization).Returns(authz.Object);
             adapter.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
 

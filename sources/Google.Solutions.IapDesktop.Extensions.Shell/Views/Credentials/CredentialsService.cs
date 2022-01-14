@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using System;
@@ -60,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         {
             var username = string.IsNullOrEmpty(settings.RdpUsername.StringValue)
                 ? this.serviceProvider
-                    .GetService<IAuthorizationAdapter>()
+                    .GetService<IAuthorizationService>()
                     .Authorization
                     .SuggestWindowsUsername()
                 : settings.RdpUsername.StringValue;

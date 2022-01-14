@@ -22,6 +22,7 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -83,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             registry.AddSingleton<IMainForm>(mainForm);
             registry.AddSingleton<IJobService>(mainForm);
-            registry.AddSingleton<IAuthorizationAdapter>(mainForm);
+            registry.AddSingleton<IAuthorizationService>(mainForm);
             registry.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
 
             registry.AddSingleton<IEventService>(this.eventService);

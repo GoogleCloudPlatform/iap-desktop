@@ -25,6 +25,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
@@ -81,13 +82,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             authorization
                 .SetupGet(a => a.Email)
                 .Returns("test@example.com");
-            var authorizationAdapter = new Mock<IAuthorizationAdapter>();
-            authorizationAdapter
+            var authorizationService = new Mock<IAuthorizationService>();
+            authorizationService
                 .Setup(a => a.Authorization)
                 .Returns(authorization.Object);
 
             using (var keyAdapter = new AuthorizedKeyService(
-                authorizationAdapter.Object,
+                authorizationService.Object,
                 new ComputeEngineAdapter(credential),
                 new ResourceManagerAdapter(credential),
                 new Mock<IOsLoginService>().Object))

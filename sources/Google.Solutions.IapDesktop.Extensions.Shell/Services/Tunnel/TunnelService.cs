@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;
@@ -40,15 +41,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
     [Service(typeof(ITunnelService))]
     public class TunnelService : ITunnelService
     {
-        private readonly IAuthorizationAdapter authorizationService;
+        private readonly IAuthorizationService authorizationService;
 
-        public TunnelService(IAuthorizationAdapter authorizationService)
+        public TunnelService(IAuthorizationService authorizationService)
         {
             this.authorizationService = authorizationService;
         }
 
         public TunnelService(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationAdapter>())
+            : this(serviceProvider.GetService<IAuthorizationService>())
         {
         }
 

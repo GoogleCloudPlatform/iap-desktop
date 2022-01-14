@@ -25,6 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
@@ -50,7 +51,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationAdapter
+    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationService
     {
         private readonly MainFormViewModel viewModel;
 
@@ -629,7 +630,7 @@ namespace Google.Solutions.IapDesktop.Windows
 #pragma warning restore IDE0067 // Dispose objects before losing scope
 
         //---------------------------------------------------------------------
-        // IAuthorizationAdapter.
+        // IAuthorizationService.
         //---------------------------------------------------------------------
 
         public IAuthorization Authorization => this.viewModel.Authorization;

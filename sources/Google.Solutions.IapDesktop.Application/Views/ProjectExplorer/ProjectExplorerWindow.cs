@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -53,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         private readonly IMainForm mainForm;
         private readonly IJobService jobService;
-        private readonly IAuthorizationAdapter authService;
+        private readonly IAuthorizationService authService;
         private readonly IServiceProvider serviceProvider;
 
         private readonly ProjectExplorerViewModel viewModel;
@@ -83,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             this.mainForm = serviceProvider.GetService<IMainForm>();
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
+            this.authService = serviceProvider.GetService<IAuthorizationService>();
 
             this.ContextMenuCommands = new CommandContainer<IProjectModelNode>(
                 this,

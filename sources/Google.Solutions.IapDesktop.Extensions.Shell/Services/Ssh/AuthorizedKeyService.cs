@@ -29,6 +29,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
@@ -48,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private const string EnableOsLoginFlag = "enable-oslogin";
         private const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
 
-        private readonly IAuthorizationAdapter authorizationAdapter;
+        private readonly IAuthorizationService authorizationService;
         private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly IResourceManagerAdapter resourceManagerAdapter;
         private readonly IOsLoginService osLoginService;
@@ -58,12 +59,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         //---------------------------------------------------------------------
 
         public AuthorizedKeyService(
-            IAuthorizationAdapter authorizationAdapter,
+            IAuthorizationService authorizationService,
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
             IOsLoginService osLoginService)
         {
-            this.authorizationAdapter = authorizationAdapter;
+            this.authorizationService = authorizationService;
             this.computeEngineAdapter = computeEngineAdapter;
             this.resourceManagerAdapter = resourceManagerAdapter;
             this.osLoginService = osLoginService;
@@ -71,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
         public AuthorizedKeyService(IServiceProvider serviceProvider)
             : this(
-                  serviceProvider.GetService<IAuthorizationAdapter>(),
+                  serviceProvider.GetService<IAuthorizationService>(),
                   serviceProvider.GetService<IComputeEngineAdapter>(),
                   serviceProvider.GetService<IResourceManagerAdapter>(),
                   serviceProvider.GetService<IOsLoginService>())
@@ -326,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         key,
                         preferredPosixUsername,
                         useInstanceKeySet,
-                        this.authorizationAdapter.Authorization);
+                        this.authorizationService.Authorization);
                     Debug.Assert(profile.Username != null);
 
                     var metadataKey = new ManagedMetadataAuthorizedKey(
@@ -334,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         key.Type,
                         key.PublicKeyString,
                         new ManagedKeyMetadata(
-                            this.authorizationAdapter.Authorization.Email,
+                            this.authorizationService.Authorization.Email,
                             DateTime.UtcNow.Add(validity)));
 
                     var existingKeySet = MetadataAuthorizedKeySet.FromMetadata(

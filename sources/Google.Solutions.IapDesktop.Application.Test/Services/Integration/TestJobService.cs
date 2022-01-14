@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Moq;
 using NUnit.Framework;
@@ -71,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             }
         }
 
-        private Mock<IAuthorizationAdapter> authService = null;
+        private Mock<IAuthorizationService> authService = null;
         private Mock<IJobHost> jobHost = null;
         private JobService jobService = null;
 
@@ -80,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         {
             var authz = new Mock<IAuthorization>();
 
-            this.authService = new Mock<IAuthorizationAdapter>();
+            this.authService = new Mock<IAuthorizationService>();
             this.authService.SetupGet(a => a.Authorization).Returns(authz.Object);
             this.authService.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(true));
