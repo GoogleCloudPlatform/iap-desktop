@@ -110,6 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         {
             var adapter = new Mock<ISignInAdapter>();
             adapter.Setup(a => a.SignInWithBrowserAsync(
+                    It.Is<string>(loginHint => loginHint == null),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<ICredential>().Object);
             adapter.Setup(a => a.QueryUserInfoAsync(
@@ -140,6 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         {
             var adapter = new Mock<ISignInAdapter>();
             adapter.Setup(a => a.SignInWithBrowserAsync(
+                    It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<ICredential>().Object);
             adapter.Setup(a => a.QueryUserInfoAsync(
@@ -173,6 +175,45 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
             Assert.IsNotNull(authorization);
             Assert.AreEqual("bob@example.com", authorization.Email);
             Assert.AreEqual("bob@example.com", authorization.UserInfo.Email);
+        }
+
+        [Test]
+        public async Task WhenExistingEmailKnown_ThenReauthorizeAsyncSetsLoginHint()
+        {
+            var adapter = new Mock<ISignInAdapter>();
+            adapter.Setup(a => a.SignInWithBrowserAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Mock<ICredential>().Object);
+            adapter.Setup(a => a.QueryUserInfoAsync(
+                    It.IsAny<ICredential>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UserInfo()
+                {
+                    Email = "alice@example.com"
+                });
+
+            var authorization = await AppAuthorization.CreateAuthorizationAsync(
+                    adapter.Object,
+                    new Mock<IDeviceEnrollment>().Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNotNull(authorization);
+            Assert.AreEqual("alice@example.com", authorization.Email);
+            Assert.AreEqual("alice@example.com", authorization.UserInfo.Email);
+
+            adapter.Verify(a => a.SignInWithBrowserAsync(
+                    It.Is<string>(hint => hint == null),
+                    It.IsAny<CancellationToken>()), 
+                    Times.Once);
+
+            await authorization.ReauthorizeAsync(CancellationToken.None);
+
+            adapter.Verify(a => a.SignInWithBrowserAsync(
+                    It.Is<string>(hint => hint == "alice@example.com"),
+                    It.IsAny<CancellationToken>()),
+                    Times.Once);
         }
     }
 }

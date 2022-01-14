@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                 .ReturnsAsync(new TokenResponse()
                 {
                     RefreshToken = "refresh-token-1",
-                    Scope = "scope-1 scope-2"
+                    Scope = "scope-1"
                 });
             flow.Setup(f => f.ShouldForceTokenRetrieval())
                 .Returns(false);
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var adapter = new SignInAdapter(
                 new Apis.Auth.OAuth2.ClientSecrets(),
-                new[] { "scope-1" },
+                new[] { "scope-1", "scope-2" },
                 dataStore.Object,
                 string.Empty,
                 _ => flow.Object);
