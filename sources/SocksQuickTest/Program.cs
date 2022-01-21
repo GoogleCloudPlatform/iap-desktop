@@ -68,31 +68,31 @@ namespace SocksQuickTest
 
         static void Main(string[] args)
         {
-            //var chrome = Process.Start(new ProcessStartInfo()
-            //{
-            //    UseShellExecute = true,
-            //    FileName = "chrome",
-            //    Arguments = $"--user-data-dir={Path.GetTempPath()} " +
-            //                $"--proxy-server=\"socks5://127.0.0.1:{SocksPort}\" " +
-            //                "--guest --host-resolver-rules=\"MAP * ~NOTFOUND\""
-            //});
-
-            //new Program(GoogleCredential.GetApplicationDefault())
-            //    .StartSocksServerAsync(CancellationToken.None)
-            //    .ContinueWith(t =>
-            //    {
-            //        if (t.IsFaulted)
-            //        {
-            //            Console.WriteLine(t.Exception.ToString());
-            //            Environment.Exit(1);
-            //        }
-            //    });
-
-            //chrome.WaitForExit();
+            var chrome = Process.Start(new ProcessStartInfo()
+            {
+                UseShellExecute = true,
+                FileName = "chrome",
+                Arguments = $"--user-data-dir={Path.GetTempPath()} " +
+                            $"--proxy-server=\"socks5://127.0.0.1:{SocksPort}\" " +
+                            "--guest" // --host-resolver-rules=\"MAP * ~NOTFOUND\""
+            });
 
             new Program(GoogleCredential.GetApplicationDefault())
                 .StartSocksServerAsync(CancellationToken.None)
-                .Wait();
+                .ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                    {
+                        Console.WriteLine(t.Exception.ToString());
+                        Environment.Exit(1);
+                    }
+                });
+
+            chrome.WaitForExit();
+
+            //new Program(GoogleCredential.GetApplicationDefault())
+            //    .StartSocksServerAsync(CancellationToken.None)
+            //    .Wait();
         }
     }
 }
