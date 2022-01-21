@@ -92,6 +92,7 @@
     <Compile Include="Iap\TestEchoOverIapIndirectTunnel.cs" />
     <Compile Include="Iap\TestHttpOverIapTunnelBase.cs" />
     <Compile Include="Iap\TestHttpOverIapIndirectTunnel.cs" />
+    <Compile Include="Iap\TestNetworkEndpointLocator.cs" />
     <Compile Include="Iap\TestSshRelayListener.cs" />
     <Compile Include="Iap\TestSshRelayProber.cs" />
     <Compile Include="Iap\TestSshRelayStreamReading.cs" />

@@ -19,12 +19,11 @@ namespace SocksQuickTest
     {
         private const ushort SocksPort = 1080;
         private readonly UserAgent agent = new UserAgent("SocksTest", new Version(1, 0));
-        private readonly ICredential credential;
 
-        public Program(ICredential credential)
-        {
-            this.credential = credential;
-        }
+        
+        public ICredential Credential { get; set; }
+        public string Region { get; set; }
+        public string Network { get; set; } = "default";
 
         public Task<ISshRelayEndpoint> ResolveEndpointAsync(
             string destinationDomain,
@@ -34,7 +33,7 @@ namespace SocksQuickTest
             if (InternalDns.TryParseZonalDns(destinationDomain, out var locator))
             {
                 return Task.FromResult<ISshRelayEndpoint>(new IapTunnelingEndpoint(
-                    this.credential,
+                    this.Credential,
                     locator,
                     destinationPort,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
@@ -68,6 +67,19 @@ namespace SocksQuickTest
 
         static void Main(string[] args)
         {
+            var region = args.FirstOrDefault(a => a.StartsWith("--region="))?
+                .Substring("--region=".Length);
+
+            var network = args.FirstOrDefault(a => a.StartsWith("--network="))?
+                .Substring("--network=".Length);
+
+            if (args.Length != 2 || string.IsNullOrEmpty(region) || string.IsNullOrEmpty(network))
+            {
+                Console.WriteLine("Usage: <program> --network=<network> --region=<region>");
+                Environment.Exit(2);
+            }
+
+
             var chrome = Process.Start(new ProcessStartInfo()
             {
                 UseShellExecute = true,
@@ -77,7 +89,12 @@ namespace SocksQuickTest
                             "--guest" // --host-resolver-rules=\"MAP * ~NOTFOUND\""
             });
 
-            new Program(GoogleCredential.GetApplicationDefault())
+            new Program()
+            {
+                Credential = GoogleCredential.GetApplicationDefault(),
+                Region = region,
+                Network = network
+            }
                 .StartSocksServerAsync(CancellationToken.None)
                 .ContinueWith(t =>
                 {
