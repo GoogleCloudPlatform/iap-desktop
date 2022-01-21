@@ -1,4 +1,5 @@
-﻿using Google.Solutions.Common.Locator;
+﻿using Google.Apis.Util;
+using Google.Solutions.Common.Locator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Google.Solutions.IapTunneling.Iap
     /// <summary>
     /// Locator for an IAP a generic ("on-prem") network endpoint.
     /// </summary>
-    internal class NetworkEndpointLocator : ResourceLocator, IEquatable<NetworkEndpointLocator>
+    public class NetworkEndpointLocator : ResourceLocator, IEquatable<NetworkEndpointLocator>
     {
         /// <summary>
         /// Region of of the network resource or VPN endpoint.
@@ -29,10 +30,12 @@ namespace Google.Solutions.IapTunneling.Iap
             string region,
             string network,
             string name)
-            : base(projectId, name)
+            : base(
+                  projectId.ThrowIfNull(nameof(projectId)), 
+                  name.ThrowIfNull(nameof(name)))
         {
-            this.Region = region;
-            this.Network = network;
+            this.Region = region.ThrowIfNull(nameof(region));
+            this.Network = network.ThrowIfNull(nameof(network));
         }
 
         //---------------------------------------------------------------------

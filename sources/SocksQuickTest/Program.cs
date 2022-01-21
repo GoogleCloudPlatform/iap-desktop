@@ -22,8 +22,11 @@ namespace SocksQuickTest
 
         
         public ICredential Credential { get; set; }
+        public string ProjectId { get; set; }
         public string Region { get; set; }
         public string Network { get; set; } = "default";
+
+        public bool IsOnPremEnabled { get; set; }
 
         public Task<ISshRelayEndpoint> ResolveEndpointAsync(
             string destinationDomain,
@@ -39,6 +42,19 @@ namespace SocksQuickTest
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     this.agent));
             }
+            else if (this.IsOnPremEnabled)
+            {
+                return Task.FromResult<ISshRelayEndpoint>(new IapOnPremTunnelingEndpoint(
+                    this.Credential,
+                    new NetworkEndpointLocator(
+                        this.ProjectId,
+                        this.Region,
+                        this.Network,
+                        destinationDomain),
+                    destinationPort,
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    this.agent));
+            }
             else
             {
                 throw new ArgumentException(
@@ -50,9 +66,10 @@ namespace SocksQuickTest
             IPAddress destination,
             ushort destinationPort,
             CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+            => ResolveEndpointAsync(
+                destination.ToString(), 
+                destinationPort, 
+                cancellationToken);
 
         public async Task StartSocksServerAsync(CancellationToken cancellationToken)
         {
@@ -73,7 +90,13 @@ namespace SocksQuickTest
             var network = args.FirstOrDefault(a => a.StartsWith("--network="))?
                 .Substring("--network=".Length);
 
-            if (args.Length != 2 || string.IsNullOrEmpty(region) || string.IsNullOrEmpty(network))
+            var projectId = args.FirstOrDefault(a => a.StartsWith("--project="))?
+                .Substring("--project=".Length);
+            
+            if (args.Length != 0 && ( 
+                string.IsNullOrEmpty(region) || 
+                string.IsNullOrEmpty(network) ||
+                string.IsNullOrEmpty(projectId)))
             {
                 Console.WriteLine("Usage: <program> --network=<network> --region=<region>");
                 Environment.Exit(2);
@@ -92,8 +115,10 @@ namespace SocksQuickTest
             new Program()
             {
                 Credential = GoogleCredential.GetApplicationDefault(),
+                ProjectId = projectId,
                 Region = region,
-                Network = network
+                Network = network,
+                IsOnPremEnabled = region != null && network != null && projectId != null
             }
                 .StartSocksServerAsync(CancellationToken.None)
                 .ContinueWith(t =>
