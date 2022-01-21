@@ -470,37 +470,21 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsTrue(await clientStream
-                    .ConfirmClosedAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
-
-                Assert.IsTrue(await clientStream
-                    .ConfirmClosedAsync(CancellationToken.None)
-                    .ConfigureAwait(false));
-
                 Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
                 Assert.AreEqual(ConnectionReply.Succeeded, response.Reply);
                 CollectionAssert.AreEqual(new byte[] { 127, 0, 0, 1 }, response.ServerAddress);
 
-                using (var socket = new Socket(SocketType.Stream, ProtocolType.IP))
-                {
-                    socket.Connect(new IPAddress(response.ServerAddress), response.ServerPort);
+                var sendData = new byte[] { 1, 2, 3, 4 };
+                await clientStream.RawStream
+                    .WriteAsync(sendData, 0, sendData.Length, CancellationToken.None)
+                    .ConfigureAwait(false);
 
-                    using (var stream = new SocketStream(socket, new ConnectionStatistics()))
-                    {
-                        var sendData = new byte[] { 1, 2, 3, 4 };
-                        await stream
-                            .WriteAsync(sendData, 0, sendData.Length, CancellationToken.None)
-                            .ConfigureAwait(false);
+                var readData = new byte[4];
+                await clientStream.RawStream
+                    .ReadAsync(readData, 0, readData.Length, CancellationToken.None)
+                    .ConfigureAwait(false);
 
-                        var readData = new byte[4];
-                        await stream
-                            .ReadAsync(readData, 0, readData.Length, CancellationToken.None)
-                            .ConfigureAwait(false);
-
-                        CollectionAssert.AreEqual(sendData, readData);
-                    }
-                }
+                CollectionAssert.AreEqual(sendData, readData);
             }
         }
     }

@@ -236,17 +236,14 @@ namespace Google.Solutions.IapTunneling.Socks5
                         cancellationToken)
                     .ConfigureAwait(false);
 
+                using (var serverStream = new SshRelayStream(endpoint))
+                {
+                    await Task.WhenAll(
+                            stream.RawStream.RelayToAsync(serverStream, cancellationToken),
+                            serverStream.RelayToAsync(stream.RawStream, cancellationToken));
 
-                var serverStream = new SshRelayStream(endpoint);
-                await Task.WhenAll(
-                        stream.RawStream.RelayToAsync(serverStream, cancellationToken),
-                        serverStream.RelayToAsync(stream.RawStream, cancellationToken))
-                    .ContinueWith(t =>
-                    {
-                        IapTraceSources.Default.TraceVerbose("Socks5Listener: Closed connection");
-                        stream.Dispose();
-                        serverStream.Dispose();
-                    });
+                    IapTraceSources.Default.TraceVerbose("Socks5Listener: Closed connection");
+                }
             }
             else
             {
@@ -295,6 +292,7 @@ namespace Google.Solutions.IapTunneling.Socks5
                                 token)
                             .ContinueWith(t =>
                             {
+                                socksStream.Dispose();
                                 if (t.IsFaulted)
                                 {
                                     IapTraceSources.Default.TraceError(
