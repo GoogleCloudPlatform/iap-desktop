@@ -22,9 +22,11 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Util.Store;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -33,96 +35,111 @@ namespace Google.Solutions.IapDesktop.Windows
 {
     public partial class AuthorizeDialog : Form
     {
-        private IAuthorization authorization;
+        public IAuthorization AuthorizationResult { get; private set; }
 
-        public AuthorizeDialog()
+        public Exception AuthorizationError { get; private set; }
+
+
+        public AuthorizeDialog(
+            ISignInAdapter signInAdapter,
+            IDeviceEnrollment deviceEnrollment)
         {
             InitializeComponent();
 
             // Don't maximize when double-clicking title bar.
             this.MaximumSize = this.Size;
+
+            var viewModel = new AuthorizeViewModel(this, signInAdapter, deviceEnrollment);
+
+            this.spinner.BindProperty(
+                c => c.Visible,
+                viewModel,
+                m => m.IsWaitControlVisible,
+                this.Container);
+            this.signInButton.BindProperty(
+                c => c.Visible,
+                viewModel,
+                m => m.IsSignOnControlVisible,
+                this.Container);
+            viewModel.OnPropertyChange(
+                m => m.IsSignOnControlVisible,
+                visible =>
+                {
+                    if (visible)
+                    {
+                        this.signInButton.Focus();
+                    }
+                });
+
+            viewModel.OnPropertyChange(
+                m => m.Authorization,
+                authz =>
+                {
+                    if (authz != null)
+                    {
+                        //
+                        // We're all set, close the dialog.
+                        //
+                        this.AuthorizationResult = authz;
+                        this.DialogResult = DialogResult.OK;
+                        Close();
+                    }
+                });
+
+            this.signInButton.Click += async (sender, args) =>
+            {
+                try
+                {
+                    await viewModel
+                        .SignInAsync(CancellationToken.None)
+                        .ConfigureAwait(true);
+                    Debug.Assert(this.AuthorizationResult != null);
+                }
+                catch (Exception e)
+                {
+                    this.AuthorizationError = e;
+                    this.DialogResult = DialogResult.Cancel;
+                    Close();
+                }
+            };
+
+            //
+            // Try to authorize using saved credentials.
+            //
+            viewModel.TryLoadExistingAuthorizationAsync(CancellationToken.None)
+                .ContinueWith(
+                    _ => Debug.Assert(false, "Should never throw an exception"), 
+                    TaskContinuationOptions.OnlyOnFaulted);
         }
 
-        private void ToggleSignInButton()
-        {
-            this.spinner.Visible = !this.spinner.Visible;
-            this.signInButton.Visible = !this.signInButton.Visible;
-
-            this.signInButton.Focus();
-        }
+        //---------------------------------------------------------------------
+        // Statics.
+        //---------------------------------------------------------------------
 
         public static IAuthorization Authorize(
             Control parent,
             ISignInAdapter signInAdapter,
             IDeviceEnrollment deviceEnrollment)
         {
-            Exception caughtException = null;
-            using (var dialog = new AuthorizeDialog())
+            var dialog = new AuthorizeDialog(signInAdapter, deviceEnrollment);
+            if (dialog.ShowDialog(parent) == DialogResult.OK)
             {
-                Task.Run(async () =>
+                Debug.Assert(dialog.AuthorizationResult != null);
+                return dialog.AuthorizationResult;
+            }
+            else
+            {
+                if (dialog.AuthorizationError != null)
                 {
-                    try
-                    {
-                        // Try to authorize using OAuth.
-                        dialog.authorization = await AppAuthorization.TryLoadExistingAuthorizationAsync(
-                                signInAdapter,
-                                deviceEnrollment,
-                                CancellationToken.None)
-                            .ConfigureAwait(true);
-
-                        if (dialog.authorization != null)
-                        {
-                            // We have existing credentials, there is no need to even
-                            // show the "Sign In" button.
-                            parent.BeginInvoke((Action)(() => dialog.Close()));
-                        }
-                        else
-                        {
-                            // No valid credentials present, request user to authroize
-                            // by showing the "Sign In" button.
-                            parent.BeginInvoke((Action)(() => dialog.ToggleSignInButton()));
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // Something went wrong trying to load existing credentials.
-                        parent.BeginInvoke((Action)(() => dialog.ToggleSignInButton()));
-                    }
-                });
-
-                dialog.signInButton.Click += async (sender, args) =>
-                {
-                    // Switch to showing spinner so that a user cannot click twice.
-                    dialog.ToggleSignInButton();
-
-                    try
-                    {
-                        dialog.authorization = await AppAuthorization.CreateAuthorizationAsync(
-                                signInAdapter,
-                                deviceEnrollment,
-                                CancellationToken.None)
-                            .ConfigureAwait(true);
-                    }
-                    catch (Exception e)
-                    {
-                        caughtException = e;
-                    }
-
-                    dialog.Close();
-                };
-
-                dialog.ShowDialog(parent);
-
-#pragma warning disable CA1508 // Avoid dead conditional code
-                if (caughtException != null)
-                {
-                    throw caughtException;
+                    throw dialog.AuthorizationError;
                 }
                 else
                 {
-                    return dialog.authorization;
+                    //
+                    // User just closed the dialog.
+                    //
+                    return null;
                 }
-#pragma warning restore CA1508 // Avoid dead conditional code
             }
         }
     }
