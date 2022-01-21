@@ -32,7 +32,7 @@ namespace Google.Solutions.IapTunneling.Net
     public static class InternalDns
     {
         //
-        // "Official" patterns from discovers document
+        // "Official" patterns from discovery document
         // https://www.googleapis.com/discovery/v1/apis/compute/v1/rest
         //
 

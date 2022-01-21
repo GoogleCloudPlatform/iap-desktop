@@ -22,14 +22,16 @@ namespace SocksQuickTest
         }
 
         public Task<ISshRelayEndpoint> ResolveEndpointAsync(
-            string destinationDomain, 
+            string destinationDomain,
+            ushort destinationPort,
             CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
         public Task<ISshRelayEndpoint> ResolveEndpointAsync(
-            IPAddress destination, 
+            IPAddress destination,
+            ushort destinationPort,
             CancellationToken cancellationToken)
         {
             throw new NotImplementedException();

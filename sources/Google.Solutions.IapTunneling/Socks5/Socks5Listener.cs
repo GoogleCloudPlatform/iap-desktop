@@ -138,6 +138,7 @@ namespace Google.Solutions.IapTunneling.Socks5
                     destinationName = domainName;
                     resolveFunc = () => this.resolver.ResolveEndpointAsync(
                         domainName, 
+                        connectionRequest.DestinationPort,
                         cancellationToken);
                 }
                 else if (connectionRequest.AddressType == AddressType.IPv4)
@@ -146,7 +147,8 @@ namespace Google.Solutions.IapTunneling.Socks5
 
                     destinationName = address.ToString();
                     resolveFunc = () => this.resolver.ResolveEndpointAsync(
-                        address, 
+                        address,
+                        connectionRequest.DestinationPort,
                         cancellationToken);
                 }
                 else
@@ -200,8 +202,9 @@ namespace Google.Solutions.IapTunneling.Socks5
                 catch (Exception e)
                 {
                     IapTraceSources.Default.TraceWarning(
-                        "Endpoint {0} cannot be resolved",
-                        destinationName);
+                        "Endpoint {0} cannot be resolved: {1}",
+                        destinationName,
+                        e.Message);
 
                     await stream
                         .WriteConnectionResponseAsync(
@@ -243,7 +246,7 @@ namespace Google.Solutions.IapTunneling.Socks5
                     .WriteConnectionResponseAsync(
                         new ConnectionResponse(
                             Socks5Stream.ProtocolVersion,
-                            ConnectionReply.GeneralServerFailure,
+                            ConnectionReply.Succeeded,
                             AddressType.IPv4,
                             LoopbackAddress,
                             (ushort)relayListener.LocalPort),

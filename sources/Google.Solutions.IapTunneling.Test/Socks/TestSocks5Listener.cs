@@ -19,10 +19,14 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.IapTunneling.Socks5;
+using Google.Solutions.IapTunneling.Test.Iap;
 using Google.Solutions.IapTunneling.Test.Net;
 using Moq;
 using NUnit.Framework;
@@ -61,6 +65,10 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             });
         }
 
+        //---------------------------------------------------------------------
+        // Protocol version.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenProtocolVersionInvalid_ThenServerSendsNoAcceptableMethods()
         {
@@ -92,6 +100,10 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             }
         }
 
+        //---------------------------------------------------------------------
+        // Authentication method.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenAuthenticationMethodsUnsupported_ThenServerSendsNoAcceptableMethods()
         {
@@ -122,6 +134,10 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                 Assert.AreEqual(AuthenticationMethod.NoAcceptableMethods, response.Method);
             }
         }
+
+        //---------------------------------------------------------------------
+        // Connect with invalid parameters.
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenConnectionCommandUnsupported_ThenServerSendsCommandNotSupported()
@@ -266,6 +282,10 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             }
         }
 
+        //---------------------------------------------------------------------
+        // Connect with invalid destination.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenAddressTypeIsDomainAndDomainNotResolvable_ThenServerSendsNetworkUnreachable()
         {
@@ -277,6 +297,7 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             var resolver = new Mock<ISshRelayEndpointResolver>();
             resolver.Setup(r => r.ResolveEndpointAsync(
                     It.IsAny<string>(),
+                    It.IsAny<ushort>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ArgumentException("mock!"));
 
@@ -336,6 +357,7 @@ namespace Google.Solutions.IapTunneling.Test.Socks
             var resolver = new Mock<ISshRelayEndpointResolver>();
             resolver.Setup(r => r.ResolveEndpointAsync(
                     It.IsAny<IPAddress>(),
+                    It.IsAny<ushort>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ArgumentException("mock!"));
 
@@ -382,6 +404,103 @@ namespace Google.Solutions.IapTunneling.Test.Socks
 
                 Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
                 Assert.AreEqual(ConnectionReply.NetworkUnreachable, response.Reply);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Connect with proper destination.
+        //---------------------------------------------------------------------
+
+        private const ushort EchoPort = 7;
+
+        [Test]
+        public async Task WhenAddressTypeIsDomainAndDomainResolvable_ThenServerSendsAddress(
+            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> instanceTask,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
+        {
+            var policy = new Mock<ISshRelayPolicy>();
+            policy.Setup(r => r.IsClientAllowed(
+                    It.IsAny<IPEndPoint>()))
+                .Returns(true);
+
+            var instance = await instanceTask;
+            var credential = await credentialTask;
+            var resolver = new Mock<ISshRelayEndpointResolver>();
+            resolver.Setup(r => r.ResolveEndpointAsync(
+                    It.IsAny<string>(),
+                    It.Is<ushort>(port => port == EchoPort),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(
+                    new IapTunnelingEndpoint(
+                        credential,
+                        instance,
+                        EchoPort,
+                        IapTunnelingEndpoint.DefaultNetworkInterface,
+                        TestProject.UserAgent));
+
+            var listener = new Socks5Listener(
+                resolver.Object,
+                policy.Object,
+                PortFinder.FindFreeLocalPort());
+
+            using (RunListener(listener))
+            using (var clientStream = ConnectToListener(listener))
+            {
+                await clientStream.WriteNegotiateMethodRequestAsync(
+                        new NegotiateMethodRequest(
+                            Socks5Stream.ProtocolVersion,
+                            new[] { AuthenticationMethod.NoAuthenticationRequired }),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                await clientStream.ReadNegotiateMethodResponseAsync(
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                await clientStream.WriteConnectionRequestAsync(
+                        new ConnectionRequest(
+                            Socks5Stream.ProtocolVersion,
+                            Command.Connect,
+                            "host.example.com",
+                            EchoPort),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                var response = await clientStream.ReadConnectionResponseAsync(
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
+                Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
+                Assert.AreEqual(ConnectionReply.Succeeded, response.Reply);
+                CollectionAssert.AreEqual(new byte[] { 127, 0, 0, 1 }, response.ServerAddress);
+
+                using (var socket = new Socket(SocketType.Stream, ProtocolType.IP))
+                {
+                    socket.Connect(new IPAddress(response.ServerAddress), response.ServerPort);
+
+                    using (var stream = new SocketStream(socket, new ConnectionStatistics()))
+                    {
+                        var sendData = new byte[] { 1, 2, 3, 4 };
+                        await stream
+                            .WriteAsync(sendData, 0, sendData.Length, CancellationToken.None)
+                            .ConfigureAwait(false);
+
+                        var readData = new byte[4];
+                        await stream
+                            .ReadAsync(readData, 0, readData.Length, CancellationToken.None)
+                            .ConfigureAwait(false);
+
+                        CollectionAssert.AreEqual(sendData, readData);
+                    }
+                }
             }
         }
     }
