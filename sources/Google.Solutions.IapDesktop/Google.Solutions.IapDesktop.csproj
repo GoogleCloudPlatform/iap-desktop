@@ -128,6 +128,7 @@
     <Compile Include="Windows\AuthorizeDialog.Designer.cs">
       <DependentUpon>AuthorizeDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\AuthorizeViewModel.cs" />
     <Compile Include="Windows\ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
