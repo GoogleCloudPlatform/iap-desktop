@@ -45,13 +45,12 @@ namespace Google.Solutions.IapTunneling.Socks5
         /// </summary>
         private readonly BufferedNetworkStream stream;
 
-        public Socks5Stream(INetworkStream stream) : this(new BufferedNetworkStream(stream))
-        {
-        }
+        public INetworkStream RawStream { get; }
 
-        public Socks5Stream(BufferedNetworkStream stream)
+        public Socks5Stream(INetworkStream stream)
         {
-            this.stream = stream;
+            this.RawStream = stream;
+            this.stream = new BufferedNetworkStream(stream);
         }
 
         public async Task<NegotiateMethodRequest> ReadNegotiateMethodRequestAsync(

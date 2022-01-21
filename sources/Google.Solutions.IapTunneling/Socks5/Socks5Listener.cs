@@ -220,28 +220,11 @@ namespace Google.Solutions.IapTunneling.Socks5
                 }
 
                 //
-                // Create a new listener and keep it alive for a single connection.
+                // All good, connect the backend and tie the streams
+                // together.
                 //
-                // Use the same policy so that the client is checked again
-                // when connecting to the listener.
+                // NB. We have to use the raw (i.e., unbuffered) stream.
                 //
-                var relayListener = SshRelayListener.CreateLocalListener(
-                    endpoint,
-                    this.policy);
-                relayListener.ClientAcceptLimit = 1;
-
-                #pragma warning disable CS4014 // Call not awaited
-                relayListener.ListenAsync(cancellationToken)
-                    .ContinueWith(t =>
-                    {
-                        if (t.IsFaulted)
-                        {
-                            IapTraceSources.Default.TraceError(
-                                "Socks5SshRelay: Connection failed", t.Exception);
-                        }
-                    });
-                #pragma warning restore CS4014
-
                 await stream
                     .WriteConnectionResponseAsync(
                         new ConnectionResponse(
@@ -249,9 +232,21 @@ namespace Google.Solutions.IapTunneling.Socks5
                             ConnectionReply.Succeeded,
                             AddressType.IPv4,
                             LoopbackAddress,
-                            (ushort)relayListener.LocalPort),
+                            (ushort)this.ListenPort),
                         cancellationToken)
                     .ConfigureAwait(false);
+
+
+                var serverStream = new SshRelayStream(endpoint);
+                await Task.WhenAll(
+                        stream.RawStream.RelayToAsync(serverStream, cancellationToken),
+                        serverStream.RelayToAsync(stream.RawStream, cancellationToken))
+                    .ContinueWith(t =>
+                    {
+                        IapTraceSources.Default.TraceVerbose("Socks5Listener: Closed connection");
+                        stream.Dispose();
+                        serverStream.Dispose();
+                    });
             }
             else
             {
@@ -292,8 +287,7 @@ namespace Google.Solutions.IapTunneling.Socks5
                             var socket = this.listener.AcceptSocket();
 
                             var socksStream = new Socks5Stream(
-                                new BufferedNetworkStream(
-                                    new SocketStream(socket, this.Statistics)));
+                                    new SocketStream(socket, this.Statistics));
                             
                             HandleConnectionAsync(
                                 (IPEndPoint)socket.RemoteEndPoint,
@@ -301,8 +295,6 @@ namespace Google.Solutions.IapTunneling.Socks5
                                 token)
                             .ContinueWith(t =>
                             {
-                                socksStream.Dispose();
-
                                 if (t.IsFaulted)
                                 {
                                     IapTraceSources.Default.TraceError(
