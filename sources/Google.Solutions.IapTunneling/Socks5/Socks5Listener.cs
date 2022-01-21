@@ -24,6 +24,7 @@ using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -33,14 +34,6 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapTunneling.Socks5
 {
-    public interface ISocks5Relay
-    {
-        Task<ushort> CreateRelayPortAsync(
-            IPEndPoint clientEndpoint,
-            string destinationHost,
-            CancellationToken cancellationToken);
-    }
-
     public class Socks5Listener
     {
         private static byte[] LoopbackAddress = new byte[] { 127, 0, 0, 1 };
@@ -57,7 +50,7 @@ namespace Google.Solutions.IapTunneling.Socks5
         public ConnectionStatistics Statistics { get; } = new ConnectionStatistics();
 
         //---------------------------------------------------------------------
-        // Ctor
+        // Ctor.
         //---------------------------------------------------------------------
 
         public Socks5Listener(
@@ -129,17 +122,42 @@ namespace Google.Solutions.IapTunneling.Socks5
                         cancellationToken)
                     .ConfigureAwait(false);
             }
-            else if (connectionRequest.AddressType == AddressType.DomainName)
+            else if (connectionRequest.AddressType == AddressType.DomainName ||
+                    (connectionRequest.AddressType == AddressType.IPv4 &&
+                            connectionRequest.DestinationAddress.Length == 4))
             {
-                var domainName = Encoding.ASCII.GetString(
-                    connectionRequest.DestinationAddress, 
-                    1, 
-                    connectionRequest.DestinationAddress.Length - 1);
+                string destinationName;
+                Func<Task<ISshRelayEndpoint>> resolveFunc;
+                if (connectionRequest.AddressType == AddressType.DomainName)
+                {
+                    var domainName = Encoding.ASCII.GetString(
+                        connectionRequest.DestinationAddress,
+                        1,
+                        connectionRequest.DestinationAddress.Length - 1);
+
+                    destinationName = domainName;
+                    resolveFunc = () => this.resolver.ResolveEndpointAsync(
+                        domainName, 
+                        cancellationToken);
+                }
+                else if (connectionRequest.AddressType == AddressType.IPv4)
+                {
+                    var address = new IPAddress(connectionRequest.DestinationAddress);
+
+                    destinationName = address.ToString();
+                    resolveFunc = () => this.resolver.ResolveEndpointAsync(
+                        address, 
+                        cancellationToken);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Unsupported address type");
+                }
 
                 IapTraceSources.Default.TraceVerbose(
                     "Socks5Listener: Connection request from {0} to {1}",
                     clientEndpoint,
-                    domainName);
+                    destinationName);
 
                 //
                 // Check if the client is allowed at all.
@@ -149,14 +167,14 @@ namespace Google.Solutions.IapTunneling.Socks5
                     IapTraceSources.Default.TraceInformation(
                         "Connection from {0} to {1} allowed by policy",
                         clientEndpoint,
-                        domainName);
+                        destinationName);
                 }
                 else
                 {
                     IapTraceSources.Default.TraceWarning(
                         "Connection from {0} to {1} rejected by policy",
                         clientEndpoint,
-                        domainName);
+                        destinationName);
 
                     await stream
                         .WriteConnectionResponseAsync(
@@ -177,15 +195,13 @@ namespace Google.Solutions.IapTunneling.Socks5
                 ISshRelayEndpoint endpoint;
                 try
                 {
-                    endpoint = await this.resolver
-                        .ResolveEndpointAsync(domainName, cancellationToken)
-                        .ConfigureAwait(false);
+                    endpoint = await resolveFunc().ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
                     IapTraceSources.Default.TraceWarning(
                         "Endpoint {0} cannot be resolved",
-                        domainName);
+                        destinationName);
 
                     await stream
                         .WriteConnectionResponseAsync(
@@ -250,7 +266,7 @@ namespace Google.Solutions.IapTunneling.Socks5
         }
 
         //---------------------------------------------------------------------
-        // Publics
+        // Publics.
         //---------------------------------------------------------------------
 
         /// <summary>

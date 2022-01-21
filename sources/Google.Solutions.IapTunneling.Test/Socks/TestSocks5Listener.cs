@@ -169,7 +169,7 @@ namespace Google.Solutions.IapTunneling.Test.Socks
         }
 
         [Test]
-        public async Task WhenAddressIsIpv4_ThenServerSendsAddressTypeNotSupported()
+        public async Task WhenAddressIsIpv6_ThenServerSendsAddressTypeNotSupported()
         {
             var listener = new Socks5Listener(
                 new Mock<ISshRelayEndpointResolver>().Object,
@@ -194,8 +194,8 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                         new ConnectionRequest(
                             Socks5Stream.ProtocolVersion,
                             Command.Connect,
-                            AddressType.IPv4,
-                            new byte[] { 1, 2, 3, 4 },
+                            AddressType.IPv6,
+                            new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8 },
                             8080),
                         CancellationToken.None)
                     .ConfigureAwait(false);
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapTunneling.Test.Socks
         }
 
         [Test]
-        public async Task WhenDestinationNotResolvable_ThenServerSendsNetworkUnreachable()
+        public async Task WhenAddressTypeIsDomainAndDomainNotResolvable_ThenServerSendsNetworkUnreachable()
         {
             var policy = new Mock<ISshRelayPolicy>();
             policy.Setup(r => r.IsClientAllowed(
@@ -304,6 +304,66 @@ namespace Google.Solutions.IapTunneling.Test.Socks
                             Socks5Stream.ProtocolVersion,
                             Command.Connect,
                             "unresolvable.example.com",
+                            8080),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                var response = await clientStream.ReadConnectionResponseAsync(
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
+                Assert.IsTrue(await clientStream
+                    .ConfirmClosedAsync(CancellationToken.None)
+                    .ConfigureAwait(false));
+
+                Assert.AreEqual(Socks5Stream.ProtocolVersion, response.Version);
+                Assert.AreEqual(ConnectionReply.NetworkUnreachable, response.Reply);
+            }
+        }
+
+        [Test]
+        public async Task WhenAddressTypeIsIpv4ndAddressNotResolvable_ThenServerSendsNetworkUnreachable()
+        {
+            var policy = new Mock<ISshRelayPolicy>();
+            policy.Setup(r => r.IsClientAllowed(
+                    It.IsAny<IPEndPoint>()))
+                .Returns(true);
+
+            var resolver = new Mock<ISshRelayEndpointResolver>();
+            resolver.Setup(r => r.ResolveEndpointAsync(
+                    It.IsAny<IPAddress>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ArgumentException("mock!"));
+
+            var listener = new Socks5Listener(
+                resolver.Object,
+                policy.Object,
+                PortFinder.FindFreeLocalPort());
+
+            using (RunListener(listener))
+            using (var clientStream = ConnectToListener(listener))
+            {
+                await clientStream.WriteNegotiateMethodRequestAsync(
+                        new NegotiateMethodRequest(
+                            Socks5Stream.ProtocolVersion,
+                            new[] { AuthenticationMethod.NoAuthenticationRequired }),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                await clientStream.ReadNegotiateMethodResponseAsync(
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                await clientStream.WriteConnectionRequestAsync(
+                        new ConnectionRequest(
+                            Socks5Stream.ProtocolVersion,
+                            Command.Connect,
+                            AddressType.IPv4,
+                            new byte[] { 1, 2, 3, 4 },
                             8080),
                         CancellationToken.None)
                     .ConfigureAwait(false);

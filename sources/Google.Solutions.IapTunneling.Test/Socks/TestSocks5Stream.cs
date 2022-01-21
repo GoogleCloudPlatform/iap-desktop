@@ -294,7 +294,7 @@ namespace Google.Solutions.IapTunneling.Test.Socks
 
             var socksStream = new Socks5Stream(stream);
 
-            AssertEx.ThrowsAggregateException<SocksProtocolException>(
+            ExceptionAssert.ThrowsAggregateException<SocksProtocolException>(
                 () => socksStream
                     .ReadConnectionRequestAsync(CancellationToken.None)
                     .Wait());

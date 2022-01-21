@@ -16,5 +16,9 @@ namespace Google.Solutions.IapTunneling.Socks5
         Task<ISshRelayEndpoint> ResolveEndpointAsync(
             string destinationDomain,
             CancellationToken cancellationToken);
+
+        Task<ISshRelayEndpoint> ResolveEndpointAsync(
+            IPAddress destination,
+            CancellationToken cancellationToken);
     }
 }

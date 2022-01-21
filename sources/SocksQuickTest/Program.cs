@@ -1,4 +1,5 @@
-﻿using Google.Solutions.IapTunneling.Socks5;
+﻿using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.IapTunneling.Socks5;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,26 @@ using System.Threading.Tasks;
 
 namespace SocksQuickTest
 {
-    class Program : ISocks5Relay
+    class Program : ISshRelayEndpointResolver
     {
         static void Main(string[] args)
         {
             var listener = new Socks5Listener(
                 new Program(),
+                new AllowAllRelayPolicy(),
                 1080);
             listener.ListenAsync(CancellationToken.None).Wait();
         }
 
-        public Task<ushort> CreateRelayPortAsync(
-            IPEndPoint clientEndpoint, 
-            string destinationHost, 
+        public Task<ISshRelayEndpoint> ResolveEndpointAsync(
+            string destinationDomain, 
+            CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ISshRelayEndpoint> ResolveEndpointAsync(
+            IPAddress destination, 
             CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
