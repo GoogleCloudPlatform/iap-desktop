@@ -29,7 +29,9 @@ using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -75,6 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public const string StoreUserId = "oauth";
 
+        private readonly X509Certificate2 deviceCertificate;
         private readonly ICodeReceiver codeReceiver;
         private readonly ClientSecrets clientSecrets;
         private readonly IEnumerable<string> scopes;
@@ -82,13 +85,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         private readonly Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow;
 
         public SignInAdapter(
+            X509Certificate2 deviceCertificate,
             ClientSecrets clientSecrets,
             IEnumerable<string> scopes,
             IDataStore dataStore,
-            string closePageReponse,
+            ICodeReceiver codeReceiver,
             Func<GoogleAuthorizationCodeFlow.Initializer, IAuthorizationCodeFlow> createCodeFlow = null)
         {
-            this.codeReceiver = new LocalServerCodeReceiver(closePageReponse);
+            this.deviceCertificate = deviceCertificate;
+            this.codeReceiver = codeReceiver;
             this.clientSecrets = clientSecrets;
             this.scopes = scopes;
             this.dataStore = dataStore;
@@ -101,7 +106,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             // Add email scope to requested scope so that we can query
             // user info.
             //
-            return new OAuthInitializer
+            return new OAuthInitializer(
+                HttpClientHandlerExtensions.IsClientCertificateSupported ? 
+                    this.deviceCertificate 
+                    : null)
             {
                 ClientSecrets = clientSecrets,
                 Scopes = scopes.Concat(new[] { SignInAdapter.EmailScope }),
@@ -111,9 +119,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private IAuthorizationCodeFlow CreateFlow(OAuthInitializer initializer)
         {
-            return this.createCodeFlow != null
-                ? this.createCodeFlow(initializer)
-                :new GoogleAuthorizationCodeFlow(initializer);
+            if (this.createCodeFlow != null)
+            {
+                return this.createCodeFlow(initializer);
+            }
+            else
+            {
+                var flow = new GoogleAuthorizationCodeFlow(initializer);
+
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "mTLS supported: {0}", HttpClientHandlerExtensions.IsClientCertificateSupported);
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "mTLS certificate: {0}", this.deviceCertificate?.Subject);
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "TokenServerUrl: {0}", flow.TokenServerUrl);
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "RevokeTokenUrl: {0}", flow.RevokeTokenUrl);
+
+                Debug.Assert(
+                    flow.TokenServerUrl.Contains("mtls.") ==
+                    (HttpClientHandlerExtensions.IsClientCertificateSupported && this.deviceCertificate != null));
+
+                return flow;
+            }
         }
 
         public Task DeleteStoredRefreshToken()
@@ -176,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public async Task<ICredential> SignInWithBrowserAsync(
-            String loginHint, 
+            string loginHint, 
             CancellationToken token)
         {
             try
@@ -212,6 +240,25 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
                 return userCredential;
             }
+            catch (TokenResponseException e) when (
+                e.Error?.ErrorUri != null && 
+                e.Error.ErrorUri.StartsWith("https://accounts.google.com/info/servicerestricted"))
+            {
+                if (this.deviceCertificate != null)
+                {
+                    throw new AuthorizationFailedException(
+                        "Authorization failed because your computer's device certificate is " +
+                        "is invalid or unrecognized. Use the Endpoint Verification extension " +
+                        "to verify that your computer is enrolled and try again.\n\n" + e.Error.ErrorDescription);
+                }
+                else
+                {
+                    throw new AuthorizationFailedException(
+                        "Authorization failed because your computer is not enrolled in Endpoint " + 
+                        "Verification.\n\n" + e.Error.ErrorDescription);
+
+                }
+            }
             catch (PlatformNotSupportedException)
             {
                 // Convert this into an exception with more actionable information.
@@ -226,25 +273,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // User info.
         //---------------------------------------------------------------------
 
-        public async Task<OpenIdConfiguration> QueryOpenIdConfigurationAsync(
-            CancellationToken token)
-        {
-            return await new RestClient().GetAsync<OpenIdConfiguration>(
-                    CreateInitializer().MetadataUrl,
-                    token)
-                .ConfigureAwait(false);
-        }
-
         public async Task<UserInfo> QueryUserInfoAsync(
             ICredential credential,
             CancellationToken token)
         {
-            var configuration = await QueryOpenIdConfigurationAsync(token).ConfigureAwait(false);
-
-            var client = new RestClient(credential);
+            var client = new RestClient()
+            {
+                ClientCertificate = this.deviceCertificate,
+                Credential = credential,
+            };
 
             return await client.GetAsync<UserInfo>(
-                    configuration.UserInfoEndpoint,
+                    CreateInitializer().UserInfoUrl,
                     token)
                 .ConfigureAwait(false);
         }
@@ -255,11 +295,42 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private class OAuthInitializer : GoogleAuthorizationCodeFlow.Initializer
         {
-            public const string DefaultMetadataUrl =
-                "https://accounts.google.com/.well-known/openid-configuration";
+            public string UserInfoUrl { get; } 
 
-            public string MetadataUrl { get; set; } = DefaultMetadataUrl;
+            private static string FixupUrl(
+                string url,
+                X509Certificate2 certificate)
+            {
+                //
+                // Switch to mTLS endpoint if there is a device certificate.
+                //
+                return certificate == null
+                    ? url
+                    : url.Replace(".googleapis.com", ".mtls.googleapis.com");
+            }
 
+            public OAuthInitializer(X509Certificate2 certificate)
+                : base(FixupUrl("https://accounts.google.com/o/oauth2/v2/auth", certificate), 
+                       FixupUrl("https://oauth2.googleapis.com/token", certificate), 
+                       FixupUrl("https://oauth2.googleapis.com/revoke", certificate))
+            {
+                this.UserInfoUrl = FixupUrl(
+                    "https://openidconnect.googleapis.com/v1/userinfo", certificate);
+
+                if (certificate != null)
+                {
+                    //
+                    // Inject the certificate into all HTTP communication.
+                    //
+                    this.HttpClientFactory = new MtlsHttpClientFactory(certificate);
+
+                    ApplicationTraceSources.Default.TraceVerbose("Using OAuth mTLS endpoints");
+                }
+                else
+                {
+                    ApplicationTraceSources.Default.TraceVerbose("Using OAuth TLS endpoints");
+                }
+            }
         }
 
         public class OpenIdConfiguration

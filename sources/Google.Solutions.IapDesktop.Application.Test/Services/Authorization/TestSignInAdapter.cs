@@ -21,8 +21,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
+using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Moq;
 using NUnit.Framework;
@@ -34,22 +36,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
     [TestFixture]
     public class TestSignInAdapter : ApplicationFixtureBase
     {
-        [Test]
-        public async Task WhenCalled_ThenQueryOpenIdConfigurationAsyncReturnsInfo()
-        {
-            var adapter = new SignInAdapter(
-                new Apis.Auth.OAuth2.ClientSecrets(),
-                new[] { "openid" },
-                new NullDataStore(),
-                string.Empty);
-
-            var config = await adapter
-                .QueryOpenIdConfigurationAsync(CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.IsNotNull(config.UserInfoEndpoint);
-        }
-
         //---------------------------------------------------------------------
         // TrySignInWithRefreshTokenAsync.
         //---------------------------------------------------------------------
@@ -69,13 +55,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
             flow.Setup(f => f.ShouldForceTokenRetrieval())
                 .Returns(false);
 
-            var dataStore = new Mock<IDataStore>();
-
             var adapter = new SignInAdapter(
+                null,
                 new Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1" },
-                dataStore.Object,
-                string.Empty,
+                new Mock<IDataStore>().Object,
+                new Mock<ICodeReceiver>().Object,
                 _ => flow.Object);
 
             var credential = await adapter
@@ -101,13 +86,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
             flow.Setup(f => f.ShouldForceTokenRetrieval())
                 .Returns(false);
 
-            var dataStore = new Mock<IDataStore>();
-
             var adapter = new SignInAdapter(
+                null,
                 new Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1", "scope-2" },
-                dataStore.Object,
-                string.Empty,
+                new Mock<IDataStore>().Object,
+                new Mock<ICodeReceiver>().Object,
                 _ => flow.Object);
 
             var credential = await adapter
@@ -121,16 +105,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         public async Task WhenRefreshTokenInvalid_ThenTrySignInWithRefreshTokenAsyncReturnsNull()
         {
             var flow = new Mock<IAuthorizationCodeFlow>();
-            flow.Setup(f => f.ShouldForceTokenRetrieval())
-                .Returns(true);
-
-            var dataStore = new Mock<IDataStore>();
+            flow.Setup(f => f.ShouldForceTokenRetrieval()).Returns(true);
 
             var adapter = new SignInAdapter(
+                null,
                 new Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1" },
-                dataStore.Object,
-                string.Empty,
+                new Mock<IDataStore>().Object,
+                new Mock<ICodeReceiver>().Object,
                 _ => flow.Object);
 
             var credential = await adapter
@@ -138,6 +120,132 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                 .ConfigureAwait(false);
 
             Assert.IsNull(credential);
+        }
+
+        //---------------------------------------------------------------------
+        // SignInWithBrowserAsync.
+        //---------------------------------------------------------------------
+        
+        [Test]
+        public async Task WhenSignInSucceeds_ThenSignInWithBrowserAsyncReturnsCredential()
+        {
+            var receiver = new Mock<ICodeReceiver>();
+            receiver.Setup(r => r.ReceiveCodeAsync(
+                    It.IsAny<AuthorizationCodeRequestUrl>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new AuthorizationCodeResponseUrl()
+                {
+                    Code = "123"
+                });
+
+            var flow = new Mock<IAuthorizationCodeFlow>();
+            flow.Setup(f => f.ShouldForceTokenRetrieval()).Returns(true);
+            flow.Setup(f => f.ExchangeCodeForTokenAsync(
+                    It.IsAny<string>(),
+                    It.Is<string>(code => code == "123"),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TokenResponse()
+                {
+                    Scope = "scope-1",
+                    AccessToken = "token-1",
+                    RefreshToken = "refreshtoken-1"
+                });
+
+            var adapter = new SignInAdapter(
+                null,
+                new Apis.Auth.OAuth2.ClientSecrets(),
+                new[] { "scope-1" },
+                new Mock<IDataStore>().Object,
+                receiver.Object,
+                _ => flow.Object);
+
+            var credential = await adapter.SignInWithBrowserAsync(
+                    "bob@example.com",
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.NotNull(credential);
+        }
+
+        [Test]
+        public void WhenSignInLacksScopes_ThenSignInWithBrowserAsyncThrowsException()
+        {
+            var receiver = new Mock<ICodeReceiver>();
+            receiver.Setup(r => r.ReceiveCodeAsync(
+                    It.IsAny<AuthorizationCodeRequestUrl>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new AuthorizationCodeResponseUrl()
+                {
+                    Code = "123"
+                });
+
+            var flow = new Mock<IAuthorizationCodeFlow>();
+            flow.Setup(f => f.ShouldForceTokenRetrieval()).Returns(true);
+            flow.Setup(f => f.ExchangeCodeForTokenAsync(
+                    It.IsAny<string>(),
+                    It.Is<string>(code => code == "123"),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TokenResponse()
+                {
+                    Scope = "", // Scope missing
+                    AccessToken = "token-1",
+                    RefreshToken = "refreshtoken-1"
+                });
+
+            var adapter = new SignInAdapter(
+                null,
+                new Apis.Auth.OAuth2.ClientSecrets(),
+                new[] { "scope-1" },
+                new Mock<IDataStore>().Object,
+                receiver.Object,
+                _ => flow.Object);
+
+            ExceptionAssert.ThrowsAggregateException<AuthorizationFailedException>(
+                () => adapter.SignInWithBrowserAsync(
+                    "bob@example.com",
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public void WhenSignInFailsBecauseOfConditionalAccess_ThenSignInWithBrowserAsyncThrowsException()
+        {
+            var receiver = new Mock<ICodeReceiver>();
+            receiver.Setup(r => r.ReceiveCodeAsync(
+                    It.IsAny<AuthorizationCodeRequestUrl>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new AuthorizationCodeResponseUrl()
+                {
+                    Code = "123"
+                });
+
+            var flow = new Mock<IAuthorizationCodeFlow>();
+            flow.Setup(f => f.ShouldForceTokenRetrieval()).Returns(true);
+            flow.Setup(f => f.ExchangeCodeForTokenAsync(
+                    It.IsAny<string>(),
+                    It.Is<string>(code => code == "123"),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new TokenResponseException(new TokenErrorResponse()
+                    {
+                        Error = "access_denied",
+                        ErrorDescription = "Account restricted",
+                        ErrorUri = "https://accounts.google.com/info/servicerestricted?es\u003d..."
+                    }));
+
+            var adapter = new SignInAdapter(
+                null,
+                new Apis.Auth.OAuth2.ClientSecrets(),
+                new[] { "scope-1" },
+                new Mock<IDataStore>().Object,
+                receiver.Object,
+                _ => flow.Object);
+
+            ExceptionAssert.ThrowsAggregateException<AuthorizationFailedException>(
+                () => adapter.SignInWithBrowserAsync(
+                    "bob@example.com",
+                    CancellationToken.None).Wait());
         }
     }
 }
