@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
@@ -112,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // Show/Hide.
         //---------------------------------------------------------------------
 
-        protected void CloseSafely()
+        public void CloseSafely()
         {
             if (this.HideOnClose)
             {
@@ -203,6 +204,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 }
             }
         }
+
+        public bool IsDockable => this.IsDocked || this.IsAutoHide || this.IsFloat;
 
         //---------------------------------------------------------------------
         // Window events.

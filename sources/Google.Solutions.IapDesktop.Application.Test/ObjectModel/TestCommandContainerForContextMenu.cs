@@ -172,6 +172,31 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             this.commandContainer.ExecuteCommandByKey(Keys.F4);
         }
 
+        [Test]
+        public void WhenContainerHasCommands_ThenRefreshCallsQueryState()
+        {
+            int queryCalls = 0;
+            this.commandContainer.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx =>
+                    {
+                        Assert.AreEqual("ctx", ctx);
+                        queryCalls++;
+                        return CommandState.Disabled;
+                    },
+                    ctx => throw new InvalidOperationException()));
+
+            this.commandContainer.Context = "ctx";
+            this.contextMenu.Show();
+
+            Assert.AreEqual(1, queryCalls);
+
+            this.commandContainer.Refresh();
+
+            Assert.AreEqual(2, queryCalls);
+        }
+
         //---------------------------------------------------------------------
         // Second-level commands.
         //---------------------------------------------------------------------

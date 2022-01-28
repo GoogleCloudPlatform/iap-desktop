@@ -60,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public IapRdpUrl StartupUrl { get; set; }
         public CommandContainer<IMainForm> ViewMenu { get; }
+        public CommandContainer<ToolWindow> WindowMenu { get; }
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
@@ -105,6 +106,23 @@ namespace Google.Solutions.IapDesktop.Windows
                 Context = this // There is no real context for this.
             };
 
+            this.WindowMenu = new CommandContainer<ToolWindow>(
+                this,
+                this.windowToolStripMenuItem.DropDownItems,
+                ToolStripItemDisplayStyle.ImageAndText,
+                this.serviceProvider)
+            {
+                Context = null
+            };
+            this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
+            {
+                this.WindowMenu.Context = this.dockPanel.ActiveContent as ToolWindow;
+            };
+            this.dockPanel.ActiveContentChanged += (sender, args) =>
+            {
+                this.WindowMenu.Context = this.dockPanel.ActiveContent as ToolWindow;
+            };
+
             this.viewModel = new MainFormViewModel(
                 this,
                 this.vs2015LightTheme.ColorPalette,
@@ -122,7 +140,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 m => m.IsReportInternalIssueVisible,
                 this.components);
 
+            //
             // Status bar.
+            //
             this.statusStrip.BindProperty(
                 c => c.BackColor,
                 this.viewModel,
@@ -164,7 +184,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 m => m.IsDeviceStateVisible,
                 this.components);
 
+            //
             // Logging.
+            //
             this.enableloggingToolStripMenuItem.BindProperty(
                 c => c.Checked,
                 this.viewModel,
@@ -309,6 +331,56 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
             }
 
+            //
+            // Bind menu commands.
+            //
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "&Close",
+                    window => window != null && window.IsDockable
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window => window.CloseSafely()));
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "&Float",
+                    window => window != null && 
+                              !window.IsFloat && 
+                              window.DockAreas.HasFlag(DockAreas.Float)
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window => window.IsFloat = true));
+
+            var dockCommand = this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "Dock",
+                    _ => CommandState.Enabled,
+                    context => { }));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Left",
+                DockState.DockLeft,
+                DockState.DockLeftAutoHide,
+                DockAreas.DockLeft,
+                Keys.Control | Keys.Alt | Keys.Left));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Right",
+                DockState.DockRight,
+                DockState.DockRightAutoHide,
+                DockAreas.DockRight,
+                Keys.Control | Keys.Alt | Keys.Right));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Top",
+                DockState.DockTop,
+                DockState.DockTopAutoHide,
+                DockAreas.DockTop,
+                Keys.Control | Keys.Alt | Keys.Up));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Bottom",
+                DockState.DockBottom,
+                DockState.DockBottomAutoHide,
+                DockAreas.DockBottom,
+                Keys.Control | Keys.Alt | Keys.Down));
+
 #if DEBUG
             var debugCommand = this.ViewMenu.AddCommand(
                 new Command<IMainForm>(
@@ -336,6 +408,47 @@ namespace Google.Solutions.IapDesktop.Windows
                 _ => CommandState.Enabled,
                 _ => this.serviceProvider.GetService<DebugFocusWindow>().ShowWindow()));
 #endif
+        }
+
+        private Command<ToolWindow> CreateDockCommand(
+            string caption,
+            DockState dockState,
+            DockState autoHideDockState,
+            DockAreas dockArea,
+            Keys shortcutKeys)
+        {
+            return new Command<ToolWindow>(
+                caption,
+                window => window != null &&
+                            window.VisibleState != dockState &&
+                            window.VisibleState != autoHideDockState &&
+                            window.DockAreas.HasFlag(dockArea)
+                    ? CommandState.Enabled
+                    : CommandState.Disabled,
+                window =>
+                {
+                    window.DockState = dockState;
+
+                    //
+                    // The DockPanel has a quirk where re-docking a
+                    // window doesn't cause the document to re-paint,
+                    // even if it changed positions.
+                    // To fix this, force the active document pane
+                    // to relayout.
+                    //
+                    this.dockPanel.ActiveDocumentPane.PerformLayout();
+
+                    //
+                    // Force context refresh. This is necessary
+                    // of the command is triggered by a shortcut,
+                    // bypassing the menu-open event (which normally
+                    // updates the context).
+                    //
+                    this.WindowMenu.Refresh();
+                })
+            {
+                ShortcutKeys = shortcutKeys
+            };
         }
 
         internal void ConnectToUrl(IapRdpUrl url)
