@@ -61,6 +61,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         private Size currentConnectionSize;
         private Size initialConnectionSize;
 
+        // For testing only.
+        internal event EventHandler AuthenticationWarningDisplayed;
+
         public InstanceLocator Instance { get; }
 
         public bool IsFormClosing { get; private set; } = false;
@@ -194,7 +197,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 //
                 // Connection security settings.
                 //
-                advancedSettings.EnableCredSspSupport = true;
                 nonScriptable.PromptForCredentials = false;
                 nonScriptable.NegotiateSecurityLayer = true;
 
@@ -223,6 +225,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 advancedSettings.PerformanceFlags = 0; // Enable all features, it's 2020.
                 advancedSettings.EnableAutoReconnect = true;
                 advancedSettings.MaxReconnectAttempts = 10;
+
+                if (settings.RdpNetworkLevelAuthentication.EnumValue != RdpNetworkLevelAuthentication.Disabled)
+                {
+                    //
+                    // Use NLA.
+                    //
+                    advancedSettings.EnableCredSspSupport = true;
+                }
+                else
+                {
+                    //
+                    // Disable NLA. This only works if server authentication is enabled.
+                    //
+                    advancedSettings.EnableCredSspSupport = false;
+                    advancedSettings.AuthenticationLevel = 2;
+                }
 
                 //
                 // Apply timeouts. Note that the control might take
@@ -621,7 +639,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         private void rdpClient_OnAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            { }
+            {
+                this.AuthenticationWarningDisplayed?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void rdpClient_OnWarning(

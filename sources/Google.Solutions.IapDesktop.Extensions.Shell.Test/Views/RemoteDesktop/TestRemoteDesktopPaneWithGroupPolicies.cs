@@ -41,22 +41,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
     [Category("IAP")]
     public class TestRemoteDesktopWithServerSideGroupPolicies : WindowTestFixtureBase
     {
-        private async Task<IRemoteDesktopSession> Connect(
-            IapTunnel tunnel,
-            InstanceLocator vmInstanceReference)
+        private async Task<InstanceConnectionSettings> CreateSettingsAsync(
+            InstanceLocator instanceLocator)
         {
             using (var credentialAdapter = new WindowsCredentialAdapter(
                 new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationSource>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
-                        vmInstanceReference,
-                        CreateRandomUsername(),
-                        UserFlags.AddToAdministrators,
-                        TimeSpan.FromSeconds(60),
-                        CancellationToken.None)
-                    .ConfigureAwait(true);
+                    instanceLocator,
+                    CreateRandomUsername(),
+                    UserFlags.AddToAdministrators,
+                    TimeSpan.FromSeconds(60),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
-                var settings = InstanceConnectionSettings.CreateNew(vmInstanceReference);
+                var settings = InstanceConnectionSettings.CreateNew(instanceLocator);
                 settings.RdpUsername.Value = credentials.UserName;
                 settings.RdpPassword.Value = credentials.SecurePassword;
                 settings.RdpAuthenticationLevel.Value = RdpAuthenticationLevel.NoServerAuthentication;
@@ -69,13 +68,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpRedirectDrive.Value = RdpRedirectDrive.Enabled;
                 settings.RdpRedirectDevice.Value = RdpRedirectDevice.Enabled;
 
-                var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
-                return rdpService.Connect(
-                    vmInstanceReference,
-                    "localhost",
-                    (ushort)tunnel.LocalPort,
-                    settings);
+                return settings;
             }
+        }
+
+        private async Task<IRemoteDesktopSession> ConnectAsync(
+            IapTunnel tunnel,
+            InstanceLocator instanceLocator)
+        {
+            var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
+            return rdpService.Connect(
+                instanceLocator,
+                "localhost",
+                (ushort)tunnel.LocalPort,
+                await CreateSettingsAsync(instanceLocator));
         }
 
         [Test]
@@ -92,12 +98,84 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator).ConfigureAwait(true);
+                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionAbortedEvent>(TimeSpan.FromSeconds(90));
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
                 Assert.AreEqual(264, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+            }
+        }
+
+        [Test]
+        public async Task WhenNlaDisabledAndServerRequiresNla_ThenErrorIsShownAndWindowIsClosed(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+
+            using (var tunnel = IapTunnel.ForRdp(
+                locator,
+                await credential))
+            {
+                var settings = await CreateSettingsAsync(locator);
+                settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
+
+                var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
+                var session = rdpService.Connect(
+                    locator,
+                    "localhost",
+                    (ushort)tunnel.LocalPort,
+                    settings);
+
+                AwaitEvent<SessionAbortedEvent>(TimeSpan.FromSeconds(90));
+                Assert.IsNotNull(this.ExceptionShown);
+                Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+                Assert.AreEqual(2825, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+            }
+        }
+
+        [Test]
+        public async Task WhenNlaDisabledAndServerDoesNotRequireNla_ThenServerAuthWarningIsDisplayed(
+            [WindowsInstance(InitializeScript = @"
+                & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 0 /f | Out-Default
+            ")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+
+            using (var tunnel = IapTunnel.ForRdp(
+                locator,
+                await credential))
+            {
+                var settings = await CreateSettingsAsync(locator);
+                settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
+
+                var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
+                var session = rdpService.Connect(
+                    locator,
+                    "localhost",
+                    (ushort)tunnel.LocalPort,
+                    settings);
+
+                bool serverAuthWarningIsDisplayed = false;
+                ((RemoteDesktopPane)session).AuthenticationWarningDisplayed += (sender, args) =>
+                {
+                    serverAuthWarningIsDisplayed = true;
+                    mainForm.Close();
+                };
+
+                var deadline = DateTime.Now.AddSeconds(45);
+                while (!serverAuthWarningIsDisplayed && DateTime.Now < deadline)
+                {
+                    try
+                    {
+                        PumpWindowMessages();
+                    }
+                    catch (AccessViolationException) { }
+                }
+
+                Assert.IsTrue(serverAuthWarningIsDisplayed);
             }
         }
 
@@ -114,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator).ConfigureAwait(true);
+                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -147,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator).ConfigureAwait(true);
+                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -180,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator).ConfigureAwait(true);
+                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -213,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator).ConfigureAwait(true);
+                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -246,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator).ConfigureAwait(true);
+                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -279,7 +357,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator).ConfigureAwait(true);
+                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -312,7 +390,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator).ConfigureAwait(true);
+                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -351,7 +429,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await Connect(tunnel, locator).ConfigureAwait(true);
+                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
 
                 AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
