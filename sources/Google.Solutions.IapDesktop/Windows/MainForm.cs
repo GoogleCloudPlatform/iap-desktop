@@ -346,10 +346,24 @@ namespace Google.Solutions.IapDesktop.Windows
                     "&Float",
                     window => window != null && 
                               !window.IsFloat && 
-                              window.DockAreas.HasFlag(DockAreas.Float)
+                              window.IsDockStateValid(DockState.Float)
                         ? CommandState.Enabled
                         : CommandState.Disabled,
                     window => window.IsFloat = true));
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "&Auto hide",
+                    window => window != null && window.IsDocked && !window.IsAutoHide
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window =>
+                    {
+                        window.IsAutoHide = true;
+                        OnDockLayoutChanged();
+                    })
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.H
+                });
 
             var dockCommand = this.WindowMenu.AddCommand(
                 new Command<ToolWindow>(
@@ -359,26 +373,18 @@ namespace Google.Solutions.IapDesktop.Windows
             dockCommand.AddCommand(CreateDockCommand(
                 "&Left",
                 DockState.DockLeft,
-                DockState.DockLeftAutoHide,
-                DockAreas.DockLeft,
                 Keys.Control | Keys.Alt | Keys.Left));
             dockCommand.AddCommand(CreateDockCommand(
                 "&Right",
                 DockState.DockRight,
-                DockState.DockRightAutoHide,
-                DockAreas.DockRight,
                 Keys.Control | Keys.Alt | Keys.Right));
             dockCommand.AddCommand(CreateDockCommand(
                 "&Top",
                 DockState.DockTop,
-                DockState.DockTopAutoHide,
-                DockAreas.DockTop,
                 Keys.Control | Keys.Alt | Keys.Up));
             dockCommand.AddCommand(CreateDockCommand(
                 "&Bottom",
                 DockState.DockBottom,
-                DockState.DockBottomAutoHide,
-                DockAreas.DockBottom,
                 Keys.Control | Keys.Alt | Keys.Down));
 
 #if DEBUG
@@ -413,42 +419,43 @@ namespace Google.Solutions.IapDesktop.Windows
         private Command<ToolWindow> CreateDockCommand(
             string caption,
             DockState dockState,
-            DockState autoHideDockState,
-            DockAreas dockArea,
             Keys shortcutKeys)
         {
             return new Command<ToolWindow>(
                 caption,
                 window => window != null &&
                             window.VisibleState != dockState &&
-                            window.VisibleState != autoHideDockState &&
-                            window.DockAreas.HasFlag(dockArea)
+                            window.IsDockStateValid(dockState)
                     ? CommandState.Enabled
                     : CommandState.Disabled,
                 window =>
                 {
                     window.DockState = dockState;
-
-                    //
-                    // The DockPanel has a quirk where re-docking a
-                    // window doesn't cause the document to re-paint,
-                    // even if it changed positions.
-                    // To fix this, force the active document pane
-                    // to relayout.
-                    //
-                    this.dockPanel.ActiveDocumentPane.PerformLayout();
-
-                    //
-                    // Force context refresh. This is necessary
-                    // of the command is triggered by a shortcut,
-                    // bypassing the menu-open event (which normally
-                    // updates the context).
-                    //
-                    this.WindowMenu.Refresh();
+                    OnDockLayoutChanged();
                 })
             {
                 ShortcutKeys = shortcutKeys
             };
+        }
+
+        private void OnDockLayoutChanged()
+        {
+            //
+            // The DockPanel has a quirk where re-docking a
+            // window doesn't cause the document to re-paint,
+            // even if it changed positions.
+            // To fix this, force the active document pane
+            // to relayout.
+            //
+            this.dockPanel.ActiveDocumentPane?.PerformLayout();
+
+            //
+            // Force context refresh. This is necessary
+            // of the command is triggered by a shortcut,
+            // bypassing the menu-open event (which normally
+            // updates the context).
+            //
+            this.WindowMenu.Refresh();
         }
 
         internal void ConnectToUrl(IapRdpUrl url)
