@@ -670,7 +670,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             IMsTscAxEvents_OnFocusReleasedEvent e)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            { }
+            {
+                //
+                // Release focus and move it to the panel, which ensures
+                // that any other shortcuts start applying again.
+                //
+                this.MainForm.MainPanel.Focus();
+            }
         }
 
         private void rdpClient_OnRemoteDesktopSizeChange(
