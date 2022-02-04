@@ -343,6 +343,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
                 advancedSettings.allowBackgroundInput = 1;
 
+                //
+                // Set hotkey to trigger OnFocusReleasedEvent. This should be
+                // the same as the main window uses to move the focus to the
+                // control.
+                //
+                // NB. The Ctrl+Alt are implied by the HotKeyFocusRelease properties.
+                //
+                Debug.Assert(ToggleFocusHotKey.HasFlag(Keys.Control));
+                Debug.Assert(ToggleFocusHotKey.HasFlag(Keys.Alt));
+                var focusReleaseVirtualKey = (int)(ToggleFocusHotKey & ~(Keys.Control | Keys.Alt));
+
+                advancedSettings.HotKeyFocusReleaseLeft = focusReleaseVirtualKey;
+                advancedSettings.HotKeyFocusReleaseRight = focusReleaseVirtualKey;
+
                 this.connecting = true;
                 this.rdpClient.Connect();
             }

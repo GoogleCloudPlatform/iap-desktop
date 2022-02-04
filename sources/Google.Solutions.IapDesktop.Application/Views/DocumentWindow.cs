@@ -35,6 +35,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
 {
     public class DocumentWindow : ToolWindow
     {
+        /// <summary>
+        /// Hotkey to move focus to current document, or release focus
+        /// back to main window.
+        /// </summary>
+        public const Keys ToggleFocusHotKey = Keys.Control | Keys.Alt | Keys.Home;
+
         //
         // Full screen form -- created lazily. There can only be one window
         // full scnreen at a time, so it's static.

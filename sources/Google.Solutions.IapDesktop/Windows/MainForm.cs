@@ -120,7 +120,15 @@ namespace Google.Solutions.IapDesktop.Windows
             };
             this.dockPanel.ActiveContentChanged += (sender, args) =>
             {
-                this.WindowMenu.Context = this.dockPanel.ActiveContent as ToolWindow;
+                //
+                // NB. It's possible that ActiveContent is null although there
+                // is an active document. Most commonly, this happens when
+                // focus is released from an RDP window by using a keyboard
+                // shortcut.
+                //
+                this.WindowMenu.Context = 
+                    (this.dockPanel.ActiveContent ?? this.dockPanel.ActiveDocumentPane?.ActiveContent) 
+                        as ToolWindow;
             };
 
             this.viewModel = new MainFormViewModel(
@@ -387,6 +395,41 @@ namespace Google.Solutions.IapDesktop.Windows
                 DockState.DockBottom,
                 Keys.Control | Keys.Alt | Keys.Down));
 
+            this.WindowMenu.AddSeparator();
+
+            Func<ToolWindow, CommandState> showTabCommand = window
+                => window != null && window.DockState == DockState.Document && window.Pane.Contents.Count > 1
+                    ? CommandState.Enabled
+                    : CommandState.Disabled;
+
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "&Next tab",
+                    showTabCommand,
+                    window => SwitchTab(window, 1))
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageDown
+                });
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "&Previous tab",
+                    showTabCommand,
+                    window => SwitchTab(window, -1))
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageUp
+                });
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "Capture/release &focus",
+                    _ => this.dockPanel.ActiveDocumentPane != null && 
+                         this.dockPanel.ActiveDocumentPane.Contents.EnsureNotNull().Any()
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window => (this.dockPanel.ActiveDocumentPane?.ActiveContent as ToolWindow)?.ShowWindow())
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.Home
+                });
+
 #if DEBUG
             var debugCommand = this.ViewMenu.AddCommand(
                 new Command<IMainForm>(
@@ -414,6 +457,21 @@ namespace Google.Solutions.IapDesktop.Windows
                 _ => CommandState.Enabled,
                 _ => this.serviceProvider.GetService<DebugFocusWindow>().ShowWindow()));
 #endif
+        }
+
+        private void SwitchTab(ToolWindow reference, int delta)
+        {
+            //
+            // Find a sibling tab and activate it. Make sure
+            // to not run out of bounds.
+            //
+            var pane = this.dockPanel.ActiveDocumentPane;
+            var windowIndex = pane.Contents.IndexOf(reference);
+            var tabCount = pane.Contents.Count;
+            if (pane.Contents[(tabCount + windowIndex + delta) % tabCount] is ToolWindow sibling)
+            {
+                sibling.ShowWindow();
+            }
         }
 
         private Command<ToolWindow> CreateDockCommand(
