@@ -44,7 +44,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    public partial class SshTerminalPane : ToolWindow, ISshTerminalSession
+    public partial class SshTerminalPane : DocumentWindow, ISshTerminalSession
     {
         private readonly IExceptionDialog exceptionDialog;
 
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             AuthorizedKey authorizedKey,
             CultureInfo language,
             TimeSpan connectionTimeout)
-            : base(serviceProvider, DockState.Document)
+            : base(serviceProvider)
         {
             InitializeComponent();
 
@@ -368,6 +368,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             await ConnectAsync()
                 .ConfigureAwait(false);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyData == ToggleFocusHotKey)
+            {
+                //
+                // Release focus and move it to the panel, which ensures
+                // that any other shortcuts start applying again.
+                //
+                this.MainForm.MainPanel.Focus();
+                e.Handled = true;
+            }
         }
 
         //---------------------------------------------------------------------

@@ -60,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public IapRdpUrl StartupUrl { get; set; }
         public CommandContainer<IMainForm> ViewMenu { get; }
+        public CommandContainer<ToolWindow> WindowMenu { get; }
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
@@ -105,6 +106,31 @@ namespace Google.Solutions.IapDesktop.Windows
                 Context = this // There is no real context for this.
             };
 
+            this.WindowMenu = new CommandContainer<ToolWindow>(
+                this,
+                this.windowToolStripMenuItem.DropDownItems,
+                ToolStripItemDisplayStyle.ImageAndText,
+                this.serviceProvider)
+            {
+                Context = null
+            };
+            this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
+            {
+                this.WindowMenu.Context = this.dockPanel.ActiveContent as ToolWindow;
+            };
+            this.dockPanel.ActiveContentChanged += (sender, args) =>
+            {
+                //
+                // NB. It's possible that ActiveContent is null although there
+                // is an active document. Most commonly, this happens when
+                // focus is released from an RDP window by using a keyboard
+                // shortcut.
+                //
+                this.WindowMenu.Context = 
+                    (this.dockPanel.ActiveContent ?? this.dockPanel.ActiveDocumentPane?.ActiveContent) 
+                        as ToolWindow;
+            };
+
             this.viewModel = new MainFormViewModel(
                 this,
                 this.vs2015LightTheme.ColorPalette,
@@ -122,7 +148,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 m => m.IsReportInternalIssueVisible,
                 this.components);
 
+            //
             // Status bar.
+            //
             this.statusStrip.BindProperty(
                 c => c.BackColor,
                 this.viewModel,
@@ -164,7 +192,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 m => m.IsDeviceStateVisible,
                 this.components);
 
+            //
             // Logging.
+            //
             this.enableloggingToolStripMenuItem.BindProperty(
                 c => c.Checked,
                 this.viewModel,
@@ -309,6 +339,97 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
             }
 
+            //
+            // Bind menu commands.
+            //
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "&Close",
+                    window => window != null && window.IsDockable
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window => window.CloseSafely()));
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "&Float",
+                    window => window != null && 
+                              !window.IsFloat && 
+                              window.IsDockStateValid(DockState.Float)
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window => window.IsFloat = true));
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "&Auto hide",
+                    window => window != null && window.IsDocked && !window.IsAutoHide
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window =>
+                    {
+                        window.IsAutoHide = true;
+                        OnDockLayoutChanged();
+                    })
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.H
+                });
+
+            var dockCommand = this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "Dock",
+                    _ => CommandState.Enabled,
+                    context => { }));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Left",
+                DockState.DockLeft,
+                Keys.Control | Keys.Alt | Keys.Left));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Right",
+                DockState.DockRight,
+                Keys.Control | Keys.Alt | Keys.Right));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Top",
+                DockState.DockTop,
+                Keys.Control | Keys.Alt | Keys.Up));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Bottom",
+                DockState.DockBottom,
+                Keys.Control | Keys.Alt | Keys.Down));
+
+            this.WindowMenu.AddSeparator();
+
+            Func<ToolWindow, CommandState> showTabCommand = window
+                => window != null && window.DockState == DockState.Document && window.Pane.Contents.Count > 1
+                    ? CommandState.Enabled
+                    : CommandState.Disabled;
+
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "&Next tab",
+                    showTabCommand,
+                    window => SwitchTab(window, 1))
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageDown
+                });
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "&Previous tab",
+                    showTabCommand,
+                    window => SwitchTab(window, -1))
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageUp
+                });
+            this.WindowMenu.AddCommand(
+                new Command<ToolWindow>(
+                    "Capture/release &focus",
+                    _ => this.dockPanel.ActiveDocumentPane != null && 
+                         this.dockPanel.ActiveDocumentPane.Contents.EnsureNotNull().Any()
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window => (this.dockPanel.ActiveDocumentPane?.ActiveContent as ToolWindow)?.ShowWindow())
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.Home
+                });
+
 #if DEBUG
             var debugCommand = this.ViewMenu.AddCommand(
                 new Command<IMainForm>(
@@ -336,6 +457,63 @@ namespace Google.Solutions.IapDesktop.Windows
                 _ => CommandState.Enabled,
                 _ => this.serviceProvider.GetService<DebugFocusWindow>().ShowWindow()));
 #endif
+        }
+
+        private void SwitchTab(ToolWindow reference, int delta)
+        {
+            //
+            // Find a sibling tab and activate it. Make sure
+            // to not run out of bounds.
+            //
+            var pane = this.dockPanel.ActiveDocumentPane;
+            var windowIndex = pane.Contents.IndexOf(reference);
+            var tabCount = pane.Contents.Count;
+            if (pane.Contents[(tabCount + windowIndex + delta) % tabCount] is ToolWindow sibling)
+            {
+                sibling.ShowWindow();
+            }
+        }
+
+        private Command<ToolWindow> CreateDockCommand(
+            string caption,
+            DockState dockState,
+            Keys shortcutKeys)
+        {
+            return new Command<ToolWindow>(
+                caption,
+                window => window != null &&
+                            window.VisibleState != dockState &&
+                            window.IsDockStateValid(dockState)
+                    ? CommandState.Enabled
+                    : CommandState.Disabled,
+                window =>
+                {
+                    window.DockState = dockState;
+                    OnDockLayoutChanged();
+                })
+            {
+                ShortcutKeys = shortcutKeys
+            };
+        }
+
+        private void OnDockLayoutChanged()
+        {
+            //
+            // The DockPanel has a quirk where re-docking a
+            // window doesn't cause the document to re-paint,
+            // even if it changed positions.
+            // To fix this, force the active document pane
+            // to relayout.
+            //
+            this.dockPanel.ActiveDocumentPane?.PerformLayout();
+
+            //
+            // Force context refresh. This is necessary
+            // of the command is triggered by a shortcut,
+            // bypassing the menu-open event (which normally
+            // updates the context).
+            //
+            this.WindowMenu.Refresh();
         }
 
         internal void ConnectToUrl(IapRdpUrl url)

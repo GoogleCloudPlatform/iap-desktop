@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
@@ -112,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // Show/Hide.
         //---------------------------------------------------------------------
 
-        protected void CloseSafely()
+        public void CloseSafely()
         {
             if (this.HideOnClose)
             {
@@ -168,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public virtual void ShowWindow() => ShowWindow(true);
 
-        protected bool IsAutoHide
+        public bool IsAutoHide
         {
             get
             {
@@ -184,9 +185,34 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         return false;
                 }
             }
+            set
+            {
+                switch (this.VisibleState)
+                {
+                    case DockState.DockTop:
+                    case DockState.DockTopAutoHide:
+                        this.DockState = DockState.DockTopAutoHide;
+                        break;
+
+                    case DockState.DockBottom:
+                    case DockState.DockBottomAutoHide:
+                        this.DockState = DockState.DockBottomAutoHide;
+                        break;
+
+                    case DockState.DockLeft:
+                    case DockState.DockLeftAutoHide:
+                        this.DockState = DockState.DockLeftAutoHide;
+                        break;
+
+                    case DockState.DockRight:
+                    case DockState.DockRightAutoHide:
+                        this.DockState = DockState.DockRightAutoHide;
+                        break;
+                }
+            }
         }
 
-        protected bool IsDocked
+        public bool IsDocked
         {
             get
             {
@@ -203,6 +229,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 }
             }
         }
+
+        public bool IsDockable => this.IsDocked || this.IsAutoHide || this.IsFloat;
 
         //---------------------------------------------------------------------
         // Window events.

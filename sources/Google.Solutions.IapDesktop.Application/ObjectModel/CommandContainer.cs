@@ -30,6 +30,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
     public class CommandContainer<TContext>
+        where TContext : class
     {
         private TContext context;
         private readonly IWin32Window window;
@@ -66,17 +67,29 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.parent = parent;
         }
 
+        /// <summary>
+        /// Set the context that determines the state of
+        /// menu items.
+        /// </summary>
         public TContext Context
         {
             get => this.context != null
                 ? this.context
-                : this.parent.Context;
+                : this.parent?.Context;
             set
             {
                 this.context = value;
 
                 UpdateMenuItemState(this.menuItems, value);
             }
+        }
+
+        /// <summary>
+        /// Refresh the state of menu items.
+        /// </summary>
+        public void Refresh()
+        {
+            UpdateMenuItemState(this.menuItems, this.context);
         }
 
         private static void UpdateMenuItemState(

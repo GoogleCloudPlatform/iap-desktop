@@ -60,14 +60,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.richTextBox.Location = new System.Drawing.Point(13, 12);
             this.richTextBox.Name = "richTextBox";
             this.richTextBox.ReadOnly = true;
-            this.richTextBox.Size = new System.Drawing.Size(391, 232);
+            this.richTextBox.Size = new System.Drawing.Size(471, 251);
             this.richTextBox.TabIndex = 1;
             this.richTextBox.Text = "";
             // 
             // closeButton
             // 
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.closeButton.Location = new System.Drawing.Point(363, 215);
+            this.closeButton.Location = new System.Drawing.Point(409, 269);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(75, 23);
             this.closeButton.TabIndex = 2;
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.closeButton;
-            this.ClientSize = new System.Drawing.Size(450, 250);
+            this.ClientSize = new System.Drawing.Size(496, 304);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.richTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
