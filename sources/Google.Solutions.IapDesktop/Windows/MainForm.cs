@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Windows
             var settings = this.applicationSettings.GetSettings();
 
             if (settings.IsUpdateCheckEnabled.BoolValue &&
-                (DateTime.UtcNow - DateTime.FromBinary(settings.LastUpdateCheck.LongValue)).Days > 7)
+                (DateTime.UtcNow - DateTime.FromBinary(settings.LastUpdateCheck.LongValue)).TotalDays > 7)
             {
                 // Time to check for updates again.
                 try
