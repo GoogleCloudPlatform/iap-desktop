@@ -371,7 +371,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     _ => DoWithActiveRemoteDesktopSession(session => session.TrySetFullscreen(FullScreenMode.SingleScreen)))
                 {
                     Image = Resources.Fullscreen_16,
-                    ShortcutKeys = Keys.F11
+                    ShortcutKeys =  DocumentWindow.EnterFullScreenHotKey
                 });
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
