@@ -366,7 +366,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // the same as the main window uses to move the focus to the
                 // control.
                 //
-                // NB. The Ctrl+Alt are implied by the HotKeyFocusRelease properties.
+                // NB. The Ctrl+Alt modifiers are implied by the HotKeyFocusRelease properties.
                 //
                 Debug.Assert(ToggleFocusHotKey.HasFlag(Keys.Control));
                 Debug.Assert(ToggleFocusHotKey.HasFlag(Keys.Alt));
@@ -374,6 +374,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
                 advancedSettings.HotKeyFocusReleaseLeft = focusReleaseVirtualKey;
                 advancedSettings.HotKeyFocusReleaseRight = focusReleaseVirtualKey;
+
+                //
+                // NB. The Ctrl+Alt modifiers are implied by the HotKeyFullScreen properties.
+                //
+                Debug.Assert(LeaveFullScreenHotKey.HasFlag(Keys.Control));
+                Debug.Assert(LeaveFullScreenHotKey.HasFlag(Keys.Alt));
+                var leaveFullScreenVirtualKey = (int)(LeaveFullScreenHotKey & ~(Keys.Control | Keys.Alt));
+
+                advancedSettings.HotKeyFullScreen = (int)leaveFullScreenVirtualKey;
 
                 this.connecting = true;
                 this.rdpClient.Connect();

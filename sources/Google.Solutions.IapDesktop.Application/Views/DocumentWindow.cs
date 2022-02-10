@@ -40,6 +40,17 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// back to main window.
         /// </summary>
         public const Keys ToggleFocusHotKey = Keys.Control | Keys.Alt | Keys.Home;
+        
+        /// <summary>
+        /// Hotkey to enter full-screen.
+        /// </summary>
+        public const Keys EnterFullScreenHotKey = Keys.F11;
+
+        /// <summary>
+        /// Hotkey to leave full-screen.
+        /// </summary>
+        public const Keys LeaveFullScreenHotKey = Keys.Control | Keys.Alt | Keys.F11;
+
 
         //
         // Full screen form -- created lazily. There can only be one window
