@@ -680,6 +680,11 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.General);
         }
 
+        private void viewShortcutsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.Shortcuts);
+        }
+
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
         {
             try
@@ -814,6 +819,5 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
-
     }
 }

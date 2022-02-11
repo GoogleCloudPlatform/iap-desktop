@@ -38,6 +38,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             "Documentation",
             "https://github.com/GoogleCloudPlatform/iap-desktop/wiki");
 
+        public static readonly IHelpTopic Shortcuts = new HelpTopic(
+            "Keyboard shortcuts",
+            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Keyboard-shortcuts");
+
         public static readonly IHelpTopic BrowserIntegration = new HelpTopic(
             "Browser Integration",
             "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Browser-Integration");

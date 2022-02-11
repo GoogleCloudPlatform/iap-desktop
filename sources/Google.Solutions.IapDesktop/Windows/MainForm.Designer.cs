@@ -84,6 +84,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.toolStripSignInStateButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDeviceStateButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.viewShortcutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -192,6 +193,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.viewHelpToolStripMenuItem,
+            this.viewShortcutsToolStripMenuItem,
             this.overviewSeparatorStripMenuItem,
             this.openIapDocsToolStripMenuItem,
             this.openSecureConnectDocsToolStripMenuItem,
@@ -358,6 +360,14 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.TabIndex = 9;
             this.dockPanel.ActiveContentChanged += new System.EventHandler(this.dockPanel_ActiveContentChanged);
             // 
+            // viewShortcutsToolStripMenuItem
+            // 
+            this.viewShortcutsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Documentation_16;
+            this.viewShortcutsToolStripMenuItem.Name = "viewShortcutsToolStripMenuItem";
+            this.viewShortcutsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.viewShortcutsToolStripMenuItem.Text = "Keyboard &shortcuts";
+            this.viewShortcutsToolStripMenuItem.Click += new System.EventHandler(this.viewShortcutsToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -417,5 +427,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripSeparator overviewSeparatorStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openSecureConnectDocsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewShortcutsToolStripMenuItem;
     }
 }

@@ -391,11 +391,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     Image = Resources.Disconnect_16,
                     ShortcutKeys = Keys.Control | Keys.F4
                 });
-            desktopMenu.AddCommand(
-                new Command<IMainForm>(
-                    "&Keyboard shortcuts",
-                    _ => GetCommandStateWhenActiveRemoteDesktopSessionRequired(),
-                    _ => new ShortcutsWindow().Show(this.window)));
             desktopMenu.AddSeparator();
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
