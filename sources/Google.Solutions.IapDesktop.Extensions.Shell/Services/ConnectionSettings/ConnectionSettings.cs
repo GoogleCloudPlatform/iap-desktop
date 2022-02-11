@@ -189,6 +189,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         _Default = Enabled
     }
 
+    public enum RdpHookWindowsKeys
+    {
+        //
+        // NB. Values correspond to IMsRdpClientSecuredSettings::KeyboardHookMode.
+        //
+        Never = 0,
+        Always = 1,
+        FullScreenOnly = 2,
+
+
+        [Browsable(false)]
+        _Default = FullScreenOnly
+    }
+
     public abstract class ConnectionSettingsBase : IRegistrySettingsCollection
     {
         //---------------------------------------------------------------------
@@ -215,6 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         public RegistryEnumSetting<RdpRedirectPort> RdpRedirectPort { get; private set; }
         public RegistryEnumSetting<RdpRedirectDrive> RdpRedirectDrive { get; private set; }
         public RegistryEnumSetting<RdpRedirectDevice> RdpRedirectDevice { get; private set; }
+        public RegistryEnumSetting<RdpHookWindowsKeys> RdpHookWindowsKeys { get; private set; }
 
         internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {
@@ -237,7 +252,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
             this.RdpRedirectSmartCard,
             this.RdpRedirectPort,
             this.RdpRedirectDrive,
-            this.RdpRedirectDevice
+            this.RdpRedirectDevice,
+            this.RdpHookWindowsKeys
         };
 
         internal bool IsRdpSetting(ISetting setting) => this.RdpSettings.Contains(setting);
@@ -429,6 +445,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 Categories.RdpResources,
                 ConnectionSettings.RdpRedirectDevice._Default,
                 key);
+            this.RdpHookWindowsKeys = RegistryEnumSetting<RdpHookWindowsKeys>.FromKey(
+                "RdpHookWindowsKeys",
+                "Enable Windows shortcuts",
+                "Enable Windows shortcuts (like Win+R)",
+                Categories.RdpAdvanced,
+                ConnectionSettings.RdpHookWindowsKeys._Default,
+                key);
 
             //
             // SSH Settings.
@@ -509,6 +532,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 baseSettings.RdpRedirectDrive.OverlayBy(overlaySettings.RdpRedirectDrive);
             prototype.RdpRedirectDevice = (RegistryEnumSetting<RdpRedirectDevice>)
                 baseSettings.RdpRedirectDevice.OverlayBy(overlaySettings.RdpRedirectDevice);
+            prototype.RdpHookWindowsKeys = (RegistryEnumSetting<RdpHookWindowsKeys>)
+                baseSettings.RdpHookWindowsKeys.OverlayBy(overlaySettings.RdpHookWindowsKeys);
 
             prototype.SshPort = (RegistryDwordSetting)
                 baseSettings.SshPort.OverlayBy(overlaySettings.SshPort);

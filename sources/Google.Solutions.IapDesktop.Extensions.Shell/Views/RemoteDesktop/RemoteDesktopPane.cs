@@ -355,9 +355,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 //
                 // Keyboard settings.
                 //
-                // NB. Apply key combinations to the remote server only when the client is running 
-                // in full-screen mode.
-                this.rdpClient.SecuredSettings2.KeyboardHookMode = 2;
+                this.rdpClient.SecuredSettings2.KeyboardHookMode = 
+                    (int)settings.RdpHookWindowsKeys.EnumValue;
 
                 advancedSettings.allowBackgroundInput = 1;
 
