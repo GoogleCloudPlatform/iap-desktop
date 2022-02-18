@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         {
             var activeSession = this.serviceProvider
                 .GetService<IRemoteDesktopSessionBroker>()
-                .ActiveSession;
+                .ActiveRemoteDesktopSession;
 
             return (activeSession != null && activeSession.IsConnected)
                 ? CommandState.Enabled
@@ -361,9 +361,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 1);
 
             //
-            // Desktop menu (Windows/RDP only).
+            // Session menu.
             //
-            var desktopMenu = mainForm.AddMenu("&Desktop", 1);
+            var desktopMenu = mainForm.AddMenu("&Session", 1);
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Full screen",
@@ -408,7 +408,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         {
             try
             {
-                var session = this.serviceProvider.GetService<IRemoteDesktopSessionBroker>().ActiveSession;
+                var session = this.serviceProvider.GetService<IRemoteDesktopSessionBroker>().ActiveRemoteDesktopSession;
                 if (session != null)
                 {
                     action(session);

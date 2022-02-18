@@ -33,6 +33,39 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
+        //---------------------------------------------------------------------
+        // ActiveSession.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNoServiceRegistered_ThenActiveSessionIsNull()
+        {
+            var registry = new ServiceRegistry();
+            var broker = new GlobalSessionBroker(registry);
+
+            Assert.IsNull(broker.ActiveSession);
+        }
+
+        [Test]
+        public void WhenServicesRegistered_ThenActiveSessionReturnSession()
+        {
+            var service = new Mock<ISessionBroker>();
+            service.SetupGet(s => s.ActiveSession)
+                .Returns(new Mock<ISession>().Object);
+
+            var registry = new ServiceRegistry();
+            registry.AddSingleton<ISessionBroker>(service.Object);
+            registry.AddServiceToCategory(typeof(ISessionBroker), typeof(ISessionBroker));
+
+            var broker = new GlobalSessionBroker(registry);
+
+            Assert.IsNotNull(broker.ActiveSession);
+        }
+
+        //---------------------------------------------------------------------
+        // IsConnected.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenNoServiceRegistered_ThenIsConnectedReturnsFalse()
         {
@@ -41,16 +74,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             Assert.IsFalse(broker.IsConnected(SampleLocator));
         }
-
-        [Test]
-        public void WhenNoServiceRegistered_ThenTryActivateReturnsFalse()
-        {
-            var registry = new ServiceRegistry();
-            var broker = new GlobalSessionBroker(registry);
-
-            Assert.IsFalse(broker.IsConnected(SampleLocator));
-        }
-
 
         [Test]
         public void WhenServicesRegistered_ThenIsConnectedReturnsResult()
@@ -70,6 +93,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             service.Verify(s => s.IsConnected(
                     It.Is<InstanceLocator>(l => l.Equals(SampleLocator))), Times.Once);
+        }
+
+        //---------------------------------------------------------------------
+        // TryActivate.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNoServiceRegistered_ThenTryActivateReturnsFalse()
+        {
+            var registry = new ServiceRegistry();
+            var broker = new GlobalSessionBroker(registry);
+
+            Assert.IsFalse(broker.IsConnected(SampleLocator));
         }
 
         [Test]

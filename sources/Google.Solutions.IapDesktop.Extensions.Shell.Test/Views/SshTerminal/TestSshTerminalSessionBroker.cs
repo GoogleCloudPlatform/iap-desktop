@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public void WhenNotConnected_ThenActiveSessionReturnsNull()
         {
             var broker = new SshTerminalSessionBroker(this.serviceProvider);
-            Assert.IsNull(broker.ActiveSession);
+            Assert.IsNull(broker.ActiveSshTerminalSession);
         }
     }
 }

@@ -28,10 +28,8 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
-    public interface IRemoteDesktopSession
+    public interface IRemoteDesktopSession : ISession
     {
-        void Close();
-
         bool TrySetFullscreen(FullScreenMode mode);
 
         bool IsConnected { get; }
@@ -50,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
     public interface IRemoteDesktopSessionBroker : ISessionBroker
     {
-        IRemoteDesktopSession ActiveSession { get; }
+        IRemoteDesktopSession ActiveRemoteDesktopSession { get; }
 
         IRemoteDesktopSession Connect(
             InstanceLocator vmInstance,
@@ -75,10 +73,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             // announced to the session connection broker.
         }
 
-        public IRemoteDesktopSession ActiveSession
+        public IRemoteDesktopSession ActiveRemoteDesktopSession
         {
             get => RemoteDesktopPane.TryGetActivePane(this.mainForm);
         }
+
+        public ISession ActiveSession => this.ActiveRemoteDesktopSession;
 
         public bool IsConnected(InstanceLocator vmInstance)
         {

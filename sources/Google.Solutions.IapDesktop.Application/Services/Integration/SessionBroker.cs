@@ -25,8 +25,18 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
+    public interface ISession : IDisposable
+    {
+        void Close();
+    }
+
     public interface ISessionBroker
     {
+        /// <summary>
+        /// Return active session, or null if no session is active.
+        /// </summary>
+        ISession ActiveSession { get; }
+
         bool IsConnected(InstanceLocator vmInstance);
 
         bool TryActivate(InstanceLocator vmInstance);
@@ -75,6 +85,24 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             }
 
             return false;
+        }
+
+        public ISession ActiveSession
+        {
+            get
+            {
+                foreach (var broker in this.serviceProvider
+                    .GetServicesByCategory<ISessionBroker>())
+                {
+                    var session = broker.ActiveSession;
+                    if (session != null)
+                    {
+                        return session;
+                    }
+                }
+
+                return null;
+            }
         }
     }
 

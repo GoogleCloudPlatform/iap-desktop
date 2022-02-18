@@ -31,14 +31,13 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    public interface ISshTerminalSession : IDisposable
+    public interface ISshTerminalSession : ISession
     {
-        void Close();
     }
 
     public interface ISshTerminalSessionBroker : ISessionBroker
     {
-        ISshTerminalSession ActiveSession { get; }
+        ISshTerminalSession ActiveSshTerminalSession { get; }
 
         Task<ISshTerminalSession> ConnectAsync(
             InstanceLocator vmInstance,
@@ -68,10 +67,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Public
         //---------------------------------------------------------------------
 
-        public ISshTerminalSession ActiveSession
+        public ISshTerminalSession ActiveSshTerminalSession
         {
             get => SshTerminalPane.TryGetActivePane(this.mainForm);
         }
+
+        public ISession ActiveSession => this.ActiveSshTerminalSession;
 
         public bool IsConnected(InstanceLocator vmInstance)
         {
