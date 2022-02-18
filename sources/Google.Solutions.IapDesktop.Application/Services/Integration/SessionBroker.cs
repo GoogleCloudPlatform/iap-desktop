@@ -27,7 +27,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
     public interface ISession : IDisposable
     {
+        /// <summary>
+        /// Disconnect and close session.
+        /// </summary>
         void Close();
+
+        /// <summary>
+        /// Check if session is connected (and not dead).
+        /// </summary>
+        bool IsConnected { get; }
     }
 
     public interface ISessionBroker
@@ -37,8 +45,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         /// </summary>
         ISession ActiveSession { get; }
 
+        /// <summary>
+        /// Check if there is an active session for a VM instance.
+        /// </summary>
         bool IsConnected(InstanceLocator vmInstance);
 
+        /// <summary>
+        /// Activate session to VM instance, if any.
+        /// </summary>
         bool TryActivate(InstanceLocator vmInstance);
     }
 

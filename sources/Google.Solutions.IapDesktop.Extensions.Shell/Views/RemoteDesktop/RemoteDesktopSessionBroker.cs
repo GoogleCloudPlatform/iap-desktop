@@ -32,8 +32,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
     {
         bool TrySetFullscreen(FullScreenMode mode);
 
-        bool IsConnected { get; }
-
         void ShowSecurityScreen();
 
         void ShowTaskManager();

@@ -408,5 +408,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         public Task DisconnectAsync()
             => this.viewModel.DisconnectAsync();
+
+        //---------------------------------------------------------------------
+        // ISession
+        //---------------------------------------------------------------------
+
+        public bool IsConnected =>
+            this.viewModel.ConnectionStatus == SshTerminalPaneViewModel.Status.Connected;
     }
 }
