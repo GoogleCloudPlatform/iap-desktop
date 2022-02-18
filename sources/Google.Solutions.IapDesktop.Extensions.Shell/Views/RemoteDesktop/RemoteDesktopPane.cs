@@ -26,6 +26,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
@@ -136,10 +137,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.eventService = serviceProvider.GetService<IEventService>();
             this.Instance = vmInstance;
 
-            // The ActiveX fails when trying to drag/dock a window, so disable
-            // that feature.
-            this.AllowEndUserDocking = false;
-
             var singleScreenFullScreenMenuItem = new ToolStripMenuItem("&Full screen");
             singleScreenFullScreenMenuItem.Click += (sender, _)
                 => TrySetFullscreen(FullScreenMode.SingleScreen);
@@ -178,6 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // an error happens indicating that the control does not have a Window handle.
                 InitializeComponent();
                 UpdateLayout();
+
 
                 var advancedSettings = this.rdpClient.AdvancedSettings7;
                 var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
@@ -411,6 +409,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // stress on the control (especially if events come in quick succession).
                 if (size != this.currentConnectionSize && !this.connecting)
                 {
+                    MoveRdpControlToRescueWindow();
+
                     if (this.rdpClient.FullScreen)
                     {
                         //
@@ -838,6 +838,74 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
                 nonScriptable.SendKeys(keys);
             }
+        }
+
+
+        //---------------------------------------------------------------------
+        // Drag/docking.
+        //
+        // The RDP control must always have a parent. But when a document is
+        // dragged to become a floating window, or when a window is re-docked,
+        // then its parent is temporarily set to null.
+        // 
+        // To "rescue" the RDP control in these situations, we temporarily
+        // move the the control to a rescue form when the drag begins, and
+        // restore it when it ends.
+        //---------------------------------------------------------------------
+
+        private Form rescueWindow = null;
+        private bool closeMessageReceived = false;
+
+        private void RestoreRdpControlFromRescueWindow()
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                this.rescueWindow = new Form();
+                this.rdpClient.Parent = rescueWindow;
+                this.rdpClient.ContainingControl = rescueWindow;
+            }
+        }
+
+        private void MoveRdpControlToRescueWindow()
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                if (this.rescueWindow != null)
+                {
+                    this.rdpClient.Parent = this;
+                    this.rdpClient.ContainingControl = this;
+                    this.rescueWindow.Close();
+                    this.rescueWindow = null;
+                }
+            }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            var messageId = (WindowMessage)m.Msg;
+            if (messageId == WindowMessage.WM_CLOSE)
+            {
+                //
+                // After a WM_CLOSE, we need to handle WM_DESTROYs
+                // normally.
+                //
+                this.closeMessageReceived = true;
+            }
+            else if (!this.closeMessageReceived && 
+                messageId == WindowMessage.WM_DESTROY && 
+                this.rdpClient != null)
+            { 
+                //
+                // A WM_DESTROY that's not preceeded by a WM_CLOSE
+                // indicates that the window is being re-docked.
+                //
+                RestoreRdpControlFromRescueWindow();
+            }
+
+            // TODO: Disable full-screen if one window is already in full-screen mode
+
+            Debug.WriteLine("Message: {0}", messageId);
+            base.WndProc(ref m);
         }
     }
 }

@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         protected IMainForm MainForm { get; }
         private readonly ApplicationSettingsRepository settingsRepository;
 
-        private static void MoveControls(Form source, Form target)
+        protected static void MoveControls(Form source, Form target)
         {
             var controls = new Control[source.Controls.Count];
             source.Controls.CopyTo(controls, 0);
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.settingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
             this.MainForm = serviceProvider.GetService<IMainForm>();
 
-            this.DockAreas = DockAreas.Document;
+            this.DockAreas = DockAreas.Document | DockAreas.Float;
         }
 
         //---------------------------------------------------------------------

@@ -119,8 +119,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             Debug.Assert(this.viewModel.View != null);
 
-            this.DockAreas = DockAreas.Document;
-
             //
             // Bind controls.
             //
