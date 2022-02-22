@@ -409,8 +409,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // stress on the control (especially if events come in quick succession).
                 if (size != this.currentConnectionSize && !this.connecting)
                 {
-                    RestoreRdpControlFromRescueWindow();
-
                     if (this.rdpClient.FullScreen)
                     {
                         //
@@ -908,6 +906,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // indicates that the window is being re-docked.
                 //
                 MoveRdpControlToRescueWindow();
+            }
+            else if (messageId == WindowMessage.WM_SHOWWINDOW &&
+                this.rdpClient != null)
+            {
+                RestoreRdpControlFromRescueWindow();
             }
 
             // TODO: Set floating window size
