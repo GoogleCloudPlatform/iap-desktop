@@ -409,7 +409,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // stress on the control (especially if events come in quick succession).
                 if (size != this.currentConnectionSize && !this.connecting)
                 {
-                    MoveRdpControlToRescueWindow();
+                    RestoreRdpControlFromRescueWindow();
 
                     if (this.rdpClient.FullScreen)
                     {
@@ -856,18 +856,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         private Form rescueWindow = null;
         private bool closeMessageReceived = false;
 
-        private void RestoreRdpControlFromRescueWindow()
+        private void MoveRdpControlToRescueWindow()
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                Debug.Assert(this.rescueWindow == null);
-                this.rescueWindow = new Form();
-                this.rdpClient.Parent = rescueWindow;
-                this.rdpClient.ContainingControl = rescueWindow;
+                //
+                // NB. It's possible that another rescue operation is still in
+                // progress. So don't create a window if there is one already.
+                //
+                if (this.rescueWindow == null)
+                {
+                    this.rescueWindow = new Form();
+                    this.rdpClient.Parent = rescueWindow;
+                    this.rdpClient.ContainingControl = rescueWindow;
+                }
             }
         }
 
-        private void MoveRdpControlToRescueWindow()
+        private void RestoreRdpControlFromRescueWindow()
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -901,7 +907,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // A WM_DESTROY that's not preceeded by a WM_CLOSE
                 // indicates that the window is being re-docked.
                 //
-                RestoreRdpControlFromRescueWindow();
+                MoveRdpControlToRescueWindow();
             }
 
             // TODO: Set floating window size
