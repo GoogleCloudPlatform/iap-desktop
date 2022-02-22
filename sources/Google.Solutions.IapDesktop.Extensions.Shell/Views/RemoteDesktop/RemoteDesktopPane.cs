@@ -884,11 +884,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                         // Resize of the floating window so that its client
                         // area matches the size of the RDP connection.
                         //
-                        // TODO: Calculation is off and causes a resize
-                        var nonClientOverhead = 
-                            (this.Pane.FloatWindow.Size - this.Pane.FloatWindow.ClientSize) +
-                            (this.Size - this.ClientSize);
+                        var nonClientOverhead = (this.Pane.FloatWindow.Size - this.Size);
                         this.Pane.FloatWindow.Size = this.currentConnectionSize + nonClientOverhead;
+                        this.rdpClient.Size = this.currentConnectionSize;
                     }
 
                     this.rdpClient.Parent = this;
@@ -901,6 +899,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
         protected override void WndProc(ref Message m)
         {
+            // TODO: consolidate methods
             var messageId = (WindowMessage)m.Msg;
             if (messageId == WindowMessage.WM_CLOSE)
             {
@@ -927,7 +926,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 RestoreRdpControlFromRescueWindow();
             }
 
-            // TODO: Set floating window size
             // TODO: Disable full-screen if one window is already in full-screen mode
             // TODO: Test w/o auto-resize
 
