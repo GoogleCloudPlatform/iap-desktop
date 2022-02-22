@@ -860,6 +860,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
+                Debug.Assert(this.rescueWindow == null);
                 this.rescueWindow = new Form();
                 this.rdpClient.Parent = rescueWindow;
                 this.rdpClient.ContainingControl = rescueWindow;
@@ -889,6 +890,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // After a WM_CLOSE, we need to handle WM_DESTROYs
                 // normally.
                 //
+                Debug.Assert(!this.closeMessageReceived);
                 this.closeMessageReceived = true;
             }
             else if (!this.closeMessageReceived && 
@@ -902,6 +904,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 RestoreRdpControlFromRescueWindow();
             }
 
+            // TODO: Set floating window size
             // TODO: Disable full-screen if one window is already in full-screen mode
 
             Debug.WriteLine("Message: {0}", messageId);
