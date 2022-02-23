@@ -262,12 +262,33 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.MainForm.Minimize();
         }
 
+        //---------------------------------------------------------------------
+        // Drag/docking support.
+        //---------------------------------------------------------------------
+
+        private bool closeMessageReceived = false;
+
         protected override void WndProc(ref Message m)
         {
             if (!this.DesignMode)
             {
                 switch (m.Id())
                 {
+                    case WindowMessage.WM_CLOSE:
+                        this.closeMessageReceived = true;
+                        break;
+
+                    case WindowMessage.WM_DESTROY:
+                        if (!this.closeMessageReceived)
+                        {
+                            //
+                            // A WM_DESTROY that's not preceeded by a WM_CLOSE
+                            // indicates that the window is being re-docked.
+                            //
+                            OnDockBegin();
+                        }
+                        break;
+
                     case WindowMessage.WM_SHOWWINDOW:
                         if (this.Pane?.FloatWindow != null)
                         {
@@ -288,7 +309,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
                             {
                                 this.Pane.FloatWindow.Size = targetSize;
                             }
+
                         }
+                        
+                        OnDockEnd();
                         break;
                 }
             }
@@ -307,5 +331,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
             //
             get => this.PreviousNonFloatingSize ?? this.Size;
         }
+
+        protected virtual void OnDockBegin()
+        { }
+
+        protected virtual void OnDockEnd()
+        { }
     }
 }

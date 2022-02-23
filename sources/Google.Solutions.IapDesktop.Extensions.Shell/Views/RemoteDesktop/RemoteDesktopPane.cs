@@ -854,76 +854,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         //---------------------------------------------------------------------
 
         private Form rescueWindow = null;
-        private bool closeMessageReceived = false;
-
-        private void MoveRdpControlToRescueWindow()
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            {
-                //
-                // NB. It's possible that another rescue operation is still in
-                // progress. So don't create a window if there is one already.
-                //
-                if (this.rescueWindow == null)
-                {
-                    this.rescueWindow = new Form();
-                    this.rdpClient.Parent = rescueWindow;
-                    this.rdpClient.ContainingControl = rescueWindow;
-                }
-            }
-        }
-
-        private void RestoreRdpControlFromRescueWindow()
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            {
-                if (this.rescueWindow != null)
-                {
-                    this.rdpClient.Parent = this;
-                    this.rdpClient.ContainingControl = this;
-                    this.rdpClient.Size = this.currentConnectionSize;
-                    this.rescueWindow.Close();
-                    this.rescueWindow = null;
-                }
-            }
-        }
-
-        protected override void WndProc(ref Message m)
-        {
-            // TODO: consolidate methods
-            var messageId = m.Id();
-            if (messageId == WindowMessage.WM_CLOSE)
-            {
-                //
-                // After a WM_CLOSE, we need to handle WM_DESTROYs
-                // normally.
-                //
-                Debug.Assert(!this.closeMessageReceived);
-                this.closeMessageReceived = true;
-            }
-            else if (!this.closeMessageReceived && 
-                messageId == WindowMessage.WM_DESTROY && 
-                this.rdpClient != null)
-            { 
-                //
-                // A WM_DESTROY that's not preceeded by a WM_CLOSE
-                // indicates that the window is being re-docked.
-                //
-                MoveRdpControlToRescueWindow();
-            }
-            else if (messageId == WindowMessage.WM_SHOWWINDOW &&
-                this.rdpClient != null)
-            {
-                RestoreRdpControlFromRescueWindow();
-            }
-
-            // TODO: Disable full-screen if one window is already in full-screen mode
-            // TODO: Test w/o auto-resize
-
-            Debug.WriteLine("Message: {0}", messageId);
-            base.WndProc(ref m);
-        }
 
         protected override Size DefaultFloatWindowClientSize => this.currentConnectionSize;
+
+        protected override void OnDockBegin()
+        {
+            //
+            // NB. It's possible that another rescue operation is still in
+            // progress. So don't create a window if there is one already.
+            //
+            if (this.rescueWindow == null && this.rdpClient != null)
+            {
+                this.rescueWindow = new Form();
+                this.rdpClient.Parent = rescueWindow;
+                this.rdpClient.ContainingControl = rescueWindow;
+            }
+
+            base.OnDockBegin();
+        }
+        protected override void  OnDockEnd()
+        {
+            if (this.rescueWindow != null && this.rdpClient != null)
+            {
+                this.rdpClient.Parent = this;
+                this.rdpClient.ContainingControl = this;
+                this.rdpClient.Size = this.currentConnectionSize;
+                this.rescueWindow.Close();
+                this.rescueWindow = null;
+            }
+
+            base.OnDockEnd();
+        }
     }
 }
