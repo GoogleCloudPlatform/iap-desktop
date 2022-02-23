@@ -51,6 +51,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         {
             this.fullScreenToggleButton = new System.Windows.Forms.Button();
             this.allScreensCheckBox = new System.Windows.Forms.CheckBox();
+            this.groupBox = new System.Windows.Forms.GroupBox();
+            this.sizeLabel = new System.Windows.Forms.Label();
+            this.groupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // fullScreenToggleButton
@@ -73,15 +76,40 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.allScreensCheckBox.Text = "Use all screens";
             this.allScreensCheckBox.UseVisualStyleBackColor = true;
             // 
+            // groupBox
+            // 
+            this.groupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox.Controls.Add(this.sizeLabel);
+            this.groupBox.Location = new System.Drawing.Point(12, 41);
+            this.groupBox.Name = "groupBox";
+            this.groupBox.Size = new System.Drawing.Size(776, 397);
+            this.groupBox.TabIndex = 2;
+            this.groupBox.TabStop = false;
+            // 
+            // sizeLabel
+            // 
+            this.sizeLabel.AutoSize = true;
+            this.sizeLabel.Location = new System.Drawing.Point(6, 16);
+            this.sizeLabel.Name = "sizeLabel";
+            this.sizeLabel.Size = new System.Drawing.Size(33, 13);
+            this.sizeLabel.TabIndex = 3;
+            this.sizeLabel.Text = "(Size)";
+            // 
             // DebugFullScreenPane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.groupBox);
             this.Controls.Add(this.allScreensCheckBox);
             this.Controls.Add(this.fullScreenToggleButton);
             this.Name = "DebugFullScreenPane";
             this.Text = "DebugFullScreenPane";
+            this.SizeChanged += new System.EventHandler(this.DebugFullScreenPane_SizeChanged);
+            this.groupBox.ResumeLayout(false);
+            this.groupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -91,5 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
         private System.Windows.Forms.Button fullScreenToggleButton;
         private System.Windows.Forms.CheckBox allScreensCheckBox;
+        private System.Windows.Forms.GroupBox groupBox;
+        private System.Windows.Forms.Label sizeLabel;
     }
 }

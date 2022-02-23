@@ -24,6 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -40,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// back to main window.
         /// </summary>
         public const Keys ToggleFocusHotKey = Keys.Control | Keys.Alt | Keys.Home;
-        
+
         /// <summary>
         /// Hotkey to enter full-screen.
         /// </summary>
@@ -227,5 +228,55 @@ namespace Google.Solutions.IapDesktop.Application.Views
             //
             this.MainForm.Minimize();
         }
+
+
+        protected override void WndProc(ref Message m)
+        {
+            if (!this.DesignMode)
+            {
+                switch (m.Id())
+                {
+                    case WindowMessage.WM_SHOWWINDOW:
+                        if (this.Pane?.FloatWindow != null)
+                        {
+                            //
+                            // Window has been torn off and is entering a floating state.
+                            //
+                            // Try to site the floating window so that it matches the
+                            // current size.
+                            //
+                            // Add a magic (2, 1) margin to accomodate for DockPanelSuite
+                            // repositioning the window after sizing it.
+                            //
+                            var nonClientOverhead = new Size
+                            {
+                                Width = this.Pane.FloatWindow.Width - this.Pane.FloatWindow.ClientRectangle.Width + 2,
+                                Height = this.Pane.FloatWindow.Height - this.Pane.FloatWindow.ClientRectangle.Height + 1
+                            };
+
+                            var targetSize = this.DefaultFloatWindowSize + nonClientOverhead;
+                            if (this.Pane.FloatWindow.Size.Width < targetSize.Width ||
+                                this.Pane.FloatWindow.Size.Height < targetSize.Height)
+                            {
+                                //
+                                // If a window is torn off to float while not fully initialized
+                                // yet, then this.Size might have a weird size, typically way
+                                // too small. Therefore, only grow the window, but never shrink.
+                                //
+                                this.Pane.FloatWindow.Size = targetSize;
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        break;
+                }
+            }
+
+            base.WndProc(ref m);
+        }
+
+        protected virtual Size DefaultFloatWindowSize => this.Size;
     }
 }

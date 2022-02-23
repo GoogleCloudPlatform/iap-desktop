@@ -877,20 +877,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             {
                 if (this.rescueWindow != null)
                 {
-
-                    if (this.Pane.FloatWindow != null)
-                    {
-                        //
-                        // Resize of the floating window so that its client
-                        // area matches the size of the RDP connection.
-                        //
-                        var nonClientOverhead = (this.Pane.FloatWindow.Size - this.Size);
-                        this.Pane.FloatWindow.Size = this.currentConnectionSize + nonClientOverhead;
-                        this.rdpClient.Size = this.currentConnectionSize;
-                    }
-
                     this.rdpClient.Parent = this;
                     this.rdpClient.ContainingControl = this;
+                    this.rdpClient.Size = this.currentConnectionSize;
                     this.rescueWindow.Close();
                     this.rescueWindow = null;
                 }
@@ -900,7 +889,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         protected override void WndProc(ref Message m)
         {
             // TODO: consolidate methods
-            var messageId = (WindowMessage)m.Msg;
+            var messageId = m.Id();
             if (messageId == WindowMessage.WM_CLOSE)
             {
                 //
@@ -932,5 +921,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             Debug.WriteLine("Message: {0}", messageId);
             base.WndProc(ref m);
         }
+
+        protected override Size DefaultFloatWindowSize => this.currentConnectionSize;
     }
 }

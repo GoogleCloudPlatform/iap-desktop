@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Util
 {
@@ -292,4 +293,12 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
 		WM_REFLECT = WM_USER + 0x1C00,
 	}
+
+	public static class WindowMessageExtensions
+    {
+		public static WindowMessage Id(this Message message)
+        {
+			return (WindowMessage)message.Msg;
+		}
+    }
 }
