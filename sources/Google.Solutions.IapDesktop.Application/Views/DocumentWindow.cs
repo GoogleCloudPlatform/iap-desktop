@@ -52,7 +52,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// </summary>
         public const Keys LeaveFullScreenHotKey = Keys.Control | Keys.Alt | Keys.F11;
 
-
         //
         // Full screen form -- created lazily. There can only be one window
         // full scnreen at a time, so it's static.
@@ -106,6 +105,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
+        /// <summary>
+        /// Size of window when it was not floating.
+        /// </summary>
+        protected Size? PreviousNonFloatingSize { get; private set; }
+
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -123,6 +127,18 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.MainForm = serviceProvider.GetService<IMainForm>();
 
             this.DockAreas = DockAreas.Document | DockAreas.Float;
+
+            this.SizeChanged += (sender, args) =>
+            {
+                if (this.Pane?.FloatWindow == null)
+                {
+                    //
+                    // Keep track of size for as long as the window
+                    // isn't floating.
+                    //
+                    this.PreviousNonFloatingSize = this.Size;
+                }
+            };
         }
 
         //---------------------------------------------------------------------
@@ -229,7 +245,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.MainForm.Minimize();
         }
 
-
         protected override void WndProc(ref Message m)
         {
             if (!this.DesignMode)
@@ -242,9 +257,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
                             //
                             // Window has been torn off and is entering a floating state.
                             //
-                            // Try to site the floating window so that it matches the
-                            // current size.
-                            //
                             // Add a magic (2, 1) margin to accomodate for DockPanelSuite
                             // repositioning the window after sizing it.
                             //
@@ -255,8 +267,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                             };
 
                             var targetSize = this.DefaultFloatWindowSize + nonClientOverhead;
-                            if (this.Pane.FloatWindow.Size.Width < targetSize.Width ||
-                                this.Pane.FloatWindow.Size.Height < targetSize.Height)
+                            if (this.Pane.FloatWindow.Size != targetSize)
                             {
                                 //
                                 // If a window is torn off to float while not fully initialized
@@ -264,10 +275,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
                                 // too small. Therefore, only grow the window, but never shrink.
                                 //
                                 this.Pane.FloatWindow.Size = targetSize;
-                            }
-                            else
-                            {
-
                             }
                         }
                         break;
@@ -277,6 +284,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
             base.WndProc(ref m);
         }
 
-        protected virtual Size DefaultFloatWindowSize => this.Size;
+        protected virtual Size DefaultFloatWindowSize
+        {
+            //
+            // Try to size the floating window so that it matches its previous
+            // non-floating size.
+            //
+            get => this.PreviousNonFloatingSize ?? this.Size;
+        }
     }
 }
