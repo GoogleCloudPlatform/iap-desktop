@@ -242,6 +242,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
+        protected static bool IsAnyDocumentInFullScreen
+            => fullScreenForm != null && fullScreenForm.Visible;
+
         protected void MinimizeWindow()
         {
             if (!IsFullscreen)

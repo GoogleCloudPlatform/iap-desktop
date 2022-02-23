@@ -369,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Full screen",
-                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(),
+                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(),   // TODO: Check CanEnterFullScreen
                     _ => DoWithActiveSession<IRemoteDesktopSession>(session => session.TrySetFullscreen(FullScreenMode.SingleScreen)))
                 {
                     Image = Resources.Fullscreen_16,
@@ -378,7 +378,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Full screen (multiple displays)",
-                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(),
+                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(), // TODO: Check CanEnterFullScreen
                     _ => DoWithActiveSession<IRemoteDesktopSession>(session => session.TrySetFullscreen(FullScreenMode.AllScreens)))
                 {
                     Image = Resources.Fullscreen_16,

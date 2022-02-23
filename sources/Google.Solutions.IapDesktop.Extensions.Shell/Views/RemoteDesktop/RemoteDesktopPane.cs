@@ -141,14 +141,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             singleScreenFullScreenMenuItem.Click += (sender, _)
                 => TrySetFullscreen(FullScreenMode.SingleScreen);
             this.TabContextStrip.Items.Add(singleScreenFullScreenMenuItem);
-            this.TabContextStrip.Opening += tabContextStrip_Opening;
 
             var allScreensFullScreenMenuItem = new ToolStripMenuItem("&Full screen (multiple displays)");
             allScreensFullScreenMenuItem.Click += (sender, _)
                 => TrySetFullscreen(FullScreenMode.AllScreens);
             this.TabContextStrip.Items.Add(allScreensFullScreenMenuItem);
-            this.TabContextStrip.Opening += tabContextStrip_Opening;
+
+            this.TabContextStrip.Opening += (sender, _) =>
+            {
+                foreach (var menuItem in this.TabContextStrip.Items.Cast<ToolStripDropDownItem>())
+                {
+                    //
+                    // Disable all commands while connecting.
+                    //
+                    menuItem.Enabled = !this.IsConnecting;
+                }
+
+                //
+                // Disable full-screen if some other window is full-screen already.
+                //
+                singleScreenFullScreenMenuItem.Enabled &= this.CanEnterFullScreen;
+                allScreensFullScreenMenuItem.Enabled &= this.CanEnterFullScreen;
+            };
         }
+
 
         //---------------------------------------------------------------------
         // Publics.
@@ -456,6 +472,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
         public bool IsConnected => this.rdpClient.Connected == 1 && !this.connecting;
         public bool IsConnecting => this.rdpClient.Connected == 2 && !this.connecting;
+        public bool CanEnterFullScreen => this.IsConnected && !IsAnyDocumentInFullScreen;
 
         //---------------------------------------------------------------------
         // Window events.
@@ -539,15 +556,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
                 await this.eventService.FireAsync(new SessionEndedEvent(this.Instance))
                     .ConfigureAwait(true);
-            }
-        }
-
-        private void tabContextStrip_Opening(object sender, CancelEventArgs e)
-        {
-            foreach (var menuItem in this.TabContextStrip.Items.Cast<ToolStripDropDownItem>())
-            {
-                // Disable everything while we are connecting.
-                menuItem.Enabled = !this.IsConnecting;
             }
         }
 
@@ -872,6 +880,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
             base.OnDockBegin();
         }
+
         protected override void  OnDockEnd()
         {
             if (this.rescueWindow != null && this.rdpClient != null)
@@ -885,5 +894,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
             base.OnDockEnd();
         }
+
+        // TODO: Disable full-screen if one window is already in full-screen mode
+        // TODO: Test w/o auto-resize
+        // TODO: add test for re-docking
     }
 }
