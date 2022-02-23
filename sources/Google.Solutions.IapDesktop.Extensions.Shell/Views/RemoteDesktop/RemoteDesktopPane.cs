@@ -405,8 +405,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.currentConnectionSize, size))
             {
+                //
                 // Only resize if the size really changed, otherwise we put unnecessary
                 // stress on the control (especially if events come in quick succession).
+                //
                 if (size != this.currentConnectionSize && !this.connecting)
                 {
                     if (this.rdpClient.FullScreen)
@@ -922,6 +924,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             base.WndProc(ref m);
         }
 
-        protected override Size DefaultFloatWindowSize => this.currentConnectionSize;
+        protected override Size DefaultFloatWindowClientSize => this.currentConnectionSize;
     }
 }

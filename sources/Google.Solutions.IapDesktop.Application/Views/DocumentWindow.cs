@@ -138,6 +138,23 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     //
                     this.PreviousNonFloatingSize = this.Size;
                 }
+                else if (this.PreviousNonFloatingSize != null &&
+                    this.Size != this.PreviousNonFloatingSize.Value &&
+                    Math.Abs(this.Size.Width - this.PreviousNonFloatingSize.Value.Width) <= 2 &&
+                    Math.Abs(this.Size.Height - this.PreviousNonFloatingSize.Value.Height) <= 2)
+                {
+                    //
+                    // The floating size is really close to the size the window had when
+                    // it was non-floating. This discrepancy is most likely caused by the
+                    // docking library and is unintentional (we try to size the window
+                    // so that it fits the required client size, but that doesn't always
+                    // match exactly).
+                    //
+                    // Adjust the size so that it fits the previous size. That way,
+                    // we avoid having to resize the contents (which can be expensive).
+                    //
+                    this.Size = this.PreviousNonFloatingSize.Value;
+                }
             };
         }
 
@@ -255,25 +272,20 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         if (this.Pane?.FloatWindow != null)
                         {
                             //
-                            // Window has been torn off and is entering a floating state.
-                            //
-                            // Add a magic (2, 1) margin to accomodate for DockPanelSuite
-                            // repositioning the window after sizing it.
+                            // Window has been torn off and is now entering a floating state.
+                            // 
+                            // Set the size of the floating window so that it fits the 
+                            // required client size.
                             //
                             var nonClientOverhead = new Size
                             {
-                                Width = this.Pane.FloatWindow.Width - this.Pane.FloatWindow.ClientRectangle.Width + 2,
-                                Height = this.Pane.FloatWindow.Height - this.Pane.FloatWindow.ClientRectangle.Height + 1
+                                Width = this.Pane.FloatWindow.Width - this.Pane.FloatWindow.ClientRectangle.Width,
+                                Height = this.Pane.FloatWindow.Height - this.Pane.FloatWindow.ClientRectangle.Height
                             };
 
-                            var targetSize = this.DefaultFloatWindowSize + nonClientOverhead;
+                            var targetSize = this.DefaultFloatWindowClientSize + nonClientOverhead;
                             if (this.Pane.FloatWindow.Size != targetSize)
                             {
-                                //
-                                // If a window is torn off to float while not fully initialized
-                                // yet, then this.Size might have a weird size, typically way
-                                // too small. Therefore, only grow the window, but never shrink.
-                                //
                                 this.Pane.FloatWindow.Size = targetSize;
                             }
                         }
@@ -284,7 +296,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             base.WndProc(ref m);
         }
 
-        protected virtual Size DefaultFloatWindowSize
+        /// <summary>
+        /// Client size that a float window should default to.
+        /// </summary>
+        protected virtual Size DefaultFloatWindowClientSize
         {
             //
             // Try to size the floating window so that it matches its previous
