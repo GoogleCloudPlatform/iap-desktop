@@ -41,7 +41,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             InitializeComponent();
             this.TabText = this.Text;
 
-            this.DockAreas = DockAreas.Document;
             this.HideOnClose = true;
         }
 
@@ -55,6 +54,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 EnterFullscreen(this.allScreensCheckBox.Checked);
             }
+        }
+
+        private void DebugFullScreenPane_SizeChanged(object sender, EventArgs e)
+        {
+            this.sizeLabel.Text = $"Size: {this.Size}\nClientSize: {this.ClientSize}\nDisplayRectangle:{this.DisplayRectangle}";
         }
     }
 }

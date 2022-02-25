@@ -26,6 +26,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
@@ -136,22 +137,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.eventService = serviceProvider.GetService<IEventService>();
             this.Instance = vmInstance;
 
-            // The ActiveX fails when trying to drag/dock a window, so disable
-            // that feature.
-            this.AllowEndUserDocking = false;
-
             var singleScreenFullScreenMenuItem = new ToolStripMenuItem("&Full screen");
             singleScreenFullScreenMenuItem.Click += (sender, _)
                 => TrySetFullscreen(FullScreenMode.SingleScreen);
             this.TabContextStrip.Items.Add(singleScreenFullScreenMenuItem);
-            this.TabContextStrip.Opening += tabContextStrip_Opening;
 
             var allScreensFullScreenMenuItem = new ToolStripMenuItem("&Full screen (multiple displays)");
             allScreensFullScreenMenuItem.Click += (sender, _)
                 => TrySetFullscreen(FullScreenMode.AllScreens);
             this.TabContextStrip.Items.Add(allScreensFullScreenMenuItem);
-            this.TabContextStrip.Opening += tabContextStrip_Opening;
+
+            this.TabContextStrip.Opening += (sender, _) =>
+            {
+                foreach (var menuItem in this.TabContextStrip.Items.Cast<ToolStripDropDownItem>())
+                {
+                    //
+                    // Disable all commands while connecting.
+                    //
+                    menuItem.Enabled = !this.IsConnecting;
+                }
+
+                //
+                // Disable full-screen if some other window is full-screen already.
+                //
+                singleScreenFullScreenMenuItem.Enabled &= this.CanEnterFullScreen;
+                allScreensFullScreenMenuItem.Enabled &= this.CanEnterFullScreen;
+            };
         }
+
 
         //---------------------------------------------------------------------
         // Publics.
@@ -178,6 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // an error happens indicating that the control does not have a Window handle.
                 InitializeComponent();
                 UpdateLayout();
+
 
                 var advancedSettings = this.rdpClient.AdvancedSettings7;
                 var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
@@ -407,8 +421,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.currentConnectionSize, size))
             {
+                //
                 // Only resize if the size really changed, otherwise we put unnecessary
                 // stress on the control (especially if events come in quick succession).
+                //
                 if (size != this.currentConnectionSize && !this.connecting)
                 {
                     if (this.rdpClient.FullScreen)
@@ -456,6 +472,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
         public bool IsConnected => this.rdpClient.Connected == 1 && !this.connecting;
         public bool IsConnecting => this.rdpClient.Connected == 2 && !this.connecting;
+        public bool CanEnterFullScreen => this.IsConnected && !IsAnyDocumentInFullScreen;
 
         //---------------------------------------------------------------------
         // Window events.
@@ -539,15 +556,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
                 await this.eventService.FireAsync(new SessionEndedEvent(this.Instance))
                     .ConfigureAwait(true);
-            }
-        }
-
-        private void tabContextStrip_Opening(object sender, CancelEventArgs e)
-        {
-            foreach (var menuItem in this.TabContextStrip.Items.Cast<ToolStripDropDownItem>())
-            {
-                // Disable everything while we are connecting.
-                menuItem.Enabled = !this.IsConnecting;
             }
         }
 
@@ -838,6 +846,53 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
                 nonScriptable.SendKeys(keys);
             }
+        }
+
+
+        //---------------------------------------------------------------------
+        // Drag/docking.
+        //
+        // The RDP control must always have a parent. But when a document is
+        // dragged to become a floating window, or when a window is re-docked,
+        // then its parent is temporarily set to null.
+        // 
+        // To "rescue" the RDP control in these situations, we temporarily
+        // move the the control to a rescue form when the drag begins, and
+        // restore it when it ends.
+        //---------------------------------------------------------------------
+
+        private Form rescueWindow = null;
+
+        protected override Size DefaultFloatWindowClientSize => this.currentConnectionSize;
+
+        protected override void OnDockBegin()
+        {
+            //
+            // NB. It's possible that another rescue operation is still in
+            // progress. So don't create a window if there is one already.
+            //
+            if (this.rescueWindow == null && this.rdpClient != null)
+            {
+                this.rescueWindow = new Form();
+                this.rdpClient.Parent = rescueWindow;
+                this.rdpClient.ContainingControl = rescueWindow;
+            }
+
+            base.OnDockBegin();
+        }
+
+        protected override void  OnDockEnd()
+        {
+            if (this.rescueWindow != null && this.rdpClient != null)
+            {
+                this.rdpClient.Parent = this;
+                this.rdpClient.ContainingControl = this;
+                this.rdpClient.Size = this.currentConnectionSize;
+                this.rescueWindow.Close();
+                this.rescueWindow = null;
+            }
+
+            base.OnDockEnd();
         }
     }
 }

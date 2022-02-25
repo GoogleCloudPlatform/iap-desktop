@@ -114,14 +114,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             }
         }
 
-        private CommandState GetCommandStateWhenActiveSessionRequired<TSession>()
+        private CommandState GetCommandStateWhenActiveSessionRequired<TSession>(
+            Predicate<TSession> predicate)
             where TSession : class, ISession
         {
             var activeSession = this.serviceProvider
                 .GetService<IGlobalSessionBroker>()
                 .ActiveSession as TSession;
 
-            return (activeSession != null && activeSession.IsConnected)
+            return (activeSession != null && predicate(activeSession))
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
@@ -369,8 +370,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Full screen",
-                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(),
-                    _ => DoWithActiveSession<IRemoteDesktopSession>(session => session.TrySetFullscreen(FullScreenMode.SingleScreen)))
+                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(
+                        session => session.IsConnected && session.CanEnterFullScreen),
+                    _ => DoWithActiveSession<IRemoteDesktopSession>(
+                        session => session.TrySetFullscreen(FullScreenMode.SingleScreen)))
                 {
                     Image = Resources.Fullscreen_16,
                     ShortcutKeys =  DocumentWindow.EnterFullScreenHotKey
@@ -378,8 +381,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Full screen (multiple displays)",
-                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(),
-                    _ => DoWithActiveSession<IRemoteDesktopSession>(session => session.TrySetFullscreen(FullScreenMode.AllScreens)))
+                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(
+                        session => session.IsConnected && session.CanEnterFullScreen),
+                    _ => DoWithActiveSession<IRemoteDesktopSession>(
+                        session => session.TrySetFullscreen(FullScreenMode.AllScreens)))
                 {
                     Image = Resources.Fullscreen_16,
                     ShortcutKeys = Keys.F11 | Keys.Shift
@@ -387,8 +392,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Disconnect",
-                    _ => GetCommandStateWhenActiveSessionRequired<ISession>(),
-                    _ => DoWithActiveSession<ISession>(session => session.Close()))
+                    _ => GetCommandStateWhenActiveSessionRequired<ISession>(
+                        session => session.IsConnected),
+                    _ => DoWithActiveSession<ISession>(
+                        session => session.Close()))
                 {
                     Image = Resources.Disconnect_16,
                     ShortcutKeys = Keys.Control | Keys.F4
@@ -397,13 +404,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "Show &security screen (send Ctrl+Alt+Esc)",
-                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(),
-                    _ => DoWithActiveSession<IRemoteDesktopSession>(session => session.ShowSecurityScreen())));
+                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(
+                        session => session.IsConnected),
+                    _ => DoWithActiveSession<IRemoteDesktopSession>(
+                        session => session.ShowSecurityScreen())));
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "Open &task manager (send Ctrl+Shift+Esc)",
-                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(),
-                    _ => DoWithActiveSession<IRemoteDesktopSession>(session => session.ShowTaskManager())));
+                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(
+                        session => session.IsConnected),
+                    _ => DoWithActiveSession<IRemoteDesktopSession>(
+                        session => session.ShowTaskManager())));
         }
 
         private void DoWithActiveSession<TSession>(Action<TSession> action)

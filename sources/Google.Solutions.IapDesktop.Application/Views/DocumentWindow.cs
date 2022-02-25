@@ -24,6 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -40,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// back to main window.
         /// </summary>
         public const Keys ToggleFocusHotKey = Keys.Control | Keys.Alt | Keys.Home;
-        
+
         /// <summary>
         /// Hotkey to enter full-screen.
         /// </summary>
@@ -51,7 +52,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// </summary>
         public const Keys LeaveFullScreenHotKey = Keys.Control | Keys.Alt | Keys.F11;
 
-
         //
         // Full screen form -- created lazily. There can only be one window
         // full scnreen at a time, so it's static.
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         protected IMainForm MainForm { get; }
         private readonly ApplicationSettingsRepository settingsRepository;
 
-        private static void MoveControls(Form source, Form target)
+        protected static void MoveControls(Form source, Form target)
         {
             var controls = new Control[source.Controls.Count];
             source.Controls.CopyTo(controls, 0);
@@ -105,6 +105,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
+        /// <summary>
+        /// Size of window when it was not floating.
+        /// </summary>
+        protected Size? PreviousNonFloatingSize { get; private set; }
+
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -121,7 +126,36 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.settingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
             this.MainForm = serviceProvider.GetService<IMainForm>();
 
-            this.DockAreas = DockAreas.Document;
+            this.DockAreas = DockAreas.Document | DockAreas.Float;
+
+            this.SizeChanged += (sender, args) =>
+            {
+                if (this.Pane?.FloatWindow == null)
+                {
+                    //
+                    // Keep track of size for as long as the window
+                    // isn't floating.
+                    //
+                    this.PreviousNonFloatingSize = this.Size;
+                }
+                else if (this.PreviousNonFloatingSize != null &&
+                    this.Size != this.PreviousNonFloatingSize.Value &&
+                    Math.Abs(this.Size.Width - this.PreviousNonFloatingSize.Value.Width) <= 2 &&
+                    Math.Abs(this.Size.Height - this.PreviousNonFloatingSize.Value.Height) <= 2)
+                {
+                    //
+                    // The floating size is really close to the size the window had when
+                    // it was non-floating. This discrepancy is most likely caused by the
+                    // docking library and is unintentional (we try to size the window
+                    // so that it fits the required client size, but that doesn't always
+                    // match exactly).
+                    //
+                    // Adjust the size so that it fits the previous size. That way,
+                    // we avoid having to resize the contents (which can be expensive).
+                    //
+                    this.Size = this.PreviousNonFloatingSize.Value;
+                }
+            };
         }
 
         //---------------------------------------------------------------------
@@ -208,6 +242,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
+        protected static bool IsAnyDocumentInFullScreen
+            => fullScreenForm != null && fullScreenForm.Visible;
+
         protected void MinimizeWindow()
         {
             if (!IsFullscreen)
@@ -227,5 +264,81 @@ namespace Google.Solutions.IapDesktop.Application.Views
             //
             this.MainForm.Minimize();
         }
+
+        //---------------------------------------------------------------------
+        // Drag/docking support.
+        //---------------------------------------------------------------------
+
+        private bool closeMessageReceived = false;
+
+        protected override void WndProc(ref Message m)
+        {
+            if (!this.DesignMode)
+            {
+                switch (m.Id())
+                {
+                    case WindowMessage.WM_CLOSE:
+                        this.closeMessageReceived = true;
+                        break;
+
+                    case WindowMessage.WM_DESTROY:
+                        if (!this.closeMessageReceived)
+                        {
+                            //
+                            // A WM_DESTROY that's not preceeded by a WM_CLOSE
+                            // indicates that the window is being re-docked.
+                            //
+                            OnDockBegin();
+                        }
+                        break;
+
+                    case WindowMessage.WM_SHOWWINDOW:
+                        if (this.Pane?.FloatWindow != null)
+                        {
+                            //
+                            // Window has been torn off and is now entering a floating state.
+                            // 
+                            // Set the size of the floating window so that it fits the 
+                            // required client size.
+                            //
+                            var nonClientOverhead = new Size
+                            {
+                                Width = this.Pane.FloatWindow.Width - this.Pane.FloatWindow.ClientRectangle.Width,
+                                Height = this.Pane.FloatWindow.Height - this.Pane.FloatWindow.ClientRectangle.Height
+                            };
+
+                            var targetSize = this.DefaultFloatWindowClientSize + nonClientOverhead;
+                            if (this.Pane.FloatWindow.Size != targetSize)
+                            {
+                                this.Pane.FloatWindow.Size = targetSize;
+                            }
+
+                        }
+                        
+                        OnDockEnd();
+                        break;
+                }
+            }
+
+            base.WndProc(ref m);
+        }
+
+        /// <summary>
+        /// Client size that a float window should default to.
+        /// </summary>
+        protected virtual Size DefaultFloatWindowClientSize
+        {
+            //
+            // Try to size the floating window so that it matches its previous
+            // non-floating size.
+            //
+            get => this.PreviousNonFloatingSize ?? this.Size;
+        }
+
+        protected virtual void OnDockBegin()
+        { }
+
+        protected virtual void OnDockEnd()
+        { }
     }
 }

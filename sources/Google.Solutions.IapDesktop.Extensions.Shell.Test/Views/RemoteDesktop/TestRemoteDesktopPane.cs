@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using NUnit.Framework;
 using System;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -144,7 +145,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             }
         }
 
-
         [Test]
         public async Task WhenCredentialsValid_ThenConnectingSucceeds(
             [Values(RdpConnectionBarState.AutoHide, RdpConnectionBarState.Off, RdpConnectionBarState.Pinned)]
@@ -227,6 +227,54 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             }
         }
 
+        [Test]
+        public async Task WhenWindowChangedToFloating_ThenConnectionSurvives(
+            [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+
+            using (var tunnel = IapTunnel.ForRdp(
+                locator,
+                await credential))
+            using (var credentialAdapter = new WindowsCredentialAdapter(
+                new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationSource>())))
+            {
+                var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
+                        locator,
+                        CreateRandomUsername(),
+                        UserFlags.AddToAdministrators,
+                        TimeSpan.FromSeconds(60),
+                        CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                var settings = InstanceConnectionSettings.CreateNew(
+                    locator.ProjectId,
+                    locator.Name);
+                settings.RdpUsername.StringValue = credentials.UserName;
+                settings.RdpPassword.Value = credentials.SecurePassword;
+
+                var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
+                var session = (RemoteDesktopPane)rdpService.Connect(
+                    locator,
+                    "localhost",
+                    (ushort)tunnel.LocalPort,
+                    settings);
+
+                AwaitEvent<SessionStartedEvent>();
+                Assert.IsNull(this.ExceptionShown);
+
+                // Float.
+                session.FloatAt(new Rectangle(0, 0, 800, 600));
+                await Task.Delay(TimeSpan.FromSeconds(2));
+
+                // Dock again.
+                session.DockTo(session.DockPanel, DockStyle.Fill);
+                await Task.Delay(TimeSpan.FromSeconds(2));
+
+                session.Close();
+            }
+        }
 
         [Test, Ignore("Unreliable in CI")]
         public async Task WhenSigningOutPerSendKeys_ThenWindowIsClosed(
