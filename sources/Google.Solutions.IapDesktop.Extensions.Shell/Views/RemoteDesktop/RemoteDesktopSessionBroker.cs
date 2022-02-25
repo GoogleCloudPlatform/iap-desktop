@@ -35,6 +35,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         void ShowSecurityScreen();
 
         void ShowTaskManager();
+
+        bool CanEnterFullScreen { get; }
     }
 
     public enum FullScreenMode
