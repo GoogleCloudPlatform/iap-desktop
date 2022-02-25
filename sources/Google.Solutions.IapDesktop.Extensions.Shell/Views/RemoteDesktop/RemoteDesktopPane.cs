@@ -894,8 +894,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
             base.OnDockEnd();
         }
-
-        // TODO: Test w/o auto-resize
-        // TODO: add test for re-docking
     }
 }
