@@ -233,6 +233,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     keyType)
                 .ConfigureAwait(true))
             {
+                Assert.IsTrue(pane.IsConnected);
+
                 // Close the pane (not the window).
                 pane.Close();
 
