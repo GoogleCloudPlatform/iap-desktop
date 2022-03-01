@@ -88,31 +88,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
 
         public bool IsModifyingKey(string key)
         {
-            return ExtractModifiedMetadataKeys(this.LogRecord)
+            return ModifiedMetadata.ExtractModifiedMetadataKeys(
+                    this.LogRecord, 
+                    "instanceMetadataDelta")
                 .EnsureNotNull()
                 .Any(v => v == key);
-        }
-
-        private static string[] ExtractModifiedMetadataKeys(LogRecord record)
-        {
-            // NB. instanceMetadataDelta contains one of two fields:
-            // - modifiedMetadataKeys 
-            // - addedMetadataKeys
-            // in both cases, the value is an array of metadata keys.
-            var delta = record.ProtoPayload.Metadata?["instanceMetadataDelta"];
-            var modifiedMetadataKeys = delta?["modifiedMetadataKeys"];
-            if (modifiedMetadataKeys != null)
-            {
-                return modifiedMetadataKeys.ToObject<string[]>();
-            }
-
-            var addedMetadataKeys = delta?["addedMetadataKeys"];
-            if (addedMetadataKeys != null)
-            {
-                return addedMetadataKeys.ToObject<string[]>();
-            }
-
-            return null;
         }
     }
 }

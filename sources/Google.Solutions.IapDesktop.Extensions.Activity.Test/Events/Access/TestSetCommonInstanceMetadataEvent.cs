@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
         }
 
         [Test]
-        public void WhenOperationIsLast_ThenFieldsAreExtracted()
+        public void WhenOperationIsLastAndLacksModifiedFields_ThenFieldsAreExtracted()
         {
             var json = @"
                 {
@@ -167,6 +167,66 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.IsNull(e.UserAgent);
 
             Assert.AreEqual("Linux SSH keys or metadata update from (unknown) using (unknown agent) (operation completed)", e.Message);
+        }
+
+
+
+        [Test]
+        public void WhenOperationIsLastAndIncludesModifiedFields_ThenFieldsAreExtracted()
+        {
+            var json = @"
+                {
+                  'protoPayload': {
+                    '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                    'authenticationInfo': {
+                      'principalEmail': 'user@example.com'
+                    },
+                    'serviceName': 'compute.googleapis.com',
+                    'methodName': 'v1.compute.projects.setCommonInstanceMetadata',
+                    'resourceName': 'projects/project-1',
+                    'request': {
+                      '@type': 'type.googleapis.com/compute.projects.setCommonInstanceMetadata'
+                    },
+                    'metadata': {
+                      '@type': 'type.googleapis.com/google.cloud.audit.GceProjectAuditMetadata',
+                      'projectMetadataDelta': {
+                        'addedMetadataKeys': ['foo'],
+                        'modifiedMetadataKeys': ['ssh-keys']
+                      }
+                    }
+                  },
+                  'insertId': 'a9re9fd7yhq',
+                  'resource': {
+                    'type': 'gce_project',
+                    'labels': {
+                      'project_id': '123'
+                    }
+                  },
+                  'timestamp': '2021-03-24T09:59:46.832678Z',
+                  'severity': 'NOTICE',
+                  'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Factivity',
+                  'operation': {
+                    'id': 'operation-1616579961482-5be455a5ae',
+                    'producer': 'compute.googleapis.com',
+                    'last': true
+                  },
+                  'receiveTimestamp': '2021-03-24T09:59:47.688249630Z'
+                }";
+
+            var r = LogRecord.Deserialize(json);
+            Assert.IsTrue(SetCommonInstanceMetadataEvent.IsSetCommonInstanceMetadataEvent(r));
+
+            var e = (SetCommonInstanceMetadataEvent)r.ToEvent();
+
+            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual("project-1", e.ProjectId);
+            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.IsNull(e.Status);
+
+            Assert.IsNull(e.SourceHost);
+            Assert.IsNull(e.UserAgent);
+
+            Assert.AreEqual("Linux SSH keys update from (unknown) using (unknown agent) (operation completed)", e.Message);
         }
 
         [Test]
