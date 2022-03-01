@@ -27,7 +27,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
     /// <summary>
     /// Event that indicates a connection attempt to a VM.
     /// </summary>
-    public class OsLoginCheckPolicyEvent : InstanceEventBase
+    public class OsLoginCheckPolicyEvent : OsLoginEventBase
     {
         public const string ServiceName = "oslogin.googleapis.com";
         public const string Method = "google.cloud.oslogin.v1.OsLoginService.CheckPolicy";
@@ -45,13 +45,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
                 record.ProtoPayload.MethodName == Method;
         }
 
-        public override ulong InstanceId => 0; // Not present in log, b/186845475.
-
         public bool IsSuccess => this.LogRecord.ProtoPayload.Response?.Value<bool?>("success") == true;
 
         public override string Message =>
-            string.Format("OS Login access for {0} {1}",
+            string.Format("OS Login access for {0} and policy {1} {2}",
                 this.LogRecord.ProtoPayload.AuthenticationInfo.PrincipalEmail,
+                this.LogRecord.ProtoPayload.Request.Value<string>("policy"),
                 this.IsSuccess ? "granted" : "denied");
     }
 }

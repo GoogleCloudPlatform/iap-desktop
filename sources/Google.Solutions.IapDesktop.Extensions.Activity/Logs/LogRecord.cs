@@ -55,6 +55,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Logs
         [JsonProperty("operation")]
         public OperationRecord Operation { get; set; }
 
+        [JsonProperty("labels")]
+        public IDictionary<string, string> Labels { get; set; }
+
         //---------------------------------------------------------------------
         // Derived part.
         //---------------------------------------------------------------------

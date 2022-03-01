@@ -88,6 +88,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
                   },
                   'timestamp': '2021-11-10T06:49:38.025734Z',
                   'severity': 'INFO',
+                  'labels': {
+                    'zone': 'ignoreme',
+                    'instance_id': '1234567890'
+                  },
                   'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fdata_access',
                   'receiveTimestamp': '2021-11-10T06:49:39.615871551Z'
                 }";
@@ -101,6 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.PrincipalEmail);
             Assert.AreEqual("CHALLENGE_REQUIRED", e.ChallengeStatus);
             Assert.AreEqual("Start OS Login 2FA session for bob@example.com: CHALLENGE_REQUIRED", e.Message);
