@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
 {
@@ -43,13 +45,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
             get
             {
                 //
-                // NB. Unlike setMetadata records, the setCommonInstanceMetadata records
-                // do not contain the names of modified keys (b/170386936). Therefore, we
-                // cannot say whether this was a Linux SSH keys update or something else.
-                // 
+                // Newer setCommonInstanceMetadata (as of late 2021) contain
+                // the names of modified fields in the last record,
+                // older records don't.
+                //
                 // NB. Windows user resets never use common instance metadata.
                 //
-                return "Linux SSH keys or metadata update";
+                if (IsModifyingKey("ssh-keys"))
+                {
+                    return "Linux SSH keys update";
+                }
+                else
+                {
+                    return "Linux SSH keys or metadata update";
+                }
             }
         }
 
@@ -62,6 +71,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
         {
             return record.IsActivityEvent &&
                 record.ProtoPayload.MethodName == Method;
+        }
+
+        public bool IsModifyingKey(string key)
+        {
+            return ModifiedMetadata.ExtractModifiedMetadataKeys(
+                    this.LogRecord,
+                    "projectMetadataDelta")
+                .EnsureNotNull()
+                .Any(v => v == key);
         }
     }
 }
