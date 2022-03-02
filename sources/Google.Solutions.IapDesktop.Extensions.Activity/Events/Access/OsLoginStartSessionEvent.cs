@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
     /// StartSession call, a client declares its capabilities to the server 
     /// and obtains information about the available challenges.
     /// </summary>
-    public class OsLoginStartSessionEvent : InstanceEventBase
+    public class OsLoginStartSessionEvent : OsLoginEventBase
     {
         public const string ServiceName = "oslogin.googleapis.com";
         public const string Method = "google.cloud.oslogin.v1.OsLoginService.StartSession";
@@ -46,8 +46,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
             return record.IsDataAccessEvent &&
                 record.ProtoPayload.MethodName == Method;
         }
-
-        public override ulong InstanceId => 0;  // Not present in log, b/186845475.
 
         public string ChallengeStatus => this.LogRecord.ProtoPayload.Response?.Value<string>("status");
 

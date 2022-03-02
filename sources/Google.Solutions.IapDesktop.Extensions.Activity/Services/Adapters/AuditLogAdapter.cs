@@ -157,14 +157,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
             var criteria = new LinkedList<string>();
 
+            //
+            // NB. OSLogin logs have the zone and instance_id at the top level:
+            //
+            // "labels": {
+            //   "zone": "europe-west4-a",
+            //   "instance_id": "1234567890"
+            // }
+            //
+            // All other logs have these fields under resource.labels.
+            //
+
             if (zones != null && zones.Any())
             {
-                criteria.AddLast($"resource.labels.zone=(\"{string.Join("\" OR \"", zones)}\")");
+                var zonesClause = string.Join("\" OR \"", zones);
+                criteria.AddLast($"(resource.labels.zone=(\"{zonesClause}\") OR labels.zone=(\"{zonesClause}\"))");
             }
 
             if (instanceIds != null && instanceIds.Any())
             {
-                criteria.AddLast($"resource.labels.instance_id=(\"{string.Join("\" OR \"", instanceIds)}\")");
+                var instanceIdsClause = string.Join("\" OR \"", instanceIds);
+                criteria.AddLast($"(resource.labels.instance_id=(\"{instanceIdsClause}\") OR labels.instance_id=(\"{instanceIdsClause}\"))");
             }
 
             if (methods != null && methods.Any())

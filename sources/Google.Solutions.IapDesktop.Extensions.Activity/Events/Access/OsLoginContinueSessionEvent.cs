@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
     /// response to the challenge or method and either authenticates or 
     /// rejects the authentication attempt.
     /// </summary>
-    public class OsLoginContinueSessionEvent : InstanceEventBase
+    public class OsLoginContinueSessionEvent : OsLoginEventBase
     {
         public const string ServiceName = "oslogin.googleapis.com";
         public const string Method = "google.cloud.oslogin.v1.OsLoginService.ContinueSession";
@@ -49,8 +49,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
             return record.IsDataAccessEvent &&
                 record.ProtoPayload.MethodName == Method;
         }
-
-        public override ulong InstanceId => 0;  // Not present in log, b/186845475.
 
         public string ChallengeStatus => this.LogRecord.ProtoPayload.Response?.Value<string>("status");
 

@@ -78,6 +78,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
                   },
                   'timestamp': '2021-11-10T06:54:56.704058Z',
                   'severity': 'INFO',
+                  'labels': {
+                    'zone': 'ignoreme',
+                    'instance_id': '1234567890'
+                  },
                   'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fdata_access',
                   'receiveTimestamp': '2021-11-10T06:54:57.478165572Z'
                 }";
@@ -91,9 +95,70 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.PrincipalEmail);
             Assert.IsTrue(e.IsSuccess);
-            Assert.AreEqual("OS Login access for bob@example.com granted", e.Message);
+            Assert.AreEqual("OS Login access for bob@example.com and policy LOGIN granted", e.Message);
+        }
+
+        [Test]
+        public void WhenLegacyLogRecordLacksTopLevelLabels_ThenFieldsAreExtracted()
+        {
+            var json = @"
+                {
+                  'protoPayload': {
+                    '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                    'authenticationInfo': {
+                      'principalEmail': 'bob@example.com'
+                    },
+                    'requestMetadata': {
+                    },
+                    'serviceName': 'oslogin.googleapis.com',
+                    'methodName': 'google.cloud.oslogin.v1.OsLoginService.CheckPolicy',
+                    'authorizationInfo': [
+                      {
+                        'resource': 'projects/project-1/zones/us-central1-a/instances/instance-1',
+                        'granted': true
+                      }
+                    ],
+                    'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-1',
+                    'request': {
+                      'email': '10315820000000000000',
+                      'policy': 'LOGIN',
+                      'projectId': 'project-1',
+                      'serviceAccount': '884959770000-compute@developer.gserviceaccount.com',
+                      '@type': 'type.googleapis.com/google.cloud.oslogin.v1.CheckPolicyRequest',
+                      'zone': 'us-central1-a',
+                      'instance': 'instance-1',
+                      'numericProjectId': '884959770000'
+                    },
+                    'response': {
+                      '@type': 'type.googleapis.com/google.cloud.oslogin.v1.CheckPolicyResponse',
+                      'success': true
+                    }
+                  },
+                  'insertId': 'p9fqrhcly1',
+                  'resource': {
+                    'type': 'audited_resource',
+                    'labels': {
+                      'method': 'google.cloud.oslogin.v1.OsLoginService.CheckPolicy',
+                      'project_id': 'project-1',
+                      'service': 'oslogin.googleapis.com'
+                    }
+                  },
+                  'timestamp': '2021-11-10T06:54:56.704058Z',
+                  'severity': 'INFO',
+                  'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fdata_access',
+                  'receiveTimestamp': '2021-11-10T06:54:57.478165572Z'
+                }";
+
+            var r = LogRecord.Deserialize(json);
+            Assert.IsTrue(OsLoginCheckPolicyEvent.IsStartOsLoginCheckPolicyEvent(r));
+
+            var e = (OsLoginCheckPolicyEvent)r.ToEvent();
+
+            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
+            Assert.AreEqual(0, e.InstanceId);
         }
 
         [Test]
@@ -139,6 +204,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
                   },
                   'timestamp': '2021-11-10T07:27:23.512514Z',
                   'severity': 'INFO',
+                  'labels': {
+                    'zone': 'ignoreme',
+                    'instance_id': '1234567890'
+                  },
                   'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fdata_access',
                   'receiveTimestamp': '2021-11-10T07:27:24.463212211Z'
                 }";
@@ -152,9 +221,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.PrincipalEmail);
             Assert.IsFalse(e.IsSuccess);
-            Assert.AreEqual("OS Login access for bob@example.com denied", e.Message);
+            Assert.AreEqual("OS Login access for bob@example.com and policy LOGIN denied", e.Message);
         }
 
         [Test]
@@ -206,6 +276,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
                   },
                   'timestamp': '2021-11-10T07:27:23.512514Z',
                   'severity': 'INFO',
+                  'labels': {
+                    'zone': 'ignoreme',
+                    'instance_id': '1234567890'
+                  },
                   'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fdata_access',
                   'receiveTimestamp': '2021-11-10T07:27:24.463212211Z'
                 }";
@@ -219,9 +293,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual(1234567890, e.InstanceId);
             Assert.AreEqual("bob@example.com", e.PrincipalEmail);
             Assert.IsFalse(e.IsSuccess);
-            Assert.AreEqual("OS Login access for bob@example.com denied", e.Message);
+            Assert.AreEqual("OS Login access for bob@example.com and policy LOGIN denied", e.Message);
         }
     }
 }

@@ -110,6 +110,7 @@
     <Compile Include="DateTimeUtil.cs" />
     <Compile Include="Events\Access\AuthorizeUserTunnelEvent.cs" />
     <Compile Include="Events\Access\OsLoginContinueSessionEvent.cs" />
+    <Compile Include="Events\Access\OsLoginEventBase.cs" />
     <Compile Include="Events\Access\OsLoginStartSessionEvent.cs" />
     <Compile Include="Events\Access\SetCommonInstanceMetadataEvent.cs" />
     <Compile Include="Events\Access\SetMetadataEvent.cs" />
