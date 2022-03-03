@@ -60,29 +60,29 @@
     <CodeAnalysisRuleSet>..\Google.Solutions.Common\Google.Solutions.Common.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Google.Apis, Version=1.55.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.55.0\lib\net45\Google.Apis.dll</HintPath>
+    <Reference Include="Google.Apis, Version=1.56.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.56.0\lib\net45\Google.Apis.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Auth, Version=1.55.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.55.0\lib\net461\Google.Apis.Auth.dll</HintPath>
+    <Reference Include="Google.Apis.Auth, Version=1.56.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.56.0\lib\net461\Google.Apis.Auth.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.55.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.55.0\lib\net461\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.56.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.56.0\lib\net461\Google.Apis.Auth.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Compute.v1, Version=1.55.0.2525, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Compute.v1.1.55.0.2525\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.56.0.2611, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.56.0.2611\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Core, Version=1.55.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Core.1.55.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    <Reference Include="Google.Apis.Core, Version=1.56.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.56.0\lib\net45\Google.Apis.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Logging.v2, Version=1.55.0.2503, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Logging.v2.1.55.0.2503\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
+    <Reference Include="Google.Apis.Logging.v2, Version=1.56.0.2598, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Logging.v2.1.56.0.2598\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.PlatformServices, Version=1.55.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.55.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.56.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.56.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Storage.v1, Version=1.55.0.2526, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Storage.v1.1.55.0.2526\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Storage.v1, Version=1.56.0.2597, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Storage.v1.1.56.0.2597\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
