@@ -53,13 +53,16 @@ namespace Google.Solutions.IapDesktop.Windows
             this.errorText = new System.Windows.Forms.TextBox();
             this.headerLabel = new System.Windows.Forms.Label();
             this.closeButton = new System.Windows.Forms.Button();
+            this.descriptionLabel = new System.Windows.Forms.Label();
+            this.reportButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // emojiLabel
             // 
             this.emojiLabel.AutoSize = true;
             this.emojiLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 72F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.emojiLabel.Location = new System.Drawing.Point(12, 9);
+            this.emojiLabel.Location = new System.Drawing.Point(9, 7);
+            this.emojiLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.emojiLabel.Name = "emojiLabel";
             this.emojiLabel.Size = new System.Drawing.Size(104, 108);
             this.emojiLabel.TabIndex = 0;
@@ -71,47 +74,75 @@ namespace Google.Solutions.IapDesktop.Windows
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.errorText.Font = new System.Drawing.Font("Courier New", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.errorText.Location = new System.Drawing.Point(140, 57);
+            this.errorText.Location = new System.Drawing.Point(105, 68);
+            this.errorText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.errorText.Multiline = true;
             this.errorText.Name = "errorText";
             this.errorText.ReadOnly = true;
-            this.errorText.Size = new System.Drawing.Size(622, 355);
+            this.errorText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.errorText.Size = new System.Drawing.Size(468, 283);
             this.errorText.TabIndex = 1;
             // 
             // headerLabel
             // 
             this.headerLabel.AutoSize = true;
             this.headerLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.headerLabel.Location = new System.Drawing.Point(136, 25);
+            this.headerLabel.Location = new System.Drawing.Point(102, 15);
+            this.headerLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.headerLabel.Name = "headerLabel";
-            this.headerLabel.Size = new System.Drawing.Size(344, 21);
+            this.headerLabel.Size = new System.Drawing.Size(235, 21);
             this.headerLabel.TabIndex = 2;
-            this.headerLabel.Text = "IAP Desktop experienced an unrecoverable error";
+            this.headerLabel.Text = "This should not have happened...";
             // 
             // closeButton
             // 
             this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.closeButton.Location = new System.Drawing.Point(674, 418);
+            this.closeButton.Location = new System.Drawing.Point(506, 357);
+            this.closeButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(88, 31);
+            this.closeButton.Size = new System.Drawing.Size(66, 25);
             this.closeButton.TabIndex = 3;
             this.closeButton.Text = "Close";
             this.closeButton.UseVisualStyleBackColor = true;
             // 
+            // descriptionLabel
+            // 
+            this.descriptionLabel.AutoSize = true;
+            this.descriptionLabel.Location = new System.Drawing.Point(103, 44);
+            this.descriptionLabel.Name = "descriptionLabel";
+            this.descriptionLabel.Size = new System.Drawing.Size(331, 13);
+            this.descriptionLabel.TabIndex = 4;
+            this.descriptionLabel.Text = "IAP Desktop experienced an unrecoverable error and needs to close";
+            // 
+            // reportButton
+            // 
+            this.reportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.reportButton.Location = new System.Drawing.Point(410, 357);
+            this.reportButton.Margin = new System.Windows.Forms.Padding(2);
+            this.reportButton.Name = "reportButton";
+            this.reportButton.Size = new System.Drawing.Size(92, 25);
+            this.reportButton.TabIndex = 3;
+            this.reportButton.Text = "Report issue...";
+            this.reportButton.UseVisualStyleBackColor = true;
+            this.reportButton.Click += new System.EventHandler(this.reportButton_Click);
+            // 
             // ErrorDialog
             // 
             this.AcceptButton = this.closeButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.closeButton;
-            this.ClientSize = new System.Drawing.Size(784, 461);
+            this.ClientSize = new System.Drawing.Size(588, 393);
             this.ControlBox = false;
+            this.Controls.Add(this.descriptionLabel);
+            this.Controls.Add(this.reportButton);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.headerLabel);
             this.Controls.Add(this.errorText);
             this.Controls.Add(this.emojiLabel);
-            this.MinimumSize = new System.Drawing.Size(800, 500);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MinimumSize = new System.Drawing.Size(604, 414);
             this.Name = "ErrorDialog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -127,5 +158,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.TextBox errorText;
         private System.Windows.Forms.Label headerLabel;
         private System.Windows.Forms.Button closeButton;
+        private System.Windows.Forms.Label descriptionLabel;
+        private System.Windows.Forms.Button reportButton;
     }
 }

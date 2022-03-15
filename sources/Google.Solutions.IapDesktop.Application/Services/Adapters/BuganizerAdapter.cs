@@ -41,22 +41,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             { };
         }
 
-        public void ReportIssue()
+        public void ReportBug(BugReport report)
         {
-            var version = typeof(GithubAdapter).Assembly.GetName().Version;
-            var body = "Expected behavior:\n" +
+            var body = "Steps:\n" +
                        "* Step 1\n" +
                        "* Step 2\n" +
                        "* ...\n" +
                        "\n" +
+                       "Expected behavior:\n" +
                        "Observed behavior:\n" +
-                       "* Step 1\n" +
-                       "* Step 2\n" +
-                       "* ...\n" +
                        "\n" +
-                       $"Installed version: {version}\n" +
-                       $".NET Version: {ClrVersion.Version}\n" +
-                       $"OS Version: {Environment.OSVersion}";
+                       "```" + report + "```";
+
             OpenUrl($"{BaseUrl}/issues/new?component=953762&template=1561579&description={WebUtility.UrlEncode(body)}");
         }
     }

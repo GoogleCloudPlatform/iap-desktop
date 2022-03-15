@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Reflection;
 using System.Text;
@@ -29,29 +30,15 @@ namespace Google.Solutions.IapDesktop.Windows
 {
     public partial class ErrorDialog : Form
     {
+        private readonly BugReport report;
+
         public ErrorDialog(Exception exception)
         {
             InitializeComponent();
 
-            var text = new StringBuilder();
+            this.report = new BugReport(exception);
 
-            text.Append(exception.ToString().Replace("\n", "\r\n"));
-
-            if (exception is ReflectionTypeLoadException tle)
-            {
-                text.Append("\r\nLoader Exceptions:\r\n");
-                foreach (var e in tle.LoaderExceptions)
-                {
-                    text.Append(e.ToString().Replace("\n", "\r\n"));
-                }
-            }
-
-            text.Append("\r\n");
-            text.Append($"Installed version: {GetType().Assembly.GetName().Version}\r\n");
-            text.Append($".NET Version: {ClrVersion.Version}\r\n");
-            text.Append($"OS Version: {Environment.OSVersion}\r\n");
-
-            this.errorText.Text = text.ToString();
+            this.errorText.Text = report.ToString().Replace("\n", "\r\n");
             this.errorText.SelectionStart = 0;
             this.errorText.SelectionLength = 0;
         }
@@ -59,6 +46,11 @@ namespace Google.Solutions.IapDesktop.Windows
         public static void Show(Exception e)
         {
             new ErrorDialog(e).ShowDialog();
+        }
+
+        private void reportButton_Click(object sender, EventArgs e)
+        {
+            new GithubAdapter().ReportBug(this.report);
         }
     }
 }

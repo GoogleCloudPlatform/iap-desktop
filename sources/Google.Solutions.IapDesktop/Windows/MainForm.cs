@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
@@ -667,12 +668,12 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void reportGithubIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<GithubAdapter>().ReportIssue();
+            this.serviceProvider.GetService<GithubAdapter>().ReportBug(new BugReport());
         }
 
         private void reportInternalIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<BuganizerAdapter>().ReportIssue();
+            this.serviceProvider.GetService<BuganizerAdapter>().ReportBug(new BugReport());
         }
 
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
