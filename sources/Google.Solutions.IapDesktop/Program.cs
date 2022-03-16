@@ -314,13 +314,23 @@ namespace Google.Solutions.IapDesktop
                 extensionLayer.AddExtensionAssembly(extension);
             }
 
+            //
             // Run app.
+            //
             this.initializedMainForm = mainForm;
             this.mainFormInitialized.Set();
 
+            //
+            // Replace the standard WinForms exception dialog.
+            //
+            System.Windows.Forms.Application.ThreadException += (_, exArgs) 
+                => ShowFatalError(exArgs.Exception);
+
             System.Windows.Forms.Application.Run(mainForm);
 
+            //
             // Ensure logs are flushed.
+            //
             IsLoggingEnabled = false;
 
             return 0;
@@ -355,6 +365,7 @@ namespace Google.Solutions.IapDesktop
             // NB. This could be called on any thread, at any time, so avoid
             // touching the main form.
             ErrorDialog.Show(e);
+            Environment.Exit(e.HResult);
         }
 
         /// <summary>
