@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 (this.Size.Height - this.reconnectPanel.Height) / 2);
         }
 
-        private async Task ShowErrorAndClose(string caption, RdpException e)
+        private async Task ShowErrorAndClose(string caption, Exception e)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(e.Message))
             {
@@ -745,11 +745,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             { }
         }
 
-        private void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private async void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                Reconnect();
+                try
+                {
+                    //
+                    // Occasionally, reconnecting fails with a non-descriptive
+                    // E_FAIL error. There isn't much to do about it, so treat
+                    // it as fatal error and close the window.
+                    //
+                    Reconnect();
+                }
+                catch (Exception ex)
+                {
+                    await ShowErrorAndClose("Failed to reconnect", ex)
+                        .ConfigureAwait(true);
+                }
             }
         }
 
