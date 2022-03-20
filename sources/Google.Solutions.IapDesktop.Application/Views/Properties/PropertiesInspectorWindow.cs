@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
 
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
-            Debug.Assert(!InvokeRequired, "running on UI thread");
+            Debug.Assert(!this.InvokeRequired, "running on UI thread");
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
