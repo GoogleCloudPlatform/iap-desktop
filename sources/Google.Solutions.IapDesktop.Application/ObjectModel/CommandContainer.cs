@@ -73,9 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         /// </summary>
         public TContext Context
         {
-            get => this.context != null
-                ? this.context
-                : this.parent?.Context;
+            get => this.context ?? (this.parent?.Context);
             set
             {
                 this.context = value;

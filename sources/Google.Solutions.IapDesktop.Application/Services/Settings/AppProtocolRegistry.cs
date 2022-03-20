@@ -67,12 +67,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public bool IsRegistered(string scheme, string applicationLocation)
         {
-            using (var key = Registry.CurrentUser.OpenSubKey(KeyPathFromScheme(scheme) + @"\shell\open\command"))
+            using (var key = Registry.CurrentUser.OpenSubKey(
+                KeyPathFromScheme(scheme) + @"\shell\open\command"))
             {
                 if (key != null)
                 {
                     var value = key.GetValue("", null);
-                    return value is string && ((string)value) == CommandStringFromAppLocation(applicationLocation);
+                    return value is string s && 
+                           s == CommandStringFromAppLocation(applicationLocation);
                 }
                 else
                 {

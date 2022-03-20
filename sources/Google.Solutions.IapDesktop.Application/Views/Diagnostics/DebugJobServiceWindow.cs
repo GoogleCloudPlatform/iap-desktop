@@ -40,8 +40,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
     {
         private readonly IJobService jobService;
         private readonly IEventService eventService;
-        private readonly DockPanel dockPanel;
-        private readonly IServiceProvider serviceProvider;
 
         public DebugJobServiceWindow(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockRightAutoHide)
@@ -64,10 +62,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                     await Task.Delay(10).ConfigureAwait(true);
                     Debug.WriteLine("Delayed in event handler");
                 });
-
-
-            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
-            this.serviceProvider = serviceProvider;
         }
 
         public class StatusUpdatedEvent

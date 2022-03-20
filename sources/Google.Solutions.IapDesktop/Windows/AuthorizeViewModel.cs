@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.Authorization = await AppAuthorization.CreateAuthorizationAsync(
                     this.signInAdapter,
                     this.deviceEnrollment,
-                    CancellationToken.None)
+                    cancellationToken)
                 .ConfigureAwait(true);
         }
     }

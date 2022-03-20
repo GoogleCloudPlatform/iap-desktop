@@ -290,6 +290,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                             //
                             OnDockBegin();
                         }
+
                         break;
 
                     case WindowMessage.WM_SHOWWINDOW:

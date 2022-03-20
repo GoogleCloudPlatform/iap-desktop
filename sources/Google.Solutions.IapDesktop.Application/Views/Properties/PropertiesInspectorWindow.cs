@@ -91,12 +91,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                 oldObj.PropertyChanged -= RefreshOnPropertyChange;
             }
 
-            if (obj is ISettingsCollection)
+            if (obj is ISettingsCollection collection)
             {
                 // Use a custom type descriptor to interpret each setting
                 // as property.
                 this.propertyGrid.SelectedObject =
-                    new SettingsCollectionTypeDescriptor((ISettingsCollection)obj);
+                    new SettingsCollectionTypeDescriptor(collection);
             }
             else
             {

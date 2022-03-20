@@ -33,7 +33,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
     [SkipCodeCoverage("For debug purposes only")]
     public partial class DebugDockingWindow : ToolWindow
     {
-        private readonly DockPanel dockPanel;
         private readonly StateSnapshot snapshot = new StateSnapshot();
         private int eventId = 1;
 
@@ -42,7 +41,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         {
             InitializeComponent();
             this.TabText = this.Text;
-            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
         }
 
         private void WriteOutput(string text)
