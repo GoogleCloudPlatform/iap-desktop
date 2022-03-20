@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
         }
 
         public ICredential Credential => this.credential;
-        
+
         public string Email => this.credential.UserInfo.Email;
 
         public UserInfo UserInfo => this.credential.UserInfo;

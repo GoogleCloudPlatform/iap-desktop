@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
     public class SecureConnectFixtureBase : ApplicationFixtureBase
     {
         protected static IAuthorizationSource CreateAuthorizationSourceForSecureConnectUser()
-        {   
+        {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State)
                 .Returns(DeviceEnrollmentState.Enrolled);

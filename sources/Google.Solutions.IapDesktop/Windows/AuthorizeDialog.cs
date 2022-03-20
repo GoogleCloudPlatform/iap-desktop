@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             viewModel.TryLoadExistingAuthorizationAsync(CancellationToken.None)
                 .ContinueWith(
-                    _ => Debug.Assert(false, "Should never throw an exception"), 
+                    _ => Debug.Assert(false, "Should never throw an exception"),
                     TaskContinuationOptions.OnlyOnFaulted);
         }
 

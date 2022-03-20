@@ -48,8 +48,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey)
             => ApplicationSettings.FromKey(
-                settingsKey, 
-                machinePolicyKey, 
+                settingsKey,
+                machinePolicyKey,
                 userPolicyKey);
     }
 

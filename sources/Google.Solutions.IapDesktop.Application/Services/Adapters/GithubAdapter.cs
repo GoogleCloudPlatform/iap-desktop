@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                        "* Step 2\n" +
                        "* ...\n" +
                        "\n" +
-                       "Expected behavior:\n" + 
+                       "Expected behavior:\n" +
                        "Observed behavior:\n" +
                        "\n" +
                        "```" + report + "```";

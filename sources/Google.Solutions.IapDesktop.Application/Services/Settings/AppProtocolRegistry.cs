@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                 if (key != null)
                 {
                     var value = key.GetValue("", null);
-                    return value is string s && 
+                    return value is string s &&
                            s == CommandStringFromAppLocation(applicationLocation);
                 }
                 else

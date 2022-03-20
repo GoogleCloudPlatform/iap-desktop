@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
         public bool IsModifyingKey(string key)
         {
             return ModifiedMetadata.ExtractModifiedMetadataKeys(
-                    this.LogRecord, 
+                    this.LogRecord,
                     "instanceMetadataDelta")
                 .EnsureNotNull()
                 .Any(v => v == key);

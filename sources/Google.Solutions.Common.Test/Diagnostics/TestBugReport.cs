@@ -58,8 +58,8 @@ namespace Google.Solutions.Common.Test.Diagnostics
         {
             var ex = new ReflectionTypeLoadException(
                 new[] { typeof(BugReport) },
-                new[] 
-                { 
+                new[]
+                {
                     new ApplicationException("inner#1"),
                     new ApplicationException("inner#2")
                 });
