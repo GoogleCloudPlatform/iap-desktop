@@ -186,8 +186,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(229, 26);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Device certificate authentication requires the\r\ncomputer to be enrolled in Endpoi" +
-    "nt Verification";
+            this.label2.Text = "Certificate-based access requires the\r\ncomputer to be enrolled in Endpoint Verifi" +
+    "cation";
             // 
             // label1
             // 
@@ -226,8 +226,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.enableDcaCheckBox.Name = "enableDcaCheckBox";
             this.enableDcaCheckBox.Size = new System.Drawing.Size(242, 30);
             this.enableDcaCheckBox.TabIndex = 1;
-            this.enableDcaCheckBox.Text = "Secure connections to Google Cloud by using\r\ndevice certificate authentication if" +
-    " possible";
+            this.enableDcaCheckBox.Text = "Secure connections to Google Cloud by using\r\ncertificate-based access if possible" +
+    "";
             this.enableDcaCheckBox.UseVisualStyleBackColor = true;
             // 
             // GeneralOptionsControl

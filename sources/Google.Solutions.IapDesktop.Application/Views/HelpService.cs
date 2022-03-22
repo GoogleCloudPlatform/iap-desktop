@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public static readonly IHelpTopic SecureConnectDcaOverview = new HelpTopic(
             "Device certiticate authentication",
-            "https://cloud.google.com/endpoint-verification/docs/overview");
+            "https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access");
 
         public static readonly IHelpTopic ProjectAccessControl = new HelpTopic(
             "Project access control",
