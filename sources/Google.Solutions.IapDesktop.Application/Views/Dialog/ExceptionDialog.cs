@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
             string details,
             IHelpTopic helpTopic)
         {
-            Debug.Assert(!(parent is Control) || !((Control)parent).InvokeRequired);
+            Debug.Assert(!(parent is Control control) || !control.InvokeRequired);
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(caption, message, details))
             {
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
             string caption,
             Exception e)
         {
-            Debug.Assert(!(parent is Control) || !((Control)parent).InvokeRequired);
+            Debug.Assert(!(parent is Control control) || !control.InvokeRequired);
 
             e = e.Unwrap();
 

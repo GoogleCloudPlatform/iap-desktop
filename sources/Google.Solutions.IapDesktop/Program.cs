@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop
             //
             // Replace the standard WinForms exception dialog.
             //
-            System.Windows.Forms.Application.ThreadException += (_, exArgs) 
+            System.Windows.Forms.Application.ThreadException += (_, exArgs)
                 => ShowFatalError(exArgs.Exception);
 
             System.Windows.Forms.Application.Run(mainForm);

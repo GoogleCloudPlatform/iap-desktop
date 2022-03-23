@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             CancellationToken token);
 
         Task<UserInfo> QueryUserInfoAsync(
-            ICredential credential, 
+            ICredential credential,
             CancellationToken token);
     }
 
@@ -107,8 +107,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             // user info.
             //
             return new OAuthInitializer(
-                HttpClientHandlerExtensions.IsClientCertificateSupported ? 
-                    this.deviceCertificate 
+                HttpClientHandlerExtensions.IsClientCertificateSupported ?
+                    this.deviceCertificate
                     : null)
             {
                 ClientSecrets = clientSecrets,
@@ -204,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public async Task<ICredential> SignInWithBrowserAsync(
-            string loginHint, 
+            string loginHint,
             CancellationToken token)
         {
             try
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 return userCredential;
             }
             catch (TokenResponseException e) when (
-                e.Error?.ErrorUri != null && 
+                e.Error?.ErrorUri != null &&
                 e.Error.ErrorUri.StartsWith("https://accounts.google.com/info/servicerestricted"))
             {
                 if (this.deviceCertificate != null)
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 else
                 {
                     throw new AuthorizationFailedException(
-                        "Authorization failed because your computer is not enrolled in Endpoint " + 
+                        "Authorization failed because your computer is not enrolled in Endpoint " +
                         "Verification.\n\n" + e.Error.ErrorDescription);
 
                 }
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private class OAuthInitializer : GoogleAuthorizationCodeFlow.Initializer
         {
-            public string UserInfoUrl { get; } 
+            public string UserInfoUrl { get; }
 
             private static string FixupUrl(
                 string url,
@@ -310,8 +310,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
 
             public OAuthInitializer(X509Certificate2 certificate)
-                : base(FixupUrl("https://accounts.google.com/o/oauth2/v2/auth", certificate), 
-                       FixupUrl("https://oauth2.googleapis.com/token", certificate), 
+                : base(FixupUrl("https://accounts.google.com/o/oauth2/v2/auth", certificate),
+                       FixupUrl("https://oauth2.googleapis.com/token", certificate),
                        FixupUrl("https://oauth2.googleapis.com/revoke", certificate))
             {
                 this.UserInfoUrl = FixupUrl(

@@ -36,7 +36,7 @@ namespace Google.Solutions.Ssh.Auth
         //
 
         [Display(Name = "RSA (3072 bit)")]
-        Rsa3072       = 0x01,
+        Rsa3072 = 0x01,
 
         [Display(Name = "ECDSA NIST P-256")]
         EcdsaNistp256 = 0x11,

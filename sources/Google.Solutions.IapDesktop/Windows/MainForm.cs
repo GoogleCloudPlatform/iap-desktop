@@ -127,8 +127,8 @@ namespace Google.Solutions.IapDesktop.Windows
                 // focus is released from an RDP window by using a keyboard
                 // shortcut.
                 //
-                this.WindowMenu.Context = 
-                    (this.dockPanel.ActiveContent ?? this.dockPanel.ActiveDocumentPane?.ActiveContent) 
+                this.WindowMenu.Context =
+                    (this.dockPanel.ActiveContent ?? this.dockPanel.ActiveDocumentPane?.ActiveContent)
                         as ToolWindow;
             };
 
@@ -353,8 +353,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.WindowMenu.AddCommand(
                 new Command<ToolWindow>(
                     "&Float",
-                    window => window != null && 
-                              !window.IsFloat && 
+                    window => window != null &&
+                              !window.IsFloat &&
                               window.IsDockStateValid(DockState.Float)
                         ? CommandState.Enabled
                         : CommandState.Disabled,
@@ -422,7 +422,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.WindowMenu.AddCommand(
                 new Command<ToolWindow>(
                     "Capture/release &focus",
-                    _ => this.dockPanel.ActiveDocumentPane != null && 
+                    _ => this.dockPanel.ActiveDocumentPane != null &&
                          this.dockPanel.ActiveDocumentPane.Contents.EnsureNotNull().Any()
                         ? CommandState.Enabled
                         : CommandState.Disabled,

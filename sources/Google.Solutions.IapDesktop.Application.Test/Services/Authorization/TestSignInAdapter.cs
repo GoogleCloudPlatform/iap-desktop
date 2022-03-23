@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         //---------------------------------------------------------------------
         // SignInWithBrowserAsync.
         //---------------------------------------------------------------------
-        
+
         [Test]
         public async Task WhenSignInSucceeds_ThenSignInWithBrowserAsyncReturnsCredential()
         {
@@ -228,11 +228,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new TokenResponseException(new TokenErrorResponse()
-                    {
-                        Error = "access_denied",
-                        ErrorDescription = "Account restricted",
-                        ErrorUri = "https://accounts.google.com/info/servicerestricted?es\u003d..."
-                    }));
+                {
+                    Error = "access_denied",
+                    ErrorDescription = "Account restricted",
+                    ErrorUri = "https://accounts.google.com/info/servicerestricted?es\u003d..."
+                }));
 
             var adapter = new SignInAdapter(
                 null,

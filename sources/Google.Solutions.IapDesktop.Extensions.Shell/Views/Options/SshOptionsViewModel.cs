@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
     [ServiceCategory(typeof(IOptionsDialogPane))]
     public class SshOptionsViewModel : ViewModelBase, ISshDialogPane
     {
-        private static readonly SshKeyType[] publicKeyTypes = 
+        private static readonly SshKeyType[] publicKeyTypes =
             Enum.GetValues(typeof(SshKeyType))
                 .Cast<SshKeyType>()
                 .ToArray();

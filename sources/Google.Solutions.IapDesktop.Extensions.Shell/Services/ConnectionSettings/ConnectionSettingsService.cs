@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                     // Hide any settings that are not applicable to the operating system.
                     .ToFilteredSettingsCollection((coll, setting) => supportsRdp
                         ? coll.IsRdpSetting(setting)
-                        : supportsSsh ? coll.IsSshSetting(setting) : false);
+                        : supportsSsh && coll.IsSshSetting(setting));
             }
             else
             {

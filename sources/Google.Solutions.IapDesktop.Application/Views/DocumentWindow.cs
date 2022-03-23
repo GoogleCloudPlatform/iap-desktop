@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 }
 
                 fullScreenForm.Bounds = allScreens
-                    ? BoundsOfAllScreens
+                    ? this.BoundsOfAllScreens
                     : Screen.FromControl(this).Bounds;
 
                 MoveControls(this, fullScreenForm);
@@ -290,6 +290,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                             //
                             OnDockBegin();
                         }
+
                         break;
 
                     case WindowMessage.WM_SHOWWINDOW:
@@ -314,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                             }
 
                         }
-                        
+
                         OnDockEnd();
                         break;
                 }

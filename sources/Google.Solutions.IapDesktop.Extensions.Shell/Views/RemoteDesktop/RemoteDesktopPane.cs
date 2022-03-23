@@ -369,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 //
                 // Keyboard settings.
                 //
-                this.rdpClient.SecuredSettings2.KeyboardHookMode = 
+                this.rdpClient.SecuredSettings2.KeyboardHookMode =
                     (int)settings.RdpHookWindowsKeys.EnumValue;
 
                 advancedSettings.allowBackgroundInput = 1;
@@ -894,7 +894,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             base.OnDockBegin();
         }
 
-        protected override void  OnDockEnd()
+        protected override void OnDockEnd()
         {
             if (this.rescueWindow != null && this.rdpClient != null)
             {

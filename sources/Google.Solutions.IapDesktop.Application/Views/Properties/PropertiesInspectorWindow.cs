@@ -91,12 +91,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                 oldObj.PropertyChanged -= RefreshOnPropertyChange;
             }
 
-            if (obj is ISettingsCollection)
+            if (obj is ISettingsCollection collection)
             {
                 // Use a custom type descriptor to interpret each setting
                 // as property.
                 this.propertyGrid.SelectedObject =
-                    new SettingsCollectionTypeDescriptor((ISettingsCollection)obj);
+                    new SettingsCollectionTypeDescriptor(collection);
             }
             else
             {
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
 
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
-            Debug.Assert(!InvokeRequired, "running on UI thread");
+            Debug.Assert(!this.InvokeRequired, "running on UI thread");
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }

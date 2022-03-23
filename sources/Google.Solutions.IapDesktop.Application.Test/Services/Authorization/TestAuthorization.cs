@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             adapter.Verify(a => a.SignInWithBrowserAsync(
                     It.Is<string>(hint => hint == null),
-                    It.IsAny<CancellationToken>()), 
+                    It.IsAny<CancellationToken>()),
                     Times.Once);
 
             await authorization.ReauthorizeAsync(CancellationToken.None);

@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
         [Test]
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
-            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)]SshKeyType keyType)
+            [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
             SessionAbortedEvent deliveredEvent = null;
             this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instanceLocator = await instanceLocatorTask;
-            
+
             SessionAbortedEvent deliveredEvent = null;
             this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
 
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             using (var pane = await ConnectSshTerminalPane(
                     await instanceLocatorTask,
-                    await credential, 
+                    await credential,
                     keyType)
                 .ConfigureAwait(true))
             {

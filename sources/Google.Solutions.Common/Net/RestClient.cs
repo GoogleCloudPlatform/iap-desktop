@@ -36,7 +36,7 @@ namespace Google.Solutions.Common.Net
         public UserAgent UserAgent { get; set; }
 
         public X509Certificate2 ClientCertificate { get; set; }
-        
+
         public ICredential Credential { get; set; }
 
         private HttpClient CreateClient()
