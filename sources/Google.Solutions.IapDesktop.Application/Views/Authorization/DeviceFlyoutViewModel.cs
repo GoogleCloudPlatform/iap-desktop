@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                 case DeviceEnrollmentState.Enrolled:
                     this.EnrollmentStateDescription =
                         $"Computer is enrolled in {ProductName} and uses " +
-                        "device certificate authentication";
+                        "certificate-based access";
                     this.IsDeviceEnrolledIconVisible = true;
                     this.IsDeviceNotEnrolledIconVisible = false;
                     this.IsDetailsLinkVisible = true;
