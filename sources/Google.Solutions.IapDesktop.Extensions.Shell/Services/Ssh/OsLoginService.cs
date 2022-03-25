@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     public interface IOsLoginService
     {
         Task<AuthorizedKey> AuthorizeKeyAsync(
-            string projectId,
+            ProjectLocator project,
             OsLoginSystemType os,
             ISshKey key,
             TimeSpan validity,
@@ -76,13 +77,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         //---------------------------------------------------------------------
 
         public async Task<AuthorizedKey> AuthorizeKeyAsync(
-            string projectId,
+            ProjectLocator project,
             OsLoginSystemType os,
             ISshKey key,
             TimeSpan validity,
             CancellationToken token)
         {
-            Utilities.ThrowIfNullOrEmpty(projectId, nameof(projectId));
+            Utilities.ThrowIfNull(project, nameof(project));
             Utilities.ThrowIfNull(key, nameof(key));
 
             if (os != OsLoginSystemType.Linux)
@@ -95,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 throw new ArgumentException(nameof(validity));
             }
 
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
             {
                 //
                 // If OS Login is enabled for a project, we have to use
@@ -115,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 //
 
                 var loginProfile = await this.adapter.ImportSshPublicKeyAsync(
-                        new ProjectLocator(projectId),
+                        project,
                         key,
                         validity,
                         token)

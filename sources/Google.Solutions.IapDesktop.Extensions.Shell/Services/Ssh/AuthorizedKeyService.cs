@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     // to check for previous keys first.
                     // 
                     return await this.osLoginService.AuthorizeKeyAsync(
-                            instance.ProjectId,
+                            new ProjectLocator(instance.ProjectId),
                             OsLoginSystemType.Linux,
                             key,
                             validity,
