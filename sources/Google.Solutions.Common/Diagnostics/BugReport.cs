@@ -57,9 +57,10 @@ namespace Google.Solutions.Common.Diagnostics
                         text.Append(e.ToString());
                     }
                 }
+
+                text.Append("\n\n");
             }
 
-            text.Append("\n\n");
             text.Append($"Installed version: {GetType().Assembly.GetName().Version}\n");
             text.Append($".NET Version: {ClrVersion.Version}\n");
             text.Append($"OS Version: {Environment.OSVersion}\n");

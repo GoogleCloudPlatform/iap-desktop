@@ -40,32 +40,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         private const string LatestReleaseUrl = "https://api.github.com/repos/GoogleCloudPlatform/iap-desktop/releases/latest";
         public const string BaseUrl = "https://github.com/GoogleCloudPlatform/iap-desktop";
 
-        private void OpenUrl(string url)
-        {
-            using (Process.Start(new ProcessStartInfo()
-            {
-                UseShellExecute = true,
-                Verb = "open",
-                FileName = url
-            }))
-            { };
-        }
-
-        public void ReportBug(BugReport report)
-        {
-            var body = "Steps:\n" +
-                       "* Step 1\n" +
-                       "* Step 2\n" +
-                       "* ...\n" +
-                       "\n" +
-                       "Expected behavior:\n" +
-                       "Observed behavior:\n" +
-                       "\n" +
-                       "```" + report + "```";
-
-            OpenUrl($"{BaseUrl}/issues/new?body={WebUtility.UrlEncode(body)}");
-        }
-
         public async Task<Release> FindLatestReleaseAsync(CancellationToken cancellationToken)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())

@@ -668,12 +668,12 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void reportGithubIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<GithubAdapter>().ReportBug(new BugReport());
+            this.serviceProvider.GetService<BuganizerAdapter>().ReportBug(new BugReport());
         }
 
         private void reportInternalIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<BuganizerAdapter>().ReportBug(new BugReport());
+            this.serviceProvider.GetService<BuganizerAdapter>().ReportPrivateBug(new BugReport());
         }
 
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
