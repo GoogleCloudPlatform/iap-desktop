@@ -131,6 +131,7 @@
     <Compile Include="Services\Adapter\TestKeyStoreAdapter.cs" />
     <Compile Include="Services\Adapter\TestMetadataAuthorizedKey.cs" />
     <Compile Include="Services\Adapter\TestMetadataAuthorizedKeySet.cs" />
+    <Compile Include="Services\Adapter\TestOsLoginAdapter.cs" />
     <Compile Include="Services\Settings\TestSshSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestTerminalSettingsRepository.cs" />
     <Compile Include="Services\Ssh\TestAuthorizedKey.cs" />

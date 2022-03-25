@@ -23,6 +23,7 @@ using Google.Apis.CloudOSLogin.v1;
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Net;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -40,11 +41,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 {
     public interface IOsLoginAdapter
     {
+        /// <summary>
+        /// Import user's public key to OS Login.
+        /// </summary>
         Task<LoginProfile> ImportSshPublicKeyAsync(
-            string projectId,
+            ProjectLocator project,
             ISshKey key,
             TimeSpan validity,
             CancellationToken token);
+
+        /// <summary>
+        /// Read user's profile and published SSH keys.
+        /// </summary>
+        Task<LoginProfile> GetLoginProfileAsync(
+           ProjectLocator project,
+           CancellationToken token);
     }
 
     [Service(typeof(IOsLoginAdapter))]
@@ -88,12 +99,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         //---------------------------------------------------------------------
 
         public async Task<LoginProfile> ImportSshPublicKeyAsync(
-            string projectId,
+            ProjectLocator project,
             ISshKey key,
             TimeSpan validity,
             CancellationToken token)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
             {
                 var expiryTimeUsec = new DateTimeOffset(DateTime.UtcNow.Add(validity))
                     .ToUnixTimeMilliseconds() * 1000;
@@ -108,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                         ExpirationTimeUsec = expiryTimeUsec
                     },
                     $"users/{userEmail}");
-                request.ProjectId = projectId;
+                request.ProjectId = project.ProjectId;
 
                 try
                 {
@@ -125,6 +136,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                     // an administrator has disabled POSIX account/SSH key information
                     // updates in the Admin Console.
                     //
+                    throw new ResourceAccessDeniedException(
+                        "You do not have sufficient permissions to use OS Login: " +
+                        e.Error?.Message ?? "access denied",
+                        HelpTopics.ManagingOsLogin,
+                        e);
+                }
+            }
+        }
+
+        public async Task<LoginProfile> GetLoginProfileAsync(
+            ProjectLocator project,
+            CancellationToken token)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
+            {
+                var request = this.service.Users.GetLoginProfile(
+                    $"users/{this.authorizationSource.Authorization.Email}");
+                request.ProjectId = project.ProjectId;
+
+                try
+                {
+                    return await request
+                        .ExecuteAsync(token)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to use OS Login: " +
                         e.Error?.Message ?? "access denied",

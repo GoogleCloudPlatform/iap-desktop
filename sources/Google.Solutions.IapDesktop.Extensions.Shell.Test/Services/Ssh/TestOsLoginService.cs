@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
@@ -89,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var adapter = new Mock<IOsLoginAdapter>();
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<ISshKey>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
@@ -142,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var adapter = new Mock<IOsLoginAdapter>();
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
-                    It.IsAny<string>(),
+                    It.IsAny<ProjectLocator>(),
                     It.IsAny<ISshKey>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
