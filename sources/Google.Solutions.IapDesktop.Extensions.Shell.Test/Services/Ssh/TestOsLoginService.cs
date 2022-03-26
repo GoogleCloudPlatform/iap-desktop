@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         {
             var service = new OsLoginService(new Mock<IOsLoginAdapter>().Object);
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyAsync(
+            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyAsync(
                 null,
                 OsLoginSystemType.Linux,
                 new Mock<ISshKeyPair>().Object,
