@@ -109,21 +109,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private bool IsLegacySshKeyPresent(Metadata metadata)
         {
             return !string.IsNullOrEmpty(
-                metadata.GetValue(MetadataAuthorizedKeySet.LegacyMetadataKey));
+                metadata.GetValue(MetadataAuthorizedPublicKeySet.LegacyMetadataKey));
         }
 
         private static void MergeKeyIntoMetadata(
             Metadata metadata,
-            MetadataAuthorizedKey newKey)
+            MetadataAuthorizedPublicKey newKey)
         {
             //
             // Merge new key into existing keyset, and take 
             // the opportunity to purge expired keys.
             //
-            var newKeySet = MetadataAuthorizedKeySet.FromMetadata(metadata)
+            var newKeySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
                 .RemoveExpiredKeys()
                 .Add(newKey);
-            metadata.Add(MetadataAuthorizedKeySet.MetadataKey, newKeySet.ToString());
+            metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
         }
 
         private async Task PushPublicKeyToMetadataAsync(
@@ -338,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                             this.authorizationSource.Authorization.Email,
                             DateTime.UtcNow.Add(validity)));
 
-                    var existingKeySet = MetadataAuthorizedKeySet.FromMetadata(
+                    var existingKeySet = MetadataAuthorizedPublicKeySet.FromMetadata(
                         useInstanceKeySet
                             ? instanceMetadata
                             : projectMetadata);

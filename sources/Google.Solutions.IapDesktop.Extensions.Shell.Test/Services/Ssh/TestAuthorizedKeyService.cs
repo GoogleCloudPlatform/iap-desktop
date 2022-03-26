@@ -69,8 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             bool legacySshKeyPresent,
             bool projectWideKeysBlockedForProject,
             bool projectWideKeysBlockedForInstance,
-            MetadataAuthorizedKeySet existingProjectKeySet = null,
-            MetadataAuthorizedKeySet existingInstanceKeySet = null)
+            MetadataAuthorizedPublicKeySet existingProjectKeySet = null,
+            MetadataAuthorizedPublicKeySet existingInstanceKeySet = null)
         {
             var projectMetadata = new Metadata();
             if (osLoginEnabledForProject.HasValue)
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             if (existingProjectKeySet != null)
             {
                 projectMetadata.Add(
-                    MetadataAuthorizedKeySet.MetadataKey,
+                    MetadataAuthorizedPublicKeySet.MetadataKey,
                     existingProjectKeySet.ToString());
             }
 
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             if (existingInstanceKeySet != null)
             {
                 instanceMetadata.Add(
-                    MetadataAuthorizedKeySet.MetadataKey,
+                    MetadataAuthorizedPublicKeySet.MetadataKey,
                     existingInstanceKeySet.ToString());
             }
 
@@ -395,7 +395,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         {
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
-                var existingProjectKeySet = MetadataAuthorizedKeySet
+                var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
                     .Add(new UnmanagedMetadataAuthorizedKey(
                         "bob",
@@ -449,7 +449,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         {
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
-                var existingProjectKeySet = MetadataAuthorizedKeySet
+                var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
                     .Add(new ManagedMetadataAuthorizedKey(
                         "bob",
@@ -503,7 +503,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         {
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
-                var existingProjectKeySet = MetadataAuthorizedKeySet
+                var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
                     .Add(new ManagedMetadataAuthorizedKey(
                         "bob",
@@ -557,7 +557,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         {
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
-                var existingProjectKeySet = MetadataAuthorizedKeySet
+                var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
                     .Add(new ManagedMetadataAuthorizedKey(
                         "bob",

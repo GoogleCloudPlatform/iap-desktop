@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     /// Single authorized key.
     /// See https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys.
     /// </summary>
-    public abstract class MetadataAuthorizedKey
+    public abstract class MetadataAuthorizedPublicKey
     {
         //
         // NB Managed and unmanaged keys use a different format,
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         public string KeyType { get; }
         public string Key { get; }
 
-        protected MetadataAuthorizedKey(
+        protected MetadataAuthorizedPublicKey(
             string loginUsername,
             string keyType,
             string key)
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             this.Key = key;
         }
 
-        public static MetadataAuthorizedKey Parse(string line)
+        public static MetadataAuthorizedPublicKey Parse(string line)
         {
             Debug.Assert(!line.Contains('\n'));
 
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         }
     }
 
-    public class UnmanagedMetadataAuthorizedKey : MetadataAuthorizedKey
+    public class UnmanagedMetadataAuthorizedKey : MetadataAuthorizedPublicKey
     {
         public string Username { get; }
 
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         }
     }
 
-    public class ManagedMetadataAuthorizedKey : MetadataAuthorizedKey
+    public class ManagedMetadataAuthorizedKey : MetadataAuthorizedPublicKey
     {
         public string Username { get; }
         public ManagedKeyMetadata Metadata { get; }
