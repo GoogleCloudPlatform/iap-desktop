@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 
             var adapter = new KeyStoreAdapter();
 
-            Assert.IsNull(adapter.OpenSshKey(
+            Assert.IsNull(adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 false,
@@ -178,9 +178,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                 .Returns("bob@example.com");
 
             var adapter = new KeyStoreAdapter();
-            adapter.DeleteSshKey(SshKeyType.Rsa3072, authorization.Object);
+            adapter.DeleteSshKeyPair(SshKeyType.Rsa3072, authorization.Object);
 
-            var key = adapter.OpenSshKey(
+            var key = adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 true,
@@ -200,13 +200,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 
             var adapter = new KeyStoreAdapter();
 
-            var key1 = adapter.OpenSshKey(
+            var key1 = adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 true,
                 null);
 
-            var key2 = adapter.OpenSshKey(
+            var key2 = adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 false,
@@ -226,14 +226,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 
             var adapter = new KeyStoreAdapter();
 
-            var rsaKey = adapter.OpenSshKey(
+            var rsaKey = adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 true,
                 null);
             Assert.IsNotNull(rsaKey);
 
-            var ecdsaKey = adapter.OpenSshKey(
+            var ecdsaKey = adapter.OpenSshKeyPair(
                 SshKeyType.EcdsaNistp256,
                 authorization.Object,
                 true,
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 
             var adapter = new KeyStoreAdapter();
 
-            adapter.OpenSshKey(
+            adapter.OpenSshKeyPair(
                 SshKeyType.Rsa3072,
                 authorization.Object,
                 true,

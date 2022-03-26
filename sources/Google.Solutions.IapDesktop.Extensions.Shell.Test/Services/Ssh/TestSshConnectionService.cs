@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .Returns(authz.Object);
 
             this.keyStore = this.serviceRegistry.AddMock<IKeyStoreAdapter>();
-            this.keyStore.Setup(k => k.OpenSshKey(
+            this.keyStore.Setup(k => k.OpenSshKeyPair(
                     It.IsAny<SshKeyType>(),
                     It.IsAny<IAuthorization>(),
                     It.IsAny<bool>(),
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .ActivateOrConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
-            this.keyStore.Verify(k => k.OpenSshKey(
+            this.keyStore.Verify(k => k.OpenSshKeyPair(
                 It.Is<SshKeyType>(t => t == SshKeyType.Rsa3072),
                 It.IsAny<IAuthorization>(),
                 It.Is<bool>(create => true),

@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             // Load persistent CNG key. This must be done on the UI thread.
             //
             var sshSettings = this.sshSettingsRepository.GetSettings();
-            var sshKey = this.keyStoreAdapter.OpenSshKey(
+            var sshKey = this.keyStoreAdapter.OpenSshKeyPair(
                 sshSettings.PublicKeyType.EnumValue,
                 this.authorizationSource.Authorization,
                 true,

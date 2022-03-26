@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 {
     public interface IKeyStoreAdapter
     {
-        ISshKeyPair OpenSshKey(
+        ISshKeyPair OpenSshKeyPair(
             SshKeyType keyType,
             IAuthorization authorization,
             bool createNewIfNotExists,
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             }
         }
 
-        internal void DeleteSshKey(
+        internal void DeleteSshKeyPair(
             SshKeyType keyType,
             IAuthorization authorization)
         {
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         // IKeyStoreAdapter
         //---------------------------------------------------------------------
 
-        public ISshKeyPair OpenSshKey(
+        public ISshKeyPair OpenSshKeyPair(
             SshKeyType keyType,
             IAuthorization authorization,
             bool createNewIfNotExists,
