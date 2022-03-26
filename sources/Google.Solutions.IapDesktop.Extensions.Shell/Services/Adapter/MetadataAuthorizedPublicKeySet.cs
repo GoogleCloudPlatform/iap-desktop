@@ -109,9 +109,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         public bool Contains(MetadataAuthorizedPublicKey key)
         {
             return this.Keys
-                .Any(k => k.Key == key.Key &&
+                .Any(k => k.PublicKey == key.PublicKey &&
                           k.KeyType == key.KeyType &&
-                          k.LoginUsername == key.LoginUsername);
+                          k.PosixUsername == key.PosixUsername);
         }
 
         public override string ToString()

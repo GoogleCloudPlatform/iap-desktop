@@ -44,21 +44,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 
         protected const string ManagedKeyToken = "google-ssh";
 
-        public string LoginUsername { get; }
+        /// <summary>
+        /// POSIX username, can be custom or derived from the
+        /// user's email address.
+        /// </summary>
+        public string PosixUsername { get; }
+
+        /// <summary>
+        /// Type of key (rsa-ssa, ...).
+        /// </summary>
         public string KeyType { get; }
-        public string Key { get; }
+
+        /// <summary>
+        /// Public key.
+        /// </summary>
+        public string PublicKey { get; }
 
         protected MetadataAuthorizedPublicKey(
-            string loginUsername,
+            string posixUsername,
             string keyType,
             string key)
         {
             Utilities.ThrowIfNullOrEmpty(keyType, nameof(keyType));
             Utilities.ThrowIfNullOrEmpty(key, nameof(key));
 
-            this.LoginUsername = loginUsername;
+            this.PosixUsername = posixUsername;
             this.KeyType = keyType;
-            this.Key = key;
+            this.PublicKey = key;
         }
 
         public static MetadataAuthorizedPublicKey Parse(string line)
@@ -102,29 +114,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 
     public class UnmanagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey
     {
-        public string Username { get; }
+        /// <summary>
+        /// Email address of owning user account.
+        /// </summary>
+        public string Email { get; }
 
         public UnmanagedMetadataAuthorizedPublicKey(
-            string loginUsername,
+            string posixUsername,
             string keyType,
             string key,
             string username)
-            : base(loginUsername, keyType, key)
+            : base(posixUsername, keyType, key)
         {
             Utilities.ThrowIfNullOrEmpty(username, nameof(username));
 
-            this.Username = username;
+            this.Email = username;
         }
 
         public override string ToString()
         {
-            return $"{this.LoginUsername}:{this.KeyType} {this.Key} {this.Username}";
+            return $"{this.PosixUsername}:{this.KeyType} {this.PublicKey} {this.Email}";
         }
     }
 
     public class ManagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey
     {
-        public string Username { get; }
         public PublicKeyMetadata Metadata { get; }
 
         public ManagedMetadataAuthorizedPublicKey(
@@ -135,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             : base(loginUsername, keyType, key)
         {
             Utilities.ThrowIfNull(metadata, nameof(metadata));
-            Debug.Assert(metadata.Username.Contains("@"));
+            Debug.Assert(metadata.Email.Contains("@"));
             Debug.Assert(metadata.ExpireOn.Kind == DateTimeKind.Utc);
 
             this.Metadata = metadata;
@@ -158,13 +172,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                     //
                     DateFormatString = "yyyy-MM-dd'T'HH:mm:ss+0000"
                 });
-            return $"{this.LoginUsername}:{this.KeyType} {this.Key} {ManagedKeyToken} {metadata}";
+            return $"{this.PosixUsername}:{this.KeyType} {this.PublicKey} {ManagedKeyToken} {metadata}";
         }
 
         public class PublicKeyMetadata
         {
+            /// <summary>
+            /// Email address of owning user account.
+            /// </summary>
             [JsonProperty("userName")]
-            public string Username { get; set; }
+            public string Email { get; set; }
 
             [JsonProperty("expireOn")]
             public DateTime ExpireOn { get; set; }
@@ -174,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 [JsonProperty("userName")] string username,
                 [JsonProperty("expireOn")] DateTime expireOn)
             {
-                this.Username = username;
+                this.Email = username;
                 this.ExpireOn = expireOn.ToUniversalTime();
             }
         }

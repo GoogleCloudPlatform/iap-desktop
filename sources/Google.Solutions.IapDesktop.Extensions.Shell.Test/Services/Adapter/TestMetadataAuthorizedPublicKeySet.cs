@@ -175,8 +175,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                 .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa key2 bob"));
 
             Assert.AreEqual(5, keySet.Keys.Count());
-            Assert.AreEqual("", keySet.Keys.First(k => k.Key == "phantomkey2").LoginUsername);
-            Assert.AreEqual("", keySet.Keys.First(k => k.Key == "phantomkey3").LoginUsername);
+            Assert.AreEqual("", keySet.Keys.First(k => k.PublicKey == "phantomkey2").PosixUsername);
+            Assert.AreEqual("", keySet.Keys.First(k => k.PublicKey == "phantomkey3").PosixUsername);
         }
 
         [Test]
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                 .RemoveExpiredKeys();
 
             Assert.AreEqual(2, keySet.Keys.Count());
-            Assert.IsFalse(keySet.Keys.Any(k => k.LoginUsername == "joe"));
+            Assert.IsFalse(keySet.Keys.Any(k => k.PosixUsername == "joe"));
         }
     }
 }
