@@ -41,19 +41,27 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             { };
         }
 
-        public void ReportBug(BugReport report)
+        private void ReportBug(int component, int template, BugReport report)
         {
-            var body = "Steps:\n" +
+            var body = "NOTE: This issue report will be visible to the public. Make sure you don't include any confidential information.\n\n" + 
+                       "Steps:\n" +
                        "* Step 1\n" +
                        "* Step 2\n" +
                        "* ...\n" +
                        "\n" +
                        "Expected behavior:\n" +
+                       "\n" +
                        "Observed behavior:\n" +
                        "\n" +
-                       "```" + report + "```";
+                       "```\n" + report + "```";
 
-            OpenUrl($"{BaseUrl}/issues/new?component=953762&template=1561579&description={WebUtility.UrlEncode(body)}");
+            OpenUrl($"{BaseUrl}/issues/new?component={component}&template={template}&description={WebUtility.UrlEncode(body)}&format=MARKDOWN");
         }
+
+        public void ReportPrivateBug(BugReport report)
+            => ReportBug(953762, 1561579, report);
+
+        public void ReportBug(BugReport report)
+            => ReportBug(1172073, 1670021, report);
     }
 }

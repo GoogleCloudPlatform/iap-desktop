@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void reportButton_Click(object sender, EventArgs e)
         {
-            new GithubAdapter().ReportBug(this.report);
+            new BuganizerAdapter().ReportBug(this.report);
         }
     }
 }
