@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
             {
-                var metdataKeyProcessor = await MetadataAuthorizedKeyProcessor.ForInstance(
+                var metdataKeyProcessor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
                     this.computeEngineAdapter,
                     this.resourceManagerAdapter,
                     instance,
