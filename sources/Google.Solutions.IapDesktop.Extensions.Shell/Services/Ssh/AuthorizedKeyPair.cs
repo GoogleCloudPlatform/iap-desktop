@@ -32,7 +32,7 @@ using System.Text.RegularExpressions;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    public sealed class AuthorizedKey : IDisposable
+    public sealed class AuthorizedKeyPair : IDisposable
     {
         //
         // NB. This is the pattern used by Debian's shadow-utils.
@@ -40,19 +40,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private static readonly Regex posixUsernamePattern = new Regex("^[a-z_][a-z0-9_-]*$");
         private const int MaxUsernameLength = 32;
 
-        public AuthorizeKeyMethods AuthorizationMethod { get; }
-        public ISshKeyPair Key { get; }
+        public KeyAuthorizationMethods AuthorizationMethod { get; }
+        public ISshKeyPair KeyPair { get; }
         public string Username { get; }
 
-        private AuthorizedKey(
-            ISshKeyPair key,
-            AuthorizeKeyMethods method,
+        private AuthorizedKeyPair(
+            ISshKeyPair keyPair,
+            KeyAuthorizationMethods method,
             string posixUsername)
         {
             Debug.Assert(IsValidUsername(posixUsername));
             Debug.Assert(method.IsSingleFlag());
 
-            this.Key = key;
+            this.KeyPair = keyPair;
             this.AuthorizationMethod = method;
             this.Username = posixUsername;
         }
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // Factory methods.
         //---------------------------------------------------------------------
 
-        public static AuthorizedKey ForOsLoginAccount(
+        public static AuthorizedKeyPair ForOsLoginAccount(
             ISshKeyPair key,
             PosixAccount posixAccount)
         {
@@ -89,13 +89,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
             Debug.Assert(IsValidUsername(posixAccount.Username));
 
-            return new AuthorizedKey(
+            return new AuthorizedKeyPair(
                 key,
-                AuthorizeKeyMethods.Oslogin,
+                KeyAuthorizationMethods.Oslogin,
                 posixAccount.Username);
         }
 
-        public static AuthorizedKey ForMetadata(
+        public static AuthorizedKeyPair ForMetadata(
             ISshKeyPair key,
             string preferredUsername,
             bool useInstanceKeySet,
@@ -115,11 +115,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     //
                     // Use the preferred username.
                     //
-                    return new AuthorizedKey(
+                    return new AuthorizedKeyPair(
                         key,
                         useInstanceKeySet
-                            ? AuthorizeKeyMethods.InstanceMetadata
-                            : AuthorizeKeyMethods.ProjectMetadata,
+                            ? KeyAuthorizationMethods.InstanceMetadata
+                            : KeyAuthorizationMethods.ProjectMetadata,
                         preferredUsername);
                 }
             }
@@ -154,11 +154,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 //
                 username = username.Substring(0, Math.Min(MaxUsernameLength, username.Length));
 
-                return new AuthorizedKey(
+                return new AuthorizedKeyPair(
                     key,
                     useInstanceKeySet
-                        ? AuthorizeKeyMethods.InstanceMetadata
-                        : AuthorizeKeyMethods.ProjectMetadata,
+                        ? KeyAuthorizationMethods.InstanceMetadata
+                        : KeyAuthorizationMethods.ProjectMetadata,
                     username);
             }
         }
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
         public void Dispose()
         {
-            this.Key.Dispose();
+            this.KeyPair.Dispose();
         }
     }
 }

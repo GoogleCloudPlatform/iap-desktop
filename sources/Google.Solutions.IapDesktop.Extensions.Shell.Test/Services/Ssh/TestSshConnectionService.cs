@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         private Mock<IKeyStoreAdapter> keyStore;
         private Mock<ITunnelBrokerService> tunnelBrokerService;
         private Mock<ISshTerminalSessionBroker> sessionBroker;
-        private Mock<IAuthorizedKeyService> authorizedKeyService;
+        private Mock<IKeyAuthorizationService> authorizedKeyService;
 
         [SetUp]
         public void SetUp()
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .Returns(RsaSshKeyPair.NewEphemeralKey(1024));
 
             this.sessionBroker = this.serviceRegistry.AddMock<ISshTerminalSessionBroker>();
-            this.authorizedKeyService = this.serviceRegistry.AddMock<IAuthorizedKeyService>();
+            this.authorizedKeyService = this.serviceRegistry.AddMock<IKeyAuthorizationService>();
 
             this.serviceRegistry.AddMock<IMainForm>();
 
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 It.IsAny<ISshKeyPair>(),
                 It.IsAny<TimeSpan>(),
                 It.Is<string>(user => user == "bob"),
-                It.IsAny<AuthorizeKeyMethods>(),
+                It.IsAny<KeyAuthorizationMethods>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -275,7 +275,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 It.IsAny<ISshKeyPair>(),
                 It.Is<TimeSpan>(validity => validity == TimeSpan.FromDays(4)),
                 It.IsAny<string>(),
-                It.IsAny<AuthorizeKeyMethods>(),
+                It.IsAny<KeyAuthorizationMethods>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -342,7 +342,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     It.IsAny<ISshKeyPair>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<string>(),
-                    It.IsAny<AuthorizeKeyMethods>(),
+                    It.IsAny<KeyAuthorizationMethods>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new SshKeyPushFailedException("mock", HelpTopics.ManagingOsLogin));
 

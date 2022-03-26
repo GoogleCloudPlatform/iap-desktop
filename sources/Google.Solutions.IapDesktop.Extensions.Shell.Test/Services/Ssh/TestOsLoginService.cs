@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .ConfigureAwait(false);
 
             Assert.AreEqual("joe3", key.Username);
-            Assert.AreEqual(AuthorizeKeyMethods.Oslogin, key.AuthorizationMethod);
+            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, key.AuthorizationMethod);
         }
 
         [Test]

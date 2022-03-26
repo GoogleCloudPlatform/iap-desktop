@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly IEventService eventService;
         private readonly CultureInfo language;
         private readonly IPEndPoint endpoint;
-        private readonly AuthorizedKey authorizedKey;
+        private readonly AuthorizedKeyPair authorizedKey;
         private readonly TimeSpan connectionTimeout;
 
         private Status connectionStatus = Status.ConnectionFailed;
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             IEventService eventService,
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
-            AuthorizedKey authorizedKey,
+            AuthorizedKeyPair authorizedKey,
             CultureInfo language,
             TimeSpan connectionTimeout)
         {
@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
             catch (SshNativeException e) when (
                 e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED &&
-                this.authorizedKey.AuthorizationMethod == AuthorizeKeyMethods.Oslogin)
+                this.authorizedKey.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
             {
                 throw new OsLoginAuthenticationFailedException(
                     "You do not have sufficient permissions to access this VM instance.\n\n" +
@@ -292,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     this.currentConnection = new SshShellConnection(
                         this.authorizedKey.Username,
                         this.endpoint,
-                        this.authorizedKey.Key,
+                        this.authorizedKey.KeyPair,
                         SshShellConnection.DefaultTerminal,
                         initialSize,
                         this.language,

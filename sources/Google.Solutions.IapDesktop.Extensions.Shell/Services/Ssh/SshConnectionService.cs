@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly ISshTerminalSessionBroker sessionBroker;
         private readonly ITunnelBrokerService tunnelBroker;
         private readonly IConnectionSettingsService settingsService;
-        private readonly IAuthorizedKeyService authorizedKeyService;
+        private readonly IKeyAuthorizationService authorizedKeyService;
         private readonly IKeyStoreAdapter keyStoreAdapter;
         private readonly IAuthorizationSource authorizationSource;
         private readonly SshSettingsRepository sshSettingsRepository;
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.sessionBroker = serviceProvider.GetService<ISshTerminalSessionBroker>();
             this.tunnelBroker = serviceProvider.GetService<ITunnelBrokerService>();
             this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
-            this.authorizedKeyService = serviceProvider.GetService<IAuthorizedKeyService>();
+            this.authorizedKeyService = serviceProvider.GetService<IKeyAuthorizationService>();
             this.keyStoreAdapter = serviceProvider.GetService<IKeyStoreAdapter>();
             this.authorizationSource = serviceProvider.GetService<IAuthorizationSource>();
             this.sshSettingsRepository = serviceProvider.GetService<SshSettingsRepository>();
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                                 sshKey,
                                 TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue),
                                 NullIfEmpty(settings.SshUsername.StringValue),
-                                AuthorizeKeyMethods.All,
+                                KeyAuthorizationMethods.All,
                                 token)
                             .ConfigureAwait(true);
                     });

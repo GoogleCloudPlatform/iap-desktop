@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             IServiceProvider serviceProvider,
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
-            AuthorizedKey authorizedKey,
+            AuthorizedKeyPair authorizedKey,
             CultureInfo language,
             TimeSpan connectionTimeout)
             : base(serviceProvider)

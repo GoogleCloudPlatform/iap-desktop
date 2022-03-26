@@ -28,19 +28,19 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    public interface IAuthorizedKeyService : IDisposable
+    public interface IKeyAuthorizationService : IDisposable
     {
-        Task<AuthorizedKey> AuthorizeKeyAsync(
+        Task<AuthorizedKeyPair> AuthorizeKeyAsync(
             InstanceLocator instance,
             ISshKeyPair key,
             TimeSpan keyValidity,
             string preferredPosixUsername,
-            AuthorizeKeyMethods methods,
+            KeyAuthorizationMethods methods,
             CancellationToken token);
     }
 
     [Flags]
-    public enum AuthorizeKeyMethods
+    public enum KeyAuthorizationMethods
     {
         InstanceMetadata = 1,
         ProjectMetadata = 2,

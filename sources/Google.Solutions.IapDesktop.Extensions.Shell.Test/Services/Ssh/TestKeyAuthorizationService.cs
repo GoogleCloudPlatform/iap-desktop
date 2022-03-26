@@ -41,7 +41,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 {
     [TestFixture]
-    public class TestAuthorizedKeyService : ApplicationFixtureBase
+    public class TestKeyAuthorizationService : ApplicationFixtureBase
     {
         private const string SampleEmailAddress = "bob@example.com";
         private readonly static InstanceLocator SampleLocator
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         It.IsAny<ISshKeyPair>(),
                         It.IsAny<TimeSpan>(),
                         It.IsAny<CancellationToken>()))
-                .ReturnsAsync(AuthorizedKey.ForOsLoginAccount(
+                .ReturnsAsync(AuthorizedKeyPair.ForOsLoginAccount(
                     new Mock<ISshKeyPair>().Object,
                     new PosixAccount()
                     {
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public async Task WhenOsLoginEnabledForProject_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
@@ -203,19 +203,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
-                    AuthorizeKeyMethods.All,
+                    KeyAuthorizationMethods.All,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(authorizedKey);
-            Assert.AreEqual(AuthorizeKeyMethods.Oslogin, authorizedKey.AuthorizationMethod);
+            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, authorizedKey.AuthorizationMethod);
             Assert.AreEqual("bob", authorizedKey.Username);
         }
 
         [Test]
         public async Task WhenOsLoginEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,
@@ -233,19 +233,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
-                    AuthorizeKeyMethods.All,
+                    KeyAuthorizationMethods.All,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(authorizedKey);
-            Assert.AreEqual(AuthorizeKeyMethods.Oslogin, authorizedKey.AuthorizationMethod);
+            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, authorizedKey.AuthorizationMethod);
             Assert.AreEqual("bob", authorizedKey.Username);
         }
 
         [Test]
         public async Task WhenOsLoginDisabledForProjectButEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: false,
@@ -263,12 +263,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
-                    AuthorizeKeyMethods.All,
+                    KeyAuthorizationMethods.All,
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(authorizedKey);
-            Assert.AreEqual(AuthorizeKeyMethods.Oslogin, authorizedKey.AuthorizationMethod);
+            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, authorizedKey.AuthorizationMethod);
             Assert.AreEqual("bob", authorizedKey.Username);
         }
 
@@ -282,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 legacySshKeyPresent: false,
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
@@ -296,12 +296,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         null,
-                        AuthorizeKeyMethods.All,
+                        KeyAuthorizationMethods.All,
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeEngineAdapter.Verify(a => a.UpdateCommonInstanceMetadataAsync(
@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public void WhenOsLoginEnabledForProjectButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
@@ -332,14 +332,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
-                    AuthorizeKeyMethods.InstanceMetadata,
+                    KeyAuthorizationMethods.InstanceMetadata,
                     CancellationToken.None).Wait());
         }
 
         [Test]
         public void WhenOsLoginEnabledForInstanceButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,
@@ -357,7 +357,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
-                    AuthorizeKeyMethods.InstanceMetadata,
+                    KeyAuthorizationMethods.InstanceMetadata,
                     CancellationToken.None).Wait());
         }
 
@@ -368,7 +368,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public void WhenLegacySshKeyPresent_ThenAuthorizeKeyAsyncThrowsUnsupportedLegacySshKeyEncounteredException()
         {
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,
@@ -386,7 +386,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
-                    AuthorizeKeyMethods.All,
+                    KeyAuthorizationMethods.All,
                     CancellationToken.None).Wait());
         }
 
@@ -412,7 +412,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     projectWideKeysBlockedForInstance: false,
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
-                var service = new AuthorizedKeyService(
+                var service = new KeyAuthorizationService(
                     CreateAuthorizationSourceMock().Object,
                     computeEngineAdapter.Object,
                     CreateResourceManagerAdapterMock(true).Object,
@@ -424,12 +424,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         "bob",
-                        AuthorizeKeyMethods.All,
+                        KeyAuthorizationMethods.All,
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
@@ -466,7 +466,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     projectWideKeysBlockedForInstance: false,
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
-                var service = new AuthorizedKeyService(
+                var service = new KeyAuthorizationService(
                     CreateAuthorizationSourceMock().Object,
                     computeEngineAdapter.Object,
                     CreateResourceManagerAdapterMock(true).Object,
@@ -478,12 +478,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         "bob",
-                        AuthorizeKeyMethods.All,
+                        KeyAuthorizationMethods.All,
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
@@ -520,7 +520,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     projectWideKeysBlockedForInstance: false,
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
-                var service = new AuthorizedKeyService(
+                var service = new KeyAuthorizationService(
                     CreateAuthorizationSourceMock().Object,
                     computeEngineAdapter.Object,
                     CreateResourceManagerAdapterMock(true).Object,
@@ -532,12 +532,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         "bob",
-                        AuthorizeKeyMethods.All,
+                        KeyAuthorizationMethods.All,
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
@@ -574,7 +574,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     projectWideKeysBlockedForInstance: false,
                     existingProjectKeySet: existingProjectKeySet,
                     existingInstanceKeySet: null);
-                var service = new AuthorizedKeyService(
+                var service = new KeyAuthorizationService(
                     CreateAuthorizationSourceMock().Object,
                     computeEngineAdapter.Object,
                     CreateResourceManagerAdapterMock(true).Object,
@@ -586,12 +586,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         "bob",
-                        AuthorizeKeyMethods.All,
+                        KeyAuthorizationMethods.All,
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
@@ -620,7 +620,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 legacySshKeyPresent: false,
                 projectWideKeysBlockedForProject: true,
                 projectWideKeysBlockedForInstance: false);
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
@@ -634,12 +634,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         null,
-                        AuthorizeKeyMethods.All,
+                        KeyAuthorizationMethods.All,
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
@@ -659,7 +659,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 legacySshKeyPresent: false,
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: true);
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
@@ -673,12 +673,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         null,
-                        AuthorizeKeyMethods.All,
+                        KeyAuthorizationMethods.All,
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
@@ -698,7 +698,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 legacySshKeyPresent: false,
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(false).Object,
@@ -712,12 +712,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         null,
-                        AuthorizeKeyMethods.All,
+                        KeyAuthorizationMethods.All,
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
@@ -737,7 +737,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 legacySshKeyPresent: false,
                 projectWideKeysBlockedForProject: true,
                 projectWideKeysBlockedForInstance: false);
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
@@ -749,7 +749,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
-                    AuthorizeKeyMethods.Oslogin | AuthorizeKeyMethods.ProjectMetadata,
+                    KeyAuthorizationMethods.Oslogin | KeyAuthorizationMethods.ProjectMetadata,
                     CancellationToken.None).Wait());
         }
 
@@ -763,7 +763,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 legacySshKeyPresent: false,
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
@@ -777,12 +777,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         null,
-                        AuthorizeKeyMethods.InstanceMetadata,
+                        KeyAuthorizationMethods.InstanceMetadata,
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
@@ -802,7 +802,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 legacySshKeyPresent: false,
                 projectWideKeysBlockedForProject: false,
                 projectWideKeysBlockedForInstance: false);
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
@@ -816,12 +816,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         null,
-                        AuthorizeKeyMethods.All,
+                        KeyAuthorizationMethods.All,
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
                 Assert.IsNotNull(authorizedKey);
-                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
                 Assert.AreEqual("bob", authorizedKey.Username);
 
                 computeEngineAdapter.Verify(a => a.UpdateCommonInstanceMetadataAsync(
@@ -854,7 +854,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     HttpStatusCode = httpStatus
                 });
 
-            var service = new AuthorizedKeyService(
+            var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
                 CreateResourceManagerAdapterMock(true).Object,
@@ -868,7 +868,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         key,
                         TimeSpan.FromMinutes(1),
                         null,
-                        AuthorizeKeyMethods.All,
+                        KeyAuthorizationMethods.All,
                         CancellationToken.None).Wait());
             }
         }

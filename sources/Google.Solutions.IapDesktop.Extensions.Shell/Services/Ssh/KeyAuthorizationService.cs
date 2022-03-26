@@ -43,8 +43,8 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    [Service(typeof(IAuthorizedKeyService))]
-    public class AuthorizedKeyService : IAuthorizedKeyService
+    [Service(typeof(IKeyAuthorizationService))]
+    public class KeyAuthorizationService : IKeyAuthorizationService
     {
         private const string EnableOsLoginFlag = "enable-oslogin";
         private const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // Ctor.
         //---------------------------------------------------------------------
 
-        public AuthorizedKeyService(
+        public KeyAuthorizationService(
             IAuthorizationSource authorizationSource,
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.osLoginService = osLoginService;
         }
 
-        public AuthorizedKeyService(IServiceProvider serviceProvider)
+        public KeyAuthorizationService(IServiceProvider serviceProvider)
             : this(
                   serviceProvider.GetService<IAuthorizationSource>(),
                   serviceProvider.GetService<IComputeEngineAdapter>(),
@@ -191,12 +191,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // IPublicKeyService.
         //---------------------------------------------------------------------
 
-        public async Task<AuthorizedKey> AuthorizeKeyAsync(
+        public async Task<AuthorizedKeyPair> AuthorizeKeyAsync(
             InstanceLocator instance,
             ISshKeyPair key,
             TimeSpan validity,
             string preferredPosixUsername,
-            AuthorizeKeyMethods allowedMethods,
+            KeyAuthorizationMethods allowedMethods,
             CancellationToken token)
         {
             Utilities.ThrowIfNull(instance, nameof(key));
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     // If OS Login is enabled, it has to be used. Any metadata keys
                     // are ignored.
                     //
-                    if (!allowedMethods.HasFlag(AuthorizeKeyMethods.Oslogin))
+                    if (!allowedMethods.HasFlag(KeyAuthorizationMethods.Oslogin))
                     {
                         throw new InvalidOperationException(
                             $"{instance} requires OS Login to beused");
@@ -282,8 +282,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         BlockProjectSshKeysFlag);
 
                     bool useInstanceKeySet;
-                    if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata) &&
-                        allowedMethods.HasFlag(AuthorizeKeyMethods.InstanceMetadata))
+                    if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata) &&
+                        allowedMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
                     {
                         //
                         // Both allowed - use project metadata unless:
@@ -299,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
                         useInstanceKeySet = blockProjectSshKeys || !canUpdateProjectMetadata;
                     }
-                    else if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata))
+                    else if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
                     {
                         // Only project allowed.
                         if (blockProjectSshKeys)
@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                             useInstanceKeySet = false;
                         }
                     }
-                    else if (allowedMethods.HasFlag(AuthorizeKeyMethods.InstanceMetadata))
+                    else if (allowedMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
                     {
                         // Only instance allowed.
                         useInstanceKeySet = true;
@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         throw new ArgumentException(nameof(allowedMethods));
                     }
 
-                    var profile = AuthorizedKey.ForMetadata(
+                    var profile = AuthorizedKeyPair.ForMetadata(
                         key,
                         preferredPosixUsername,
                         useInstanceKeySet,
