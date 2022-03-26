@@ -27,7 +27,7 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Auth
 {
-    public sealed class RsaSshKey : ISshKey
+    public sealed class RsaSshKeyPair : ISshKeyPair
     {
 #if DEBUG
         private bool disposed = false;
@@ -35,19 +35,19 @@ namespace Google.Solutions.Ssh.Auth
 
         private readonly RSA key;
 
-        private RsaSshKey(RSA key)
+        private RsaSshKeyPair(RSA key)
         {
             this.key = key;
         }
 
-        public static RsaSshKey FromKey(RSA key)
+        public static RsaSshKeyPair FromKey(RSA key)
         {
-            return new RsaSshKey(key);
+            return new RsaSshKeyPair(key);
         }
 
-        public static RsaSshKey NewEphemeralKey(int keySize)
+        public static RsaSshKeyPair NewEphemeralKey(int keySize)
         {
-            return new RsaSshKey(new RSACng(keySize));
+            return new RsaSshKeyPair(new RSACng(keySize));
         }
 
         //---------------------------------------------------------------------

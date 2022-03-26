@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     It.IsAny<IAuthorization>(),
                     It.IsAny<bool>(),
                     It.IsAny<IWin32Window>()))
-                .Returns(RsaSshKey.NewEphemeralKey(1024));
+                .Returns(RsaSshKeyPair.NewEphemeralKey(1024));
 
             this.sessionBroker = this.serviceRegistry.AddMock<ISshTerminalSessionBroker>();
             this.authorizedKeyService = this.serviceRegistry.AddMock<IAuthorizedKeyService>();
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             this.authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
                 It.Is<InstanceLocator>(l => l == SampleLocator),
-                It.IsAny<ISshKey>(),
+                It.IsAny<ISshKeyPair>(),
                 It.IsAny<TimeSpan>(),
                 It.Is<string>(user => user == "bob"),
                 It.IsAny<AuthorizeKeyMethods>(),
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             this.authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
                 It.Is<InstanceLocator>(l => l == SampleLocator),
-                It.IsAny<ISshKey>(),
+                It.IsAny<ISshKeyPair>(),
                 It.Is<TimeSpan>(validity => validity == TimeSpan.FromDays(4)),
                 It.IsAny<string>(),
                 It.IsAny<AuthorizeKeyMethods>(),
@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             this.authorizedKeyService.Setup(a => a.AuthorizeKeyAsync(
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ISshKey>(),
+                    It.IsAny<ISshKeyPair>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<string>(),
                     It.IsAny<AuthorizeKeyMethods>(),

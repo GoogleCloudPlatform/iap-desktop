@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
         public async Task<AuthorizedKey> AuthorizeKeyAsync(
             InstanceLocator instance,
-            ISshKey key,
+            ISshKeyPair key,
             TimeSpan validity,
             string preferredPosixUsername,
             AuthorizeKeyMethods allowedMethods,

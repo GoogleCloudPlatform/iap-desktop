@@ -42,14 +42,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         {
             Assert.Throws<ArgumentException>(
                 () => AuthorizedKey.ForMetadata(
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     "",
                     false,
                     new Mock<IAuthorization>().Object));
 
             Assert.Throws<ArgumentException>(
                 () => AuthorizedKey.ForMetadata(
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     " ",
                     false,
                     new Mock<IAuthorization>().Object));
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         {
             Assert.Throws<ArgumentException>(
                 () => AuthorizedKey.ForMetadata(
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     "!user",
                     false,
                     new Mock<IAuthorization>().Object));
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public void WhenPreferredUsernameIsValid_ThenUsernameIsUsed()
         {
             var key = AuthorizedKey.ForMetadata(
-                new Mock<ISshKey>().Object,
+                new Mock<ISshKeyPair>().Object,
                 "user",
                 false,
                 new Mock<IAuthorization>().Object);
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public void WhenEmailValid_ThenForMetadataGeneratesUsername()
         {
-            var sshKey = new Mock<ISshKey>().Object;
+            var sshKey = new Mock<ISshKeyPair>().Object;
             var authorization = new Mock<IAuthorization>();
             authorization
                 .SetupGet(a => a.Email)
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public void WhenEmailTooLong_ThenForMetadataStripsUsername()
         {
-            var sshKey = new Mock<ISshKey>().Object;
+            var sshKey = new Mock<ISshKeyPair>().Object;
             var authorization = new Mock<IAuthorization>();
             authorization
                 .SetupGet(a => a.Email)
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public void WhenEmailContainsInvalidChars_ThenForMetadataReplacesChars()
         {
-            var sshKey = new Mock<ISshKey>().Object;
+            var sshKey = new Mock<ISshKeyPair>().Object;
             var authorization = new Mock<IAuthorization>();
             authorization
                 .SetupGet(a => a.Email)
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public void WhenEmailContainsUpperCaseChars_ThenForMetadataReplacesChars()
         {
-            var sshKey = new Mock<ISshKey>().Object;
+            var sshKey = new Mock<ISshKeyPair>().Object;
             var authorization = new Mock<IAuthorization>();
             authorization
                 .SetupGet(a => a.Email)

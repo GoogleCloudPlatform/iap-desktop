@@ -48,9 +48,9 @@ namespace Google.Solutions.Ssh.Auth
         EcdsaNistp521 = 0x13
     }
 
-    public static class SshKey
+    public static class SshKeyPair
     {
-        private static CngKey OpenPersistentKey(
+        private static CngKey OpenPersistentKeyPair(
             string name,
             CngAlgorithm algorithm,
             CngProvider provider,
@@ -162,7 +162,7 @@ namespace Google.Solutions.Ssh.Auth
         /// <summary>
         /// Create or open a key in the key storage provider.
         /// </summary>
-        public static ISshKey OpenPersistentKey(
+        public static ISshKeyPair OpenPersistentKeyPair(
             string name,
             SshKeyType sshKeyType,
             CngProvider provider,
@@ -174,7 +174,7 @@ namespace Google.Solutions.Ssh.Auth
             {
                 case SshKeyType.Rsa3072:
                     {
-                        var key = OpenPersistentKey(
+                        var key = OpenPersistentKeyPair(
                             name,
                             CngAlgorithm.Rsa,
                             provider,
@@ -184,13 +184,13 @@ namespace Google.Solutions.Ssh.Auth
                             parentWindowHandle);
 
                         return key != null
-                            ? RsaSshKey.FromKey(new RSACng(key))
+                            ? RsaSshKeyPair.FromKey(new RSACng(key))
                             : null;
                     }
 
                 case SshKeyType.EcdsaNistp256:
                     {
-                        var key = OpenPersistentKey(
+                        var key = OpenPersistentKeyPair(
                             name,
                             CngAlgorithm.ECDsaP256,
                             provider,
@@ -200,13 +200,13 @@ namespace Google.Solutions.Ssh.Auth
                             parentWindowHandle);
 
                         return key != null
-                            ? ECDsaSshKey.FromKey(new ECDsaCng(key))
+                            ? ECDsaSshKeyPair.FromKey(new ECDsaCng(key))
                             : null;
                     }
 
                 case SshKeyType.EcdsaNistp384:
                     {
-                        var key = OpenPersistentKey(
+                        var key = OpenPersistentKeyPair(
                             name,
                             CngAlgorithm.ECDsaP384,
                             provider,
@@ -216,13 +216,13 @@ namespace Google.Solutions.Ssh.Auth
                             parentWindowHandle);
 
                         return key != null
-                            ? ECDsaSshKey.FromKey(new ECDsaCng(key))
+                            ? ECDsaSshKeyPair.FromKey(new ECDsaCng(key))
                             : null;
                     }
 
                 case SshKeyType.EcdsaNistp521:
                     {
-                        var key = OpenPersistentKey(
+                        var key = OpenPersistentKeyPair(
                             name,
                             CngAlgorithm.ECDsaP521,
                             provider,
@@ -232,7 +232,7 @@ namespace Google.Solutions.Ssh.Auth
                             parentWindowHandle);
 
                         return key != null
-                            ? ECDsaSshKey.FromKey(new ECDsaCng(key))
+                            ? ECDsaSshKeyPair.FromKey(new ECDsaCng(key))
                             : null;
                     }
 
@@ -244,7 +244,7 @@ namespace Google.Solutions.Ssh.Auth
         /// <summary>
         /// Delete a key from the key storage provider.
         /// </summary>
-        public static void DeletePersistentKey(string name)
+        public static void DeletePersistentKeyPair(string name)
         {
             using (SshTraceSources.Default.TraceMethod().WithParameters(name))
             {
@@ -258,21 +258,21 @@ namespace Google.Solutions.Ssh.Auth
         /// <summary>
         /// Create a new in-memory key for testing purposes.
         /// </summary>
-        public static ISshKey NewEphemeralKey(SshKeyType sshKeyType)
+        public static ISshKeyPair NewEphemeralKeyPair(SshKeyType sshKeyType)
         {
             switch (sshKeyType)
             {
                 case SshKeyType.Rsa3072:
-                    return RsaSshKey.NewEphemeralKey(3072);
+                    return RsaSshKeyPair.NewEphemeralKey(3072);
 
                 case SshKeyType.EcdsaNistp256:
-                    return ECDsaSshKey.NewEphemeralKey(256);
+                    return ECDsaSshKeyPair.NewEphemeralKey(256);
 
                 case SshKeyType.EcdsaNistp384:
-                    return ECDsaSshKey.NewEphemeralKey(384);
+                    return ECDsaSshKeyPair.NewEphemeralKey(384);
 
                 case SshKeyType.EcdsaNistp521:
-                    return ECDsaSshKey.NewEphemeralKey(521);
+                    return ECDsaSshKeyPair.NewEphemeralKey(521);
 
                 default:
                     throw new ArgumentException("Unsupported key type");

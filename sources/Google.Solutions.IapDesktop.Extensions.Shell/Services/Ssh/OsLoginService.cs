@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         Task<AuthorizedKey> AuthorizeKeyAsync(
             ProjectLocator project,
             OsLoginSystemType os,
-            ISshKey key,
+            ISshKeyPair key,
             TimeSpan validity,
             CancellationToken token);
     }
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         public async Task<AuthorizedKey> AuthorizeKeyAsync(
             ProjectLocator project,
             OsLoginSystemType os,
-            ISshKey key,
+            ISshKeyPair key,
             TimeSpan validity,
             CancellationToken token)
         {

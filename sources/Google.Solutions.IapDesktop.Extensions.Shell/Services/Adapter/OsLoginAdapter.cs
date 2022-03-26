@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         /// </summary>
         Task<LoginProfile> ImportSshPublicKeyAsync(
             ProjectLocator project,
-            ISshKey key,
+            ISshKeyPair key,
             TimeSpan validity,
             CancellationToken token);
 
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 
         public async Task<LoginProfile> ImportSshPublicKeyAsync(
             ProjectLocator project,
-            ISshKey key,
+            ISshKeyPair key,
             TimeSpan validity,
             CancellationToken token)
         {

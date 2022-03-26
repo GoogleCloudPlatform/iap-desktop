@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     {
         Task<AuthorizedKey> AuthorizeKeyAsync(
             InstanceLocator instance,
-            ISshKey key,
+            ISshKeyPair key,
             TimeSpan keyValidity,
             string preferredPosixUsername,
             AuthorizeKeyMethods methods,

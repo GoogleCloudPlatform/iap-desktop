@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 {
     public interface IKeyStoreAdapter
     {
-        ISshKey OpenSshKey(
+        ISshKeyPair OpenSshKey(
             SshKeyType keyType,
             IAuthorization authorization,
             bool createNewIfNotExists,
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(keyType))
             {
-                SshKey.DeletePersistentKey(
+                SshKeyPair.DeletePersistentKeyPair(
                     CreateKeyName(authorization, keyType, Provider));
             }
         }
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         // IKeyStoreAdapter
         //---------------------------------------------------------------------
 
-        public ISshKey OpenSshKey(
+        public ISshKeyPair OpenSshKey(
             SshKeyType keyType,
             IAuthorization authorization,
             bool createNewIfNotExists,
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(keyType))
             {
-                return SshKey.OpenPersistentKey(
+                return SshKeyPair.OpenPersistentKeyPair(
                     CreateKeyName(authorization, keyType, Provider),
                     keyType,
                     Provider,

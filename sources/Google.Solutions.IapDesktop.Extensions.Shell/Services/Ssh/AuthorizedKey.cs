@@ -41,11 +41,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private const int MaxUsernameLength = 32;
 
         public AuthorizeKeyMethods AuthorizationMethod { get; }
-        public ISshKey Key { get; }
+        public ISshKeyPair Key { get; }
         public string Username { get; }
 
         private AuthorizedKey(
-            ISshKey key,
+            ISshKeyPair key,
             AuthorizeKeyMethods method,
             string posixUsername)
         {
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         //---------------------------------------------------------------------
 
         public static AuthorizedKey ForOsLoginAccount(
-            ISshKey key,
+            ISshKeyPair key,
             PosixAccount posixAccount)
         {
             Utilities.ThrowIfNull(key, nameof(key));
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         }
 
         public static AuthorizedKey ForMetadata(
-            ISshKey key,
+            ISshKeyPair key,
             string preferredUsername,
             bool useInstanceKeySet,
             IAuthorization authorization)

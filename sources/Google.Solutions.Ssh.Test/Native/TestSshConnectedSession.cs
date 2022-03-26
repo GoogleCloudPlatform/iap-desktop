@@ -326,7 +326,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 22);
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var key = SshKey.NewEphemeralKey(keyType))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -348,7 +348,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = SshKey.NewEphemeralKey(keyType))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -387,7 +387,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = SshKey.NewEphemeralKey(keyType))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -433,7 +433,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = SshKey.NewEphemeralKey(keyType))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -477,7 +477,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = SshKey.NewEphemeralKey(keyType))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(
@@ -521,7 +521,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
                     .ConfigureAwait(false),
                 22);
-            using (var key = SshKey.NewEphemeralKey(keyType))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
             {
                 await InstanceUtil
                     .AddPublicKeyToMetadata(

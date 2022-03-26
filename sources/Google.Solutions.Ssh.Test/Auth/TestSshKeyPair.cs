@@ -34,9 +34,9 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Test.Auth
 {
     [TestFixture]
-    public class TestSshKey
+    public class TestSshKeyPair
     {
-        private static readonly string KeyName = "test-" + typeof(TestSshKey).Name;
+        private static readonly string KeyName = "test-" + typeof(TestSshKeyPair).Name;
         private readonly CngProvider KeyStoragePovider
             = CngProvider.MicrosoftSoftwareKeyStorageProvider;
 
@@ -58,32 +58,32 @@ namespace Google.Solutions.Ssh.Test.Auth
         [Test]
         public void WhenTypeIsRsa3072_ThenNewEphemeralKeyReturnsKey()
         {
-            var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072);
-            Assert.IsInstanceOf<RsaSshKey>(key);
+            var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072);
+            Assert.IsInstanceOf<RsaSshKeyPair>(key);
             Assert.AreEqual(3072, key.KeySize);
         }
 
         [Test]
         public void WhenTypeIsEcdsaNistp256_ThenNewEphemeralKeyReturnsKey()
         {
-            var key = SshKey.NewEphemeralKey(SshKeyType.EcdsaNistp256);
-            Assert.IsInstanceOf<ECDsaSshKey>(key);
+            var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.EcdsaNistp256);
+            Assert.IsInstanceOf<ECDsaSshKeyPair>(key);
             Assert.AreEqual(256, key.KeySize);
         }
 
         [Test]
         public void WhenTypeIsEcdsaNistp384_ThenNewEphemeralKeyReturnsKey()
         {
-            var key = SshKey.NewEphemeralKey(SshKeyType.EcdsaNistp384);
-            Assert.IsInstanceOf<ECDsaSshKey>(key);
+            var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.EcdsaNistp384);
+            Assert.IsInstanceOf<ECDsaSshKeyPair>(key);
             Assert.AreEqual(384, key.KeySize);
         }
 
         [Test]
         public void WhenTypeIsEcdsaNistp521_ThenNewEphemeralKeyReturnsKey()
         {
-            var key = SshKey.NewEphemeralKey(SshKeyType.EcdsaNistp521);
-            Assert.IsInstanceOf<ECDsaSshKey>(key);
+            var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.EcdsaNistp521);
+            Assert.IsInstanceOf<ECDsaSshKeyPair>(key);
             Assert.AreEqual(521, key.KeySize);
         }
 
@@ -91,7 +91,7 @@ namespace Google.Solutions.Ssh.Test.Auth
         public void WhenTypeIsInvalid_ThenNewEphemeralKeyReturnsThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => SshKey.NewEphemeralKey((SshKeyType)0xFF));
+                () => SshKeyPair.NewEphemeralKeyPair((SshKeyType)0xFF));
         }
 
         //---------------------------------------------------------------------
@@ -101,56 +101,56 @@ namespace Google.Solutions.Ssh.Test.Auth
         [Test]
         public void WhenTypeIsRsa3072_ThenOpenPersistentKeyReturnsKey()
         {
-            var key = SshKey.OpenPersistentKey(
+            var key = SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 SshKeyType.Rsa3072,
                 KeyStoragePovider,
                 CngKeyUsages.Signing,
                 true,
                 IntPtr.Zero);
-            Assert.IsInstanceOf<RsaSshKey>(key);
+            Assert.IsInstanceOf<RsaSshKeyPair>(key);
             Assert.AreEqual(3072, key.KeySize);
         }
 
         [Test]
         public void WhenTypeIsEcdsaNistp256_ThenOpenPersistentKeyReturnsKey()
         {
-            var key = SshKey.OpenPersistentKey(
+            var key = SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 SshKeyType.EcdsaNistp256,
                 KeyStoragePovider,
                 CngKeyUsages.Signing,
                 true,
                 IntPtr.Zero);
-            Assert.IsInstanceOf<ECDsaSshKey>(key);
+            Assert.IsInstanceOf<ECDsaSshKeyPair>(key);
             Assert.AreEqual(256, key.KeySize);
         }
 
         [Test]
         public void WhenTypeIsEcdsaNistp384_ThenOpenPersistentKeyReturnsKey()
         {
-            var key = SshKey.OpenPersistentKey(
+            var key = SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 SshKeyType.EcdsaNistp384,
                 KeyStoragePovider,
                 CngKeyUsages.Signing,
                 true,
                 IntPtr.Zero);
-            Assert.IsInstanceOf<ECDsaSshKey>(key);
+            Assert.IsInstanceOf<ECDsaSshKeyPair>(key);
             Assert.AreEqual(384, key.KeySize);
         }
 
         [Test]
         public void WhenTypeIsEcdsaNistp521_ThenOpenPersistentKeyReturnsKey()
         {
-            var key = SshKey.OpenPersistentKey(
+            var key = SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 SshKeyType.EcdsaNistp521,
                 KeyStoragePovider,
                 CngKeyUsages.Signing,
                 true,
                 IntPtr.Zero);
-            Assert.IsInstanceOf<ECDsaSshKey>(key);
+            Assert.IsInstanceOf<ECDsaSshKeyPair>(key);
             Assert.AreEqual(521, key.KeySize);
         }
 
@@ -158,7 +158,7 @@ namespace Google.Solutions.Ssh.Test.Auth
         public void WhenKeyFoundAndCreateNewIsFalse_ThenOpenPersistentKeyReturnsKey(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var createdKey = SshKey.OpenPersistentKey(
+            var createdKey = SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 keyType,
                 KeyStoragePovider,
@@ -166,7 +166,7 @@ namespace Google.Solutions.Ssh.Test.Auth
                 true,
                 IntPtr.Zero);
 
-            var openedKey = SshKey.OpenPersistentKey(
+            var openedKey = SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 keyType,
                 KeyStoragePovider,
@@ -182,7 +182,7 @@ namespace Google.Solutions.Ssh.Test.Auth
         public void WhenKeyNotFoundAndCreateNewIsFalse_ThenOpenPersistentKeyReturnsNull(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var key = SshKey.OpenPersistentKey(
+            var key = SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 keyType,
                 KeyStoragePovider,
@@ -195,7 +195,7 @@ namespace Google.Solutions.Ssh.Test.Auth
         [Test]
         public void WhenKeyFoundButAlgorithmMismatches_ThenOpenPersistentKeyThrowsException()
         {
-            SshKey.OpenPersistentKey(
+            SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 SshKeyType.Rsa3072,
                 KeyStoragePovider,
@@ -204,7 +204,7 @@ namespace Google.Solutions.Ssh.Test.Auth
                 IntPtr.Zero);
 
             Assert.Throws<CryptographicException>(
-                () => SshKey.OpenPersistentKey(
+                () => SshKeyPair.OpenPersistentKeyPair(
                     KeyName,
                     SshKeyType.EcdsaNistp256,
                     KeyStoragePovider,
@@ -216,7 +216,7 @@ namespace Google.Solutions.Ssh.Test.Auth
         [Test]
         public void WhenKeyFoundButUsageMismatches_ThenOpenPersistentKeyThrowsException()
         {
-            SshKey.OpenPersistentKey(
+            SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 SshKeyType.Rsa3072,
                 KeyStoragePovider,
@@ -225,7 +225,7 @@ namespace Google.Solutions.Ssh.Test.Auth
                 IntPtr.Zero);
 
             Assert.Throws<CryptographicException>(
-                () => SshKey.OpenPersistentKey(
+                () => SshKeyPair.OpenPersistentKeyPair(
                     KeyName,
                     SshKeyType.Rsa3072,
                     KeyStoragePovider,
@@ -238,7 +238,7 @@ namespace Google.Solutions.Ssh.Test.Auth
         public void WhenKeTypeIsInvalid_ThenOpenPersistentKeyThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => SshKey.OpenPersistentKey(
+                () => SshKeyPair.OpenPersistentKeyPair(
                     KeyName,
                     (SshKeyType)0xFF,
                     KeyStoragePovider,
@@ -254,7 +254,7 @@ namespace Google.Solutions.Ssh.Test.Auth
         [Test]
         public void WhenKeyExists_ThenDeletePersistentKeyDeletesKey()
         {
-            SshKey.OpenPersistentKey(
+            SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 SshKeyType.Rsa3072,
                 KeyStoragePovider,
@@ -262,10 +262,10 @@ namespace Google.Solutions.Ssh.Test.Auth
                 true,
                 IntPtr.Zero);
 
-            SshKey.DeletePersistentKey(KeyName);
-            SshKey.DeletePersistentKey(KeyName);
+            SshKeyPair.DeletePersistentKeyPair(KeyName);
+            SshKeyPair.DeletePersistentKeyPair(KeyName);
 
-            Assert.IsNull(SshKey.OpenPersistentKey(
+            Assert.IsNull(SshKeyPair.OpenPersistentKeyPair(
                 KeyName,
                 SshKeyType.Rsa3072,
                 KeyStoragePovider,

@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Test.Auth
 {
     [TestFixture]
-    public class TestRsaSshKey
+    public class TestRsaSshKeyPair
     {
         [Test]
         public void WhenKeyUsesRsa3072_ThenPublicKeyStringMatchesResultOfSshKeyGen()
@@ -117,7 +117,7 @@ namespace Google.Solutions.Ssh.Test.Auth
                 "sdKxvXSMMex6PlHuOcuYg9pz+kxWkcrW01fuGSaV/IWB8HOsr+jaHs5CjDyDR60HRekpOStUxqv0ipc" +
                 "NG0Yk0/da/AEUNQJ4r7T5pjWTtshSRuDx257MklJbqt98ShOyZcabfsWxQUTsM+mBijXIV+XvU9KW3N" +
                 "R3S+um1Uz+YmUcWNYSAOLA5xIz/H5UFEk5ywv0=";
-            using (var key = RsaSshKey.FromKey((RSA)certificateWithRsa3072Key.GetRSAPublicKey()))
+            using (var key = RsaSshKeyPair.FromKey((RSA)certificateWithRsa3072Key.GetRSAPublicKey()))
             {
                 Assert.AreEqual(
                     openSshKey,

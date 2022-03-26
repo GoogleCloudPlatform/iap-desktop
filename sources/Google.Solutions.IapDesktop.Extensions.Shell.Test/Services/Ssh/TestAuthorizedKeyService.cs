@@ -152,11 +152,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .Setup(s => s.AuthorizeKeyAsync(
                         It.IsAny<ProjectLocator>(),
                         It.Is((OsLoginSystemType os) => os == OsLoginSystemType.Linux),
-                        It.IsAny<ISshKey>(),
+                        It.IsAny<ISshKeyPair>(),
                         It.IsAny<TimeSpan>(),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(AuthorizedKey.ForOsLoginAccount(
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     new PosixAccount()
                     {
                         Username = "bob"
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var authorizedKey = await service
                 .AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     AuthorizeKeyMethods.All,
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var authorizedKey = await service
                 .AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     AuthorizeKeyMethods.All,
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var authorizedKey = await service
                 .AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     AuthorizeKeyMethods.All,
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await service
                     .AuthorizeKeyAsync(
@@ -329,7 +329,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     AuthorizeKeyMethods.InstanceMetadata,
@@ -354,7 +354,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     AuthorizeKeyMethods.InstanceMetadata,
@@ -383,7 +383,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             ExceptionAssert.ThrowsAggregateException<UnsupportedLegacySshKeyEncounteredException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     AuthorizeKeyMethods.All,
@@ -393,7 +393,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public async Task WhenExistingUnmanagedKeyFound_ThenKeyIsNotPushedAgain()
         {
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 var existingProjectKeySet = MetadataAuthorizedKeySet
                     .FromMetadata(new Metadata())
@@ -447,7 +447,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public async Task WhenExistingValidManagedKeyFound_ThenKeyIsNotPushedAgain()
         {
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 var existingProjectKeySet = MetadataAuthorizedKeySet
                     .FromMetadata(new Metadata())
@@ -501,7 +501,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public async Task WhenExistingManagedKeyOfDifferentTypeFound_ThenNewKeyIsPushed()
         {
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 var existingProjectKeySet = MetadataAuthorizedKeySet
                     .FromMetadata(new Metadata())
@@ -555,7 +555,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public async Task WhenExpiredManagedKeyFound_ThenNewKeyIsPushed()
         {
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 var existingProjectKeySet = MetadataAuthorizedKeySet
                     .FromMetadata(new Metadata())
@@ -626,7 +626,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await service
                     .AuthorizeKeyAsync(
@@ -665,7 +665,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await service
                     .AuthorizeKeyAsync(
@@ -704,7 +704,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(false).Object,
                 CreateOsLoginServiceMock().Object);
 
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await service
                     .AuthorizeKeyAsync(
@@ -746,7 +746,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                 () => service.AuthorizeKeyAsync(
                     SampleLocator,
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromMinutes(1),
                     null,
                     AuthorizeKeyMethods.Oslogin | AuthorizeKeyMethods.ProjectMetadata,
@@ -769,7 +769,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await service
                     .AuthorizeKeyAsync(
@@ -808,7 +808,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 var authorizedKey = await service
                     .AuthorizeKeyAsync(
@@ -860,7 +860,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 ExceptionAssert.ThrowsAggregateException<SshKeyPushFailedException>(
                     () => service.AuthorizeKeyAsync(

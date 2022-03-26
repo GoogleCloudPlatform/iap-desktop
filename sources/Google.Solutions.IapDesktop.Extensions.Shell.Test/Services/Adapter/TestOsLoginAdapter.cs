@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var adapter = CreateAdapter("x@gmail.com");
 
-            var key = new Mock<ISshKey>();
+            var key = new Mock<ISshKeyPair>();
             key.SetupGet(s => s.PublicKeyString).Returns("key");
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var adapter = CreateAdapter("x@gmail.com");
 
-            var key = new Mock<ISshKey>();
+            var key = new Mock<ISshKeyPair>();
             key.SetupGet(s => s.PublicKeyString).Returns("key");
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(

@@ -27,7 +27,7 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh.Auth
 {
-    public sealed class ECDsaSshKey : ISshKey
+    public sealed class ECDsaSshKeyPair : ISshKeyPair
     {
 #if DEBUG
         private bool disposed = false;
@@ -35,7 +35,7 @@ namespace Google.Solutions.Ssh.Auth
 
         private readonly ECDsaCng key;
 
-        private ECDsaSshKey(ECDsaCng key)
+        private ECDsaSshKeyPair(ECDsaCng key)
         {
             Debug.Assert(key.KeySize == 256 ||
                          key.KeySize == 384 ||
@@ -43,14 +43,14 @@ namespace Google.Solutions.Ssh.Auth
 
             this.key = key;
         }
-        public static ECDsaSshKey FromKey(ECDsaCng key)
+        public static ECDsaSshKeyPair FromKey(ECDsaCng key)
         {
-            return new ECDsaSshKey(key);
+            return new ECDsaSshKeyPair(key);
         }
 
-        public static ECDsaSshKey NewEphemeralKey(int keySize)
+        public static ECDsaSshKeyPair NewEphemeralKey(int keySize)
         {
-            return new ECDsaSshKey(new ECDsaCng(keySize));
+            return new ECDsaSshKeyPair(new ECDsaCng(keySize));
         }
 
         private HashAlgorithmName HashAlgorithm

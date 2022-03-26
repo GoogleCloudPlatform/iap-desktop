@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             {
                 var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
                         instanceLocator,
-                        SshKey.NewEphemeralKey(keyType),
+                        SshKeyPair.NewEphemeralKeyPair(keyType),
                         TimeSpan.FromMinutes(10),
                         null,
                         AuthorizeKeyMethods.InstanceMetadata,
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             SessionAbortedEvent deliveredEvent = null;
             this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
 
-            var key = SshKey.NewEphemeralKey(keyType);
+            var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
             var broker = new SshTerminalSessionBroker(
                 this.serviceProvider);
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             SessionAbortedEvent deliveredEvent = null;
             this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
 
-            var key = SshKey.NewEphemeralKey(keyType);
+            var key = SshKeyPair.NewEphemeralKeyPair(keyType);
             var broker = new SshTerminalSessionBroker(
                 this.serviceProvider);
             await broker.ConnectAsync(
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             SessionAbortedEvent deliveredEvent = null;
             this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
 
-            var key = SshKey.NewEphemeralKey(keyType);
+            var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
             var broker = new SshTerminalSessionBroker(
                 this.serviceProvider);

@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var locator = await testInstance;
 
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             using (var gceAdapter = new ComputeEngineAdapter(
                 this.serviceProvider.GetService<IAuthorizationSource>()))
             using (var keyAdapter = new AuthorizedKeyService(

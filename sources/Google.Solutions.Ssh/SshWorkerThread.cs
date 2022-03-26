@@ -33,7 +33,7 @@ namespace Google.Solutions.Ssh
     {
         private readonly string username;
         private readonly IPEndPoint endpoint;
-        private readonly ISshKey key;
+        private readonly ISshKeyPair key;
 
         private readonly Thread workerThread;
         private readonly CancellationTokenSource workerCancellationSource;
@@ -70,7 +70,7 @@ namespace Google.Solutions.Ssh
         protected SshWorkerThread(
             string username,
             IPEndPoint endpoint,
-            ISshKey key)
+            ISshKeyPair key)
         {
             this.username = username;
             this.endpoint = endpoint;

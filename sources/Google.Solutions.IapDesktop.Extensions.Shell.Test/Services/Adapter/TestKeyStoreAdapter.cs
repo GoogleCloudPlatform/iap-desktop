@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                 null);
 
             Assert.IsNotNull(key);
-            Assert.IsInstanceOf<RsaSshKey>(key);
+            Assert.IsInstanceOf<RsaSshKeyPair>(key);
         }
 
         [Test]
