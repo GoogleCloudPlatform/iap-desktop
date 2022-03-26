@@ -215,6 +215,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             IAuthorization authorization,
             CancellationToken cancellationToken)
         {
+            Debug.Assert(!this.IsOsLoginEnabled);
+
             var instanceMetadata = this.instanceDetails.Metadata;
             var projectMetadata = this.projectDetails.CommonInstanceMetadata;
 
