@@ -22,11 +22,12 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using NUnit.Framework;
 using System;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 {
     [TestFixture]
     public class TestMetadataAuthorizedPublicKeySet : ApplicationFixtureBase

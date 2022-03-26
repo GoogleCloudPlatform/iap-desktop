@@ -26,7 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
     /// <summary>
     /// A set of authorized keys.
