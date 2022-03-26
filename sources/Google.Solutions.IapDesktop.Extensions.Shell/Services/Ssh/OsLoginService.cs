@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
     public interface IOsLoginService
     {
-        Task<AuthorizedKeyPair> AuthorizeKeyAsync(
+        Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
             ProjectLocator project,
             OsLoginSystemType os,
             ISshKeyPair key,
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // IOsLoginService.
         //---------------------------------------------------------------------
 
-        public async Task<AuthorizedKeyPair> AuthorizeKeyAsync(
+        public async Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
             ProjectLocator project,
             OsLoginSystemType os,
             ISshKeyPair key,

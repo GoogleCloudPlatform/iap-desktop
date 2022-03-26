@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         {
             var osLoginService = new Mock<IOsLoginService>();
             osLoginService
-                .Setup(s => s.AuthorizeKeyAsync(
+                .Setup(s => s.AuthorizeKeyPairAsync(
                         It.IsAny<ProjectLocator>(),
                         It.Is((OsLoginSystemType os) => os == OsLoginSystemType.Linux),
                         It.IsAny<ISshKeyPair>(),
