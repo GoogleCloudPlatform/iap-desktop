@@ -32,22 +32,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     /// A set of authorized keys.
     /// See https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys.
     /// </summary>
-    public class MetadataAuthorizedKeySet
+    public class MetadataAuthorizedPublicKeySet
     {
         public const string LegacyMetadataKey = "sshKeys";
         public const string MetadataKey = "ssh-keys";
 
-        public IEnumerable<MetadataAuthorizedKey> Keys { get; }
+        public IEnumerable<MetadataAuthorizedPublicKey> Keys { get; }
 
         //---------------------------------------------------------------------
         // Metadata.
         //---------------------------------------------------------------------
-        private MetadataAuthorizedKeySet(IEnumerable<MetadataAuthorizedKey> keys)
+        private MetadataAuthorizedPublicKeySet(IEnumerable<MetadataAuthorizedPublicKey> keys)
         {
             this.Keys = keys;
         }
 
-        public static MetadataAuthorizedKeySet FromMetadata(Metadata.ItemsData data)
+        public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata.ItemsData data)
         {
             Utilities.ThrowIfNull(data, nameof(data));
             if (data.Key != MetadataKey)
@@ -55,15 +55,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 throw new ArgumentException("Not a valid metadata key");
             }
 
-            return new MetadataAuthorizedKeySet(
+            return new MetadataAuthorizedPublicKeySet(
                 data.Value
                     .Split('\n')
                     .Where(line => !string.IsNullOrWhiteSpace(line))
-                    .Select(line => MetadataAuthorizedKey.Parse(line.Trim()))
+                    .Select(line => MetadataAuthorizedPublicKey.Parse(line.Trim()))
                     .ToList());
         }
 
-        public static MetadataAuthorizedKeySet FromMetadata(Metadata data)
+        public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata data)
         {
             var item = data?.Items?.FirstOrDefault(i => i.Key == MetadataKey);
             if (item != null)
@@ -72,12 +72,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             }
             else
             {
-                return new MetadataAuthorizedKeySet(
-                    Enumerable.Empty<MetadataAuthorizedKey>());
+                return new MetadataAuthorizedPublicKeySet(
+                    Enumerable.Empty<MetadataAuthorizedPublicKey>());
             }
         }
 
-        public MetadataAuthorizedKeySet Add(MetadataAuthorizedKey key)
+        public MetadataAuthorizedPublicKeySet Add(MetadataAuthorizedPublicKey key)
         {
             if (Contains(key))
             {
@@ -85,16 +85,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             }
             else
             {
-                return new MetadataAuthorizedKeySet(this.Keys.ConcatItem(key));
+                return new MetadataAuthorizedPublicKeySet(this.Keys.ConcatItem(key));
             }
         }
 
-        public MetadataAuthorizedKeySet RemoveExpiredKeys()
+        public MetadataAuthorizedPublicKeySet RemoveExpiredKeys()
         {
-            return new MetadataAuthorizedKeySet(
+            return new MetadataAuthorizedPublicKeySet(
                 this.Keys.Where(k =>
                 {
-                    if (k is ManagedMetadataAuthorizedKey managed)
+                    if (k is ManagedMetadataAuthorizedPublicKey managed)
                     {
                         return managed.Metadata.ExpireOn >= DateTime.UtcNow;
                     }
@@ -106,12 +106,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 }));
         }
 
-        public bool Contains(MetadataAuthorizedKey key)
+        public bool Contains(MetadataAuthorizedPublicKey key)
         {
             return this.Keys
-                .Any(k => k.Key == key.Key &&
+                .Any(k => k.PublicKey == key.PublicKey &&
                           k.KeyType == key.KeyType &&
-                          k.LoginUsername == key.LoginUsername);
+                          k.PosixUsername == key.PosixUsername);
         }
 
         public override string ToString()

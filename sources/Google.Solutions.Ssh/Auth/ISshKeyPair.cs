@@ -27,7 +27,7 @@ namespace Google.Solutions.Ssh.Auth
     /// Public/private key pair that can be used for public key 
     /// authentication.
     /// </summary>
-    public interface ISshKey : IDisposable
+    public interface ISshKeyPair : IDisposable
     {
         /// <summary>
         /// Key type (for ex, 'ssh-rsa').

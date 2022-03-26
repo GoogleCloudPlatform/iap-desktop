@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Test.Auth
 {
     [TestFixture]
-    public class TestEcdsaSshKey
+    public class TestEcdsaSshKeyPair
     {
         [Test]
         public void WhenKeyUsesNistp256_ThenPublicKeyStringMatchesResultOfSshKeyGen()
@@ -76,7 +76,7 @@ namespace Google.Solutions.Ssh.Test.Auth
                 "BC1j0bi/xsx91tP4NBBGmk+sD2iMBuyIp1KeQURwF6EJn6BOrS+tibpSyH947LpeJnw89pUHMNmFeL7" +
                 "gmVLqf0g=";
 
-            using (var key = ECDsaSshKey.FromKey((ECDsaCng)certificateWithNistp256Key.GetECDsaPrivateKey()))
+            using (var key = ECDsaSshKeyPair.FromKey((ECDsaCng)certificateWithNistp256Key.GetECDsaPrivateKey()))
             {
                 Assert.AreEqual(
                     openSshKeyForNistp256Key,
@@ -126,7 +126,7 @@ namespace Google.Solutions.Ssh.Test.Auth
                 "IbmlzdHAzODQAAABhBKy3mjS25s76iVqXDlAIvNfD+5Zhb9V+U3ok2V8FQvBymQYv+L2rFbCWBnG2ih" +
                 "0oa+ez5502ltV8/+U5DVTp8zr8OQ+siSOwv8P1RTXmzHLHdD0G3quthtjy1QxhXz1bBA==";
 
-            using (var key = ECDsaSshKey.FromKey((ECDsaCng)certificateWithNistp384Key.GetECDsaPrivateKey()))
+            using (var key = ECDsaSshKeyPair.FromKey((ECDsaCng)certificateWithNistp384Key.GetECDsaPrivateKey()))
             {
                 Assert.AreEqual(
                     openSshKeyForNistp384Key,
@@ -178,7 +178,7 @@ namespace Google.Solutions.Ssh.Test.Auth
                 "IbmlzdHA1MjEAAACFBAFUv+fP8ziOox7ND+z0EumV0A4L+f5mjy5dBJ29WuHEv+a8LbQoSDDS88aIeg" +
                 "HjFcKK+tKQUPxZlRHqkKnZDr4atgCQHZPoQCR9fyy5ted5sjjhSNME1AJPIl92SX/PysEhgeD1GyJDg" +
                 "SKZRvKwiCGc1axl7m8m4x+a0cqVgvquqMYoYQ==";
-            using (var key = ECDsaSshKey.FromKey((ECDsaCng)certificateWithNistp521Key.GetECDsaPrivateKey()))
+            using (var key = ECDsaSshKeyPair.FromKey((ECDsaCng)certificateWithNistp521Key.GetECDsaPrivateKey()))
             {
                 Assert.AreEqual(
                     openSshKeyForNistp521Key,

@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         private Mock<IKeyStoreAdapter> keyStore;
         private Mock<ITunnelBrokerService> tunnelBrokerService;
         private Mock<ISshTerminalSessionBroker> sessionBroker;
-        private Mock<IAuthorizedKeyService> authorizedKeyService;
+        private Mock<IKeyAuthorizationService> authorizedKeyService;
 
         [SetUp]
         public void SetUp()
@@ -89,15 +89,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .Returns(authz.Object);
 
             this.keyStore = this.serviceRegistry.AddMock<IKeyStoreAdapter>();
-            this.keyStore.Setup(k => k.OpenSshKey(
+            this.keyStore.Setup(k => k.OpenSshKeyPair(
                     It.IsAny<SshKeyType>(),
                     It.IsAny<IAuthorization>(),
                     It.IsAny<bool>(),
                     It.IsAny<IWin32Window>()))
-                .Returns(RsaSshKey.NewEphemeralKey(1024));
+                .Returns(RsaSshKeyPair.NewEphemeralKey(1024));
 
             this.sessionBroker = this.serviceRegistry.AddMock<ISshTerminalSessionBroker>();
-            this.authorizedKeyService = this.serviceRegistry.AddMock<IAuthorizedKeyService>();
+            this.authorizedKeyService = this.serviceRegistry.AddMock<IKeyAuthorizationService>();
 
             this.serviceRegistry.AddMock<IMainForm>();
 
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .ActivateOrConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
-            this.keyStore.Verify(k => k.OpenSshKey(
+            this.keyStore.Verify(k => k.OpenSshKeyPair(
                 It.Is<SshKeyType>(t => t == SshKeyType.Rsa3072),
                 It.IsAny<IAuthorization>(),
                 It.Is<bool>(create => true),
@@ -239,10 +239,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             this.authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
                 It.Is<InstanceLocator>(l => l == SampleLocator),
-                It.IsAny<ISshKey>(),
+                It.IsAny<ISshKeyPair>(),
                 It.IsAny<TimeSpan>(),
                 It.Is<string>(user => user == "bob"),
-                It.IsAny<AuthorizeKeyMethods>(),
+                It.IsAny<KeyAuthorizationMethods>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -272,10 +272,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             this.authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
                 It.Is<InstanceLocator>(l => l == SampleLocator),
-                It.IsAny<ISshKey>(),
+                It.IsAny<ISshKeyPair>(),
                 It.Is<TimeSpan>(validity => validity == TimeSpan.FromDays(4)),
                 It.IsAny<string>(),
-                It.IsAny<AuthorizeKeyMethods>(),
+                It.IsAny<KeyAuthorizationMethods>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -339,10 +339,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             this.authorizedKeyService.Setup(a => a.AuthorizeKeyAsync(
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ISshKey>(),
+                    It.IsAny<ISshKeyPair>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<string>(),
-                    It.IsAny<AuthorizeKeyMethods>(),
+                    It.IsAny<KeyAuthorizationMethods>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new SshKeyPushFailedException("mock", HelpTopics.ManagingOsLogin));
 

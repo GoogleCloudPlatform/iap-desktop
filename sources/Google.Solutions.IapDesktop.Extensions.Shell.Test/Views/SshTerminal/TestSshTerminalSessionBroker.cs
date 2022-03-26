@@ -73,10 +73,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var locator = await testInstance;
 
-            using (var key = SshKey.NewEphemeralKey(SshKeyType.Rsa3072))
+            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             using (var gceAdapter = new ComputeEngineAdapter(
                 this.serviceProvider.GetService<IAuthorizationSource>()))
-            using (var keyAdapter = new AuthorizedKeyService(
+            using (var keyAdapter = new KeyAuthorizationService(
                 this.serviceProvider.GetService<IAuthorizationSource>(),
                 new ComputeEngineAdapter(await credential),
                 new ResourceManagerAdapter(await credential),
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         key,
                         TimeSpan.FromMinutes(10),
                         null,
-                        AuthorizeKeyMethods.InstanceMetadata,
+                        KeyAuthorizationMethods.InstanceMetadata,
                         CancellationToken.None)
                     .ConfigureAwait(true);
 

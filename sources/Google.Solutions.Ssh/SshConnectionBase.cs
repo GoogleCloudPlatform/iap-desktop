@@ -71,7 +71,7 @@ namespace Google.Solutions.Ssh
         protected SshConnectionBase(
             string username,
             IPEndPoint endpoint,
-            ISshKey key,
+            ISshKeyPair key,
             ReceivedAuthenticationPromptHandler authenticationPromptHandler,
             ReceiveStringDataHandler receiveHandler,
             ReceiveErrorHandler receiveErrorHandler,

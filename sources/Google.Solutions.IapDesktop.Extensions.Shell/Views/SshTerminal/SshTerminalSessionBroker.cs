@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         Task<ISshTerminalSession> ConnectAsync(
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
-            AuthorizedKey authorizedKey,
+            AuthorizedKeyPair authorizedKey,
             CultureInfo language,
             TimeSpan connectionTimeout);
     }
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public async Task<ISshTerminalSession> ConnectAsync(
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
-            AuthorizedKey authorizedKey,
+            AuthorizedKeyPair authorizedKey,
             CultureInfo language,
             TimeSpan connectionTimeout)
         {

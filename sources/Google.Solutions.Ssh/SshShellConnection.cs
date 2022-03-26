@@ -47,7 +47,7 @@ namespace Google.Solutions.Ssh
         public SshShellConnection(
             string username,
             IPEndPoint endpoint,
-            ISshKey key,
+            ISshKeyPair key,
             string terminal,
             TerminalSize terminalSize,
             CultureInfo language,

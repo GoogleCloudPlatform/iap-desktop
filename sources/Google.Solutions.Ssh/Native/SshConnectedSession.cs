@@ -252,7 +252,7 @@ namespace Google.Solutions.Ssh.Native
 
         public SshAuthenticatedSession Authenticate(
             string username,
-            ISshKey key,
+            ISshKeyPair key,
             AuthenticationCallback callback)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();

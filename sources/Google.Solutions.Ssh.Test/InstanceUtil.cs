@@ -63,7 +63,7 @@ namespace Google.Solutions.Ssh.Test
         public async static Task AddPublicKeyToMetadata(
             InstanceLocator instanceLocator,
             string username,
-            ISshKey key)
+            ISshKeyPair key)
         {
             using (var service = TestProject.CreateComputeService())
             {

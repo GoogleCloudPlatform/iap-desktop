@@ -29,14 +29,14 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 {
     [TestFixture]
-    public class TestMetadataAuthorizedKeySet : ApplicationFixtureBase
+    public class TestMetadataAuthorizedPublicKeySet : ApplicationFixtureBase
     {
         [Test]
         public void WhenMetadataIsEmpry_ThenFromMetadataThrowsArgumentException()
         {
             var metadata = new Metadata();
 
-            CollectionAssert.IsEmpty(MetadataAuthorizedKeySet.FromMetadata(metadata).Keys);
+            CollectionAssert.IsEmpty(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys);
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                 }
             };
 
-            CollectionAssert.IsEmpty(MetadataAuthorizedKeySet.FromMetadata(metadata).Keys);
+            CollectionAssert.IsEmpty(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys);
         }
 
         [Test]
@@ -61,12 +61,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var metadata = new Metadata.ItemsData()
             {
-                Key = MetadataAuthorizedKeySet.LegacyMetadataKey,
+                Key = MetadataAuthorizedPublicKeySet.LegacyMetadataKey,
                 Value = " "
             };
 
             Assert.Throws<ArgumentException>(
-                () => MetadataAuthorizedKeySet.FromMetadata(metadata));
+                () => MetadataAuthorizedPublicKeySet.FromMetadata(metadata));
         }
 
         [Test]
@@ -74,12 +74,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var metadata = new Metadata.ItemsData()
             {
-                Key = MetadataAuthorizedKeySet.MetadataKey,
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
                 Value = "junk junk junk "
             };
 
             Assert.Throws<ArgumentException>(
-                () => MetadataAuthorizedKeySet.FromMetadata(metadata));
+                () => MetadataAuthorizedPublicKeySet.FromMetadata(metadata));
         }
 
         [Test]
@@ -87,11 +87,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var metadata = new Metadata.ItemsData()
             {
-                Key = MetadataAuthorizedKeySet.MetadataKey,
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
                 Value = " "
             };
 
-            CollectionAssert.IsEmpty(MetadataAuthorizedKeySet.FromMetadata(metadata).Keys);
+            CollectionAssert.IsEmpty(MetadataAuthorizedPublicKeySet.FromMetadata(metadata).Keys);
         }
 
         [Test]
@@ -99,12 +99,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var metadata = new Metadata.ItemsData()
             {
-                Key = MetadataAuthorizedKeySet.MetadataKey,
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
                 Value = "alice:ssh-rsa key alice\n" +
                     "bob:ssh-rsa key google-ssh {\"userName\":\"bob@example.com\",\"expireOn\":\"2050-01-15T15:22:35Z\"}"
             };
 
-            var keySet = MetadataAuthorizedKeySet.FromMetadata(metadata);
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
             Assert.AreEqual(2, keySet.Keys.Count());
         }
 
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var metadata = new Metadata.ItemsData()
             {
-                Key = MetadataAuthorizedKeySet.MetadataKey,
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
                 Value =
                     "alice:ssh-rsa key alice\r\n" +
                     "bob:ssh-rsa key google-ssh {\"userName\":\"bob@example.com\",\"expireOn\":\"2050-01-15T15:22:35Z\"}\n" +
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                     "dave:ssh-rsa key dave\r\n"
             };
 
-            var keySet = MetadataAuthorizedKeySet.FromMetadata(metadata);
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
             Assert.AreEqual(4, keySet.Keys.Count());
         }
 
@@ -131,15 +131,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var metadata = new Metadata.ItemsData()
             {
-                Key = MetadataAuthorizedKeySet.MetadataKey,
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
                 Value = "alice:ssh-rsa key alice"
             };
 
-            var keySet = MetadataAuthorizedKeySet.FromMetadata(metadata);
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata);
 
             Assert.AreSame(
                 keySet,
-                keySet.Add(MetadataAuthorizedKey.Parse("alice:ssh-rsa key notalice")));
+                keySet.Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa key notalice")));
         }
 
         [Test]
@@ -147,13 +147,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var metadata = new Metadata.ItemsData()
             {
-                Key = MetadataAuthorizedKeySet.MetadataKey,
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
                 Value = "alice:ssh-rsa key alice"
             };
 
-            var keySet = MetadataAuthorizedKeySet.FromMetadata(metadata)
-                .Add(MetadataAuthorizedKey.Parse("bob:ssh-rsa key notalice"))
-                .Add(MetadataAuthorizedKey.Parse("bob:ssh-rsa key2 bob"));
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
+                .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa key notalice"))
+                .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa key2 bob"));
 
             Assert.AreEqual(3, keySet.Keys.Count());
         }
@@ -163,20 +163,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var metadata = new Metadata.ItemsData()
             {
-                Key = MetadataAuthorizedKeySet.MetadataKey,
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
                 Value = $"alice:ssh-rsa key alice\n" +
                         $":ssh-rsa phantomkey2 phantom\n" +
                         $":ssh-rsa phantomkey3 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n" +
                         $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
             };
 
-            var keySet = MetadataAuthorizedKeySet.FromMetadata(metadata)
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
                 .RemoveExpiredKeys()
-                .Add(MetadataAuthorizedKey.Parse("bob:ssh-rsa key2 bob"));
+                .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa key2 bob"));
 
             Assert.AreEqual(5, keySet.Keys.Count());
-            Assert.AreEqual("", keySet.Keys.First(k => k.Key == "phantomkey2").LoginUsername);
-            Assert.AreEqual("", keySet.Keys.First(k => k.Key == "phantomkey3").LoginUsername);
+            Assert.AreEqual("", keySet.Keys.First(k => k.PublicKey == "phantomkey2").PosixUsername);
+            Assert.AreEqual("", keySet.Keys.First(k => k.PublicKey == "phantomkey3").PosixUsername);
         }
 
         [Test]
@@ -184,17 +184,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var metadata = new Metadata.ItemsData()
             {
-                Key = MetadataAuthorizedKeySet.MetadataKey,
+                Key = MetadataAuthorizedPublicKeySet.MetadataKey,
                 Value = $"alice:ssh-rsa key alice\n" +
                         $"joe:ssh-rsa key2 google-ssh {{\"userName\":\"joe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(-1):O}\"}}\n" +
                         $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
             };
 
-            var keySet = MetadataAuthorizedKeySet.FromMetadata(metadata)
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
                 .RemoveExpiredKeys();
 
             Assert.AreEqual(2, keySet.Keys.Count());
-            Assert.IsFalse(keySet.Keys.Any(k => k.LoginUsername == "joe"));
+            Assert.IsFalse(keySet.Keys.Any(k => k.PosixUsername == "joe"));
         }
     }
 }

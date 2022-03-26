@@ -43,8 +43,8 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    [Service(typeof(IAuthorizedKeyService))]
-    public class AuthorizedKeyService : IAuthorizedKeyService
+    [Service(typeof(IKeyAuthorizationService))]
+    public class KeyAuthorizationService : IKeyAuthorizationService
     {
         private const string EnableOsLoginFlag = "enable-oslogin";
         private const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // Ctor.
         //---------------------------------------------------------------------
 
-        public AuthorizedKeyService(
+        public KeyAuthorizationService(
             IAuthorizationSource authorizationSource,
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.osLoginService = osLoginService;
         }
 
-        public AuthorizedKeyService(IServiceProvider serviceProvider)
+        public KeyAuthorizationService(IServiceProvider serviceProvider)
             : this(
                   serviceProvider.GetService<IAuthorizationSource>(),
                   serviceProvider.GetService<IComputeEngineAdapter>(),
@@ -109,27 +109,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private bool IsLegacySshKeyPresent(Metadata metadata)
         {
             return !string.IsNullOrEmpty(
-                metadata.GetValue(MetadataAuthorizedKeySet.LegacyMetadataKey));
+                metadata.GetValue(MetadataAuthorizedPublicKeySet.LegacyMetadataKey));
         }
 
         private static void MergeKeyIntoMetadata(
             Metadata metadata,
-            MetadataAuthorizedKey newKey)
+            MetadataAuthorizedPublicKey newKey)
         {
             //
             // Merge new key into existing keyset, and take 
             // the opportunity to purge expired keys.
             //
-            var newKeySet = MetadataAuthorizedKeySet.FromMetadata(metadata)
+            var newKeySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
                 .RemoveExpiredKeys()
                 .Add(newKey);
-            metadata.Add(MetadataAuthorizedKeySet.MetadataKey, newKeySet.ToString());
+            metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
         }
 
         private async Task PushPublicKeyToMetadataAsync(
             InstanceLocator instance,
             bool useInstanceKeySet,
-            ManagedMetadataAuthorizedKey metadataKey,
+            ManagedMetadataAuthorizedPublicKey metadataKey,
             CancellationToken token)
         {
             try
@@ -191,12 +191,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // IPublicKeyService.
         //---------------------------------------------------------------------
 
-        public async Task<AuthorizedKey> AuthorizeKeyAsync(
+        public async Task<AuthorizedKeyPair> AuthorizeKeyAsync(
             InstanceLocator instance,
-            ISshKey key,
+            ISshKeyPair key,
             TimeSpan validity,
             string preferredPosixUsername,
-            AuthorizeKeyMethods allowedMethods,
+            KeyAuthorizationMethods allowedMethods,
             CancellationToken token)
         {
             Utilities.ThrowIfNull(instance, nameof(key));
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     // If OS Login is enabled, it has to be used. Any metadata keys
                     // are ignored.
                     //
-                    if (!allowedMethods.HasFlag(AuthorizeKeyMethods.Oslogin))
+                    if (!allowedMethods.HasFlag(KeyAuthorizationMethods.Oslogin))
                     {
                         throw new InvalidOperationException(
                             $"{instance} requires OS Login to beused");
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     // to check for previous keys first.
                     // 
                     return await this.osLoginService.AuthorizeKeyAsync(
-                            instance.ProjectId,
+                            new ProjectLocator(instance.ProjectId),
                             OsLoginSystemType.Linux,
                             key,
                             validity,
@@ -282,8 +282,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         BlockProjectSshKeysFlag);
 
                     bool useInstanceKeySet;
-                    if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata) &&
-                        allowedMethods.HasFlag(AuthorizeKeyMethods.InstanceMetadata))
+                    if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata) &&
+                        allowedMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
                     {
                         //
                         // Both allowed - use project metadata unless:
@@ -299,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
                         useInstanceKeySet = blockProjectSshKeys || !canUpdateProjectMetadata;
                     }
-                    else if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata))
+                    else if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
                     {
                         // Only project allowed.
                         if (blockProjectSshKeys)
@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                             useInstanceKeySet = false;
                         }
                     }
-                    else if (allowedMethods.HasFlag(AuthorizeKeyMethods.InstanceMetadata))
+                    else if (allowedMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
                     {
                         // Only instance allowed.
                         useInstanceKeySet = true;
@@ -323,22 +323,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         throw new ArgumentException(nameof(allowedMethods));
                     }
 
-                    var profile = AuthorizedKey.ForMetadata(
+                    var authorizedKeyPair = AuthorizedKeyPair.ForMetadata(
                         key,
                         preferredPosixUsername,
                         useInstanceKeySet,
                         this.authorizationSource.Authorization);
-                    Debug.Assert(profile.Username != null);
+                    Debug.Assert(authorizedKeyPair.Username != null);
 
-                    var metadataKey = new ManagedMetadataAuthorizedKey(
-                        profile.Username,
+                    var metadataKey = new ManagedMetadataAuthorizedPublicKey(
+                        authorizedKeyPair.Username,
                         key.Type,
                         key.PublicKeyString,
-                        new ManagedKeyMetadata(
+                        new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                             this.authorizationSource.Authorization.Email,
                             DateTime.UtcNow.Add(validity)));
 
-                    var existingKeySet = MetadataAuthorizedKeySet.FromMetadata(
+                    var existingKeySet = MetadataAuthorizedPublicKeySet.FromMetadata(
                         useInstanceKeySet
                             ? instanceMetadata
                             : projectMetadata);
@@ -352,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         //
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Existing SSH key found for {0}",
-                            profile.Username);
+                            authorizedKeyPair.Username);
                     }
                     else
                     {
@@ -362,7 +362,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         //
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Pushing new SSH key for {0}",
-                            profile.Username);
+                            authorizedKeyPair.Username);
 
                         await PushPublicKeyToMetadataAsync(
                             instance,
@@ -372,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         .ConfigureAwait(false);
                     }
 
-                    return profile;
+                    return authorizedKeyPair;
                 }
             }
         }

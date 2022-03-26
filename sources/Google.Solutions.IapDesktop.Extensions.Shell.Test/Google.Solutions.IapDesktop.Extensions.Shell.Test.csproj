@@ -129,12 +129,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IapTunnel.cs" />
     <Compile Include="Services\Adapter\TestKeyStoreAdapter.cs" />
-    <Compile Include="Services\Adapter\TestMetadataAuthorizedKey.cs" />
-    <Compile Include="Services\Adapter\TestMetadataAuthorizedKeySet.cs" />
+    <Compile Include="Services\Adapter\TestMetadataAuthorizedPublicKey.cs" />
+    <Compile Include="Services\Adapter\TestMetadataAuthorizedPublicKeySet.cs" />
+    <Compile Include="Services\Adapter\TestOsLoginAdapter.cs" />
     <Compile Include="Services\Settings\TestSshSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestTerminalSettingsRepository.cs" />
     <Compile Include="Services\Ssh\TestAuthorizedKey.cs" />
-    <Compile Include="Services\Ssh\TestAuthorizedKeyService.cs" />
+    <Compile Include="Services\Ssh\TestKeyAuthorizationService.cs" />
     <Compile Include="Services\Ssh\TestOsLoginService.cs" />
     <Compile Include="Services\Ssh\TestSshConnectionService.cs" />
     <Compile Include="Services\SynchronousJobService.cs" />

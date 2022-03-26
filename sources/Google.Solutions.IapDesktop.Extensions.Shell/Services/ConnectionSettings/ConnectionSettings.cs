@@ -473,7 +473,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 null,
                 key,
                 username => string.IsNullOrEmpty(username) ||
-                            AuthorizedKey.IsValidUsername(username));
+                            AuthorizedKeyPair.IsValidUsername(username));
             this.SshConnectionTimeout = RegistryDwordSetting.FromKey(
                 "SshConnectionTimeout",
                 null, // Hidden.

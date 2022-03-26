@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
@@ -42,22 +43,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         {
             var service = new OsLoginService(new Mock<IOsLoginAdapter>().Object);
 
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyAsync(
-                "",
-                OsLoginSystemType.Linux,
-                new Mock<ISshKey>().Object,
-                TimeSpan.FromDays(1),
-                CancellationToken.None).Wait());
-
-            ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyAsync(
+            ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyAsync(
                 null,
                 OsLoginSystemType.Linux,
-                new Mock<ISshKey>().Object,
+                new Mock<ISshKeyPair>().Object,
                 TimeSpan.FromDays(1),
                 CancellationToken.None).Wait());
 
             ExceptionAssert.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyAsync(
-                "project-1",
+                new ProjectLocator("project-1"),
                 OsLoginSystemType.Linux,
                 null,
                 TimeSpan.FromDays(1),
@@ -70,15 +64,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var service = new OsLoginService(new Mock<IOsLoginAdapter>().Object);
 
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyAsync(
-                "project-1",
+                new ProjectLocator("project-1"),
                 OsLoginSystemType.Linux,
-                new Mock<ISshKey>().Object,
+                new Mock<ISshKeyPair>().Object,
                 TimeSpan.FromDays(-1),
                 CancellationToken.None).Wait());
             ExceptionAssert.ThrowsAggregateException<ArgumentException>(() => service.AuthorizeKeyAsync(
-                "project-1",
+                new ProjectLocator("project-1"),
                 OsLoginSystemType.Linux,
-                new Mock<ISshKey>().Object,
+                new Mock<ISshKeyPair>().Object,
                 TimeSpan.FromSeconds(0),
                 CancellationToken.None).Wait());
         }
@@ -89,8 +83,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var adapter = new Mock<IOsLoginAdapter>();
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<ISshKey>(),
+                    It.IsAny<ProjectLocator>(),
+                    It.IsAny<ISshKeyPair>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LoginProfile()
@@ -124,15 +118,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var key = await service
                 .AuthorizeKeyAsync(
-                    "project-1",
+                    new ProjectLocator("project-1"),
                     OsLoginSystemType.Linux,
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromDays(1),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.AreEqual("joe3", key.Username);
-            Assert.AreEqual(AuthorizeKeyMethods.Oslogin, key.AuthorizationMethod);
+            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, key.AuthorizationMethod);
         }
 
         [Test]
@@ -142,8 +136,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var adapter = new Mock<IOsLoginAdapter>();
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<ISshKey>(),
+                    It.IsAny<ProjectLocator>(),
+                    It.IsAny<ISshKeyPair>(),
                     It.IsAny<TimeSpan>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LoginProfile());
@@ -151,9 +145,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             ExceptionAssert.ThrowsAggregateException<OsLoginSshKeyImportFailedException>(
                 () => service.AuthorizeKeyAsync(
-                    "project-1",
+                    new ProjectLocator("project-1"),
                     OsLoginSystemType.Linux,
-                    new Mock<ISshKey>().Object,
+                    new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromDays(1),
                     CancellationToken.None).Wait());
         }
