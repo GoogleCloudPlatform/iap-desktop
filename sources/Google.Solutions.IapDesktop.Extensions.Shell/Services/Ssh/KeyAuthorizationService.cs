@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private async Task PushPublicKeyToMetadataAsync(
             InstanceLocator instance,
             bool useInstanceKeySet,
-            ManagedMetadataAuthorizedKey metadataKey,
+            ManagedMetadataAuthorizedPublicKey metadataKey,
             CancellationToken token)
         {
             try
@@ -323,18 +323,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         throw new ArgumentException(nameof(allowedMethods));
                     }
 
-                    var profile = AuthorizedKeyPair.ForMetadata(
+                    var authorizedKeyPair = AuthorizedKeyPair.ForMetadata(
                         key,
                         preferredPosixUsername,
                         useInstanceKeySet,
                         this.authorizationSource.Authorization);
-                    Debug.Assert(profile.Username != null);
+                    Debug.Assert(authorizedKeyPair.Username != null);
 
-                    var metadataKey = new ManagedMetadataAuthorizedKey(
-                        profile.Username,
+                    var metadataKey = new ManagedMetadataAuthorizedPublicKey(
+                        authorizedKeyPair.Username,
                         key.Type,
                         key.PublicKeyString,
-                        new ManagedKeyMetadata(
+                        new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
                             this.authorizationSource.Authorization.Email,
                             DateTime.UtcNow.Add(validity)));
 
@@ -352,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         //
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Existing SSH key found for {0}",
-                            profile.Username);
+                            authorizedKeyPair.Username);
                     }
                     else
                     {
@@ -362,7 +362,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         //
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Pushing new SSH key for {0}",
-                            profile.Username);
+                            authorizedKeyPair.Username);
 
                         await PushPublicKeyToMetadataAsync(
                             instance,
@@ -372,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         .ConfigureAwait(false);
                     }
 
-                    return profile;
+                    return authorizedKeyPair;
                 }
             }
         }

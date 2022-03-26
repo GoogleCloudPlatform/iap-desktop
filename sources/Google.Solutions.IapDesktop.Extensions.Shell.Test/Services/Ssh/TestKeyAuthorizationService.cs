@@ -397,7 +397,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             {
                 var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
-                    .Add(new UnmanagedMetadataAuthorizedKey(
+                    .Add(new UnmanagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ssh-rsa",
                         key.PublicKeyString,
@@ -451,11 +451,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             {
                 var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
-                    .Add(new ManagedMetadataAuthorizedKey(
+                    .Add(new ManagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ssh-rsa",
                         key.PublicKeyString,
-                        new ManagedKeyMetadata(SampleEmailAddress, DateTime.UtcNow.AddMinutes(5))));
+                        new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(SampleEmailAddress, DateTime.UtcNow.AddMinutes(5))));
 
                 var computeEngineAdapter = CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: false,
@@ -505,11 +505,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             {
                 var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
-                    .Add(new ManagedMetadataAuthorizedKey(
+                    .Add(new ManagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ecdsa-sha2-nistp384",
                         key.PublicKeyString,
-                        new ManagedKeyMetadata(SampleEmailAddress, DateTime.UtcNow.AddMinutes(5))));
+                        new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
+                            SampleEmailAddress, 
+                            DateTime.UtcNow.AddMinutes(5))));
 
                 var computeEngineAdapter = CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: false,
@@ -559,11 +561,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             {
                 var existingProjectKeySet = MetadataAuthorizedPublicKeySet
                     .FromMetadata(new Metadata())
-                    .Add(new ManagedMetadataAuthorizedKey(
+                    .Add(new ManagedMetadataAuthorizedPublicKey(
                         "bob",
                         "ssh-rsa",
                         key.PublicKeyString,
-                        new ManagedKeyMetadata(SampleEmailAddress, DateTime.UtcNow.AddMinutes(-5))));
+                        new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
+                            SampleEmailAddress, 
+                            DateTime.UtcNow.AddMinutes(-5))));
 
                 var computeEngineAdapter = CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: false,

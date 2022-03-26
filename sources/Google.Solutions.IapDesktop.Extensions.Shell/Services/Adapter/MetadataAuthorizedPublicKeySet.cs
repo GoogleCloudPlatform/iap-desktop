@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             return new MetadataAuthorizedPublicKeySet(
                 this.Keys.Where(k =>
                 {
-                    if (k is ManagedMetadataAuthorizedKey managed)
+                    if (k is ManagedMetadataAuthorizedPublicKey managed)
                     {
                         return managed.Metadata.ExpireOn >= DateTime.UtcNow;
                     }

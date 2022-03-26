@@ -81,17 +81,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 !string.IsNullOrWhiteSpace(match.Groups[5].Value))
             {
                 // This is a managed key.
-                return new ManagedMetadataAuthorizedKey(
+                return new ManagedMetadataAuthorizedPublicKey(
                     username,
                     keyType,
                     key,
-                    JsonConvert.DeserializeObject<ManagedKeyMetadata>(
+                    JsonConvert.DeserializeObject<ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata>(
                         match.Groups[5].Value));
             }
             else
             {
                 // This is an unmanaged key.
-                return new UnmanagedMetadataAuthorizedKey(
+                return new UnmanagedMetadataAuthorizedPublicKey(
                     username,
                     keyType,
                     key,
@@ -100,11 +100,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         }
     }
 
-    public class UnmanagedMetadataAuthorizedKey : MetadataAuthorizedPublicKey
+    public class UnmanagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey
     {
         public string Username { get; }
 
-        public UnmanagedMetadataAuthorizedKey(
+        public UnmanagedMetadataAuthorizedPublicKey(
             string loginUsername,
             string keyType,
             string key,
@@ -122,16 +122,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         }
     }
 
-    public class ManagedMetadataAuthorizedKey : MetadataAuthorizedPublicKey
+    public class ManagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey
     {
         public string Username { get; }
-        public ManagedKeyMetadata Metadata { get; }
+        public PublicKeyMetadata Metadata { get; }
 
-        public ManagedMetadataAuthorizedKey(
+        public ManagedMetadataAuthorizedPublicKey(
             string loginUsername,
             string keyType,
             string key,
-            ManagedKeyMetadata metadata)
+            PublicKeyMetadata metadata)
             : base(loginUsername, keyType, key)
         {
             Utilities.ThrowIfNull(metadata, nameof(metadata));
@@ -160,23 +160,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 });
             return $"{this.LoginUsername}:{this.KeyType} {this.Key} {ManagedKeyToken} {metadata}";
         }
-    }
 
-    public class ManagedKeyMetadata
-    {
-        [JsonProperty("userName")]
-        public string Username { get; set; }
-
-        [JsonProperty("expireOn")]
-        public DateTime ExpireOn { get; set; }
-
-        [JsonConstructor]
-        public ManagedKeyMetadata(
-            [JsonProperty("userName")] string username,
-            [JsonProperty("expireOn")] DateTime expireOn)
+        public class PublicKeyMetadata
         {
-            this.Username = username;
-            this.ExpireOn = expireOn.ToUniversalTime();
+            [JsonProperty("userName")]
+            public string Username { get; set; }
+
+            [JsonProperty("expireOn")]
+            public DateTime ExpireOn { get; set; }
+
+            [JsonConstructor]
+            public PublicKeyMetadata(
+                [JsonProperty("userName")] string username,
+                [JsonProperty("expireOn")] DateTime expireOn)
+            {
+                this.Username = username;
+                this.ExpireOn = expireOn.ToUniversalTime();
+            }
         }
     }
 }
