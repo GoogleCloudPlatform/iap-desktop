@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata data)
         {
             var item = data?.Items?.FirstOrDefault(i => i.Key == MetadataKey);
-            if (item != null)
+            if (item != null && !string.IsNullOrEmpty(item.Value))
             {
                 return FromMetadata(item);
             }

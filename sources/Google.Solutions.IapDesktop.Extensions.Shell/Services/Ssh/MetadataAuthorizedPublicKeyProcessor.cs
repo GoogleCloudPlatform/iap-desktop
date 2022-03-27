@@ -204,7 +204,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     {
         private readonly Project projectDetails;
 
-        // TODO: Add test
         public override bool IsOsLoginEnabled
             => GetFlag(this.projectDetails.CommonInstanceMetadata, EnableOsLoginFlag) == true;
 
@@ -214,11 +213,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.projectDetails = projectDetails;
         }
 
-        // TODO: Add test
         public IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys()
         {
             return MetadataAuthorizedPublicKeySet
-                .FromMetadata(this.projectDetails.CommonInstanceMetadata)
+                .FromMetadata(this.projectDetails.CommonInstanceMetadata)?
                 .Keys;
         }
 
@@ -281,7 +279,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 .Metadata
                 .GetValue(MetadataAuthorizedPublicKeySet.LegacyMetadataKey));
 
-        // TODO: Add test
         public IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
             KeyAuthorizationMethods allowedMethods)
         {
