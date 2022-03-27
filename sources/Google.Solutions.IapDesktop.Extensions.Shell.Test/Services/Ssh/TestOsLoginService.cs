@@ -274,5 +274,48 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             Assert.AreEqual("AAAA", keys.First().PublicKey);
             Assert.AreEqual(firstOfJan.Date, keys.First().ExpireOn);
         }
+
+        //---------------------------------------------------------------------
+        // DeleteAuthorizedKeyAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenKeyValid_ThenDeleteAuthorizedKeyDeletesKey()
+        {
+            var adapter = new Mock<IOsLoginAdapter>();
+            adapter.Setup(a => a.GetLoginProfileAsync(
+                    It.IsAny<ProjectLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LoginProfile()
+                {
+                    SshPublicKeys = new Dictionary<string, SshPublicKey>
+                    {
+                        {
+                            "fingerprint-1",
+                            new SshPublicKey()
+                            {
+                                Fingerprint = "fingerprint-1",
+                                Key = "ssh-rsa AAAA",
+                                Name = "users/bob@gmail.com/sshPublicKeys/fingerprint-1"
+                            }
+                        }
+                    }
+                });
+
+            var service = new OsLoginService(adapter.Object);
+            var keys = await service
+                .ListAuthorizedKeysAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            await service.DeleteAuthorizedKeyAsync(
+                    keys.First(), 
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            adapter.Verify(a => a.DeleteSshPublicKey(
+                    It.Is<string>(f => f == "fingerprint-1"),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
     }
 }

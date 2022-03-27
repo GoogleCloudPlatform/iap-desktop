@@ -196,5 +196,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                     .Any(k => k.Key.Contains(keyPair.PublicKeyString)));
             }
         }
+
+        [Test]
+        public async Task WhenDeletingNonexistingKey_ThenDeleteSucceeds(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
+        {
+            var credential = (TemporaryServiceCredential)(await credentialTask);
+            var adapter = CreateAdapter(credential);
+
+            await adapter.DeleteSshPublicKey(
+                    "nonexisting",
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+        }
     }
 }

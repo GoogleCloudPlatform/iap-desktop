@@ -184,18 +184,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             }
         }
 
-        //public async Task DeleteAuthorizedKeyAsync(
-        //    IAuthorizedPublicKey key,
-        //    CancellationToken cancellationToken)
-        //{
-        //    Debug.Assert(key is AuthorizedPublicKey);
-        //    using (ApplicationTraceSources.Default.TraceMethod().WithParameters(key))
-        //    {
-        //        var fingerprint = ((AuthorizedPublicKey)key).Fingerprint;
-
-        //        this.adapter
-        //    }
-        //}
+        public async Task DeleteAuthorizedKeyAsync(
+            IAuthorizedPublicKey key,
+            CancellationToken cancellationToken)
+        {
+            Debug.Assert(key is AuthorizedPublicKey);
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(key))
+            {
+                await this.adapter.DeleteSshPublicKey(
+                        ((AuthorizedPublicKey)key).Fingerprint,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
+        }
 
         internal class AuthorizedPublicKey : IAuthorizedPublicKey
         {
