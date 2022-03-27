@@ -132,8 +132,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
-    <Compile Include="Services\Adapter\MetadataAuthorizedPublicKey.cs" />
-    <Compile Include="Services\Adapter\MetadataAuthorizedPublicKeySet.cs" />
+    <Compile Include="Services\Ssh\MetadataAuthorizedPublicKey.cs" />
+    <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeySet.cs" />
     <Compile Include="Services\Adapter\OsLoginAdapter.cs" />
     <Compile Include="Services\ConnectionFailedException.cs" />
     <Compile Include="Services\ConnectionSettings\ProjectExplorerNodeExtensions.cs" />
@@ -142,6 +142,7 @@
     <Compile Include="Services\Ssh\AuthorizedKeyPair.cs" />
     <Compile Include="Services\Ssh\KeyAuthorizationService.cs" />
     <Compile Include="Services\Ssh\IKeyAuthorizationService.cs" />
+    <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeyProcessor.cs" />
     <Compile Include="Services\Ssh\OsLoginService.cs" />
     <Compile Include="Services\ConnectionSettings\ConnectionSettingsService.cs" />
     <Compile Include="Services\Rdp\RdpConnectionService.cs" />

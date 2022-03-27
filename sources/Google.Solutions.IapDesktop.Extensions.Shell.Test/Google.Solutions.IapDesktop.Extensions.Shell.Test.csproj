@@ -129,8 +129,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IapTunnel.cs" />
     <Compile Include="Services\Adapter\TestKeyStoreAdapter.cs" />
-    <Compile Include="Services\Adapter\TestMetadataAuthorizedPublicKey.cs" />
-    <Compile Include="Services\Adapter\TestMetadataAuthorizedPublicKeySet.cs" />
+    <Compile Include="Services\Ssh\TestMetadataAuthorizedPublicKey.cs" />
+    <Compile Include="Services\Ssh\TestMetadataAuthorizedPublicKeyProcessor.cs" />
+    <Compile Include="Services\Ssh\TestMetadataAuthorizedPublicKeySet.cs" />
     <Compile Include="Services\Adapter\TestOsLoginAdapter.cs" />
     <Compile Include="Services\Settings\TestSshSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestTerminalSettingsRepository.cs" />
