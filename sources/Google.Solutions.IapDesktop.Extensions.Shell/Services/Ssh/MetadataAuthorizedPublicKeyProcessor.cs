@@ -43,54 +43,14 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    public class MetadataAuthorizedPublicKeyProcessor
+    public abstract class MetadataAuthorizedPublicKeyProcessor
     {
-        private const string EnableOsLoginFlag = "enable-oslogin";
-        private const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
+        protected const string EnableOsLoginFlag = "enable-oslogin";
+        protected const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
 
-        private readonly IComputeEngineAdapter computeEngineAdapter;
-        private readonly IResourceManagerAdapter resourceManagerAdapter;
+        public abstract bool IsOsLoginEnabled { get; }
 
-        private readonly InstanceLocator instance;
-        private readonly Instance instanceDetails;
-        private readonly Project projectDetails;
-
-        private MetadataAuthorizedPublicKeyProcessor(
-            IComputeEngineAdapter computeEngineAdapter,
-            IResourceManagerAdapter resourceManagerAdapter,
-            InstanceLocator instance,
-            Instance instanceDetails,
-            Project projectDetails)
-        {
-            this.computeEngineAdapter = computeEngineAdapter;
-            this.resourceManagerAdapter = resourceManagerAdapter;
-            this.instance = instance;
-            this.instanceDetails = instanceDetails;
-            this.projectDetails = projectDetails;
-        }
-
-        private bool IsFlagEnabled(string flag)
-        {
-            var projectValue = this.projectDetails.CommonInstanceMetadata?.GetValue(flag);
-            var instanceValue = this.instanceDetails.Metadata?.GetValue(flag);
-
-            if (!string.IsNullOrEmpty(instanceValue))
-            {
-                // The instance takes precedence.
-                return instanceValue.Equals("true", StringComparison.OrdinalIgnoreCase);
-            }
-            else if (!string.IsNullOrEmpty(projectValue))
-            {
-                // The project value only applies if the instance value was null.
-                return projectValue.Equals("true", StringComparison.OrdinalIgnoreCase);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private static void MergeKeyIntoMetadata(
+        protected static void MergeKeyIntoMetadata(
             Metadata metadata,
             MetadataAuthorizedPublicKey newKey)
         {
@@ -104,29 +64,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
         }
 
-        private async Task PushPublicKeyToMetadataAsync(
-            bool useInstanceKeySet,
-            ManagedMetadataAuthorizedPublicKey metadataKey,
+        protected async Task ModifyMetadataAndHandleErrorsAsync(
+            Func<CancellationToken, Task> modifyMetadata,
             CancellationToken token)
         {
             try
             {
-                if (useInstanceKeySet)
-                {
-                    await this.computeEngineAdapter.UpdateMetadataAsync(
-                        this.instance,
-                        metadata => MergeKeyIntoMetadata(metadata, metadataKey),
-                        token)
-                    .ConfigureAwait(false);
-                }
-                else
-                {
-                    await this.computeEngineAdapter.UpdateCommonInstanceMetadataAsync(
-                       this.instance.ProjectId,
-                       metadata => MergeKeyIntoMetadata(metadata, metadataKey),
-                       token)
-                   .ConfigureAwait(false);
-                }
+                await modifyMetadata(token).ConfigureAwait(false);
             }
             catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
             {
@@ -168,12 +112,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // Publics.
         //---------------------------------------------------------------------
 
-        public static async Task<MetadataAuthorizedPublicKeyProcessor> ForInstance(
+        public static async Task<InstanceMetadataAuthorizedPublicKeyProcessor> ForInstance(
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
             InstanceLocator instance,
             CancellationToken token)
         {
+            Utilities.ThrowIfNull(computeEngineAdapter, nameof(computeEngineAdapter));
+            Utilities.ThrowIfNull(resourceManagerAdapter, nameof(resourceManagerAdapter));
             Utilities.ThrowIfNull(instance, nameof(instance));
 
             //
@@ -188,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     token)
                 .ConfigureAwait(false);
 
-            return new MetadataAuthorizedPublicKeyProcessor(
+            return new InstanceMetadataAuthorizedPublicKeyProcessor(
                 computeEngineAdapter,
                 resourceManagerAdapter,
                 instance,
@@ -196,7 +142,99 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 await projectDetailsTask);
         }
 
-        public bool IsOsLoginEnabled 
+        public static async Task<ProjectMetadataAuthorizedPublicKeyProcessor> ForProject(
+            IComputeEngineAdapter computeEngineAdapter,
+            ProjectLocator project,
+            CancellationToken token)
+        {
+            Utilities.ThrowIfNull(computeEngineAdapter, nameof(computeEngineAdapter));
+            Utilities.ThrowIfNull(project, nameof(project));
+
+            var projectDetails = await computeEngineAdapter.GetProjectAsync(
+                    project.ProjectId,
+                    token)
+                .ConfigureAwait(false);
+
+            return new ProjectMetadataAuthorizedPublicKeyProcessor(projectDetails);
+        }
+    }
+
+    public class ProjectMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
+    {
+        private readonly Project projectDetails;
+
+        public override bool IsOsLoginEnabled
+        {
+            get
+            {
+                var value = this.projectDetails
+                    .CommonInstanceMetadata?
+                    .GetValue(EnableOsLoginFlag);
+
+                return value != null && 
+                    value.Equals("true", StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        public ProjectMetadataAuthorizedPublicKeyProcessor(
+            Project projectDetails)
+        {
+            this.projectDetails = projectDetails;
+        }
+
+        public IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys()
+        {
+            return MetadataAuthorizedPublicKeySet
+                .FromMetadata(this.projectDetails.CommonInstanceMetadata)
+                .Keys;
+        }
+    }
+
+    public class InstanceMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
+    {
+        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IResourceManagerAdapter resourceManagerAdapter;
+
+        private readonly InstanceLocator instance;
+        private readonly Instance instanceDetails;
+        private readonly Project projectDetails;
+
+        internal InstanceMetadataAuthorizedPublicKeyProcessor(
+            IComputeEngineAdapter computeEngineAdapter,
+            IResourceManagerAdapter resourceManagerAdapter,
+            InstanceLocator instance,
+            Instance instanceDetails,
+            Project projectDetails)
+        {
+            this.computeEngineAdapter = computeEngineAdapter;
+            this.resourceManagerAdapter = resourceManagerAdapter;
+            this.instance = instance;
+            this.instanceDetails = instanceDetails;
+            this.projectDetails = projectDetails;
+        }
+
+        private bool IsFlagEnabled(string flag)
+        {
+            var projectValue = this.projectDetails.CommonInstanceMetadata?.GetValue(flag);
+            var instanceValue = this.instanceDetails.Metadata?.GetValue(flag);
+
+            if (!string.IsNullOrEmpty(instanceValue))
+            {
+                // The instance takes precedence.
+                return instanceValue.Equals("true", StringComparison.OrdinalIgnoreCase);
+            }
+            else if (!string.IsNullOrEmpty(projectValue))
+            {
+                // The project value only applies if the instance value was null.
+                return projectValue.Equals("true", StringComparison.OrdinalIgnoreCase);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override bool IsOsLoginEnabled 
             => IsFlagEnabled(EnableOsLoginFlag);
 
         public bool AreProjectSshKeysBlocked
@@ -206,6 +244,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             => !string.IsNullOrEmpty(this.instanceDetails
                 .Metadata
                 .GetValue(MetadataAuthorizedPublicKeySet.LegacyMetadataKey));
+
+        public IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
+            KeyAuthorizationMethods allowedMethods)
+        {
+            var keys = new List<MetadataAuthorizedPublicKey>();
+            if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
+            {
+                keys.AddRange(MetadataAuthorizedPublicKeySet
+                    .FromMetadata(this.projectDetails.CommonInstanceMetadata)
+                    .Keys);
+            }
+
+            if (allowedMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
+            {
+                keys.AddRange(MetadataAuthorizedPublicKeySet
+                    .FromMetadata(this.instanceDetails.Metadata)
+                    .Keys);
+            }
+
+            return keys;
+        }
 
         public async Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
             ISshKeyPair key,
@@ -325,9 +384,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     "Pushing new SSH key for {0}",
                     authorizedKeyPair.Username);
 
-                await PushPublicKeyToMetadataAsync(
-                    useInstanceKeySet,
-                    metadataKey,
+                await ModifyMetadataAndHandleErrorsAsync(
+                    async token =>
+                    {
+                        if (useInstanceKeySet)
+                        {
+                            await this.computeEngineAdapter.UpdateMetadataAsync(
+                                this.instance,
+                                metadata => MergeKeyIntoMetadata(metadata, metadataKey),
+                                token)
+                            .ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await this.computeEngineAdapter.UpdateCommonInstanceMetadataAsync(
+                                this.instance.ProjectId,
+                                metadata => MergeKeyIntoMetadata(metadata, metadataKey),
+                                token)
+                           .ConfigureAwait(false);
+                        }
+                    },
                     cancellationToken)
                 .ConfigureAwait(false);
             }
