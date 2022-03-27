@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Util;
+using System;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
@@ -32,7 +33,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             return metadata?.Items
                 .EnsureNotNull()
-                .FirstOrDefault(item => item.Key == key);
+                .FirstOrDefault(item => 
+                    item.Key != null && 
+                    item.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
         }
 
         public static string GetValue(this Metadata metadata, string key)

@@ -64,6 +64,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
         }
 
+        protected bool? GetFlag(Metadata metadata, string flag)
+        {
+            var value = metadata?.GetValue(flag);
+
+            if (value == null)
+            {
+                //
+                // Undefined.
+                //
+                return null;
+            }
+            else
+            {
+                //
+                // Evaluate "truthyness" using same rules as
+                // CheckMetadataFeatureEnabled()
+                //
+                switch (value.Trim().ToLower())
+                {
+                    case "true":
+                    case "1":
+                    case "y":
+                    case "yes":
+                        return true;
+
+                    case "false":
+                    case "0":
+                    case "n":
+                        case "no":
+                        return false;
+
+                    default:
+                        return null;
+                }
+            }
+        }
+
         protected async Task ModifyMetadataAndHandleErrorsAsync(
             Func<CancellationToken, Task> modifyMetadata,
             CancellationToken token)
@@ -79,8 +116,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     e.Message,
                     e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
 
+                //
                 // Setting metadata failed due to lack of permissions. Note that
                 // the Error object is not always populated, hence the OR filter.
+                //
 
                 throw new SshKeyPushFailedException(
                     "You do not have sufficient permissions to publish an SSH key. " +
@@ -96,9 +135,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     e.Message,
                     e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
 
+                //
                 // This slightly weirdly encoded error happens if the user has the necessary
                 // permissions on the VM, but lacks ActAs permission on the associated 
                 // service account.
+                //
 
                 throw new SshKeyPushFailedException(
                     "You do not have sufficient permissions to publish an SSH key. " +
@@ -163,31 +204,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     {
         private readonly Project projectDetails;
 
+        // TODO: Add test
         public override bool IsOsLoginEnabled
-        {
-            get
-            {
-                var value = this.projectDetails
-                    .CommonInstanceMetadata?
-                    .GetValue(EnableOsLoginFlag);
+            => GetFlag(this.projectDetails.CommonInstanceMetadata, EnableOsLoginFlag) == true;
 
-                return value != null && 
-                    value.Equals("true", StringComparison.OrdinalIgnoreCase);
-            }
-        }
-
-        public ProjectMetadataAuthorizedPublicKeyProcessor(
+        internal ProjectMetadataAuthorizedPublicKeyProcessor(
             Project projectDetails)
         {
             this.projectDetails = projectDetails;
         }
 
+        // TODO: Add test
         public IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys()
         {
             return MetadataAuthorizedPublicKeySet
                 .FromMetadata(this.projectDetails.CommonInstanceMetadata)
                 .Keys;
         }
+
+        // TODO: Add DeleteAuthorizedKeyAsync()
     }
 
     public class InstanceMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
@@ -213,38 +248,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.projectDetails = projectDetails;
         }
 
-        private bool IsFlagEnabled(string flag)
+        private bool? GetFlag(string flag)
         {
-            var projectValue = this.projectDetails.CommonInstanceMetadata?.GetValue(flag);
-            var instanceValue = this.instanceDetails.Metadata?.GetValue(flag);
+            //
+            // NB. The instance value always takes precedence,
+            // even if it's false.
+            //
 
-            if (!string.IsNullOrEmpty(instanceValue))
+            var instanceValue = GetFlag(this.instanceDetails.Metadata, flag);
+            if (instanceValue != null)
             {
-                // The instance takes precedence.
-                return instanceValue.Equals("true", StringComparison.OrdinalIgnoreCase);
+                return instanceValue.Value;
             }
-            else if (!string.IsNullOrEmpty(projectValue))
+
+            var projectValue = GetFlag(this.projectDetails.CommonInstanceMetadata, flag);
+            if (projectValue != null)
             {
-                // The project value only applies if the instance value was null.
-                return projectValue.Equals("true", StringComparison.OrdinalIgnoreCase);
+                return projectValue.Value;
             }
-            else
-            {
-                return false;
-            }
+
+            return null;
         }
 
-        public override bool IsOsLoginEnabled 
-            => IsFlagEnabled(EnableOsLoginFlag);
+        public override bool IsOsLoginEnabled
+            => GetFlag(EnableOsLoginFlag) == true;
 
         public bool AreProjectSshKeysBlocked
-            => IsFlagEnabled(BlockProjectSshKeysFlag);
+            => GetFlag(BlockProjectSshKeysFlag) == true;
 
         private bool IsLegacySshKeyPresent 
             => !string.IsNullOrEmpty(this.instanceDetails
                 .Metadata
                 .GetValue(MetadataAuthorizedPublicKeySet.LegacyMetadataKey));
 
+        // TODO: Add test
         public IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
             KeyAuthorizationMethods allowedMethods)
         {

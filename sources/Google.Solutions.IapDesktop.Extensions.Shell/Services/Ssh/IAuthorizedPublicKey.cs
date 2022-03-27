@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         string Email { get; }
 
         /// <summary>
-        /// Type of key (rsa-ssa, ...).
+        /// Type of key (rsa-rsa, ...).
         /// </summary>
         string KeyType { get; }
 
