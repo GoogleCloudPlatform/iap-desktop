@@ -112,12 +112,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         }
     }
 
-    public class UnmanagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey
+    public class UnmanagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
     {
         /// <summary>
         /// Email address of owning user account.
         /// </summary>
         public string Email { get; }
+
+        public DateTime? ExpireOn => null;
 
         public UnmanagedMetadataAuthorizedPublicKey(
             string posixUsername,
@@ -137,9 +139,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         }
     }
 
-    public class ManagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey
+    public class ManagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
     {
         public PublicKeyMetadata Metadata { get; }
+
+        public DateTime? ExpireOn => this.Metadata.ExpireOn;
+
+        public string Email => this.Metadata.Email;
 
         public ManagedMetadataAuthorizedPublicKey(
             string loginUsername,

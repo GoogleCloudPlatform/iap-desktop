@@ -56,6 +56,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         Task<LoginProfile> GetLoginProfileAsync(
            ProjectLocator project,
            CancellationToken token);
+
+        /// <summary>
+        /// Delete existing authorized key.
+        /// </summary>
+        Task DeleteSshPublicKey(
+            string fingerprint,
+            CancellationToken cancellationToken);
     }
 
     [Service(typeof(IOsLoginAdapter))]
@@ -159,6 +166,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 {
                     return await request
                         .ExecuteAsync(token)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        "You do not have sufficient permissions to use OS Login: " +
+                        e.Error?.Message ?? "access denied",
+                        HelpTopics.ManagingOsLogin,
+                        e);
+                }
+            }
+        }
+
+        public async Task DeleteSshPublicKey(
+            string fingerprint,
+            CancellationToken cancellationToken)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(fingerprint))
+            {
+                try
+                {
+                    var userEmail = this.authorizationSource.Authorization.Email;
+                    Debug.Assert(userEmail != null);
+
+                    await this.service.Users.SshPublicKeys
+                        .Delete($"users/{userEmail}/sshPublicKeys/{fingerprint}")
+                        .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())

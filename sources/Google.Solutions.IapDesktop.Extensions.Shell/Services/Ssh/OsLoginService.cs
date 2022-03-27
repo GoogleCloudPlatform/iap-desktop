@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
@@ -32,6 +34,7 @@ using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,12 +43,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
     public interface IOsLoginService
     {
+        /// <summary>
+        /// Upload an a public key to authorize it.
+        /// </summary>
         Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
             ProjectLocator project,
             OsLoginSystemType os,
             ISshKeyPair key,
             TimeSpan validity,
             CancellationToken token);
+
+        /// <summary>
+        /// List existing authorized keys.
+        /// </summary>
+        Task<IEnumerable<IAuthorizedPublicKey>> ListAuthorizedKeysAsync(
+            CancellationToken cancellationToken);
     }
 
     public enum OsLoginSystemType
@@ -142,6 +154,120 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
                 return AuthorizedKeyPair.ForOsLoginAccount(key, account);
             }
+        }
+
+        public async Task<IEnumerable<IAuthorizedPublicKey>> ListAuthorizedKeysAsync(
+            CancellationToken cancellationToken)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                //
+                // NB. The OS Login profile (in particular, the username
+                // and UID/GID) depends on the project, and the organization
+                // it resides in. However, the SSH public keys are independent
+                // of that -- therefore, we can query the list of public keys
+                // using any project.
+                //
+                // 
+                var wellKnownProject = new ProjectLocator("winodws-cloud");
+
+                var loginProfile = await this.adapter
+                    .GetLoginProfileAsync(wellKnownProject, cancellationToken)
+                    .ConfigureAwait(false);
+
+                return loginProfile
+                    .SshPublicKeys
+                    .EnsureNotNull()
+                    .Select(k => AuthorizedPublicKey.TryParse(k.Value))
+                    .Where(k => k != null)
+                    .ToList();
+            }
+        }
+
+        //public async Task DeleteAuthorizedKeyAsync(
+        //    IAuthorizedPublicKey key,
+        //    CancellationToken cancellationToken)
+        //{
+        //    Debug.Assert(key is AuthorizedPublicKey);
+        //    using (ApplicationTraceSources.Default.TraceMethod().WithParameters(key))
+        //    {
+        //        var fingerprint = ((AuthorizedPublicKey)key).Fingerprint;
+
+        //        this.adapter
+        //    }
+        //}
+
+        internal class AuthorizedPublicKey : IAuthorizedPublicKey
+        {
+            internal string Fingerprint { get; }
+
+            public string Email { get; }
+
+            public string KeyType { get; }
+
+            public string PublicKey { get; }
+
+            public DateTime? ExpireOn { get; }
+
+            private AuthorizedPublicKey(
+                string fingerprint,
+                string email,
+                string keyType,
+                string publicKey,
+                DateTime? expiresOn)
+            {
+                this.Fingerprint = fingerprint.ThrowIfNull(nameof(fingerprint));
+                this.Email = email.ThrowIfNullOrEmpty(nameof(email));
+                this.KeyType = keyType.ThrowIfNullOrEmpty(nameof(keyType));
+                this.PublicKey = publicKey.ThrowIfNullOrEmpty(nameof(publicKey));
+                this.ExpireOn = expiresOn;
+            }
+
+            public static AuthorizedPublicKey TryParse(
+                SshPublicKey osLoginKey)
+            {
+                //
+                // The key should be formatted as:
+                //
+                //   <type> <key>
+                //
+                // But the API doesn't enforce that format,
+                // so we might be encountering garbage.
+                //
+                var keyParts = osLoginKey.Key.Trim().Split(' ');
+
+                //
+                // The name should be formatted as:
+                //
+                //   users/<email>/sshPublicKeys/<fingerprint>
+                //
+                var nameParts = osLoginKey.Name.Split('/');
+
+                if (keyParts.Length == 2 &&
+                    nameParts.Length == 4 &&
+                    nameParts[0] == "users" &&
+                    nameParts[2] == "sshPublicKeys")
+                {
+                    Debug.Assert(nameParts[3] == osLoginKey.Fingerprint);
+
+                    return new AuthorizedPublicKey(
+                        osLoginKey.Fingerprint,
+                        nameParts[1],
+                        keyParts[0],
+                        keyParts[1],
+                        osLoginKey.ExpirationTimeUsec != null
+                            ? (DateTime?)DateTimeOffsetExtensions
+                                .FromUnixTimeMicroseconds(osLoginKey.ExpirationTimeUsec.Value)
+                                .Date
+                            : null);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            public override string ToString() => this.Fingerprint;
         }
     }
 

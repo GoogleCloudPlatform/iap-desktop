@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Test;
@@ -53,6 +55,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
             return new OsLoginAdapter(authzSource.Object);
         }
 
+        private OsLoginAdapter CreateAdapter(TemporaryServiceCredential credential)
+        {
+            var authz = new Mock<IAuthorization>();
+            authz.SetupGet(a => a.Email).Returns(credential.Email);
+            authz.SetupGet(a => a.Credential).Returns(credential);
+
+            var authzSource = new Mock<IAuthorizationSource>();
+            authzSource.SetupGet(s => s.Authorization).Returns(authz.Object);
+
+            return new OsLoginAdapter(authzSource.Object);
+        }
+
         //---------------------------------------------------------------------
         // ImportSshPublicKeyAsync.
         //---------------------------------------------------------------------
@@ -73,6 +87,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                     CancellationToken.None).Wait());
         }
 
+        [Test]
+        public async Task WhenEmailValid_ThenImportSshPublicKeySucceeds(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
+        {
+            var credential = (TemporaryServiceCredential)(await credentialTask);
+            var adapter = CreateAdapter(credential);
+
+            using (var keyPair = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            {
+                var profile = await adapter.ImportSshPublicKeyAsync(
+                    new ProjectLocator(TestProject.ProjectId),
+                    keyPair,
+                    TimeSpan.FromMinutes(5),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+                var key = profile.SshPublicKeys
+                    .Values
+                    .Where(k => k.Key.Contains(keyPair.PublicKeyString))
+                    .FirstOrDefault();
+                Assert.IsNotNull(key);
+            }
+        }
+
         //---------------------------------------------------------------------
         // GetLoginProfileAsync.
         //---------------------------------------------------------------------
@@ -82,13 +120,81 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         {
             var adapter = CreateAdapter("x@gmail.com");
 
-            var key = new Mock<ISshKeyPair>();
-            key.SetupGet(s => s.PublicKeyString).Returns("key");
-
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.GetLoginProfileAsync(
                     new ProjectLocator(TestProject.ProjectId),
                     CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenEmailInvalid_ThenGetLoginProfileReturnsProfile(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
+        {
+            var credential = (TemporaryServiceCredential)(await credentialTask);
+            var adapter = CreateAdapter(credential);
+
+            var profile = await adapter.GetLoginProfileAsync(
+                        new ProjectLocator(TestProject.ProjectId),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+            Assert.IsNotNull(profile);
+        }
+
+        //---------------------------------------------------------------------
+        // DeleteSshPublicKey.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenDeletingKeyTwice_ThenDeleteSucceeds(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credentialTask)
+        {
+            var credential = (TemporaryServiceCredential)(await credentialTask);
+            var adapter = CreateAdapter(credential);
+
+            using (var keyPair = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            {
+                //
+                // Import a key.
+                //
+                var profile = await adapter.ImportSshPublicKeyAsync(
+                        new ProjectLocator(TestProject.ProjectId),
+                        keyPair,
+                        TimeSpan.FromMinutes(5),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                var key = profile.SshPublicKeys
+                    .Values
+                    .Where(k => k.Key.Contains(keyPair.PublicKeyString))
+                    .FirstOrDefault();
+                Assert.IsNotNull(key);
+
+                //
+                // Delete key twice.
+                //
+                await adapter.DeleteSshPublicKey(
+                        key.Fingerprint,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+                await adapter.DeleteSshPublicKey(
+                        key.Fingerprint,
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                //
+                // Check that it's gone.
+                //
+                profile = await adapter.GetLoginProfileAsync(
+                        new ProjectLocator(TestProject.ProjectId),
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Assert.IsFalse(profile.SshPublicKeys?
+                    .Values
+                    .EnsureNotNull()
+                    .Any(k => k.Key.Contains(keyPair.PublicKeyString)));
+            }
         }
     }
 }
