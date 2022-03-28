@@ -108,10 +108,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
         public bool Contains(MetadataAuthorizedPublicKey key)
         {
-            return this.Keys
-                .Any(k => k.PublicKey == key.PublicKey &&
-                          k.KeyType == key.KeyType &&
-                          k.PosixUsername == key.PosixUsername);
+            return this.Keys.Any(k => k.Equals(key));
+        }
+
+        public MetadataAuthorizedPublicKeySet Remove(MetadataAuthorizedPublicKey key)
+        {
+            return new MetadataAuthorizedPublicKeySet(
+                this.Keys.Where(k => !k.Equals(key)));
         }
 
         public override string ToString()

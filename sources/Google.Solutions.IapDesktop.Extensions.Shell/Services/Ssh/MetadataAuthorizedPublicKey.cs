@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     /// Single authorized key.
     /// See https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys.
     /// </summary>
-    public abstract class MetadataAuthorizedPublicKey
+    public abstract class MetadataAuthorizedPublicKey : IEquatable<MetadataAuthorizedPublicKey>
     {
         //
         // NB Managed and unmanaged keys use a different format,
@@ -109,6 +109,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     key,
                     match.Groups[4].Value);
             }
+        }
+
+        public override int GetHashCode()
+        {
+            return 
+                this.PublicKey.GetHashCode() ^
+                this.KeyType.GetHashCode() ^
+                this.PosixUsername.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+            => Equals(obj as ManagedMetadataAuthorizedPublicKey);
+
+        public bool Equals(MetadataAuthorizedPublicKey other)
+        {
+            //
+            // NB. These 3 fields are all that count when comparing
+            // keys. Any additional metadata is irrelevant.
+            //
+            // Therefore, subclasses don't need to override
+            // this method.
+            //
+
+            return
+                this.PublicKey == other?.PublicKey &&
+                this.KeyType == other?.KeyType &&
+                this.PosixUsername == other?.PosixUsername;
         }
     }
 

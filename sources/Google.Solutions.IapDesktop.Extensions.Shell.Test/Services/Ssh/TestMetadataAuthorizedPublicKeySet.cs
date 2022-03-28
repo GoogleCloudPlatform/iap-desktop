@@ -32,6 +32,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
     [TestFixture]
     public class TestMetadataAuthorizedPublicKeySet : ApplicationFixtureBase
     {
+        //---------------------------------------------------------------------
+        // FromMetadata.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenMetadataIsEmpry_ThenFromMetadataThrowsArgumentException()
         {
@@ -127,6 +131,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             Assert.AreEqual(4, keySet.Keys.Count());
         }
 
+        //---------------------------------------------------------------------
+        // Add.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenAddingDuplicateKey_ThenAddReturnsThis()
         {
@@ -179,6 +187,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             Assert.AreEqual("", keySet.Keys.First(k => k.PublicKey == "phantomkey2").PosixUsername);
             Assert.AreEqual("", keySet.Keys.First(k => k.PublicKey == "phantomkey3").PosixUsername);
         }
+
+        //---------------------------------------------------------------------
+        // Remove.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenKeyNotFound_ThenRemoveReturnsEquivalentSet()
+        {
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(new Metadata())
+                .Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa KEY1 alice@example.com"))
+                .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa KEY2 bob@gmail.com"));
+
+            var keyToRemove = new UnmanagedMetadataAuthorizedPublicKey(
+                "carol", 
+                "ssh-rsa", 
+                "KEY1", 
+                "carol@example.com");
+
+            var newKeySet = keySet.Remove(keyToRemove);
+
+            CollectionAssert.AreEquivalent(keySet.Keys, newKeySet.Keys);
+        }
+
+        [Test]
+        public void WhenKeyFound_ThenRemoveReturnsSetWithoutKey()
+        {
+            var keySet = MetadataAuthorizedPublicKeySet.FromMetadata(new Metadata())
+                .Add(MetadataAuthorizedPublicKey.Parse("alice:ssh-rsa KEY1 alice@example.com"))
+                .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa KEY2 bob@gmail.com"));
+
+            var keyToRemove = new UnmanagedMetadataAuthorizedPublicKey(
+                "alice",
+                "ssh-rsa",
+                "KEY1",
+                "alice@example.com");
+
+            var newKeySet = keySet.Remove(keyToRemove);
+            Assert.AreEqual(1, newKeySet.Keys.Count());
+        }
+
+        //---------------------------------------------------------------------
+        // RemoveExpiredKeys.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenKeyExpired_ThenRemoveExpiredKeysStripsKey()

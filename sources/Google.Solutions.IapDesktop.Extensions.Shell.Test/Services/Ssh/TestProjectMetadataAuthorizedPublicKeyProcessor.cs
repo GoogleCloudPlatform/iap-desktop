@@ -70,18 +70,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
-                CreateComputeEngineAdapterMock(
-                    new Metadata()
-                    {
-                        Items = new[]
+                    CreateComputeEngineAdapterMock(
+                        new Metadata()
                         {
-                            new Metadata.ItemsData()
+                            Items = new[]
                             {
-                                Key = "Enable-OsLogin",
-                                Value = truthyValue
+                                new Metadata.ItemsData()
+                                {
+                                    Key = "Enable-OsLogin",
+                                    Value = truthyValue
+                                }
                             }
-                        }
-                    }).Object,
+                        }).Object,
                     SampleLocator,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -94,18 +94,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
-                CreateComputeEngineAdapterMock(
-                    new Metadata()
-                    {
-                        Items = new[]
+                    CreateComputeEngineAdapterMock(
+                        new Metadata()
                         {
-                            new Metadata.ItemsData()
+                            Items = new[]
                             {
-                                Key = "Enable-OsLogin",
-                                Value = truthyValue
+                                new Metadata.ItemsData()
+                                {
+                                    Key = "Enable-OsLogin",
+                                    Value = truthyValue
+                                }
                             }
-                        }
-                    }).Object,
+                        }).Object,
                     SampleLocator,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -121,8 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public async Task WhenMetadataIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
-                CreateComputeEngineAdapterMock(
-                    new Metadata()).Object,
+                    CreateComputeEngineAdapterMock(new Metadata()).Object,
                     SampleLocator,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -136,17 +135,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public async Task WhenMetadataItemIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
-                CreateComputeEngineAdapterMock(
-                    new Metadata()
-                    {
-                        Items = new[]
+                    CreateComputeEngineAdapterMock(
+                        new Metadata()
                         {
-                            new Metadata.ItemsData()
+                            Items = new[]
                             {
-                                Key = "ssh-keys",
+                                new Metadata.ItemsData()
+                                {
+                                    Key = "ssh-keys",
+                                }
                             }
-                        }
-                    }).Object,
+                        }).Object,
                     SampleLocator,
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -178,8 +177,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
                 CreateComputeEngineAdapterMock(metadata).Object,
-                    SampleLocator,
-                    CancellationToken.None)
+                SampleLocator,
+                CancellationToken.None)
                 .ConfigureAwait(false);
 
             var keys = processor.ListAuthorizedKeys();
@@ -188,6 +187,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             CollectionAssert.AreEquivalent(
                 new[] { "alice", "bob" },
                 keys.Select(k => k.PosixUsername));
+        }
+
+        //---------------------------------------------------------------------
+        // RemoveAuthorizedKeyAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenKeyFound_ThenRemoveAuthorizedKeyUpdatesMetadata()
+        {
+            var bobsKey = new UnmanagedMetadataAuthorizedPublicKey(
+                "bob",
+                "ssh-rsa",
+                "KEY-BOB",
+                "bob@example.com");
+            var metadata = new Metadata();
+            metadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(bobsKey)
+                    .ToString());
+
+            var computeEngineAdapter = CreateComputeEngineAdapterMock(metadata);
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+                    computeEngineAdapter.Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            await processor.RemoveAuthorizedKeyAsync(
+                    bobsKey,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            computeEngineAdapter.Verify(a => a.UpdateCommonInstanceMetadataAsync(
+                It.IsAny<string>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
         public abstract bool IsOsLoginEnabled { get; }
 
-        protected static void MergeKeyIntoMetadata(
+        protected static void AddPublicKeyToMetadata(
             Metadata metadata,
             MetadataAuthorizedPublicKey newKey)
         {
@@ -61,6 +61,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             var newKeySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
                 .RemoveExpiredKeys()
                 .Add(newKey);
+            metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
+        }
+
+        protected static void RemovePublicKeyFromMetadata(
+            Metadata metadata,
+            MetadataAuthorizedPublicKey key)
+        {
+            //
+            // Merge new key into existing keyset, and take 
+            // the opportunity to purge expired keys.
+            //
+            var newKeySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
+                .RemoveExpiredKeys()
+                .Remove(key);
             metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
         }
 
@@ -196,20 +210,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     token)
                 .ConfigureAwait(false);
 
-            return new ProjectMetadataAuthorizedPublicKeyProcessor(projectDetails);
+            return new ProjectMetadataAuthorizedPublicKeyProcessor(
+                computeEngineAdapter,
+                projectDetails);
         }
     }
 
     public class ProjectMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
     {
+        private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly Project projectDetails;
 
         public override bool IsOsLoginEnabled
             => GetFlag(this.projectDetails.CommonInstanceMetadata, EnableOsLoginFlag) == true;
 
         internal ProjectMetadataAuthorizedPublicKeyProcessor(
+            IComputeEngineAdapter computeEngineAdapter,
             Project projectDetails)
         {
+            this.computeEngineAdapter = computeEngineAdapter;
             this.projectDetails = projectDetails;
         }
 
@@ -220,7 +239,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 .Keys;
         }
 
-        // TODO: Add DeleteAuthorizedKeyAsync()
+        public async Task RemoveAuthorizedKeyAsync(
+            MetadataAuthorizedPublicKey key,
+            CancellationToken cancellationToken)
+        {
+            await this.computeEngineAdapter.UpdateCommonInstanceMetadataAsync(
+                    this.projectDetails.Name,
+                    metadata => RemovePublicKeyFromMetadata(metadata, key),
+                    cancellationToken)
+                .ConfigureAwait(false);
+        }
     }
 
     public class InstanceMetadataAuthorizedPublicKeyProcessor : MetadataAuthorizedPublicKeyProcessor
@@ -298,6 +326,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             }
 
             return keys;
+        }
+
+        public async Task RemoveAuthorizedKeyAsync(
+            MetadataAuthorizedPublicKey key,
+            KeyAuthorizationMethods allowedMethods,
+            CancellationToken cancellationToken)
+        {
+            if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
+            {
+                await this.computeEngineAdapter.UpdateCommonInstanceMetadataAsync(
+                        this.instance.ProjectId,
+                        metadata => RemovePublicKeyFromMetadata(metadata, key),
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
+            if (allowedMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
+            {
+                await this.computeEngineAdapter.UpdateMetadataAsync(
+                        this.instance,
+                        metadata => RemovePublicKeyFromMetadata(metadata, key),
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
         }
 
         public async Task<AuthorizedKeyPair> AuthorizeKeyPairAsync(
@@ -425,7 +477,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         {
                             await this.computeEngineAdapter.UpdateMetadataAsync(
                                 this.instance,
-                                metadata => MergeKeyIntoMetadata(metadata, metadataKey),
+                                metadata => AddPublicKeyToMetadata(metadata, metadataKey),
                                 token)
                             .ConfigureAwait(false);
                         }
@@ -433,7 +485,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         {
                             await this.computeEngineAdapter.UpdateCommonInstanceMetadataAsync(
                                 this.instance.ProjectId,
-                                metadata => MergeKeyIntoMetadata(metadata, metadataKey),
+                                metadata => AddPublicKeyToMetadata(metadata, metadataKey),
                                 token)
                            .ConfigureAwait(false);
                         }

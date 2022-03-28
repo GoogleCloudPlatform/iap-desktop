@@ -831,9 +831,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public async Task WhenMetadataIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
-                CreateComputeEngineAdapterMock(
-                    new Metadata(),
-                    new Metadata()).Object,
+                    CreateComputeEngineAdapterMock(
+                        new Metadata(),
+                        new Metadata()).Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
                     CancellationToken.None)
@@ -883,9 +883,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public async Task WhenMethodIsNeitherProjectNorInstance_ThenListAuthorizedKeysReturnsEmptyList()
         {
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
-                CreateComputeEngineAdapterMock(
-                    new Metadata(),
-                    new Metadata()).Object,
+                    CreateComputeEngineAdapterMock(
+                        new Metadata(),
+                        new Metadata()).Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
                     CancellationToken.None)
@@ -924,9 +924,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     .ToString());
 
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
-                CreateComputeEngineAdapterMock(
-                    projectMetadata,
-                    instanceMetadata).Object,
+                    CreateComputeEngineAdapterMock(
+                        projectMetadata,
+                        instanceMetadata).Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
                     CancellationToken.None)
@@ -966,9 +966,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     .ToString());
 
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
-                CreateComputeEngineAdapterMock(
-                    projectMetadata,
-                    instanceMetadata).Object,
+                    CreateComputeEngineAdapterMock(
+                        projectMetadata,
+                        instanceMetadata).Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
                     CancellationToken.None)
@@ -1008,9 +1008,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     .ToString());
 
             var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
-                CreateComputeEngineAdapterMock(
-                    projectMetadata,
-                    instanceMetadata).Object,
+                    CreateComputeEngineAdapterMock(
+                        projectMetadata,
+                        instanceMetadata).Object,
                     CreateResourceManagerAdapterMock(true).Object,
                     SampleLocator,
                     CancellationToken.None)
@@ -1022,6 +1022,63 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             CollectionAssert.AreEquivalent(
                 new[] { "alice", "bob" },
                 keys.Select(k => k.PosixUsername));
+        }
+
+        //---------------------------------------------------------------------
+        // RemoveAuthorizedKeyAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenMethodIsAll_ThenRemoveAuthorizedKeyUpdatesProjectAndInstanceMetadata()
+        {
+            var bobsKey = new UnmanagedMetadataAuthorizedPublicKey(
+                "bob",
+                "ssh-rsa",
+                "KEY-BOB",
+                "bob@example.com");
+
+            var projectMetadata = new Metadata();
+            projectMetadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(bobsKey)
+                    .ToString());
+
+            var instanceMetadata = new Metadata();
+            instanceMetadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(bobsKey)
+                    .ToString());
+
+            var computeEngineAdapter = CreateComputeEngineAdapterMock(
+                projectMetadata,
+                instanceMetadata);
+
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                    computeEngineAdapter.Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            await processor.RemoveAuthorizedKeyAsync(
+                    bobsKey,
+                    KeyAuthorizationMethods.All,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            computeEngineAdapter.Verify(a => a.UpdateCommonInstanceMetadataAsync(
+                It.IsAny<string>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+
+            computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
+                It.IsAny<InstanceLocator>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
