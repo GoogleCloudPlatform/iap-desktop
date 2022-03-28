@@ -190,8 +190,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
-                Assert.IsFalse(profile.SshPublicKeys?
-                    .Values
+                Assert.IsFalse(profile.SshPublicKeys
                     .EnsureNotNull()
                     .Any(k => k.Key.Contains(keyPair.PublicKeyString)));
             }
