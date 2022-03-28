@@ -45,8 +45,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
     public abstract class MetadataAuthorizedPublicKeyProcessor
     {
-        protected const string EnableOsLoginFlag = "enable-oslogin";
-        protected const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
+        public const string EnableOsLoginFlag = "enable-oslogin";
+        public const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
 
         public abstract bool IsOsLoginEnabled { get; }
         public abstract bool AreProjectSshKeysBlocked { get; }

@@ -204,6 +204,8 @@
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\RemoteDesktop\UnsafeNativeMethods.cs" />
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysModel.cs" />
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysViewModel.cs" />
     <Compile Include="Views\SshTerminal\SshAuthenticationPromptDialog.cs">
       <SubType>Form</SubType>
     </Compile>
