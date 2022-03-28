@@ -44,6 +44,7 @@ namespace Google.Solutions.Common.Util
             var v = (int)(object)enumValue;
             return v != 0 && !IsPowerOfTwo(v);
         }
+
         public static TAttribute GetAttribute<TAttribute>(this Enum enumValue)
                 where TAttribute : Attribute
         {

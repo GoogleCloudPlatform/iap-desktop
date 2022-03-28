@@ -41,7 +41,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    public interface IOsLoginService
+    public interface IOsLoginService : IDisposable
     {
         /// <summary>
         /// Upload an a public key to authorize it.
@@ -196,6 +196,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         cancellationToken)
                     .ConfigureAwait(false);
             }
+        }
+
+        public void Dispose()
+        {
+            this.adapter?.Dispose();
         }
 
         internal class AuthorizedPublicKey : IAuthorizedPublicKey

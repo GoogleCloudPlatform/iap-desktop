@@ -39,7 +39,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 {
-    public interface IOsLoginAdapter
+    public interface IOsLoginAdapter : IDisposable
     {
         /// <summary>
         /// Import user's public key to OS Login.
@@ -204,6 +204,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                         e);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            this.service?.Dispose();
         }
     }
 }
