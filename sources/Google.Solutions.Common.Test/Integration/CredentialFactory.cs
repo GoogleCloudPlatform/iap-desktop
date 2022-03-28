@@ -20,11 +20,13 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Iam.v1.Data;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -121,7 +123,9 @@ namespace Google.Solutions.Common.Test.Integration
                 .ExecuteAsync()
                 .ConfigureAwait(false);
 
-            return GoogleCredential.FromAccessToken(response.AccessToken);
+            return new TemporaryServiceCredential(
+                serviceAccountEmail, 
+                response.AccessToken);
         }
 
         public static async Task<ICredential> CreateServiceAccountCredentialAsync(
@@ -159,6 +163,33 @@ namespace Google.Solutions.Common.Test.Integration
                     throw;
                 }
             }
+        }
+    }
+
+    public class TemporaryServiceCredential : ServiceCredential
+    {
+        public string AccessToken { get; }
+        public string Email { get; }
+
+        internal TemporaryServiceCredential(
+            string email,
+            string accessToken)
+            : base(new ServiceCredential.Initializer(GoogleAuthConsts.TokenUrl))
+        {
+            this.Email = email;
+            this.AccessToken = accessToken;
+        }
+
+        public override Task<bool> RequestAccessTokenAsync(
+            CancellationToken taskCancellationToken)
+        {
+            this.Token = new TokenResponse()
+            {
+                AccessToken = this.AccessToken,
+                ExpiresInSeconds = 3600
+            };
+
+            return Task.FromResult(true);
         }
     }
 }

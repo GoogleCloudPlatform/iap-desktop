@@ -125,6 +125,7 @@
     <Compile Include="Integration\InstanceFactory.cs" />
     <Compile Include="Integration\CredentialAttribute.cs" />
     <Compile Include="Util\TestCancellationTokenExtensions.cs" />
+    <Compile Include="Util\TestDateTimeOffsetExtensions.cs" />
     <Compile Include="Util\TestEnumExtensions.cs" />
     <Compile Include="Util\TestExceptionExtensions.cs" />
     <Compile Include="Util\TestLinqExtensions.cs" />

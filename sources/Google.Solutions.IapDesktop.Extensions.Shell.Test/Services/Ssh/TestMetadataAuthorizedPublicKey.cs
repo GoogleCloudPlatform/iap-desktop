@@ -30,6 +30,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
     [TestFixture]
     public class TestMetadataAuthorizedPublicKey : ApplicationFixtureBase
     {
+        //---------------------------------------------------------------------
+        // Parse.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenUnmanagedKeyIsInvalid_ThenParseThrowsArgumentException()
         {
@@ -122,6 +126,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             Assert.AreEqual(line, key.ToString());
         }
 
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenKeySerialized_ThenTimestampHasNoMilliseconds()
         {
@@ -136,6 +144,82 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             Assert.AreEqual(
                 "login:ssh-rsa key google-ssh {\"userName\":\"joe@example.com\",\"expireOn\":\"2020-01-01T23:59:59+0000\"}",
                 key.ToString());
+        }
+
+        //---------------------------------------------------------------------
+        // Equals.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenOtherIsNull_ThenEqualsReturnsFalse()
+        {
+            var key = new UnmanagedMetadataAuthorizedPublicKey(
+                "bob",
+                "ssh-rsa",
+                "AAAA",
+                "bob@gmail.com");
+
+            Assert.IsFalse(key.Equals((object)null));
+            Assert.IsFalse(key.Equals((MetadataAuthorizedPublicKey)null));
+        }
+
+        [Test]
+        public void WhenKeysEquivalent_ThenEqualsReturnsTrue()
+        {
+            var key1 = new UnmanagedMetadataAuthorizedPublicKey(
+                "bob",
+                "ssh-rsa",
+                "AAAA",
+                "bob@gmail.com");
+
+            var key2 = new UnmanagedMetadataAuthorizedPublicKey(
+                "bob",
+                "ssh-rsa",
+                "AAAA",
+                "bob@gmail.com");
+
+            Assert.IsTrue(key1.Equals(key2));
+            Assert.AreEqual(key1.GetHashCode(), key2.GetHashCode());
+        }
+
+        [Test]
+        public void WhenKeysEquivalentExceptForEmail_ThenEqualsReturnsTrue()
+        {
+            var key1 = new UnmanagedMetadataAuthorizedPublicKey(
+                "bob",
+                "ssh-rsa",
+                "AAAA",
+                "bob@gmail.com");
+
+            var key2 = new UnmanagedMetadataAuthorizedPublicKey(
+                "bob",
+                "ssh-rsa",
+                "AAAA",
+                "bob@example.com");
+
+            Assert.IsTrue(key1.Equals(key2));
+            Assert.AreEqual(key1.GetHashCode(), key2.GetHashCode());
+        }
+
+        [Test]
+        public void WhenKeysEquivalentButOneIsManaged_ThenEqualsReturnsTrue()
+        {
+            var key1 = new UnmanagedMetadataAuthorizedPublicKey(
+                "bob",
+                "ssh-rsa",
+                "AAAA",
+                "bob@gmail.com");
+
+            var key2 = new ManagedMetadataAuthorizedPublicKey(
+                "bob",
+                "ssh-rsa",
+                "AAAA",
+                new ManagedMetadataAuthorizedPublicKey.PublicKeyMetadata(
+                    "bob@example.com",
+                    new DateTime(2020, 1, 1, 23, 59, 59, 123, DateTimeKind.Utc)));
+
+            Assert.IsTrue(key2.Equals(key1));
+            Assert.IsTrue(key1.Equals(key2));
         }
     }
 }

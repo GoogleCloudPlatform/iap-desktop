@@ -41,7 +41,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 {
     [TestFixture]
-    public class TestMetadataAuthorizedPublicKeyProcessor : ApplicationFixtureBase
+    public class TestInstanceMetadataAuthorizedPublicKeyProcessor : ApplicationFixtureBase
     {
         private const string SampleEmailAddress = "bob@example.com";
         private readonly static InstanceLocator SampleLocator
@@ -58,14 +58,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
-            bool legacySshKeyPresent,
-            bool projectWideKeysBlockedForProject,
-            bool projectWideKeysBlockedForInstance,
-            MetadataAuthorizedPublicKeySet existingProjectKeySet = null,
-            MetadataAuthorizedPublicKeySet existingInstanceKeySet = null)
+            Metadata projectMetadata,
+            Metadata instanceMetadata)
+        {
+            var adapter = new Mock<IComputeEngineAdapter>();
+            adapter
+                .Setup(a => a.GetProjectAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Project()
+                {
+                    CommonInstanceMetadata = projectMetadata
+                });
+            adapter
+                .Setup(a => a.GetInstanceAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Instance()
+                {
+                    Metadata = instanceMetadata
+                });
+            return adapter;
+        }
+
+        private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+           bool legacySshKeyPresent,
+           bool projectWideKeysBlockedForProject,
+           bool projectWideKeysBlockedForInstance,
+           MetadataAuthorizedPublicKeySet existingProjectKeySet = null,
+           MetadataAuthorizedPublicKeySet existingInstanceKeySet = null)
         {
             var projectMetadata = new Metadata();
-            
+
             if (projectWideKeysBlockedForProject)
             {
                 projectMetadata.Add("block-project-ssh-keys", "true");
@@ -97,24 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     existingInstanceKeySet.ToString());
             }
 
-            var adapter = new Mock<IComputeEngineAdapter>();
-            adapter
-                .Setup(a => a.GetProjectAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Project()
-                {
-                    CommonInstanceMetadata = projectMetadata
-                });
-            adapter
-                .Setup(a => a.GetInstanceAsync(
-                    It.IsAny<InstanceLocator>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Instance()
-                {
-                    Metadata = instanceMetadata
-                });
-            return adapter;
+            return CreateComputeEngineAdapterMock(projectMetadata, instanceMetadata);
         }
 
         private static Mock<IResourceManagerAdapter> CreateResourceManagerAdapterMock(
@@ -131,9 +138,190 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             return adapter;
         }
 
+        //---------------------------------------------------------------------
+        // IsOsLoginEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenValueIsTruthy_ThenIsOsLoginEnabledReturnsTrue(
+            [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                CreateComputeEngineAdapterMock(
+                    new Metadata()
+                    {
+                        Items = new[]
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "Enable-OsLogin",
+                                Value = truthyValue
+                            }
+                        }
+                    },
+                    new Metadata()).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsTrue(processor.IsOsLoginEnabled);
+        }
+
+        [Test]
+        public async Task WhenValueIsNotTruthy_ThenIsOsLoginEnabledReturnsFalse(
+            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                CreateComputeEngineAdapterMock(
+                    new Metadata()
+                    {
+                        Items = new[]
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "Enable-OsLogin",
+                                Value = truthyValue
+                            }
+                        }
+                    },
+                    new Metadata()).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsFalse(processor.IsOsLoginEnabled);
+        }
+
+        [Test]
+        public async Task WhenOsLoginEnabledForProjectButDisabledForInstance_ThenIsOsLoginEnabledReturnsFalse()
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                CreateComputeEngineAdapterMock(
+                    new Metadata()
+                    {
+                        Items = new[]
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "Enable-OsLogin",
+                                Value = "true"
+                            }
+                        }
+                    },
+                    new Metadata()
+                    {
+                        Items = new[]
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "Enable-OsLogin",
+                                Value = "false"
+                            }
+                        }
+                    }).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsFalse(processor.IsOsLoginEnabled);
+        }
 
         //---------------------------------------------------------------------
-        // Metadata - using existing keys.
+        // AreProjectSshKeysBlocked.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenValueIsTruthy_ThenAreProjectSshKeysBlockedReturnsTrue(
+            [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                CreateComputeEngineAdapterMock(
+                    new Metadata()
+                    {
+                        Items = new[]
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "Block-Project-SSH-keys",
+                                Value = truthyValue
+                            }
+                        }
+                    },
+                    new Metadata()).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsTrue(processor.AreProjectSshKeysBlocked);
+        }
+
+        [Test]
+        public async Task WhenValueIsNotTruthy_ThenAreProjectSshKeysBlockedReturnsFalse(
+            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                CreateComputeEngineAdapterMock(
+                    new Metadata()
+                    {
+                        Items = new[]
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "BLOCK-project-ssh-KEYS",
+                                Value = truthyValue
+                            }
+                        }
+                    },
+                    new Metadata()).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsFalse(processor.AreProjectSshKeysBlocked);
+        }
+
+        [Test]
+        public async Task WhenProjectSshKeysBlockedForProjectButNotForInstance_ThenAreProjectSshKeysBlockedReturnsFalse()
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                CreateComputeEngineAdapterMock(
+                    new Metadata()
+                    {
+                        Items = new[]
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "BLOCK-project-ssh-KEYS",
+                                Value = "true"
+                            }
+                        }
+                    },
+                    new Metadata()
+                    {
+                        Items = new[]
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "BLOCK-project-ssh-KEYS",
+                                Value = "false"
+                            }
+                        }
+                    }).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsFalse(processor.IsOsLoginEnabled);
+        }
+
+        //---------------------------------------------------------------------
+        // AuthorizeKeyAsync, using existing keys.
         //---------------------------------------------------------------------
 
         [Test]
@@ -376,7 +564,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         //---------------------------------------------------------------------
-        // Metadata - pushing new keys.
+        // AuthorizeKeyAsync, pushing new keys.
         //---------------------------------------------------------------------
 
         [Test]
@@ -633,6 +821,264 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                         CreateAuthorizationMock().Object,
                         CancellationToken.None).Wait());
             }
+        }
+
+        //---------------------------------------------------------------------
+        // ListAuthorizedKeys.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenMetadataIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                    CreateComputeEngineAdapterMock(
+                        new Metadata(),
+                        new Metadata()).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
+            Assert.IsNotNull(keys);
+            CollectionAssert.IsEmpty(keys);
+        }
+
+        [Test]
+        public async Task WhenMetadataItemIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                CreateComputeEngineAdapterMock(
+                    new Metadata()
+                    {
+                        Items = new[]
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "ssh-keys",
+                            }
+                        }
+                    },
+                    new Metadata()
+                    {
+                        Items = new[]
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "ssh-keys",
+                            }
+                        }
+                    }).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
+            Assert.IsNotNull(keys);
+            CollectionAssert.IsEmpty(keys);
+        }
+
+        [Test]
+        public async Task WhenMethodIsNeitherProjectNorInstance_ThenListAuthorizedKeysReturnsEmptyList()
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                    CreateComputeEngineAdapterMock(
+                        new Metadata(),
+                        new Metadata()).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.Oslogin);
+            Assert.IsNotNull(keys);
+            CollectionAssert.IsEmpty(keys);
+        }
+
+        [Test]
+        public async Task WhenMethodIsInstance_ThenListAuthorizedKeysReturnsInstanceKeys()
+        {
+            var projectMetadata = new Metadata();
+            projectMetadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(new UnmanagedMetadataAuthorizedPublicKey(
+                        "alice",
+                        "ssh-rsa",
+                        "KEY-ALICE",
+                        "alice@example.com"))
+                    .ToString());
+
+            var instanceMetadata = new Metadata();
+            instanceMetadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(new UnmanagedMetadataAuthorizedPublicKey(
+                        "bob",
+                        "ssh-rsa",
+                        "KEY-BOB",
+                        "bob@example.com"))
+                    .ToString());
+
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                    CreateComputeEngineAdapterMock(
+                        projectMetadata,
+                        instanceMetadata).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.InstanceMetadata);
+            Assert.IsNotNull(keys);
+            Assert.AreEqual(1, keys.Count());
+            Assert.AreEqual("bob", keys.First().PosixUsername);
+        }
+
+        [Test]
+        public async Task WhenMethodIsProject_ThenListAuthorizedKeysReturnsInstanceKeys()
+        {
+            var projectMetadata = new Metadata();
+            projectMetadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(new UnmanagedMetadataAuthorizedPublicKey(
+                        "alice",
+                        "ssh-rsa",
+                        "KEY-ALICE",
+                        "alice@example.com"))
+                    .ToString());
+
+            var instanceMetadata = new Metadata();
+            instanceMetadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(new UnmanagedMetadataAuthorizedPublicKey(
+                        "bob",
+                        "ssh-rsa",
+                        "KEY-BOB",
+                        "bob@example.com"))
+                    .ToString());
+
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                    CreateComputeEngineAdapterMock(
+                        projectMetadata,
+                        instanceMetadata).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.ProjectMetadata);
+            Assert.IsNotNull(keys);
+            Assert.AreEqual(1, keys.Count());
+            Assert.AreEqual("alice", keys.First().PosixUsername);
+        }
+
+        [Test]
+        public async Task WhenMethodIsAll_ThenListAuthorizedKeysReturnsAllKeys()
+        {
+            var projectMetadata = new Metadata();
+            projectMetadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(new UnmanagedMetadataAuthorizedPublicKey(
+                        "alice",
+                        "ssh-rsa",
+                        "KEY-ALICE",
+                        "alice@example.com"))
+                    .ToString());
+
+            var instanceMetadata = new Metadata();
+            instanceMetadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(new UnmanagedMetadataAuthorizedPublicKey(
+                        "bob",
+                        "ssh-rsa",
+                        "KEY-BOB",
+                        "bob@example.com"))
+                    .ToString());
+
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                    CreateComputeEngineAdapterMock(
+                        projectMetadata,
+                        instanceMetadata).Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var keys = processor.ListAuthorizedKeys(KeyAuthorizationMethods.All);
+            Assert.IsNotNull(keys);
+            Assert.AreEqual(2, keys.Count());
+            CollectionAssert.AreEquivalent(
+                new[] { "alice", "bob" },
+                keys.Select(k => k.PosixUsername));
+        }
+
+        //---------------------------------------------------------------------
+        // RemoveAuthorizedKeyAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenMethodIsAll_ThenRemoveAuthorizedKeyUpdatesProjectAndInstanceMetadata()
+        {
+            var bobsKey = new UnmanagedMetadataAuthorizedPublicKey(
+                "bob",
+                "ssh-rsa",
+                "KEY-BOB",
+                "bob@example.com");
+
+            var projectMetadata = new Metadata();
+            projectMetadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(bobsKey)
+                    .ToString());
+
+            var instanceMetadata = new Metadata();
+            instanceMetadata.Add(
+                MetadataAuthorizedPublicKeySet.MetadataKey,
+                MetadataAuthorizedPublicKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(bobsKey)
+                    .ToString());
+
+            var computeEngineAdapter = CreateComputeEngineAdapterMock(
+                projectMetadata,
+                instanceMetadata);
+
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                    computeEngineAdapter.Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            await processor.RemoveAuthorizedKeyAsync(
+                    bobsKey,
+                    KeyAuthorizationMethods.All,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            computeEngineAdapter.Verify(a => a.UpdateCommonInstanceMetadataAsync(
+                It.IsAny<string>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+
+            computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
+                It.IsAny<InstanceLocator>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

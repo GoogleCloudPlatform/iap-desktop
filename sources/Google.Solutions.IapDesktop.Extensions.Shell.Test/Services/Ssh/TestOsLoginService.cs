@@ -22,6 +22,7 @@
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
@@ -30,6 +31,8 @@ using Google.Solutions.Ssh.Auth;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,6 +41,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
     [TestFixture]
     public class TestOsLoginService : ApplicationFixtureBase
     {
+        //---------------------------------------------------------------------
+        // AuthorizeKeyPairAsync.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenArgumentsIncomplete_ThenAuthorizeKeyAsyncThrowsArgumentException()
         {
@@ -132,7 +139,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public void WhenAdapterReturnsNoAccount_ThenAuthorizeKeyAsyncThrowsOsLoginSshKeyImportFailedException()
         {
-
             var adapter = new Mock<IOsLoginAdapter>();
             adapter
                 .Setup(a => a.ImportSshPublicKeyAsync(
@@ -150,6 +156,166 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     new Mock<ISshKeyPair>().Object,
                     TimeSpan.FromDays(1),
                     CancellationToken.None).Wait());
+        }
+
+        //---------------------------------------------------------------------
+        // ListAuthorizedKeysAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenProfileIsEmpty_ThenListAuthorizedKeysReturnsEmptyList()
+        {
+            var adapter = new Mock<IOsLoginAdapter>();
+            adapter.Setup(a => a.GetLoginProfileAsync(
+                    It.IsAny<ProjectLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LoginProfile()
+                {
+                });
+
+            var service = new OsLoginService(adapter.Object);
+
+            var keys = await service
+                .ListAuthorizedKeysAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            CollectionAssert.IsEmpty(keys);
+        }
+
+        [Test]
+        public async Task WhenProfileContainsInvalidKeys_ThenListAuthorizedKeysIgnoresThem()
+        {
+            var adapter = new Mock<IOsLoginAdapter>();
+            adapter.Setup(a => a.GetLoginProfileAsync(
+                    It.IsAny<ProjectLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LoginProfile()
+                {
+                    SshPublicKeys = new Dictionary<string, SshPublicKey>
+                    {
+                        { 
+                            "invalid-1", 
+                            new SshPublicKey()
+                            {
+                                Fingerprint = "invalid-1",
+                                Key = "",
+                                Name = "users/bob@gmail.com/sshPublicKeys/invalid-1"
+                            }
+                        },
+                        {
+                            "invalid-2",
+                            new SshPublicKey()
+                            {
+                                Fingerprint = "invalid-1",
+                                Key = "ssh-rsa AAAA",
+                                Name = "JUNK/bob@gmail.com/sshPublicKeys"
+                            }
+                        },
+                        {
+                            "valid",
+                            new SshPublicKey()
+                            {
+                                Fingerprint = "valid",
+                                Key = "ssh-rsa AAAA",
+                                Name = "users/bob@gmail.com/sshPublicKeys/valid"
+                            }
+                        }
+                    }
+                });
+
+            var service = new OsLoginService(adapter.Object);
+
+            var keys = await service
+                .ListAuthorizedKeysAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(1, keys.Count());
+            Assert.AreEqual("bob@gmail.com", keys.First().Email);
+            Assert.AreEqual("ssh-rsa", keys.First().KeyType);
+            Assert.AreEqual("AAAA", keys.First().PublicKey);
+            Assert.IsNull(keys.First().ExpireOn);
+        }
+
+        [Test]
+        public async Task WhenProfileContainsKeyWithExpiryDate_ThenExpiryDateIsConverted()
+        {
+            var firstOfJan = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+            var adapter = new Mock<IOsLoginAdapter>();
+            adapter.Setup(a => a.GetLoginProfileAsync(
+                    It.IsAny<ProjectLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LoginProfile()
+                {
+                    SshPublicKeys = new Dictionary<string, SshPublicKey>
+                    {
+                        {
+                            "expiring",
+                            new SshPublicKey()
+                            {
+                                Fingerprint = "expiring",
+                                Key = "ssh-rsa AAAA",
+                                Name = "users/bob@gmail.com/sshPublicKeys/expiring",
+                                ExpirationTimeUsec = firstOfJan.ToUnixTimeMilliseconds()
+                            }
+                        }
+                    }
+                });
+
+            var service = new OsLoginService(adapter.Object);
+
+            var keys = await service
+                .ListAuthorizedKeysAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(1, keys.Count());
+            Assert.AreEqual("bob@gmail.com", keys.First().Email);
+            Assert.AreEqual("ssh-rsa", keys.First().KeyType);
+            Assert.AreEqual("AAAA", keys.First().PublicKey);
+            Assert.AreEqual(firstOfJan.Date, keys.First().ExpireOn);
+        }
+
+        //---------------------------------------------------------------------
+        // DeleteAuthorizedKeyAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenKeyValid_ThenDeleteAuthorizedKeyDeletesKey()
+        {
+            var adapter = new Mock<IOsLoginAdapter>();
+            adapter.Setup(a => a.GetLoginProfileAsync(
+                    It.IsAny<ProjectLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LoginProfile()
+                {
+                    SshPublicKeys = new Dictionary<string, SshPublicKey>
+                    {
+                        {
+                            "fingerprint-1",
+                            new SshPublicKey()
+                            {
+                                Fingerprint = "fingerprint-1",
+                                Key = "ssh-rsa AAAA",
+                                Name = "users/bob@gmail.com/sshPublicKeys/fingerprint-1"
+                            }
+                        }
+                    }
+                });
+
+            var service = new OsLoginService(adapter.Object);
+            var keys = await service
+                .ListAuthorizedKeysAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            await service.DeleteAuthorizedKeyAsync(
+                    keys.First(), 
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            adapter.Verify(a => a.DeleteSshPublicKey(
+                    It.Is<string>(f => f == "fingerprint-1"),
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
         }
     }
 }

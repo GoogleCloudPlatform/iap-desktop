@@ -32,6 +32,9 @@ using System.Text.RegularExpressions;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
+    /// <summary>
+    /// SSH key pair for which the public key has been authorized.
+    /// </summary>
     public sealed class AuthorizedKeyPair : IDisposable
     {
         //

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,28 +19,28 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Util;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Common.Util
 {
-    public static class MetadataExtensions
+    public static class DateTimeOffsetExtensions
     {
+        private static readonly DateTimeOffset UnixEpoch =
+            new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-        public static Metadata.ItemsData GetItem(this Metadata metadata, string key)
+        public static long ToUnixTimeMicroseconds(this DateTimeOffset timestamp)
         {
-            return metadata?.Items
-                .EnsureNotNull()
-                .FirstOrDefault(item => 
-                    item.Key != null && 
-                    item.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
+            var duration = timestamp - UnixEpoch;
+            return duration.Ticks / 10;
         }
 
-        public static string GetValue(this Metadata metadata, string key)
+        public static DateTimeOffset FromUnixTimeMicroseconds(long millis)
         {
-            return GetItem(metadata, key)?.Value;
+            return UnixEpoch.AddMilliseconds(millis);
         }
     }
 }

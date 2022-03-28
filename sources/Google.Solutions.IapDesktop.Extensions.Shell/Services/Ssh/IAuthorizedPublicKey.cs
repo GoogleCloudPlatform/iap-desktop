@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,28 +19,37 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Util;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    public static class MetadataExtensions
+    /// <summary>
+    /// SSH public key that has been authorized to access a resource.
+    /// </summary>
+    public interface IAuthorizedPublicKey
     {
+        /// <summary>
+        /// Email address of user.
+        /// </summary>
+        string Email { get; }
 
-        public static Metadata.ItemsData GetItem(this Metadata metadata, string key)
-        {
-            return metadata?.Items
-                .EnsureNotNull()
-                .FirstOrDefault(item => 
-                    item.Key != null && 
-                    item.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
-        }
+        /// <summary>
+        /// Type of key (rsa-rsa, ...).
+        /// </summary>
+        string KeyType { get; }
 
-        public static string GetValue(this Metadata metadata, string key)
-        {
-            return GetItem(metadata, key)?.Value;
-        }
+        /// <summary>
+        /// Public key.
+        /// </summary>
+        string PublicKey { get; }
+
+        /// <summary>
+        /// Expiry date.
+        /// </summary>
+        DateTime? ExpireOn { get; }
     }
 }
