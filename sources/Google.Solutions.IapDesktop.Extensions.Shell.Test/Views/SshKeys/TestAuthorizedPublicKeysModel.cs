@@ -59,6 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
             nodeMock.SetupGet(n => n.DisplayName).Returns(instanceName);
             nodeMock.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", instanceName));
+            nodeMock.SetupGet(n => n.OperatingSystem)
+                .Returns(OperatingSystems.Linux);
 
             return nodeMock;
         }
@@ -103,6 +105,51 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 });
 
             return adapter;
+        }
+
+        //---------------------------------------------------------------------
+        // IsNodeSupported.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNodeIsCloudNode_ThenIsNodeSupportedReturnsFalse()
+        {
+            Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(
+                new Mock<IProjectModelCloudNode>().Object));
+        }
+
+        [Test]
+        public void WhenNodeIsZoneNode_ThenIsNodeSupportedReturnsFalse()
+        {
+            Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(
+                new Mock<IProjectModelZoneNode>().Object));
+        }
+
+        [Test]
+        public void WhenNodeIsProjectNode_ThenIsNodeSupportedReturnsFalse()
+        {
+            Assert.IsTrue(AuthorizedPublicKeysModel.IsNodeSupported(
+                new Mock<IProjectModelProjectNode>().Object));
+        }
+
+        [Test]
+        public void WhenNodeIsWindowsInstance_ThenIsNodeSupportedReturnsFalse()
+        {
+            var node = new Mock<IProjectModelInstanceNode>();
+            node.SetupGet(n => n.OperatingSystem)
+                .Returns(OperatingSystems.Windows);
+
+            Assert.IsFalse(AuthorizedPublicKeysModel.IsNodeSupported(node.Object));
+        }
+
+        [Test]
+        public void WhenNodeIsLinuxInstance_ThenIsNodeSupportedReturnsFalse()
+        {
+            var node = new Mock<IProjectModelInstanceNode>();
+            node.SetupGet(n => n.OperatingSystem)
+                .Returns(OperatingSystems.Linux);
+
+            Assert.IsTrue(AuthorizedPublicKeysModel.IsNodeSupported(node.Object));
         }
 
         //---------------------------------------------------------------------

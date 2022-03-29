@@ -56,7 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         // Factory.
         //---------------------------------------------------------------------
 
-        // TODO: test
         internal static bool IsNodeSupported(IProjectModelNode node)
         {
             return node is IProjectModelProjectNode ||
@@ -84,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 //
                 return null;
             }
-            if (node is IProjectModelProjectNode projectNode)
+            else if (node is IProjectModelProjectNode projectNode)
             {
                 metadataTask = MetadataAuthorizedPublicKeyProcessor.ForProject(
                         computeEngineAdapter,

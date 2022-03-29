@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Test;
+using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Moq;
@@ -54,6 +55,48 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
         {
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new JobServiceMock());
+            registry.AddMock<IResourceManagerAdapter>();
+            
+            var gceAdapter = registry.AddMock<IComputeEngineAdapter>();
+            gceAdapter.Setup(a => a.GetProjectAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Project()
+                {
+                    CommonInstanceMetadata = new Metadata()
+                    {
+                        Items = new []
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag,
+                                Value = "true"
+                            }
+                        }
+                    }
+                });
+            gceAdapter.Setup(a => a.GetInstanceAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Instance());
+
+
+            var alicesKey = new Mock<IAuthorizedPublicKey>();
+            alicesKey.SetupGet(k => k.Email).Returns("alice@gmail.com");
+            alicesKey.SetupGet(k => k.KeyType).Returns("ssh-rsa");
+
+            var bobsKey = new Mock<IAuthorizedPublicKey>();
+            bobsKey.SetupGet(k => k.Email).Returns("bob@gmail.com");
+            bobsKey.SetupGet(k => k.KeyType).Returns("ssh-rsa");
+
+            var osLoginService = registry.AddMock<IOsLoginService>();
+            osLoginService
+                .Setup(s => s.ListAuthorizedKeysAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new[]
+                {
+                    alicesKey.Object, 
+                    bobsKey.Object
+                });
 
             return new AuthorizedPublicKeysViewModel(registry);
         }
@@ -74,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
 
             Assert.AreEqual(CommandState.Unavailable, AuthorizedPublicKeysViewModel.GetCommandState(node.Object));
             Assert.IsFalse(viewModel.IsInformationBarVisible);
-            Assert.AreEqual("Installed packages", viewModel.WindowTitle);
+            Assert.AreEqual("Authorized SSH keys", viewModel.WindowTitle);
             Assert.IsFalse(viewModel.AllKeys.Any());
             Assert.IsFalse(viewModel.FilteredKeys.Any());
         }
@@ -91,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
 
             Assert.AreEqual(CommandState.Unavailable, AuthorizedPublicKeysViewModel.GetCommandState(node.Object));
             Assert.IsFalse(viewModel.IsInformationBarVisible);
-            Assert.AreEqual("Installed packages", viewModel.WindowTitle);
+            Assert.AreEqual("Authorized SSH keys", viewModel.WindowTitle);
             Assert.IsFalse(viewModel.AllKeys.Any());
             Assert.IsFalse(viewModel.FilteredKeys.Any());
         }
@@ -99,15 +142,57 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
         [Test]
         public async Task WhenSwitchingToProjectNode_ThenListIsPopulated()
         {
-            await Task.Yield();
-            Assert.Inconclusive();
+            var node = new Mock<IProjectModelProjectNode>();
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
+            node.SetupGet(n => n.DisplayName).Returns("project-1");
+
+            var viewModel = CreateViewModel();
+
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
+
+            // Switch again.
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
+
+            Assert.AreEqual(CommandState.Enabled, AuthorizedPublicKeysViewModel.GetCommandState(node.Object));
+            Assert.IsTrue(viewModel.IsListEnabled);
+            Assert.IsTrue(viewModel.IsInformationBarVisible);
+            StringAssert.Contains("project-1", viewModel.WindowTitle);
+
+            Assert.AreEqual(2, viewModel.AllKeys.Count);
+            Assert.AreEqual(2, viewModel.FilteredKeys.Count);
         }
 
         [Test]
         public async Task WhenSwitchingToInstanceNode_ThenListIsPopulated()
         {
-            await Task.Yield();
-            Assert.Inconclusive();
+            var node = new Mock<IProjectModelInstanceNode>();
+            node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Linux);
+            node.SetupGet(n => n.DisplayName).Returns("instance-1");
+            node.SetupGet(n => n.Instance).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
+
+            var viewModel = CreateViewModel();
+
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
+
+            // Switch again.
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
+
+            Assert.AreEqual(CommandState.Enabled, AuthorizedPublicKeysViewModel.GetCommandState(node.Object));
+            Assert.IsTrue(viewModel.IsListEnabled);
+            Assert.IsTrue(viewModel.IsInformationBarVisible);
+            StringAssert.Contains("instance-1", viewModel.WindowTitle);
+
+            Assert.AreEqual(2, viewModel.AllKeys.Count);
+            Assert.AreEqual(2, viewModel.FilteredKeys.Count);
         }
 
         //---------------------------------------------------------------------
@@ -115,24 +200,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenLoaded_ThenFilteredPackagesContainsKeys()
+        public async Task WhenFilterSet_ThenFilteredPackagesContainsPackagesThatMatchTerm()
         {
-            await Task.Yield();
-            Assert.Inconclusive();
-        }
+            var node = new Mock<IProjectModelProjectNode>();
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
+            node.SetupGet(n => n.DisplayName).Returns("project-1");
 
-        [Test]
-        public async Task WhenFilteSet_ThenFilteredPackagesContainsPackagesThatMatchTerm()
-        {
-            await Task.Yield();
-            Assert.Inconclusive();
-        }
+            var viewModel = CreateViewModel();
 
-        [Test]
-        public async Task WhenFilterIsReset_ThenFilteredPackagesContainsAllPackages()
-        {
-            await Task.Yield();
-            Assert.Inconclusive();
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
+
+            viewModel.Filter = "ice";
+            Assert.AreEqual(2, viewModel.AllKeys.Count);
+            Assert.AreEqual(1, viewModel.FilteredKeys.Count);
+
+            viewModel.Filter = null;
+            Assert.AreEqual(2, viewModel.FilteredKeys.Count);
         }
     }
 }

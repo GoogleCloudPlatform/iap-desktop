@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         : ModelCachingViewModelBase<IProjectModelNode, AuthorizedPublicKeysModel>
     {
         private const int ModelCacheCapacity = 5;
-        private const string WindowTitlePrefix = "Metadata authorized SSH keys";
+        private const string WindowTitlePrefix = "Authorized SSH keys";
 
         private readonly IServiceProvider serviceProvider;
 
@@ -129,7 +129,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 this.filter = value;
 
                 var matches = this.AllKeys
-                    .Where(k => k.Key.Email.Contains(this.filter) || k.Key.KeyType.Contains(this.filter));
+                    .Where(k => string.IsNullOrEmpty(this.filter) ||
+                                k.Key.Email.Contains(this.filter) || 
+                                k.Key.KeyType.Contains(this.filter));
 
                 this.FilteredKeys.Clear();
                 this.FilteredKeys.AddRange(matches);
@@ -143,7 +145,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         // Static helpers.
         //---------------------------------------------------------------------
 
-        // TODO: test
         internal static CommandState GetCommandState(IProjectModelNode node)
         {
             return AuthorizedPublicKeysModel.IsNodeSupported(node)
@@ -155,7 +156,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        // TODO: test
         protected async override Task<AuthorizedPublicKeysModel> LoadModelAsync(
             IProjectModelNode node, 
             CancellationToken token)
@@ -205,7 +205,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             }
         }
 
-        // TODO: test
         protected override void ApplyModel(bool cached)
         {
             this.AllKeys.Clear();

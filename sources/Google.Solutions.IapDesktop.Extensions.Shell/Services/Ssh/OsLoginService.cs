@@ -68,6 +68,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     [Service(typeof(IOsLoginService))]
     public class OsLoginService : IOsLoginService
     {
+        private static readonly ProjectLocator WellKnownProject 
+            = new ProjectLocator("windows-cloud");
+        
         private readonly IOsLoginAdapter adapter;
 
         //---------------------------------------------------------------------
@@ -169,10 +172,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 // using any project.
                 //
                 // 
-                var wellKnownProject = new ProjectLocator("windows-cloud"); // TODO: move to field
-
                 var loginProfile = await this.adapter
-                    .GetLoginProfileAsync(wellKnownProject, cancellationToken)
+                    .GetLoginProfileAsync(WellKnownProject, cancellationToken)
                     .ConfigureAwait(false);
 
                 return loginProfile
