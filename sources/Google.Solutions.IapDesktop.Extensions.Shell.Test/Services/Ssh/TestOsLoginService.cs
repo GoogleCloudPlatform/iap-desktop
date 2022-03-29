@@ -22,6 +22,7 @@
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
@@ -256,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                                 Fingerprint = "expiring",
                                 Key = "ssh-rsa AAAA",
                                 Name = "users/bob@gmail.com/sshPublicKeys/expiring",
-                                ExpirationTimeUsec = firstOfJan.ToUnixTimeMilliseconds()
+                                ExpirationTimeUsec = firstOfJan.ToUnixTimeMicroseconds()
                             }
                         }
                     }
