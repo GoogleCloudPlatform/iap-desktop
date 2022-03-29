@@ -35,6 +35,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer;
 using System;
@@ -415,6 +416,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                         session => session.IsConnected),
                     _ => DoWithActiveSession<IRemoteDesktopSession>(
                         session => session.ShowTaskManager())));
+
+
+            //
+            // Add commands to main menu.
+            //
+            mainForm.ViewMenu.AddCommand(
+                new Command<IMainForm>(
+                    "Authorized SSH &keys",
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
+                {
+                    // TODO: Image = Resources.ComputerDetails_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.K
+                });
+            // TODO: Add context menu command
         }
 
         private void DoWithActiveSession<TSession>(Action<TSession> action)

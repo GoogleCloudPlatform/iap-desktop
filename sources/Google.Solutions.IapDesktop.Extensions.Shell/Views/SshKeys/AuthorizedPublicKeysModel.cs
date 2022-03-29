@@ -56,6 +56,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         // Factory.
         //---------------------------------------------------------------------
 
+        // TODO: test
+        internal static bool IsNodeSupported(IProjectModelNode node)
+        {
+            return node is IProjectModelProjectNode ||
+                (node is IProjectModelInstanceNode instanceNode && 
+                    instanceNode.OperatingSystem == OperatingSystems.Linux);
+        }
+
         internal static async Task<AuthorizedPublicKeysModel> LoadAsync(
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
@@ -69,6 +77,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             var osLoginKeysTask = osLoginService.ListAuthorizedKeysAsync(cancellationToken);
 
             Task<MetadataAuthorizedPublicKeyProcessor> metadataTask = null;
+            if (!IsNodeSupported(node))
+            {
+                //
+                // We don't support that kind of node.
+                //
+                return null;
+            }
             if (node is IProjectModelProjectNode projectNode)
             {
                 metadataTask = MetadataAuthorizedPublicKeyProcessor.ForProject(
@@ -88,9 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             }
             else
             {
-                //
-                // We don't support that kind of node.
-                //
+                Debug.Fail("This case should not happen.");
                 return null;
             }
 

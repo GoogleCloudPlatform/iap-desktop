@@ -49,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
         private string filter;
         private bool isLoading;
+        private bool isListEnabled = false;
         private string windowTitle;
         private string informationBarContent;
 
@@ -57,6 +58,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             : base(ModelCacheCapacity)
         {
             this.serviceProvider = serviceProvider;
+        }
+
+        public void ResetWindowTitle()
+        {
+            this.WindowTitle = WindowTitlePrefix;
         }
 
         //---------------------------------------------------------------------
@@ -68,7 +74,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
         public RangeObservableCollection<AuthorizedPublicKeysModel.Item> FilteredKeys { get; }
             = new RangeObservableCollection<AuthorizedPublicKeysModel.Item>();
-
+        
+        public bool IsListEnabled
+        {
+            get => this.isListEnabled;
+            set
+            {
+                this.isListEnabled = value;
+                RaisePropertyChange();
+            }
+        }
         public bool IsLoading
         {
             get => this.isLoading;
@@ -131,8 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         // TODO: test
         internal static CommandState GetCommandState(IProjectModelNode node)
         {
-            return (node is IProjectModelInstanceNode ||
-                    node is IProjectModelProjectNode)
+            return AuthorizedPublicKeysModel.IsNodeSupported(node)
                 ? CommandState.Enabled
                 : CommandState.Unavailable;
         }
@@ -166,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     //
                     return await jobService.RunInBackground(
                         new JobDescription(
-                            $"Loading inventory for {node.DisplayName}",
+                            $"Loading SSH keys for {node.DisplayName}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
@@ -200,11 +214,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             if (this.Model == null)
             {
                 // Unsupported node.
+                this.IsListEnabled = false;
                 this.InformationBarContent = null;
                 this.WindowTitle = WindowTitlePrefix;
             }
             else
             {
+                this.IsListEnabled = true;
                 this.InformationBarContent = this.Model.Warnings.Any()
                     ? string.Join(", ", this.Model.Warnings)
                     : null;

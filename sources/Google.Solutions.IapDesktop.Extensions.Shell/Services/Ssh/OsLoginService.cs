@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 // using any project.
                 //
                 // 
-                var wellKnownProject = new ProjectLocator("winodws-cloud");
+                var wellKnownProject = new ProjectLocator("windows-cloud"); // TODO: move to field
 
                 var loginProfile = await this.adapter
                     .GetLoginProfileAsync(wellKnownProject, cancellationToken)
