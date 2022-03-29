@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
             this.viewModel = new AuthorizedPublicKeysViewModel(serviceProvider);
 
-            this.infoLabel.BindProperty(
+            this.infoLabel.BindReadonlyProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.InformationBarContent,
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     this.TabText = title;
                     this.Text = title;
                 }));
-            this.viewModel.ResetWindowTitle();  // Fire event to set initial window title.
+            this.viewModel.ResetWindowTitleAndInformationBar();  // Fire event to set initial window title.
 
             // Bind list.
             this.keysList.BindProperty(

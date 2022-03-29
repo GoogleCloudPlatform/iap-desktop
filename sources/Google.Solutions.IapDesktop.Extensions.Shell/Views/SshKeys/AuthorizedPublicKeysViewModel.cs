@@ -60,9 +60,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.serviceProvider = serviceProvider;
         }
 
-        public void ResetWindowTitle()
+        public void ResetWindowTitleAndInformationBar()
         {
             this.WindowTitle = WindowTitlePrefix;
+            this.InformationBarContent = null;
         }
 
         //---------------------------------------------------------------------
