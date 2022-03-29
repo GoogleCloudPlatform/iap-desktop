@@ -39,7 +39,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 {
-    public class MetadataAuthorizedPublicKeysViewModel
+    public class AuthorizedPublicKeysViewModel
         : ModelCachingViewModelBase<IProjectModelNode, AuthorizedPublicKeysModel>
     {
         private const int ModelCacheCapacity = 5;
@@ -47,11 +47,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
         private readonly IServiceProvider serviceProvider;
 
+        private string filter;
         private bool isLoading;
         private string windowTitle;
         private string informationBarContent;
 
-        public MetadataAuthorizedPublicKeysViewModel(
+        public AuthorizedPublicKeysViewModel(
             IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
@@ -62,7 +63,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         // Observable "output" properties.
         //---------------------------------------------------------------------
 
-        public RangeObservableCollection<AuthorizedPublicKeysModel.Item> Items { get; }
+        public RangeObservableCollection<AuthorizedPublicKeysModel.Item> AllKeys { get; }
+            = new RangeObservableCollection<AuthorizedPublicKeysModel.Item>();
+
+        public RangeObservableCollection<AuthorizedPublicKeysModel.Item> FilteredKeys { get; }
+            = new RangeObservableCollection<AuthorizedPublicKeysModel.Item>();
 
         public bool IsLoading
         {
@@ -93,7 +98,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             {
                 this.informationBarContent = value;
                 RaisePropertyChange();
-                RaisePropertyChange((MetadataAuthorizedPublicKeysViewModel m) => m.IsInformationBarVisible);
+                RaisePropertyChange((AuthorizedPublicKeysViewModel m) => m.IsInformationBarVisible);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // "Input" properties.
+        //---------------------------------------------------------------------
+
+        public string Filter
+        {
+            get => this.filter;
+            set
+            {
+                this.filter = value;
+
+                var matches = this.AllKeys
+                    .Where(k => k.Key.Email.Contains(this.filter) || k.Key.KeyType.Contains(this.filter));
+
+                this.FilteredKeys.Clear();
+                this.FilteredKeys.AddRange(matches);
+
+                RaisePropertyChange((AuthorizedPublicKeysViewModel m) => m.FilteredKeys);
+                RaisePropertyChange();
             }
         }
 
@@ -167,7 +194,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         // TODO: test
         protected override void ApplyModel(bool cached)
         {
-            this.Items.Clear();
+            this.AllKeys.Clear();
+            this.FilteredKeys.Clear();
 
             if (this.Model == null)
             {
@@ -181,8 +209,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     ? string.Join(", ", this.Model.Warnings)
                     : null;
                 this.WindowTitle = WindowTitlePrefix + $": {this.Model.DisplayName}";
-                this.Items.AddRange(this.Model.Items);
+                this.AllKeys.AddRange(this.Model.Items);
             }
+
+            // Reset filter, implicitly populating the FilteredPackages property.
+            this.Filter = string.Empty;
         }
     }
 }
