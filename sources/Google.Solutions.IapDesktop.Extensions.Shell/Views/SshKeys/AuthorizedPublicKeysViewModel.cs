@@ -50,7 +50,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         private bool isLoading;
         private string windowTitle;
         private string informationBarContent;
-        private KeyAuthorizationMethods authorizationMethods;
 
         public MetadataAuthorizedPublicKeysViewModel(
             IServiceProvider serviceProvider)
@@ -81,36 +80,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             set
             {
                 this.windowTitle = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsOsLoginKeysEnabled
-        {
-            get => this.authorizationMethods.HasFlag(KeyAuthorizationMethods.Oslogin);
-            set
-            {
-                this.authorizationMethods |= KeyAuthorizationMethods.Oslogin;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsProjectMetadataKeysEnabled
-        {
-            get => this.authorizationMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata);
-            set
-            {
-                this.authorizationMethods |= KeyAuthorizationMethods.ProjectMetadata;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsProjectInstanceKeysEnabled
-        {
-            get => this.authorizationMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata);
-            set
-            {
-                this.authorizationMethods |= KeyAuthorizationMethods.InstanceMetadata;
                 RaisePropertyChange();
             }
         }
@@ -183,7 +152,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                                         resourceManagerAdapter,
                                         osLoginService,
                                         node,
-                                        this.authorizationMethods,
                                         jobToken)
                                     .ConfigureAwait(false);
                             }

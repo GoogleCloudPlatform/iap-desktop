@@ -117,127 +117,102 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 new Mock<IResourceManagerAdapter>().Object,
                 new Mock<IOsLoginService>().Object,
                 new Mock<IProjectModelCloudNode>().Object,
-                KeyAuthorizationMethods.All,
                 CancellationToken.None);
 
             Assert.IsNull(model);
         }
 
         [Test]
-        public async Task WhenScopeIsProjectAndNoMethodsAllowed_ThenLoadReturnsEmptyModel()
-        {
-            var model = await AuthorizedPublicKeysModel.LoadAsync(
-                new Mock<IComputeEngineAdapter>().Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
-                CreateProjectNodeMock("project-1", "Project 1").Object,
-                (KeyAuthorizationMethods)0,
-                CancellationToken.None);
-
-            Assert.IsNotNull(model);
-            Assert.AreEqual("Project 1", model.DisplayName);
-            CollectionAssert.IsEmpty(model.Items);
-            CollectionAssert.IsEmpty(model.Warnings);
-        }
-
-        [Test]
-        public async Task WhenScopeIsProjectAndOsLoginSelected_ThenLoadReturnsModel()
+        public async Task WhenScopeIsProjectAndOsLoginEnabled_ThenModelIncludesOsLoginKeys()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
-
             var osLoginServiceMock = new Mock<IOsLoginService>();
             osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
 
+            var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
+                new Dictionary<string, string>
+                {
+                    { MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag, "true" },
+                    { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
+                },
+                null);
+
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                new Mock<IComputeEngineAdapter>().Object,
+                computeEngineAdapterMock.Object,
                 new Mock<IResourceManagerAdapter>().Object,
                 osLoginServiceMock.Object,
                 CreateProjectNodeMock("project-1", "Project 1").Object,
-                KeyAuthorizationMethods.Oslogin,
                 CancellationToken.None);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("Project 1", model.DisplayName);
+
             Assert.AreEqual(1, model.Items.Count());
             Assert.AreEqual(KeyAuthorizationMethods.Oslogin, model.Items.First().AuthorizationMethod);
             Assert.AreSame(osLoginKey, model.Items.First().Key);
         }
 
         [Test]
-        public async Task WhenScopeIsProjectAndProjectMetadataSelected_ThenLoadReturnsModel()
+        public async Task WhenScopeIsProjectAndOsLoginDisabled_ThenModelIncludesProjectKeys()
         {
+            var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
+            var osLoginServiceMock = new Mock<IOsLoginService>();
+            osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new[] { osLoginKey });
+
             var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
                 new Dictionary<string, string>
                 {
-                    { "ssh-keys", "bob:ssh-rsa KEY bob@gmail.com" }
+                    { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
                 },
                 null);
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                 computeEngineAdapterMock.Object,
                 new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
+                osLoginServiceMock.Object,
                 CreateProjectNodeMock("project-1", "Project 1").Object,
-                KeyAuthorizationMethods.ProjectMetadata,
                 CancellationToken.None);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("Project 1", model.DisplayName);
+
             Assert.AreEqual(1, model.Items.Count());
-            Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, model.Items.First().AuthorizationMethod);
-            Assert.AreEqual("KEY", model.Items.First().Key.PublicKey);
+            Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, model.Items.ToList()[0].AuthorizationMethod);
+            Assert.AreEqual("alice@gmail.com", model.Items.ToList()[0].Key.Email);
         }
 
         [Test]
-        public async Task WhenScopeIsProjectAndProjectKeysBlocked_ThenLoadReturnsEmptyModelWithWarning()
+        public async Task WhenScopeIsProjectAndOsLoginDisabledAndProjectKeysBlocked_ThenModelIncludesNoKeys()
         {
+            var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
+            var osLoginServiceMock = new Mock<IOsLoginService>();
+            osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new[] { osLoginKey });
+
             var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
                 new Dictionary<string, string>
                 {
-                    { "ssh-keys", "bob:ssh-rsa KEY bob@gmail.com" },
-                    { MetadataAuthorizedPublicKeyProcessor.BlockProjectSshKeysFlag, "true" }
+                    { MetadataAuthorizedPublicKeyProcessor.BlockProjectSshKeysFlag, "true" },
+                    { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
                 },
                 null);
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                 computeEngineAdapterMock.Object,
                 new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
+                osLoginServiceMock.Object,
                 CreateProjectNodeMock("project-1", "Project 1").Object,
-                KeyAuthorizationMethods.ProjectMetadata,
                 CancellationToken.None);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("Project 1", model.DisplayName);
+
             CollectionAssert.IsEmpty(model.Items);
-            Assert.AreEqual(1, model.Warnings.Count());
-        }
-
-        [Test]
-        public async Task WhenScopeIsProjectOsLoginEnabled_ThenLoadReturnsEmptyModelWithWarning()
-        {
-            var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
-                new Dictionary<string, string>
-                {
-                    { "ssh-keys", "bob:ssh-rsa KEY bob@gmail.com" },
-                    { MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag, "true" }
-                },
-                null);
-
-            var model = await AuthorizedPublicKeysModel.LoadAsync(
-                computeEngineAdapterMock.Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
-                CreateProjectNodeMock("project-1", "Project 1").Object,
-                KeyAuthorizationMethods.ProjectMetadata,
-                CancellationToken.None);
-
-            Assert.IsNotNull(model);
-            Assert.AreEqual("Project 1", model.DisplayName);
-            CollectionAssert.IsEmpty(model.Items);
-            Assert.AreEqual(1, model.Warnings.Count());
         }
 
         //---------------------------------------------------------------------
@@ -252,58 +227,56 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 new Mock<IResourceManagerAdapter>().Object,
                 new Mock<IOsLoginService>().Object,
                 new Mock<IProjectModelZoneNode>().Object,
-                KeyAuthorizationMethods.All,
                 CancellationToken.None);
 
             Assert.IsNull(model);
         }
 
-        [Test]
-        public async Task WhenScopeIsInstanceAndNoMethodsAllowed_ThenLoadReturnsEmptyModel()
-        {
-            var model = await AuthorizedPublicKeysModel.LoadAsync(
-                new Mock<IComputeEngineAdapter>().Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
-                CreateInstanceNodeMock("instance-1").Object,
-                (KeyAuthorizationMethods)0,
-                CancellationToken.None);
-
-            Assert.IsNotNull(model);
-            Assert.AreEqual("instance-1", model.DisplayName);
-            CollectionAssert.IsEmpty(model.Items);
-            CollectionAssert.IsEmpty(model.Warnings);
-        }
 
         [Test]
-        public async Task WhenScopeIsInstanceAndOsLoginSelected_ThenLoadReturnsModel()
+        public async Task WhenScopeIsInstanceAndOsLoginEnabled_ThenModelIncludesOsLoginKeys()
         {
             var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
-
             var osLoginServiceMock = new Mock<IOsLoginService>();
             osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new[] { osLoginKey });
 
+            var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
+                new Dictionary<string, string>
+                {
+                    { MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag, "true" },
+                    { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
+                },
+                new Dictionary<string, string>
+                {
+                    { "ssh-keys", "bob:ssh-rsa BOBS-KEY bob@gmail.com" }
+                });
+
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                new Mock<IComputeEngineAdapter>().Object,
+                computeEngineAdapterMock.Object,
                 new Mock<IResourceManagerAdapter>().Object,
                 osLoginServiceMock.Object,
                 CreateInstanceNodeMock("instance-1").Object,
-                KeyAuthorizationMethods.Oslogin,
                 CancellationToken.None);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("instance-1", model.DisplayName);
+
             Assert.AreEqual(1, model.Items.Count());
-            Assert.AreEqual(KeyAuthorizationMethods.Oslogin, model.Items.First().AuthorizationMethod);
             Assert.AreEqual(KeyAuthorizationMethods.Oslogin, model.Items.First().AuthorizationMethod);
             Assert.AreSame(osLoginKey, model.Items.First().Key);
         }
 
         [Test]
-        public async Task WhenScopeIsInstanceAndInstanceMetadataSelected_ThenLoadReturnsModel()
+        public async Task WhenScopeIsInstanceAndOsLoginDisabled_ThenModelIncludesProjectAndInstanceKeys()
         {
+            var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
+            var osLoginServiceMock = new Mock<IOsLoginService>();
+            osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new[] { osLoginKey });
+
             var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
                 new Dictionary<string, string>
                 {
@@ -317,100 +290,53 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                 computeEngineAdapterMock.Object,
                 new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
+                osLoginServiceMock.Object,
                 CreateInstanceNodeMock("instance-1").Object,
-                KeyAuthorizationMethods.InstanceMetadata,
                 CancellationToken.None);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("instance-1", model.DisplayName);
-            Assert.AreEqual(1, model.Items.Count());
-            Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, model.Items.First().AuthorizationMethod);
-            Assert.AreEqual("BOBS-KEY", model.Items.First().Key.PublicKey);
-        }
 
-        [Test]
-        public async Task WhenScopeIsInstanceAndProjectAndInstanceMetadataSelected_ThenLoadReturnsModel()
-        {
-            var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
-                new Dictionary<string, string>
-                {
-                    { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
-                },
-                new Dictionary<string, string>
-                {
-                    { "ssh-keys", "bob:ssh-rsa BOBS-KEY bob@gmail.com" }
-                });
-
-            var model = await AuthorizedPublicKeysModel.LoadAsync(
-                computeEngineAdapterMock.Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
-                CreateInstanceNodeMock("instance-1").Object,
-                KeyAuthorizationMethods.InstanceMetadata | KeyAuthorizationMethods.ProjectMetadata,
-                CancellationToken.None);
-
-            Assert.IsNotNull(model);
-            Assert.AreEqual("instance-1", model.DisplayName);
             Assert.AreEqual(2, model.Items.Count());
-
-            Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, model.Items.First().AuthorizationMethod);
-            Assert.AreEqual("ALICES-KEY", model.Items.First().Key.PublicKey);
-
-            Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, model.Items.Last().AuthorizationMethod);
-            Assert.AreEqual("BOBS-KEY", model.Items.Last().Key.PublicKey);
+            Assert.AreEqual(KeyAuthorizationMethods.ProjectMetadata, model.Items.ToList()[0].AuthorizationMethod);
+            Assert.AreEqual("alice@gmail.com", model.Items.ToList()[0].Key.Email);
+            Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, model.Items.ToList()[1].AuthorizationMethod);
+            Assert.AreEqual("bob@gmail.com", model.Items.ToList()[1].Key.Email);
         }
 
         [Test]
-        public async Task WhenScopeIsInstanceAndProjectAndInstanceMetadataSelectedButProjectKeysBlocked_ThenLoadReturnsEmptyModelWithWarning()
+        public async Task WhenScopeIsInstanceAndOsLoginDisabledAndProjectKeysBlocked_ThenModelIncludesInstanceKeys()
         {
+            var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
+            var osLoginServiceMock = new Mock<IOsLoginService>();
+            osLoginServiceMock.Setup(s => s.ListAuthorizedKeysAsync(
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new[] { osLoginKey });
+
             var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
+                new Dictionary<string, string>
+                {
+                    { "ssh-keys", "alice:ssh-rsa ALICES-KEY alice@gmail.com" }
+                },
                 new Dictionary<string, string>
                 {
                     { MetadataAuthorizedPublicKeyProcessor.BlockProjectSshKeysFlag, "true" },
                     { "ssh-keys", "bob:ssh-rsa BOBS-KEY bob@gmail.com" }
-                },
-                null);
-
-            var model = await AuthorizedPublicKeysModel.LoadAsync(
-                computeEngineAdapterMock.Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
-                CreateInstanceNodeMock("instance-1").Object,
-                KeyAuthorizationMethods.InstanceMetadata | KeyAuthorizationMethods.ProjectMetadata,
-                CancellationToken.None);
-
-            Assert.IsNotNull(model);
-            Assert.AreEqual("instance-1", model.DisplayName);
-            CollectionAssert.IsEmpty(model.Items);
-            Assert.AreEqual(1, model.Warnings.Count());
-        }
-
-        [Test]
-        public async Task WhenScopeIsInstanceAndProjectAndInstanceMetadataSelectedAndOsLoginEnabled_ThenLoadReturnsEmptyModelWithWarning()
-        {
-            var computeEngineAdapterMock = CreateComputeEngineAdapterMock(
-                new Dictionary<string, string>
-                {
-                    { MetadataAuthorizedPublicKeyProcessor.EnableOsLoginFlag, "true" }
-                },
-                new Dictionary<string, string>
-                {
-                    { "ssh-keys", "bob:ssh-rsa BOBS-KEY bob@gmail.com" }
                 });
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
                 computeEngineAdapterMock.Object,
                 new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
+                osLoginServiceMock.Object,
                 CreateInstanceNodeMock("instance-1").Object,
-                KeyAuthorizationMethods.InstanceMetadata | KeyAuthorizationMethods.ProjectMetadata,
                 CancellationToken.None);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("instance-1", model.DisplayName);
-            CollectionAssert.IsEmpty(model.Items);
-            Assert.AreEqual(1, model.Warnings.Count());
+
+            Assert.AreEqual(1, model.Items.Count());
+            Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, model.Items.ToList()[0].AuthorizationMethod);
+            Assert.AreEqual("bob@gmail.com", model.Items.ToList()[0].Key.Email);
         }
     }
 }

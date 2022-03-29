@@ -61,37 +61,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             IResourceManagerAdapter resourceManagerAdapter,
             IOsLoginService osLoginService,
             IProjectModelNode node,
-            KeyAuthorizationMethods authorizationMethods,
             CancellationToken cancellationToken)
         {
             //
             // Kick off the tasks we need.
             //
+            var osLoginKeysTask = osLoginService.ListAuthorizedKeysAsync(cancellationToken);
 
             Task<MetadataAuthorizedPublicKeyProcessor> metadataTask = null;
             if (node is IProjectModelProjectNode projectNode)
             {
-                if (authorizationMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
-                {
-                    metadataTask = MetadataAuthorizedPublicKeyProcessor.ForProject(
-                            computeEngineAdapter,
-                            projectNode.Project,
-                            cancellationToken)
-                        .ContinueWith(t => (MetadataAuthorizedPublicKeyProcessor)t.Result);
-                }
+                metadataTask = MetadataAuthorizedPublicKeyProcessor.ForProject(
+                        computeEngineAdapter,
+                        projectNode.Project,
+                        cancellationToken)
+                    .ContinueWith(t => (MetadataAuthorizedPublicKeyProcessor)t.Result);
             }
             else if (node is IProjectModelInstanceNode instanceNode)
             {
-                if (authorizationMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata) ||
-                    authorizationMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
-                {
-                    metadataTask = MetadataAuthorizedPublicKeyProcessor.ForInstance(
-                            computeEngineAdapter,
-                            resourceManagerAdapter,
-                            instanceNode.Instance,
-                            cancellationToken)
-                        .ContinueWith(t => (MetadataAuthorizedPublicKeyProcessor)t.Result); ;
-                }
+                metadataTask = MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                        computeEngineAdapter,
+                        resourceManagerAdapter,
+                        instanceNode.Instance,
+                        cancellationToken)
+                    .ContinueWith(t => (MetadataAuthorizedPublicKeyProcessor)t.Result); ;
             }
             else
             {
@@ -101,65 +94,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 return null;
             }
 
-            //
-            // Consider OS Login keys (if requested).
-            //
-            Task<IEnumerable<IAuthorizedPublicKey>> osLoginKeysTask =
-                authorizationMethods.HasFlag(KeyAuthorizationMethods.Oslogin)
-                    ? osLoginService.ListAuthorizedKeysAsync(cancellationToken)
-                    : null;
+            var processor = await metadataTask.ConfigureAwait(false);
 
             var items = new List<AuthorizedPublicKeysModel.Item>();
+            string warning = null;
 
-            if (authorizationMethods.HasFlag(KeyAuthorizationMethods.Oslogin))
+            if (processor.IsOsLoginEnabled)
             {
-                Debug.Assert(osLoginKeysTask != null);
-
+                //
+                // OS Login enabled - only include OS Login keys them, since
+                // all others are ignored anyway.
+                //
                 items.AddRange((await osLoginKeysTask.ConfigureAwait(false))
                     .Select(k => new AuthorizedPublicKeysModel.Item(k, KeyAuthorizationMethods.Oslogin))
                     .ToList());
+                warning = "OS Login is enabled, the list only includes your personal OS Login keys.";
             }
-
-            //
-            // Consider metadata keys (if requested).
-            //
-
-            string warning = null;
-            if (authorizationMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata) ||
-                authorizationMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
+            else
             {
-                var processor = await metadataTask.ConfigureAwait(false);
-                if (processor.IsOsLoginEnabled)
+                warning = "OS Login is disabled, the list only includes metadata-based keys.";
+                //
+                // OS Login disabled - consider metadata keys.
+                //
+                if (processor.AreProjectSshKeysBlocked)
                 {
-                    warning = "OS Login enabled - keys from metadata are ignored";
+                    warning += " Project SSH keys are blocked.";
                 }
                 else
                 {
-                    if (authorizationMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
-                    {
-                        if (processor.AreProjectSshKeysBlocked)
-                        {
-                            warning = "Project-wide keys are blocked";
-                        }
-                        else
-                        {
-                            items.AddRange(processor
-                                .ListAuthorizedKeys(KeyAuthorizationMethods.ProjectMetadata)
-                                .Select(k => new AuthorizedPublicKeysModel.Item(
-                                    k,
-                                    KeyAuthorizationMethods.ProjectMetadata)));
-                        }
-                    }
-
-                    if (authorizationMethods.HasFlag(KeyAuthorizationMethods.InstanceMetadata))
-                    {
-                        items.AddRange(processor
-                            .ListAuthorizedKeys(KeyAuthorizationMethods.InstanceMetadata)
-                            .Select(k => new AuthorizedPublicKeysModel.Item(
-                                k,
-                                KeyAuthorizationMethods.InstanceMetadata)));
-                    }
+                    items.AddRange(processor
+                        .ListAuthorizedKeys(KeyAuthorizationMethods.ProjectMetadata)
+                        .Select(k => new AuthorizedPublicKeysModel.Item(
+                            k,
+                            KeyAuthorizationMethods.ProjectMetadata)));
                 }
+
+                items.AddRange(processor
+                    .ListAuthorizedKeys(KeyAuthorizationMethods.InstanceMetadata)
+                    .Select(k => new AuthorizedPublicKeysModel.Item(
+                        k,
+                        KeyAuthorizationMethods.InstanceMetadata)));
+
             }
 
             return new AuthorizedPublicKeysModel(
