@@ -250,7 +250,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             }
             else
             {
-                // TODO: test.
                 return Enumerable.Empty<MetadataAuthorizedPublicKey>();
             }
         }
