@@ -50,6 +50,8 @@ namespace Google.Solutions.Ssh.Auth
 
     public static class SshKeyPair
     {
+        private const int NTE_EXISTS = -2146893809; // 0x8009000F
+
         private static CngKey OpenPersistentKeyPair(
             string name,
             CngAlgorithm algorithm,
@@ -140,17 +142,34 @@ namespace Google.Solutions.Ssh.Auth
                     //
                     // Create the key. 
                     //
-                    var key = CngKey.Create(
-                        algorithm,
-                        name,
-                        keyParams);
+                    try
+                    {
+                        var key = CngKey.Create(
+                            algorithm,
+                            name,
+                            keyParams);
 
-                    Debug.Assert(key.KeySize == keySize);
+                        Debug.Assert(key.KeySize == keySize);
 
-                    SshTraceSources.Default.TraceInformation(
-                        "Created new CNG key {0} in {1}", name, provider.Provider);
+                        SshTraceSources.Default.TraceInformation(
+                            "Created new CNG key {0} in {1}", name, provider.Provider);
 
-                    return key;
+                        return key;
+                    }
+                    catch (CryptographicException e) when (e.HResult == NTE_EXISTS)
+                    {
+                        //
+                        // This should not happen because of the previous Exists()
+                        // check, but:
+                        //
+                        //  - There might be a race condition (rare)
+                        //  - The specific algorithm might be disabled on the machine
+                        //    (also rare).
+                        //
+                        throw new CryptographicException(
+                            "Failed to create or access cryptographic key. If the error " +
+                            $"persists, try using an algorithm other than {algorithm}.", e);
+                    }
                 }
                 else
                 {
