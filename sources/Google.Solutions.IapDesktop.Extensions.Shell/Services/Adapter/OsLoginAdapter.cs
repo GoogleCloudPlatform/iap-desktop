@@ -25,6 +25,7 @@ using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Net;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -134,7 +135,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                         .ExecuteAsync(token)
                         .ConfigureAwait(false);
 
-                    return response.LoginProfile;
+                    //
+                    // Creating the profile succeeded (if it didn't exist
+                    // yet -- but we still need to check if the key was actually
+                    // added.
+                    //
+                    // If the 'Allow users to manage their SSH public keys
+                    // via the OS Login API' policy is disabled (in Cloud Identity),
+                    // then adding the key won't work.
+                    //
+                    if (response.LoginProfile.SshPublicKeys
+                        .EnsureNotNull()
+                        .Any(kvp => kvp.Key.Contains(key.PublicKeyString)))
+                    {
+                        return response.LoginProfile;
+                    }
+                    else
+                    {
+                        //
+                        // Key wasn't added.
+                        //
+                        throw new ResourceAccessDeniedException(
+                            "You do not have sufficient permissions to publish an SSH " +
+                            "key to OS Login",
+                            HelpTopics.ManagingOsLogin,
+                            new GoogleApiException("oslogin", response.Details ?? String.Empty));
+                    }
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
