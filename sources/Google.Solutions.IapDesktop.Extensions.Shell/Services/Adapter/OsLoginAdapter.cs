@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                     //
                     if (response.LoginProfile.SshPublicKeys
                         .EnsureNotNull()
-                        .Any(kvp => kvp.Key.Contains(key.PublicKeyString)))
+                        .Any(kvp => kvp.Value.Key.Contains(key.PublicKeyString)))
                     {
                         return response.LoginProfile;
                     }
