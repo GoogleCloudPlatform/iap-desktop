@@ -45,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
+            this.theme.ApplyTo(this.toolStrip);
 
             this.viewModel = new AuthorizedPublicKeysViewModel(serviceProvider);
 
@@ -71,6 +72,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     this.Text = title;
                 }));
             this.viewModel.ResetWindowTitleAndInformationBar();  // Fire event to set initial window title.
+
+
+            // Bind tool strip.
+            this.toolStrip.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsListEnabled,
+                this.components);
 
             // Bind list.
             this.keysList.BindProperty(
@@ -120,6 +129,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             {
                 this.keysList.SetFocusOnSearchBox();
             }
+        }
+
+        private void refreshToolStripButton_Click(object sender, EventArgs e)
+        {
+            //TODO: Refresh.
         }
     }
 }

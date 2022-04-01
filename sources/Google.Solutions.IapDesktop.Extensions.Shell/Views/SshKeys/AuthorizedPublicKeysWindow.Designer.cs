@@ -50,31 +50,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizedPublicKeysWindow));
-            this.keysList = new AuthorizedPublicKeysList();
+            this.keysList = new Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys.AuthorizedPublicKeysList();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.infoLabel = new System.Windows.Forms.Label();
             this.infoIcon = new System.Windows.Forms.PictureBox();
+            this.toolStrip = new System.Windows.Forms.ToolStrip();
+            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).BeginInit();
+            this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // packageList
+            // keysList
             // 
             this.keysList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.keysList.Loading = true;
             this.keysList.Location = new System.Drawing.Point(0, 0);
-            this.keysList.Name = "packageList";
+            this.keysList.MultiSelect = true;
+            this.keysList.Name = "keysList";
+            this.keysList.SearchOnKeyDown = false;
             this.keysList.SearchTerm = "";
-            this.keysList.Size = new System.Drawing.Size(800, 424);
+            this.keysList.Size = new System.Drawing.Size(800, 401);
             this.keysList.TabIndex = 0;
             // 
             // splitContainer
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer.IsSplitterFixed = true;
-            this.splitContainer.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer.Location = new System.Drawing.Point(0, 25);
             this.splitContainer.Name = "splitContainer";
             this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -88,8 +95,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add(this.keysList);
-            this.splitContainer.Size = new System.Drawing.Size(800, 450);
-            this.splitContainer.SplitterDistance = 25;
+            this.splitContainer.Size = new System.Drawing.Size(800, 425);
+            this.splitContainer.SplitterDistance = 23;
             this.splitContainer.SplitterWidth = 1;
             this.splitContainer.TabIndex = 0;
             // 
@@ -111,13 +118,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.infoIcon.TabIndex = 1;
             this.infoIcon.TabStop = false;
             // 
-            // PackageInventoryWindow
+            // toolStrip
+            // 
+            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.refreshToolStripButton});
+            this.toolStrip.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip.Name = "toolStrip";
+            this.toolStrip.Size = new System.Drawing.Size(800, 25);
+            this.toolStrip.TabIndex = 1;
+            this.toolStrip.Text = "toolStrip1";
+            // 
+            // refreshToolStripButton
+            // 
+            this.refreshToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.refreshToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshToolStripButton.Image")));
+            this.refreshToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.refreshToolStripButton.Name = "refreshToolStripButton";
+            this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.refreshToolStripButton.Text = "Refresh";
+            this.refreshToolStripButton.Click += new System.EventHandler(this.refreshToolStripButton_Click);
+            // 
+            // AuthorizedPublicKeysWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.splitContainer);
-            this.Name = "PackageInventoryWindow";
+            this.Controls.Add(this.toolStrip);
+            this.Name = "AuthorizedPublicKeysWindow";
             this.Text = "PackageInventoryWindow";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PackageInventoryWindow_KeyDown);
             this.splitContainer.Panel1.ResumeLayout(false);
@@ -126,7 +154,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).EndInit();
+            this.toolStrip.ResumeLayout(false);
+            this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -136,5 +167,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.Label infoLabel;
         private System.Windows.Forms.PictureBox infoIcon;
+        private System.Windows.Forms.ToolStrip toolStrip;
+        private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
+        private System.Windows.Forms.ToolStripButton refreshToolStripButton;
     }
 }

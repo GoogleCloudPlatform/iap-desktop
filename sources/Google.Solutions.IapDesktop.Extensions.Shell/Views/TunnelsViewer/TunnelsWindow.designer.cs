@@ -64,10 +64,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.receivedHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.localPortHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.remotePortHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.protocolHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.disconnectTunnelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.protocolHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -75,8 +76,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             // toolStrip
             // 
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.refreshToolStripButton,
             this.disconnectToolStripButton,
-            this.refreshToolStripButton});
+            this.toolStripButton1});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(862, 25);
@@ -101,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.refreshToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.refreshToolStripButton.Name = "refreshToolStripButton";
             this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.refreshToolStripButton.Text = "toolStripButton1";
+            this.refreshToolStripButton.Text = "Refresh";
             this.refreshToolStripButton.Click += new System.EventHandler(this.refreshToolStripButton_Click);
             // 
             // tunnelsList
@@ -168,6 +170,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.remotePortHeader.Text = "Remote port";
             this.remotePortHeader.Width = 80;
             // 
+            // protocolHeader
+            // 
+            this.protocolHeader.Text = "Protocol";
+            this.protocolHeader.Width = 146;
+            // 
             // contextMenuStrip
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -183,10 +190,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.disconnectTunnelToolStripMenuItem.Text = "&Disconnect tunnel";
             this.disconnectTunnelToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripButton_Click);
             // 
-            // protocolHeader
+            // toolStripButton1
             // 
-            this.protocolHeader.Text = "Protocol";
-            this.protocolHeader.Width = 146;
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton1.Text = "toolStripButton1";
             // 
             // TunnelsWindow
             // 
@@ -223,5 +234,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
         private System.Windows.Forms.ToolStripButton refreshToolStripButton;
         private System.Windows.Forms.ColumnHeader remotePortHeader;
         private System.Windows.Forms.ColumnHeader protocolHeader;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }
