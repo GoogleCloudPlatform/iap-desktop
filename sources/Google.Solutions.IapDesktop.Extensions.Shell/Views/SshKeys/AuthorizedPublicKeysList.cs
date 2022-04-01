@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
+using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
@@ -35,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             AddColumn("User", 170);
             AddColumn("Key type", 120);
             AddColumn("Source", 120);
-            AddColumn("Expiry", 80);
+            AddColumn("Expiry", 120);
             AddColumn("Public key", 200);
 
             this.List.GridLines = true;
@@ -44,7 +45,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.List.BindColumn(0, m => m.Key.Email);
             this.List.BindColumn(1, m => m.Key.KeyType);
             this.List.BindColumn(2, m => m.AuthorizationMethod.ToString());
-            this.List.BindColumn(3, m => m.Key.ExpireOn?.ToShortDateString() ?? string.Empty);
+            this.List.BindColumn(3, m => 
+            {
+                if (m.Key.ExpireOn == null)
+                {
+                    return string.Empty;
+                }
+                else if (m.Key.ExpireOn.Value < DateTime.UtcNow)
+                {
+                    return $"{m.Key.ExpireOn?.ToShortDateString()} (expired)";
+                }
+                else
+                {
+                    return $"{m.Key.ExpireOn?.ToShortDateString()}";
+                }
+            });
             this.List.BindColumn(4, m => m.Key.PublicKey);
         }
     }
