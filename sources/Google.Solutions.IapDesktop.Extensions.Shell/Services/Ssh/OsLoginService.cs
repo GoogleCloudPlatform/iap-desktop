@@ -41,7 +41,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    public interface IOsLoginService
+    public interface IOsLoginService : IDisposable
     {
         /// <summary>
         /// Upload an a public key to authorize it.
@@ -68,6 +68,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     [Service(typeof(IOsLoginService))]
     public class OsLoginService : IOsLoginService
     {
+        private static readonly ProjectLocator WellKnownProject 
+            = new ProjectLocator("windows-cloud");
+        
         private readonly IOsLoginAdapter adapter;
 
         //---------------------------------------------------------------------
@@ -169,10 +172,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 // using any project.
                 //
                 // 
-                var wellKnownProject = new ProjectLocator("winodws-cloud");
-
                 var loginProfile = await this.adapter
-                    .GetLoginProfileAsync(wellKnownProject, cancellationToken)
+                    .GetLoginProfileAsync(WellKnownProject, cancellationToken)
                     .ConfigureAwait(false);
 
                 return loginProfile
@@ -196,6 +197,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         cancellationToken)
                     .ConfigureAwait(false);
             }
+        }
+
+        public void Dispose()
+        {
+            this.adapter?.Dispose();
         }
 
         internal class AuthorizedPublicKey : IAuthorizedPublicKey

@@ -40,7 +40,7 @@ namespace Google.Solutions.Common.Util
 
         public static DateTimeOffset FromUnixTimeMicroseconds(long millis)
         {
-            return UnixEpoch.AddMilliseconds(millis);
+            return UnixEpoch.AddMilliseconds(millis/1000);
         }
     }
 }

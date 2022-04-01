@@ -33,7 +33,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     /// Single authorized key.
     /// See https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys.
     /// </summary>
-    public abstract class MetadataAuthorizedPublicKey : IEquatable<MetadataAuthorizedPublicKey>
+    public abstract class MetadataAuthorizedPublicKey
+        : IEquatable<MetadataAuthorizedPublicKey>, IAuthorizedPublicKey
     {
         //
         // NB Managed and unmanaged keys use a different format,
@@ -59,6 +60,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         /// Public key.
         /// </summary>
         public string PublicKey { get; }
+
+        /// <summary>
+        /// Email address of owning user account.
+        /// </summary>
+        public abstract string Email { get; }
+
+        public abstract DateTime? ExpireOn { get; }
 
         protected MetadataAuthorizedPublicKey(
             string posixUsername,
@@ -141,12 +149,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
     public class UnmanagedMetadataAuthorizedPublicKey : MetadataAuthorizedPublicKey, IAuthorizedPublicKey
     {
-        /// <summary>
-        /// Email address of owning user account.
-        /// </summary>
-        public string Email { get; }
+        public override string Email { get; }
 
-        public DateTime? ExpireOn => null;
+        public override DateTime? ExpireOn => null;
 
         public UnmanagedMetadataAuthorizedPublicKey(
             string posixUsername,
@@ -170,9 +175,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     {
         public PublicKeyMetadata Metadata { get; }
 
-        public DateTime? ExpireOn => this.Metadata.ExpireOn;
+        public override DateTime? ExpireOn => this.Metadata.ExpireOn;
 
-        public string Email => this.Metadata.Email;
+        public override string Email => this.Metadata.Email;
 
         public ManagedMetadataAuthorizedPublicKey(
             string loginUsername,

@@ -45,11 +45,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
     public abstract class MetadataAuthorizedPublicKeyProcessor
     {
-        protected const string EnableOsLoginFlag = "enable-oslogin";
-        protected const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
+        public const string EnableOsLoginFlag = "enable-oslogin";
+        public const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
 
         public abstract bool IsOsLoginEnabled { get; }
-
+        public abstract bool AreProjectSshKeysBlocked { get; }
         protected static void AddPublicKeyToMetadata(
             Metadata metadata,
             MetadataAuthorizedPublicKey newKey)
@@ -163,6 +163,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             }
         }
 
+        public abstract IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
+           KeyAuthorizationMethods allowedMethods);
+
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
@@ -224,6 +227,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         public override bool IsOsLoginEnabled
             => GetFlag(this.projectDetails.CommonInstanceMetadata, EnableOsLoginFlag) == true;
 
+        public override bool AreProjectSshKeysBlocked
+            => GetFlag(this.projectDetails.CommonInstanceMetadata, BlockProjectSshKeysFlag) == true;
+
+
         internal ProjectMetadataAuthorizedPublicKeyProcessor(
             IComputeEngineAdapter computeEngineAdapter,
             Project projectDetails)
@@ -232,11 +239,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.projectDetails = projectDetails;
         }
 
-        public IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys()
+        public override IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
+            KeyAuthorizationMethods allowedMethods)
         {
-            return MetadataAuthorizedPublicKeySet
-                .FromMetadata(this.projectDetails.CommonInstanceMetadata)?
-                .Keys;
+            if (allowedMethods.HasFlag(KeyAuthorizationMethods.ProjectMetadata))
+            {
+                return MetadataAuthorizedPublicKeySet
+                    .FromMetadata(this.projectDetails.CommonInstanceMetadata)?
+                    .Keys;
+            }
+            else
+            {
+                return Enumerable.Empty<MetadataAuthorizedPublicKey>();
+            }
         }
 
         public async Task RemoveAuthorizedKeyAsync(
@@ -299,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         public override bool IsOsLoginEnabled
             => GetFlag(EnableOsLoginFlag) == true;
 
-        public bool AreProjectSshKeysBlocked
+        public override bool AreProjectSshKeysBlocked
             => GetFlag(BlockProjectSshKeysFlag) == true;
 
         private bool IsLegacySshKeyPresent 
@@ -307,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 .Metadata
                 .GetValue(MetadataAuthorizedPublicKeySet.LegacyMetadataKey));
 
-        public IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
+        public override IEnumerable<MetadataAuthorizedPublicKey> ListAuthorizedKeys(
             KeyAuthorizationMethods allowedMethods)
         {
             var keys = new List<MetadataAuthorizedPublicKey>();

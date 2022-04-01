@@ -35,6 +35,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer;
 using System;
@@ -350,7 +351,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 });
 
             //
-            // TunnelsViewer
+            // Authorized keys.
+            //
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Authorized SSH &keys",
+                    node => AuthorizedPublicKeysViewModel.GetCommandState(node),
+                    _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
+                {
+                    Image = Resources.Key_16
+                },
+                11);
+
+            //
+            // View menu.
             //
             mainForm.ViewMenu.AddCommand(
                 new Command<IMainForm>(
@@ -362,6 +376,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.T
                 },
                 1);
+            mainForm.ViewMenu.AddCommand(
+                new Command<IMainForm>(
+                    "Authorized SSH &keys",
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
+                {
+                    Image = Resources.Key_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.K
+                });
 
             //
             // Session menu.

@@ -204,6 +204,17 @@
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\RemoteDesktop\UnsafeNativeMethods.cs" />
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysModel.cs" />
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysViewModel.cs" />
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysWindow.Designer.cs">
+      <DependentUpon>AuthorizedPublicKeysWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Views\SshTerminal\SshAuthenticationPromptDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -294,6 +305,9 @@
     <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopPane.resx">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\SshKeys\AuthorizedPublicKeysWindow.resx">
+      <DependentUpon>AuthorizedPublicKeysWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\SshTerminal\SshAuthenticationPromptDialog.resx">
       <DependentUpon>SshAuthenticationPromptDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -331,6 +345,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Key_36.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SshKey_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
