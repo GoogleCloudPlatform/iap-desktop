@@ -113,9 +113,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Key_36 {
+        internal static System.Drawing.Bitmap Key_32 {
             get {
-                object obj = ResourceManager.GetObject("Key_36", resourceCulture);
+                object obj = ResourceManager.GetObject("Key_32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -349,6 +349,9 @@
   <ItemGroup>
     <None Include="Resources\SshKey_16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SshKey_32.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
