@@ -131,9 +131,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             }
         }
 
-        private void refreshToolStripButton_Click(object sender, EventArgs e)
+        private async void refreshToolStripButton_Click(object sender, EventArgs e)
         {
-            //TODO: Refresh.
+            await this.viewModel
+                .RefreshAsync()
+                .ConfigureAwait(true);
         }
     }
 }

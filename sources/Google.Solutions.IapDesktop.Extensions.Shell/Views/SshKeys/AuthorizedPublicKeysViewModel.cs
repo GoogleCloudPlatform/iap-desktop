@@ -153,6 +153,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 : CommandState.Unavailable;
         }
 
+
+        //---------------------------------------------------------------------
+        // Actions.
+        //---------------------------------------------------------------------
+
+        public Task RefreshAsync() => InvalidateAsync();
+
         //---------------------------------------------------------------------
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
