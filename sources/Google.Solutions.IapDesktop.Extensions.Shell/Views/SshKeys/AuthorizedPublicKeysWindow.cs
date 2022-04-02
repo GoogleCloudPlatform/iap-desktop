@@ -48,6 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.theme.ApplyTo(this.toolStrip);
 
             this.viewModel = new AuthorizedPublicKeysViewModel(serviceProvider);
+            this.viewModel.View = this;
 
             this.infoLabel.BindReadonlyProperty(
                 c => c.Text,
@@ -139,6 +140,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                  e.KeyCode == Keys.F3)
             {
                 this.keysList.SetFocusOnSearchBox();
+            }
+            else if (e.KeyCode == Keys.Delete)
+            {
+                InvokeActionAsync(
+                        () => this.viewModel.DeleteSelectedItemAsync(),
+                        "Deleting key")
+                    .ConfigureAwait(true);
             }
         }
 

@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 {
@@ -173,9 +175,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
         public Task RefreshAsync() => InvalidateAsync();
 
-        public Task DeleteSelectedItemAsync()
+        public async Task DeleteSelectedItemAsync()
         {
-            throw new NotImplementedException();
+            Debug.Assert(this.selectedItem != null);
+            Debug.Assert(this.View != null);
+
+            string question = "Are you sure you want to delete this key?";
+            if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.ProjectMetadata)
+            {
+                question += " This change affects all VM instances in the project.";
+            }
+
+            if (this.serviceProvider
+                .GetService<IConfirmationDialog>()
+                .Confirm(
+                    this.View,
+                    question,
+                    "Delete key for user " + this.selectedItem.Key.Email) == DialogResult.Yes)
+            {
+                await InvalidateAsync().ConfigureAwait(true);
+
+                throw new NotImplementedException();
+            }
         }
 
         //---------------------------------------------------------------------
