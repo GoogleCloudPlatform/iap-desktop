@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Moq;
@@ -37,6 +38,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
 {
@@ -51,12 +53,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 => jobFunc(CancellationToken.None);
         }
 
-        private static AuthorizedPublicKeysViewModel CreateViewModel()
+        private static AuthorizedPublicKeysViewModel CreateViewModel(
+            IConfirmationDialog confirmationDialog = null)
         {
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new JobServiceMock());
             registry.AddMock<IResourceManagerAdapter>();
             
+            if (confirmationDialog != null)
+            {
+                registry.AddSingleton(confirmationDialog);
+            }
+
             var gceAdapter = registry.AddMock<IComputeEngineAdapter>();
             gceAdapter.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
@@ -269,6 +277,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
 
             viewModel.SelectedItem = viewModel.AllKeys.FirstOrDefault();
             Assert.IsTrue(viewModel.IsDeleteButtonEnabled);
+        }
+
+        //---------------------------------------------------------------------
+        // DeleteSelectedItemAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenConfirmationIsNo_ThenDeleteSelectedItemAsyncDoesNothing()
+        {
+            var confirmationMock = new Mock<IConfirmationDialog>();
+            confirmationMock.Setup(d => d.Confirm(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Returns(DialogResult.Cancel);
+
+            var node = new Mock<IProjectModelProjectNode>();
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
+            node.SetupGet(n => n.DisplayName).Returns("project-1");
+
+            var viewModel = CreateViewModel(confirmationMock.Object);
+            viewModel.View = new Mock<IWin32Window>().Object;
+
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
+
+            viewModel.SelectedItem = viewModel.AllKeys.FirstOrDefault();
+
+            await viewModel.DeleteSelectedItemAsync(CancellationToken.None)
+                .ConfigureAwait(false);
         }
     }
 }

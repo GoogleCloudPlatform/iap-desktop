@@ -175,9 +175,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
         public Task RefreshAsync() => InvalidateAsync();
 
-        public async Task DeleteSelectedItemAsync()
+        public async Task DeleteSelectedItemAsync(CancellationToken cancellationToken)
         {
             Debug.Assert(this.selectedItem != null);
+            Debug.Assert(this.IsDeleteButtonEnabled);
             Debug.Assert(this.View != null);
 
             string question = "Are you sure you want to delete this key?";
@@ -193,9 +194,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     question,
                     "Delete key for user " + this.selectedItem.Key.Email) == DialogResult.Yes)
             {
-                await InvalidateAsync().ConfigureAwait(true);
+                if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                {
+                    using (var osLoginService = this.serviceProvider.GetService<IOsLoginService>())
+                    {
+                        await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
+                                osLoginService,
+                                this.selectedItem,
+                                cancellationToken)
+                            .ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
+                    using (var resourceManagerAdapter = this.serviceProvider.GetService<IResourceManagerAdapter>())
+                    {
+                        await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
+                                computeEngineAdapter,
+                                resourceManagerAdapter,
+                                this.ModelKey,
+                                this.selectedItem,
+                                cancellationToken)
+                            .ConfigureAwait(false);
+                    }
+                }
 
-                throw new NotImplementedException();
+                await InvalidateAsync()
+                    .ConfigureAwait(false);
             }
         }
 

@@ -58,6 +58,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         /// </summary>
         Task<IEnumerable<IAuthorizedPublicKey>> ListAuthorizedKeysAsync(
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Delete authorized key.
+        /// </summary>
+        Task DeleteAuthorizedKeyAsync(
+            IAuthorizedPublicKey key,
+            CancellationToken cancellationToken);
     }
 
     public enum OsLoginSystemType

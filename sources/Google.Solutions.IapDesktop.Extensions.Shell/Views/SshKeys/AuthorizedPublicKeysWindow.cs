@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -144,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             else if (e.KeyCode == Keys.Delete)
             {
                 InvokeActionAsync(
-                        () => this.viewModel.DeleteSelectedItemAsync(),
+                        () => this.viewModel.DeleteSelectedItemAsync(CancellationToken.None),
                         "Deleting key")
                     .ConfigureAwait(true);
             }
@@ -158,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
         private async void deleteToolStripButton_Click(object sender, EventArgs _)
             => await InvokeActionAsync(
-                () => this.viewModel.DeleteSelectedItemAsync(),
+                () => this.viewModel.DeleteSelectedItemAsync(CancellationToken.None),
                 "Deleting key")
             .ConfigureAwait(true);
     }
