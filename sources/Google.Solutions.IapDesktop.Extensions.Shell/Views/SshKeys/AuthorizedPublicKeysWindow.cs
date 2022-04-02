@@ -75,14 +75,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
 
             // Bind tool strip.
-            this.toolStrip.BindProperty(
+            this.toolStrip.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsListEnabled,
                 this.components);
+            this.deleteToolStripButton.BindReadonlyProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsDeleteButtonEnabled,
+                this.components);
 
             // Bind list.
-            this.keysList.BindProperty(
+            this.keysList.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsListEnabled,
@@ -90,6 +95,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
             this.keysList.List.BindCollection(this.viewModel.FilteredKeys);
             this.keysList.List.AddCopyCommands();
+            this.keysList.List.BindProperty(
+                l => l.SelectedModelItem,
+                this.viewModel,
+                m => this.viewModel.SelectedItem,
+                this.components);
+
             this.keysList.BindProperty(
                 c => c.SearchTerm,
                 this.viewModel,
@@ -131,11 +142,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             }
         }
 
-        private async void refreshToolStripButton_Click(object sender, EventArgs e)
-        {
-            await this.viewModel
-                .RefreshAsync()
-                .ConfigureAwait(true);
-        }
+        private async void refreshToolStripButton_Click(object sender, EventArgs _)
+            => await InvokeActionAsync(
+                () => this.viewModel.RefreshAsync(),
+                "Refreshing keys")
+            .ConfigureAwait(true);
+
+        private async void deleteToolStripButton_Click(object sender, EventArgs _)
+            => await InvokeActionAsync(
+                () => this.viewModel.DeleteSelectedItemAsync(),
+                "Deleting key")
+            .ConfigureAwait(true);
     }
 }

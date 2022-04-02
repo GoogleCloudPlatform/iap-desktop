@@ -20,12 +20,15 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -35,6 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
     [SkipCodeCoverage("GUI plumbing")]
     public partial class ToolWindow : DockContent
     {
+        private readonly IExceptionDialog exceptionDialog;
         private readonly DockPanel panel;
         private readonly DockState initialDockState;
         private DockState lastDockState;
@@ -53,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             IServiceProvider serviceProvider,
             DockState defaultDockState) : this()
         {
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.panel = serviceProvider.GetService<IMainForm>().MainPanel;
             var stateRepository = serviceProvider.GetService<ToolWindowStateRepository>();
 
@@ -347,6 +352,48 @@ namespace Google.Solutions.IapDesktop.Application.Views
         protected virtual void OnUserVisibilityChanged(bool visible)
         {
             // Can be overriden in derived class.
+        }
+
+        //---------------------------------------------------------------------
+        // Utility methods.
+        //---------------------------------------------------------------------
+
+        protected void InvokeAction(
+            Action action,
+            string actionName)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception e) when (e.IsCancellation())
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.exceptionDialog
+                    .Show(this, $"{actionName} failed", e);
+            }
+        }
+
+        protected async Task InvokeActionAsync(
+            Func<Task> action,
+            string actionName)
+        {
+            try
+            {
+                await action().ConfigureAwait(true);
+            }
+            catch (Exception e) when (e.IsCancellation())
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.exceptionDialog
+                    .Show(this, $"{actionName} failed", e);
+            }
         }
     }
 }

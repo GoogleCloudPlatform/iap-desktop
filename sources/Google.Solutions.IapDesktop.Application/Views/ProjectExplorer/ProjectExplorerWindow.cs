@@ -225,46 +225,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.Container);
         }
 
-        private async Task CallViewModelAsync(
-            Func<ProjectExplorerViewModel, Task> action,
-            string actionName)
-        {
-            try
-            {
-                await action(this.viewModel).ConfigureAwait(true);
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, $"{actionName} failed", e);
-            }
-        }
-
-        private void CallViewModel(
-            Action<ProjectExplorerViewModel> action,
-            string actionName)
-        {
-            try
-            {
-                action(this.viewModel);
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, $"{actionName} failed", e);
-            }
-        }
-
         private async Task<bool> AddNewProjectAsync()
         {
             try
@@ -309,28 +269,31 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         //---------------------------------------------------------------------
 
         private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs _)
-            => await CallViewModelAsync(
-                vm => vm.RefreshAsync(false),
-                "Refreshing projects").ConfigureAwait(true);
+            => await InvokeActionAsync(
+                () => this.viewModel.RefreshAsync(false),
+                "Refreshing projects")
+            .ConfigureAwait(true);
 
         private async void refreshToolStripMenuItem_Click(object sender, EventArgs _)
-            => await CallViewModelAsync(
-                vm => vm.RefreshSelectedNodeAsync(),
-                "Refreshing projects").ConfigureAwait(true);
+            => await InvokeActionAsync(
+                () => this.viewModel.RefreshSelectedNodeAsync(),
+                "Refreshing projects")
+            .ConfigureAwait(true);
 
         private async void unloadProjectToolStripMenuItem_Click(object sender, EventArgs _)
-            => await CallViewModelAsync(
-                vm => vm.UnloadSelectedProjectAsync(),
-                "Unloading projects").ConfigureAwait(true);
+            => await InvokeActionAsync(
+                () => this.viewModel.UnloadSelectedProjectAsync(),
+                "Unloading projects")
+            .ConfigureAwait(true);
 
         private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs _)
-            => CallViewModel(
-                vm => vm.OpenInCloudConsole(),
+            => InvokeAction(
+                () => this.viewModel.OpenInCloudConsole(),
                 "Opening Cloud Console");
 
         private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs _)
-            => CallViewModel(
-                vm => vm.ConfigureIapAccess(),
+            => InvokeAction(
+                () => this.viewModel.ConfigureIapAccess(),
                 "Opening Cloud Console");
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -343,8 +306,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         //---------------------------------------------------------------------
 
         private async void refreshButton_Click(object sender, EventArgs args)
-            => await CallViewModelAsync(
-                vm => vm.RefreshSelectedNodeAsync(),
+            => await InvokeActionAsync(
+                () => this.viewModel.RefreshSelectedNodeAsync(),
                 "Refreshing projects").ConfigureAwait(true);
 
         private async void addButton_Click(object sender, EventArgs args)
@@ -406,8 +369,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             if (e.KeyCode == Keys.F5)
             {
-                CallViewModelAsync(
-                        vm => vm.RefreshSelectedNodeAsync(),
+                InvokeActionAsync(
+                        () => this.viewModel.RefreshSelectedNodeAsync(),
                         "Refreshing projects")
                     .ContinueWith(_ => { });
             }

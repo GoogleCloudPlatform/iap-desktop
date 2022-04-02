@@ -55,8 +55,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.infoLabel = new System.Windows.Forms.Label();
             this.infoIcon = new System.Windows.Forms.PictureBox();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.deleteToolStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -74,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.keysList.Name = "keysList";
             this.keysList.SearchOnKeyDown = false;
             this.keysList.SearchTerm = "";
-            this.keysList.Size = new System.Drawing.Size(800, 401);
+            this.keysList.Size = new System.Drawing.Size(800, 399);
             this.keysList.TabIndex = 0;
             // 
             // splitContainer
@@ -96,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             // 
             this.splitContainer.Panel2.Controls.Add(this.keysList);
             this.splitContainer.Size = new System.Drawing.Size(800, 425);
-            this.splitContainer.SplitterDistance = 23;
+            this.splitContainer.SplitterDistance = 25;
             this.splitContainer.SplitterWidth = 1;
             this.splitContainer.TabIndex = 0;
             // 
@@ -121,7 +122,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             // toolStrip
             // 
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.refreshToolStripButton});
+            this.refreshToolStripButton,
+            this.deleteToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
@@ -137,6 +139,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.refreshToolStripButton.Text = "Refresh";
             this.refreshToolStripButton.Click += new System.EventHandler(this.refreshToolStripButton_Click);
+            // 
+            // deleteToolStripButton
+            // 
+            this.deleteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.deleteToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripButton.Image")));
+            this.deleteToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.deleteToolStripButton.Name = "deleteToolStripButton";
+            this.deleteToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.deleteToolStripButton.Text = "Delete key";
+            this.deleteToolStripButton.Click += new System.EventHandler(this.deleteToolStripButton_Click);
             // 
             // AuthorizedPublicKeysWindow
             // 
@@ -170,5 +182,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         private System.Windows.Forms.ToolStrip toolStrip;
         private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
         private System.Windows.Forms.ToolStripButton refreshToolStripButton;
+        private System.Windows.Forms.ToolStripButton deleteToolStripButton;
     }
 }

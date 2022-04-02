@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         private bool isListEnabled = false;
         private string windowTitle;
         private string informationBarContent;
+        private AuthorizedPublicKeysModel.Item selectedItem;
 
         public AuthorizedPublicKeysViewModel(
             IServiceProvider serviceProvider)
@@ -118,6 +119,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             }
         }
 
+        public AuthorizedPublicKeysModel.Item SelectedItem
+        {
+            get => this.selectedItem;
+            set
+            {
+                this.selectedItem = value;
+                RaisePropertyChange();
+                RaisePropertyChange((AuthorizedPublicKeysViewModel m) => m.IsDeleteButtonEnabled);
+            }
+        }
+
+        public bool IsDeleteButtonEnabled => this.selectedItem != null;
+
         //---------------------------------------------------------------------
         // "Input" properties.
         //---------------------------------------------------------------------
@@ -153,12 +167,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 : CommandState.Unavailable;
         }
 
-
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
 
         public Task RefreshAsync() => InvalidateAsync();
+
+        public Task DeleteSelectedItemAsync()
+        {
+            throw new NotImplementedException();
+        }
 
         //---------------------------------------------------------------------
         // ModelCachingViewModelBase.
@@ -217,6 +235,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         {
             this.AllKeys.Clear();
             this.FilteredKeys.Clear();
+            this.SelectedItem = null;
 
             if (this.Model == null)
             {

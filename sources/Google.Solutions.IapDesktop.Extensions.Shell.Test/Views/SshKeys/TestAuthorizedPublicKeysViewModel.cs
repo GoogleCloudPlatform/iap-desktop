@@ -219,5 +219,56 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
             viewModel.Filter = null;
             Assert.AreEqual(2, viewModel.FilteredKeys.Count);
         }
+
+        //---------------------------------------------------------------------
+        // SelectedItem.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenSwitchingNodes_ThenSelectedItemisCleared()
+        {
+            var node = new Mock<IProjectModelProjectNode>();
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
+            node.SetupGet(n => n.DisplayName).Returns("project-1");
+
+            var viewModel = CreateViewModel();
+
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
+
+            viewModel.SelectedItem = viewModel.AllKeys.FirstOrDefault();
+            Assert.IsTrue(viewModel.IsDeleteButtonEnabled);
+
+            // Switch again.
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
+
+            Assert.IsFalse(viewModel.IsDeleteButtonEnabled);
+        }
+
+        //---------------------------------------------------------------------
+        // IsDeleteButtonEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenItemSelected_ThenDeleteButtonIsEnabled()
+        {
+            var node = new Mock<IProjectModelProjectNode>();
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
+            node.SetupGet(n => n.DisplayName).Returns("project-1");
+
+            var viewModel = CreateViewModel();
+
+            await viewModel
+                .SwitchToModelAsync(node.Object)
+                .ConfigureAwait(true);
+
+            Assert.IsFalse(viewModel.IsDeleteButtonEnabled);
+
+            viewModel.SelectedItem = viewModel.AllKeys.FirstOrDefault();
+            Assert.IsTrue(viewModel.IsDeleteButtonEnabled);
+        }
     }
 }
