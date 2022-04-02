@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                                 osLoginService,
                                 this.selectedItem,
                                 cancellationToken)
-                            .ConfigureAwait(false);
+                            .ConfigureAwait(true);
                     }
                 }
                 else
@@ -216,12 +216,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                                 this.ModelKey,
                                 this.selectedItem,
                                 cancellationToken)
-                            .ConfigureAwait(false);
+                            .ConfigureAwait(true);
                     }
                 }
 
                 await InvalidateAsync()
-                    .ConfigureAwait(false);
+                    .ConfigureAwait(true);
             }
         }
 
