@@ -252,6 +252,88 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        // TODO: test
+        public SshFileDownloadChannel OpenFileDownloadChannel(
+            string remotePath)
+        {
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
+            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
+
+            using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
+            {
+                var fileStat = new LIBSSH2_STAT();
+                LIBSSH2_ERROR result;
+                var channelHandle = UnsafeNativeMethods.libssh2_scp_recv2(
+                    this.session.Handle,
+                    remotePath,
+                    ref fileStat);
+
+                if (channelHandle.IsInvalid)
+                {
+                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                        this.session.Handle);
+                }
+                else
+                {
+                    result = LIBSSH2_ERROR.NONE;
+                }
+
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw this.session.CreateException(result);
+                }
+
+                channelHandle.SessionHandle = this.session.Handle;
+
+                return new SshFileDownloadChannel(
+                    session,
+                    channelHandle,
+                    fileStat);
+            }
+        }
+
+        public SshFileUploadChannel OpenFileUploadChannel(
+            string remotePath,
+            uint mode,
+            long fileSize)
+        {
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
+            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
+
+            using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
+            {
+                LIBSSH2_ERROR result;
+                var channelHandle = UnsafeNativeMethods.libssh2_scp_send64(
+                    this.session.Handle,
+                    remotePath,
+                    mode & 0777, // Only consider permission bits.
+                    fileSize,
+                    0,           // Let server set mtime.
+                    0);          // Let server set atime.
+
+                if (channelHandle.IsInvalid)
+                {
+                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                        this.session.Handle);
+                }
+                else
+                {
+                    result = LIBSSH2_ERROR.NONE;
+                }
+
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw this.session.CreateException(result);
+                }
+
+                channelHandle.SessionHandle = this.session.Handle;
+
+                return new SshFileUploadChannel(
+                    session,
+                    channelHandle);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Dispose.
         //---------------------------------------------------------------------

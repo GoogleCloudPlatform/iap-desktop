@@ -60,16 +60,6 @@ namespace Google.Solutions.Ssh.Test
                 $"Timeout waiting for buffer to contain '{token}");
         }
 
-        private string UnexpectedAuthenticationCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
-        {
-            Assert.Fail("Unexpected callback");
-            return null;
-        }
-
         private void UnexpectedErrorCallback(Exception exception)
         {
             Assert.Fail("Unexpected callback");

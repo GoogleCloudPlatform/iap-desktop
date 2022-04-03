@@ -35,16 +35,6 @@ namespace Google.Solutions.Ssh.Test.Native
     [TestFixture]
     public class TestSshExecChannel : SshFixtureBase
     {
-        private string UnexpectedAuthenticationCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
-        {
-            Assert.Fail("Unexpected callback");
-            return null;
-        }
-
         //---------------------------------------------------------------------
         // Exec.
         //---------------------------------------------------------------------

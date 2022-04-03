@@ -269,16 +269,6 @@ namespace Google.Solutions.Ssh.Test.Native
         // User auth.
         //---------------------------------------------------------------------
 
-        private string UnexpectedAuthenticationCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
-        {
-            Assert.Fail("Unexpected callback");
-            return null;
-        }
-
         [Test]
         public async Task WhenConnected_ThenIsAuthenticatedIsFalse(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)

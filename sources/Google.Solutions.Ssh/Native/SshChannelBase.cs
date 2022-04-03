@@ -72,7 +72,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public uint Read(
+        public virtual uint Read(
             byte[] buffer,
             LIBSSH2_STREAM streamId = LIBSSH2_STREAM.NORMAL)
         {
@@ -105,7 +105,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public uint Write(
+        public virtual uint Write(
             byte[] buffer,
             LIBSSH2_STREAM streamId = LIBSSH2_STREAM.NORMAL)
         {

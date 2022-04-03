@@ -110,6 +110,22 @@ namespace Google.Solutions.Ssh.Native
         EXTENDED_DATA_STDERR = 1
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LIBSSH2_STAT
+    {
+        public uint st_dev;
+        public ushort st_ino;
+        public ushort st_mode;
+        public short st_nlink;
+        public short st_uid;
+        public short st_gid;
+        public uint st_rdev;
+        public uint st_size;
+        public uint st_atime;
+        public uint st_mtime;
+        public uint st_ctime;
+    }
+
     internal static class UnsafeNativeMethods
     {
         private const string Libssh2 = "libssh2.dll";
@@ -425,6 +441,21 @@ namespace Google.Solutions.Ssh.Native
             int height,
             int widthPx,
             int heightPx);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern SshChannelHandle libssh2_scp_recv2(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            ref LIBSSH2_STAT stat);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern SshChannelHandle libssh2_scp_send64(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            uint mode,
+            long size,
+            long mtime, // TODO: should this be ptr-sized?
+            long atime);
 
         //---------------------------------------------------------------------
         // Keepalive.
