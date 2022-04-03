@@ -72,12 +72,10 @@ namespace Google.Solutions.Ssh.Test
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
-
                 var receiveBuffer = new StringBuilder();
 
                 void receiveHandler(string data)
@@ -127,27 +125,23 @@ namespace Google.Solutions.Ssh.Test
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var connection = new SshShellConnection(
+                "testuser",
+                endpoint,
+                key,
+                SshShellConnection.DefaultTerminal,
+                SshShellConnection.DefaultTerminalSize,
+                CultureInfo.InvariantCulture,
+                UnexpectedAuthenticationCallback,
+                _ => { },
+                UnexpectedErrorCallback))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
+                await connection
+                    .ConnectAsync()
                     .ConfigureAwait(false);
-
-                using (var connection = new SshShellConnection(
-                    "testuser",
-                    endpoint,
-                    key,
-                    SshShellConnection.DefaultTerminal,
-                    SshShellConnection.DefaultTerminalSize,
-                    CultureInfo.InvariantCulture,
-                    UnexpectedAuthenticationCallback,
-                    _ => { },
-                    UnexpectedErrorCallback))
-                {
-                    await connection
-                        .ConnectAsync()
-                        .ConfigureAwait(false);
-                }
             }
         }
 
@@ -158,12 +152,10 @@ namespace Google.Solutions.Ssh.Test
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
-            {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
-
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            { 
                 var receiveBuffer = new StringBuilder();
 
                 void receiveHandler(string data)
@@ -218,12 +210,10 @@ namespace Google.Solutions.Ssh.Test
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
-            {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
-
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            { 
                 var receiveBuffer = new StringBuilder();
 
                 void receiveHandler(string data)
@@ -276,12 +266,10 @@ namespace Google.Solutions.Ssh.Test
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
-            {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
-
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            { 
                 var receiveBuffer = new StringBuilder();
 
                 void receiveHandler(string data)

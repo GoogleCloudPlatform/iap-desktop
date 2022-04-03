@@ -310,25 +310,21 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
+                connection.Dispose();
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    connection.Dispose();
-
-                    SshAssert.ThrowsNativeExceptionWithError(
-                        session,
-                        LIBSSH2_ERROR.SOCKET_SEND,
-                        () => connection.Authenticate(
-                            "testuser",
-                            key,
-                            this.UnexpectedAuthenticationCallback));
-                }
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.SOCKET_SEND,
+                    () => connection.Authenticate(
+                        "testuser",
+                        key,
+                        this.UnexpectedAuthenticationCallback));
             }
         }
 
@@ -344,21 +340,17 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
-
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    var authSession = connection.Authenticate(
-                        "testuser",
-                        key,
-                        this.UnexpectedAuthenticationCallback);
-                    Assert.IsNotNull(authSession);
-                }
+                var authSession = connection.Authenticate(
+                    "testuser",
+                    key,
+                    this.UnexpectedAuthenticationCallback);
+                Assert.IsNotNull(authSession);
             }
         }
 
@@ -385,34 +377,30 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
+                var callbackCount = 0;
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    var callbackCount = 0;
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                    () => connection.Authenticate(
+                        "testuser",
+                        key,
+                        (name, instruction, prompt, echo) =>
+                        {
+                            callbackCount++;
 
-                    SshAssert.ThrowsNativeExceptionWithError(
-                        session,
-                        LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                        () => connection.Authenticate(
-                            "testuser",
-                            key,
-                            (name, instruction, prompt, echo) =>
-                            {
-                                callbackCount++;
+                            Assert.AreEqual("Password: ", prompt);
+                            Assert.IsFalse(echo);
 
-                                Assert.AreEqual("Password: ", prompt);
-                                Assert.IsFalse(echo);
-
-                                return "wrong";
-                            }));
-                    Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
-                }
+                            return "wrong";
+                        }));
+                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
             }
         }
 
@@ -424,34 +412,30 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
+                var callbackCount = 0;
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    var callbackCount = 0;
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                    () => connection.Authenticate(
+                        "testuser",
+                        key,
+                        (name, instruction, prompt, echo) =>
+                        {
+                            callbackCount++;
 
-                    SshAssert.ThrowsNativeExceptionWithError(
-                        session,
-                        LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                        () => connection.Authenticate(
-                            "testuser",
-                            key,
-                            (name, instruction, prompt, echo) =>
-                            {
-                                callbackCount++;
+                            Assert.AreEqual("Password: ", prompt);
+                            Assert.IsFalse(echo);
 
-                                Assert.AreEqual("Password: ", prompt);
-                                Assert.IsFalse(echo);
-
-                                return null;
-                            }));
-                    Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
-                }
+                            return null;
+                        }));
+                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
             }
         }
 
@@ -463,28 +447,24 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
+                var callbackCount = 0;
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    var callbackCount = 0;
-
-                    Assert.Throws<OperationCanceledException>(
-                        () => connection.Authenticate(
-                            "testuser",
-                            key,
-                            (name, instruction, prompt, echo) =>
-                            {
-                                callbackCount++;
-                                throw new OperationCanceledException();
-                            }));
-                    Assert.AreEqual(1, callbackCount);
-                }
+                Assert.Throws<OperationCanceledException>(
+                    () => connection.Authenticate(
+                        "testuser",
+                        key,
+                        (name, instruction, prompt, echo) =>
+                        {
+                            callbackCount++;
+                            throw new OperationCanceledException();
+                        }));
+                Assert.AreEqual(1, callbackCount);
             }
         }
     }

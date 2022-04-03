@@ -60,7 +60,7 @@ namespace Google.Solutions.Ssh.Test
             }
         }
 
-        public async static Task AddPublicKeyToMetadata(
+        public static async Task AddPublicKeyToMetadataAsync(
             InstanceLocator instanceLocator,
             string username,
             ISshKeyPair key)
@@ -84,6 +84,20 @@ namespace Google.Solutions.Ssh.Test
                         CancellationToken.None)
                     .ConfigureAwait(false);
             }
+        }
+
+        public static async Task<ISshKeyPair> CreateEphemeralKeyAndPushKeyToMetadata(
+            InstanceLocator instanceLocator,
+            string username,
+            SshKeyType keyType)
+        {
+            var key = SshKeyPair.NewEphemeralKeyPair(keyType);
+            await AddPublicKeyToMetadataAsync(
+                    instanceLocator,
+                    username,
+                    key)
+                .ConfigureAwait(false);
+            return key;
         }
     }
 }

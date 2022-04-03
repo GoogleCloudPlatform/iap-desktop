@@ -87,39 +87,35 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenShellChannel(
+                LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                DefaultTerminal,
+                80,
+                24))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
+                // Run command.
+                var bytesWritten = channel.Write(Encoding.ASCII.GetBytes("whoami;exit\n"));
+                Assert.AreEqual(12, bytesWritten);
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback))
-                using (var channel = authSession.OpenShellChannel(
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
-                    DefaultTerminal,
-                    80,
-                    24))
-                {
-                    // Run command.
-                    var bytesWritten = channel.Write(Encoding.ASCII.GetBytes("whoami;exit\n"));
-                    Assert.AreEqual(12, bytesWritten);
+                // Read command output.
+                var output = ReadToEnd(channel, Encoding.ASCII);
+                channel.Close();
 
-                    // Read command output.
-                    var output = ReadToEnd(channel, Encoding.ASCII);
-                    channel.Close();
+                StringAssert.Contains(
+                    "whoami;exit\r\ntestuser\r\nlogout\r\n",
+                    output);
 
-                    StringAssert.Contains(
-                        "whoami;exit\r\ntestuser\r\nlogout\r\n",
-                        output);
-
-                    Assert.AreEqual(0, channel.ExitCode);
-                    Assert.AreEqual(null, channel.ExitSignal);
-                }
+                Assert.AreEqual(0, channel.ExitCode);
+                Assert.AreEqual(null, channel.ExitSignal);
             }
         }
 
@@ -130,43 +126,39 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
-            {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
-
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback))
-                using (var channel = authSession.OpenShellChannel(
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
-                    DefaultTerminal,
-                    80,
-                    24,
-                    new[]
-                    {
-                        new EnvironmentVariable(
-                            "LANG",
-                            "LC_ALL",
-                            true) // LANG is whitelisted by sshd by default.
-                    }))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenShellChannel(
+                LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                DefaultTerminal,
+                80,
+                24,
+                new[]
                 {
-                    var bytesWritten = channel.Write(Encoding.ASCII.GetBytes("echo $LANG;exit\n"));
-                    Assert.AreEqual(16, bytesWritten);
+                    new EnvironmentVariable(
+                        "LANG",
+                        "LC_ALL",
+                        true) // LANG is whitelisted by sshd by default.
+                }))
+            {
+                var bytesWritten = channel.Write(Encoding.ASCII.GetBytes("echo $LANG;exit\n"));
+                Assert.AreEqual(16, bytesWritten);
 
-                    var output = ReadToEnd(channel, Encoding.ASCII);
-                    channel.Close();
+                var output = ReadToEnd(channel, Encoding.ASCII);
+                channel.Close();
 
-                    StringAssert.Contains(
-                        "en_US.UTF-8",
-                        output);
+                StringAssert.Contains(
+                    "en_US.UTF-8",
+                    output);
 
-                    Assert.AreEqual(0, channel.ExitCode);
-                }
+                Assert.AreEqual(0, channel.ExitCode);
             }
         }
 
@@ -177,33 +169,29 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
-
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback))
-                {
-                    SshAssert.ThrowsNativeExceptionWithError(
-                        session,
-                        LIBSSH2_ERROR.CHANNEL_REQUEST_DENIED,
-                        () => authSession.OpenShellChannel(
-                            LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
-                            DefaultTerminal,
-                            80,
-                            24,
-                            new[]
-                            {
-                                new EnvironmentVariable("FOO", "foo", true),
-                                new EnvironmentVariable("BAR", "bar", true)
-                            }));
-                }
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.CHANNEL_REQUEST_DENIED,
+                    () => authSession.OpenShellChannel(
+                        LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                        DefaultTerminal,
+                        80,
+                        24,
+                        new[]
+                        {
+                            new EnvironmentVariable("FOO", "foo", true),
+                            new EnvironmentVariable("BAR", "bar", true)
+                        }));
             }
         }
 
@@ -214,45 +202,41 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenShellChannel(
+                LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                DefaultTerminal,
+                80,
+                24))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(instance, "testuser", key)
-                    .ConfigureAwait(false);
+                var welcome = ReadUntil(channel, "~$", Encoding.ASCII);
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback))
-                using (var channel = authSession.OpenShellChannel(
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
-                    DefaultTerminal,
-                    80,
-                    24))
-                {
-                    var welcome = ReadUntil(channel, "~$", Encoding.ASCII);
+                // Read initial terminal size.
+                channel.Write(Encoding.ASCII.GetBytes("echo $COLUMNS $LINES\n"));
+                ReadUntil(channel, "\n", Encoding.ASCII);
 
-                    // Read initial terminal size.
-                    channel.Write(Encoding.ASCII.GetBytes("echo $COLUMNS $LINES\n"));
-                    ReadUntil(channel, "\n", Encoding.ASCII);
+                var terminalSize = ReadUntil(channel, "\n", Encoding.ASCII);
+                Assert.AreEqual("80 24\r\n", terminalSize);
 
-                    var terminalSize = ReadUntil(channel, "\n", Encoding.ASCII);
-                    Assert.AreEqual("80 24\r\n", terminalSize);
+                // Resize terminal.
+                channel.ResizePseudoTerminal(100, 30);
 
-                    // Resize terminal.
-                    channel.ResizePseudoTerminal(100, 30);
+                // Read terminal size again.
+                channel.Write(Encoding.ASCII.GetBytes("echo $COLUMNS $LINES\n"));
+                ReadUntil(channel, "\n", Encoding.ASCII);
 
-                    // Read terminal size again.
-                    channel.Write(Encoding.ASCII.GetBytes("echo $COLUMNS $LINES\n"));
-                    ReadUntil(channel, "\n", Encoding.ASCII);
+                terminalSize = ReadUntil(channel, "\n", Encoding.ASCII);
+                Assert.AreEqual("100 30\r\n", terminalSize);
 
-                    terminalSize = ReadUntil(channel, "\n", Encoding.ASCII);
-                    Assert.AreEqual("100 30\r\n", terminalSize);
-
-                    channel.Close();
-                }
+                channel.Close();
             }
         }
     }
