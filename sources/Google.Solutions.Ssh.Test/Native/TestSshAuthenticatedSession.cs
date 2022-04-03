@@ -41,18 +41,14 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenDisconnected_ThenOpenExecChannelAsyncThrowsSocketSend(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var instanceLocator = await instanceLocatorTask;
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    instanceLocator,
-                    "testuser",
-                    key).ConfigureAwait(true);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
+                    .ConfigureAwait(false);
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
@@ -77,18 +73,13 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var instanceLocator = await instanceLocatorTask;
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                        instanceLocator,
-                        "testuser",
-                        key)
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var session = CreateSession())
@@ -110,18 +101,14 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenClosingSessionBeforeChannel_ThenDoubleFreeIsPrevented(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var instanceLocator = await instanceLocatorTask;
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    instanceLocator,
-                    "testuser",
-                    key).ConfigureAwait(true);
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
+                    .ConfigureAwait(false);
 
                 var session = CreateSession();
                 var connection = session.Connect(endpoint);
@@ -146,18 +133,13 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance(InitializeScript = InitializeScripts.AllowEcdsaOnlyForPubkey)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var instanceLocator = await instanceLocatorTask;
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                        instanceLocator,
-                        "testuser",
-                        key)
+                await InstanceUtil
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var session = CreateSession())

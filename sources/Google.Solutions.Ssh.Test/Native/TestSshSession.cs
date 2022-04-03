@@ -225,11 +225,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenPreferringIncompatibleAlgorithm_ThenConnectFails(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             {
                 session.SetPreferredMethods(
@@ -277,11 +275,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenPortIsCorrect_ThenHandshakeSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {

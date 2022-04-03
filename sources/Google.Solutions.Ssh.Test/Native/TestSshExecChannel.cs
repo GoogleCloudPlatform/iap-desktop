@@ -43,18 +43,13 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenCommandIsValid_ThenOpenExecChannelAsyncSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var session = CreateSession())
@@ -86,18 +81,13 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenNoMoreDataToRead_ThenReadReturnZero(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var session = CreateSession())
@@ -123,18 +113,13 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenCommandInvalidAndExtendedDataModeIsNormal_ThenExecuteSucceedsAndStderrContainsError(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var session = CreateSession())
@@ -170,18 +155,13 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenCommandInvalidAndExtendedDataModeIsMerge_ThenExecuteSucceedsAndStdoutContainsError(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var session = CreateSession())

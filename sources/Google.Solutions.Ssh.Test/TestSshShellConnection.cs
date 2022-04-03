@@ -69,19 +69,13 @@ namespace Google.Solutions.Ssh.Test
         public async Task WhenSendingEchoCommand_ThenEchoIsReceived(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 var receiveBuffer = new StringBuilder();
@@ -130,19 +124,13 @@ namespace Google.Solutions.Ssh.Test
         public async Task WhenDisposingConnection_ThenWorkerIsStopped(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var connection = new SshShellConnection(
@@ -167,19 +155,13 @@ namespace Google.Solutions.Ssh.Test
         public async Task WhenServerAcceptsLocale_ThenShellUsesRightLocale(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 var receiveBuffer = new StringBuilder();
@@ -233,19 +215,13 @@ namespace Google.Solutions.Ssh.Test
                 "sed -i '/AcceptEnv/d' /etc/ssh/sshd_config && systemctl restart sshd")]
                 ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 var receiveBuffer = new StringBuilder();
@@ -297,19 +273,13 @@ namespace Google.Solutions.Ssh.Test
         public async Task WhenLocaleIsNull_ThenShellUsesDefaultLocale(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 var receiveBuffer = new StringBuilder();

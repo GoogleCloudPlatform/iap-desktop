@@ -84,19 +84,13 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenConnected_ThenOpenShellChannelAsyncSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var session = CreateSession())
@@ -133,18 +127,13 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenWhitelistedEnvironmentVariablePassed_ThenShellCanAccessVariable(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var session = CreateSession())
@@ -185,18 +174,13 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenNonWhitelistedEnvironmentVariablePassed_ThenOpenShellChannelAsyncThrowsRequestDenied(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var session = CreateSession())
@@ -227,18 +211,13 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenPseudoterminalResized_ThenShellReflectsNewSize(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             {
                 await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
+                    .AddPublicKeyToMetadata(instance, "testuser", key)
                     .ConfigureAwait(false);
 
                 using (var session = CreateSession())
