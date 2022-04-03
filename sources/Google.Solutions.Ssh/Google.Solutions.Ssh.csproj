@@ -75,7 +75,6 @@
   <ItemGroup>
     <Compile Include="Auth\SshKeyPair.cs" />
     <Compile Include="Cryptography\ECDsaExtensions.cs" />
-    <Compile Include="Native\SshFileCopyChannel.cs" />
     <Compile Include="SshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Auth\ISshKeyPair.cs" />
