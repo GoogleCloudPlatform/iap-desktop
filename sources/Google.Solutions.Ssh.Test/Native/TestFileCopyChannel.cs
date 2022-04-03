@@ -93,11 +93,12 @@ namespace Google.Solutions.Ssh.Test.Native
                 {
                     Assert.Greater(download.FileSize, 0);
 
-                    var tinyBuffer = new byte[8];
+                    var tinyBuffer = new byte[128];
                     uint totalBytesRead = 0;
                     uint bytesRead = 0;
                     while ((bytesRead = download.Read(tinyBuffer)) > 0)
                     {
+                        // TODO: Prevent reading past end of file -> causes timeout
                         totalBytesRead += bytesRead;
                     }
 
@@ -194,7 +195,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     key,
                     UnexpectedAuthenticationCallback))
                 using (var upload = authSession.OpenFileUploadChannel(
-                    $"~/{Guid.NewGuid()}.txt",
+                    $"{Guid.NewGuid()}.txt",
                     0600,
                     0))
                 {

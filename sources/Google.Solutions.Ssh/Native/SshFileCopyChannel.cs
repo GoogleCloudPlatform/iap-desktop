@@ -69,7 +69,7 @@ namespace Google.Solutions.Ssh.Native
     {
         private readonly LIBSSH2_STAT fileStat;
 
-        public uint FileSize => this.fileStat.st_size; // TODO: 64 bit?
+        public ulong FileSize => this.fileStat.st_size; // TODO: Test with 64 bit
 
         internal SshFileDownloadChannel(
             SshSession session,
