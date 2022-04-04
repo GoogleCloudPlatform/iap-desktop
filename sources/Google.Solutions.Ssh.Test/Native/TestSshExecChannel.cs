@@ -35,16 +35,6 @@ namespace Google.Solutions.Ssh.Test.Native
     [TestFixture]
     public class TestSshExecChannel : SshFixtureBase
     {
-        private string UnexpectedAuthenticationCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
-        {
-            Assert.Fail("Unexpected callback");
-            return null;
-        }
-
         //---------------------------------------------------------------------
         // Exec.
         //---------------------------------------------------------------------
@@ -53,42 +43,33 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenCommandIsValid_ThenOpenExecChannelAsyncSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenExecChannel(
+                "whoami",
+                LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
-                    .ConfigureAwait(false);
+                channel.WaitForEndOfStream();
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback))
-                using (var channel = authSession.OpenExecChannel(
-                    "whoami",
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
-                {
-                    channel.WaitForEndOfStream();
+                var buffer = new byte[1024];
+                var bytesRead = channel.Read(buffer);
+                Assert.AreNotEqual(0, bytesRead);
 
-                    var buffer = new byte[1024];
-                    var bytesRead = channel.Read(buffer);
-                    Assert.AreNotEqual(0, bytesRead);
+                Assert.AreEqual("testuser\n", Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
 
-                    Assert.AreEqual("testuser\n", Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
-
-                    Assert.AreEqual(0, channel.ExitCode);
-                    Assert.IsNull(channel.ExitSignal);
-                    channel.Close();
-                }
+                Assert.AreEqual(0, channel.ExitCode);
+                Assert.IsNull(channel.ExitSignal);
+                channel.Close();
             }
         }
 
@@ -96,36 +77,27 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenNoMoreDataToRead_ThenReadReturnZero(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenExecChannel(
+                "whoami",
+                LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
-                    .ConfigureAwait(false);
+                channel.WaitForEndOfStream();
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback))
-                using (var channel = authSession.OpenExecChannel(
-                    "whoami",
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
-                {
-                    channel.WaitForEndOfStream();
-
-                    Assert.AreNotEqual(0, channel.Read(new byte[1024]));
-                    Assert.AreEqual(0, channel.Read(new byte[1024]));
-                    channel.Close();
-                }
+                Assert.AreNotEqual(0, channel.Read(new byte[1024]));
+                Assert.AreEqual(0, channel.Read(new byte[1024]));
+                channel.Close();
             }
         }
 
@@ -133,46 +105,37 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenCommandInvalidAndExtendedDataModeIsNormal_ThenExecuteSucceedsAndStderrContainsError(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenExecChannel(
+                "invalidcommand",
+                LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
-                    .ConfigureAwait(false);
+                channel.WaitForEndOfStream();
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback))
-                using (var channel = authSession.OpenExecChannel(
-                    "invalidcommand",
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
-                {
-                    channel.WaitForEndOfStream();
+                var buffer = new byte[1024];
+                var bytesRead = channel.Read(
+                    buffer,
+                    LIBSSH2_STREAM.EXTENDED_DATA_STDERR);
+                Assert.AreNotEqual(0, bytesRead);
 
-                    var buffer = new byte[1024];
-                    var bytesRead = channel.Read(
-                        buffer,
-                        LIBSSH2_STREAM.EXTENDED_DATA_STDERR);
-                    Assert.AreNotEqual(0, bytesRead);
+                Assert.AreEqual(
+                    "bash: invalidcommand: command not found\n",
+                    Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
 
-                    Assert.AreEqual(
-                        "bash: invalidcommand: command not found\n",
-                        Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
-
-                    Assert.AreEqual(127, channel.ExitCode);
-                    Assert.IsNull(channel.ExitSignal);
-                    channel.Close();
-                }
+                Assert.AreEqual(127, channel.ExitCode);
+                Assert.IsNull(channel.ExitSignal);
+                channel.Close();
             }
         }
 
@@ -180,44 +143,35 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenCommandInvalidAndExtendedDataModeIsMerge_ThenExecuteSucceedsAndStdoutContainsError(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenExecChannel(
+                "invalidcommand",
+                LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
-                    .ConfigureAwait(false);
+                channel.WaitForEndOfStream();
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback))
-                using (var channel = authSession.OpenExecChannel(
-                    "invalidcommand",
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE))
-                {
-                    channel.WaitForEndOfStream();
+                var buffer = new byte[1024];
+                var bytesRead = channel.Read(
+                    buffer);
+                Assert.AreNotEqual(0, bytesRead);
 
-                    var buffer = new byte[1024];
-                    var bytesRead = channel.Read(
-                        buffer);
-                    Assert.AreNotEqual(0, bytesRead);
+                Assert.AreEqual(
+                    "bash: invalidcommand: command not found\n",
+                    Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
 
-                    Assert.AreEqual(
-                        "bash: invalidcommand: command not found\n",
-                        Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
-
-                    Assert.IsNull(channel.ExitSignal);
-                    channel.Close();
-                }
+                Assert.IsNull(channel.ExitSignal);
+                channel.Close();
             }
         }
     }

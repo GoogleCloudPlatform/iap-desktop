@@ -33,16 +33,6 @@ namespace Google.Solutions.Ssh.Test.Native
     [TestFixture]
     public class TestSshAuthenticatedSession : SshFixtureBase
     {
-        private string UnexpectedAuthenticationCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
-        {
-            Assert.Fail("Unexpected callback");
-            return null;
-        }
-
         //---------------------------------------------------------------------
         // Channel.
         //---------------------------------------------------------------------
@@ -51,34 +41,26 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenDisconnected_ThenOpenExecChannelAsyncThrowsSocketSend(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var instanceLocator = await instanceLocatorTask;
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
-            {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    instanceLocator,
-                    "testuser",
-                    key).ConfigureAwait(true);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback))
-                {
-                    connection.Dispose();
-                    SshAssert.ThrowsNativeExceptionWithError(
-                        session,
-                        LIBSSH2_ERROR.SOCKET_SEND,
-                        () => authSession.OpenExecChannel(
-                            "whoami",
-                            LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL));
-                }
+            using (var key = await InstanceUtil
+                .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+                .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            {
+                connection.Dispose();
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.SOCKET_SEND,
+                    () => authSession.OpenExecChannel(
+                        "whoami",
+                        LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL));
             }
         }
 
@@ -87,32 +69,23 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var instanceLocator = await instanceLocatorTask;
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
-            {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                        instanceLocator,
-                        "testuser",
-                        key)
-                    .ConfigureAwait(false);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback))
-                using (var channel = authSession.OpenExecChannel(
-                    "whoami",
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
-                {
-                    channel.Close();
-                }
+            using (var key = await InstanceUtil
+                .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+                .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenExecChannel(
+                "whoami",
+                LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
+            {
+                channel.Close();
             }
         }
 
@@ -120,19 +93,13 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenClosingSessionBeforeChannel_ThenDoubleFreeIsPrevented(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var instanceLocator = await instanceLocatorTask;
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
-            {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    instanceLocator,
-                    "testuser",
-                    key).ConfigureAwait(true);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            {
                 var session = CreateSession();
                 var connection = session.Connect(endpoint);
                 var authSession = connection.Authenticate(
@@ -156,31 +123,22 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance(InitializeScript = InitializeScripts.AllowEcdsaOnlyForPubkey)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var instanceLocator = await instanceLocatorTask;
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
-            {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                        instanceLocator,
-                        "testuser",
-                        key)
-                    .ConfigureAwait(false);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    SshAssert.ThrowsNativeExceptionWithError(
-                        session,
-                        LIBSSH2_ERROR.PUBLICKEY_UNRECOGNIZED,
-                        () => connection.Authenticate(
-                            "testuser",
-                            key,
-                            UnexpectedAuthenticationCallback));
-                }
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            {
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.PUBLICKEY_UNRECOGNIZED,
+                    () => connection.Authenticate(
+                        "testuser",
+                        key,
+                        UnexpectedAuthenticationCallback));
             }
         }
     }

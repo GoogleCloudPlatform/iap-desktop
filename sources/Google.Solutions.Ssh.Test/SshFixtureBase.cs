@@ -20,12 +20,15 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test
 {
@@ -69,6 +72,26 @@ namespace Google.Solutions.Ssh.Test
             session.Timeout = TimeSpan.FromSeconds(5);
 
             return session;
+        }
+
+        protected string UnexpectedAuthenticationCallback(
+            string name,
+            string instruction,
+            string prompt,
+            bool echo)
+        {
+            Assert.Fail("Unexpected callback");
+            return null;
+        }
+        
+        protected static async Task<IPEndPoint> GetPublicSshEndpointAsync(
+            InstanceLocator instance)
+        {
+            return new IPEndPoint(
+                await InstanceUtil
+                    .PublicIpAddressForInstanceAsync(instance)
+                    .ConfigureAwait(false),
+                22);
         }
     }
 }

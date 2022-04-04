@@ -81,7 +81,7 @@
     <Compile Include="Native\Disposable.cs" />
     <Compile Include="Native\EnvironmentVariable.cs" />
     <Compile Include="Native\HandleTable.cs" />
-    <Compile Include="Native\SshSessionChannelBase.cs" />
+    <Compile Include="Native\SshSessionChannel.cs" />
     <Compile Include="Native\SshChannelBase.cs" />
     <Compile Include="Native\SshAuthenticatedSession.cs" />
     <Compile Include="Native\SshConnectedSession.cs" />

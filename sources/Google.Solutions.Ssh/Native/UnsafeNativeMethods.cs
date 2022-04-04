@@ -110,6 +110,37 @@ namespace Google.Solutions.Ssh.Native
         EXTENDED_DATA_STDERR = 1
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LIBSSH2_STAT
+    {
+        //
+        // dt libssh2_struct_stat
+        //    +0x000 st_dev           : Uint4B
+        //    +0x004 st_ino           : Uint2B
+        //    +0x006 st_mode          : Uint2B
+        //    +0x008 st_nlink         : Int2B
+        //    +0x00a st_uid           : Int2B
+        //    +0x00c st_gid           : Int2B
+        //    +0x010 st_rdev          : Uint4B
+        //    +0x018 st_size          : Int8B
+        //    +0x020 st_atime         : Int8B
+        //    +0x028 st_mtime         : Int8B
+        //    +0x030 st_ctime         : Int8B
+        //
+
+        public uint st_dev;
+        public ushort st_ino;
+        public ushort st_mode;
+        public short st_nlink;
+        public short st_uid;
+        public short st_gid;
+        public uint st_rdev;
+        public ulong st_size;
+        public long st_atime;
+        public long st_mtime;
+        public long st_ctime;
+    }
+
     internal static class UnsafeNativeMethods
     {
         private const string Libssh2 = "libssh2.dll";
@@ -425,6 +456,21 @@ namespace Google.Solutions.Ssh.Native
             int height,
             int widthPx,
             int heightPx);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern SshChannelHandle libssh2_scp_recv2(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            ref LIBSSH2_STAT stat);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern SshChannelHandle libssh2_scp_send64(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            uint mode,
+            long size,
+            long mtime, // TODO: should this be ptr-sized?
+            long atime);
 
         //---------------------------------------------------------------------
         // Keepalive.

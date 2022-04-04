@@ -43,11 +43,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenConnected_ThenGetRemoteBannerReturnsBanner(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -66,11 +64,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenConnected_ThenActiveAlgorithmsAreSet(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -91,11 +87,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenRequestedAlgorithmInvalid_ThenActiveAlgorithmsThrowsArgumentException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -112,11 +106,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenConnected_ThenGetRemoteHostKeyReturnsKey(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -130,11 +122,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenConnected_ThenGetRemoteHostKeyTypeReturnsEcdsa256(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -150,11 +140,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenConnected_ThenGetRemoteHostKeyHashReturnsKeyHash(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -170,11 +158,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenRequestedAlgorithmInvalid_ThennGetRemoteHostKeyHashThrowsArgumentException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -188,11 +174,9 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance(InitializeScript = InitializeScripts.AllowNeitherEcdsaNorRsaForHostKey)]
             ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             {
                 //
@@ -231,11 +215,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenCustomBannerSet_ThenConnectionSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             {
                 session.SetLocalBanner("SSH-2.0-test-123");
@@ -251,11 +233,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenConnected_GetRemoteBannerReturnsBanner(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             {
                 using (var connection = session.Connect(endpoint))
@@ -269,25 +249,13 @@ namespace Google.Solutions.Ssh.Test.Native
         // User auth.
         //---------------------------------------------------------------------
 
-        private string UnexpectedAuthenticationCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
-        {
-            Assert.Fail("Unexpected callback");
-            return null;
-        }
-
         [Test]
         public async Task WhenConnected_ThenIsAuthenticatedIsFalse(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -299,11 +267,9 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenConnected_ThenGetAuthenticationMethodsReturnsPublicKey(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -319,11 +285,9 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
@@ -343,33 +307,24 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
+                connection.Dispose();
+
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.SOCKET_SEND,
+                    () => connection.Authenticate(
                         "testuser",
-                        key)
-                    .ConfigureAwait(false);
-
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    connection.Dispose();
-
-                    SshAssert.ThrowsNativeExceptionWithError(
-                        session,
-                        LIBSSH2_ERROR.SOCKET_SEND,
-                        () => connection.Authenticate(
-                            "testuser",
-                            key,
-                            this.UnexpectedAuthenticationCallback));
-                }
+                        key,
+                        this.UnexpectedAuthenticationCallback));
             }
         }
 
@@ -382,29 +337,20 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshKeyType.EcdsaNistp384,
                 SshKeyType.EcdsaNistp521)] SshKeyType keyType)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
-            {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
-                        "testuser",
-                        key)
-                    .ConfigureAwait(false);
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    var authSession = connection.Authenticate(
-                        "testuser",
-                        key,
-                        this.UnexpectedAuthenticationCallback);
-                    Assert.IsNotNull(authSession);
-                }
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            {
+                var authSession = connection.Authenticate(
+                    "testuser",
+                    key,
+                    this.UnexpectedAuthenticationCallback);
+                Assert.IsNotNull(authSession);
             }
         }
 
@@ -428,42 +374,33 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
+                var callbackCount = 0;
+
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                    () => connection.Authenticate(
                         "testuser",
-                        key)
-                    .ConfigureAwait(false);
+                        key,
+                        (name, instruction, prompt, echo) =>
+                        {
+                            callbackCount++;
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    var callbackCount = 0;
+                            Assert.AreEqual("Password: ", prompt);
+                            Assert.IsFalse(echo);
 
-                    SshAssert.ThrowsNativeExceptionWithError(
-                        session,
-                        LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                        () => connection.Authenticate(
-                            "testuser",
-                            key,
-                            (name, instruction, prompt, echo) =>
-                            {
-                                callbackCount++;
-
-                                Assert.AreEqual("Password: ", prompt);
-                                Assert.IsFalse(echo);
-
-                                return "wrong";
-                            }));
-                    Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
-                }
+                            return "wrong";
+                        }));
+                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
             }
         }
 
@@ -472,42 +409,33 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
+                var callbackCount = 0;
+
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                    () => connection.Authenticate(
                         "testuser",
-                        key)
-                    .ConfigureAwait(false);
+                        key,
+                        (name, instruction, prompt, echo) =>
+                        {
+                            callbackCount++;
 
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    var callbackCount = 0;
+                            Assert.AreEqual("Password: ", prompt);
+                            Assert.IsFalse(echo);
 
-                    SshAssert.ThrowsNativeExceptionWithError(
-                        session,
-                        LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                        () => connection.Authenticate(
-                            "testuser",
-                            key,
-                            (name, instruction, prompt, echo) =>
-                            {
-                                callbackCount++;
-
-                                Assert.AreEqual("Password: ", prompt);
-                                Assert.IsFalse(echo);
-
-                                return null;
-                            }));
-                    Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
-                }
+                            return null;
+                        }));
+                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
             }
         }
 
@@ -516,36 +444,27 @@ namespace Google.Solutions.Ssh.Test.Native
             [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(await instanceLocatorTask)
-                    .ConfigureAwait(false),
-                22);
-            using (var key = SshKeyPair.NewEphemeralKeyPair(keyType))
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
             {
-                await InstanceUtil
-                    .AddPublicKeyToMetadata(
-                        await instanceLocatorTask,
+                var callbackCount = 0;
+
+                Assert.Throws<OperationCanceledException>(
+                    () => connection.Authenticate(
                         "testuser",
-                        key)
-                    .ConfigureAwait(false);
-
-                using (var session = CreateSession())
-                using (var connection = session.Connect(endpoint))
-                {
-                    var callbackCount = 0;
-
-                    Assert.Throws<OperationCanceledException>(
-                        () => connection.Authenticate(
-                            "testuser",
-                            key,
-                            (name, instruction, prompt, echo) =>
-                            {
-                                callbackCount++;
-                                throw new OperationCanceledException();
-                            }));
-                    Assert.AreEqual(1, callbackCount);
-                }
+                        key,
+                        (name, instruction, prompt, echo) =>
+                        {
+                            callbackCount++;
+                            throw new OperationCanceledException();
+                        }));
+                Assert.AreEqual(1, callbackCount);
             }
         }
     }
