@@ -203,6 +203,58 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
+        public async Task WhenAccessDenied_ThenOpenFileUploadChannelThrowsException(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+                .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+                .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            {
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.SCP_PROTOCOL,
+                    () => authSession.OpenFileUploadChannel(
+                        "/proc/version",
+                        FilePermissions.OwnerRead | FilePermissions.OwnerWrite,
+                        1));
+            }
+        }
+
+        [Test]
+        public async Task WhenFilePathIsRelative_ThenOpenFileUploadChannelSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+                .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+                .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var upload1 = authSession.OpenFileUploadChannel(
+                $"{Guid.NewGuid()}.txt",
+                FilePermissions.OwnerRead | FilePermissions.OwnerWrite,
+                1))
+            {
+                upload1.Write(new byte[] { (byte)'A' });
+            }
+        }
+
+        [Test]
         public async Task WhenCreatingSubsequentUploadChannel_ThenOpenFileUploadChannelSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {

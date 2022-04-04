@@ -312,6 +312,11 @@ namespace Google.Solutions.Ssh.Native
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
 
+            if (fileSize < 0)
+            {
+                throw new ArgumentException(nameof(fileSize));
+            }
+
             using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
             {
                 LIBSSH2_ERROR result;
