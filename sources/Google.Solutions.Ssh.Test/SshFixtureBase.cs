@@ -66,7 +66,7 @@ namespace Google.Solutions.Ssh.Test
             var session = new SshSession();
             session.SetTraceHandler(
                 LIBSSH2_TRACE.SOCKET | LIBSSH2_TRACE.ERROR | LIBSSH2_TRACE.CONN |
-                                       LIBSSH2_TRACE.AUTH | LIBSSH2_TRACE.KEX,
+                                       LIBSSH2_TRACE.AUTH | LIBSSH2_TRACE.KEX | LIBSSH2_TRACE.SCP,
                 Console.WriteLine);
 
             session.Timeout = TimeSpan.FromSeconds(5);

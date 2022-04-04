@@ -385,9 +385,10 @@ namespace Google.Solutions.Ssh
                             }
                             catch (Exception e)
                             {
+                                //
                                 // NB. This is non-fatal - we're tearing down the 
-                                // connection anyway..
-
+                                // connection anyway.
+                                //
                                 SshTraceSources.Default.TraceError(
                                     "Closing connection failed for {0}: {1}",
                                     Thread.CurrentThread.Name,

@@ -148,6 +148,9 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        /// <summary>
+        /// Start an interactive shell.
+        /// </summary>
         public SshShellChannel OpenShellChannel(
             LIBSSH2_CHANNEL_EXTENDED_DATA mode,
             string term,
@@ -218,6 +221,9 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        /// <summary>
+        /// Execute a single command.
+        /// </summary>
         public SshExecChannel OpenExecChannel(
             string command,
             LIBSSH2_CHANNEL_EXTENDED_DATA mode)
@@ -249,6 +255,99 @@ namespace Google.Solutions.Ssh.Native
                 }
 
                 return new SshExecChannel(this.session, channelHandle);
+            }
+        }
+
+        /// <summary>
+        /// Download a file using SCP.
+        /// </summary>
+        public SshFileDownloadChannel OpenFileDownloadChannel(
+            string remotePath)
+        {
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
+            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
+
+            using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
+            {
+                var fileStat = new LIBSSH2_STAT();
+                LIBSSH2_ERROR result;
+                var channelHandle = UnsafeNativeMethods.libssh2_scp_recv2(
+                    this.session.Handle,
+                    remotePath,
+                    ref fileStat);
+
+                if (channelHandle.IsInvalid)
+                {
+                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                        this.session.Handle);
+                }
+                else
+                {
+                    result = LIBSSH2_ERROR.NONE;
+                }
+
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw this.session.CreateException(result);
+                }
+
+                channelHandle.SessionHandle = this.session.Handle;
+
+                return new SshFileDownloadChannel(
+                    session,
+                    channelHandle,
+                    fileStat);
+            }
+        }
+
+        /// <summary>
+        /// Upload a file using SCP. Note that scp doesn't honor umask,
+        /// so permissions need to be specified explicitly.
+        /// </summary>
+        public SshFileUploadChannel OpenFileUploadChannel(
+            string remotePath,
+            FilePermissions permissions,
+            long fileSize)
+        {
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
+            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
+
+            if (fileSize < 0)
+            {
+                throw new ArgumentException(nameof(fileSize));
+            }
+
+            using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
+            {
+                LIBSSH2_ERROR result;
+                var channelHandle = UnsafeNativeMethods.libssh2_scp_send64(
+                    this.session.Handle,
+                    remotePath,
+                    (uint)permissions,
+                    fileSize,
+                    0,  // Let server set mtime.
+                    0); // Let server set atime.
+
+                if (channelHandle.IsInvalid)
+                {
+                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                        this.session.Handle);
+                }
+                else
+                {
+                    result = LIBSSH2_ERROR.NONE;
+                }
+
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw this.session.CreateException(result);
+                }
+
+                channelHandle.SessionHandle = this.session.Handle;
+
+                return new SshFileUploadChannel(
+                    session,
+                    channelHandle);
             }
         }
 
