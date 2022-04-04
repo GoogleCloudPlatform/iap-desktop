@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
@@ -50,6 +51,76 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.DisplayName = displayName.ThrowIfNull(nameof(displayName));
             this.Items = items.EnsureNotNull();
             this.Warnings = warnings.EnsureNotNull();
+        }
+
+        public static async Task DeleteFromOsLoginAsync(
+            IOsLoginService osLoginService,
+            Item item,
+            CancellationToken cancellationToken)
+        {
+            Utilities.ThrowIfNull(item, nameof(item));
+
+            if (item.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+            {
+                await osLoginService.DeleteAuthorizedKeyAsync(
+                        item.Key,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        public static async Task DeleteFromMetadataAsync(
+            IComputeEngineAdapter computeEngineAdapter,
+            IResourceManagerAdapter resourceManagerAdapter,
+            IProjectModelNode node,
+            Item item,
+            CancellationToken cancellationToken)
+        {
+            Utilities.ThrowIfNull(item, nameof(item));
+
+            if (item.AuthorizationMethod == KeyAuthorizationMethods.ProjectMetadata &&
+                item.Key is MetadataAuthorizedPublicKey projectMetadataKey)
+            {
+                ProjectLocator project;
+                if (node is IProjectModelProjectNode projectNode)
+                {
+                    project = projectNode.Project;
+                }
+                else if (node is IProjectModelInstanceNode instanceNode)
+                {
+                    project = new ProjectLocator(instanceNode.Instance.ProjectId);
+                }
+                else
+                {
+                    throw new ArgumentException(nameof(node));
+                }
+
+                var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+                        computeEngineAdapter,
+                        project,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+                await processor.RemoveAuthorizedKeyAsync(
+                        projectMetadataKey,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            else if (item.AuthorizationMethod == KeyAuthorizationMethods.InstanceMetadata &&
+                node is IProjectModelInstanceNode instanceNode &&
+                item.Key is MetadataAuthorizedPublicKey instanceMetadataKey)
+            {
+                var processor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
+                        computeEngineAdapter,
+                        resourceManagerAdapter,
+                        instanceNode.Instance,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+                await processor.RemoveAuthorizedKeyAsync(
+                        instanceMetadataKey,
+                        item.AuthorizationMethod,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
         }
 
         //---------------------------------------------------------------------

@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -45,8 +46,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
+            this.theme.ApplyTo(this.toolStrip);
 
             this.viewModel = new AuthorizedPublicKeysViewModel(serviceProvider);
+            this.viewModel.View = this;
 
             this.infoLabel.BindReadonlyProperty(
                 c => c.Text,
@@ -72,8 +75,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 }));
             this.viewModel.ResetWindowTitleAndInformationBar();  // Fire event to set initial window title.
 
+
+            // Bind tool strip.
+            this.toolStrip.BindReadonlyProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsListEnabled,
+                this.components);
+            this.deleteToolStripButton.BindReadonlyProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsDeleteButtonEnabled,
+                this.components);
+
             // Bind list.
-            this.keysList.BindProperty(
+            this.keysList.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsListEnabled,
@@ -81,6 +97,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
             this.keysList.List.BindCollection(this.viewModel.FilteredKeys);
             this.keysList.List.AddCopyCommands();
+            this.keysList.List.BindProperty(
+                l => l.SelectedModelItem,
+                this.viewModel,
+                m => this.viewModel.SelectedItem,
+                this.components);
+
             this.keysList.BindProperty(
                 c => c.SearchTerm,
                 this.viewModel,
@@ -120,6 +142,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             {
                 this.keysList.SetFocusOnSearchBox();
             }
+            else if (e.KeyCode == Keys.Delete)
+            {
+                InvokeActionAsync(
+                        () => this.viewModel.DeleteSelectedItemAsync(CancellationToken.None),
+                        "Deleting key")
+                    .ConfigureAwait(true);
+            }
         }
+
+        private async void refreshToolStripButton_Click(object sender, EventArgs _)
+            => await InvokeActionAsync(
+                () => this.viewModel.RefreshAsync(),
+                "Refreshing keys")
+            .ConfigureAwait(true);
+
+        private async void deleteToolStripButton_Click(object sender, EventArgs _)
+            => await InvokeActionAsync(
+                () => this.viewModel.DeleteSelectedItemAsync(CancellationToken.None),
+                "Deleting key")
+            .ConfigureAwait(true);
     }
 }

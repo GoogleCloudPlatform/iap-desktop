@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
     public class TestAuthorizedPublicKeysModel : ApplicationFixtureBase
     {
         private static Mock<IProjectModelProjectNode> CreateProjectNodeMock(
-            string projectId, 
+            string projectId,
             string displayName)
         {
             var nodeMock = new Mock<IProjectModelProjectNode>();
@@ -160,11 +160,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
         public async Task WhenScopeIsCloud_ThenLoadReturnsNull()
         {
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                new Mock<IComputeEngineAdapter>().Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
-                new Mock<IProjectModelCloudNode>().Object,
-                CancellationToken.None);
+                    new Mock<IComputeEngineAdapter>().Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IOsLoginService>().Object,
+                    new Mock<IProjectModelCloudNode>().Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNull(model);
         }
@@ -187,11 +188,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 null);
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                computeEngineAdapterMock.Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                osLoginServiceMock.Object,
-                CreateProjectNodeMock("project-1", "Project 1").Object,
-                CancellationToken.None);
+                    computeEngineAdapterMock.Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    osLoginServiceMock.Object,
+                    CreateProjectNodeMock("project-1", "Project 1").Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("Project 1", model.DisplayName);
@@ -218,11 +220,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 null);
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                computeEngineAdapterMock.Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                osLoginServiceMock.Object,
-                CreateProjectNodeMock("project-1", "Project 1").Object,
-                CancellationToken.None);
+                    computeEngineAdapterMock.Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    osLoginServiceMock.Object,
+                    CreateProjectNodeMock("project-1", "Project 1").Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("Project 1", model.DisplayName);
@@ -250,11 +253,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 null);
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                computeEngineAdapterMock.Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                osLoginServiceMock.Object,
-                CreateProjectNodeMock("project-1", "Project 1").Object,
-                CancellationToken.None);
+                    computeEngineAdapterMock.Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    osLoginServiceMock.Object,
+                    CreateProjectNodeMock("project-1", "Project 1").Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("Project 1", model.DisplayName);
@@ -270,11 +274,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
         public async Task WhenScopeIsZone_ThenLoadReturnsNull()
         {
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                new Mock<IComputeEngineAdapter>().Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                new Mock<IOsLoginService>().Object,
-                new Mock<IProjectModelZoneNode>().Object,
-                CancellationToken.None);
+                    new Mock<IComputeEngineAdapter>().Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IOsLoginService>().Object,
+                    new Mock<IProjectModelZoneNode>().Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNull(model);
         }
@@ -301,11 +306,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 });
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                computeEngineAdapterMock.Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                osLoginServiceMock.Object,
-                CreateInstanceNodeMock("instance-1").Object,
-                CancellationToken.None);
+                    computeEngineAdapterMock.Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    osLoginServiceMock.Object,
+                    CreateInstanceNodeMock("instance-1").Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("instance-1", model.DisplayName);
@@ -335,11 +341,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 });
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                computeEngineAdapterMock.Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                osLoginServiceMock.Object,
-                CreateInstanceNodeMock("instance-1").Object,
-                CancellationToken.None);
+                    computeEngineAdapterMock.Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    osLoginServiceMock.Object,
+                    CreateInstanceNodeMock("instance-1").Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("instance-1", model.DisplayName);
@@ -372,11 +379,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 });
 
             var model = await AuthorizedPublicKeysModel.LoadAsync(
-                computeEngineAdapterMock.Object,
-                new Mock<IResourceManagerAdapter>().Object,
-                osLoginServiceMock.Object,
-                CreateInstanceNodeMock("instance-1").Object,
-                CancellationToken.None);
+                    computeEngineAdapterMock.Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    osLoginServiceMock.Object,
+                    CreateInstanceNodeMock("instance-1").Object,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.IsNotNull(model);
             Assert.AreEqual("instance-1", model.DisplayName);
@@ -384,6 +392,178 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
             Assert.AreEqual(1, model.Items.Count());
             Assert.AreEqual(KeyAuthorizationMethods.InstanceMetadata, model.Items.ToList()[0].AuthorizationMethod);
             Assert.AreEqual("bob@gmail.com", model.Items.ToList()[0].Key.Email);
+        }
+
+        //---------------------------------------------------------------------
+        // DeleteFromOsLoginAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenAuthorizationMethodIsInstanceMetadata_ThenDeleteFromOsLoginDoesNothing()
+        {
+            var osLoginServiceMock = new Mock<IOsLoginService>();
+
+            await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
+                    osLoginServiceMock.Object,
+                    new AuthorizedPublicKeysModel.Item(
+                        new Mock<IAuthorizedPublicKey>().Object,
+                        KeyAuthorizationMethods.InstanceMetadata),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            osLoginServiceMock.Verify(s => s.DeleteAuthorizedKeyAsync(
+                It.IsAny<IAuthorizedPublicKey>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Test]
+        public async Task WhenAuthorizationMethodIsOslogin_ThenDeleteFromOsLoginDeletesKey()
+        {
+            var osLoginKey = new Mock<IAuthorizedPublicKey>().Object;
+            var osLoginServiceMock = new Mock<IOsLoginService>();
+
+            await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
+                    osLoginServiceMock.Object,
+                    new AuthorizedPublicKeysModel.Item(
+                        new Mock<IAuthorizedPublicKey>().Object,
+                        KeyAuthorizationMethods.Oslogin),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            osLoginServiceMock.Verify(s => s.DeleteAuthorizedKeyAsync(
+                It.IsAny<IAuthorizedPublicKey>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        //---------------------------------------------------------------------
+        // DeleteFromMetadataAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenAuthorizationMethodIsOslogin_ThenDeleteFromMetadataDoesNothing()
+        {
+            var computeEngineMock = new Mock<IComputeEngineAdapter>();
+
+            await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
+                    computeEngineMock.Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    new Mock<IProjectModelInstanceNode>().Object,
+                    new AuthorizedPublicKeysModel.Item(
+                        MetadataAuthorizedPublicKey.Parse("login:ssh-rsa key user"),
+                        KeyAuthorizationMethods.Oslogin),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            computeEngineMock.Verify(s => s.UpdateMetadataAsync(
+                It.IsAny<InstanceLocator>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+
+            computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
+                It.IsAny<string>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Test]
+        public async Task WhenAuthorizationMethodIsInstanceMetadataAndNodeIsInstance_ThenDeleteFromOsLoginDeletesKeyDeletesInstanceMetadata()
+        {
+            var computeEngineMock = new Mock<IComputeEngineAdapter>();
+
+            var instance = new Mock<IProjectModelInstanceNode>();
+            instance
+                .SetupGet(i => i.Instance)
+                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+
+            await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
+                    computeEngineMock.Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    instance.Object,
+                    new AuthorizedPublicKeysModel.Item(
+                        MetadataAuthorizedPublicKey.Parse("login:ssh-rsa key user"),
+                        KeyAuthorizationMethods.InstanceMetadata),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            computeEngineMock.Verify(s => s.UpdateMetadataAsync(
+                It.IsAny<InstanceLocator>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+
+            computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
+                It.IsAny<string>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Test]
+        public async Task WhenAuthorizationMethodIsProjectMetadataAndNodeIsInstance_ThenDeleteFromOsLoginDeletesKeyDeletesProjectMetadata()
+        {
+            var computeEngineMock = new Mock<IComputeEngineAdapter>();
+            computeEngineMock.Setup(a => a.GetProjectAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Project());
+
+            var instance = new Mock<IProjectModelInstanceNode>();
+            instance
+                .SetupGet(i => i.Instance)
+                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+
+            await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
+                    computeEngineMock.Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    instance.Object,
+                    new AuthorizedPublicKeysModel.Item(
+                        MetadataAuthorizedPublicKey.Parse("login:ssh-rsa key user"),
+                        KeyAuthorizationMethods.ProjectMetadata),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            computeEngineMock.Verify(s => s.UpdateMetadataAsync(
+                It.IsAny<InstanceLocator>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+
+            computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
+                It.IsAny<string>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenAuthorizationMethodIsProjectMetadataAndNodeIsProject_ThenDeleteFromOsLoginDeletesKeyDeletesProjectMetadata()
+        {
+            var computeEngineMock = new Mock<IComputeEngineAdapter>();
+            computeEngineMock.Setup(a => a.GetProjectAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Project());
+
+            var project = new Mock<IProjectModelProjectNode>();
+            project
+                .SetupGet(i => i.Project)
+                .Returns(new ProjectLocator("project-1"));
+
+            await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
+                    computeEngineMock.Object,
+                    new Mock<IResourceManagerAdapter>().Object,
+                    project.Object,
+                    new AuthorizedPublicKeysModel.Item(
+                        MetadataAuthorizedPublicKey.Parse("login:ssh-rsa key user"),
+                        KeyAuthorizationMethods.ProjectMetadata),
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            computeEngineMock.Verify(s => s.UpdateMetadataAsync(
+                It.IsAny<InstanceLocator>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+
+            computeEngineMock.Verify(s => s.UpdateCommonInstanceMetadataAsync(
+                It.IsAny<string>(),
+                It.IsAny<Action<Metadata>>(),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

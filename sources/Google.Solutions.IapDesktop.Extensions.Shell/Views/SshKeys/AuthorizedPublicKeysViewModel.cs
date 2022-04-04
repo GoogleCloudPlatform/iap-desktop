@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 {
@@ -52,6 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         private bool isListEnabled = false;
         private string windowTitle;
         private string informationBarContent;
+        private AuthorizedPublicKeysModel.Item selectedItem;
 
         public AuthorizedPublicKeysViewModel(
             IServiceProvider serviceProvider)
@@ -118,6 +121,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             }
         }
 
+        public AuthorizedPublicKeysModel.Item SelectedItem
+        {
+            get => this.selectedItem;
+            set
+            {
+                this.selectedItem = value;
+                RaisePropertyChange();
+                RaisePropertyChange((AuthorizedPublicKeysViewModel m) => m.IsDeleteButtonEnabled);
+            }
+        }
+
+        public bool IsDeleteButtonEnabled => this.selectedItem != null;
+
         //---------------------------------------------------------------------
         // "Input" properties.
         //---------------------------------------------------------------------
@@ -151,6 +167,62 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             return AuthorizedPublicKeysModel.IsNodeSupported(node)
                 ? CommandState.Enabled
                 : CommandState.Unavailable;
+        }
+
+        //---------------------------------------------------------------------
+        // Actions.
+        //---------------------------------------------------------------------
+
+        public Task RefreshAsync() => InvalidateAsync();
+
+        public async Task DeleteSelectedItemAsync(CancellationToken cancellationToken)
+        {
+            Debug.Assert(this.selectedItem != null);
+            Debug.Assert(this.IsDeleteButtonEnabled);
+            Debug.Assert(this.View != null);
+
+            string question = "Are you sure you want to delete this key?";
+            if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.ProjectMetadata)
+            {
+                question += " This change affects all VM instances in the project.";
+            }
+
+            if (this.serviceProvider
+                .GetService<IConfirmationDialog>()
+                .Confirm(
+                    this.View,
+                    question,
+                    "Delete key for user " + this.selectedItem.Key.Email) == DialogResult.Yes)
+            {
+                if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                {
+                    using (var osLoginService = this.serviceProvider.GetService<IOsLoginService>())
+                    {
+                        await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
+                                osLoginService,
+                                this.selectedItem,
+                                cancellationToken)
+                            .ConfigureAwait(true);
+                    }
+                }
+                else
+                {
+                    using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
+                    using (var resourceManagerAdapter = this.serviceProvider.GetService<IResourceManagerAdapter>())
+                    {
+                        await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
+                                computeEngineAdapter,
+                                resourceManagerAdapter,
+                                this.ModelKey,
+                                this.selectedItem,
+                                cancellationToken)
+                            .ConfigureAwait(true);
+                    }
+                }
+
+                await InvalidateAsync()
+                    .ConfigureAwait(true);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -210,6 +282,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         {
             this.AllKeys.Clear();
             this.FilteredKeys.Clear();
+            this.SelectedItem = null;
 
             if (this.Model == null)
             {
