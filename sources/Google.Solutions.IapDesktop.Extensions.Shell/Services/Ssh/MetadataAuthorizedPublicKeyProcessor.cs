@@ -50,7 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
         public abstract bool IsOsLoginEnabled { get; }
         public abstract bool AreProjectSshKeysBlocked { get; }
-        protected static void AddPublicKeyToMetadata(
+
+        internal static void AddPublicKeyToMetadata(
             Metadata metadata,
             MetadataAuthorizedPublicKey newKey)
         {
@@ -64,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
         }
 
-        protected static void RemovePublicKeyFromMetadata(
+        internal static void RemovePublicKeyFromMetadata(
             Metadata metadata,
             MetadataAuthorizedPublicKey key)
         {
@@ -74,7 +75,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             //
             var newKeySet = MetadataAuthorizedPublicKeySet
                 .FromMetadata(metadata)
-                .RemoveExpiredKeys() // TODO
                 .Remove(key);
             metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
         }
