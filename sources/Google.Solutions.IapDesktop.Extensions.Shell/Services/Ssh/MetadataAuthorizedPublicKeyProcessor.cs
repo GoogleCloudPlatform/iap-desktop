@@ -72,8 +72,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             // Merge new key into existing keyset, and take 
             // the opportunity to purge expired keys.
             //
-            var newKeySet = MetadataAuthorizedPublicKeySet.FromMetadata(metadata)
-                .RemoveExpiredKeys()
+            var newKeySet = MetadataAuthorizedPublicKeySet
+                .FromMetadata(metadata)
+                .RemoveExpiredKeys() // TODO
                 .Remove(key);
             metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
         }

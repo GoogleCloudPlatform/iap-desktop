@@ -192,37 +192,53 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 .Confirm(
                     this.View,
                     question,
-                    "Delete key for user " + this.selectedItem.Key.Email) == DialogResult.Yes)
+                    "Delete key for user " + this.selectedItem.Key.Email) != DialogResult.Yes)
             {
-                if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
-                {
-                    using (var osLoginService = this.serviceProvider.GetService<IOsLoginService>())
-                    {
-                        await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
-                                osLoginService,
-                                this.selectedItem,
-                                cancellationToken)
-                            .ConfigureAwait(true);
-                    }
-                }
-                else
-                {
-                    using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
-                    using (var resourceManagerAdapter = this.serviceProvider.GetService<IResourceManagerAdapter>())
-                    {
-                        await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
-                                computeEngineAdapter,
-                                resourceManagerAdapter,
-                                this.ModelKey,
-                                this.selectedItem,
-                                cancellationToken)
-                            .ConfigureAwait(true);
-                    }
-                }
+                return;
+            }
 
+            await this.serviceProvider
+                .GetService<IJobService>()
+                .RunInBackground<object>(
+                    new JobDescription(
+                        $"Deleting SSH keys for {this.selectedItem.Key.Email}",
+                        JobUserFeedbackType.BackgroundFeedback),
+                    async jobToken =>
+                    {
+                        if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                        {
+                            using (var osLoginService = this.serviceProvider.GetService<IOsLoginService>())
+                            {
+                                await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
+                                        osLoginService,
+                                        this.selectedItem,
+                                        cancellationToken)
+                                    .ConfigureAwait(true);
+                            }
+                        }
+                        else
+                        {
+                            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
+                            using (var resourceManagerAdapter = this.serviceProvider.GetService<IResourceManagerAdapter>())
+                            {
+                                await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
+                                        computeEngineAdapter,
+                                        resourceManagerAdapter,
+                                        this.ModelKey,
+                                        this.selectedItem,
+                                        cancellationToken)
+                                    .ConfigureAwait(true);
+                            }
+                        }
+
+                        return null;
+                    }).ConfigureAwait(true);  // Back to original (UI) thread.
+
+                //
+                // Refresh list.
+                //
                 await InvalidateAsync()
                     .ConfigureAwait(true);
-            }
         }
 
         //---------------------------------------------------------------------
