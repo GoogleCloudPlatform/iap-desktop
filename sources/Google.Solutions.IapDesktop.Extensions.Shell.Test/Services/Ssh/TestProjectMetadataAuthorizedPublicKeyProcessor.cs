@@ -225,13 +225,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProjectHasExpiredKeys_ThenRemoveAuthorizedKeyLeavesThemAsIs()
-        {
-            await Task.Yield();
-            Assert.Fail();
-        }
-
-        [Test]
         public async Task WhenKeyFound_ThenRemoveAuthorizedKeyUpdatesMetadata()
         {
             var bobsKey = new UnmanagedMetadataAuthorizedPublicKey(
