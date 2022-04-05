@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                        "\n" +
                        "```\n" + report + "```";
 
-            BrowserAdapter.Navigate(
+            Browser.Default.Navigate(
                 $"{BaseUrl}/issues/new?component={component}&template={template}&description={WebUtility.UrlEncode(body)}&format=MARKDOWN");
         }
 

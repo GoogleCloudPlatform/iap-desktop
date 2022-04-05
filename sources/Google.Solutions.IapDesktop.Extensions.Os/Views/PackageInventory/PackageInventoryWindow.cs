@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 null,
                 (sender, args) =>
                 {
-                    BrowserAdapter.Navigate(
+                    Browser.Default.Navigate(
                         this.packageList.List.SelectedModelItem?.Package?.Weblink.ToString());
                 });
             this.packageList.List.ContextMenuStrip.Items.Add(openUrl);

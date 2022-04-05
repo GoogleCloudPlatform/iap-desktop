@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
             var tempFile = Path.GetTempFileName() + ".html";
             File.WriteAllText(tempFile, buffer.ToString());
 
-            BrowserAdapter.Navigate(tempFile);
+            Browser.Default.Navigate(tempFile);
         }
     }
 }

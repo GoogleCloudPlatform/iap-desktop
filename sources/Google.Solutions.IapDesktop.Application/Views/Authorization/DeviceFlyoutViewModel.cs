@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 
         private void OpenEndpointVerificationHelp()
         {
-            BrowserAdapter.Navigate(
+            Browser.Default.Navigate(
                 "https://cloud.google.com/endpoint-verification/docs/overview");
 
         }

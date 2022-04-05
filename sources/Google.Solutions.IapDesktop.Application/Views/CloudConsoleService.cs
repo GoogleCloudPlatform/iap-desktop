@@ -47,14 +47,14 @@ namespace Google.Solutions.IapDesktop.Application.Views
     {
         public void OpenInstanceDetails(InstanceLocator instance)
         {
-            BrowserAdapter.Navigate(
+            Browser.Default.Navigate(
                 "https://console.cloud.google.com/compute/instancesDetail/zones/" +
                 $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}");
         }
 
         public void OpenInstanceList(ProjectLocator project)
         {
-            BrowserAdapter.Navigate(
+            Browser.Default.Navigate(
                 "https://console.cloud.google.com/compute/instances" +
                 $"?project={project.ProjectId}");
         }
@@ -62,14 +62,14 @@ namespace Google.Solutions.IapDesktop.Application.Views
         public void OpenInstanceList(ZoneLocator zone)
         {
             var query = "[{\"k\":\"zoneForFilter\",\"v\":\"" + zone.Name + "\"}]";
-            BrowserAdapter.Navigate(
+            Browser.Default.Navigate(
                 "https://console.cloud.google.com/compute/instances" +
                 $"?project={zone.ProjectId}&instancesquery={WebUtility.UrlEncode(query)}");
         }
 
         private void OpenLogs(string projectId, string query)
         {
-            BrowserAdapter.Navigate(
+            Browser.Default.Navigate(
                 "https://console.cloud.google.com/logs/query;" +
                 $"query={WebUtility.UrlEncode(query)};timeRange=PT1H;summaryFields=:true:32:beginning?" +
                 $"project={projectId}");
@@ -110,13 +110,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void ConfigureIapAccess(string projectId)
         {
-            BrowserAdapter.Navigate(
+            Browser.Default.Navigate(
                 $"https://console.cloud.google.com/security/iap?project={projectId}");
         }
 
         public void OpenMyAccount()
         {
-            BrowserAdapter.Navigate(
+            Browser.Default.Navigate(
                 "https://myaccount.google.com/security");
         }
     }

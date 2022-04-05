@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
     {
         public void OpenTopic(IHelpTopic topic)
         {
-            BrowserAdapter.Navigate(topic.Address.ToString());
+            Browser.Default.Navigate(topic.Address.ToString());
         }
     }
 }
