@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Diagnostics;
 
@@ -107,13 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
     {
         public void OpenTopic(IHelpTopic topic)
         {
-            using (Process.Start(new ProcessStartInfo()
-            {
-                UseShellExecute = true,
-                Verb = "open",
-                FileName = topic.Address.ToString()
-            }))
-            { };
+            BrowserAdapter.Navigate(topic.Address.ToString());
         }
     }
 }

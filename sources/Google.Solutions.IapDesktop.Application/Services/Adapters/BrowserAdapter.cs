@@ -47,6 +47,23 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public static bool IsChromeInstalled => ChromeExecutablePath != null;
 
         //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Open system default browser and navigate to address.
+        /// </summary>
+        /// <param name="url"></param>
+        public static void Navigate(string url)
+        {
+            using (Process.Start(new ProcessStartInfo()
+            {
+                UseShellExecute = true,
+                Verb = "open",
+                FileName = url
+            }))
+            { };
+        }
+
+        //---------------------------------------------------------------------
         // IBrowserAdapter.
         //---------------------------------------------------------------------
 
@@ -70,13 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 //
                 // Use system-default browser.
                 //
-                using (Process.Start(new ProcessStartInfo()
-                {
-                    UseShellExecute = true,
-                    Verb = "open",
-                    FileName = address.ToString()
-                }))
-                { };
+                Navigate(address.ToString());
             }
         }
     }

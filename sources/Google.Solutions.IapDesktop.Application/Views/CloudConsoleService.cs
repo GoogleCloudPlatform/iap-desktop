@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using System;
 using System.Diagnostics;
@@ -44,39 +45,32 @@ namespace Google.Solutions.IapDesktop.Application.Views
     [SkipCodeCoverage("UI code")]
     public class CloudConsoleService : ICloudConsoleService
     {
-        private void OpenUrl(string url)
-        {
-            using (Process.Start(new ProcessStartInfo()
-            {
-                UseShellExecute = true,
-                Verb = "open",
-                FileName = url
-            }))
-            { };
-        }
-
         public void OpenInstanceDetails(InstanceLocator instance)
         {
-            OpenUrl("https://console.cloud.google.com/compute/instancesDetail/zones/" +
-                    $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}");
+            BrowserAdapter.Navigate(
+                "https://console.cloud.google.com/compute/instancesDetail/zones/" +
+                $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}");
         }
 
         public void OpenInstanceList(ProjectLocator project)
         {
-            OpenUrl("https://console.cloud.google.com/compute/instances" +
+            BrowserAdapter.Navigate(
+                "https://console.cloud.google.com/compute/instances" +
                 $"?project={project.ProjectId}");
         }
 
         public void OpenInstanceList(ZoneLocator zone)
         {
             var query = "[{\"k\":\"zoneForFilter\",\"v\":\"" + zone.Name + "\"}]";
-            OpenUrl("https://console.cloud.google.com/compute/instances" +
+            BrowserAdapter.Navigate(
+                "https://console.cloud.google.com/compute/instances" +
                 $"?project={zone.ProjectId}&instancesquery={WebUtility.UrlEncode(query)}");
         }
 
         private void OpenLogs(string projectId, string query)
         {
-            OpenUrl("https://console.cloud.google.com/logs/query;" +
+            BrowserAdapter.Navigate(
+                "https://console.cloud.google.com/logs/query;" +
                 $"query={WebUtility.UrlEncode(query)};timeRange=PT1H;summaryFields=:true:32:beginning?" +
                 $"project={projectId}");
         }
@@ -116,12 +110,14 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void ConfigureIapAccess(string projectId)
         {
-            OpenUrl($"https://console.cloud.google.com/security/iap?project={projectId}");
+            BrowserAdapter.Navigate(
+                $"https://console.cloud.google.com/security/iap?project={projectId}");
         }
 
         public void OpenMyAccount()
         {
-            OpenUrl("https://myaccount.google.com/security");
+            BrowserAdapter.Navigate(
+                "https://myaccount.google.com/security");
         }
     }
 }

@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
@@ -100,13 +101,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 null,
                 (sender, args) =>
                 {
-                    using (Process.Start(new ProcessStartInfo()
-                    {
-                        UseShellExecute = true,
-                        Verb = "open",
-                        FileName = this.packageList.List.SelectedModelItem?.Package?.Weblink.ToString()
-                    }))
-                    { };
+                    BrowserAdapter.Navigate(
+                        this.packageList.List.SelectedModelItem?.Package?.Weblink.ToString());
                 });
             this.packageList.List.ContextMenuStrip.Items.Add(openUrl);
             this.packageList.List.ContextMenuStrip.Opening += (sender, args) =>
