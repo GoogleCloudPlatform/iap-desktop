@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -56,12 +57,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
             this.serviceProvider = serviceProvider;
         }
 
+        private static bool ShouldShowBugReportLink(Exception e)
+        {
+            //
+            // Avoid showing a link for all exceptions, as many
+            // exceptions are benign. But any unwrapped System.*
+            // exceptions are likely to indicate some sort of bug.
+            //
+            return e.GetType().Namespace.StartsWith("System");
+        }
+
         private void ShowErrorDialogWithHelp(
             IWin32Window parent,
             string caption,
             string message,
             string details,
-            IHelpTopic helpTopic)
+            IHelpTopic helpTopic,
+            BugReport bugReport)
         {
             Debug.Assert(!(parent is Control control) || !control.InvokeRequired);
 
@@ -83,9 +95,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                 if (helpTopic != null)
                 {
                     //
-                    // Add hyperlinked footer text.
+                    // Add help link to footer.
                     //
-
                     config.FooterIcon = TaskDialogIcons.TD_INFORMATION_ICON;
                     config.dwFlags |= UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA |
                                       UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS;
@@ -95,6 +106,25 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                         if (notification == UnsafeNativeMethods.TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
                         {
                             this.serviceProvider.GetService<HelpService>().OpenTopic(helpTopic);
+                        }
+
+                        return 0; // S_OK;
+                    };
+                }
+                else if (bugReport != null)
+                {
+                    //
+                    // Add bug report link to footer.
+                    //
+                    config.FooterIcon = TaskDialogIcons.TD_INFORMATION_ICON;
+                    config.dwFlags |= UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA |
+                                      UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS;
+                    config.pszFooter = "If this looks wrong, consider <A HREF=\"#\">reporting an issue</A>.";
+                    config.pfCallback = (hwnd, notification, wParam, lParam, refData) =>
+                    {
+                        if (notification == UnsafeNativeMethods.TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
+                        {
+                            this.serviceProvider.GetService<BuganizerAdapter>().ReportBug(bugReport);
                         }
 
                         return 0; // S_OK;
@@ -165,7 +195,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     caption,
                     message,
                     details.ToString(),
-                    (e as IExceptionWithHelpTopic)?.Help);
+                    (e as IExceptionWithHelpTopic)?.Help,
+                    ShouldShowBugReportLink(e) ? new BugReport(e) : null);
             }
         }
     }
