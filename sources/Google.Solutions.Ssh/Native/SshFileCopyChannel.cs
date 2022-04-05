@@ -30,9 +30,9 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// SCP file uploda/download channel.
     /// </summary>
-    public abstract class SshFileCopyChannel : SshChannelBase // TODO: rename to Base
+    public abstract class SshFileCopyChannelBase : SshChannelBase
     {
-        internal SshFileCopyChannel(
+        internal SshFileCopyChannelBase(
             SshSession session,
             SshChannelHandle channelHandle)
             : base(session, channelHandle)
@@ -44,7 +44,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// SCP upload channel.
     /// </summary>
-    public class SshFileUploadChannel : SshFileCopyChannel
+    public class SshFileUploadChannel : SshFileCopyChannelBase
     {
         internal SshFileUploadChannel(
             SshSession session,
@@ -65,11 +65,11 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// SCP download channel.
     /// </summary>
-    public class SshFileDownloadChannel : SshFileCopyChannel
+    public class SshFileDownloadChannel : SshFileCopyChannelBase
     {
         private readonly LIBSSH2_STAT fileStat;
 
-        public ulong FileSize => this.fileStat.st_size; // TODO: Test with 64 bit
+        public ulong FileSize => this.fileStat.st_size;
 
         internal SshFileDownloadChannel(
             SshSession session,
