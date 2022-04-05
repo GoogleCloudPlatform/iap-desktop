@@ -28,6 +28,7 @@ using Google.Apis.Services;
 using Google.Solutions.Common.Net;
 using System;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
@@ -48,6 +49,13 @@ namespace Google.Solutions.Common.Test.Integration
             UserAgent = new UserAgent(
                 "IAP-Desktop-TestSuite",
                 Assembly.GetExecutingAssembly().GetName().Version);
+
+            //
+            // Enable TLS 1.2.
+            //
+            ServicePointManager.SecurityProtocol =
+                SecurityProtocolType.Tls12 |
+                SecurityProtocolType.Tls11;
         }
 
         public static GoogleCredential GetAdminCredential()
