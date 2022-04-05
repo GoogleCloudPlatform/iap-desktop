@@ -114,6 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 m => m.IsLoading,
                 this.components);
             this.keysList.SearchOnKeyDown = true;
+            this.keysList.List.MultiSelect = false;
         }
 
         //---------------------------------------------------------------------
