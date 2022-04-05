@@ -33,15 +33,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     {
         private const string AppPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths";
 
-        public static string ChromeExecutablePath
+        private static string ChromeExecutablePath { get; }
+
+        static BrowserAdapter()
         {
-            get 
+            using (var hive = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default))
+            using (var chromeAppPath = hive.OpenSubKey($@"{AppPath}\chrome.exe", false))
             {
-                using (var hive = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default))
-                using (var chromeAppPath = hive.OpenSubKey($@"{AppPath}\chrome.exe", false))
-                {
-                    return (string)chromeAppPath?.GetValue(null);
-                }
+                ChromeExecutablePath = (string)chromeAppPath?.GetValue(null);
             }
         }
 
@@ -58,6 +57,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 //
                 // Launch Chrome.
                 //
+                using (Process.Start(new ProcessStartInfo()
+                {
+                    UseShellExecute = false,
+                    FileName = ChromeExecutablePath,
+                    Arguments = $"\"{address}\""
+                }))
+                { };
             }
             else
             {
