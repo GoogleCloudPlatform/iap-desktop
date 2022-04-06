@@ -190,8 +190,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 }
                 catch (GoogleApiException e)
                     when ((e.Error != null && (e.Error.Code == 403 || e.Error.Code == 404)) ||
-                          e.Message == "Not Found" ||
-                          e.Message.Contains("storage.objects.get access"))
+                          e.Error.ErrorResponseContent == "Not Found" ||
+                          (e.Error.ErrorResponseContent != null &&
+                           e.Error.ErrorResponseContent.Contains("storage.objects.get access")))
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to storage bucket {locator.Bucket} has been denied", e);
