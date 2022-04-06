@@ -40,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private bool isWaitControlVisible = false;
         private bool isSignOnControlVisible = false;
+        private bool isCancelButtonVisible = false;
         private IAuthorization authorization;
 
         public AuthorizeViewModel(
@@ -91,6 +92,16 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        public bool IsCancelButtonVisible
+        {
+            get => this.isCancelButtonVisible;
+            private set
+            {
+                this.isCancelButtonVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
@@ -99,6 +110,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.IsSignOnControlVisible = false;
             this.IsWaitControlVisible = true;
+            this.IsCancelButtonVisible = false;
 
             //
             // This method is called on the GUI thread, but we don't want to 
@@ -158,12 +170,22 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.IsSignOnControlVisible = false;
             this.IsWaitControlVisible = true;
+            this.IsCancelButtonVisible = true;
 
-            this.Authorization = await AppAuthorization.CreateAuthorizationAsync(
-                    this.signInAdapter,
-                    this.deviceEnrollment,
-                    cancellationToken)
-                .ConfigureAwait(true);
+            try
+            {
+                this.Authorization = await AppAuthorization.CreateAuthorizationAsync(
+                        this.signInAdapter,
+                        this.deviceEnrollment,
+                        cancellationToken)
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                this.IsSignOnControlVisible = true;
+                this.IsWaitControlVisible = false;
+                this.IsCancelButtonVisible = false;
+            }
         }
     }
 }

@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Controls;
+
 namespace Google.Solutions.IapDesktop.Windows
 {
     partial class AuthorizeDialog
@@ -49,30 +51,57 @@ namespace Google.Solutions.IapDesktop.Windows
         /// </summary>
         private void InitializeComponent()
         {
-            this.signInButton = new System.Windows.Forms.Button();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizeDialog));
+            this.signInButton = new Google.Solutions.IapDesktop.Controls.DropDownButton();
             this.spinner = new System.Windows.Forms.PictureBox();
+            this.cancelSignInLink = new System.Windows.Forms.LinkLabel();
+            this.cancelSignInLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
             this.SuspendLayout();
             // 
             // signInButton
             // 
-            this.signInButton.Image = global::Google.Solutions.IapDesktop.Windows.Resources.btn_google_signin_dark_normal_web;
-            this.signInButton.Location = new System.Drawing.Point(356, 124);
+            this.signInButton.BackColor = System.Drawing.Color.White;
+            this.signInButton.Image = ((System.Drawing.Image)(resources.GetObject("signInButton.Image")));
+            this.signInButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.signInButton.Location = new System.Drawing.Point(406, 132);
             this.signInButton.Name = "signInButton";
-            this.signInButton.Size = new System.Drawing.Size(191, 46);
+            this.signInButton.Size = new System.Drawing.Size(137, 36);
             this.signInButton.TabIndex = 0;
-            this.signInButton.UseVisualStyleBackColor = true;
+            this.signInButton.Text = "Sign in";
+            this.signInButton.UseVisualStyleBackColor = false;
             this.signInButton.Visible = false;
             // 
             // spinner
             // 
             this.spinner.BackColor = System.Drawing.Color.White;
             this.spinner.Image = global::Google.Solutions.IapDesktop.Windows.Resources.Spinner;
-            this.spinner.Location = new System.Drawing.Point(439, 125);
+            this.spinner.Location = new System.Drawing.Point(453, 124);
             this.spinner.Name = "spinner";
             this.spinner.Size = new System.Drawing.Size(44, 44);
             this.spinner.TabIndex = 2;
             this.spinner.TabStop = false;
+            // 
+            // cancelSignInLink
+            // 
+            this.cancelSignInLink.BackColor = System.Drawing.Color.White;
+            this.cancelSignInLink.Location = new System.Drawing.Point(409, 206);
+            this.cancelSignInLink.Name = "cancelSignInLink";
+            this.cancelSignInLink.Size = new System.Drawing.Size(134, 23);
+            this.cancelSignInLink.TabIndex = 3;
+            this.cancelSignInLink.TabStop = true;
+            this.cancelSignInLink.Text = "Cancel sign-in";
+            this.cancelSignInLink.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // waitingLabel
+            // 
+            this.cancelSignInLabel.BackColor = System.Drawing.Color.White;
+            this.cancelSignInLabel.Location = new System.Drawing.Point(393, 171);
+            this.cancelSignInLabel.Name = "waitingLabel";
+            this.cancelSignInLabel.Size = new System.Drawing.Size(162, 33);
+            this.cancelSignInLabel.TabIndex = 4;
+            this.cancelSignInLabel.Text = "Waiting for you to sign in\r\nusing a web browser ...";
+            this.cancelSignInLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // AuthorizeDialog
             // 
@@ -80,6 +109,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Google.Solutions.IapDesktop.Properties.Resources.Splash;
             this.ClientSize = new System.Drawing.Size(634, 290);
+            this.Controls.Add(this.cancelSignInLabel);
+            this.Controls.Add(this.cancelSignInLink);
             this.Controls.Add(this.spinner);
             this.Controls.Add(this.signInButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -96,7 +127,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
         #endregion
 
-        private System.Windows.Forms.Button signInButton;
+        private DropDownButton signInButton;
         private System.Windows.Forms.PictureBox spinner;
+        private System.Windows.Forms.LinkLabel cancelSignInLink;
+        private System.Windows.Forms.Label cancelSignInLabel;
     }
 }

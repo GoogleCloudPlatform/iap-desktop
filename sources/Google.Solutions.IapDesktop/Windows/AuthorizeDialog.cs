@@ -51,12 +51,12 @@ namespace Google.Solutions.IapDesktop.Windows
 
             var viewModel = new AuthorizeViewModel(this, signInAdapter, deviceEnrollment);
 
-            this.spinner.BindProperty(
+            this.spinner.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsWaitControlVisible,
                 this.Container);
-            this.signInButton.BindProperty(
+            this.signInButton.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsSignOnControlVisible,
@@ -70,6 +70,17 @@ namespace Google.Solutions.IapDesktop.Windows
                         this.signInButton.Focus();
                     }
                 });
+
+            this.cancelSignInLabel.BindReadonlyProperty(
+                c => c.Visible,
+                viewModel,
+                m => m.IsCancelButtonVisible,
+                this.Container);
+            this.cancelSignInLink.BindReadonlyProperty(
+                c => c.Visible,
+                viewModel,
+                m => m.IsCancelButtonVisible,
+                this.Container);
 
             viewModel.OnPropertyChange(
                 m => m.Authorization,
@@ -86,15 +97,20 @@ namespace Google.Solutions.IapDesktop.Windows
                     }
                 });
 
+            CancellationTokenSource cancellationSource = null;
             this.signInButton.Click += async (sender, args) =>
             {
                 try
                 {
+                    cancellationSource = new CancellationTokenSource();
+
                     await viewModel
-                        .SignInAsync(CancellationToken.None)
+                        .SignInAsync(cancellationSource.Token)
                         .ConfigureAwait(true);
                     Debug.Assert(this.AuthorizationResult != null);
                 }
+                catch (OperationCanceledException)
+                { }
                 catch (Exception e)
                 {
                     this.AuthorizationError = e;
@@ -102,11 +118,15 @@ namespace Google.Solutions.IapDesktop.Windows
                     Close();
                 }
             };
+            this.cancelSignInLink.Click += (sender, args) =>
+            {
+                cancellationSource?.Cancel();
+            };
 
-            //
-            // Try to authorize using saved credentials.
-            //
-            viewModel.TryLoadExistingAuthorizationAsync(CancellationToken.None)
+             //
+             // Try to authorize using saved credentials.
+             //
+             viewModel.TryLoadExistingAuthorizationAsync(CancellationToken.None)
                 .ContinueWith(
                     _ => Debug.Assert(false, "Should never throw an exception"),
                     TaskContinuationOptions.OnlyOnFaulted);
