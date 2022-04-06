@@ -102,6 +102,7 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 try
                 {
+                    cancellationSource?.Dispose();
                     cancellationSource = new CancellationTokenSource();
 
                     await viewModel
@@ -110,7 +111,11 @@ namespace Google.Solutions.IapDesktop.Windows
                     Debug.Assert(this.AuthorizationResult != null);
                 }
                 catch (OperationCanceledException)
-                { }
+                {
+                    //
+                    // User clicked cancel-link.
+                    //
+                }
                 catch (Exception e)
                 {
                     this.AuthorizationError = e;
