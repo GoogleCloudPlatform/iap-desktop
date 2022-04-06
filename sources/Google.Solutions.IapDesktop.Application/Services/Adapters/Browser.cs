@@ -75,34 +75,34 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 { };
             }
         }
+    }
 
-        private class ChromeBrowser : Browser
+    public class ChromeBrowser : Browser
+    {
+        private const string AppPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths";
+
+        private static string ChromeExecutablePath { get; }
+
+        static ChromeBrowser()
         {
-            private const string AppPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths";
-
-            private static string ChromeExecutablePath { get; }
-
-            static ChromeBrowser()
+            using (var hive = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default))
+            using (var chromeAppPath = hive.OpenSubKey($@"{AppPath}\chrome.exe", false))
             {
-                using (var hive = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default))
-                using (var chromeAppPath = hive.OpenSubKey($@"{AppPath}\chrome.exe", false))
-                {
-                    ChromeExecutablePath = (string)chromeAppPath?.GetValue(null);
-                }
+                ChromeExecutablePath = (string)chromeAppPath?.GetValue(null);
             }
+        }
 
-            public static bool IsAvailable => ChromeExecutablePath != null;
+        public static bool IsAvailable => ChromeExecutablePath != null;
 
-            public override void Navigate(Uri address)
+        public override void Navigate(Uri address)
+        {
+            using (Process.Start(new ProcessStartInfo()
             {
-                using (Process.Start(new ProcessStartInfo()
-                {
-                    UseShellExecute = false,
-                    FileName = ChromeExecutablePath,
-                    Arguments = $"\"{address}\""
-                }))
-                { };
-            }
+                UseShellExecute = false,
+                FileName = ChromeExecutablePath,
+                Arguments = $"\"{address}\""
+            }))
+            { };
         }
     }
 }

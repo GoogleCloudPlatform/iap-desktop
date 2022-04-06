@@ -51,6 +51,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
             var viewModel = new AuthorizeViewModel(this, signInAdapter, deviceEnrollment);
 
+            //
+            // Bind controls.
+            //
             this.spinner.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,
@@ -81,6 +84,11 @@ namespace Google.Solutions.IapDesktop.Windows
                 viewModel,
                 m => m.IsCancelButtonVisible,
                 this.Container);
+            this.signInWithChromeMenuItem.BindReadonlyProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsChromeSingnInButtonEnabled,
+                this.Container);
 
             viewModel.OnPropertyChange(
                 m => m.Authorization,
@@ -97,13 +105,19 @@ namespace Google.Solutions.IapDesktop.Windows
                     }
                 });
 
+            //
+            // Manual sign-in.
+            //
             CancellationTokenSource cancellationSource = null;
-            this.signInButton.Click += async (sender, args) =>
+            async void signIn(BrowserPreference browserPreference)
             {
                 try
                 {
                     cancellationSource?.Dispose();
                     cancellationSource = new CancellationTokenSource();
+
+                    // TODO: Select browser based on sender
+                    var browser = Browser.Get(browserPreference);
 
                     await viewModel
                         .SignInAsync(cancellationSource.Token)
@@ -123,15 +137,18 @@ namespace Google.Solutions.IapDesktop.Windows
                     Close();
                 }
             };
-            this.cancelSignInLink.Click += (sender, args) =>
+
+            this.signInButton.Click += (s, a) => signIn(BrowserPreference.Default);
+            this.signInWithChromeMenuItem.Click += (s, a) => signIn(BrowserPreference.Chrome);
+            this.cancelSignInLink.Click += (s, a) =>
             {
                 cancellationSource?.Cancel();
             };
 
-             //
-             // Try to authorize using saved credentials.
-             //
-             viewModel.TryLoadExistingAuthorizationAsync(CancellationToken.None)
+            //
+            // Try to authorize using saved credentials.
+            //
+            viewModel.TryLoadExistingAuthorizationAsync(CancellationToken.None)
                 .ContinueWith(
                     _ => Debug.Assert(false, "Should never throw an exception"),
                     TaskContinuationOptions.OnlyOnFaulted);

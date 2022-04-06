@@ -51,26 +51,17 @@ namespace Google.Solutions.IapDesktop.Windows
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizeDialog));
-            this.signInButton = new Google.Solutions.IapDesktop.Controls.DropDownButton();
             this.spinner = new System.Windows.Forms.PictureBox();
             this.cancelSignInLink = new System.Windows.Forms.LinkLabel();
             this.cancelSignInLabel = new System.Windows.Forms.Label();
+            this.signInMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.signInWithChromeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.signInButton = new Google.Solutions.IapDesktop.Controls.DropDownButton();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
+            this.signInMenuStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // signInButton
-            // 
-            this.signInButton.BackColor = System.Drawing.Color.White;
-            this.signInButton.Image = ((System.Drawing.Image)(resources.GetObject("signInButton.Image")));
-            this.signInButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.signInButton.Location = new System.Drawing.Point(406, 132);
-            this.signInButton.Name = "signInButton";
-            this.signInButton.Size = new System.Drawing.Size(137, 36);
-            this.signInButton.TabIndex = 0;
-            this.signInButton.Text = "Sign in";
-            this.signInButton.UseVisualStyleBackColor = false;
-            this.signInButton.Visible = false;
             // 
             // spinner
             // 
@@ -93,15 +84,43 @@ namespace Google.Solutions.IapDesktop.Windows
             this.cancelSignInLink.Text = "Cancel sign-in";
             this.cancelSignInLink.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // waitingLabel
+            // cancelSignInLabel
             // 
             this.cancelSignInLabel.BackColor = System.Drawing.Color.White;
             this.cancelSignInLabel.Location = new System.Drawing.Point(393, 171);
-            this.cancelSignInLabel.Name = "waitingLabel";
+            this.cancelSignInLabel.Name = "cancelSignInLabel";
             this.cancelSignInLabel.Size = new System.Drawing.Size(162, 33);
             this.cancelSignInLabel.TabIndex = 4;
             this.cancelSignInLabel.Text = "Waiting for you to sign in\r\nusing a web browser ...";
             this.cancelSignInLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // signInMenuStrip
+            // 
+            this.signInMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.signInWithChromeMenuItem});
+            this.signInMenuStrip.Name = "signInMenuStrip";
+            this.signInMenuStrip.Size = new System.Drawing.Size(183, 48);
+            // 
+            // signInWithChromeMenuItem
+            // 
+            this.signInWithChromeMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("signInWithChromeMenuItem.Image")));
+            this.signInWithChromeMenuItem.Name = "signInWithChromeMenuItem";
+            this.signInWithChromeMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.signInWithChromeMenuItem.Text = "Sign in with &Chrome";
+            // 
+            // signInButton
+            // 
+            this.signInButton.BackColor = System.Drawing.Color.White;
+            this.signInButton.Image = ((System.Drawing.Image)(resources.GetObject("signInButton.Image")));
+            this.signInButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.signInButton.Location = new System.Drawing.Point(406, 132);
+            this.signInButton.Menu = this.signInMenuStrip;
+            this.signInButton.Name = "signInButton";
+            this.signInButton.Size = new System.Drawing.Size(137, 36);
+            this.signInButton.TabIndex = 0;
+            this.signInButton.Text = "Sign in";
+            this.signInButton.UseVisualStyleBackColor = false;
+            this.signInButton.Visible = false;
             // 
             // AuthorizeDialog
             // 
@@ -121,6 +140,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sign in";
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).EndInit();
+            this.signInMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -131,5 +151,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.PictureBox spinner;
         private System.Windows.Forms.LinkLabel cancelSignInLink;
         private System.Windows.Forms.Label cancelSignInLabel;
+        private System.Windows.Forms.ContextMenuStrip signInMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem signInWithChromeMenuItem;
     }
 }

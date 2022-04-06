@@ -117,7 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="signInMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="signInWithChromeMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wwAADsMBx2+oZAAAAeZJREFUOE+1kt1LmlEcx/0nyhb0Qnf7AwYrIYeaucwyX2L5srKtuhmsVkFR3fZm
+        TRO6G1bq1S5G4UVzg6CIagsVyoUSj5YRZN2VXow5v51zdNOnJmMX+8Hn5pzn8zkHniP4LxN/1YWoRp5F
+        LQPXKsVprwm57eJzNj6MmL4JUZ0CUW0jL8C1SMCpnuB87M2fQ5HR1/imluJYR0T906IBTikmkf77EWeH
+        BEHyAY3QG3BtRH6mRMJhJcwgsTCLhG2acWGb4gfqV0fQPNWB3SYRDkgkOtCHUPAEix9vGKFwDFefOnHt
+        FeG7T4Qfn+uQ3tHnIzWeHlDGeuX4qiCRYAzt9iRa3qagmk9Ba0vi6PgE6U0x0lti/Nwm7IjzgWrPC9S4
+        X6J20Qxf42N26i+ZopxLwUHWMl+kyOzLAD8hIM0Hqkig2p3FMtTMAoWy0koC6zdAUJ4lcCdQ4bag0tXN
+        eOi0wB+5gMael9W2FFujcibQwGReoPbDMMpdXb9ReCewEY6za9OTN47iONwbyMnZ0xG687AKAw9cnTme
+        o2zJDMOKhi8HJHyZjs43jbIVIuQQEkqXzRC+M+JyT8GTERm8H6Cj9U0yiVKybGLMrql4ciZc5CkXzqP3
+        /UwWOg249tMA+X2Hxr+L/z4CwS2GJLdy9evANwAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="signInButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAAwBQTFRFa6ZW

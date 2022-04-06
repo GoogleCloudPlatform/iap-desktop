@@ -102,6 +102,8 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        public bool IsChromeSingnInButtonEnabled => ChromeBrowser.IsAvailable;
+
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
