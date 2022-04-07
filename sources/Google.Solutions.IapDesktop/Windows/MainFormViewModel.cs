@@ -222,21 +222,16 @@ namespace Google.Solutions.IapDesktop.Windows
                 new ChromePolicy(),
                 this.applicationSettings).Result;
 
-            var signInAdapter = new SignInAdapter(
-                deviceEnrollment.Certificate,
-                OAuthClient.Secrets,
-                new[] { IapTunnelingEndpoint.RequiredScope },
-                this.authSettings,
-                new LocalServerCodeReceiver(Resources.AuthorizationSuccessful));
-
             //
             // Get the user authorization, either by using stored
             // credentials or by initiating an OAuth authorization flow.
             //
             this.Authorization = AuthorizeDialog.Authorize(
                 (Control)this.View,
-                signInAdapter,
-                deviceEnrollment);
+                OAuthClient.Secrets,
+                new[] { IapTunnelingEndpoint.RequiredScope },
+                deviceEnrollment,
+                this.authSettings);
             if (this.Authorization == null)
             {
                 // Aborted.

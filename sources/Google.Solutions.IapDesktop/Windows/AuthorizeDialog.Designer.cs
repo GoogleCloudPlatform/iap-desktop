@@ -59,6 +59,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.signInMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.signInWithChromeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signInButton = new Google.Solutions.IapDesktop.Controls.DropDownButton();
+            this.signInWithDefaultBrowserMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
             this.signInMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -97,15 +98,16 @@ namespace Google.Solutions.IapDesktop.Windows
             // signInMenuStrip
             // 
             this.signInMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.signInWithChromeMenuItem});
+            this.signInWithChromeMenuItem,
+            this.signInWithDefaultBrowserMenuItem});
             this.signInMenuStrip.Name = "signInMenuStrip";
-            this.signInMenuStrip.Size = new System.Drawing.Size(183, 48);
+            this.signInMenuStrip.Size = new System.Drawing.Size(222, 70);
             // 
             // signInWithChromeMenuItem
             // 
             this.signInWithChromeMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("signInWithChromeMenuItem.Image")));
             this.signInWithChromeMenuItem.Name = "signInWithChromeMenuItem";
-            this.signInWithChromeMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.signInWithChromeMenuItem.Size = new System.Drawing.Size(221, 22);
             this.signInWithChromeMenuItem.Text = "Sign in with &Chrome";
             // 
             // signInButton
@@ -121,6 +123,12 @@ namespace Google.Solutions.IapDesktop.Windows
             this.signInButton.Text = "Sign in";
             this.signInButton.UseVisualStyleBackColor = false;
             this.signInButton.Visible = false;
+            // 
+            // signInWithDefaultBrowserMenuItem
+            // 
+            this.signInWithDefaultBrowserMenuItem.Name = "signInWithDefaultBrowserMenuItem";
+            this.signInWithDefaultBrowserMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.signInWithDefaultBrowserMenuItem.Text = "Sign in with &default browser";
             // 
             // AuthorizeDialog
             // 
@@ -153,5 +161,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.Label cancelSignInLabel;
         private System.Windows.Forms.ContextMenuStrip signInMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem signInWithChromeMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem signInWithDefaultBrowserMenuItem;
     }
 }
