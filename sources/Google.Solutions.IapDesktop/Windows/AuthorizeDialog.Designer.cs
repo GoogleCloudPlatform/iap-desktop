@@ -102,7 +102,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.signInWithChromeMenuItem,
             this.signInWithDefaultBrowserMenuItem});
             this.signInMenuStrip.Name = "signInMenuStrip";
-            this.signInMenuStrip.Size = new System.Drawing.Size(222, 48);
+            this.signInMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.signInMenuStrip.Size = new System.Drawing.Size(222, 70);
             // 
             // signInWithChromeMenuItem
             // 
