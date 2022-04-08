@@ -23,7 +23,7 @@
 # Basic configuration
 #------------------------------------------------------------------------------
 
-PRODUCT_VERSION = 2.25
+PRODUCT_VERSION = 2.26
 CONFIGURATION = Release
 PLATFORM=x86
 
