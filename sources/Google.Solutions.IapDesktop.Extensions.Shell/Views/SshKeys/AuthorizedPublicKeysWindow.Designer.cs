@@ -56,8 +56,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.infoIcon = new System.Windows.Forms.PictureBox();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.deleteToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -81,6 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             // splitContainer
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer.IsSplitterFixed = true;
             this.splitContainer.Location = new System.Drawing.Point(0, 25);
             this.splitContainer.Name = "splitContainer";
