@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // cancelSignInLink
             // 
-            this.cancelSignInLink.BackColor = System.Drawing.Color.White;
+            this.cancelSignInLink.BackColor = System.Drawing.Color.Transparent;
             this.cancelSignInLink.Location = new System.Drawing.Point(100, 378);
             this.cancelSignInLink.Name = "cancelSignInLink";
             this.cancelSignInLink.Size = new System.Drawing.Size(134, 23);
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // cancelSignInLabel
             // 
-            this.cancelSignInLabel.BackColor = System.Drawing.Color.White;
+            this.cancelSignInLabel.BackColor = System.Drawing.Color.Transparent;
             this.cancelSignInLabel.Location = new System.Drawing.Point(6, 343);
             this.cancelSignInLabel.Name = "cancelSignInLabel";
             this.cancelSignInLabel.Size = new System.Drawing.Size(322, 33);
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.signInWithDefaultBrowserMenuItem});
             this.signInMenuStrip.Name = "signInMenuStrip";
             this.signInMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.signInMenuStrip.Size = new System.Drawing.Size(222, 70);
+            this.signInMenuStrip.Size = new System.Drawing.Size(222, 48);
             // 
             // signInWithChromeMenuItem
             // 
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // introLabel
             // 
             this.introLabel.AutoSize = true;
-            this.introLabel.BackColor = System.Drawing.Color.White;
+            this.introLabel.BackColor = System.Drawing.Color.Transparent;
             this.introLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.introLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.introLabel.Location = new System.Drawing.Point(43, 116);
