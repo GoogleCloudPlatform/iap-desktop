@@ -117,6 +117,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\DropDownButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OAuthClient.cs" />
     <Compile Include="ProcessMitigations.cs" />
     <Compile Include="Program.cs" />

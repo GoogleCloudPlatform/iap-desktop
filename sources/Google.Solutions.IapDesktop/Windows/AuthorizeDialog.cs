@@ -25,7 +25,9 @@ using Google.Apis.Util.Store;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,22 +43,35 @@ namespace Google.Solutions.IapDesktop.Windows
 
 
         public AuthorizeDialog(
-            ISignInAdapter signInAdapter,
-            IDeviceEnrollment deviceEnrollment)
+            ClientSecrets clientSecrets,
+            IEnumerable<string> scopes,
+            IDeviceEnrollment deviceEnrollment,
+            AuthSettingsRepository authSettingsRepository)
         {
             InitializeComponent();
 
             // Don't maximize when double-clicking title bar.
             this.MaximumSize = this.Size;
 
+            var codeReceiver = new BrowserCodeReceiver();
+            var signInAdapter = new SignInAdapter(
+                deviceEnrollment.Certificate,
+                clientSecrets,
+                scopes,
+                authSettingsRepository,
+                codeReceiver);
+
             var viewModel = new AuthorizeViewModel(this, signInAdapter, deviceEnrollment);
 
-            this.spinner.BindProperty(
+            //
+            // Bind controls.
+            //
+            this.spinner.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsWaitControlVisible,
                 this.Container);
-            this.signInButton.BindProperty(
+            this.signInButton.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsSignOnControlVisible,
@@ -70,6 +85,22 @@ namespace Google.Solutions.IapDesktop.Windows
                         this.signInButton.Focus();
                     }
                 });
+
+            this.cancelSignInLabel.BindReadonlyProperty(
+                c => c.Visible,
+                viewModel,
+                m => m.IsCancelButtonVisible,
+                this.Container);
+            this.cancelSignInLink.BindReadonlyProperty(
+                c => c.Visible,
+                viewModel,
+                m => m.IsCancelButtonVisible,
+                this.Container);
+            this.signInWithChromeMenuItem.BindReadonlyProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsChromeSingnInButtonEnabled,
+                this.Container);
 
             viewModel.OnPropertyChange(
                 m => m.Authorization,
@@ -86,14 +117,32 @@ namespace Google.Solutions.IapDesktop.Windows
                     }
                 });
 
-            this.signInButton.Click += async (sender, args) =>
+            //
+            // Manual sign-in.
+            //
+            CancellationTokenSource cancellationSource = null;
+            async void signIn(BrowserPreference browserPreference)
             {
                 try
                 {
+                    cancellationSource?.Dispose();
+                    cancellationSource = new CancellationTokenSource();
+
+                    //
+                    // Adjust browser preference.
+                    //
+                    codeReceiver.BrowserPreference = browserPreference;
+
                     await viewModel
-                        .SignInAsync(CancellationToken.None)
+                        .SignInAsync(cancellationSource.Token)
                         .ConfigureAwait(true);
                     Debug.Assert(this.AuthorizationResult != null);
+                }
+                catch (OperationCanceledException)
+                {
+                    //
+                    // User clicked cancel-link.
+                    //
                 }
                 catch (Exception e)
                 {
@@ -101,6 +150,14 @@ namespace Google.Solutions.IapDesktop.Windows
                     this.DialogResult = DialogResult.Cancel;
                     Close();
                 }
+            };
+
+            this.signInButton.Click += (s, a) => signIn(BrowserPreference.Default);
+            this.signInWithDefaultBrowserMenuItem.Click += (s, a) => signIn(BrowserPreference.Default);
+            this.signInWithChromeMenuItem.Click += (s, a) => signIn(BrowserPreference.Chrome);
+            this.cancelSignInLink.Click += (s, a) =>
+            {
+                cancellationSource?.Cancel();
             };
 
             //
@@ -113,15 +170,44 @@ namespace Google.Solutions.IapDesktop.Windows
         }
 
         //---------------------------------------------------------------------
+        // Custom code receiver.
+        //---------------------------------------------------------------------
+
+        private class BrowserCodeReceiver : LocalServerCodeReceiver
+        {
+            public BrowserPreference BrowserPreference { get; set; }
+                = BrowserPreference.Default;
+
+            public BrowserCodeReceiver()
+                : base(Resources.AuthorizationSuccessful)
+            {
+            }
+
+            protected override bool OpenBrowser(string url)
+            {
+                Browser
+                    .Get(this.BrowserPreference)
+                    .Navigate(url);
+                return true;
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Statics.
         //---------------------------------------------------------------------
 
         public static IAuthorization Authorize(
             Control parent,
-            ISignInAdapter signInAdapter,
-            IDeviceEnrollment deviceEnrollment)
+            ClientSecrets clientSecrets,
+            IEnumerable<string> scopes,
+            IDeviceEnrollment deviceEnrollment,
+            AuthSettingsRepository authSettingsRepository)
         {
-            var dialog = new AuthorizeDialog(signInAdapter, deviceEnrollment);
+            var dialog = new AuthorizeDialog(
+                clientSecrets,
+                scopes, 
+                deviceEnrollment,
+                authSettingsRepository);
             if (dialog.ShowDialog(parent) == DialogResult.OK)
             {
                 Debug.Assert(dialog.AuthorizationResult != null);

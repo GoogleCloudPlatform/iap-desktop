@@ -86,13 +86,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 
         private void OpenEndpointVerificationHelp()
         {
-            using (Process.Start(new ProcessStartInfo()
-            {
-                UseShellExecute = true,
-                Verb = "open",
-                FileName = "https://cloud.google.com/endpoint-verification/docs/overview"
-            }))
-            { };
+            Browser.Default.Navigate(
+                "https://cloud.google.com/endpoint-verification/docs/overview");
 
         }
 

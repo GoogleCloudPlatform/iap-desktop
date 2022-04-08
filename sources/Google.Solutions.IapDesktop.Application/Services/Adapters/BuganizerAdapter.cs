@@ -30,17 +30,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     {
         public const string BaseUrl = "https://issuetracker.google.com";
 
-        private void OpenUrl(string url)
-        {
-            using (Process.Start(new ProcessStartInfo()
-            {
-                UseShellExecute = true,
-                Verb = "open",
-                FileName = url
-            }))
-            { };
-        }
-
         private void ReportBug(int component, int template, BugReport report)
         {
             var body = "NOTE: This issue report will be visible to the public. Make sure you don't include any confidential information.\n\n" + 
@@ -55,7 +44,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                        "\n" +
                        "```\n" + report + "```";
 
-            OpenUrl($"{BaseUrl}/issues/new?component={component}&template={template}&description={WebUtility.UrlEncode(body)}&format=MARKDOWN");
+            Browser.Default.Navigate(
+                $"{BaseUrl}/issues/new?component={component}&template={template}&description={WebUtility.UrlEncode(body)}&format=MARKDOWN");
         }
 
         public void ReportPrivateBug(BugReport report)
