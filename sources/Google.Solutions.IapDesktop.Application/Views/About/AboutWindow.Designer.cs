@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(351, 261);
+            this.okButton.Location = new System.Drawing.Point(351, 287);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 0;
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // 
             this.infoLabel.AutoSize = true;
             this.infoLabel.BackColor = System.Drawing.Color.White;
-            this.infoLabel.Location = new System.Drawing.Point(25, 70);
+            this.infoLabel.Location = new System.Drawing.Point(26, 70);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(10, 13);
             this.infoLabel.TabIndex = 1;
@@ -92,10 +92,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // licenseText
             // 
             this.licenseText.BackColor = System.Drawing.Color.White;
-            this.licenseText.Location = new System.Drawing.Point(25, 125);
+            this.licenseText.Location = new System.Drawing.Point(26, 125);
             this.licenseText.Name = "licenseText";
             this.licenseText.ReadOnly = true;
-            this.licenseText.Size = new System.Drawing.Size(401, 130);
+            this.licenseText.Size = new System.Drawing.Size(400, 151);
             this.licenseText.TabIndex = 2;
             this.licenseText.Text = "";
             this.licenseText.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.licenseText_LinkClicked);
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.CancelButton = this.okButton;
-            this.ClientSize = new System.Drawing.Size(449, 297);
+            this.ClientSize = new System.Drawing.Size(449, 330);
             this.Controls.Add(this.authorLink);
             this.Controls.Add(this.licenseText);
             this.Controls.Add(this.copyrightLabel);
