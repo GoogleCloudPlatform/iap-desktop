@@ -64,8 +64,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             // packageList
             // 
             this.packageList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.packageList.Loading = true;
             this.packageList.Location = new System.Drawing.Point(0, 0);
+            this.packageList.MultiSelect = true;
             this.packageList.Name = "packageList";
+            this.packageList.SearchOnKeyDown = false;
             this.packageList.SearchTerm = "";
             this.packageList.Size = new System.Drawing.Size(800, 424);
             this.packageList.TabIndex = 0;
@@ -73,6 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             // splitContainer
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer.IsSplitterFixed = true;
             this.splitContainer.Location = new System.Drawing.Point(0, 0);
             this.splitContainer.Name = "splitContainer";
