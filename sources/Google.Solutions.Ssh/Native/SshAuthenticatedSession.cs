@@ -351,6 +351,35 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        public SshSftpChannel OpenSftpChannel()
+        {
+            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                LIBSSH2_ERROR result;
+                var channelHandle = UnsafeNativeMethods.libssh2_sftp_init(
+                    this.session.Handle);
+
+                if (channelHandle.IsInvalid)
+                {
+                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                        this.session.Handle);
+                }
+                else
+                {
+                    result = LIBSSH2_ERROR.NONE;
+                }
+
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw this.session.CreateException(result);
+                }
+
+                channelHandle.SessionHandle = this.session.Handle;
+
+                return new SshSftpChannel(channelHandle);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Dispose.
         //---------------------------------------------------------------------

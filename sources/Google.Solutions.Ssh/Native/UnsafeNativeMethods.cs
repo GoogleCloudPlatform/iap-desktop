@@ -469,8 +469,24 @@ namespace Google.Solutions.Ssh.Native
             [MarshalAs(UnmanagedType.LPStr)] string path,
             uint mode,
             long size,
-            long mtime, // TODO: should this be ptr-sized?
+            long mtime,
             long atime);
+
+        //---------------------------------------------------------------------
+        // SFTP.
+        //---------------------------------------------------------------------
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern SshSftpHandle libssh2_sftp_init(
+            SshSessionHandle session);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libssh2_sftp_shutdown(
+            IntPtr sftp);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libssh2_sftp_last_error(
+            SshSftpHandle sftp);
 
         //---------------------------------------------------------------------
         // Keepalive.
@@ -633,6 +649,9 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
+    /// <summary>
+    /// Safe handle for a LIBSSH2_SESSION.
+    /// </summary>
     internal class SshSessionHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
 #if DEBUG
@@ -665,7 +684,10 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
-    internal class SshChannelHandle : SafeHandleZeroOrMinusOneIsInvalid
+    /// <summary>
+    /// Safe handle for a resource that's dependent on a LIBSSH2_SESSION.
+    /// </summary>
+    internal abstract class SshSessionResourceHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
 #if DEBUG
         private readonly Thread owningThread = Thread.CurrentThread;
@@ -676,7 +698,7 @@ namespace Google.Solutions.Ssh.Native
         /// </summary>
         public SshSessionHandle SessionHandle { get; set; }
 
-        private SshChannelHandle() : base(true)
+        protected SshSessionResourceHandle() : base(true)
         {
             HandleTable.OnHandleCreated(this, "SSH session");
         }
@@ -693,13 +715,15 @@ namespace Google.Solutions.Ssh.Native
         override protected bool ReleaseHandle()
         {
             //
-            // NB. Libssh2 manages channels as a sub-resource of a session.
-            // Freeing a channel is fine if the session is still around,
-            // but trying to free a channel *after* freeing a session will
+            // NB. Libssh2 manages channels and SFTPs as a sub-resource of a
+            // session.
+            //
+            // Freeing a sub-resource is fine if the session is still around,
+            // but trying to free a sub-resource *after* freeing a session will
             // cause an access violation.
             //
             // When calling dispose, it's therefore imporant to dispose
-            // channels before disposing their parent session - that's
+            // sub-resource before disposing their parent session - that's
             // what the following assertion is for.
             //
             // When handles are not disposed (for example, because the app
@@ -715,13 +739,43 @@ namespace Google.Solutions.Ssh.Native
                 return false;
             }
 
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_free(
-                this.handle);
-            Debug.Assert(result == LIBSSH2_ERROR.NONE);
+            //
+            // Release the actual handle.
+            //
+            ProtectedReleaseHandle();
 
             HandleTable.OnHandleClosed(this);
 
             return true;
+        }
+
+        protected abstract void ProtectedReleaseHandle();
+    }
+
+    /// <summary>
+    /// Safe handle for LIBSSH2_CHANNEL.
+    /// </summary>
+    internal class SshChannelHandle : SshSessionResourceHandle
+    {
+        protected override void ProtectedReleaseHandle()
+        {
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_free(
+                this.handle);
+            Debug.Assert(result == LIBSSH2_ERROR.NONE);
+        }
+    }
+
+
+    /// <summary>
+    /// Safe handle for LIBSSH2_SFTP.
+    /// </summary>
+    internal class SshSftpHandle : SshSessionResourceHandle
+    {
+        protected override void ProtectedReleaseHandle()
+        {
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_shutdown(
+                this.handle);
+            Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }
     }
 
