@@ -151,6 +151,7 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 		-out $@ \
 		-sw1076 \
 		-cultures:null \
+		-loc $(MAKEDIR)\installer\Product.wxl \
 		-ext packages\Wix.$(WIX)\tools\WixUIExtension.dll \
 		-ext packages\Wix.$(WIX)\tools\WixUtilExtension.dll \
 		$(INSTALLER_PACKAGE).wixobj
