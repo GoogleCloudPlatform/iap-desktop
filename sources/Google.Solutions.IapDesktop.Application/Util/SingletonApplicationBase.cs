@@ -68,37 +68,55 @@ namespace Google.Solutions.IapDesktop.Application.Util
                     MutexRights.Synchronize | MutexRights.Modify,
                     AccessControlType.Allow));
 
-            using (var mutex = new Mutex(
-                true,   // Try to claim ownership.
-                MutexName,
-                out bool ownsMutex,
-                mutexSecurity))
+            try
             {
-                if (ownsMutex)
+                using (var mutex = new Mutex(
+                    true,   // Try to claim ownership.
+                    MutexName,
+                    out bool ownsMutex,
+                    mutexSecurity))
                 {
-                    // Successfully took ownership of mutex, so this is the first process.
-
-                    // Start named pipe server in background.
-                    using (var cts = new CancellationTokenSource())
+                    if (ownsMutex)
                     {
-                        var serverTask = Task.Factory.StartNew(
-                            async () => await RunNamedPipeServer(cts.Token).ConfigureAwait(false),
-                            TaskCreationOptions.LongRunning);
+                        //
+                        // Successfully took ownership of mutex, so this is the first process.
+                        //
+                        // Start named pipe server in background.
+                        //
+                        using (var cts = new CancellationTokenSource())
+                        {
+                            var serverTask = Task.Factory.StartNew(
+                                async () => await RunNamedPipeServer(cts.Token).ConfigureAwait(false),
+                                TaskCreationOptions.LongRunning);
 
-                        // Run main invocation in foreground and wait for it to finish.
-                        var result = HandleFirstInvocation(args);
+                            // Run main invocation in foreground and wait for it to finish.
+                            var result = HandleFirstInvocation(args);
 
-                        // Stop the server.
-                        cts.Cancel();
-                        serverTask.Wait();
-                        return result;
+                            // Stop the server.
+                            cts.Cancel();
+                            serverTask.Wait();
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        //
+                        // Failed to take ownership of mutex, so this is a subsequent process.
+                        //
+                        return PostCommandToNamedPipeServer(args);
                     }
                 }
-                else
-                {
-                    // Failed to take ownership of mutex, so this is a subsequent process.
-                    return PostCommandToNamedPipeServer(args);
-                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                //
+                // Failed to access mutex. Most likely, that's because the Mutex
+                // has been created at a different integrity level (for ex, the first
+                // process was launched elevated, but this process is non-elevared).
+                //
+                // Ignore the existing instance and start a new instance.
+                //
+                return HandleFirstInvocation(args);
             }
         }
 
