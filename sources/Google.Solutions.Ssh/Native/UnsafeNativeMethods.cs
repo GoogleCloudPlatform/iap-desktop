@@ -110,6 +110,42 @@ namespace Google.Solutions.Ssh.Native
         EXTENDED_DATA_STDERR = 1
     }
 
+    /// <summary>
+    /// FTP File Transfer Flags.
+    /// </summary>
+    [Flags]
+    public enum LIBSSH2_FXF : Int32
+    {
+        READ   = 0x00000001,
+        WRITE  = 0x00000002,
+        APPEND = 0x00000004,
+        CREAT  = 0x00000008,
+        TRUNC  = 0x00000010,
+        EXCL   = 0x00000020
+    }
+
+    public enum LIBSSH2_OPENTYPE : Int32
+    {
+        OPENFILE = 0,
+        OPENDIR  = 1
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LIBSSH2_SFTP_ATTRIBUTES
+    {
+        /// <summary>
+        /// If flags & ATTR_* bit is set, then the value in this struct will be
+        /// meaningful Otherwise it should be ignored
+        /// </summary>
+        uint flags;
+        ulong filesize;
+        uint uid;
+        uint gid;
+        uint permissions;
+        uint atime;
+        uint mtime;
+    };
+
     [StructLayout(LayoutKind.Sequential)]
     public struct LIBSSH2_STAT
     {
@@ -477,7 +513,7 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern SshSftpHandle libssh2_sftp_init(
+        public static extern SshSftpChannelHandle libssh2_sftp_init(
             SshSessionHandle session);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
@@ -486,7 +522,30 @@ namespace Google.Solutions.Ssh.Native
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int libssh2_sftp_last_error(
-            SshSftpHandle sftp);
+            SshSftpChannelHandle sftp);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libssh2_sftp_close_handle(
+            IntPtr sftp);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libssh2_sftp_open_ex(
+            SshSftpChannelHandle channel,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            uint pathLength,
+            LIBSSH2_FXF flags,
+            FilePermissions mode,
+            LIBSSH2_OPENTYPE openType,
+            IntPtr sftp);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libssh2_sftp_readdir_ex(
+            SshSftpFileHandle handle,
+            StringBuilder buffer,
+            IntPtr bufferSize,
+            StringBuilder longEntry,
+            IntPtr longEntrySize,
+            out LIBSSH2_SFTP_ATTRIBUTES attrs);
 
         //---------------------------------------------------------------------
         // Keepalive.
@@ -540,7 +599,6 @@ namespace Google.Solutions.Ssh.Native
             SshSessionHandle session,
             IntPtr context,
             TraceHandler callback);
-
 
         //---------------------------------------------------------------------
         // Winsock.
@@ -696,7 +754,7 @@ namespace Google.Solutions.Ssh.Native
         /// <summary>
         /// Handle to parent session.
         /// </summary>
-        public SshSessionHandle SessionHandle { get; set; }
+        public SshSessionHandle SessionHandle { get; private set; }
 
         protected SshSessionResourceHandle() : base(true)
         {
@@ -749,6 +807,29 @@ namespace Google.Solutions.Ssh.Native
             return true;
         }
 
+        public void ValidateAndAttachToSession(SshSession session)
+        {
+            Debug.Assert(session != null);
+
+            LIBSSH2_ERROR result;
+            if (!this.IsInvalid)
+            {
+                result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                    session.Handle);
+            }
+            else
+            {
+                result = LIBSSH2_ERROR.NONE;
+            }
+
+            if (result != LIBSSH2_ERROR.NONE)
+            {
+                throw session.CreateException(result);
+            }
+
+            this.SessionHandle = session.Handle;
+        }
+
         protected abstract void ProtectedReleaseHandle();
     }
 
@@ -765,15 +846,26 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
-
     /// <summary>
     /// Safe handle for LIBSSH2_SFTP.
     /// </summary>
-    internal class SshSftpHandle : SshSessionResourceHandle
+    internal class SshSftpChannelHandle : SshSessionResourceHandle
     {
         protected override void ProtectedReleaseHandle()
         {
             var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_shutdown(
+                this.handle);
+            Debug.Assert(result == LIBSSH2_ERROR.NONE);
+        }
+    }
+    /// <summary>
+    /// Safe handle for LIBSSH2_SFTP_HANDLE.
+    /// </summary>
+    internal class SshSftpFileHandle : SshSessionResourceHandle
+    {
+        protected override void ProtectedReleaseHandle()
+        {
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_close_handle(
                 this.handle);
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }

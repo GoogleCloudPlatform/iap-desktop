@@ -71,22 +71,7 @@ namespace Google.Solutions.Ssh.Native
                     null,
                     0);
 
-                if (channelHandle.IsInvalid)
-                {
-                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
-                        this.session.Handle);
-                }
-                else
-                {
-                    result = LIBSSH2_ERROR.NONE;
-                }
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw this.session.CreateException(result);
-                }
-
-                channelHandle.SessionHandle = this.session.Handle;
+                channelHandle.ValidateAndAttachToSession(this.session);
 
                 //
                 // Configure how extended data (stderr, in particular) should
@@ -270,28 +255,12 @@ namespace Google.Solutions.Ssh.Native
             using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
             {
                 var fileStat = new LIBSSH2_STAT();
-                LIBSSH2_ERROR result;
                 var channelHandle = UnsafeNativeMethods.libssh2_scp_recv2(
                     this.session.Handle,
                     remotePath,
                     ref fileStat);
 
-                if (channelHandle.IsInvalid)
-                {
-                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
-                        this.session.Handle);
-                }
-                else
-                {
-                    result = LIBSSH2_ERROR.NONE;
-                }
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw this.session.CreateException(result);
-                }
-
-                channelHandle.SessionHandle = this.session.Handle;
+                channelHandle.ValidateAndAttachToSession(this.session);
 
                 return new SshFileDownloadChannel(
                     session,
@@ -319,7 +288,6 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
             {
-                LIBSSH2_ERROR result;
                 var channelHandle = UnsafeNativeMethods.libssh2_scp_send64(
                     this.session.Handle,
                     remotePath,
@@ -328,22 +296,7 @@ namespace Google.Solutions.Ssh.Native
                     0,  // Let server set mtime.
                     0); // Let server set atime.
 
-                if (channelHandle.IsInvalid)
-                {
-                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
-                        this.session.Handle);
-                }
-                else
-                {
-                    result = LIBSSH2_ERROR.NONE;
-                }
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw this.session.CreateException(result);
-                }
-
-                channelHandle.SessionHandle = this.session.Handle;
+                channelHandle.ValidateAndAttachToSession(this.session);
 
                 return new SshFileUploadChannel(
                     session,
@@ -351,30 +304,17 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        /// <summary>
+        /// Open a channel for SFTP operations.
+        /// </summary>
         public SshSftpChannel OpenSftpChannel()
         {
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                LIBSSH2_ERROR result;
                 var channelHandle = UnsafeNativeMethods.libssh2_sftp_init(
                     this.session.Handle);
 
-                if (channelHandle.IsInvalid)
-                {
-                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
-                        this.session.Handle);
-                }
-                else
-                {
-                    result = LIBSSH2_ERROR.NONE;
-                }
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw this.session.CreateException(result);
-                }
-
-                channelHandle.SessionHandle = this.session.Handle;
+                channelHandle.ValidateAndAttachToSession(this.session);
 
                 return new SshSftpChannel(channelHandle);
             }

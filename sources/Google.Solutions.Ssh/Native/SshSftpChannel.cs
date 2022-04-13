@@ -8,11 +8,11 @@ namespace Google.Solutions.Ssh.Native
 {
     public class SshSftpChannel : IDisposable
     {
-        internal readonly SshSftpHandle channelHandle;
+        internal readonly SshSftpChannelHandle channelHandle;
         private bool disposed = false;
 
         internal SshSftpChannel(
-            SshSftpHandle channelHandle)
+            SshSftpChannelHandle channelHandle)
         {
             this.channelHandle = channelHandle;
         }
@@ -42,4 +42,5 @@ namespace Google.Solutions.Ssh.Native
             }
         }
     }
+
 }
