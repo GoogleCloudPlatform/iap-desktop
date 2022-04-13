@@ -98,8 +98,10 @@ $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 	@echo "=== Creating staging area for installer              ==="
 	@echo "========================================================"
 	
-	md $(MAKEDIR)\installer\obj\$(PLATFORM)
-    md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
+    if not exist $(MAKEDIR)\installer\obj\$(PLATFORM) \
+        md $(MAKEDIR)\installer\obj\$(PLATFORM)
+    if not exist $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION) \
+        md $(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
 		
 	copy $(MAKEDIR)\installer\*.* \
 		$(MAKEDIR)\installer\obj\$(PLATFORM)\$(CONFIGURATION)
@@ -149,6 +151,7 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 		-out $@ \
 		-sw1076 \
 		-cultures:null \
+		-loc $(MAKEDIR)\installer\Product.wxl \
 		-ext packages\Wix.$(WIX)\tools\WixUIExtension.dll \
 		-ext packages\Wix.$(WIX)\tools\WixUtilExtension.dll \
 		$(INSTALLER_PACKAGE).wixobj
