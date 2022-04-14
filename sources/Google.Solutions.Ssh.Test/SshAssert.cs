@@ -52,7 +52,7 @@ namespace Google.Solutions.Ssh.Test
             }
         }
         public static void ThrowsSftpNativeExceptionWithErrno(
-            int expected,
+            LIBSSH2_FX_ERROR expected,
             Action action)
         {
             try
@@ -63,7 +63,7 @@ namespace Google.Solutions.Ssh.Test
             catch (Exception e) when (!(e is AssertionException))
             {
                 Assert.IsInstanceOf(typeof(SshSftpNativeException), e.Unwrap());
-                Assert.AreEqual(expected, ((SshSftpNativeException)e.Unwrap()).Errno);
+                Assert.AreEqual(expected, ((SshSftpNativeException)e.Unwrap()).ErrorCode);
             }
         }
 

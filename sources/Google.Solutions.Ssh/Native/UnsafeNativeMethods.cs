@@ -548,6 +548,19 @@ namespace Google.Solutions.Ssh.Native
             IntPtr longEntrySize,
             out LIBSSH2_SFTP_ATTRIBUTES attrs);
 
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_mkdir_ex(
+            SshSftpChannelHandle channel,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            uint pathLength,
+            FilePermissions mode);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_rmdir_ex(
+            SshSftpChannelHandle channel,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            uint pathLength);
+
         //---------------------------------------------------------------------
         // Keepalive.
         //---------------------------------------------------------------------

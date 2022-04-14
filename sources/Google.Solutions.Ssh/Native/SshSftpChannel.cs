@@ -1,4 +1,5 @@
-﻿using Google.Solutions.Common.Diagnostics;
+﻿using Google.Apis.Util;
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,6 +31,8 @@ namespace Google.Solutions.Ssh.Native
 
         public IReadOnlyCollection<SshSftpFile> ListFiles(string path)
         {
+            Utilities.ThrowIfNullOrEmpty(path, nameof(path));
+
             var files = new LinkedList<SshSftpFile>();
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(path))
@@ -79,6 +82,63 @@ namespace Google.Solutions.Ssh.Native
                                     attributes));
                             }
                         }
+                    }
+                }
+                catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
+                {
+                    throw SshSftpNativeException.GetLastError(
+                        this.channelHandle,
+                        path);
+                }
+            }
+        }
+
+        public void CreateDirectory(
+            string path,
+            FilePermissions filePermissions)
+        {
+            Utilities.ThrowIfNullOrEmpty(path, nameof(path));
+
+            using (SshTraceSources.Default.TraceMethod().WithParameters(path))
+            {
+                try
+                {
+                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_mkdir_ex(
+                        this.channelHandle,
+                        path,
+                        (uint)path.Length,
+                        filePermissions);
+
+                    if (result != LIBSSH2_ERROR.NONE)
+                    {
+                        throw this.session.CreateException(result);
+                    }
+                }
+                catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
+                {
+                    throw SshSftpNativeException.GetLastError(
+                        this.channelHandle,
+                        path);
+                }
+            }
+        }
+
+        public void DeleteDirectory(string path)
+        {
+            Utilities.ThrowIfNullOrEmpty(path, nameof(path));
+
+            using (SshTraceSources.Default.TraceMethod().WithParameters(path))
+            {
+                try
+                {
+                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_rmdir_ex(
+                        this.channelHandle,
+                        path,
+                        (uint)path.Length);
+
+                    if (result != LIBSSH2_ERROR.NONE)
+                    {
+                        throw this.session.CreateException(result);
                     }
                 }
                 catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
@@ -143,30 +203,6 @@ namespace Google.Solutions.Ssh.Native
         {
             this.Name = name;
             this.attributes = attributes;
-        }
-    }
-
-    public class SshSftpNativeException : SshException
-    {
-        public int Errno { get; }
-
-        private SshSftpNativeException(
-            int errno,
-            string message)
-            : base(message)
-        {
-            this.Errno = errno;
-        }
-
-        internal static SshSftpNativeException GetLastError(
-            SshSftpChannelHandle channelHandle,
-            string path)
-        {
-            var errno = UnsafeNativeMethods.libssh2_sftp_last_error(
-                channelHandle);
-            return new SshSftpNativeException(
-                errno,
-                $"{path}: SFTP operation failed: {errno}");
         }
     }
 }

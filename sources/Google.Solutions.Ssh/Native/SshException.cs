@@ -46,6 +46,35 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
+    public class SshSftpNativeException : SshException
+    {
+        public LIBSSH2_FX_ERROR ErrorCode { get; }
+
+        private SshSftpNativeException(
+            LIBSSH2_FX_ERROR errorCode,
+            string message)
+            : base(message)
+        {
+            this.ErrorCode = errorCode;
+        }
+
+        internal static SshSftpNativeException GetLastError(
+            SshSftpChannelHandle channelHandle,
+            string path)
+        {
+            var errno = (LIBSSH2_FX_ERROR)
+                UnsafeNativeMethods.libssh2_sftp_last_error(channelHandle);
+
+            return new SshSftpNativeException(
+                errno,
+                $"{path}: SFTP operation failed: {errno}");
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // Error codes.
+    //-------------------------------------------------------------------------
+
     public enum LIBSSH2_ERROR : Int32
     {
         NONE = 0,
@@ -98,5 +127,18 @@ namespace Google.Solutions.Ssh.Native
         KNOWN_HOSTS = -46,
         CHANNEL_WINDOW_FULL = -47,
         KEYFILE_AUTH_FAILED = -48,
+    }
+
+    public enum LIBSSH2_FX_ERROR
+    {
+        OK                = 0,
+        EOF               = 1,
+        NO_SUCH_FILE      = 2,
+        PERMISSION_DENIED = 3,
+        FAILURE           = 4,
+        BAD_MESSAGE       = 5,
+        NO_CONNECTION     = 6,
+        CONNECTION_LOST   = 7,
+        OP_UNSUPPORTED    = 8,
     }
 }
