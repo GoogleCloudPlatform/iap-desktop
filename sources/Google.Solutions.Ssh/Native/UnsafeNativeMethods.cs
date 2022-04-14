@@ -323,7 +323,7 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
         // User auth.
         //
-        // NB. The documentation on libssh2_userauth_internalkey is extremely sparse.
+        // NB. The documentation on libssh2_userauth_publickey is extremely sparse.
         // For a usage example, see:
         // https://github.com/stuntbadger/GuacamoleServer/blob/master/src/common-ssh/ssh.c
         //---------------------------------------------------------------------
@@ -557,6 +557,12 @@ namespace Google.Solutions.Ssh.Native
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int libssh2_sftp_rmdir_ex(
+            SshSftpChannelHandle channel,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            uint pathLength);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_unlink_ex(
             SshSftpChannelHandle channel,
             [MarshalAs(UnmanagedType.LPStr)] string path,
             uint pathLength);

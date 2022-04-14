@@ -178,7 +178,8 @@ namespace Google.Solutions.Ssh.Native
         {
             Utilities.ThrowIfNullOrEmpty(path, nameof(path));
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(path))
+            using (SshTraceSources.Default.TraceMethod()
+                .WithParameters(path, flags, mode))
             { 
                 try
                 {
@@ -195,6 +196,33 @@ namespace Google.Solutions.Ssh.Native
                     return new SshSftpFileChannel(
                         this.session,
                         fileHandle);
+                }
+                catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
+                {
+                    throw SshSftpNativeException.GetLastError(
+                        this.channelHandle,
+                        path);
+                }
+            }
+        }
+
+        public void DeleteFile(string path)
+        {
+            Utilities.ThrowIfNullOrEmpty(path, nameof(path));
+
+            using (SshTraceSources.Default.TraceMethod().WithParameters(path))
+            {
+                try
+                {
+                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_unlink_ex(
+                        this.channelHandle,
+                        path,
+                        (uint)path.Length);
+
+                    if (result != LIBSSH2_ERROR.NONE)
+                    {
+                        throw this.session.CreateException(result);
+                    }
                 }
                 catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
                 {

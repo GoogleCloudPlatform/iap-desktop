@@ -323,7 +323,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.IsFalse(channel
                     .ListFiles(".")
                     .Any(f => f.Name == directoryName),
-                    "Directory created");
+                    "Directory deleted");
             }
         }
 
@@ -418,7 +418,97 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.IsTrue(channel
                     .ListFiles(".")
                     .Any(f => f.Name == fileName),
-                    "Directory created");
+                    "File created");
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // DeleteFile.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenFileDoesNotExist_ThenDeleteFileThrowsException(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenSftpChannel())
+            {
+                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                    LIBSSH2_FX_ERROR.NO_SUCH_FILE,
+                    () => channel.DeleteFile("/this/does/not/exist"));
+            }
+        }
+
+        [Test]
+        public async Task WhenFileIsDirectory_ThenDeleteFileThrowsException(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenSftpChannel())
+            {
+                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                    LIBSSH2_FX_ERROR.FAILURE,
+                    () => channel.DeleteFile("."));
+            }
+        }
+
+        [Test]
+        public async Task WhenFileExists_ThenDeleteFileSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenSftpChannel())
+            {
+                var fileName = Guid.NewGuid().ToString();
+
+                using (var file = channel.CreateFile(
+                    fileName,
+                    LIBSSH2_FXF_FLAGS.CREAT,
+                    FilePermissions.OwnerExecute |
+                        FilePermissions.OwnerRead |
+                        FilePermissions.OtherWrite))
+                { }
+
+                channel.DeleteFile(fileName);
+
+                Assert.IsFalse(channel
+                    .ListFiles(".")
+                    .Any(f => f.Name == fileName),
+                    "File deleted");
             }
         }
     }
