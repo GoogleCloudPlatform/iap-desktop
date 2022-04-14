@@ -195,7 +195,20 @@ namespace Google.Solutions.Ssh.Native
         public bool IsDirectory 
             => this.Permissions.HasFlag(FilePermissions.Directory);
 
-        // TODO: expose file times, etc.
+        public uint UserId 
+            => this.attributes.uid;
+
+        public uint GroupId 
+            => this.attributes.gid;
+
+        public DateTime LastAccessDate 
+            => DateTimeOffset.FromUnixTimeSeconds(this.attributes.atime).DateTime;
+
+        public DateTime LastModifiedDate
+            => DateTimeOffset.FromUnixTimeSeconds(this.attributes.mtime).DateTime;
+
+        public ulong Size
+            => this.attributes.filesize;
 
         internal SshSftpFile(
             string name,
