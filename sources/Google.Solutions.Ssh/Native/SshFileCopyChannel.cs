@@ -37,7 +37,6 @@ namespace Google.Solutions.Ssh.Native
             SshChannelHandle channelHandle)
             : base(session, channelHandle)
         {
-            // TODO: Remove session as it's contained in channel handle
         }
     }
 

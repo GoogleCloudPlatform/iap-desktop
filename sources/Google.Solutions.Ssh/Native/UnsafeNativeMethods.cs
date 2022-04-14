@@ -137,13 +137,13 @@ namespace Google.Solutions.Ssh.Native
         /// If flags & ATTR_* bit is set, then the value in this struct will be
         /// meaningful Otherwise it should be ignored
         /// </summary>
-        uint flags;
-        ulong filesize;
-        uint uid;
-        uint gid;
-        uint permissions;
-        uint atime;
-        uint mtime;
+        public uint flags;
+        public ulong filesize;
+        public uint uid;
+        public uint gid;
+        public uint permissions;
+        public uint atime;
+        public uint mtime;
     };
 
     [StructLayout(LayoutKind.Sequential)]
@@ -529,21 +529,20 @@ namespace Google.Solutions.Ssh.Native
             IntPtr sftp);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_sftp_open_ex(
+        public static extern SshSftpFileHandle libssh2_sftp_open_ex(
             SshSftpChannelHandle channel,
             [MarshalAs(UnmanagedType.LPStr)] string path,
             uint pathLength,
             LIBSSH2_FXF flags,
             FilePermissions mode,
-            LIBSSH2_OPENTYPE openType,
-            IntPtr sftp);
+            LIBSSH2_OPENTYPE openType);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
         public static extern int libssh2_sftp_readdir_ex(
             SshSftpFileHandle handle,
-            StringBuilder buffer,
+            IntPtr buffer,
             IntPtr bufferSize,
-            StringBuilder longEntry,
+            IntPtr longEntry,
             IntPtr longEntrySize,
             out LIBSSH2_SFTP_ATTRIBUTES attrs);
 
@@ -811,20 +810,11 @@ namespace Google.Solutions.Ssh.Native
         {
             Debug.Assert(session != null);
 
-            LIBSSH2_ERROR result;
-            if (!this.IsInvalid)
+            if (this.IsInvalid)
             {
-                result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
-                    session.Handle);
-            }
-            else
-            {
-                result = LIBSSH2_ERROR.NONE;
-            }
-
-            if (result != LIBSSH2_ERROR.NONE)
-            {
-                throw session.CreateException(result);
+                throw session.CreateException(
+                    (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                        session.Handle));
             }
 
             this.SessionHandle = session.Handle;
@@ -883,6 +873,42 @@ namespace Google.Solutions.Ssh.Native
             bool result = UnsafeNativeMethods.WSACloseEvent(this.handle);
             Debug.Assert(result);
             return result;
+        }
+    }
+
+    internal sealed class GlobalAllocSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        public static GlobalAllocSafeHandle Zero = new GlobalAllocSafeHandle(ownsHandle: false);
+
+        private GlobalAllocSafeHandle()
+            : base(ownsHandle: true)
+        {
+        }
+
+        private GlobalAllocSafeHandle(bool ownsHandle)
+            : base(ownsHandle)
+        {
+        }
+
+        public static GlobalAllocSafeHandle GlobalAlloc(uint cb)
+        {
+            var memory = Marshal.AllocHGlobal(new IntPtr(cb));
+
+            var handle = new GlobalAllocSafeHandle();
+            handle.SetHandle(memory);
+            if (handle.IsInvalid)
+            {
+                handle.SetHandleAsInvalid();
+                throw new OutOfMemoryException();
+            }
+
+            return handle;
+        }
+
+        protected override bool ReleaseHandle()
+        {
+            Marshal.FreeHGlobal(this.handle);
+            return true;
         }
     }
 }

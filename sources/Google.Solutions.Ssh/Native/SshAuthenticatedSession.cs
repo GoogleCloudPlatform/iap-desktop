@@ -263,7 +263,7 @@ namespace Google.Solutions.Ssh.Native
                 channelHandle.ValidateAndAttachToSession(this.session);
 
                 return new SshFileDownloadChannel(
-                    session,
+                    this.session,
                     channelHandle,
                     fileStat);
             }
@@ -299,7 +299,7 @@ namespace Google.Solutions.Ssh.Native
                 channelHandle.ValidateAndAttachToSession(this.session);
 
                 return new SshFileUploadChannel(
-                    session,
+                    this.session,
                     channelHandle);
             }
         }
@@ -316,7 +316,7 @@ namespace Google.Solutions.Ssh.Native
 
                 channelHandle.ValidateAndAttachToSession(this.session);
 
-                return new SshSftpChannel(channelHandle);
+                return new SshSftpChannel(this.session, channelHandle);
             }
         }
 

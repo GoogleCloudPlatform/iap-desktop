@@ -25,6 +25,7 @@ using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -58,6 +59,64 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var channel = authSession.OpenSftpChannel())
             {
                 Assert.IsNotNull(channel);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // ListFiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenDirectoryDoesNotExist_ThenListFilesThrowsException(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenSftpChannel())
+            {
+                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                    2,
+                    () => channel.ListFiles("/this/does/not/exist"));
+            }
+        }
+
+        [Test]
+        public async Task WhenDirectoryExists_ThenListFilesReturnsFiles(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenSftpChannel())
+            {
+                var files = channel.ListFiles("/etc");
+
+                Assert.NotNull(files);
+                Assert.Greater(files.Count, 1);
+
+                var passwd = files.First(f => f.Name == "passwd");
+                Assert.IsNotNull(passwd);
+                Assert.IsTrue(passwd.Permissions.HasFlag(FilePermissions.Regular));
+                Assert.IsFalse(passwd.IsDirectory);
             }
         }
     }

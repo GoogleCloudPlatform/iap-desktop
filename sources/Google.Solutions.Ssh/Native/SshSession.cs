@@ -363,8 +363,6 @@ namespace Google.Solutions.Ssh.Native
 
         public SshNativeException CreateException(LIBSSH2_ERROR error)
         {
-            // TODO: Check for LIBSSH2_ERROR_SFTP_PROTOCOL, call libssh2_sftp_last_error 
-            
             var lastError = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_error(
                 this.sessionHandle,
                 out IntPtr errorMessage,
