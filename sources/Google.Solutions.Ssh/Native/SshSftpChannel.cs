@@ -118,6 +118,8 @@ namespace Google.Solutions.Ssh.Native
 
     public struct SshSftpFile
     {
+        private readonly LIBSSH2_SFTP_ATTRIBUTES attributes;
+
         /// <summary>
         /// Name of file (without path).
         /// </summary>
@@ -126,20 +128,21 @@ namespace Google.Solutions.Ssh.Native
         /// <summary>
         /// File attributes.
         /// </summary>
-        public LIBSSH2_SFTP_ATTRIBUTES Attributes { get; }
-
+        
         public FilePermissions Permissions 
-            => (FilePermissions)this.Attributes.permissions;
+            => (FilePermissions)this.attributes.permissions;
 
         public bool IsDirectory 
             => this.Permissions.HasFlag(FilePermissions.Directory);
 
-        public SshSftpFile(
+        // TODO: expose file times, etc.
+
+        internal SshSftpFile(
             string name,
             LIBSSH2_SFTP_ATTRIBUTES attributes)
         {
             this.Name = name;
-            this.Attributes = attributes;
+            this.attributes = attributes;
         }
     }
 

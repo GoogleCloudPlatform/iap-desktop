@@ -21,6 +21,7 @@
 
 using Microsoft.Win32.SafeHandles;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
@@ -90,6 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
             {
             }
 
+            [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types")]
             public static SafeLocalFree LocalAlloc(uint cb)
             {
                 SafeLocalFree safeLocalFree = UnsafeNativeMethods.LocalAlloc(0, (UIntPtr)(ulong)cb);

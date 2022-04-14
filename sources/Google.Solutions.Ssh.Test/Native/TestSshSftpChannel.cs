@@ -41,6 +41,32 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
+        public async Task WhenSftpDisabledAuthenticated_ThenOpenSftpChannelThrowsException(
+            [LinuxInstance(InitializeScript =
+                "sed -i '/.*sftp-server/d' /etc/ssh/sshd_config && systemctl restart sshd")]
+            ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            {
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.CHANNEL_FAILURE,
+                    () => authSession.OpenSftpChannel());
+            }
+        }
+
+        [Test]
         public async Task WhenAuthenticated_ThenOpenSftpChannelReturnsChannel(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
