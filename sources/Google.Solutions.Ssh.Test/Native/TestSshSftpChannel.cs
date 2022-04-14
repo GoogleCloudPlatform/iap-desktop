@@ -326,5 +326,100 @@ namespace Google.Solutions.Ssh.Test.Native
                     "Directory created");
             }
         }
+
+        //---------------------------------------------------------------------
+        // CreateFile.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenParentDirectoryDoesNotExist_ThenCreateFileThrowsException(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenSftpChannel())
+            {
+                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                    LIBSSH2_FX_ERROR.NO_SUCH_FILE,
+                    () => channel.CreateFile(
+                        "/this/does/not/exist",
+                        LIBSSH2_FXF_FLAGS.CREAT,
+                        FilePermissions.OwnerExecute |
+                            FilePermissions.OwnerRead |
+                            FilePermissions.OtherWrite));
+            }
+        }
+
+        [Test]
+        public async Task WhenParentDirectoryNotWritable_ThenCreateFileThrowsException(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenSftpChannel())
+            {
+                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                    LIBSSH2_FX_ERROR.PERMISSION_DENIED,
+                    () => channel.CreateFile(
+                        "/dev/cant-create-a-file-in-dev",
+                        LIBSSH2_FXF_FLAGS.CREAT,
+                        FilePermissions.OwnerExecute |
+                            FilePermissions.OwnerRead |
+                            FilePermissions.OtherWrite));
+            }
+        }
+
+        [Test]
+        public async Task WhenParentDirectoryExists_ThenCreateFileSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+
+            var fileName = Guid.NewGuid().ToString();
+
+            using (var key = await InstanceUtil
+               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
+               .ConfigureAwait(false))
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            using (var authSession = connection.Authenticate(
+                "testuser",
+                key,
+                UnexpectedAuthenticationCallback))
+            using (var channel = authSession.OpenSftpChannel())
+            using (var file = channel.CreateFile(
+                fileName,
+                LIBSSH2_FXF_FLAGS.CREAT,
+                FilePermissions.OwnerExecute |
+                    FilePermissions.OwnerRead |
+                    FilePermissions.OtherWrite))
+            {
+                Assert.IsTrue(channel
+                    .ListFiles(".")
+                    .Any(f => f.Name == fileName),
+                    "Directory created");
+            }
+        }
     }
 }

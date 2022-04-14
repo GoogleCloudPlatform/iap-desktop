@@ -116,7 +116,7 @@ namespace Google.Solutions.Ssh.Native
     /// FTP File Transfer Flags.
     /// </summary>
     [Flags]
-    internal enum LIBSSH2_FXF : Int32
+    public enum LIBSSH2_FXF_FLAGS : Int32
     {
         READ   = 0x00000001,
         WRITE  = 0x00000002,
@@ -535,7 +535,7 @@ namespace Google.Solutions.Ssh.Native
             SshSftpChannelHandle channel,
             [MarshalAs(UnmanagedType.LPStr)] string path,
             uint pathLength,
-            LIBSSH2_FXF flags,
+            LIBSSH2_FXF_FLAGS flags,
             FilePermissions mode,
             LIBSSH2_OPENTYPE openType);
 

@@ -1,4 +1,25 @@
-﻿using Google.Apis.Util;
+﻿//
+// Copyright 2022 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Collections.Generic;
@@ -29,11 +50,11 @@ namespace Google.Solutions.Ssh.Native
 
         //---------------------------------------------------------------------
 
-        public IReadOnlyCollection<SshSftpFile> ListFiles(string path)
+        public IReadOnlyCollection<SshSftpFileInfo> ListFiles(string path)
         {
             Utilities.ThrowIfNullOrEmpty(path, nameof(path));
 
-            var files = new LinkedList<SshSftpFile>();
+            var files = new LinkedList<SshSftpFileInfo>();
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(path))
             using (var dirHandle = UnsafeNativeMethods.libssh2_sftp_open_ex(
@@ -77,7 +98,7 @@ namespace Google.Solutions.Ssh.Native
                             }
                             else
                             {
-                                files.AddLast(new SshSftpFile(
+                                files.AddLast(new SshSftpFileInfo(
                                     Marshal.PtrToStringAnsi(fileNameBuffer.DangerousGetHandle()),
                                     attributes));
                             }
@@ -150,6 +171,40 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        public SshSftpFileChannel CreateFile(
+            string path,
+            LIBSSH2_FXF_FLAGS flags,
+            FilePermissions mode)
+        {
+            Utilities.ThrowIfNullOrEmpty(path, nameof(path));
+
+            using (SshTraceSources.Default.TraceMethod().WithParameters(path))
+            { 
+                try
+                {
+                    var fileHandle = UnsafeNativeMethods.libssh2_sftp_open_ex(
+                        this.channelHandle,
+                        path,
+                        (uint)path.Length,
+                        flags,
+                        mode,
+                        LIBSSH2_OPENTYPE.OPENFILE);
+
+                    fileHandle.ValidateAndAttachToSession(this.session);
+
+                    return new SshSftpFileChannel(
+                        this.session,
+                        fileHandle);
+                }
+                catch (SshNativeException e) when (e.ErrorCode == LIBSSH2_ERROR.SFTP_PROTOCOL)
+                {
+                    throw SshSftpNativeException.GetLastError(
+                        this.channelHandle,
+                        path);
+                }
+            }
+        }
+
         //---------------------------------------------------------------------
         // Dispose.
         //---------------------------------------------------------------------
@@ -160,7 +215,6 @@ namespace Google.Solutions.Ssh.Native
             GC.SuppressFinalize(this);
         }
 
-        // Protected implementation of Dispose pattern.
         protected virtual void Dispose(bool disposing)
         {
             if (this.disposed)
@@ -176,7 +230,7 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
-    public struct SshSftpFile
+    public struct SshSftpFileInfo
     {
         private readonly LIBSSH2_SFTP_ATTRIBUTES attributes;
 
@@ -210,7 +264,7 @@ namespace Google.Solutions.Ssh.Native
         public ulong Size
             => this.attributes.filesize;
 
-        internal SshSftpFile(
+        internal SshSftpFileInfo(
             string name,
             LIBSSH2_SFTP_ATTRIBUTES attributes)
         {
