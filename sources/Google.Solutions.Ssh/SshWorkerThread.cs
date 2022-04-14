@@ -211,7 +211,6 @@ namespace Google.Solutions.Ssh
                                 LIBSSH2_TRACE.CONN |
                                 LIBSSH2_TRACE.AUTH |
                                 LIBSSH2_TRACE.KEX |
-                                LIBSSH2_TRACE.SCP |
                                 LIBSSH2_TRACE.SFTP,
                             SshTraceSources.Default.TraceVerbose);
 

@@ -244,67 +244,6 @@ namespace Google.Solutions.Ssh.Native
         }
 
         /// <summary>
-        /// Download a file using SCP.
-        /// </summary>
-        public SshFileDownloadChannel OpenFileDownloadChannel(
-            string remotePath)
-        {
-            this.session.Handle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
-
-            using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
-            {
-                var fileStat = new LIBSSH2_STAT();
-                var channelHandle = UnsafeNativeMethods.libssh2_scp_recv2(
-                    this.session.Handle,
-                    remotePath,
-                    ref fileStat);
-
-                channelHandle.ValidateAndAttachToSession(this.session);
-
-                return new SshFileDownloadChannel(
-                    this.session,
-                    channelHandle,
-                    fileStat);
-            }
-        }
-
-        /// <summary>
-        /// Upload a file using SCP. Note that scp doesn't honor umask,
-        /// so permissions need to be specified explicitly.
-        /// </summary>
-        public SshFileUploadChannel OpenFileUploadChannel(
-            string remotePath,
-            FilePermissions permissions,
-            long fileSize)
-        {
-            this.session.Handle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
-
-            if (fileSize < 0)
-            {
-                throw new ArgumentException(nameof(fileSize));
-            }
-
-            using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
-            {
-                var channelHandle = UnsafeNativeMethods.libssh2_scp_send64(
-                    this.session.Handle,
-                    remotePath,
-                    (uint)permissions,
-                    fileSize,
-                    0,  // Let server set mtime.
-                    0); // Let server set atime.
-
-                channelHandle.ValidateAndAttachToSession(this.session);
-
-                return new SshFileUploadChannel(
-                    this.session,
-                    channelHandle);
-            }
-        }
-
-        /// <summary>
         /// Open a channel for SFTP operations.
         /// </summary>
         public SshSftpChannel OpenSftpChannel()
