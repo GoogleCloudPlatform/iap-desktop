@@ -567,6 +567,18 @@ namespace Google.Solutions.Ssh.Native
             [MarshalAs(UnmanagedType.LPStr)] string path,
             uint pathLength);
 
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_read(
+            SshSftpFileHandle channel,
+            byte[] buffer,
+            IntPtr bufferSize);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_write(
+            SshSftpFileHandle channel,
+            byte[] buffer,
+            IntPtr bufferSize);
+
         //---------------------------------------------------------------------
         // Keepalive.
         //---------------------------------------------------------------------

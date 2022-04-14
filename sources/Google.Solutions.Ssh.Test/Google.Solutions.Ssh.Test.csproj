@@ -99,6 +99,7 @@
   <ItemGroup>
     <Compile Include="Native\TestSshSftpChannel.cs" />
     <Compile Include="Native\TestSshFileCopyChannel.cs" />
+    <Compile Include="Native\TestSshSftpFileChannel.cs" />
     <Compile Include="TestSshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="InstanceUtil.cs" />

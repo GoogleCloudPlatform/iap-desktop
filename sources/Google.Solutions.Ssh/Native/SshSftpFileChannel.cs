@@ -31,19 +31,87 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
+    /// <summary>
+    /// Represents an open file that can be read from/written to.
+    /// </summary>
     public class SshSftpFileChannel : IDisposable
     {
         private readonly SshSession session;
+        private readonly SshSftpChannelHandle channelHandle;
         private readonly SshSftpFileHandle fileHandle;
+        private readonly string filePath;
 
         private bool disposed = false;
 
+        private SshException CreateException(LIBSSH2_ERROR error)
+        {
+            if (error == LIBSSH2_ERROR.SFTP_PROTOCOL)
+            {
+                return SshSftpNativeException.GetLastError(
+                    this.channelHandle,
+                    this.filePath);
+            }
+            else
+            {
+                return this.session.CreateException((LIBSSH2_ERROR)error);
+            }
+        }
+
         internal SshSftpFileChannel(
             SshSession session,
-            SshSftpFileHandle channelHandle)
+            SshSftpChannelHandle channelHandle,
+            SshSftpFileHandle fileHandle,
+            string filePath)
         {
             this.session = session;
-            this.fileHandle = channelHandle;
+            this.channelHandle = channelHandle;
+            this.fileHandle = fileHandle;
+            this.filePath = filePath;
+        }
+
+        public uint Read(byte[] buffer)
+        {
+            this.fileHandle.CheckCurrentThreadOwnsHandle();
+            Utilities.ThrowIfNull(buffer, nameof(buffer));
+
+            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                var bytesRead = UnsafeNativeMethods.libssh2_sftp_read(
+                    this.fileHandle,
+                    buffer,
+                    new IntPtr(buffer.Length));
+
+                if (bytesRead >= 0)
+                {
+                    return (uint)bytesRead;
+                }
+                else
+                {
+                    throw CreateException((LIBSSH2_ERROR)bytesRead);
+                }
+            }
+        }
+        public uint Write(byte[] buffer)
+        {
+            this.channelHandle.CheckCurrentThreadOwnsHandle();
+            Utilities.ThrowIfNull(buffer, nameof(buffer));
+
+            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                var bytesWritten = UnsafeNativeMethods.libssh2_sftp_write(
+                    this.fileHandle,
+                    buffer,
+                    new IntPtr(buffer.Length));
+
+                if (bytesWritten >= 0)
+                {
+                    return (uint)bytesWritten;
+                }
+                else
+                {
+                    throw CreateException((LIBSSH2_ERROR)bytesWritten);
+                }
+            }
         }
 
         //---------------------------------------------------------------------

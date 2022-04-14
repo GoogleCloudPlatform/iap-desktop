@@ -481,7 +481,6 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
 
-
             using (var key = await InstanceUtil
                .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
                .ConfigureAwait(false))
