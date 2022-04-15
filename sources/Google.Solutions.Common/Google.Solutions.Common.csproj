@@ -79,6 +79,7 @@
     <Compile Include="Diagnostics\TraceSourceExtensions.cs" />
     <Compile Include="Diagnostics\TraceSourceLogger.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Interop\GlobalAllocSafeHandle.cs" />
     <Compile Include="Interop\LocalAllocSafeHandle.cs" />
     <Compile Include="Interop\UnsafeNativeMethods.cs" />
     <Compile Include="Locator\AccessLevelLocator.cs" />

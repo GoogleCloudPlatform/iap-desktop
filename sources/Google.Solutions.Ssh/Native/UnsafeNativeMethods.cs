@@ -866,42 +866,4 @@ namespace Google.Solutions.Ssh.Native
             return result;
         }
     }
-
-    internal sealed class GlobalAllocSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
-    {
-        internal static GlobalAllocSafeHandle Zero = new GlobalAllocSafeHandle(ownsHandle: false);
-
-        private GlobalAllocSafeHandle()
-            : base(ownsHandle: true)
-        {
-        }
-
-        private GlobalAllocSafeHandle(bool ownsHandle)
-            : base(ownsHandle)
-        {
-        }
-
-
-        [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types")]
-        internal static GlobalAllocSafeHandle GlobalAlloc(uint cb)
-        {
-            var memory = Marshal.AllocHGlobal(new IntPtr(cb));
-
-            var handle = new GlobalAllocSafeHandle();
-            handle.SetHandle(memory);
-            if (handle.IsInvalid)
-            {
-                handle.SetHandleAsInvalid();
-                throw new OutOfMemoryException();
-            }
-
-            return handle;
-        }
-
-        protected override bool ReleaseHandle()
-        {
-            Marshal.FreeHGlobal(this.handle);
-            return true;
-        }
-    }
 }
