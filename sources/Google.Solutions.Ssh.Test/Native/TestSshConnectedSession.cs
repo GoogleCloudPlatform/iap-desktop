@@ -309,7 +309,6 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
                     instance,
-                    "testuser",
                     keyType)
                 .ConfigureAwait(false);
 
@@ -338,7 +337,6 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
                     instance,
-                    "testuser",
                     keyType)
                 .ConfigureAwait(false);
 

@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -67,11 +68,11 @@ namespace Google.Solutions.Ssh.Test
         {
             var session = new SshSession();
             session.SetTraceHandler(
-                LIBSSH2_TRACE.SOCKET | 
-                    LIBSSH2_TRACE.ERROR | 
+                LIBSSH2_TRACE.SOCKET |
+                    LIBSSH2_TRACE.ERROR |
                     LIBSSH2_TRACE.CONN |
-                    LIBSSH2_TRACE.AUTH | 
-                    LIBSSH2_TRACE.KEX | 
+                    LIBSSH2_TRACE.AUTH |
+                    LIBSSH2_TRACE.KEX |
                     LIBSSH2_TRACE.SFTP,
                 Console.WriteLine);
 
@@ -99,9 +100,15 @@ namespace Google.Solutions.Ssh.Test
         /// </summary>
         protected static async Task<ISshAuthenticator> CreateEphemeralAuthenticatorForInstanceAsync(
             InstanceLocator instanceLocator,
-            string username,
-            SshKeyType keyType)
+            SshKeyType keyType,
+            [CallerFilePath] string filePath = null)
         {
+            //
+            // Use a different username per fixture/file to limit the
+            // total number of logins with the same username. If we log
+            // in too many times, we might otherwise be locked out by SSH.
+            //
+            var username = $"testuser{filePath.GetHashCode():X}";
             var cacheKey = $"{instanceLocator}|{username}|{keyType}";
 
             if (cachedAuthenticators.TryGetValue(cacheKey, out var authenticator))

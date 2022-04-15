@@ -44,8 +44,7 @@ namespace Google.Solutions.Ssh.Test.Native
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
-                    instance, 
-                    "testuser", 
+                    instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
             
@@ -72,7 +71,6 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
                     instance,
-                    "testuser",
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
@@ -95,7 +93,6 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
                     instance,
-                    "testuser",
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
@@ -122,7 +119,6 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
                     instance,
-                    "testuser",
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 

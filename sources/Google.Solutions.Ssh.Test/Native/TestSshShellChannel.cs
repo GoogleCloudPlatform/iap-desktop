@@ -88,7 +88,6 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
                     instance,
-                    "testuser",
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
@@ -110,7 +109,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 channel.Close();
 
                 StringAssert.Contains(
-                    "whoami;exit\r\ntestuser\r\nlogout\r\n",
+                    $"whoami;exit\r\n{authenticator.Username}\r\nlogout\r\n",
                     output);
 
                 Assert.AreEqual(0, channel.ExitCode);
@@ -126,7 +125,6 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
                     instance,
-                    "testuser",
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
@@ -168,7 +166,6 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
                     instance,
-                    "testuser",
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
@@ -200,7 +197,6 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
                     instance,
-                    "testuser",
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
 
