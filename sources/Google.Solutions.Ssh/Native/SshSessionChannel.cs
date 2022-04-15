@@ -113,20 +113,6 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
-    public class SshExecChannel : SshSessionChannelBase
-    {
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
-        internal SshExecChannel(
-            SshSession session,
-            SshChannelHandle channelHandle)
-            : base(session, channelHandle)
-        {
-        }
-    }
-
     public class SshShellChannel : SshSessionChannelBase
     {
         //---------------------------------------------------------------------

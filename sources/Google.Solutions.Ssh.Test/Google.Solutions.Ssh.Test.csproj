@@ -106,7 +106,6 @@
     <Compile Include="Native\TestEnvironmentVariable.cs" />
     <Compile Include="SshAssert.cs" />
     <Compile Include="SshFixtureBase.cs" />
-    <Compile Include="Native\TestSshExecChannel.cs" />
     <Compile Include="Native\TestSshShellChannel.cs" />
     <Compile Include="Native\TestSshAuthenticatedSession.cs" />
     <Compile Include="Native\TestSshConnectedSession.cs" />

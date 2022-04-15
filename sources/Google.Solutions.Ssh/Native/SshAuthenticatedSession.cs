@@ -207,43 +207,6 @@ namespace Google.Solutions.Ssh.Native
         }
 
         /// <summary>
-        /// Execute a single command.
-        /// </summary>
-        public SshExecChannel OpenExecChannel(
-            string command,
-            LIBSSH2_CHANNEL_EXTENDED_DATA mode)
-        {
-            this.session.Handle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNull(command, nameof(command));
-
-            using (SshTraceSources.Default.TraceMethod().WithParameters(
-                command,
-                mode))
-            {
-                var channelHandle = OpenChannelInternal(mode);
-
-                //
-                // Launch the process.
-                //
-                var request = "exec";
-                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
-                    channelHandle,
-                    request,
-                    (uint)request.Length,
-                    command,
-                    command == null ? 0 : (uint)command.Length);
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    channelHandle.Dispose();
-                    throw this.session.CreateException(result);
-                }
-
-                return new SshExecChannel(this.session, channelHandle);
-            }
-        }
-
-        /// <summary>
         /// Open a channel for SFTP operations.
         /// </summary>
         public SshSftpChannel OpenSftpChannel()
