@@ -79,6 +79,8 @@
     <Compile Include="Diagnostics\TraceSourceExtensions.cs" />
     <Compile Include="Diagnostics\TraceSourceLogger.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Interop\LocalAllocSafeHandle.cs" />
+    <Compile Include="Interop\UnsafeNativeMethods.cs" />
     <Compile Include="Locator\AccessLevelLocator.cs" />
     <Compile Include="Locator\GlobalResourceLocator.cs">
       <AutoGen>True</AutoGen>
