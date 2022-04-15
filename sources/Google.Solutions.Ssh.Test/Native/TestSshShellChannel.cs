@@ -86,14 +86,15 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    "testuser",
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(
-                new SshSingleFactorAuthenticator("testuser", key)))
+            using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,
@@ -123,14 +124,15 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    "testuser",
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(
-                new SshSingleFactorAuthenticator("testuser", key)))
+            using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,
@@ -164,14 +166,15 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    "testuser",
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(
-                new SshSingleFactorAuthenticator("testuser", key)))
+            using (var authSession = connection.Authenticate(authenticator))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -195,14 +198,15 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    "testuser",
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(
-                new SshSingleFactorAuthenticator("testuser", key)))
+            using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,

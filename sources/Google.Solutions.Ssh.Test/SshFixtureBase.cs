@@ -22,12 +22,14 @@
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test
@@ -86,6 +88,42 @@ namespace Google.Solutions.Ssh.Test
                     .PublicIpAddressForInstanceAsync(instance)
                     .ConfigureAwait(false),
                 22);
+        }
+
+        private readonly static IDictionary<string, ISshAuthenticator> cachedAuthenticators =
+            new Dictionary<string, ISshAuthenticator>();
+
+        /// <summary>
+        /// Create an authenticator for a given key type, minimizing
+        /// server rountrips.
+        /// </summary>
+        protected static async Task<ISshAuthenticator> CreateEphemeralAuthenticatorForInstanceAsync(
+            InstanceLocator instanceLocator,
+            string username,
+            SshKeyType keyType)
+        {
+            var cacheKey = $"{instanceLocator}|{username}|{keyType}";
+
+            if (cachedAuthenticators.TryGetValue(cacheKey, out var authenticator))
+            {
+                return authenticator;
+            }
+            else
+            {
+                var key = SshKeyPair.NewEphemeralKeyPair(keyType);
+
+                await InstanceUtil.AddPublicKeyToMetadataAsync(
+                        instanceLocator,
+                        username,
+                        key)
+                    .ConfigureAwait(false);
+
+                authenticator = new SshSingleFactorAuthenticator(username, key);
+
+                cachedAuthenticators[cacheKey] = authenticator;
+
+                return authenticator;
+            }
         }
     }
 }

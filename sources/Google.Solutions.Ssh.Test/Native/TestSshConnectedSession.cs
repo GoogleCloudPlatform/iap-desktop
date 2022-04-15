@@ -307,10 +307,12 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    "testuser",
+                    keyType)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -319,8 +321,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.SOCKET_SEND,
-                    () => connection.Authenticate(
-                        new SshSingleFactorAuthenticator("testuser", key)));
+                    () => connection.Authenticate(authenticator));
             }
         }
 
@@ -335,15 +336,16 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    "testuser",
+                    keyType)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var authSession = connection.Authenticate(
-                    new SshSingleFactorAuthenticator("testuser", key));
+                var authSession = connection.Authenticate(authenticator);
                 Assert.IsNotNull(authSession);
             }
         }
