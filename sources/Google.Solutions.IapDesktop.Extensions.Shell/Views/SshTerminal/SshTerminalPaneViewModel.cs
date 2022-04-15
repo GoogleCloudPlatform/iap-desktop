@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
+using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.ComponentModel;
@@ -45,7 +46,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    public class SshTerminalPaneViewModel : ViewModelBase, IDisposable
+    public class SshTerminalPaneViewModel : ViewModelBase, IDisposable, ISshAuthenticator
     {
         private readonly IEventService eventService;
         private readonly CultureInfo language;
@@ -132,6 +133,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public bool IsSpinnerVisible => this.ConnectionStatus == Status.Connecting;
         public bool IsTerminalVisible => this.ConnectionStatus == Status.Connected;
         public bool IsReconnectPanelVisible => this.ConnectionStatus == Status.ConnectionLost;
+
+        //---------------------------------------------------------------------
+        // ISshAuthenticator.
+        //---------------------------------------------------------------------
+
+        public string Username => this.authorizedKey.Username;
+
+        public ISshKeyPair KeyPair => this.authorizedKey.KeyPair;
+
+        public string Prompt(string name, string instruction, string prompt, bool echo)
+        {
+             //
+             // Trigger UI to respond to the prompt by firing an event.
+             // As this method is invoked on a non-UI thread, switch to
+             // the GUI thread first.
+             //
+
+            var args = new AuthenticationPromptEventArgs(prompt, !echo);
+            this.ViewInvoker?.Invoke(
+                (Action)(() =>
+                {
+                    this.AuthenticationPrompt?.Invoke(this, args);
+                }),
+                null);
+
+            if (args.Response != null)
+            {
+                //
+                // Strip:
+                //  - spaces between group of digits (g.co/sc)
+                //  - "G-" prefix (text messages)
+                //
+                if (args.Response.StartsWith("g-", StringComparison.OrdinalIgnoreCase))
+                {
+                    args.Response = args.Response.Substring(2);
+                }
+
+                return args.Response.Replace(" ", string.Empty);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         //---------------------------------------------------------------------
         // Actions.
@@ -234,46 +279,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     });
             }
 
-            string OnAuthenticationPrompt(
-                string name,
-                string instruction,
-                string prompt,
-                bool echo)
-            {
-                //
-                // Trigger UI to respond to the prompt by firing an event.
-                // As this method is invoked on a non-UI thread, switch to
-                // the GUI thread first.
-                //
-
-                var args = new AuthenticationPromptEventArgs(prompt, !echo);
-                this.ViewInvoker?.Invoke(
-                    (Action)(() =>
-                    {
-                        this.AuthenticationPrompt?.Invoke(this, args);
-                    }),
-                    null);
-
-                if (args.Response != null)
-                {
-                    //
-                    // Strip:
-                    //  - spaces between group of digits (g.co/sc)
-                    //  - "G-" prefix (text messages)
-                    //
-                    if (args.Response.StartsWith("g-", StringComparison.OrdinalIgnoreCase))
-                    {
-                        args.Response = args.Response.Substring(2);
-                    }
-
-                    return args.Response.Replace(" ", string.Empty);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 //
@@ -290,13 +295,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 {
                     this.ConnectionStatus = Status.Connecting;
                     this.currentConnection = new SshShellConnection(
-                        this.authorizedKey.Username,
                         this.endpoint,
-                        this.authorizedKey.KeyPair,
+                        this,
                         SshShellConnection.DefaultTerminal,
                         initialSize,
                         this.language,
-                        OnAuthenticationPrompt,
                         OnDataReceivedFromServerAsync,
                         OnErrorReceivedFromServerAsync)
                     {

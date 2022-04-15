@@ -23,6 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
 using System.Globalization;
@@ -87,13 +88,11 @@ namespace Google.Solutions.Ssh.Test
                 }
 
                 using (var connection = new SshShellConnection(
-                    "testuser",
                     endpoint,
-                    key,
+                    new SshSingleFactorAuthenticator("testuser", key),
                     SshShellConnection.DefaultTerminal,
                     SshShellConnection.DefaultTerminalSize,
                     CultureInfo.InvariantCulture,
-                    UnexpectedAuthenticationCallback,
                     receiveHandler,
                     UnexpectedErrorCallback))
                 {
@@ -129,13 +128,11 @@ namespace Google.Solutions.Ssh.Test
                .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
                .ConfigureAwait(false))
             using (var connection = new SshShellConnection(
-                "testuser",
                 endpoint,
-                key,
+                new SshSingleFactorAuthenticator("testuser", key),
                 SshShellConnection.DefaultTerminal,
                 SshShellConnection.DefaultTerminalSize,
                 CultureInfo.InvariantCulture,
-                UnexpectedAuthenticationCallback,
                 _ => { },
                 UnexpectedErrorCallback))
             {
@@ -167,13 +164,11 @@ namespace Google.Solutions.Ssh.Test
                 }
 
                 using (var connection = new SshShellConnection(
-                    "testuser",
                     endpoint,
-                    key,
+                    new SshSingleFactorAuthenticator("testuser", key),
                     SshShellConnection.DefaultTerminal,
                     SshShellConnection.DefaultTerminalSize,
                     new CultureInfo("en-AU"),
-                    UnexpectedAuthenticationCallback,
                     receiveHandler,
                     UnexpectedErrorCallback))
                 {
@@ -225,13 +220,11 @@ namespace Google.Solutions.Ssh.Test
                 }
 
                 using (var connection = new SshShellConnection(
-                    "testuser",
                     endpoint,
-                    key,
+                    new SshSingleFactorAuthenticator("testuser", key),
                     SshShellConnection.DefaultTerminal,
                     SshShellConnection.DefaultTerminalSize,
                     new CultureInfo("en-AU"),
-                    UnexpectedAuthenticationCallback,
                     receiveHandler,
                     UnexpectedErrorCallback))
                 {
@@ -281,13 +274,11 @@ namespace Google.Solutions.Ssh.Test
                 }
 
                 using (var connection = new SshShellConnection(
-                    "testuser",
                     endpoint,
-                    key,
+                    new SshSingleFactorAuthenticator("testuser", key),
                     SshShellConnection.DefaultTerminal,
                     SshShellConnection.DefaultTerminalSize,
                     null,
-                    UnexpectedAuthenticationCallback,
                     receiveHandler,
                     UnexpectedErrorCallback))
                 {

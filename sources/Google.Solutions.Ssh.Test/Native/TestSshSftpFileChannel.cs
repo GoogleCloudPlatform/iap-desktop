@@ -52,9 +52,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             using (var file = channel.CreateFile(
                 Guid.NewGuid().ToString(),
@@ -85,9 +83,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var sendData = "The quick brown fox jumps over the lazy dog";

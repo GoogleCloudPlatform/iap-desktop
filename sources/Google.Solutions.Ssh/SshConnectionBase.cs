@@ -39,7 +39,6 @@ namespace Google.Solutions.Ssh
         private readonly StreamingDecoder receiveDecoder;
         private readonly byte[] receiveBuffer = new byte[64 * 1024];
 
-        private readonly ReceivedAuthenticationPromptHandler authenticationPromptHandler;
         private readonly ReceiveDataHandler receiveDataHandler;
         private readonly ReceiveErrorHandler receiveErrorHandler;
 
@@ -58,25 +57,17 @@ namespace Google.Solutions.Ssh
         public delegate void ReceiveStringDataHandler(
             string data);
 
-        public delegate string ReceivedAuthenticationPromptHandler(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo);
-
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
         protected SshConnectionBase(
-            string username,
             IPEndPoint endpoint,
-            ISshKeyPair key,
-            ReceivedAuthenticationPromptHandler authenticationPromptHandler,
+            ISshAuthenticator authenticator,
             ReceiveStringDataHandler receiveHandler,
             ReceiveErrorHandler receiveErrorHandler,
             Encoding dataEncoding)
-            : base(username, endpoint, key)
+            : base(endpoint, authenticator)
         {
             this.receiveDecoder = new StreamingDecoder(
                 dataEncoding,
@@ -86,7 +77,6 @@ namespace Google.Solutions.Ssh
                 => this.receiveDecoder.Decode(buf, (int)offset, (int)count);
 
             this.receiveErrorHandler = receiveErrorHandler;
-            this.authenticationPromptHandler = authenticationPromptHandler;
         }
 
         //---------------------------------------------------------------------
@@ -120,19 +110,6 @@ namespace Google.Solutions.Ssh
         protected override void OnReceiveError(Exception exception)
         {
             this.receiveErrorHandler(exception);
-        }
-
-        protected override string OnKeyboardInteractivePromptCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
-        {
-            return this.authenticationPromptHandler(
-                name,
-                instruction,
-                prompt,
-                echo);
         }
 
         //---------------------------------------------------------------------

@@ -45,20 +45,16 @@ namespace Google.Solutions.Ssh
         //---------------------------------------------------------------------
 
         public SshShellConnection(
-            string username,
             IPEndPoint endpoint,
-            ISshKeyPair key,
+            ISshAuthenticator authenticator,
             string terminal,
             TerminalSize terminalSize,
             CultureInfo language,
-            ReceivedAuthenticationPromptHandler authenticationPromptHandler,
             ReceiveStringDataHandler receiveDataHandler,
             ReceiveErrorHandler receiveErrorHandler)
             : base(
-                  username,
                   endpoint,
-                  key,
-                  authenticationPromptHandler,
+                  authenticator,
                   receiveDataHandler,
                   receiveErrorHandler,
                   Encoding)

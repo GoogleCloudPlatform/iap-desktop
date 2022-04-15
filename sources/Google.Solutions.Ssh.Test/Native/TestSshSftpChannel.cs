@@ -55,9 +55,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -79,9 +77,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 Assert.IsNotNull(channel);
@@ -105,9 +101,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithErrno(
@@ -129,9 +123,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var files = channel.ListFiles("/etc");
@@ -159,9 +151,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var files = channel.ListFiles(".");
@@ -193,9 +183,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithErrno(
@@ -221,9 +209,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithErrno(
@@ -249,9 +235,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var directoryName = Guid.NewGuid().ToString();
@@ -284,9 +268,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithErrno(
@@ -308,9 +290,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var directoryName = Guid.NewGuid().ToString();
@@ -344,9 +324,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithErrno(
@@ -373,9 +351,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithErrno(
@@ -404,9 +380,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             using (var file = channel.CreateFile(
                 fileName,
@@ -439,9 +413,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithErrno(
@@ -463,9 +435,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 SshAssert.ThrowsSftpNativeExceptionWithErrno(
@@ -487,9 +457,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenSftpChannel())
             {
                 var fileName = Guid.NewGuid().ToString();

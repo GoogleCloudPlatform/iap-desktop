@@ -78,16 +78,6 @@ namespace Google.Solutions.Ssh.Test
             return session;
         }
 
-        protected string UnexpectedAuthenticationCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
-        {
-            Assert.Fail("Unexpected callback");
-            return null;
-        }
-        
         protected static async Task<IPEndPoint> GetPublicSshEndpointAsync(
             InstanceLocator instance)
         {

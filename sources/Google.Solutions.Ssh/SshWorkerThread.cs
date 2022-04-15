@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
@@ -31,9 +32,8 @@ namespace Google.Solutions.Ssh
 {
     public abstract class SshWorkerThread : IDisposable
     {
-        private readonly string username;
         private readonly IPEndPoint endpoint;
-        private readonly ISshKeyPair key;
+        private readonly ISshAuthenticator authenticator;
 
         private readonly Thread workerThread;
         private readonly CancellationTokenSource workerCancellationSource;
@@ -68,20 +68,18 @@ namespace Google.Solutions.Ssh
         //---------------------------------------------------------------------
 
         protected SshWorkerThread(
-            string username,
             IPEndPoint endpoint,
-            ISshKeyPair key)
+            ISshAuthenticator authenticator)
         {
-            this.username = username;
-            this.endpoint = endpoint;
-            this.key = key;
+            this.endpoint = endpoint.ThrowIfNull(nameof(endpoint));
+            this.authenticator = authenticator.ThrowIfNull(nameof(authenticator));
 
             this.readyToSend = UnsafeNativeMethods.WSACreateEvent();
 
             this.workerCancellationSource = new CancellationTokenSource();
             this.workerThread = new Thread(WorkerThreadProc)
             {
-                Name = $"SSH worker for {this.username}@{this.endpoint}",
+                Name = $"SSH worker for {authenticator.Username}@{this.endpoint}",
                 IsBackground = true
             };
         }
@@ -148,15 +146,6 @@ namespace Google.Solutions.Ssh
         /// significant amount of time.
         /// </summary>
         protected abstract void Receive(SshChannelBase channel);
-
-        /// <summary>
-        /// Respond to keyboard/interactive callback.
-        /// </summary>
-        protected abstract string OnKeyboardInteractivePromptCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo);
 
         protected abstract SshChannelBase CreateChannel(
             SshAuthenticatedSession session);
@@ -225,10 +214,7 @@ namespace Google.Solutions.Ssh
                         // Open connection and perform handshake using blocking I/O.
                         //
                         using (var connectedSession = session.Connect(this.endpoint))
-                        using (var authenticatedSession = connectedSession.Authenticate(
-                            this.username,
-                            this.key,
-                            this.OnKeyboardInteractivePromptCallback))
+                        using (var authenticatedSession = connectedSession.Authenticate(this.authenticator))
                         using (var channel = CreateChannel(authenticatedSession))
                         {
                             //

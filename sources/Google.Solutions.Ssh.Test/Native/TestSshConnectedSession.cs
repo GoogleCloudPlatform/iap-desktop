@@ -296,9 +296,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(
-                        "invaliduser",
-                        key,
-                        this.UnexpectedAuthenticationCallback));
+                        new SshSingleFactorAuthenticator("invaliduser", key)));
             }
         }
 
@@ -322,9 +320,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     session,
                     LIBSSH2_ERROR.SOCKET_SEND,
                     () => connection.Authenticate(
-                        "testuser",
-                        key,
-                        this.UnexpectedAuthenticationCallback));
+                        new SshSingleFactorAuthenticator("testuser", key)));
             }
         }
 
@@ -347,9 +343,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = session.Connect(endpoint))
             {
                 var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    this.UnexpectedAuthenticationCallback);
+                    new SshSingleFactorAuthenticator("testuser", key));
                 Assert.IsNotNull(authSession);
             }
         }
@@ -357,6 +351,38 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
         // 2FA.
         //---------------------------------------------------------------------
+
+        private class TwoFactorAuthenticator : SshSingleFactorAuthenticator
+        {
+            public delegate string PromptDelegate(
+                string name,
+                string instruction,
+                string prompt,
+                bool echo);
+
+            private readonly PromptDelegate prompt;
+
+            public uint PromptCount { get; private set; } = 0;
+
+            public TwoFactorAuthenticator(
+                string username,
+                ISshKeyPair keyPair,
+                PromptDelegate prompt)
+                : base(username, keyPair)
+            {
+                this.prompt = prompt;
+            }
+
+            public override string Prompt(
+                string name, 
+                string instruction, 
+                string prompt, 
+                bool echo)
+            {
+                this.PromptCount++;
+                return this.prompt(name, instruction, prompt, echo);
+            }
+        }
 
         //
         // Service acconts can't use 2FA, so emulate the 2FA prompting behavior
@@ -383,24 +409,23 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var callbackCount = 0;
+                var authenticator = new TwoFactorAuthenticator(
+                    "testuser",
+                    key,
+                    (name, instruction, prompt, echo) =>
+                    {
+                        Assert.AreEqual("Password: ", prompt);
+                        Assert.IsFalse(echo);
+
+                        return "wrong";
+                    });
 
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    () => connection.Authenticate(
-                        "testuser",
-                        key,
-                        (name, instruction, prompt, echo) =>
-                        {
-                            callbackCount++;
+                    () => connection.Authenticate(authenticator));
 
-                            Assert.AreEqual("Password: ", prompt);
-                            Assert.IsFalse(echo);
-
-                            return "wrong";
-                        }));
-                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
+                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, authenticator.PromptCount);
             }
         }
 
@@ -418,24 +443,23 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var callbackCount = 0;
+                var authenticator = new TwoFactorAuthenticator(
+                    "testuser",
+                    key,
+                    (name, instruction, prompt, echo) =>
+                    {
+                        Assert.AreEqual("Password: ", prompt);
+                        Assert.IsFalse(echo);
+
+                        return null;
+                    });
 
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    () => connection.Authenticate(
-                        "testuser",
-                        key,
-                        (name, instruction, prompt, echo) =>
-                        {
-                            callbackCount++;
+                    () => connection.Authenticate(authenticator));
 
-                            Assert.AreEqual("Password: ", prompt);
-                            Assert.IsFalse(echo);
-
-                            return null;
-                        }));
-                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
+                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, authenticator.PromptCount);
             }
         }
 
@@ -453,18 +477,17 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var callbackCount = 0;
+                var authenticator = new TwoFactorAuthenticator(
+                    "testuser",
+                    key,
+                    (name, instruction, prompt, echo) =>
+                    {
+                        throw new OperationCanceledException();
+                    });
 
                 Assert.Throws<OperationCanceledException>(
-                    () => connection.Authenticate(
-                        "testuser",
-                        key,
-                        (name, instruction, prompt, echo) =>
-                        {
-                            callbackCount++;
-                            throw new OperationCanceledException();
-                        }));
-                Assert.AreEqual(1, callbackCount);
+                    () => connection.Authenticate(authenticator));
+                Assert.AreEqual(1, authenticator.PromptCount);
             }
         }
     }

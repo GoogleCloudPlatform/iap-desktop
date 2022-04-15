@@ -76,6 +76,7 @@
     <Compile Include="Auth\SshKeyPair.cs" />
     <Compile Include="Cryptography\ECDsaExtensions.cs" />
     <Compile Include="Native\FilePermissions.cs" />
+    <Compile Include="Native\ISshAuthenticator.cs" />
     <Compile Include="Native\SshSftpChannel.cs" />
     <Compile Include="Native\SshSftpFileChannel.cs" />
     <Compile Include="SshDataBuffer.cs" />

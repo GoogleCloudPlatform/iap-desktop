@@ -93,9 +93,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,
@@ -132,9 +130,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,
@@ -175,9 +171,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -208,9 +202,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,

@@ -50,9 +50,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             {
                 connection.Dispose();
                 SshAssert.ThrowsNativeExceptionWithError(
@@ -78,9 +76,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+                new SshSingleFactorAuthenticator("testuser", key)))
             using (var channel = authSession.OpenExecChannel(
                 "whoami",
                 LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
@@ -103,9 +99,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 var session = CreateSession();
                 var connection = session.Connect(endpoint);
                 var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    UnexpectedAuthenticationCallback);
+                    new SshSingleFactorAuthenticator("testuser", key));
                 var channel = authSession.OpenExecChannel(
                     "whoami",
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL);
@@ -136,9 +130,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     session,
                     LIBSSH2_ERROR.PUBLICKEY_UNRECOGNIZED,
                     () => connection.Authenticate(
-                        "testuser",
-                        key,
-                        UnexpectedAuthenticationCallback));
+                        new SshSingleFactorAuthenticator("testuser", key)));
             }
         }
     }
