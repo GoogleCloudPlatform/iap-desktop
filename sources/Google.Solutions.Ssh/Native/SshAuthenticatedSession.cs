@@ -71,22 +71,7 @@ namespace Google.Solutions.Ssh.Native
                     null,
                     0);
 
-                if (channelHandle.IsInvalid)
-                {
-                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
-                        this.session.Handle);
-                }
-                else
-                {
-                    result = LIBSSH2_ERROR.NONE;
-                }
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw this.session.CreateException(result);
-                }
-
-                channelHandle.SessionHandle = this.session.Handle;
+                channelHandle.ValidateAndAttachToSession(this.session);
 
                 //
                 // Configure how extended data (stderr, in particular) should
@@ -259,95 +244,18 @@ namespace Google.Solutions.Ssh.Native
         }
 
         /// <summary>
-        /// Download a file using SCP.
+        /// Open a channel for SFTP operations.
         /// </summary>
-        public SshFileDownloadChannel OpenFileDownloadChannel(
-            string remotePath)
+        public SshSftpChannel OpenSftpChannel()
         {
-            this.session.Handle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
-
-            using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
+            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                var fileStat = new LIBSSH2_STAT();
-                LIBSSH2_ERROR result;
-                var channelHandle = UnsafeNativeMethods.libssh2_scp_recv2(
-                    this.session.Handle,
-                    remotePath,
-                    ref fileStat);
+                var channelHandle = UnsafeNativeMethods.libssh2_sftp_init(
+                    this.session.Handle);
 
-                if (channelHandle.IsInvalid)
-                {
-                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
-                        this.session.Handle);
-                }
-                else
-                {
-                    result = LIBSSH2_ERROR.NONE;
-                }
+                channelHandle.ValidateAndAttachToSession(this.session);
 
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw this.session.CreateException(result);
-                }
-
-                channelHandle.SessionHandle = this.session.Handle;
-
-                return new SshFileDownloadChannel(
-                    session,
-                    channelHandle,
-                    fileStat);
-            }
-        }
-
-        /// <summary>
-        /// Upload a file using SCP. Note that scp doesn't honor umask,
-        /// so permissions need to be specified explicitly.
-        /// </summary>
-        public SshFileUploadChannel OpenFileUploadChannel(
-            string remotePath,
-            FilePermissions permissions,
-            long fileSize)
-        {
-            this.session.Handle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
-
-            if (fileSize < 0)
-            {
-                throw new ArgumentException(nameof(fileSize));
-            }
-
-            using (SshTraceSources.Default.TraceMethod().WithParameters(remotePath))
-            {
-                LIBSSH2_ERROR result;
-                var channelHandle = UnsafeNativeMethods.libssh2_scp_send64(
-                    this.session.Handle,
-                    remotePath,
-                    (uint)permissions,
-                    fileSize,
-                    0,  // Let server set mtime.
-                    0); // Let server set atime.
-
-                if (channelHandle.IsInvalid)
-                {
-                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
-                        this.session.Handle);
-                }
-                else
-                {
-                    result = LIBSSH2_ERROR.NONE;
-                }
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw this.session.CreateException(result);
-                }
-
-                channelHandle.SessionHandle = this.session.Handle;
-
-                return new SshFileUploadChannel(
-                    session,
-                    channelHandle);
+                return new SshSftpChannel(this.session, channelHandle);
             }
         }
 

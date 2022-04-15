@@ -206,10 +206,13 @@ namespace Google.Solutions.Ssh
                     using (var session = new SshSession())
                     {
                         session.SetTraceHandler(
-                            LIBSSH2_TRACE.SOCKET | LIBSSH2_TRACE.ERROR | LIBSSH2_TRACE.CONN |
-                                                   LIBSSH2_TRACE.AUTH | LIBSSH2_TRACE.KEX,
+                            LIBSSH2_TRACE.SOCKET |
+                                LIBSSH2_TRACE.ERROR |
+                                LIBSSH2_TRACE.CONN |
+                                LIBSSH2_TRACE.AUTH |
+                                LIBSSH2_TRACE.KEX |
+                                LIBSSH2_TRACE.SFTP,
                             SshTraceSources.Default.TraceVerbose);
-
 
                         if (!string.IsNullOrEmpty(this.Banner))
                         {

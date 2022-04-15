@@ -22,6 +22,7 @@
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -43,10 +44,10 @@ namespace Google.Solutions.Ssh.Native
     {
         KEX = 0,
         HOSTKEY = 1,
-        CRYPT_CS = 2,  // Client -> Server
-        CRYPT_SC = 3,  // Server -> Client
-        MAC_CS = 4,  // Client -> Server
-        MAC_SC = 5,  // Server -> Client
+        CRYPT_CS = 2, // Client -> Server
+        CRYPT_SC = 3, // Server -> Client
+        MAC_CS = 4,   // Client -> Server
+        MAC_SC = 5,   // Server -> Client
         COMP_CS = 6,  // Compression Client -> Server
         COMP_SC = 7,  // Compression Server -> Client
         LANG_CS = 8,  // Client -> Server
@@ -54,6 +55,7 @@ namespace Google.Solutions.Ssh.Native
     }
 
     [Flags]
+    [SuppressMessage("Naming", "CA1714:Flags enums should have plural names")]
     public enum LIBSSH2_TRACE : Int32
     {
         TRANS = (1 << 1),
@@ -63,7 +65,7 @@ namespace Google.Solutions.Ssh.Native
         SCP = (1 << 5),
         SFTP = (1 << 6),
         ERROR = (1 << 7),
-        PUBLICKEY = (1 << 8),
+        internalKEY = (1 << 8),
         SOCKET = (1 << 9)
     }
 
@@ -78,7 +80,7 @@ namespace Google.Solutions.Ssh.Native
         ED25519 = 6
     }
 
-    public enum SSH_DISCONNECT : Int32
+    internal enum SSH_DISCONNECT : Int32
     {
         HOST_NOT_ALLOWED_TO_CONNECT = 1,
         PROTOCOL_ERROR = 2,
@@ -110,46 +112,51 @@ namespace Google.Solutions.Ssh.Native
         EXTENDED_DATA_STDERR = 1
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct LIBSSH2_STAT
+    /// <summary>
+    /// FTP File Transfer Flags.
+    /// </summary>
+    [Flags]
+    public enum LIBSSH2_FXF_FLAGS : Int32
     {
-        //
-        // dt libssh2_struct_stat
-        //    +0x000 st_dev           : Uint4B
-        //    +0x004 st_ino           : Uint2B
-        //    +0x006 st_mode          : Uint2B
-        //    +0x008 st_nlink         : Int2B
-        //    +0x00a st_uid           : Int2B
-        //    +0x00c st_gid           : Int2B
-        //    +0x010 st_rdev          : Uint4B
-        //    +0x018 st_size          : Int8B
-        //    +0x020 st_atime         : Int8B
-        //    +0x028 st_mtime         : Int8B
-        //    +0x030 st_ctime         : Int8B
-        //
-
-        public uint st_dev;
-        public ushort st_ino;
-        public ushort st_mode;
-        public short st_nlink;
-        public short st_uid;
-        public short st_gid;
-        public uint st_rdev;
-        public ulong st_size;
-        public long st_atime;
-        public long st_mtime;
-        public long st_ctime;
+        READ   = 0x00000001,
+        WRITE  = 0x00000002,
+        APPEND = 0x00000004,
+        CREAT  = 0x00000008,
+        TRUNC  = 0x00000010,
+        EXCL   = 0x00000020
     }
+
+    internal enum LIBSSH2_OPENTYPE : Int32
+    {
+        OPENFILE = 0,
+        OPENDIR  = 1
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct LIBSSH2_SFTP_ATTRIBUTES
+    {
+        /// <summary>
+        /// If flags & ATTR_* bit is set, then the value in this struct will be
+        /// meaningful Otherwise it should be ignored
+        /// </summary>
+        internal uint flags;
+        internal ulong filesize;
+        internal uint uid;
+        internal uint gid;
+        internal uint permissions;
+        internal uint atime;
+        internal uint mtime;
+    };
 
     internal static class UnsafeNativeMethods
     {
         private const string Libssh2 = "libssh2.dll";
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern Int32 libssh2_init(Int32 flags);
+        internal static extern Int32 libssh2_init(Int32 flags);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr libssh2_version(
+        internal static extern IntPtr libssh2_version(
             int requiredVersion);
 
         //---------------------------------------------------------------------
@@ -157,50 +164,50 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate IntPtr Alloc(
+        internal delegate IntPtr Alloc(
             IntPtr size,
             IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate IntPtr Realloc(
+        internal delegate IntPtr Realloc(
             IntPtr ptr,
             IntPtr size,
             IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void Free(
+        internal delegate void Free(
             IntPtr ptr,
             IntPtr context);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern SshSessionHandle libssh2_session_init_ex(
+        internal static extern SshSessionHandle libssh2_session_init_ex(
             Alloc alloc,
             Free free,
             Realloc realloc,
             IntPtr context);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern Int32 libssh2_free(
+        internal static extern Int32 libssh2_free(
             SshSessionHandle session,
             IntPtr ptr);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern Int32 libssh2_session_free(
+        internal static extern Int32 libssh2_session_free(
             IntPtr session);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern Int32 libssh2_session_disconnect_ex(
+        internal static extern Int32 libssh2_session_disconnect_ex(
             SshSessionHandle session,
             SSH_DISCONNECT reason,
             [MarshalAs(UnmanagedType.LPStr)] string description,
             [MarshalAs(UnmanagedType.LPStr)] string lang);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern Int32 libssh2_session_get_blocking(
+        internal static extern Int32 libssh2_session_get_blocking(
             SshSessionHandle session);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void libssh2_session_set_blocking(
+        internal static extern void libssh2_session_set_blocking(
             SshSessionHandle session,
             Int32 blocking);
 
@@ -209,18 +216,18 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr libssh2_session_methods(
+        internal static extern IntPtr libssh2_session_methods(
             SshSessionHandle session,
             LIBSSH2_METHOD methodType);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern Int32 libssh2_session_supported_algs(
+        internal static extern Int32 libssh2_session_supported_algs(
             SshSessionHandle session,
             LIBSSH2_METHOD methodType,
             [Out] out IntPtr algorithmsPtrPtr);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern Int32 libssh2_session_method_pref(
+        internal static extern Int32 libssh2_session_method_pref(
             SshSessionHandle session,
             LIBSSH2_METHOD methodType,
             [MarshalAs(UnmanagedType.LPStr)] string prefs);
@@ -231,12 +238,12 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr libssh2_session_banner_get(
+        internal static extern IntPtr libssh2_session_banner_get(
             SshSessionHandle session);
 
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern Int32 libssh2_session_banner_set(
+        internal static extern Int32 libssh2_session_banner_set(
             SshSessionHandle session,
             [MarshalAs(UnmanagedType.LPStr)] string banner);
 
@@ -249,7 +256,7 @@ namespace Google.Solutions.Ssh.Native
         // https://github.com/libssh2/libssh2/issues/388
         //
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern Int32 libssh2_session_handshake(
+        internal static extern Int32 libssh2_session_handshake(
             SshSessionHandle session,
             IntPtr socket);
 
@@ -258,14 +265,14 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr libssh2_session_hostkey(
+        internal static extern IntPtr libssh2_session_hostkey(
             SshSessionHandle session,
             out IntPtr length,
             out LIBSSH2_HOSTKEY_TYPE type);
 
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr libssh2_hostkey_hash(
+        internal static extern IntPtr libssh2_hostkey_hash(
             SshSessionHandle session,
             LIBSSH2_HOSTKEY_HASH hashType);
 
@@ -274,11 +281,11 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_session_get_timeout(
+        internal static extern int libssh2_session_get_timeout(
             SshSessionHandle session);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void libssh2_session_set_timeout(
+        internal static extern void libssh2_session_set_timeout(
             SshSessionHandle session,
             int timeout);
 
@@ -291,17 +298,17 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern Int32 libssh2_userauth_authenticated(
+        internal static extern Int32 libssh2_userauth_authenticated(
             SshSessionHandle session);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr libssh2_userauth_list(
+        internal static extern IntPtr libssh2_userauth_list(
             SshSessionHandle session,
             [MarshalAs(UnmanagedType.LPStr)] string username,
             int usernameLength);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int SignCallback(
+        internal delegate int SignCallback(
             IntPtr session,
             out IntPtr signature,
             out IntPtr signatureLength,
@@ -310,7 +317,7 @@ namespace Google.Solutions.Ssh.Native
             IntPtr context);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int libssh2_userauth_publickey(
+        internal static extern int libssh2_userauth_publickey(
             SshSessionHandle session,
             [MarshalAs(UnmanagedType.LPStr)] string username,
             [MarshalAs(UnmanagedType.LPArray)] byte[] publicKey,
@@ -319,22 +326,22 @@ namespace Google.Solutions.Ssh.Native
             IntPtr context);
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct LIBSSH2_USERAUTH_KBDINT_PROMPT
+        internal struct LIBSSH2_USERAUTH_KBDINT_PROMPT
         {
-            public IntPtr TextPtr;
-            public int TextLength;
-            public byte Echo;
+            internal IntPtr TextPtr;
+            internal int TextLength;
+            internal byte Echo;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct LIBSSH2_USERAUTH_KBDINT_RESPONSE
+        internal struct LIBSSH2_USERAUTH_KBDINT_RESPONSE
         {
-            public IntPtr TextPtr;
-            public int TextLength;
+            internal IntPtr TextPtr;
+            internal int TextLength;
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void KeyboardInteractiveCallback(
+        internal delegate void KeyboardInteractiveCallback(
             IntPtr namePtr,
             int nameLength,
             IntPtr instructionPtr,
@@ -345,7 +352,7 @@ namespace Google.Solutions.Ssh.Native
             IntPtr context);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int libssh2_userauth_keyboard_interactive_ex(
+        internal static extern int libssh2_userauth_keyboard_interactive_ex(
             SshSessionHandle session,
             [MarshalAs(UnmanagedType.LPStr)] string username,
             int usernameLength,
@@ -357,15 +364,15 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_close(
+        internal static extern int libssh2_channel_close(
             SshChannelHandle channel);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_free(
+        internal static extern int libssh2_channel_free(
             IntPtr channel);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern SshChannelHandle libssh2_channel_open_ex(
+        internal static extern SshChannelHandle libssh2_channel_open_ex(
             SshSessionHandle session,
             [MarshalAs(UnmanagedType.LPStr)] string channelType,
             uint channelTypeLength,
@@ -376,7 +383,7 @@ namespace Google.Solutions.Ssh.Native
 
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int libssh2_channel_setenv_ex(
+        internal static extern int libssh2_channel_setenv_ex(
             SshChannelHandle channel,
             [MarshalAs(UnmanagedType.LPStr)] string variableName,
             uint variableNameLength,
@@ -385,7 +392,7 @@ namespace Google.Solutions.Ssh.Native
 
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int libssh2_channel_process_startup(
+        internal static extern int libssh2_channel_process_startup(
             SshChannelHandle channel,
             [MarshalAs(UnmanagedType.LPStr)] string request,
             uint requestLength,
@@ -393,33 +400,33 @@ namespace Google.Solutions.Ssh.Native
             uint messageLength);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_read_ex(
+        internal static extern int libssh2_channel_read_ex(
             SshChannelHandle channel,
             int streamId,
             byte[] buffer,
             IntPtr bufferSize);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_write_ex(
+        internal static extern int libssh2_channel_write_ex(
             SshChannelHandle channel,
             int streamId,
             byte[] buffer,
             IntPtr bufferSize);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_wait_closed(
+        internal static extern int libssh2_channel_wait_closed(
             SshChannelHandle channel);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_wait_eof(
+        internal static extern int libssh2_channel_wait_eof(
             SshChannelHandle channel);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_get_exit_status(
+        internal static extern int libssh2_channel_get_exit_status(
             SshChannelHandle channel);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_get_exit_signal(
+        internal static extern int libssh2_channel_get_exit_signal(
             SshChannelHandle channel,
             out IntPtr exitsignal,
             out IntPtr exitsignalLength,
@@ -429,16 +436,16 @@ namespace Google.Solutions.Ssh.Native
             out IntPtr langTagLength);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_handle_extended_data2(
+        internal static extern int libssh2_channel_handle_extended_data2(
             SshChannelHandle channel,
             LIBSSH2_CHANNEL_EXTENDED_DATA mode);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_eof(
+        internal static extern int libssh2_channel_eof(
             SshChannelHandle channel);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern int libssh2_channel_request_pty_ex(
+        internal static extern int libssh2_channel_request_pty_ex(
             SshChannelHandle channel,
             [MarshalAs(UnmanagedType.LPStr)] string term,
             uint termLength,
@@ -450,40 +457,94 @@ namespace Google.Solutions.Ssh.Native
             int heightPx);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_channel_request_pty_size_ex(
+        internal static extern int libssh2_channel_request_pty_size_ex(
             SshChannelHandle channel,
             int width,
             int height,
             int widthPx,
             int heightPx);
 
-        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern SshChannelHandle libssh2_scp_recv2(
-            SshSessionHandle session,
-            [MarshalAs(UnmanagedType.LPStr)] string path,
-            ref LIBSSH2_STAT stat);
+        //---------------------------------------------------------------------
+        // SFTP.
+        //---------------------------------------------------------------------
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern SshChannelHandle libssh2_scp_send64(
-            SshSessionHandle session,
+        internal static extern SshSftpChannelHandle libssh2_sftp_init(
+            SshSessionHandle session);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_shutdown(
+            IntPtr sftp);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_last_error(
+            SshSftpChannelHandle sftp);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_close_handle(
+            IntPtr sftp);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern SshSftpFileHandle libssh2_sftp_open_ex(
+            SshSftpChannelHandle channel,
             [MarshalAs(UnmanagedType.LPStr)] string path,
-            uint mode,
-            long size,
-            long mtime, // TODO: should this be ptr-sized?
-            long atime);
+            uint pathLength,
+            LIBSSH2_FXF_FLAGS flags,
+            FilePermissions mode,
+            LIBSSH2_OPENTYPE openType);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_readdir_ex(
+            SshSftpFileHandle handle,
+            IntPtr buffer,
+            IntPtr bufferSize,
+            IntPtr longEntry,
+            IntPtr longEntrySize,
+            out LIBSSH2_SFTP_ATTRIBUTES attrs);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_mkdir_ex(
+            SshSftpChannelHandle channel,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            uint pathLength,
+            FilePermissions mode);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_rmdir_ex(
+            SshSftpChannelHandle channel,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            uint pathLength);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_unlink_ex(
+            SshSftpChannelHandle channel,
+            [MarshalAs(UnmanagedType.LPStr)] string path,
+            uint pathLength);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_read(
+            SshSftpFileHandle channel,
+            byte[] buffer,
+            IntPtr bufferSize);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int libssh2_sftp_write(
+            SshSftpFileHandle channel,
+            byte[] buffer,
+            IntPtr bufferSize);
 
         //---------------------------------------------------------------------
         // Keepalive.
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void libssh2_keepalive_config(
+        internal static extern void libssh2_keepalive_config(
             SshSessionHandle session,
             int wantReply,
             uint interval);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_keepalive_send(
+        internal static extern int libssh2_keepalive_send(
             SshSessionHandle session,
             out int secondsToNext);
 
@@ -492,11 +553,11 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_session_last_errno(
+        internal static extern int libssh2_session_last_errno(
             SshSessionHandle session);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int libssh2_session_last_error(
+        internal static extern int libssh2_session_last_error(
             SshSessionHandle session,
             out IntPtr errorMessage,
             out int errorMessageLength,
@@ -507,59 +568,58 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void TraceHandler(
+        internal delegate void TraceHandler(
             IntPtr sessionHandle,
             IntPtr context,
             IntPtr data,
             IntPtr length);
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void libssh2_trace(
+        internal static extern void libssh2_trace(
             SshSessionHandle session,
             LIBSSH2_TRACE bitmask);
 
 
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void libssh2_trace_sethandler(
+        internal static extern void libssh2_trace_sethandler(
             SshSessionHandle session,
             IntPtr context,
             TraceHandler callback);
-
 
         //---------------------------------------------------------------------
         // Winsock.
         //---------------------------------------------------------------------
 
-        public const uint WSA_WAIT_FAILED = 0xFFFFFFFF;
-        public const uint WSA_WAIT_EVENT_0 = 0;
-        public const uint WSA_WAIT_TIMEOUT = 0x102;
-        public const uint FD_READ = 1;
-        public const uint FD_WRITE = 2;
-        public const uint FD_OOB = 4;
-        public const uint FD_ACCEPT = 8;
-        public const uint FD_CONNECT = 16;
-        public const uint FD_CLOSE = 32;
+        internal const uint WSA_WAIT_FAILED = 0xFFFFFFFF;
+        internal const uint WSA_WAIT_EVENT_0 = 0;
+        internal const uint WSA_WAIT_TIMEOUT = 0x102;
+        internal const uint FD_READ = 1;
+        internal const uint FD_WRITE = 2;
+        internal const uint FD_OOB = 4;
+        internal const uint FD_ACCEPT = 8;
+        internal const uint FD_CONNECT = 16;
+        internal const uint FD_CLOSE = 32;
 
         [DllImport("Ws2_32.dll")]
-        public extern static WsaEventHandle WSACreateEvent();
+        internal extern static WsaEventHandle WSACreateEvent();
 
         [DllImport("Ws2_32.dll")]
-        public extern static int WSAEventSelect(
+        internal extern static int WSAEventSelect(
             IntPtr socket,
             WsaEventHandle hande,
             uint eventMask);
 
         [DllImport("Ws2_32.dll")]
-        public extern static bool WSASetEvent(WsaEventHandle hande);
+        internal extern static bool WSASetEvent(WsaEventHandle hande);
 
         [DllImport("Ws2_32.dll")]
-        public extern static bool WSAResetEvent(WsaEventHandle hande);
+        internal extern static bool WSAResetEvent(WsaEventHandle hande);
 
         [DllImport("Ws2_32.dll")]
-        public extern static bool WSACloseEvent(IntPtr hande);
+        internal extern static bool WSACloseEvent(IntPtr hande);
 
         [DllImport("Ws2_32.dll")]
-        public extern static uint WSAWaitForMultipleEvents(
+        internal extern static uint WSAWaitForMultipleEvents(
             uint cEvents,
             IntPtr[] pEvents,
             bool fWaitAll,
@@ -567,29 +627,29 @@ namespace Google.Solutions.Ssh.Native
             bool fAlterable);
 
         [DllImport("Ws2_32.dll")]
-        public extern static int WSAEnumNetworkEvents(
+        internal extern static int WSAEnumNetworkEvents(
             IntPtr socket,
             WsaEventHandle eventHandle,
             ref WSANETWORKEVENTS eventInfo);
 
         [DllImport("Ws2_32.dll")]
-        public extern static int WSAGetLastError();
+        internal extern static int WSAGetLastError();
 
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct WSANETWORKEVENTS
+        internal struct WSANETWORKEVENTS
         {
-            public int lNetworkEvents;
+            internal int lNetworkEvents;
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
-            public int[] iErrorCode;
+            internal int[] iErrorCode;
         }
 
         //---------------------------------------------------------------------
         // Utility functions.
         //---------------------------------------------------------------------
 
-        public static string PtrToString(
+        internal static string PtrToString(
             IntPtr stringPtr,
             int stringLength,
             Encoding encoding)
@@ -604,7 +664,7 @@ namespace Google.Solutions.Ssh.Native
             return encoding.GetString(buffer);
         }
 
-        public static T[] PtrToStructureArray<T>(
+        internal static T[] PtrToStructureArray<T>(
             IntPtr ptr,
             int count) where T : struct
         {
@@ -620,7 +680,7 @@ namespace Google.Solutions.Ssh.Native
             return array;
         }
 
-        public static void StructureArrayToPtr<T>(
+        internal static void StructureArrayToPtr<T>(
             IntPtr ptr,
             T[] array) where T : struct
         {
@@ -633,6 +693,13 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
+    //-------------------------------------------------------------------------
+    // Safe handles.
+    //-------------------------------------------------------------------------
+
+    /// <summary>
+    /// Safe handle for a LIBSSH2_SESSION.
+    /// </summary>
     internal class SshSessionHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
 #if DEBUG
@@ -657,7 +724,7 @@ namespace Google.Solutions.Ssh.Native
         }
 
         [Conditional("DEBUG")]
-        public void CheckCurrentThreadOwnsHandle()
+        internal void CheckCurrentThreadOwnsHandle()
         {
 #if DEBUG
             Debug.Assert(Thread.CurrentThread == this.owningThread);
@@ -665,7 +732,10 @@ namespace Google.Solutions.Ssh.Native
         }
     }
 
-    internal class SshChannelHandle : SafeHandleZeroOrMinusOneIsInvalid
+    /// <summary>
+    /// Safe handle for a resource that's dependent on a LIBSSH2_SESSION.
+    /// </summary>
+    internal abstract class SshSessionResourceHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
 #if DEBUG
         private readonly Thread owningThread = Thread.CurrentThread;
@@ -674,15 +744,15 @@ namespace Google.Solutions.Ssh.Native
         /// <summary>
         /// Handle to parent session.
         /// </summary>
-        public SshSessionHandle SessionHandle { get; set; }
+        internal SshSessionHandle SessionHandle { get; private set; }
 
-        private SshChannelHandle() : base(true)
+        protected SshSessionResourceHandle() : base(true)
         {
             HandleTable.OnHandleCreated(this, "SSH session");
         }
 
         [Conditional("DEBUG")]
-        public void CheckCurrentThreadOwnsHandle()
+        internal void CheckCurrentThreadOwnsHandle()
         {
 #if DEBUG
             Debug.Assert(Thread.CurrentThread == this.owningThread);
@@ -693,13 +763,15 @@ namespace Google.Solutions.Ssh.Native
         override protected bool ReleaseHandle()
         {
             //
-            // NB. Libssh2 manages channels as a sub-resource of a session.
-            // Freeing a channel is fine if the session is still around,
-            // but trying to free a channel *after* freeing a session will
+            // NB. Libssh2 manages channels and SFTPs as a sub-resource of a
+            // session.
+            //
+            // Freeing a sub-resource is fine if the session is still around,
+            // but trying to free a sub-resource *after* freeing a session will
             // cause an access violation.
             //
             // When calling dispose, it's therefore imporant to dispose
-            // channels before disposing their parent session - that's
+            // sub-resource before disposing their parent session - that's
             // what the following assertion is for.
             //
             // When handles are not disposed (for example, because the app
@@ -715,13 +787,68 @@ namespace Google.Solutions.Ssh.Native
                 return false;
             }
 
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_free(
-                this.handle);
-            Debug.Assert(result == LIBSSH2_ERROR.NONE);
+            //
+            // Release the actual handle.
+            //
+            ProtectedReleaseHandle();
 
             HandleTable.OnHandleClosed(this);
 
             return true;
+        }
+
+        internal void ValidateAndAttachToSession(SshSession session)
+        {
+            Debug.Assert(session != null);
+
+            if (this.IsInvalid)
+            {
+                throw session.CreateException(
+                    (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                        session.Handle));
+            }
+
+            this.SessionHandle = session.Handle;
+        }
+
+        protected abstract void ProtectedReleaseHandle();
+    }
+
+    /// <summary>
+    /// Safe handle for LIBSSH2_CHANNEL.
+    /// </summary>
+    internal class SshChannelHandle : SshSessionResourceHandle
+    {
+        protected override void ProtectedReleaseHandle()
+        {
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_free(
+                this.handle);
+            Debug.Assert(result == LIBSSH2_ERROR.NONE);
+        }
+    }
+
+    /// <summary>
+    /// Safe handle for LIBSSH2_SFTP.
+    /// </summary>
+    internal class SshSftpChannelHandle : SshSessionResourceHandle
+    {
+        protected override void ProtectedReleaseHandle()
+        {
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_shutdown(
+                this.handle);
+            Debug.Assert(result == LIBSSH2_ERROR.NONE);
+        }
+    }
+    /// <summary>
+    /// Safe handle for LIBSSH2_SFTP_HANDLE.
+    /// </summary>
+    internal class SshSftpFileHandle : SshSessionResourceHandle
+    {
+        protected override void ProtectedReleaseHandle()
+        {
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_sftp_close_handle(
+                this.handle);
+            Debug.Assert(result == LIBSSH2_ERROR.NONE);
         }
     }
 
@@ -737,6 +864,44 @@ namespace Google.Solutions.Ssh.Native
             bool result = UnsafeNativeMethods.WSACloseEvent(this.handle);
             Debug.Assert(result);
             return result;
+        }
+    }
+
+    internal sealed class GlobalAllocSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        internal static GlobalAllocSafeHandle Zero = new GlobalAllocSafeHandle(ownsHandle: false);
+
+        private GlobalAllocSafeHandle()
+            : base(ownsHandle: true)
+        {
+        }
+
+        private GlobalAllocSafeHandle(bool ownsHandle)
+            : base(ownsHandle)
+        {
+        }
+
+
+        [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types")]
+        internal static GlobalAllocSafeHandle GlobalAlloc(uint cb)
+        {
+            var memory = Marshal.AllocHGlobal(new IntPtr(cb));
+
+            var handle = new GlobalAllocSafeHandle();
+            handle.SetHandle(memory);
+            if (handle.IsInvalid)
+            {
+                handle.SetHandleAsInvalid();
+                throw new OutOfMemoryException();
+            }
+
+            return handle;
+        }
+
+        protected override bool ReleaseHandle()
+        {
+            Marshal.FreeHGlobal(this.handle);
+            return true;
         }
     }
 }

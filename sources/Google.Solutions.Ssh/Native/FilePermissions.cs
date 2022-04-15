@@ -38,8 +38,19 @@ namespace Google.Solutions.Ssh.Native
         GroupWrite = 0x2 << 3,
         GroupExecute = 0x1 << 3,
 
-        WorldRead = 0x4,
-        WorldWrite = 0x2,
-        WorldExecute = 0x1
+        OtherRead = 0x4,
+        OtherWrite = 0x2,
+        OtherExecute = 0x1,
+
+        //
+        // File type.
+        //
+        Fifo = 0x1000,
+        CharacterDevice = 0x2000,
+        Directory = 0x4000,
+        BlockSpecial = 0x6000,
+        Regular = 0x8000,
+        SymbolicLink = 0xa000,
+        Socket = 0xc000
     }
 }
