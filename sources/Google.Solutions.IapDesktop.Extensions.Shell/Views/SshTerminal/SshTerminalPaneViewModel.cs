@@ -209,12 +209,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     }
                     catch (Exception e)
                     {
-                            //
-                            // A fatal error occured while processing data,
-                            // possibly because of malformed or unsupported
-                            // xterm data.
-                            //
-                            this.ConnectionFailed?.Invoke(
+                        //
+                        // A fatal error occured while processing data,
+                        // possibly because of malformed or unsupported
+                        // xterm data.
+                        //
+                        this.ConnectionFailed?.Invoke(
                             this,
                             new ConnectionErrorEventArgs(e));
                     }

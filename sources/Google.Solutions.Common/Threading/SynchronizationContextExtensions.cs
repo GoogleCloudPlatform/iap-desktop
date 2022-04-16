@@ -28,8 +28,14 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Threading
 {
+    /// <summary>
+    /// Utility extension methods for SynchronizationContext.
+    /// </summary>
     public static class SynchronizationContextExtensions
     {
+        /// <summary>
+        /// Posts a callback and returns a Task to await its completion.
+        /// </summary>
         public static Task<T> RunAsync<T>(
             this SynchronizationContext context,
             Func<T> func)
@@ -61,6 +67,9 @@ namespace Google.Solutions.Common.Threading
             return completionSource.Task;
         }
 
+        /// <summary>
+        /// Posts a callback and returns a Task to await its completion.
+        /// </summary>
         public static Task RunAsync(
             this SynchronizationContext context,
             Action func)
@@ -72,6 +81,33 @@ namespace Google.Solutions.Common.Threading
                     func();
                     return null;
                 });
+        }
+
+        /// <summary>
+        /// Send a callback and pass its return value.
+        /// </summary>
+        public static T Send<T>(
+            this SynchronizationContext context,
+            Func<T> func) where T : class
+        {
+            T value = null;
+            context.Send(_ =>
+            {
+                value = func();
+            },
+            null);
+
+            return value;
+        }
+
+        /// <summary>
+        /// Post a callback that doesn not expect any parameters.
+        /// </summary>
+        public static void Post(
+            this SynchronizationContext context,
+            Action func)
+        {
+            context.Post(_ => func(), null);
         }
     }
 }

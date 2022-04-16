@@ -67,43 +67,4 @@ namespace Google.Solutions.Ssh
         /// </summary>
         void OnError(Exception exception);
     }
-
-    public static class TerminalExtensions
-    {
-        private class TerminalDataDecoder : IRawTerminal
-        {
-            private readonly ITerminal receiver;
-            private readonly StreamingDecoder decoder;
-
-            public TerminalDataDecoder(
-                ITerminal receiver,
-                Encoding encoding)
-            {
-                Utilities.ThrowIfNull(receiver, nameof(receiver));
-                Utilities.ThrowIfNull(encoding, nameof(encoding));
-
-                this.receiver = receiver;
-                this.decoder = new StreamingDecoder(
-                    encoding,
-                    s => receiver.OnDataReceived(s));
-            }
-
-            public void OnDataReceived(byte[] data, uint offset, uint length)
-            {
-                this.decoder.Decode(data, (int)offset, (int)length);
-            }
-
-            public void OnError(Exception exception)
-            {
-                this.receiver.OnError(exception);
-            }
-        }
-
-        public static IRawTerminal ToRawTerminal(
-            this ITerminal terminal,
-            Encoding encoding)
-        {
-            return new TerminalDataDecoder(terminal, encoding);
-        }
-    }
 }
