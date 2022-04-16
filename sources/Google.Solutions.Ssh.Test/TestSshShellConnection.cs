@@ -23,6 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
 using System.Globalization;
@@ -36,33 +37,48 @@ namespace Google.Solutions.Ssh.Test
     [TestFixture]
     public class TestSshShellConnection : SshFixtureBase
     {
-        private async Task AwaitBufferContentAsync(
-            StringBuilder buffer,
-            TimeSpan timeout,
-            string token)
+        private class BufferingTerminal : ITerminal
         {
-            for (int i = 0; i < 10; i++)
-            {
-                await Task
-                    .Delay(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 10))
-                    .ConfigureAwait(false);
+            private readonly StringBuilder buffer = new StringBuilder();
 
-                lock (buffer)
-                {
-                    if (buffer.ToString().Contains(token))
-                    {
-                        return;
-                    }
-                }
+            public string TerminalType => "vanilla";
+
+            public CultureInfo Locale { get; set; } = CultureInfo.InvariantCulture;
+
+            public void OnDataReceived(string data)
+            {
+                this.buffer.Append(data);
             }
 
-            throw new TimeoutException(
-                $"Timeout waiting for buffer to contain '{token}");
-        }
+            public void OnError(Exception exception)
+            {
+                Assert.Fail("Unexpected callback");
+            }
 
-        private void UnexpectedErrorCallback(Exception exception)
-        {
-            Assert.Fail("Unexpected callback");
+            public string Buffer => this.buffer.ToString();
+
+            public async Task AwaitBufferContentAsync(
+                TimeSpan timeout,
+                string token)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    await Task
+                        .Delay(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 10))
+                        .ConfigureAwait(false);
+
+                    lock (this.buffer)
+                    {
+                        if (this.buffer.ToString().Contains(token))
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                throw new TimeoutException(
+                    $"Timeout waiting for buffer to contain '{token}");
+            }
         }
 
         [Test]
@@ -71,50 +87,35 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
+            var terminal = new BufferingTerminal();
+
+            using (var connection = new SshShellConnection(
+                endpoint,
+                authenticator,
+                terminal,
+                SshShellConnection.DefaultTerminalSize))
             {
-                var receiveBuffer = new StringBuilder();
+                await connection.ConnectAsync().ConfigureAwait(false);
 
-                void receiveHandler(string data)
-                {
-                    lock (receiveBuffer)
-                    {
-                        receiveBuffer.Append(data);
-                    }
-                }
+                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
+                    () => connection.ConnectAsync().Wait());
 
-                using (var connection = new SshShellConnection(
+                await connection.SendAsync("whoami\n").ConfigureAwait(false);
+                await connection.SendAsync("exit\n").ConfigureAwait(false);
+
+                await terminal.AwaitBufferContentAsync(
+                        TimeSpan.FromSeconds(10),
+                        "testuser")
+                    .ConfigureAwait(false);
+
+                StringAssert.Contains(
                     "testuser",
-                    endpoint,
-                    key,
-                    SshShellConnection.DefaultTerminal,
-                    SshShellConnection.DefaultTerminalSize,
-                    CultureInfo.InvariantCulture,
-                    UnexpectedAuthenticationCallback,
-                    receiveHandler,
-                    UnexpectedErrorCallback))
-                {
-                    await connection.ConnectAsync().ConfigureAwait(false);
-
-                    ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                        () => connection.ConnectAsync().Wait());
-
-                    await connection.SendAsync("whoami\n").ConfigureAwait(false);
-                    await connection.SendAsync("exit\n").ConfigureAwait(false);
-
-                    await AwaitBufferContentAsync(
-                            receiveBuffer,
-                            TimeSpan.FromSeconds(10),
-                            "testuser")
-                        .ConfigureAwait(false);
-
-                    StringAssert.Contains(
-                        "testuser",
-                        receiveBuffer.ToString());
-                }
+                    terminal.Buffer.ToString());
             }
         }
 
@@ -124,20 +125,18 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+            
+            var terminal = new BufferingTerminal();
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
             using (var connection = new SshShellConnection(
-                "testuser",
                 endpoint,
-                key,
-                SshShellConnection.DefaultTerminal,
-                SshShellConnection.DefaultTerminalSize,
-                CultureInfo.InvariantCulture,
-                UnexpectedAuthenticationCallback,
-                _ => { },
-                UnexpectedErrorCallback))
+                authenticator,
+                terminal,
+                SshShellConnection.DefaultTerminalSize))
             {
                 await connection
                     .ConnectAsync()
@@ -151,53 +150,41 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
-            { 
-                var receiveBuffer = new StringBuilder();
+            var terminal = new BufferingTerminal()
+            {
+                Locale = new CultureInfo("en-AU")
+            };
 
-                void receiveHandler(string data)
-                {
-                    lock (receiveBuffer)
-                    {
-                        receiveBuffer.Append(data);
-                    }
-                }
+            using (var connection = new SshShellConnection(
+                endpoint,
+                authenticator,
+                terminal,
+                SshShellConnection.DefaultTerminalSize))
+            {
+                await connection
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
 
-                using (var connection = new SshShellConnection(
-                    "testuser",
-                    endpoint,
-                    key,
-                    SshShellConnection.DefaultTerminal,
-                    SshShellConnection.DefaultTerminalSize,
-                    new CultureInfo("en-AU"),
-                    UnexpectedAuthenticationCallback,
-                    receiveHandler,
-                    UnexpectedErrorCallback))
-                {
-                    await connection
-                        .ConnectAsync()
-                        .ConfigureAwait(false);
+                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
+                    () => connection.ConnectAsync().Wait());
 
-                    ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                        () => connection.ConnectAsync().Wait());
+                await connection
+                    .SendAsync("locale;sleep 1;exit\n")
+                    .ConfigureAwait(false);
 
-                    await connection
-                        .SendAsync("locale;sleep 1;exit\n")
-                        .ConfigureAwait(false);
+                await terminal.AwaitBufferContentAsync(
+                        TimeSpan.FromSeconds(10),
+                        "testuser")
+                    .ConfigureAwait(false);
 
-                    await AwaitBufferContentAsync(
-                            receiveBuffer,
-                            TimeSpan.FromSeconds(10),
-                            "testuser")
-                        .ConfigureAwait(false);
-
-                    StringAssert.Contains(
-                        "LC_ALL=en_AU.UTF-8",
-                        receiveBuffer.ToString());
-                }
+                StringAssert.Contains(
+                    "LC_ALL=en_AU.UTF-8",
+                    terminal.Buffer.ToString());
             }
         }
 
@@ -209,53 +196,41 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
-            { 
-                var receiveBuffer = new StringBuilder();
+            var terminal = new BufferingTerminal()
+            {
+                Locale = new CultureInfo("en-AU")
+            };
 
-                void receiveHandler(string data)
-                {
-                    lock (receiveBuffer)
-                    {
-                        receiveBuffer.Append(data);
-                    }
-                }
+            using (var connection = new SshShellConnection(
+                endpoint,
+                authenticator,
+                terminal,
+                SshShellConnection.DefaultTerminalSize))
+            {
+                await connection
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
 
-                using (var connection = new SshShellConnection(
-                    "testuser",
-                    endpoint,
-                    key,
-                    SshShellConnection.DefaultTerminal,
-                    SshShellConnection.DefaultTerminalSize,
-                    new CultureInfo("en-AU"),
-                    UnexpectedAuthenticationCallback,
-                    receiveHandler,
-                    UnexpectedErrorCallback))
-                {
-                    await connection
-                        .ConnectAsync()
-                        .ConfigureAwait(false);
+                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
+                    () => connection.ConnectAsync().Wait());
 
-                    ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                        () => connection.ConnectAsync().Wait());
+                await connection
+                    .SendAsync("locale;sleep 1;exit\n")
+                    .ConfigureAwait(false);
 
-                    await connection
-                        .SendAsync("locale;sleep 1;exit\n")
-                        .ConfigureAwait(false);
+                await terminal.AwaitBufferContentAsync(
+                        TimeSpan.FromSeconds(10),
+                        "testuser")
+                    .ConfigureAwait(false);
 
-                    await AwaitBufferContentAsync(
-                            receiveBuffer,
-                            TimeSpan.FromSeconds(10),
-                            "testuser")
-                        .ConfigureAwait(false);
-
-                    StringAssert.Contains(
-                        "LC_ALL=\r\n",
-                        receiveBuffer.ToString());
-                }
+                StringAssert.Contains(
+                    "LC_ALL=\r\n",
+                    terminal.Buffer.ToString());
             }
         }
 
@@ -265,53 +240,41 @@ namespace Google.Solutions.Ssh.Test
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
-            { 
-                var receiveBuffer = new StringBuilder();
+            var terminal = new BufferingTerminal()
+            {
+                Locale = null
+            };
 
-                void receiveHandler(string data)
-                {
-                    lock (receiveBuffer)
-                    {
-                        receiveBuffer.Append(data);
-                    }
-                }
+            using (var connection = new SshShellConnection(
+                endpoint,
+                authenticator,
+                terminal,
+                SshShellConnection.DefaultTerminalSize))
+            {
+                await connection
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
 
-                using (var connection = new SshShellConnection(
-                    "testuser",
-                    endpoint,
-                    key,
-                    SshShellConnection.DefaultTerminal,
-                    SshShellConnection.DefaultTerminalSize,
-                    null,
-                    UnexpectedAuthenticationCallback,
-                    receiveHandler,
-                    UnexpectedErrorCallback))
-                {
-                    await connection
-                        .ConnectAsync()
-                        .ConfigureAwait(false);
+                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
+                    () => connection.ConnectAsync().Wait());
 
-                    ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                        () => connection.ConnectAsync().Wait());
+                await connection
+                    .SendAsync("locale;sleep 1;exit\n")
+                    .ConfigureAwait(false);
 
-                    await connection
-                        .SendAsync("locale;sleep 1;exit\n")
-                        .ConfigureAwait(false);
+                await terminal.AwaitBufferContentAsync(
+                        TimeSpan.FromSeconds(10),
+                        "testuser")
+                    .ConfigureAwait(false);
 
-                    await AwaitBufferContentAsync(
-                            receiveBuffer,
-                            TimeSpan.FromSeconds(10),
-                            "testuser")
-                        .ConfigureAwait(false);
-
-                    StringAssert.Contains(
-                        "LC_ALL=\r\n",
-                        receiveBuffer.ToString());
-                }
+                StringAssert.Contains(
+                    "LC_ALL=\r\n",
+                    terminal.Buffer.ToString());
             }
         }
     }

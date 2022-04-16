@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;
@@ -36,57 +37,21 @@ namespace Google.Solutions.Ssh
         private readonly TaskCompletionSource<int> connectionCompleted
             = new TaskCompletionSource<int>();
 
-        private readonly StreamingDecoder receiveDecoder;
         private readonly byte[] receiveBuffer = new byte[64 * 1024];
 
-        private readonly ReceivedAuthenticationPromptHandler authenticationPromptHandler;
-        private readonly ReceiveDataHandler receiveDataHandler;
-        private readonly ReceiveErrorHandler receiveErrorHandler;
-
-        //---------------------------------------------------------------------
-        // Delegates.
-        //---------------------------------------------------------------------
-
-        public delegate void ReceiveDataHandler(
-            byte[] data,
-            uint offset,
-            uint length);
-
-        public delegate void ReceiveErrorHandler(
-            Exception exception);
-
-        public delegate void ReceiveStringDataHandler(
-            string data);
-
-        public delegate string ReceivedAuthenticationPromptHandler(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo);
+        private readonly IRawTerminal terminal;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
         protected SshConnectionBase(
-            string username,
             IPEndPoint endpoint,
-            ISshKeyPair key,
-            ReceivedAuthenticationPromptHandler authenticationPromptHandler,
-            ReceiveStringDataHandler receiveHandler,
-            ReceiveErrorHandler receiveErrorHandler,
-            Encoding dataEncoding)
-            : base(username, endpoint, key)
+            ISshAuthenticator authenticator,
+            IRawTerminal terminal)
+            : base(endpoint, authenticator)
         {
-            this.receiveDecoder = new StreamingDecoder(
-                dataEncoding,
-                s => receiveHandler(s));
-
-            this.receiveDataHandler = (buf, offset, count)
-                => this.receiveDecoder.Decode(buf, (int)offset, (int)count);
-
-            this.receiveErrorHandler = receiveErrorHandler;
-            this.authenticationPromptHandler = authenticationPromptHandler;
+            this.terminal = terminal.ThrowIfNull(nameof(terminal));
         }
 
         //---------------------------------------------------------------------
@@ -105,7 +70,7 @@ namespace Google.Solutions.Ssh
             //
 
             var bytesReceived = channel.Read(this.receiveBuffer);
-            this.receiveDataHandler(this.receiveBuffer, 0, bytesReceived);
+            this.terminal.OnDataReceived(this.receiveBuffer, 0, bytesReceived);
 
             //
             // In non-blocking mode, we're not always receive a final
@@ -113,26 +78,13 @@ namespace Google.Solutions.Ssh
             //
             if (bytesReceived > 0 && channel.IsEndOfStream)
             {
-                this.receiveDataHandler(Array.Empty<byte>(), 0, 0);
+                this.terminal.OnDataReceived(Array.Empty<byte>(), 0, 0);
             }
         }
 
         protected override void OnReceiveError(Exception exception)
         {
-            this.receiveErrorHandler(exception);
-        }
-
-        protected override string OnKeyboardInteractivePromptCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
-        {
-            return this.authenticationPromptHandler(
-                name,
-                instruction,
-                prompt,
-                echo);
+            this.terminal.OnError(exception);
         }
 
         //---------------------------------------------------------------------

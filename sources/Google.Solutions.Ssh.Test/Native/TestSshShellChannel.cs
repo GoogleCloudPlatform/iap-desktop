@@ -86,16 +86,14 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+            using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,
@@ -111,7 +109,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 channel.Close();
 
                 StringAssert.Contains(
-                    "whoami;exit\r\ntestuser\r\nlogout\r\n",
+                    $"whoami;exit\r\n{authenticator.Username}\r\nlogout\r\n",
                     output);
 
                 Assert.AreEqual(0, channel.ExitCode);
@@ -125,16 +123,14 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+            using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,
@@ -168,16 +164,14 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+            using (var authSession = connection.Authenticate(authenticator))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
@@ -201,16 +195,14 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", SshKeyType.Rsa3072)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
-            using (var authSession = connection.Authenticate(
-                "testuser",
-                key,
-                UnexpectedAuthenticationCallback))
+            using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                 DefaultTerminal,

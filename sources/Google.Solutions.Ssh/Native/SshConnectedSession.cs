@@ -244,21 +244,10 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public delegate string AuthenticationCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo);
-
-        public SshAuthenticatedSession Authenticate(
-            string username,
-            ISshKeyPair key,
-            AuthenticationCallback callback)
+        public SshAuthenticatedSession Authenticate(ISshAuthenticator authenticator)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(username, nameof(username));
-            Utilities.ThrowIfNull(key, nameof(key));
-            Utilities.ThrowIfNull(callback, nameof(callback));
+            Utilities.ThrowIfNull(authenticator, nameof(authenticator));
 
             Exception interactiveCallbackException = null;
 
@@ -285,7 +274,7 @@ namespace Google.Solutions.Ssh.Native
                 var data = new byte[dataLength.ToInt32()];
                 Marshal.Copy(dataPtr, data, 0, data.Length);
 
-                var signature = key.SignData(data);
+                var signature = authenticator.KeyPair.SignData(data);
 
                 //
                 // Copy data back to a buffer that libssh2 can free using
@@ -347,7 +336,7 @@ namespace Google.Solutions.Ssh.Native
                     string responseText = null;
                     try
                     {
-                        responseText = callback(
+                        responseText = authenticator.Prompt(
                             name,
                             instruction,
                             promptText,
@@ -393,17 +382,18 @@ namespace Google.Solutions.Ssh.Native
                     responses);
             }
 
-            using (SshTraceSources.Default.TraceMethod().WithParameters(username))
+            using (SshTraceSources.Default.TraceMethod()
+                .WithParameters(authenticator.Username))
             {
                 //
                 // NB. The public key must be passed in OpenSSH format, not PEM.
                 // cf. https://tools.ietf.org/html/rfc4253#section-6.6
                 //
-                var publicKey = key.GetPublicKey();
+                var publicKey = authenticator.KeyPair.GetPublicKey();
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
                     this.session.Handle,
-                    username,
+                    authenticator.Username,
                     publicKey,
                     new IntPtr(publicKey.Length),
                     Sign,
@@ -440,8 +430,8 @@ namespace Google.Solutions.Ssh.Native
                         {
                             result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_keyboard_interactive_ex(
                                 this.session.Handle,
-                                username,
-                                username.Length,
+                                authenticator.Username,
+                                authenticator.Username.Length,
                                 InteractiveCallback,
                                 IntPtr.Zero);
 

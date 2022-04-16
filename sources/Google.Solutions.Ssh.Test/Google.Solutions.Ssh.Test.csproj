@@ -97,16 +97,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IEnumerable.cs" />
     <Compile Include="Native\TestSshSftpChannel.cs" />
     <Compile Include="Native\TestSshSftpFileChannel.cs" />
     <Compile Include="TestSshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="InstanceUtil.cs" />
     <Compile Include="Native\InitializeScripts.cs" />
     <Compile Include="Native\TestEnvironmentVariable.cs" />
     <Compile Include="SshAssert.cs" />
     <Compile Include="SshFixtureBase.cs" />
-    <Compile Include="Native\TestSshExecChannel.cs" />
     <Compile Include="Native\TestSshShellChannel.cs" />
     <Compile Include="Native\TestSshAuthenticatedSession.cs" />
     <Compile Include="Native\TestSshConnectedSession.cs" />

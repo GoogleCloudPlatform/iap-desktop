@@ -296,9 +296,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate(
-                        "invaliduser",
-                        key,
-                        this.UnexpectedAuthenticationCallback));
+                        new SshSingleFactorAuthenticator("invaliduser", key)));
             }
         }
 
@@ -309,10 +307,11 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    keyType)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
@@ -321,10 +320,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.SOCKET_SEND,
-                    () => connection.Authenticate(
-                        "testuser",
-                        key,
-                        this.UnexpectedAuthenticationCallback));
+                    () => connection.Authenticate(authenticator));
             }
         }
 
@@ -339,17 +335,15 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    keyType)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var authSession = connection.Authenticate(
-                    "testuser",
-                    key,
-                    this.UnexpectedAuthenticationCallback);
+                var authSession = connection.Authenticate(authenticator);
                 Assert.IsNotNull(authSession);
             }
         }
@@ -357,6 +351,38 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
         // 2FA.
         //---------------------------------------------------------------------
+
+        private class TwoFactorAuthenticator : SshSingleFactorAuthenticator
+        {
+            public delegate string PromptDelegate(
+                string name,
+                string instruction,
+                string prompt,
+                bool echo);
+
+            private readonly PromptDelegate prompt;
+
+            public uint PromptCount { get; private set; } = 0;
+
+            public TwoFactorAuthenticator(
+                string username,
+                ISshKeyPair keyPair,
+                PromptDelegate prompt)
+                : base(username, keyPair)
+            {
+                this.prompt = prompt;
+            }
+
+            public override string Prompt(
+                string name, 
+                string instruction, 
+                string prompt, 
+                bool echo)
+            {
+                this.PromptCount++;
+                return this.prompt(name, instruction, prompt, echo);
+            }
+        }
 
         //
         // Service acconts can't use 2FA, so emulate the 2FA prompting behavior
@@ -376,31 +402,33 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    keyType)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var callbackCount = 0;
+                var twoFactorAuthenticator = new TwoFactorAuthenticator(
+                    authenticator.Username,
+                    authenticator.KeyPair,
+                    (name, instruction, prompt, echo) =>
+                    {
+                        Assert.AreEqual("Password: ", prompt);
+                        Assert.IsFalse(echo);
+
+                        return "wrong";
+                    });
 
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    () => connection.Authenticate(
-                        "testuser",
-                        key,
-                        (name, instruction, prompt, echo) =>
-                        {
-                            callbackCount++;
+                    () => connection.Authenticate(twoFactorAuthenticator));
 
-                            Assert.AreEqual("Password: ", prompt);
-                            Assert.IsFalse(echo);
-
-                            return "wrong";
-                        }));
-                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
+                Assert.AreEqual(
+                    SshConnectedSession.KeyboardInteractiveRetries, 
+                    twoFactorAuthenticator.PromptCount);
             }
         }
 
@@ -411,31 +439,31 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    keyType)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var callbackCount = 0;
+                var twoFactorAuthenticator = new TwoFactorAuthenticator(
+                    authenticator.Username,
+                    authenticator.KeyPair,
+                    (name, instruction, prompt, echo) =>
+                    {
+                        Assert.AreEqual("Password: ", prompt);
+                        Assert.IsFalse(echo);
+
+                        return null;
+                    });
 
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    () => connection.Authenticate(
-                        "testuser",
-                        key,
-                        (name, instruction, prompt, echo) =>
-                        {
-                            callbackCount++;
+                    () => connection.Authenticate(twoFactorAuthenticator));
 
-                            Assert.AreEqual("Password: ", prompt);
-                            Assert.IsFalse(echo);
-
-                            return null;
-                        }));
-                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
+                Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, twoFactorAuthenticator.PromptCount);
             }
         }
 
@@ -446,25 +474,25 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var instance = await instanceLocatorTask;
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    keyType)
+                .ConfigureAwait(false);
 
-            using (var key = await InstanceUtil
-               .CreateEphemeralKeyAndPushKeyToMetadata(instance, "testuser", keyType)
-               .ConfigureAwait(false))
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                var callbackCount = 0;
+                var twoFactorAuthenticator = new TwoFactorAuthenticator(
+                    authenticator.Username,
+                    authenticator.KeyPair,
+                    (name, instruction, prompt, echo) =>
+                    {
+                        throw new OperationCanceledException();
+                    });
 
                 Assert.Throws<OperationCanceledException>(
-                    () => connection.Authenticate(
-                        "testuser",
-                        key,
-                        (name, instruction, prompt, echo) =>
-                        {
-                            callbackCount++;
-                            throw new OperationCanceledException();
-                        }));
-                Assert.AreEqual(1, callbackCount);
+                    () => connection.Authenticate(twoFactorAuthenticator));
+                Assert.AreEqual(1, twoFactorAuthenticator.PromptCount);
             }
         }
     }

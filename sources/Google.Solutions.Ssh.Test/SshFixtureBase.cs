@@ -22,13 +22,22 @@
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Google.Solutions.Common.Test.Integration;
+using Google.Apis.Compute.v1.Data;
+using System.Threading;
+using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Util;
 
 namespace Google.Solutions.Ssh.Test
 {
@@ -65,11 +74,11 @@ namespace Google.Solutions.Ssh.Test
         {
             var session = new SshSession();
             session.SetTraceHandler(
-                LIBSSH2_TRACE.SOCKET | 
-                    LIBSSH2_TRACE.ERROR | 
+                LIBSSH2_TRACE.SOCKET |
+                    LIBSSH2_TRACE.ERROR |
                     LIBSSH2_TRACE.CONN |
-                    LIBSSH2_TRACE.AUTH | 
-                    LIBSSH2_TRACE.KEX | 
+                    LIBSSH2_TRACE.AUTH |
+                    LIBSSH2_TRACE.KEX |
                     LIBSSH2_TRACE.SFTP,
                 Console.WriteLine);
 
@@ -78,24 +87,100 @@ namespace Google.Solutions.Ssh.Test
             return session;
         }
 
-        protected string UnexpectedAuthenticationCallback(
-            string name,
-            string instruction,
-            string prompt,
-            bool echo)
+        protected static async Task<IPAddress> GetPublicIpAddressForInstanceAsync(
+            InstanceLocator instanceLocator)
         {
-            Assert.Fail("Unexpected callback");
-            return null;
+            using (var service = TestProject.CreateComputeService())
+            {
+                var instance = await service
+                    .Instances.Get(
+                            instanceLocator.ProjectId,
+                            instanceLocator.Zone,
+                            instanceLocator.Name)
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
+                var ip = instance
+                    .NetworkInterfaces
+                    .EnsureNotNull()
+                    .Where(nic => nic.AccessConfigs != null)
+                    .SelectMany(nic => nic.AccessConfigs)
+                    .EnsureNotNull()
+                    .Where(accessConfig => accessConfig.Type == "ONE_TO_ONE_NAT")
+                    .Select(accessConfig => accessConfig.NatIP)
+                    .FirstOrDefault();
+                return IPAddress.Parse(ip);
+            }
         }
-        
+
         protected static async Task<IPEndPoint> GetPublicSshEndpointAsync(
             InstanceLocator instance)
         {
             return new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(instance)
+                await GetPublicIpAddressForInstanceAsync(instance)
                     .ConfigureAwait(false),
                 22);
+        }
+
+        private readonly static IDictionary<string, ISshAuthenticator> cachedAuthenticators =
+            new Dictionary<string, ISshAuthenticator>();
+
+        /// <summary>
+        /// Create an authenticator for a given key type, minimizing
+        /// server rountrips.
+        /// </summary>
+        protected static async Task<ISshAuthenticator> CreateEphemeralAuthenticatorForInstanceAsync(
+            InstanceLocator instanceLocator,
+            SshKeyType keyType)
+        {
+            var username = $"testuser";
+            var cacheKey = $"{instanceLocator}|{username}|{keyType}";
+
+            if (!cachedAuthenticators.ContainsKey(cacheKey))
+            {
+                //
+                // Create a set of keys for this user/instance.
+                //
+                // N.B. We are replacing all existing keys for this
+                // user. Therefore, upload keys for all key types.
+                // 
+                var keysByType = Enum.GetValues(typeof(SshKeyType))
+                    .Cast<SshKeyType>()
+                    .ToDictionary(
+                        k => k,
+                        k => SshKeyPair.NewEphemeralKeyPair(k));
+
+                var metadataEntry = string.Join("\n", keysByType.Values.Select(
+                    k => $"{username}:{k.Type} {k.PublicKeyString} {username}"));
+
+                using (var service = TestProject.CreateComputeService())
+                {
+                    await service.Instances
+                        .AddMetadataAsync(
+                            instanceLocator,
+                            new Metadata()
+                            {
+                                Items = new[]
+                                {
+                                    new Metadata.ItemsData()
+                                    {
+                                        Key = "ssh-keys",
+                                        Value = metadataEntry
+                                    }
+                                }
+                            },
+                            CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                }
+
+                foreach (var kvp in keysByType)
+                {
+                    cachedAuthenticators[$"{instanceLocator}|{username}|{kvp.Key}"] = 
+                        new SshSingleFactorAuthenticator(username, kvp.Value);
+                }
+            }
+
+            return cachedAuthenticators[cacheKey];
         }
     }
 }
