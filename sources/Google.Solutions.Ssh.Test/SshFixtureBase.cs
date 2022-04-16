@@ -37,6 +37,7 @@ using Google.Solutions.Common.Test.Integration;
 using Google.Apis.Compute.v1.Data;
 using System.Threading;
 using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Util;
 
 namespace Google.Solutions.Ssh.Test
 {
@@ -86,12 +87,36 @@ namespace Google.Solutions.Ssh.Test
             return session;
         }
 
+        protected static async Task<IPAddress> GetPublicIpAddressForInstanceAsync(
+            InstanceLocator instanceLocator)
+        {
+            using (var service = TestProject.CreateComputeService())
+            {
+                var instance = await service
+                    .Instances.Get(
+                            instanceLocator.ProjectId,
+                            instanceLocator.Zone,
+                            instanceLocator.Name)
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
+                var ip = instance
+                    .NetworkInterfaces
+                    .EnsureNotNull()
+                    .Where(nic => nic.AccessConfigs != null)
+                    .SelectMany(nic => nic.AccessConfigs)
+                    .EnsureNotNull()
+                    .Where(accessConfig => accessConfig.Type == "ONE_TO_ONE_NAT")
+                    .Select(accessConfig => accessConfig.NatIP)
+                    .FirstOrDefault();
+                return IPAddress.Parse(ip);
+            }
+        }
+
         protected static async Task<IPEndPoint> GetPublicSshEndpointAsync(
             InstanceLocator instance)
         {
             return new IPEndPoint(
-                await InstanceUtil
-                    .PublicIpAddressForInstanceAsync(instance)
+                await GetPublicIpAddressForInstanceAsync(instance)
                     .ConfigureAwait(false),
                 22);
         }

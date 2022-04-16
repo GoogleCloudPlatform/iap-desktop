@@ -102,7 +102,6 @@
     <Compile Include="Native\TestSshSftpFileChannel.cs" />
     <Compile Include="TestSshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="InstanceUtil.cs" />
     <Compile Include="Native\InitializeScripts.cs" />
     <Compile Include="Native\TestEnvironmentVariable.cs" />
     <Compile Include="SshAssert.cs" />
