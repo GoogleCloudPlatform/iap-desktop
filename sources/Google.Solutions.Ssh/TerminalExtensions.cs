@@ -31,7 +31,6 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
-
     public static class TerminalExtensions
     {
         private class TerminalDataDecoder : IRawTerminal

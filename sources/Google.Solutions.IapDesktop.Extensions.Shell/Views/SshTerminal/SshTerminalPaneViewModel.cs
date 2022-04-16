@@ -149,19 +149,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             string prompt, 
             bool echo)
         {
-             //
-             // Trigger UI to respond to the prompt by firing an event.
-             // As this method is invoked on a non-UI thread, switch to
-             // the GUI thread first.
-             //
+            Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
             var args = new AuthenticationPromptEventArgs(prompt, !echo);
-            this.ViewInvoker?.Invoke(
-                (Action)(() =>
-                {
-                    this.AuthenticationPrompt?.Invoke(this, args);
-                }),
-                null);
+            this.AuthenticationPrompt?.Invoke(this, args);
 
             if (args.Response != null)
             {
@@ -286,16 +277,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 try
                 {
                     //
-                    // Force all terminal callbacks to run on the current
+                    // Force all callbacks to run on the current
                     // synchronization context (i.e., the UI thread.
                     //
-                    var terminal = this.BindToSynchronizationContext(
+                    var terminal = ((ITerminal)this).BindToSynchronizationContext(
+                        SynchronizationContext.Current);
+                    var authenticator = ((ISshAuthenticator)this).BindToSynchronizationContext(
                         SynchronizationContext.Current);
 
                     this.ConnectionStatus = Status.Connecting;
                     this.currentConnection = new SshShellConnection(
                         this.endpoint,
-                        (ISshAuthenticator)this,
+                        authenticator,
                         terminal,
                         initialSize)
                     {
