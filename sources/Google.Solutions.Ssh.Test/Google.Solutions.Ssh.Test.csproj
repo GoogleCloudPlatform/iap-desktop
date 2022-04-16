@@ -97,6 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IEnumerable.cs" />
     <Compile Include="Native\TestSshSftpChannel.cs" />
     <Compile Include="Native\TestSshSftpFileChannel.cs" />
     <Compile Include="TestSshDataBuffer.cs" />

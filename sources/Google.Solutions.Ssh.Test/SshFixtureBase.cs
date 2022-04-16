@@ -29,9 +29,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Google.Solutions.Common.Test.Integration;
+using Google.Apis.Compute.v1.Data;
+using System.Threading;
+using Google.Solutions.Common.ApiExtensions.Instance;
 
 namespace Google.Solutions.Ssh.Test
 {
@@ -100,37 +105,55 @@ namespace Google.Solutions.Ssh.Test
         /// </summary>
         protected static async Task<ISshAuthenticator> CreateEphemeralAuthenticatorForInstanceAsync(
             InstanceLocator instanceLocator,
-            SshKeyType keyType,
-            [CallerFilePath] string filePath = null)
+            SshKeyType keyType)
         {
-            //
-            // Use a different username per fixture/file to limit the
-            // total number of logins with the same username. If we log
-            // in too many times, we might otherwise be locked out by SSH.
-            //
-            var username = $"testuser{filePath.GetHashCode():X}";
+            var username = $"testuser";
             var cacheKey = $"{instanceLocator}|{username}|{keyType}";
 
-            if (cachedAuthenticators.TryGetValue(cacheKey, out var authenticator))
+            if (!cachedAuthenticators.ContainsKey(cacheKey))
             {
-                return authenticator;
-            }
-            else
-            {
-                var key = SshKeyPair.NewEphemeralKeyPair(keyType);
+                //
+                // Create a set of keys for this user/instance.
+                //
+                // N.B. We are replacing all existing keys for this
+                // user. Therefore, upload keys for all key types.
+                // 
+                var keys = Enum.GetValues(typeof(SshKeyType))
+                    .Cast<SshKeyType>()
+                    .Select(t => SshKeyPair.NewEphemeralKeyPair(t))
+                    .ToList();
 
-                await InstanceUtil.AddPublicKeyToMetadataAsync(
-                        instanceLocator,
-                        username,
-                        key)
+                var metadataEntry = string.Join("\n", keys.Select(
+                    k => $"{username}:{k.Type} {k.PublicKeyString} {username}"));
+
+                using (var service = TestProject.CreateComputeService())
+                {
+                    await service.Instances
+                        .AddMetadataAsync(
+                            instanceLocator,
+                            new Metadata()
+                            {
+                                Items = new[]
+                                {
+                                new Metadata.ItemsData()
+                                {
+                                    Key = "ssh-keys",
+                                    Value = metadataEntry
+                                }
+                                }
+                            },
+                            CancellationToken.None)
                     .ConfigureAwait(false);
 
-                authenticator = new SshSingleFactorAuthenticator(username, key);
+                }
 
-                cachedAuthenticators[cacheKey] = authenticator;
-
-                return authenticator;
+                foreach (var key in keys)
+                {
+                    cachedAuthenticators[cacheKey] = new SshSingleFactorAuthenticator(username, key);
+                }
             }
+
+            return cachedAuthenticators[cacheKey];
         }
     }
 }

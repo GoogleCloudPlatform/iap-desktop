@@ -26,6 +26,7 @@ using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Auth;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -58,46 +59,6 @@ namespace Google.Solutions.Ssh.Test
                     .FirstOrDefault();
                 return IPAddress.Parse(ip);
             }
-        }
-
-        public static async Task AddPublicKeyToMetadataAsync(
-            InstanceLocator instanceLocator,
-            string username,
-            ISshKeyPair key)
-        {
-            using (var service = TestProject.CreateComputeService())
-            {
-                await service.Instances
-                    .AddMetadataAsync(
-                        instanceLocator,
-                        new Metadata()
-                        {
-                            Items = new[]
-                            {
-                                new Metadata.ItemsData()
-                                {
-                                    Key = "ssh-keys",
-                                    Value = $"{username}:{key.Type} {key.PublicKeyString} {username}"
-                                }
-                            }
-                        },
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-            }
-        }
-
-        public static async Task<ISshKeyPair> CreateEphemeralKeyAndPushKeyToMetadata(
-            InstanceLocator instanceLocator,
-            string username,
-            SshKeyType keyType)
-        {
-            var key = SshKeyPair.NewEphemeralKeyPair(keyType);
-            await AddPublicKeyToMetadataAsync(
-                    instanceLocator,
-                    username,
-                    key)
-                .ConfigureAwait(false);
-            return key;
         }
     }
 }
