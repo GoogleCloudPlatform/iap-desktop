@@ -39,6 +39,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -192,72 +193,51 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         void ITerminal.OnDataReceived(string data)
         {
-            // NB. Callback runs on SSH thread, not on UI thread.
-
-            ApplicationTraceSources.Default.TraceVerbose("Received {0} chars from server", data?.Length);
+            Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
             RecordReceivedData(data);
 
-            this.ViewInvoker?.InvokeAndForget(
-                () =>
-                {
-                    try
-                    {
-                        this.DataReceived?.Invoke(
-                            this,
-                            new DataReceivedEventArgs(data));
-                    }
-                    catch (Exception e)
-                    {
-                        //
-                        // A fatal error occured while processing data,
-                        // possibly because of malformed or unsupported
-                        // xterm data.
-                        //
-                        this.ConnectionFailed?.Invoke(
-                            this,
-                            new ConnectionErrorEventArgs(e));
-                    }
-                });
+            this.DataReceived?.Invoke(
+                this,
+                new DataReceivedEventArgs(data));
         }
 
         void ITerminal.OnError(Exception exception)
         {
-            // NB. Callback runs on SSH thread, not on UI thread.
-            ApplicationTraceSources.Default.TraceVerbose("Error received from server: {0}", exception);
+            Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
-            var errorsIndicatingLostConnection = new[]
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(exception))
             {
-                LIBSSH2_ERROR.SOCKET_SEND,
-                LIBSSH2_ERROR.SOCKET_RECV,
-                LIBSSH2_ERROR.SOCKET_TIMEOUT
-            };
+                var errorsIndicatingLostConnection = new[]
+                {
+                    LIBSSH2_ERROR.SOCKET_SEND,
+                    LIBSSH2_ERROR.SOCKET_RECV,
+                    LIBSSH2_ERROR.SOCKET_TIMEOUT
+                };
 
-            if (this.ConnectionStatus == Status.Connected &&
-                exception.Unwrap() is SshNativeException sshEx &&
-                errorsIndicatingLostConnection.Contains(sshEx.ErrorCode))
-            {
-                this.ViewInvoker?.InvokeAndForget(
-                    () =>
-                    {
-                        this.ConnectionStatus = Status.ConnectionLost;
-                        this.ConnectionLost?.Invoke(
-                            this,
-                            new ConnectionErrorEventArgs(exception));
-                    });
-            }
-            else
-            {
-                this.ViewInvoker?.InvokeAndForget(
-                    () => this.ConnectionFailed?.Invoke(
+                if (this.ConnectionStatus == Status.Connected &&
+                    exception.Unwrap() is SshNativeException sshEx &&
+                    errorsIndicatingLostConnection.Contains(sshEx.ErrorCode))
+                {
+                    this.ConnectionStatus = Status.ConnectionLost;
+                    this.ConnectionLost?.Invoke(
                         this,
-                        new ConnectionErrorEventArgs(exception)));
-            }
+                        new ConnectionErrorEventArgs(exception));
+                }
+                else
+                {
+                    this.ConnectionFailed?.Invoke(
+                        this,
+                        new ConnectionErrorEventArgs(exception));
+                }
 
-            // Notify listeners.
-            this.eventService.FireAsync(
-                new SessionAbortedEvent(this.Instance, exception))
-                .ContinueWith(_ => { });
+                //
+                // Notify listeners.
+                //
+                this.eventService.FireAsync(
+                    new SessionAbortedEvent(this.Instance, exception))
+                    .ContinueWith(_ => { });
+            }
         }
 
         //---------------------------------------------------------------------
@@ -305,11 +285,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 //
                 try
                 {
+                    //
+                    // Force all terminal callbacks to run on the current
+                    // synchronization context (i.e., the UI thread.
+                    //
+                    var terminal = this.BindToSynchronizationContext(
+                        SynchronizationContext.Current);
+
                     this.ConnectionStatus = Status.Connecting;
                     this.currentConnection = new SshShellConnection(
                         this.endpoint,
                         (ISshAuthenticator)this,
-                        (ITerminal)this,
+                        terminal,
                         initialSize)
                     {
                         Banner = SshSession.BannerPrefix + Globals.UserAgent,
