@@ -97,7 +97,6 @@
     <Compile Include="Native\UnsafeNativeMethods.cs" />
     <Compile Include="Auth\ECDsaSshKeyPair.cs" />
     <Compile Include="Auth\RsaSshKeyPair.cs" />
-    <Compile Include="SshConnectionBase.cs" />
     <Compile Include="SshShellConnection.cs" />
     <Compile Include="SshWorkerThread.cs" />
     <Compile Include="StreamingDecoder.cs" />
