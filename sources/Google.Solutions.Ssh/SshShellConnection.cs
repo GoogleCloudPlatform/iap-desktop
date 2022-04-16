@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;
@@ -28,11 +29,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
-    public class SshShellConnection : SshWorkerThread
+    public class SshShellConnection : SshWorkerThread<SshShellChannel>
     {
         public const string DefaultTerminal = "xterm";
         public static readonly TerminalSize DefaultTerminalSize = new TerminalSize(80, 24);
@@ -70,7 +72,7 @@ namespace Google.Solutions.Ssh
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override SshChannelBase CreateChannel(SshAuthenticatedSession session)
+        protected override SshShellChannel CreateChannel(SshAuthenticatedSession session)
         {
             IEnumerable<EnvironmentVariable> environmentVariables = null;
             if (this.terminal.Locale != null)
@@ -98,7 +100,26 @@ namespace Google.Solutions.Ssh
                 environmentVariables);
         }
 
-        protected override void OnReadyToReceive(SshChannelBase channel)
+        protected override void CloseChannel(SshShellChannel channel)
+        {
+            try
+            {
+                channel.Close();
+            }
+            catch (Exception e)
+            {
+                //
+                // NB. This is non-fatal - we're tearing down the 
+                // connection anyway.
+                //
+                SshTraceSources.Default.TraceError(
+                    "Closing connection failed for {0}: {1}",
+                    Thread.CurrentThread.Name,
+                    e);
+            }
+        }
+
+        protected override void OnReadyToReceive(SshShellChannel channel)
         {
             //
             // NB. receiveFunc() can throw an exception, in which case
@@ -127,7 +148,7 @@ namespace Google.Solutions.Ssh
             this.terminal.OnError(exception);
         }
 
-        protected override void OnReadyToSend(SshChannelBase channel)
+        protected override void OnReadyToSend(SshShellChannel channel)
         {
             lock (this.sendQueue)
             {

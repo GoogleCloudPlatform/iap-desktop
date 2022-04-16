@@ -30,7 +30,8 @@ using System.Threading;
 
 namespace Google.Solutions.Ssh
 {
-    public abstract class SshWorkerThread : IDisposable
+    public abstract class SshWorkerThread<TChannel> : IDisposable
+        where TChannel : IDisposable
     {
         private readonly IPEndPoint endpoint;
         private readonly ISshAuthenticator authenticator;
@@ -137,7 +138,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnReadyToSend(SshChannelBase channel);
+        protected abstract void OnReadyToSend(TChannel channel);
 
         /// <summary>
         /// Perform any operation that sends data.
@@ -145,10 +146,18 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnReadyToReceive(SshChannelBase channel);
+        protected abstract void OnReadyToReceive(TChannel channel);
 
-        protected abstract SshChannelBase CreateChannel(
+        /// <summary>
+        /// Create a new channel. Only called once.
+        /// </summary>
+        protected abstract TChannel CreateChannel(
             SshAuthenticatedSession session);
+
+        /// <summary>
+        /// Close channel. This is called prior to disposing.
+        /// </summary>
+        protected abstract void CloseChannel(TChannel channel);
 
         protected bool IsConnected
             => this.workerThread.IsAlive &&
@@ -367,21 +376,7 @@ namespace Google.Solutions.Ssh
                                 } // while
                             } // nonblocking
 
-                            try
-                            {
-                                channel.Close();
-                            }
-                            catch (Exception e)
-                            {
-                                //
-                                // NB. This is non-fatal - we're tearing down the 
-                                // connection anyway.
-                                //
-                                SshTraceSources.Default.TraceError(
-                                    "Closing connection failed for {0}: {1}",
-                                    Thread.CurrentThread.Name,
-                                    e);
-                            }
+                            CloseChannel(channel);
                         }
                     }
                 }
