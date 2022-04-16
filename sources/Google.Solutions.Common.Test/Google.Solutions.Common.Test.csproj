@@ -106,6 +106,8 @@
     <Compile Include="Integration\CredentialFactory.cs" />
     <Compile Include="Integration\PredefinedRole.cs" />
     <Compile Include="Integration\ResourceTask.cs" />
+    <Compile Include="Interop\TestGlobalAllocSafeHandle.cs" />
+    <Compile Include="Interop\TestLocalAllocSafeHandle.cs" />
     <Compile Include="Locator\TestAccessLevelLocator.cs" />
     <Compile Include="Locator\TestNodeTypeLocator.cs" />
     <Compile Include="Locator\TestProjectLocator.cs" />

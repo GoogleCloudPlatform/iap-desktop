@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Interop;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -33,13 +34,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
         public const uint ERROR_NO_DATA = 232;
 
         [DllImport("iphlpapi.dll")]
-        internal static extern uint GetTcpTable2(SafeLocalFree pTcpTable, ref uint dwOutBufLen, bool order);
-
-        [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
-        internal static extern SafeLocalFree LocalAlloc(int uFlags, UIntPtr sizetdwBytes);
-
-        [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
-        internal static extern IntPtr LocalFree(IntPtr handle);
+        internal static extern uint GetTcpTable2(
+            LocalAllocSafeHandle pTcpTable, 
+            ref uint dwOutBufLen, 
+            bool order);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
         internal struct MIB_TCPTABLE2
@@ -76,39 +74,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
             MIB_TCP_STATE_TIME_WAIT = 11,
             MIB_TCP_STATE_DELETE_TCB = 12
         }
-
-        internal sealed class SafeLocalFree : SafeHandleZeroOrMinusOneIsInvalid
-        {
-            public static SafeLocalFree Zero = new SafeLocalFree(ownsHandle: false);
-
-            private SafeLocalFree()
-                : base(ownsHandle: true)
-            {
-            }
-
-            private SafeLocalFree(bool ownsHandle)
-                : base(ownsHandle)
-            {
-            }
-
-            [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types")]
-            public static SafeLocalFree LocalAlloc(uint cb)
-            {
-                SafeLocalFree safeLocalFree = UnsafeNativeMethods.LocalAlloc(0, (UIntPtr)(ulong)cb);
-                if (safeLocalFree.IsInvalid)
-                {
-                    safeLocalFree.SetHandleAsInvalid();
-                    throw new OutOfMemoryException();
-                }
-
-                return safeLocalFree;
-            }
-
-            protected override bool ReleaseHandle()
-            {
-                return UnsafeNativeMethods.LocalFree(this.handle) == IntPtr.Zero;
-            }
-        }
     }
-
 }

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -47,14 +48,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                 //
                 uint bufferSize = 0u;
                 uint error = UnsafeNativeMethods.GetTcpTable2(
-                    UnsafeNativeMethods.SafeLocalFree.Zero,
+                    LocalAllocSafeHandle.Zero,
                     ref bufferSize,
                     false);
 
                 switch (error)
                 {
                     case UnsafeNativeMethods.ERROR_INSUFFICIENT_BUFFER:
-                        using (var buffer = UnsafeNativeMethods.SafeLocalFree.LocalAlloc(bufferSize))
+                        using (var buffer = LocalAllocSafeHandle.LocalAlloc(bufferSize))
                         {
                             if (UnsafeNativeMethods.GetTcpTable2(
                                 buffer,

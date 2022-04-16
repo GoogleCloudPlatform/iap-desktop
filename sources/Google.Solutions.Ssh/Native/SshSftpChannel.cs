@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
