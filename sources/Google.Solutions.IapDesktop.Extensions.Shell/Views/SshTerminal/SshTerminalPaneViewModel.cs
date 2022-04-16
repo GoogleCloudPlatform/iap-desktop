@@ -280,17 +280,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     // Force all callbacks to run on the current
                     // synchronization context (i.e., the UI thread.
                     //
-                    var terminal = ((ITextTerminal)this).BindToSynchronizationContext(
-                        SynchronizationContext.Current);
-                    var authenticator = ((ISshAuthenticator)this).BindToSynchronizationContext(
-                        SynchronizationContext.Current);
-
                     this.ConnectionStatus = Status.Connecting;
                     this.currentConnection = new SshShellConnection(
                         this.endpoint,
-                        authenticator,
-                        terminal,
-                        initialSize)
+                        (ISshAuthenticator)this,
+                        (ITextTerminal)this,
+                        initialSize,
+                        SynchronizationContext.Current)
                     {
                         Banner = SshSession.BannerPrefix + Globals.UserAgent,
                         ConnectionTimeout = this.connectionTimeout,

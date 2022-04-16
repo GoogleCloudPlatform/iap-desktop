@@ -126,8 +126,12 @@ namespace Google.Solutions.Ssh
         public static ITextTerminal BindToSynchronizationContext(
             this ITextTerminal terminal,
             SynchronizationContext targetContext)
-            => new SynchronizationContextBoundTerminal(
-                terminal,
-                targetContext);
+        {
+            return targetContext == null
+                ? terminal
+                : new SynchronizationContextBoundTerminal(
+                    terminal,
+                    targetContext);
+        }
     }
 }

@@ -57,13 +57,28 @@ namespace Google.Solutions.Ssh
             IPEndPoint endpoint,
             ISshAuthenticator authenticator,
             ITextTerminal terminal,
-            TerminalSize initialSize)
+            TerminalSize initialSize,
+            SynchronizationContext callbackContext = null)
             : base(
                   endpoint,
-                  authenticator)
+                  authenticator
+                    .ThrowIfNull(nameof(authenticator))
+                    .BindToSynchronizationContext(callbackContext))
         {
+            //
+            // NB. We don't want callbacks to happen on the
+            // SSH worker threads, for two reasons:
+            //
+            // (1) It blocks the thread, degrading performance
+            // (2) The callbacks most likely need to run on a 
+            //     different thread (GUI thread) anyway.
+            //
+            // Therefore, force all callbacks onto a
+            // synchronization context.
+            //
             this.terminal = terminal
                 .ThrowIfNull(nameof(terminal))
+                .BindToSynchronizationContext(callbackContext)
                 .ToRawTerminal(DefaultEncoding);
             this.initialSize = initialSize;
         }
@@ -166,7 +181,7 @@ namespace Google.Solutions.Ssh
                 packet.Operation(channel);
 
                 //
-                // Receive succeeded - complete packet.
+                // Sending succeeded - complete packet.
                 //
                 this.sendQueue.Dequeue();
                 packet.CompletionSource.SetResult(0);

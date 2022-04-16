@@ -68,8 +68,12 @@ namespace Google.Solutions.Ssh
         public static ISshAuthenticator BindToSynchronizationContext(
             this ISshAuthenticator authenticator,
             SynchronizationContext targetContext)
-            => new SynchronizationContextBoundAuthenticator(
-                authenticator,
-                targetContext);
+        {
+            return targetContext == null
+                ? authenticator
+                : new SynchronizationContextBoundAuthenticator(
+                    authenticator,
+                    targetContext);
+        }
     }
 }
