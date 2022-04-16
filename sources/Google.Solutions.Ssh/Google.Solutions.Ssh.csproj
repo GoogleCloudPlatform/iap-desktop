@@ -80,7 +80,6 @@
     <Compile Include="Native\ISshAuthenticator.cs" />
     <Compile Include="Native\SshSftpChannel.cs" />
     <Compile Include="Native\SshSftpFileChannel.cs" />
-    <Compile Include="SshAuthenticatorExtensions.cs" />
     <Compile Include="SshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Auth\ISshKeyPair.cs" />

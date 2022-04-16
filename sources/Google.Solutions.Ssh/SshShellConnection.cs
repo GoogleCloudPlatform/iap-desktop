@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Threading;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;
@@ -58,27 +59,14 @@ namespace Google.Solutions.Ssh
             ISshAuthenticator authenticator,
             ITextTerminal terminal,
             TerminalSize initialSize,
-            SynchronizationContext callbackContext = null)
+            SynchronizationContext callbackContext)
             : base(
                   endpoint,
-                  authenticator
-                    .ThrowIfNull(nameof(authenticator))
-                    .BindToSynchronizationContext(callbackContext))
+                  authenticator,
+                  callbackContext)
         {
-            //
-            // NB. We don't want callbacks to happen on the
-            // SSH worker threads, for two reasons:
-            //
-            // (1) It blocks the thread, degrading performance
-            // (2) The callbacks most likely need to run on a 
-            //     different thread (GUI thread) anyway.
-            //
-            // Therefore, force all callbacks onto a
-            // synchronization context.
-            //
             this.terminal = terminal
                 .ThrowIfNull(nameof(terminal))
-                .BindToSynchronizationContext(callbackContext)
                 .ToRawTerminal(DefaultEncoding);
             this.initialSize = initialSize;
         }
@@ -137,30 +125,51 @@ namespace Google.Solutions.Ssh
         protected override void OnReadyToReceive(SshShellChannel channel)
         {
             //
-            // NB. receiveFunc() can throw an exception, in which case
-            // we do not complete the current packet. If the exception
-            // is bad, we'll receive a OnReceiveError callback later.
-            //
             // NB. This method is always called on the same thread, so it's ok
             // to reuse the same buffer.
             //
 
             var bytesReceived = channel.Read(this.receiveBuffer);
-            this.terminal.OnDataReceived(this.receiveBuffer, 0, bytesReceived);
+            var endOfStream = channel.IsEndOfStream;
+            //
+            // Run callback on different context (not on the current
+            // worker thread).
+            //
 
-            //
-            // In non-blocking mode, we're not always receive a final
-            // zero-length read.
-            //
-            if (bytesReceived > 0 && channel.IsEndOfStream)
+            // TODO: Do text conversion before post, since Post is async!
+
+            this.CallbackContext.Post(() =>
             {
-                this.terminal.OnDataReceived(Array.Empty<byte>(), 0, 0);
-            }
+                try
+                {
+                    this.terminal.OnDataReceived(this.receiveBuffer, 0, bytesReceived);
+
+                    //
+                    // In non-blocking mode, we're not always receive a final
+                    // zero-length read.
+                    //
+                    if (bytesReceived > 0 && endOfStream)
+                    {
+                        this.terminal.OnDataReceived(Array.Empty<byte>(), 0, 0);
+                    }
+                }
+                catch (Exception e)
+                {
+                    this.terminal.OnError(e);
+                }
+            });
         }
 
         protected override void OnReceiveError(Exception exception)
         {
-            this.terminal.OnError(exception);
+            //
+            // Run callback on different context (not on the current
+            // worker thread).
+            //
+            this.CallbackContext.Post(() =>
+            {
+                this.terminal.OnError(exception);
+            });
         }
 
         protected override void OnReadyToSend(SshShellChannel channel)

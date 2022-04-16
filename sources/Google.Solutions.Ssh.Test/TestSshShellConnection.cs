@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test
@@ -98,7 +99,8 @@ namespace Google.Solutions.Ssh.Test
                 endpoint,
                 authenticator,
                 terminal,
-                SshShellConnection.DefaultTerminalSize))
+                SshShellConnection.DefaultTerminalSize,
+                new SynchronizationContext()))
             {
                 await connection.ConnectAsync().ConfigureAwait(false);
 
@@ -136,7 +138,8 @@ namespace Google.Solutions.Ssh.Test
                 endpoint,
                 authenticator,
                 terminal,
-                SshShellConnection.DefaultTerminalSize))
+                SshShellConnection.DefaultTerminalSize,
+                new SynchronizationContext()))
             {
                 await connection
                     .ConnectAsync()
@@ -164,7 +167,8 @@ namespace Google.Solutions.Ssh.Test
                 endpoint,
                 authenticator,
                 terminal,
-                SshShellConnection.DefaultTerminalSize))
+                SshShellConnection.DefaultTerminalSize,
+                new SynchronizationContext()))
             {
                 await connection
                     .ConnectAsync()
@@ -210,7 +214,8 @@ namespace Google.Solutions.Ssh.Test
                 endpoint,
                 authenticator,
                 terminal,
-                SshShellConnection.DefaultTerminalSize))
+                SshShellConnection.DefaultTerminalSize,
+                new SynchronizationContext()))
             {
                 await connection
                     .ConnectAsync()
@@ -254,7 +259,8 @@ namespace Google.Solutions.Ssh.Test
                 endpoint,
                 authenticator,
                 terminal,
-                SshShellConnection.DefaultTerminalSize))
+                SshShellConnection.DefaultTerminalSize,
+                new SynchronizationContext()))
             {
                 await connection
                     .ConnectAsync()

@@ -66,46 +66,6 @@ namespace Google.Solutions.Ssh
 
         }
 
-        private class SynchronizationContextBoundTerminal : ITextTerminal
-        {
-            private readonly ITextTerminal terminal;
-            private readonly SynchronizationContext context;
-
-            public SynchronizationContextBoundTerminal(
-                ITextTerminal terminal,
-                SynchronizationContext context)
-            {
-                this.terminal = terminal.ThrowIfNull(nameof(terminal));
-                this.context = context.ThrowIfNull(nameof(context));
-            }
-
-            public string TerminalType
-                => this.context.Send(() => this.terminal.TerminalType);
-
-            public CultureInfo Locale
-                => this.context.Send(() => this.terminal.Locale);
-
-            public void OnDataReceived(string data)
-            {
-                this.context.Post(() =>
-                {
-                    try
-                    {
-                        this.terminal.OnDataReceived(data);
-                    }
-                    catch (Exception e)
-                    {
-                        this.terminal.OnError(e);
-                    }
-                });
-            }
-
-            public void OnError(Exception exception)
-            {
-                this.context.Post(() => this.terminal.OnError(exception));
-            }
-        }
-
         //---------------------------------------------------------------------
         // Extension methods.
         //---------------------------------------------------------------------
@@ -118,20 +78,5 @@ namespace Google.Solutions.Ssh
             this ITextTerminal terminal,
             Encoding encoding)
             => new TerminalDataDecoder(terminal, encoding);
-
-        /// <summary>
-        /// Create a terminal that runs callbacks on a specific
-        /// synchronization context.
-        /// </summary>
-        public static ITextTerminal BindToSynchronizationContext(
-            this ITextTerminal terminal,
-            SynchronizationContext targetContext)
-        {
-            return targetContext == null
-                ? terminal
-                : new SynchronizationContextBoundTerminal(
-                    terminal,
-                    targetContext);
-        }
     }
 }
