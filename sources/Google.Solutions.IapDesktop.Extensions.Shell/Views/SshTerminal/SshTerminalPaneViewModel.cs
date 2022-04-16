@@ -175,12 +175,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         }
 
         //---------------------------------------------------------------------
-        // ITerminal.
+        // ITextTerminal.
         //---------------------------------------------------------------------
 
-        string ITerminal.TerminalType => SshShellConnection.DefaultTerminal;
+        string ITextTerminal.TerminalType => SshShellConnection.DefaultTerminal;
 
-        CultureInfo ITerminal.Locale => this.language;
+        CultureInfo ITextTerminal.Locale => this.language;
 
         void ITextTerminal.OnDataReceived(string data)
         {

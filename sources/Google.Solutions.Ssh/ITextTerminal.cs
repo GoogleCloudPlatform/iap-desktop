@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
-    public interface ITerminal
+    public interface ITextTerminal
     {
         /// <summary>
         /// Return terminal type ($TERM), such as "xterm".
@@ -40,10 +40,7 @@ namespace Google.Solutions.Ssh
         /// Language ($LC_ALL) of terminal.
         /// </summary>
         CultureInfo Locale { get; }
-    }
 
-    public interface ITextTerminal : ITerminal
-    { 
         /// <summary>
         /// Process decoded data received from remote peer.
         /// </summary>
@@ -51,22 +48,6 @@ namespace Google.Solutions.Ssh
 
         /// <summary>
         /// Handle communication errór.
-        /// </summary>
-        void OnError(Exception exception);
-    }
-
-    public interface IRawTerminal : ITerminal
-    {
-        /// <summary>
-        /// Process raw data received from remote peer.
-        /// </summary>
-        void OnDataReceived(
-            byte[] data,
-            uint offset,
-            uint length);
-
-        /// <summary>
-        /// Handle communication error.
         /// </summary>
         void OnError(Exception exception);
     }

@@ -41,12 +41,13 @@ namespace Google.Solutions.Ssh
         public static readonly TerminalSize DefaultTerminalSize = new TerminalSize(80, 24);
         private static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
-        private readonly IRawTerminal terminal;
+        private readonly ITextTerminal terminal;
+        private readonly StreamingDecoder decoder;
         private readonly TerminalSize initialSize;
 
         private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
         private readonly TaskCompletionSource<int> connectionCompleted
-            = new TaskCompletionSource<int>();
+            = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         private readonly byte[] receiveBuffer = new byte[64 * 1024];
 
@@ -65,10 +66,9 @@ namespace Google.Solutions.Ssh
                   authenticator,
                   callbackContext)
         {
-            this.terminal = terminal
-                .ThrowIfNull(nameof(terminal))
-                .ToRawTerminal(DefaultEncoding);
             this.initialSize = initialSize;
+            this.terminal = terminal.ThrowIfNull(nameof(terminal));
+            this.decoder = new StreamingDecoder(DefaultEncoding);
         }
 
         //---------------------------------------------------------------------
@@ -131,18 +131,26 @@ namespace Google.Solutions.Ssh
 
             var bytesReceived = channel.Read(this.receiveBuffer);
             var endOfStream = channel.IsEndOfStream;
+
             //
-            // Run callback on different context (not on the current
-            // worker thread).
+            // Run callback asynchronously (post) on different context 
+            // (i.e., not on the current worker thread).
+            //
+            // NB. By decoding the data first, we make sure that the
+            // buffer is ready to be reused while the callback is
+            // running.
             //
 
-            // TODO: Do text conversion before post, since Post is async!
+            var receivedData = this.decoder.Decode(
+                this.receiveBuffer, 
+                0, 
+                (int)bytesReceived);
 
             this.CallbackContext.Post(() =>
             {
                 try
                 {
-                    this.terminal.OnDataReceived(this.receiveBuffer, 0, bytesReceived);
+                    this.terminal.OnDataReceived(receivedData);
 
                     //
                     // In non-blocking mode, we're not always receive a final
@@ -150,7 +158,7 @@ namespace Google.Solutions.Ssh
                     //
                     if (bytesReceived > 0 && endOfStream)
                     {
-                        this.terminal.OnDataReceived(Array.Empty<byte>(), 0, 0);
+                        this.terminal.OnDataReceived(string.Empty);
                     }
                 }
                 catch (Exception e)
@@ -217,17 +225,20 @@ namespace Google.Solutions.Ssh
 
         protected override void OnConnected()
         {
-            // Complete task, but force continuation to run on different thread.
-            Task.Run(() => this.connectionCompleted.SetResult(0));
+            //
+            // Complete task (with asynchronous continuation).
+            //
+            this.connectionCompleted.SetResult(0);
         }
 
         protected override void OnConnectionError(Exception exception)
         {
             if (!this.connectionCompleted.Task.IsCompleted)
             {
-                // TODO: improve this
-                // Complete task, but force continuation to run on different thread.
-                Task.Run(() => this.connectionCompleted.SetException(exception));
+                //
+                // Complete task (with asynchronous continuation).
+                //
+                this.connectionCompleted.SetException(exception);
             }
         }
 
@@ -268,7 +279,7 @@ namespace Google.Solutions.Ssh
         public Task ConnectAsync()
         {
             Connect();
-            return connectionCompleted.Task;
+            return this.connectionCompleted.Task;
         }
 
         public Task SendAsync(byte[] buffer)

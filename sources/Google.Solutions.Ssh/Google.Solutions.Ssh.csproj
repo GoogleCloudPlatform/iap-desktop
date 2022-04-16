@@ -99,7 +99,6 @@
     <Compile Include="SshShellConnection.cs" />
     <Compile Include="SshWorkerThread.cs" />
     <Compile Include="StreamingDecoder.cs" />
-    <Compile Include="TerminalExtensions.cs" />
     <Compile Include="TerminalSize.cs" />
     <Compile Include="TraceSources.cs" />
   </ItemGroup>

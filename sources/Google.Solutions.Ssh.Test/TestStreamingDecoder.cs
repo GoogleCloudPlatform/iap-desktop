@@ -27,59 +27,54 @@ namespace Google.Solutions.Ssh.Test
     [TestFixture]
     public class TestStreamingDecoder : SshFixtureBase
     {
-        private StringBuilder output;
         private StreamingDecoder decoder;
 
         [SetUp]
         public void SetUp()
         {
-            this.output = new StringBuilder();
-            this.decoder = new StreamingDecoder(
-                Encoding.UTF8,
-                s => output.Append(s));
+            this.decoder = new StreamingDecoder(Encoding.UTF8);
         }
 
         [Test]
         public void WhenInputContainsOneByteUtf8Sequence_ThenInputIsDecoded()
         {
-            this.decoder.Decode(new byte[] { 0x24, 0x24 });
-            Assert.AreEqual("$$", this.output.ToString());
+            var s = this.decoder.Decode(new byte[] { 0x24, 0x24 });
+            Assert.AreEqual("$$", s);
         }
 
 
         [Test]
         public void WhenInputContainsTwoByteUtf8Sequence_ThenInputIsDecoded()
         {
-            this.decoder.Decode(new byte[] { 0xC2, 0xA2 });
-            Assert.AreEqual("\u00A2", this.output.ToString());
-            this.output.Clear();
+            var s = this.decoder.Decode(new byte[] { 0xC2, 0xA2 });
+            Assert.AreEqual("\u00A2", s);
         }
 
         [Test]
         public void WhenInputContainsThreeByteUtf8Sequence_ThenInputIsDecoded()
         {
-            this.decoder.Decode(new byte[] { 0xE0, 0xA4, 0xB9 });
-            Assert.AreEqual("\u0939", this.output.ToString());
+            var s = this.decoder.Decode(new byte[] { 0xE0, 0xA4, 0xB9 });
+            Assert.AreEqual("\u0939", s);
         }
 
         [Test]
         public void WhenInputContainsPartialTwoByteUtf8Sequence_ThenInputIsHeld()
         {
-            this.decoder.Decode(new byte[] { 0xC2 });
-            Assert.AreEqual("", this.output.ToString());
+            var s = this.decoder.Decode(new byte[] { 0xC2 });
+            Assert.AreEqual("", s);
 
-            this.decoder.Decode(new byte[] { 0xA2, 0x20 });
-            Assert.AreEqual("\u00A2 ", this.output.ToString());
+            s = this.decoder.Decode(new byte[] { 0xA2, 0x20 });
+            Assert.AreEqual("\u00A2 ", s);
         }
 
         [Test]
         public void WhenInputContainsPartialThreeByteUtf8Sequence_ThenInputIsHeld()
         {
-            this.decoder.Decode(new byte[] { 0xE0, 0xA4 });
-            Assert.AreEqual("", this.output.ToString());
+            var s = this.decoder.Decode(new byte[] { 0xE0, 0xA4 });
+            Assert.AreEqual("", s);
 
-            this.decoder.Decode(new byte[] { 0xB9, 0x20 });
-            Assert.AreEqual("\u0939 ", this.output.ToString());
+            s = this.decoder.Decode(new byte[] { 0xB9, 0x20 });
+            Assert.AreEqual("\u0939 ", s);
         }
     }
 }
