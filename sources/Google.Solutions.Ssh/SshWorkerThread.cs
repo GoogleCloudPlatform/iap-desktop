@@ -137,7 +137,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void Send(SshChannelBase channel);
+        protected abstract void OnReadyToSend(SshChannelBase channel);
 
         /// <summary>
         /// Perform any operation that sends data.
@@ -145,7 +145,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void Receive(SshChannelBase channel);
+        protected abstract void OnReadyToReceive(SshChannelBase channel);
 
         protected abstract SshChannelBase CreateChannel(
             SshAuthenticatedSession session);
@@ -313,8 +313,7 @@ namespace Google.Solutions.Ssh
                                             // 
                                             // Perform whatever receiving operation we need to do.
                                             //
-
-                                            Receive(channel);
+                                            OnReadyToReceive(channel);
                                         }
                                         else if (waitResult == UnsafeNativeMethods.WSA_WAIT_EVENT_0 + 1)
                                         {
@@ -323,7 +322,7 @@ namespace Google.Solutions.Ssh
                                             // we need to do.
                                             // 
                                             currentOperation = Operation.Sending;
-                                            Send(channel);
+                                            OnReadyToSend(channel);
                                         }
                                         else if (waitResult == UnsafeNativeMethods.WSA_WAIT_TIMEOUT)
                                         {

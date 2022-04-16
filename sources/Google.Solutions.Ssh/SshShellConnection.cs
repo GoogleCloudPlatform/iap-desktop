@@ -98,7 +98,7 @@ namespace Google.Solutions.Ssh
                 environmentVariables);
         }
 
-        protected override void Receive(SshChannelBase channel) //TODO: Rename to OnReadyToSend/Receive
+        protected override void OnReadyToReceive(SshChannelBase channel)
         {
             //
             // NB. receiveFunc() can throw an exception, in which case
@@ -127,7 +127,7 @@ namespace Google.Solutions.Ssh
             this.terminal.OnError(exception);
         }
 
-        protected override void Send(SshChannelBase channel)
+        protected override void OnReadyToSend(SshChannelBase channel)
         {
             lock (this.sendQueue)
             {
