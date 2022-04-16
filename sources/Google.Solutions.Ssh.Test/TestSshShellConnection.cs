@@ -37,7 +37,7 @@ namespace Google.Solutions.Ssh.Test
     [TestFixture]
     public class TestSshShellConnection : SshFixtureBase
     {
-        private class BufferingTerminal : ITerminal
+        private class BufferingTerminal : ITextTerminal
         {
             private readonly StringBuilder buffer = new StringBuilder();
 

@@ -40,7 +40,10 @@ namespace Google.Solutions.Ssh
         /// Language ($LC_ALL) of terminal.
         /// </summary>
         CultureInfo Locale { get; }
+    }
 
+    public interface ITextTerminal : ITerminal
+    { 
         /// <summary>
         /// Process decoded data received from remote peer.
         /// </summary>
@@ -52,7 +55,7 @@ namespace Google.Solutions.Ssh
         void OnError(Exception exception);
     }
 
-    public interface IRawTerminal
+    public interface IRawTerminal : ITerminal
     {
         /// <summary>
         /// Process raw data received from remote peer.

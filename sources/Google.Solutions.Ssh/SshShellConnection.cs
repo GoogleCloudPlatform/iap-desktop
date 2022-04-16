@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System.Collections.Generic;
@@ -37,7 +36,7 @@ namespace Google.Solutions.Ssh
 
         private static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
-        private readonly ITerminal terminal;
+        private readonly ITextTerminal terminal;
         private readonly TerminalSize initialSize;
 
         //---------------------------------------------------------------------
@@ -47,14 +46,14 @@ namespace Google.Solutions.Ssh
         public SshShellConnection(
             IPEndPoint endpoint,
             ISshAuthenticator authenticator,
-            ITerminal terminal,
+            ITextTerminal terminal,
             TerminalSize initialSize)
             : base(
                   endpoint,
                   authenticator,
                   terminal.ToRawTerminal(DefaultEncoding))
         {
-            this.terminal = terminal.ThrowIfNull(nameof(terminal));
+            this.terminal = terminal;
             this.initialSize = initialSize;
         }
 

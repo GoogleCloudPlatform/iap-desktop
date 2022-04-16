@@ -35,11 +35,11 @@ namespace Google.Solutions.Ssh
     {
         private class TerminalDataDecoder : IRawTerminal
         {
-            private readonly ITerminal receiver;
+            private readonly ITextTerminal receiver;
             private readonly StreamingDecoder decoder;
 
             public TerminalDataDecoder(
-                ITerminal receiver,
+                ITextTerminal receiver,
                 Encoding encoding)
             {
                 Utilities.ThrowIfNull(receiver, nameof(receiver));
@@ -50,6 +50,9 @@ namespace Google.Solutions.Ssh
                     encoding,
                     s => receiver.OnDataReceived(s));
             }
+            public string TerminalType => this.receiver.TerminalType;
+
+            public CultureInfo Locale => this.receiver.Locale;
 
             public void OnDataReceived(byte[] data, uint offset, uint length)
             {
@@ -60,15 +63,16 @@ namespace Google.Solutions.Ssh
             {
                 this.receiver.OnError(exception);
             }
+
         }
 
-        private class SynchronizationContextBoundTerminal : ITerminal
+        private class SynchronizationContextBoundTerminal : ITextTerminal
         {
-            private readonly ITerminal terminal;
+            private readonly ITextTerminal terminal;
             private readonly SynchronizationContext context;
 
             public SynchronizationContextBoundTerminal(
-                ITerminal terminal,
+                ITextTerminal terminal,
                 SynchronizationContext context)
             {
                 this.terminal = terminal.ThrowIfNull(nameof(terminal));
@@ -111,7 +115,7 @@ namespace Google.Solutions.Ssh
         /// to the terminal.
         /// </summary>
         public static IRawTerminal ToRawTerminal(
-            this ITerminal terminal,
+            this ITextTerminal terminal,
             Encoding encoding)
             => new TerminalDataDecoder(terminal, encoding);
 
@@ -119,8 +123,8 @@ namespace Google.Solutions.Ssh
         /// Create a terminal that runs callbacks on a specific
         /// synchronization context.
         /// </summary>
-        public static ITerminal BindToSynchronizationContext(
-            this ITerminal terminal,
+        public static ITextTerminal BindToSynchronizationContext(
+            this ITextTerminal terminal,
             SynchronizationContext targetContext)
             => new SynchronizationContextBoundTerminal(
                 terminal,

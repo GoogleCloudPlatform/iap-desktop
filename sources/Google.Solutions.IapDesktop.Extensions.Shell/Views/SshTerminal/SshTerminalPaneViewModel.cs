@@ -47,7 +47,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    public class SshTerminalPaneViewModel : ViewModelBase, IDisposable, ISshAuthenticator, ITerminal
+    public class SshTerminalPaneViewModel : ViewModelBase, IDisposable, ISshAuthenticator, ITextTerminal
     {
         private readonly IEventService eventService;
         private readonly CultureInfo language;
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         CultureInfo ITerminal.Locale => this.language;
 
-        void ITerminal.OnDataReceived(string data)
+        void ITextTerminal.OnDataReceived(string data)
         {
             Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 new DataReceivedEventArgs(data));
         }
 
-        void ITerminal.OnError(Exception exception)
+        void ITextTerminal.OnError(Exception exception)
         {
             Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
@@ -280,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     // Force all callbacks to run on the current
                     // synchronization context (i.e., the UI thread.
                     //
-                    var terminal = ((ITerminal)this).BindToSynchronizationContext(
+                    var terminal = ((ITextTerminal)this).BindToSynchronizationContext(
                         SynchronizationContext.Current);
                     var authenticator = ((ISshAuthenticator)this).BindToSynchronizationContext(
                         SynchronizationContext.Current);
