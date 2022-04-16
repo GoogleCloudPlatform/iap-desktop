@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System.Collections.Generic;
@@ -34,11 +35,10 @@ namespace Google.Solutions.Ssh
         public const string DefaultTerminal = "xterm";
         public static readonly TerminalSize DefaultTerminalSize = new TerminalSize(80, 24);
 
-        private static readonly Encoding Encoding = Encoding.UTF8;
+        private static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
-        private readonly string terminal;
-        private readonly TerminalSize terminalSize;
-        private readonly CultureInfo language;
+        private readonly ITerminal terminal;
+        private readonly TerminalSize initialSize;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -47,21 +47,15 @@ namespace Google.Solutions.Ssh
         public SshShellConnection(
             IPEndPoint endpoint,
             ISshAuthenticator authenticator,
-            string terminal,
-            TerminalSize terminalSize,
-            CultureInfo language,
-            ReceiveStringDataHandler receiveDataHandler,
-            ReceiveErrorHandler receiveErrorHandler)
+            ITerminal terminal,
+            TerminalSize initialSize)
             : base(
                   endpoint,
                   authenticator,
-                  receiveDataHandler,
-                  receiveErrorHandler,
-                  Encoding)
+                  terminal.ToRawTerminal(DefaultEncoding))
         {
-            this.terminal = terminal;
-            this.terminalSize = terminalSize;
-            this.language = language;
+            this.terminal = terminal.ThrowIfNull(nameof(terminal));
+            this.initialSize = initialSize;
         }
 
         //---------------------------------------------------------------------
@@ -71,10 +65,10 @@ namespace Google.Solutions.Ssh
         protected override SshChannelBase CreateChannel(SshAuthenticatedSession session)
         {
             IEnumerable<EnvironmentVariable> environmentVariables = null;
-            if (this.language != null)
+            if (this.terminal.Locale != null)
             {
                 // Format language so that Linux understands it.
-                var languageFormatted = this.language.Name.Replace('-', '_');
+                var languageFormatted = this.terminal.Locale.Name.Replace('-', '_');
                 environmentVariables = new[]
                 {
                     //
@@ -90,9 +84,9 @@ namespace Google.Solutions.Ssh
 
             return session.OpenShellChannel(
                 LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
-                this.terminal,
-                this.terminalSize.Columns,
-                this.terminalSize.Rows,
+                this.terminal.TerminalType,
+                this.initialSize.Columns,
+                this.initialSize.Rows,
                 environmentVariables);
         }
 
@@ -102,7 +96,7 @@ namespace Google.Solutions.Ssh
 
         public Task SendAsync(string data)
         {
-            return base.SendAsync(Encoding.GetBytes(data));
+            return base.SendAsync(DefaultEncoding.GetBytes(data));
         }
 
         public Task ResizeTerminalAsync(TerminalSize size)

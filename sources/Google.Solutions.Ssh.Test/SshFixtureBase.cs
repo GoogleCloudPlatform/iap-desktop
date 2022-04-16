@@ -143,12 +143,13 @@ namespace Google.Solutions.Ssh.Test
                 // N.B. We are replacing all existing keys for this
                 // user. Therefore, upload keys for all key types.
                 // 
-                var keys = Enum.GetValues(typeof(SshKeyType))
+                var keysByType = Enum.GetValues(typeof(SshKeyType))
                     .Cast<SshKeyType>()
-                    .Select(t => SshKeyPair.NewEphemeralKeyPair(t))
-                    .ToList();
+                    .ToDictionary(
+                        k => k,
+                        k => SshKeyPair.NewEphemeralKeyPair(k));
 
-                var metadataEntry = string.Join("\n", keys.Select(
+                var metadataEntry = string.Join("\n", keysByType.Values.Select(
                     k => $"{username}:{k.Type} {k.PublicKeyString} {username}"));
 
                 using (var service = TestProject.CreateComputeService())
@@ -160,11 +161,11 @@ namespace Google.Solutions.Ssh.Test
                             {
                                 Items = new[]
                                 {
-                                new Metadata.ItemsData()
-                                {
-                                    Key = "ssh-keys",
-                                    Value = metadataEntry
-                                }
+                                    new Metadata.ItemsData()
+                                    {
+                                        Key = "ssh-keys",
+                                        Value = metadataEntry
+                                    }
                                 }
                             },
                             CancellationToken.None)
@@ -172,9 +173,10 @@ namespace Google.Solutions.Ssh.Test
 
                 }
 
-                foreach (var key in keys)
+                foreach (var kvp in keysByType)
                 {
-                    cachedAuthenticators[cacheKey] = new SshSingleFactorAuthenticator(username, key);
+                    cachedAuthenticators[$"{instanceLocator}|{username}|{kvp.Key}"] = 
+                        new SshSingleFactorAuthenticator(username, kvp.Value);
                 }
             }
 
