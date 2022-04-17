@@ -27,11 +27,8 @@ namespace Google.Solutions.Ssh
     internal class StreamingDecoder
     {
         private readonly Decoder decoder;
-        private readonly Action<string> consumer;
 
-        public StreamingDecoder(
-            Encoding encoding,
-            Action<string> consumer)
+        public StreamingDecoder(Encoding encoding)
         {
             //
             // Use Decoder to maintain state between 
@@ -41,10 +38,9 @@ namespace Google.Solutions.Ssh
             //
 
             this.decoder = encoding.GetDecoder();
-            this.consumer = consumer;
         }
 
-        public void Decode(
+        public string Decode(
             byte[] data,
             int offset,
             int length)
@@ -60,10 +56,10 @@ namespace Google.Solutions.Ssh
                 buffer,
                 0);
 
-            this.consumer(new string(buffer, 0, charsConverted));
+            return new string(buffer, 0, charsConverted);
         }
 
-        public void Decode(byte[] data)
+        public string Decode(byte[] data)
             => Decode(data, 0, data.Length);
     }
 }

@@ -87,12 +87,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 // Connect
                 var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
                 IRemoteDesktopSession session = null;
-                AssertRaisesEvent<SessionStartedEvent>(
-                    () => session = (RemoteDesktopPane)broker.Connect(
-                        locator,
-                        "localhost",
-                        (ushort)tunnel.LocalPort,
-                        settings));
+                await AssertRaisesEventAsync<SessionStartedEvent>(
+                        () => session = (RemoteDesktopPane)broker.Connect(
+                            locator,
+                            "localhost",
+                            (ushort)tunnel.LocalPort,
+                            settings))
+                    .ConfigureAwait(true);
 
                 Assert.IsNull(this.ExceptionShown);
 
@@ -101,8 +102,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 Assert.IsTrue(broker.IsConnected(locator));
                 Assert.IsTrue(broker.TryActivate(locator));
 
-                AssertRaisesEvent<SessionEndedEvent>(
-                    () => session.Close());
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => session.Close())
+                    .ConfigureAwait(true);
             }
         }
 

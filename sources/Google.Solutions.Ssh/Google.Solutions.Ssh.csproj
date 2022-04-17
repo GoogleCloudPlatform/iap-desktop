@@ -75,7 +75,7 @@
   <ItemGroup>
     <Compile Include="Auth\SshKeyPair.cs" />
     <Compile Include="Cryptography\ECDsaExtensions.cs" />
-    <Compile Include="ITerminal.cs" />
+    <Compile Include="ITextTerminal.cs" />
     <Compile Include="Native\FilePermissions.cs" />
     <Compile Include="Native\ISshAuthenticator.cs" />
     <Compile Include="Native\SshSftpChannel.cs" />
@@ -96,7 +96,6 @@
     <Compile Include="Native\UnsafeNativeMethods.cs" />
     <Compile Include="Auth\ECDsaSshKeyPair.cs" />
     <Compile Include="Auth\RsaSshKeyPair.cs" />
-    <Compile Include="SshConnectionBase.cs" />
     <Compile Include="SshShellConnection.cs" />
     <Compile Include="SshWorkerThread.cs" />
     <Compile Include="StreamingDecoder.cs" />

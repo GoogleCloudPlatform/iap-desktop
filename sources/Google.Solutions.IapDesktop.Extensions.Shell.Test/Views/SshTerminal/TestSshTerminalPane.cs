@@ -261,8 +261,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 await Task.Delay(50).ConfigureAwait(true);
 
                 // Send command and wait for event
-                AssertRaisesEvent<SessionEndedEvent>(
-                    () => pane.SendAsync("exit\n").Wait());
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => pane.SendAsync("exit\n").Wait())
+                    .ConfigureAwait(true);
             }
         }
 
@@ -281,8 +282,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 await Task.Delay(50).ConfigureAwait(true);
 
                 // Send keystroke and wait for event
-                AssertRaisesEvent<SessionEndedEvent>(
-                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => pane.Terminal.SimulateKey(Keys.D | Keys.Control))
+                    .ConfigureAwait(true);
             }
         }
 
@@ -321,11 +323,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     SshKeyType.EcdsaNistp384)
                 .ConfigureAwait(true))
             {
-                // Copy command with a line continuation.
-                Clipboard.SetText("whoami \\\r\n--help;exit\n\n");
-                pane.Terminal.PasteClipboard();
+                await AssertRaisesEventAsync<SessionEndedEvent>(() =>
+                    {
+                        // Copy command with a line continuation.
+                        Clipboard.SetText("whoami \\\r\n--help;exit\n\n");
+                        pane.Terminal.PasteClipboard();
 
-                AwaitEvent<SessionEndedEvent>();
+                        return Task.CompletedTask;
+                    })
+                    .ConfigureAwait(true);
+
                 var buffer = pane.Terminal.GetBuffer();
 
                 StringAssert.Contains(
@@ -350,12 +357,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .ConfigureAwait(true))
             {
                 // Measure initial window.
-                await pane.SendAsync("echo 1: $COLUMNS x $LINES;exit\n")
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => pane.SendAsync("echo 1: $COLUMNS x $LINES;exit\n"))
                     .ConfigureAwait(true);
 
                 var expectedInitialSize = $"1: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
-
-                AwaitEvent<SessionEndedEvent>();
                 var buffer = pane.Terminal.GetBuffer();
 
                 StringAssert.Contains(
@@ -376,10 +382,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new CultureInfo("en-AU"))
                 .ConfigureAwait(true))
             {
-                await pane.SendAsync("locale;sleep 1;exit\n")
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => pane.SendAsync("locale;sleep 1;exit\n"))
                     .ConfigureAwait(true);
 
-                AwaitEvent<SessionEndedEvent>();
                 var buffer = pane.Terminal.GetBuffer();
 
                 StringAssert.Contains(
@@ -413,8 +419,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 pane.Terminal.SimulateKey(Keys.C | Keys.Control);
 
                 await Task.Delay(50).ConfigureAwait(true);
-                AssertRaisesEvent<SessionEndedEvent>(
-                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
+
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => pane.Terminal.SimulateKey(Keys.D | Keys.Control))
+                    .ConfigureAwait(true);
 
                 StringAssert.Contains("ab^C", pane.Terminal.GetBuffer().Trim());
             }
@@ -448,8 +456,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 pane.Terminal.SimulateKey(Keys.Enter);
 
                 await Task.Delay(50).ConfigureAwait(true);
-                AssertRaisesEvent<SessionEndedEvent>(
-                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => pane.Terminal.SimulateKey(Keys.D | Keys.Control))
+                    .ConfigureAwait(true);
 
                 StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
             }
@@ -483,8 +492,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 pane.Terminal.SimulateKey(Keys.Enter);
 
                 await Task.Delay(50).ConfigureAwait(true);
-                AssertRaisesEvent<SessionEndedEvent>(
-                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => pane.Terminal.SimulateKey(Keys.D | Keys.Control))
+                    .ConfigureAwait(true);
 
                 StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
             }
@@ -507,8 +517,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 pane.Terminal.SimulateKey(Keys.Enter);
 
                 await Task.Delay(50).ConfigureAwait(true);
-                AssertRaisesEvent<SessionEndedEvent>(
-                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => pane.Terminal.SimulateKey(Keys.D | Keys.Control))
+                    .ConfigureAwait(true);
 
                 StringAssert.Contains("ab", pane.Terminal.GetBuffer().Trim());
             }

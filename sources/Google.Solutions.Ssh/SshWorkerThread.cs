@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Threading;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;
@@ -30,7 +31,8 @@ using System.Threading;
 
 namespace Google.Solutions.Ssh
 {
-    public abstract class SshWorkerThread : IDisposable
+    public abstract class SshWorkerThread<TChannel> : IDisposable
+        where TChannel : IDisposable
     {
         private readonly IPEndPoint endpoint;
         private readonly ISshAuthenticator authenticator;
@@ -63,16 +65,23 @@ namespace Google.Solutions.Ssh
 
         public string Banner { get; set; }
 
+        /// <summary>
+        /// Context to perform callbacks on
+        /// </summary>
+        protected SynchronizationContext CallbackContext { get; }
+
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
         protected SshWorkerThread(
             IPEndPoint endpoint,
-            ISshAuthenticator authenticator)
+            ISshAuthenticator authenticator,
+            SynchronizationContext callbackContext)
         {
             this.endpoint = endpoint.ThrowIfNull(nameof(endpoint));
             this.authenticator = authenticator.ThrowIfNull(nameof(authenticator));
+            this.CallbackContext = callbackContext.ThrowIfNull(nameof(callbackContext));
 
             this.readyToSend = UnsafeNativeMethods.WSACreateEvent();
 
@@ -137,7 +146,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void Send(SshChannelBase channel);
+        protected abstract void OnReadyToSend(TChannel channel);
 
         /// <summary>
         /// Perform any operation that sends data.
@@ -145,10 +154,18 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void Receive(SshChannelBase channel);
+        protected abstract void OnReadyToReceive(TChannel channel);
 
-        protected abstract SshChannelBase CreateChannel(
+        /// <summary>
+        /// Create a new channel. Only called once.
+        /// </summary>
+        protected abstract TChannel CreateChannel(
             SshAuthenticatedSession session);
+
+        /// <summary>
+        /// Close channel. This is called prior to disposing.
+        /// </summary>
+        protected abstract void CloseChannel(TChannel channel);
 
         protected bool IsConnected
             => this.workerThread.IsAlive &&
@@ -211,10 +228,18 @@ namespace Google.Solutions.Ssh
                         session.Timeout = this.ConnectionTimeout;
 
                         //
+                        // Force 2FA callbacks to happen on the callback 
+                        // context, not on the current worker thread.
+                        //
+                        var crossContextAuthenticator = new SynchronizationContextBoundAuthenticator(
+                            this.authenticator,
+                            this.CallbackContext);
+
+                        //
                         // Open connection and perform handshake using blocking I/O.
                         //
                         using (var connectedSession = session.Connect(this.endpoint))
-                        using (var authenticatedSession = connectedSession.Authenticate(this.authenticator))
+                        using (var authenticatedSession = connectedSession.Authenticate(crossContextAuthenticator))
                         using (var channel = CreateChannel(authenticatedSession))
                         {
                             //
@@ -313,8 +338,7 @@ namespace Google.Solutions.Ssh
                                             // 
                                             // Perform whatever receiving operation we need to do.
                                             //
-
-                                            Receive(channel);
+                                            OnReadyToReceive(channel);
                                         }
                                         else if (waitResult == UnsafeNativeMethods.WSA_WAIT_EVENT_0 + 1)
                                         {
@@ -323,7 +347,7 @@ namespace Google.Solutions.Ssh
                                             // we need to do.
                                             // 
                                             currentOperation = Operation.Sending;
-                                            Send(channel);
+                                            OnReadyToSend(channel);
                                         }
                                         else if (waitResult == UnsafeNativeMethods.WSA_WAIT_TIMEOUT)
                                         {
@@ -368,21 +392,7 @@ namespace Google.Solutions.Ssh
                                 } // while
                             } // nonblocking
 
-                            try
-                            {
-                                channel.Close();
-                            }
-                            catch (Exception e)
-                            {
-                                //
-                                // NB. This is non-fatal - we're tearing down the 
-                                // connection anyway.
-                                //
-                                SshTraceSources.Default.TraceError(
-                                    "Closing connection failed for {0}: {1}",
-                                    Thread.CurrentThread.Name,
-                                    e);
-                            }
+                            CloseChannel(channel);
                         }
                     }
                 }
@@ -423,6 +433,31 @@ namespace Google.Solutions.Ssh
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+        private class SynchronizationContextBoundAuthenticator : ISshAuthenticator
+        {
+            private readonly ISshAuthenticator authenticator;
+            private readonly SynchronizationContext context;
+
+            public SynchronizationContextBoundAuthenticator(
+                ISshAuthenticator authenticator,
+                SynchronizationContext context)
+            {
+                this.authenticator = authenticator.ThrowIfNull(nameof(authenticator));
+                this.context = context.ThrowIfNull(nameof(context));
+            }
+
+            public string Username => this.authenticator.Username;
+
+            public ISshKeyPair KeyPair => this.authenticator.KeyPair;
+
+            public string Prompt(string name, string instruction, string prompt, bool echo)
+                => this.context.Send(() => this.authenticator.Prompt(name, instruction, prompt, echo));
         }
     }
 }
