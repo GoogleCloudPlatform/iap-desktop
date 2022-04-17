@@ -284,7 +284,10 @@ namespace Google.Solutions.Ssh
 
         public Task SendAsync(byte[] buffer)
         {
-            return SendAsync(channel => channel.Write(buffer));
+            return SendAsync(channel =>
+            {
+                channel.Write(buffer);
+            });
         }
 
         public Task SendAsync(string data)
@@ -294,10 +297,12 @@ namespace Google.Solutions.Ssh
 
         public Task ResizeTerminalAsync(TerminalSize size)
         {
-            return SendAsync(
-                channel => ((SshShellChannel)channel).ResizePseudoTerminal(
+            return SendAsync(channel =>
+            {
+                ((SshShellChannel)channel).ResizePseudoTerminal(
                     size.Columns,
-                    size.Rows));
+                    size.Rows);
+            });
         }
 
         //---------------------------------------------------------------------

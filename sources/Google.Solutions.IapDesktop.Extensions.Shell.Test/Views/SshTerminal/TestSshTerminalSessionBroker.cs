@@ -72,8 +72,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
+            var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072);
 
-            using (var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072))
             using (var gceAdapter = new ComputeEngineAdapter(
                 this.serviceProvider.GetService<IAuthorizationSource>()))
             using (var keyAdapter = new KeyAuthorizationService(
@@ -117,8 +117,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 Assert.IsTrue(broker.IsConnected(locator));
                 Assert.IsTrue(broker.TryActivate(locator));
 
-                AssertRaisesEvent<SessionEndedEvent>(
-                    () => session.Close());
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => session.Close())
+                    .ConfigureAwait(true);
             }
         }
 

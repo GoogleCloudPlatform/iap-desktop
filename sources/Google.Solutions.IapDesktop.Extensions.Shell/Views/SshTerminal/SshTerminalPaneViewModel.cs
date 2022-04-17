@@ -149,6 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             string prompt, 
             bool echo)
         {
+            Debug.Assert(this.View != null, "Not disposed yet");
             Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
             var args = new AuthenticationPromptEventArgs(prompt, !echo);
@@ -184,6 +185,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         void ITextTerminal.OnDataReceived(string data)
         {
+            if (this.View == null)
+            {
+                //
+                // The window has already been closed/disposed, but there's
+                // still data arriving. Ignore.
+                //
+                return;
+            }
+
             Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
             RecordReceivedData(data);
@@ -195,6 +205,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         void ITextTerminal.OnError(Exception exception)
         {
+            if (this.View == null)
+            {
+                //
+                // The window has already been closed/disposed, but there's
+                // still data arriving. Ignore.
+                //
+                return;
+            }
+
             Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(exception))

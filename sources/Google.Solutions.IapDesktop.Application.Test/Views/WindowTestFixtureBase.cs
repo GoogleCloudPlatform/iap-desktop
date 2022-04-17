@@ -186,16 +186,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                     lastLog = DateTime.Now;
                 }
 
+                //
+                // Let the SynchronizationContext pump.
+                //
+                await Task.Yield();
+                
+                //
+                // Let Windows pump.
+                //
                 PumpWindowMessages();
             }
 
             return deliveredEvent;
         }
+
         protected Task<TEvent> AssertRaisesEventAsync<TEvent>(
             Func<Task> action) where TEvent : class
             => AssertRaisesEventAsync<TEvent>(
                 action,
                 TimeSpan.FromSeconds(45));
+
+        protected Task<TEvent> AssertRaisesEventAsync<TEvent>(
+            Action action) where TEvent : class
+            => AssertRaisesEventAsync<TEvent>(() =>
+            {
+                action();
+                return Task.CompletedTask;
+            });
 
         protected TEvent AssertRaisesEvent<TEvent>(Action action)
             where TEvent : class
@@ -215,29 +232,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 PumpWindowMessages();
             }
-        }
-
-        protected static Instance CreateInstance(string instanceName, string zone, bool windows)
-        {
-            return new Instance()
-            {
-                Id = 1,
-                Name = instanceName,
-                Zone = "projects/-/zones/" + zone,
-                MachineType = "zones/-/machineTypes/n1-standard-1",
-                Disks = new[] {
-                        new AttachedDisk()
-                        {
-                            GuestOsFeatures = new []
-                            {
-                                new GuestOsFeature()
-                                {
-                                    Type = windows ? "WINDOWS" : "WHATEVER"
-                                }
-                            }
-                        }
-                    }
-            };
         }
 
         protected static string CreateRandomUsername()
