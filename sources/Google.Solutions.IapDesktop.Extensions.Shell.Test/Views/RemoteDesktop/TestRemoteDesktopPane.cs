@@ -55,54 +55,56 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
+        public async Task WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
         {
             var settings = InstanceConnectionSettings.CreateNew(this.SampleLocator);
 
             var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
-            rdpService.Connect(
-                this.SampleLocator,
-                "invalid.corp",
-                3389,
-                settings);
 
-            AwaitEvent<SessionAbortedEvent>();
+            await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
+                    this.SampleLocator,
+                    "invalid.corp",
+                    3389,
+                    settings))
+                .ConfigureAwait(true);
+
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
             Assert.AreEqual(260, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
         }
 
         [Test]
-        public void WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
+        public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
         {
             var settings = InstanceConnectionSettings.CreateNew(this.SampleLocator);
             settings.RdpConnectionTimeout.IntValue = 5;
 
             var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
-            rdpService.Connect(
-                this.SampleLocator,
-                "localhost",
-                1,
-                settings);
 
-            AwaitEvent<SessionAbortedEvent>();
+            await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
+                    this.SampleLocator,
+                    "localhost",
+                    1,
+                    settings))
+                .ConfigureAwait(true);
+
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
             Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
         }
 
         [Test]
         [Ignore("")]
-        public void WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
+        public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
         {
             var settings = InstanceConnectionSettings.CreateNew(this.SampleLocator);
 
             var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
-            rdpService.Connect(
-                this.SampleLocator,
-                "localhost",
-                135,    // That one will be listening, but it is RPC, not RDP.
-                settings);
+            await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
+                    this.SampleLocator,
+                    "localhost",
+                    135,    // That one will be listening, but it is RPC, not RDP.
+                    settings))
+                .ConfigureAwait(true);
 
-            AwaitEvent<SessionAbortedEvent>();
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
             Assert.AreEqual(2308, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
         }
@@ -132,13 +134,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpDesktopSize.EnumValue = RdpDesktopSize.ClientSize;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
-                var session = rdpService.Connect(
-                    locator,
-                    "localhost",
-                    (ushort)tunnel.LocalPort,
-                    settings);
 
-                AwaitEvent<SessionAbortedEvent>();
+                await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
+                        locator,
+                        "localhost",
+                        (ushort)tunnel.LocalPort,
+                        settings))
+                    .ConfigureAwait(true);
+
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
                 Assert.AreEqual(2055, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
@@ -204,26 +207,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpRedirectDevice.EnumValue = redirectDevice;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
-                var session = rdpService.Connect(
-                    locator,
-                    "localhost",
-                    (ushort)tunnel.LocalPort,
-                    settings);
 
-                AwaitEvent<SessionStartedEvent>();
+                IRemoteDesktopSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(() =>
+                    {
+                        session = rdpService.Connect(
+                            locator,
+                            "localhost",
+                            (ushort)tunnel.LocalPort,
+                            settings);
+                    })
+                    .ConfigureAwait(true);
+
+                Assert.IsNotNull(session);
                 Assert.IsNull(this.ExceptionShown);
 
-
-                SessionEndedEvent expectedEvent = null;
-
-                this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<SessionEndedEvent>(e =>
-                    {
-                        expectedEvent = e;
-                    });
-                session.Close();
-
-                Assert.IsNotNull(expectedEvent);
+                await AssertRaisesEventAsync<SessionEndedEvent>(() => session.Close())
+                    .ConfigureAwait(true);
             }
         }
 
@@ -255,22 +255,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpPassword.Value = credentials.SecurePassword;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
-                var session = (RemoteDesktopPane)rdpService.Connect(
-                    locator,
-                    "localhost",
-                    (ushort)tunnel.LocalPort,
-                    settings);
 
-                AwaitEvent<SessionStartedEvent>();
+
+                RemoteDesktopPane session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(() =>
+                    {
+                        session = (RemoteDesktopPane)rdpService.Connect(
+                            locator,
+                            "localhost",
+                            (ushort)tunnel.LocalPort,
+                            settings);
+                    })
+                    .ConfigureAwait(true);
+
+                Assert.IsNotNull(session);
                 Assert.IsNull(this.ExceptionShown);
 
                 // Float.
                 session.FloatAt(new Rectangle(0, 0, 800, 600));
-                await Task.Delay(TimeSpan.FromSeconds(2));
+                await Task.Delay(TimeSpan.FromSeconds(2))
+                    .ConfigureAwait(true);
 
                 // Dock again.
                 session.DockTo(session.DockPanel, DockStyle.Fill);
-                await Task.Delay(TimeSpan.FromSeconds(2));
+                await Task.Delay(TimeSpan.FromSeconds(2))
+                    .ConfigureAwait(true);
 
                 session.Close();
             }
@@ -308,20 +317,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpDesktopSize.EnumValue = RdpDesktopSize.ClientSize;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
-                var session = (RemoteDesktopPane)rdpService.Connect(
-                    locator,
-                    "localhost",
-                    (ushort)tunnel.LocalPort,
-                    settings);
 
-                AwaitEvent<SessionStartedEvent>();
+                RemoteDesktopPane session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(() =>
+                    {
+                        session = (RemoteDesktopPane)rdpService.Connect(
+                            locator,
+                            "localhost",
+                            (ushort)tunnel.LocalPort,
+                            settings);
+                    })
+                    .ConfigureAwait(true);
 
                 Thread.Sleep(5000);
                 session.ShowSecurityScreen();
                 Thread.Sleep(1000);
-                session.SendKeys(Keys.Menu, Keys.S); // Sign out.
 
-                AwaitEvent<SessionEndedEvent>();
+                await AssertRaisesEventAsync<SessionEndedEvent>(() =>
+                    {
+                        session.SendKeys(Keys.Menu, Keys.S); // Sign out.
+                    })
+                    .ConfigureAwait(true);
+
                 Assert.IsNull(this.ExceptionShown);
             }
         }

@@ -77,11 +77,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             InstanceLocator instanceLocator)
         {
             var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
+            var settings = await CreateSettingsAsync(instanceLocator).ConfigureAwait(true);
+
             return rdpService.Connect(
                 instanceLocator,
                 "localhost",
                 (ushort)tunnel.LocalPort,
-                await CreateSettingsAsync(instanceLocator));
+                settings);
         }
 
         [Test]
@@ -98,9 +100,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                await AssertRaisesEventAsync<SessionAbortedEvent>(() => ConnectAsync(tunnel, locator))
+                    .ConfigureAwait(true);
 
-                AwaitEvent<SessionAbortedEvent>(TimeSpan.FromSeconds(90));
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
                 Assert.AreEqual(264, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
@@ -118,17 +120,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var settings = await CreateSettingsAsync(locator);
+                var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
                 settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
-                var session = rdpService.Connect(
-                    locator,
-                    "localhost",
-                    (ushort)tunnel.LocalPort,
-                    settings);
 
-                AwaitEvent<SessionAbortedEvent>(TimeSpan.FromSeconds(90));
+                await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
+                        locator,
+                        "localhost",
+                        (ushort)tunnel.LocalPort,
+                        settings))
+                    .ConfigureAwait(true);
+
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
                 Assert.AreEqual(2825, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
@@ -148,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var settings = await CreateSettingsAsync(locator);
+                var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
                 settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
@@ -192,23 +195,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                IRemoteDesktopSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
+                    {
+                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                    })
+                    .ConfigureAwait(true);
 
-                AwaitEvent<SessionStartedEvent>();
+                Assert.IsNotNull(session);
                 Assert.IsNull(this.ExceptionShown);
 
-                SessionEndedEvent expectedEvent = null;
-
-                this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<SessionEndedEvent>(e =>
-                    {
-                        expectedEvent = e;
-                    });
-
                 Delay(TimeSpan.FromSeconds(5));
-                session.Close();
 
-                Assert.IsNotNull(expectedEvent);
+                await AssertRaisesEventAsync<SessionEndedEvent>(() => session.Close())
+                    .ConfigureAwait(true);
             }
         }
 
@@ -225,23 +225,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                IRemoteDesktopSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
+                    {
+                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                    })
+                    .ConfigureAwait(true);
 
-                AwaitEvent<SessionStartedEvent>();
+                Assert.IsNotNull(session);
                 Assert.IsNull(this.ExceptionShown);
 
-                SessionEndedEvent expectedEvent = null;
-
-                this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<SessionEndedEvent>(e =>
-                    {
-                        expectedEvent = e;
-                    });
-
                 Delay(TimeSpan.FromSeconds(5));
-                session.Close();
 
-                Assert.IsNotNull(expectedEvent);
+                await AssertRaisesEventAsync<SessionEndedEvent>(() => session.Close())
+                    .ConfigureAwait(true);
             }
         }
 
@@ -258,23 +255,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                IRemoteDesktopSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
+                    {
+                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                    })
+                    .ConfigureAwait(true);
 
-                AwaitEvent<SessionStartedEvent>();
+                Assert.IsNotNull(session);
                 Assert.IsNull(this.ExceptionShown);
 
-                SessionEndedEvent expectedEvent = null;
-
-                this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<SessionEndedEvent>(e =>
-                    {
-                        expectedEvent = e;
-                    });
-
                 Delay(TimeSpan.FromSeconds(5));
-                session.Close();
 
-                Assert.IsNotNull(expectedEvent);
+                await AssertRaisesEventAsync<SessionEndedEvent>(() => session.Close())
+                    .ConfigureAwait(true);
             }
         }
 
@@ -291,23 +285,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                IRemoteDesktopSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
+                    {
+                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                    })
+                    .ConfigureAwait(true);
 
-                AwaitEvent<SessionStartedEvent>();
+                Assert.IsNotNull(session);
                 Assert.IsNull(this.ExceptionShown);
 
-                SessionEndedEvent expectedEvent = null;
-
-                this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<SessionEndedEvent>(e =>
-                    {
-                        expectedEvent = e;
-                    });
-
                 Delay(TimeSpan.FromSeconds(5));
-                session.Close();
 
-                Assert.IsNotNull(expectedEvent);
+                await AssertRaisesEventAsync<SessionEndedEvent>(() => session.Close())
+                    .ConfigureAwait(true);
             }
         }
 
@@ -324,23 +315,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                IRemoteDesktopSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
+                    {
+                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                    })
+                    .ConfigureAwait(true);
 
-                AwaitEvent<SessionStartedEvent>();
+                Assert.IsNotNull(session);
                 Assert.IsNull(this.ExceptionShown);
 
-                SessionEndedEvent expectedEvent = null;
-
-                this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<SessionEndedEvent>(e =>
-                    {
-                        expectedEvent = e;
-                    });
-
                 Delay(TimeSpan.FromSeconds(5));
-                session.Close();
 
-                Assert.IsNotNull(expectedEvent);
+                await AssertRaisesEventAsync<SessionEndedEvent>(() => session.Close())
+                    .ConfigureAwait(true);
             }
         }
 
@@ -357,23 +345,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                IRemoteDesktopSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
+                    {
+                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                    })
+                    .ConfigureAwait(true);
 
-                AwaitEvent<SessionStartedEvent>();
+                Assert.IsNotNull(session);
                 Assert.IsNull(this.ExceptionShown);
 
-                SessionEndedEvent expectedEvent = null;
-
-                this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<SessionEndedEvent>(e =>
-                    {
-                        expectedEvent = e;
-                    });
-
                 Delay(TimeSpan.FromSeconds(5));
-                session.Close();
 
-                Assert.IsNotNull(expectedEvent);
+                await AssertRaisesEventAsync<SessionEndedEvent>(() => session.Close())
+                    .ConfigureAwait(true);
             }
         }
 
@@ -390,23 +375,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                IRemoteDesktopSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
+                    {
+                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                    })
+                    .ConfigureAwait(true);
 
-                AwaitEvent<SessionStartedEvent>();
+                Assert.IsNotNull(session);
                 Assert.IsNull(this.ExceptionShown);
 
-                SessionEndedEvent expectedEvent = null;
-
-                this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<SessionEndedEvent>(e =>
-                    {
-                        expectedEvent = e;
-                    });
-
                 Delay(TimeSpan.FromSeconds(5));
-                session.Close();
 
-                Assert.IsNotNull(expectedEvent);
+                await AssertRaisesEventAsync<SessionEndedEvent>(() => session.Close())
+                    .ConfigureAwait(true);
             }
         }
 
@@ -429,23 +411,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                IRemoteDesktopSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
+                    {
+                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                    })
+                    .ConfigureAwait(true);
 
-                AwaitEvent<SessionStartedEvent>();
+                Assert.IsNotNull(session);
                 Assert.IsNull(this.ExceptionShown);
 
-                SessionEndedEvent expectedEvent = null;
-
-                this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<SessionEndedEvent>(e =>
-                    {
-                        expectedEvent = e;
-                    });
-
                 Delay(TimeSpan.FromSeconds(5));
-                session.Close();
 
-                Assert.IsNotNull(expectedEvent);
+                await AssertRaisesEventAsync<SessionEndedEvent>(() => session.Close())
+                    .ConfigureAwait(true);
             }
         }
     }
