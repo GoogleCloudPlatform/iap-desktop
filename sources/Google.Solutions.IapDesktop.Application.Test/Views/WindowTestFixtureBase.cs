@@ -111,6 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         protected static void PumpWindowMessages()
             => System.Windows.Forms.Application.DoEvents();
 
+        [Obsolete("Not safe to use with SyncContext, use AssertRaisesEventAsync instead")]
         protected TEvent AwaitEvent<TEvent>(
             TimeSpan timeout,
             [CallerMemberName] string testCase = null) where TEvent : class
@@ -147,6 +148,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             return deliveredEvent;
         }
 
+        [Obsolete("Not safe to use with SyncContext, use AssertRaisesEventAsync instead")]
         protected TEvent AwaitEvent<TEvent>(
             [CallerMemberName] string testCase = null) where TEvent : class
             => AwaitEvent<TEvent>(TimeSpan.FromSeconds(45), testCase);
@@ -157,19 +159,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         {
             var deadline = DateTime.Now.Add(timeout);
 
+            //
             // Set up event handler.
+            //
             TEvent deliveredEvent = null;
             this.eventService.BindHandler<TEvent>(e =>
             {
                 deliveredEvent = e;
             });
 
+            //
             // Invoke the action - it can either synchrounously
             // or asynchronously deliver the event.
+            //
             await action().ConfigureAwait(true);
 
+            //
             // Wait for event in case it has not been delivered yet.
-
+            //
             var lastLog = DateTime.Now;
             for (int i = 0; deliveredEvent == null; i++)
             {
@@ -179,7 +186,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                         $"Timeout waiting for event {typeof(TEvent).Name} elapsed");
                 }
 
+                //
                 // Print out a message once per second.
+                //
                 if (DateTime.Now.Subtract(lastLog).TotalSeconds >= 1)
                 {
                     Console.WriteLine($"Still waiting for {typeof(TEvent).Name} (until {deadline})");
@@ -213,16 +222,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                 action();
                 return Task.CompletedTask;
             });
-
-        protected TEvent AssertRaisesEvent<TEvent>(Action action)
-            where TEvent : class
-            => AssertRaisesEventAsync<TEvent>(
-                () =>
-                {
-                    action();
-                    return Task.CompletedTask;
-                },
-                TimeSpan.FromSeconds(45)).Result;
 
         protected static void Delay(TimeSpan timeout)
         {
