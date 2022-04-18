@@ -111,48 +111,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         protected static void PumpWindowMessages()
             => System.Windows.Forms.Application.DoEvents();
 
-        [Obsolete("Not safe to use with SyncContext, use AssertRaisesEventAsync instead")]
-        protected TEvent AwaitEvent<TEvent>(
-            TimeSpan timeout,
-            [CallerMemberName] string testCase = null) where TEvent : class
-        {
-            var deadline = DateTime.Now.Add(timeout);
-
-            TEvent deliveredEvent = null;
-
-            this.eventService.BindHandler<TEvent>(e =>
-            {
-                deliveredEvent = e;
-            });
-
-            var lastLog = DateTime.Now;
-
-            for (int i = 0; deliveredEvent == null; i++)
-            {
-                if (deadline < DateTime.Now)
-                {
-                    throw new TimeoutException(
-                        $"Timeout waiting for event {typeof(TEvent).Name} elapsed");
-                }
-
-                // Print out a message once per second.
-                if (DateTime.Now.Subtract(lastLog).TotalSeconds >= 1)
-                {
-                    Console.WriteLine($"{testCase}: Still waiting for {typeof(TEvent).Name} (until {deadline})");
-                    lastLog = DateTime.Now;
-                }
-
-                PumpWindowMessages();
-            }
-
-            return deliveredEvent;
-        }
-
-        [Obsolete("Not safe to use with SyncContext, use AssertRaisesEventAsync instead")]
-        protected TEvent AwaitEvent<TEvent>(
-            [CallerMemberName] string testCase = null) where TEvent : class
-            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(45), testCase);
-
         protected async Task<TEvent> AssertRaisesEventAsync<TEvent>(
             Func<Task> action,
             TimeSpan timeout) where TEvent : class
