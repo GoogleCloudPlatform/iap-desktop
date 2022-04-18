@@ -372,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         [Test]
-        public async Task WhenConnected_ThenPseudoterminalHasRightEncoding(
+        public async Task WhenConnected_ThenPseudoterminalHasRightEncoding( // TODO: Raises debug assertion
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
