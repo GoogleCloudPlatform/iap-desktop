@@ -101,21 +101,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         CancellationToken.None)
                     .ConfigureAwait(true);
 
-                // Connect and wait for event
-                SessionStartedEvent connectedEvent = null;
-                this.eventService.BindHandler<SessionStartedEvent>(e => connectedEvent = e);
-
                 var broker = new SshTerminalSessionBroker(
                     this.serviceProvider);
-                var pane = await broker.ConnectAsync(
-                        instanceLocator,
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator).ConfigureAwait(true), 22),
-                        authorizedKey,
-                        language,
-                        TimeSpan.FromSeconds(10))
+
+                var address = await PublicAddressFromLocator(instanceLocator)
                     .ConfigureAwait(true);
 
-                Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
+                SshTerminalPane pane = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(
+                    async () =>
+                    {
+                        pane = (SshTerminalPane)await broker.ConnectAsync(
+                                instanceLocator,
+                                new IPEndPoint(address, 22),
+                                authorizedKey,
+                                language,
+                                TimeSpan.FromSeconds(10))
+                            .ConfigureAwait(true);
+                    })
+                    .ConfigureAwait(true);
+
                 PumpWindowMessages();
 
                 return (SshTerminalPane)pane;
@@ -142,22 +147,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            SessionAbortedEvent deliveredEvent = null;
-            this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
-
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
             var broker = new SshTerminalSessionBroker(
                 this.serviceProvider);
-            await broker.ConnectAsync(
+
+            await AssertRaisesEventAsync<SessionAbortedEvent>(
+                () => broker.ConnectAsync(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
                     UnboundEndpoint,
                     AuthorizedKeyPair.ForMetadata(key, "test", true, null),
                     null,
-                    TimeSpan.FromSeconds(10))
+                    TimeSpan.FromSeconds(10)))
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(deliveredEvent, "Event fired");
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
             Assert.AreEqual(
                 SocketError.ConnectionRefused,
@@ -168,21 +171,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            SessionAbortedEvent deliveredEvent = null;
-            this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
-
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
             var broker = new SshTerminalSessionBroker(
                 this.serviceProvider);
-            await broker.ConnectAsync(
+
+            await AssertRaisesEventAsync<SessionAbortedEvent>(
+                () => broker.ConnectAsync(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
                     NonSshEndpoint,
                     AuthorizedKeyPair.ForMetadata(key, "test", true, null),
                     null,
-                    TimeSpan.FromSeconds(10))
+                    TimeSpan.FromSeconds(10)))
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(deliveredEvent, "Event fired");
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
             Assert.AreEqual(
                 SocketError.ConnectionRefused,
@@ -195,23 +196,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instanceLocator = await instanceLocatorTask;
-
-            SessionAbortedEvent deliveredEvent = null;
-            this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
-
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
             var broker = new SshTerminalSessionBroker(
                 this.serviceProvider);
-            await broker.ConnectAsync(
-                    instanceLocator,
-                    new IPEndPoint(await PublicAddressFromLocator(instanceLocator).ConfigureAwait(true), 22),
-                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                    null,
-                    TimeSpan.FromSeconds(10))
+
+            var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(deliveredEvent, "Event fired");
+            await AssertRaisesEventAsync<SessionAbortedEvent>(
+                () => broker.ConnectAsync(
+                    instanceLocator,
+                    new IPEndPoint(address, 22),
+                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
+                    null,
+                    TimeSpan.FromSeconds(10)))
+                .ConfigureAwait(true);
+
             Assert.IsInstanceOf(typeof(SshNativeException), this.ExceptionShown);
             Assert.AreEqual(
                 LIBSSH2_ERROR.AUTHENTICATION_FAILED,
