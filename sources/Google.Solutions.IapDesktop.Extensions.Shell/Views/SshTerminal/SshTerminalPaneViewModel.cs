@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly TimeSpan connectionTimeout;
 
         private Status connectionStatus = Status.ConnectionFailed;
-        private SshShellConnection currentConnection = null;
+        private SshAsyncShellChannel sshChannel = null;
 
         private readonly StringBuilder receivedData = new StringBuilder();
         private readonly StringBuilder sentData = new StringBuilder();
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // ITextTerminal.
         //---------------------------------------------------------------------
 
-        string ITextTerminal.TerminalType => SshShellConnection.DefaultTerminal;
+        string ITextTerminal.TerminalType => SshAsyncShellChannel.DefaultTerminal;
 
         CultureInfo ITextTerminal.Locale => this.language;
 
@@ -254,11 +254,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Actions.
         //---------------------------------------------------------------------
 
-        private async Task ConnectAndTranslateErrorsAsync()
+        private async Task<SshAsyncShellChannel> ConnectAndTranslateErrorsAsync(
+            TerminalSize initialSize)
         {
             try
             {
-                await this.currentConnection.ConnectAsync()
+                var connection = new SshConnection(
+                        this.endpoint,
+                        (ISshAuthenticator)this,
+                        SynchronizationContext.Current)
+                {
+                    Banner = SshSession.BannerPrefix + Globals.UserAgent,
+                    ConnectionTimeout = this.connectionTimeout,
+
+                    //
+                    // NB. Do not join worker thread as this could block the
+                    // UI thread.
+                    //
+                    JoinWorkerThreadOnDispose = false
+                };
+
+                await connection.ConnectAsync()
+                    .ConfigureAwait(false);
+
+                return await connection.OpenShellChannelAsync(
+                        (ITextTerminal)this,
+                        initialSize)
                     .ConfigureAwait(false);
             }
             catch (SshNativeException e) when (
@@ -288,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 //
                 await DisconnectAsync()
                     .ConfigureAwait(true);
-                Debug.Assert(this.currentConnection == null);
+                Debug.Assert(this.sshChannel == null);
 
                 //
                 // Establish a new connection and create a shell.
@@ -300,24 +321,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     // synchronization context (i.e., the UI thread.
                     //
                     this.ConnectionStatus = Status.Connecting;
-                    this.currentConnection = new SshShellConnection(
-                        this.endpoint,
-                        (ISshAuthenticator)this,
-                        (ITextTerminal)this,
-                        initialSize,
-                        SynchronizationContext.Current)
-                    {
-                        Banner = SshSession.BannerPrefix + Globals.UserAgent,
-                        ConnectionTimeout = this.connectionTimeout,
-
-                        //
-                        // NB. Do not join worker thread as this could block the
-                        // UI thread.
-                        //
-                        JoinWorkerThreadOnDispose = false
-                    };
-
-                    await ConnectAndTranslateErrorsAsync().ConfigureAwait(true);
+                    this.sshChannel = await ConnectAndTranslateErrorsAsync(
+                            initialSize)
+                        .ConfigureAwait(true);
 
                     this.ConnectionStatus = Status.Connected;
 
@@ -340,7 +346,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         new SessionAbortedEvent(this.Instance, e))
                         .ConfigureAwait(true);
 
-                    this.currentConnection = null;
+                    this.sshChannel = null;
                 }
             }
         }
@@ -349,10 +355,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                if (this.currentConnection != null)
+                if (this.sshChannel != null)
                 {
-                    this.currentConnection.Dispose();
-                    this.currentConnection = null;
+                    this.sshChannel.Connection.Dispose();
+                    this.sshChannel = null;
 
                     // Notify listeners.
                     await this.eventService.FireAsync(
@@ -364,10 +370,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         public async Task SendAsync(string command)
         {
-            if (this.currentConnection != null)
+            if (this.sshChannel != null)
             {
                 RecordSentData(command);
-                await this.currentConnection.SendAsync(command)
+                await this.sshChannel.SendAsync(command)
                     .ConfigureAwait(false);
             }
         }
@@ -377,9 +383,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(newSize))
             {
-                if (this.currentConnection != null)
+                if (this.sshChannel != null)
                 {
-                    await this.currentConnection.ResizeTerminalAsync(newSize)
+                    await this.sshChannel.ResizeTerminalAsync(newSize)
                         .ConfigureAwait(false);
                 }
             }
@@ -447,7 +453,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
                 this.View = null;
 
-                this.currentConnection?.Dispose();
+                this.sshChannel?.Connection.Dispose();
                 this.authorizedKey.Dispose();
             }
         }

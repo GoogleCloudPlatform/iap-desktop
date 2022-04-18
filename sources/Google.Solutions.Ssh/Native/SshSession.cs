@@ -123,6 +123,12 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        public IDisposable AsBlocking()
+        {
+            this.IsBlocking = true;
+            return Disposable.For(() => this.IsBlocking = false);
+        }
+
         public IDisposable AsNonBlocking()
         {
             this.IsBlocking = false;

@@ -80,6 +80,7 @@
     <Compile Include="Native\ISshAuthenticator.cs" />
     <Compile Include="Native\SshSftpChannel.cs" />
     <Compile Include="Native\SshSftpFileChannel.cs" />
+    <Compile Include="SshConnection.cs" />
     <Compile Include="SshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Auth\ISshKeyPair.cs" />
@@ -96,7 +97,6 @@
     <Compile Include="Native\UnsafeNativeMethods.cs" />
     <Compile Include="Auth\ECDsaSshKeyPair.cs" />
     <Compile Include="Auth\RsaSshKeyPair.cs" />
-    <Compile Include="SshShellConnection.cs" />
     <Compile Include="SshWorkerThread.cs" />
     <Compile Include="StreamingDecoder.cs" />
     <Compile Include="TerminalSize.cs" />

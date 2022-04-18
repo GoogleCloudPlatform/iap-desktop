@@ -26,13 +26,13 @@ using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Net;
 using System.Threading;
 
 namespace Google.Solutions.Ssh
 {
-    public abstract class SshWorkerThread<TChannel> : IDisposable
-        where TChannel : IDisposable
+    public abstract class SshWorkerThread : IDisposable
     {
         private readonly IPEndPoint endpoint;
         private readonly ISshAuthenticator authenticator;
@@ -68,7 +68,10 @@ namespace Google.Solutions.Ssh
         /// <summary>
         /// Context to perform callbacks on
         /// </summary>
-        protected SynchronizationContext CallbackContext { get; }
+        internal SynchronizationContext CallbackContext { get; }
+
+        internal bool IsRunningOnWorkerThread
+            => Thread.CurrentThread.ManagedThreadId == this.workerThread.ManagedThreadId;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -146,7 +149,7 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnReadyToSend(TChannel channel);
+        protected abstract void OnReadyToSend(SshAuthenticatedSession session);
 
         /// <summary>
         /// Perform any operation that sends data.
@@ -154,18 +157,12 @@ namespace Google.Solutions.Ssh
         /// Called on worker thread, method should not block for any
         /// significant amount of time.
         /// </summary>
-        protected abstract void OnReadyToReceive(TChannel channel);
+        protected abstract void OnReadyToReceive(SshAuthenticatedSession session);
 
         /// <summary>
-        /// Create a new channel. Only called once.
+        /// Close channels and other resources before session is closed.
         /// </summary>
-        protected abstract TChannel CreateChannel(
-            SshAuthenticatedSession session);
-
-        /// <summary>
-        /// Close channel. This is called prior to disposing.
-        /// </summary>
-        protected abstract void CloseChannel(TChannel channel);
+        protected abstract void OnBeforeCloseSession();
 
         protected bool IsConnected
             => this.workerThread.IsAlive &&
@@ -240,7 +237,6 @@ namespace Google.Solutions.Ssh
                         //
                         using (var connectedSession = session.Connect(this.endpoint))
                         using (var authenticatedSession = connectedSession.Authenticate(crossContextAuthenticator))
-                        using (var channel = CreateChannel(authenticatedSession))
                         {
                             //
                             // With the channel established, switch to non-blocking I/O.
@@ -338,7 +334,7 @@ namespace Google.Solutions.Ssh
                                             // 
                                             // Perform whatever receiving operation we need to do.
                                             //
-                                            OnReadyToReceive(channel);
+                                            OnReadyToReceive(authenticatedSession);
                                         }
                                         else if (waitResult == UnsafeNativeMethods.WSA_WAIT_EVENT_0 + 1)
                                         {
@@ -347,7 +343,7 @@ namespace Google.Solutions.Ssh
                                             // we need to do.
                                             // 
                                             currentOperation = Operation.Sending;
-                                            OnReadyToSend(channel);
+                                            OnReadyToSend(authenticatedSession);
                                         }
                                         else if (waitResult == UnsafeNativeMethods.WSA_WAIT_TIMEOUT)
                                         {
@@ -392,7 +388,7 @@ namespace Google.Solutions.Ssh
                                 } // while
                             } // nonblocking
 
-                            CloseChannel(channel);
+                            OnBeforeCloseSession();
                         }
                     }
                 }
@@ -419,6 +415,9 @@ namespace Google.Solutions.Ssh
 
             if (this.JoinWorkerThreadOnDispose)
             {
+                Debug.Assert(
+                    !this.IsRunningOnWorkerThread, 
+                    "Join on worker thread would cause deadlock");
                 this.workerThread.Join();
             }
 
@@ -435,10 +434,10 @@ namespace Google.Solutions.Ssh
             GC.SuppressFinalize(this);
         }
 
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
 
-        //---------------------------------------------------------------------
-        // Dispose.
-        //---------------------------------------------------------------------
         private class SynchronizationContextBoundAuthenticator : ISshAuthenticator
         {
             private readonly ISshAuthenticator authenticator;

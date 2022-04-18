@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
-    public class TestSshShellConnection : SshFixtureBase
+    public class TestSshConnection : SshFixtureBase
     {
         private class BufferingTerminal : ITextTerminal
         {
@@ -95,11 +95,9 @@ namespace Google.Solutions.Ssh.Test
 
             var terminal = new BufferingTerminal();
 
-            using (var connection = new SshShellConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 authenticator,
-                terminal,
-                SshShellConnection.DefaultTerminalSize,
                 new SynchronizationContext()))
             {
                 await connection.ConnectAsync().ConfigureAwait(false);
@@ -107,8 +105,13 @@ namespace Google.Solutions.Ssh.Test
                 ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                     () => connection.ConnectAsync().Wait());
 
-                await connection.SendAsync("whoami\n").ConfigureAwait(false);
-                await connection.SendAsync("exit\n").ConfigureAwait(false);
+                var channel = await connection.OpenShellChannelAsync(
+                        terminal,
+                        SshAsyncShellChannel.DefaultTerminalSize)
+                    .ConfigureAwait(false);
+
+                await channel.SendAsync("whoami\n").ConfigureAwait(false);
+                await channel.SendAsync("exit\n").ConfigureAwait(false);
 
                 await terminal.AwaitBufferContentAsync(
                         TimeSpan.FromSeconds(10),
@@ -132,18 +135,48 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
             
-            var terminal = new BufferingTerminal();
-
-            using (var connection = new SshShellConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 authenticator,
-                terminal,
-                SshShellConnection.DefaultTerminalSize,
                 new SynchronizationContext()))
             {
                 await connection
                     .ConnectAsync()
                     .ConfigureAwait(false);
+            }
+        }
+
+        [Test]
+        public async Task WhenChannelClosedExplicitly_ThenDoubleCloseIsPrevented(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+
+            var terminal = new BufferingTerminal()
+            {
+                Locale = new CultureInfo("en-AU")
+            };
+
+            using (var connection = new SshConnection(
+                endpoint,
+                authenticator,
+                new SynchronizationContext()))
+            {
+                await connection
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
+
+                using (var channel = await connection.OpenShellChannelAsync(
+                        terminal,
+                        SshAsyncShellChannel.DefaultTerminalSize)
+                    .ConfigureAwait(false))
+                {
+                }
             }
         }
 
@@ -163,11 +196,9 @@ namespace Google.Solutions.Ssh.Test
                 Locale = new CultureInfo("en-AU")
             };
 
-            using (var connection = new SshShellConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 authenticator,
-                terminal,
-                SshShellConnection.DefaultTerminalSize,
                 new SynchronizationContext()))
             {
                 await connection
@@ -177,7 +208,12 @@ namespace Google.Solutions.Ssh.Test
                 ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                     () => connection.ConnectAsync().Wait());
 
-                await connection
+                var channel = await connection.OpenShellChannelAsync(
+                        terminal,
+                        SshAsyncShellChannel.DefaultTerminalSize)
+                    .ConfigureAwait(false);
+
+                await channel
                     .SendAsync("locale;sleep 1;exit\n")
                     .ConfigureAwait(false);
 
@@ -210,11 +246,9 @@ namespace Google.Solutions.Ssh.Test
                 Locale = new CultureInfo("en-AU")
             };
 
-            using (var connection = new SshShellConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 authenticator,
-                terminal,
-                SshShellConnection.DefaultTerminalSize,
                 new SynchronizationContext()))
             {
                 await connection
@@ -224,7 +258,13 @@ namespace Google.Solutions.Ssh.Test
                 ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                     () => connection.ConnectAsync().Wait());
 
-                await connection
+
+                var channel = await connection.OpenShellChannelAsync(
+                        terminal,
+                        SshAsyncShellChannel.DefaultTerminalSize)
+                    .ConfigureAwait(false);
+
+                await channel
                     .SendAsync("locale;sleep 1;exit\n")
                     .ConfigureAwait(false);
 
@@ -255,11 +295,9 @@ namespace Google.Solutions.Ssh.Test
                 Locale = null
             };
 
-            using (var connection = new SshShellConnection(
+            using (var connection = new SshConnection(
                 endpoint,
                 authenticator,
-                terminal,
-                SshShellConnection.DefaultTerminalSize,
                 new SynchronizationContext()))
             {
                 await connection
@@ -269,7 +307,12 @@ namespace Google.Solutions.Ssh.Test
                 ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
                     () => connection.ConnectAsync().Wait());
 
-                await connection
+                var channel = await connection.OpenShellChannelAsync(
+                        terminal,
+                        SshAsyncShellChannel.DefaultTerminalSize)
+                    .ConfigureAwait(false);
+
+                await channel
                     .SendAsync("locale;sleep 1;exit\n")
                     .ConfigureAwait(false);
 
