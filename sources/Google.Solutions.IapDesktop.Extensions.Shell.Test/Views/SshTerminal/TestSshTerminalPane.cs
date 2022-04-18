@@ -224,22 +224,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            SessionStartedEvent connectedEvent = null;
-            this.eventService.BindHandler<SessionStartedEvent>(e => connectedEvent = e);
+            await AssertRaisesEventAsync<SessionStartedEvent>(
+                async () =>
+                {
+                    using (var pane = await ConnectSshTerminalPane(
+                            await instanceLocatorTask,
+                            await credential,
+                            keyType)
+                        .ConfigureAwait(true))
+                    {
+                        Assert.IsTrue(pane.IsConnected);
 
-            using (var pane = await ConnectSshTerminalPane(
-                    await instanceLocatorTask,
-                    await credential,
-                    keyType)
-                .ConfigureAwait(true))
-            {
-                Assert.IsTrue(pane.IsConnected);
-
-                // Close the pane (not the window).
-                pane.Close();
-
-                Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
-            }
+                        // Close the pane (not the window).
+                        pane.Close();
+                    }
+                })
+                .ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------

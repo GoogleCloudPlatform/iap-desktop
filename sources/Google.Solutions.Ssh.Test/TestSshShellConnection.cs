@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
-    public class TestSshConnection : SshFixtureBase
+    public class TestSshConnection : SshFixtureBase // TODO: Rename, split
     {
         private class BufferingTerminal : ITextTerminal
         {

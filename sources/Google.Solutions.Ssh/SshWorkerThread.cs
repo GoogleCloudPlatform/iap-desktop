@@ -100,7 +100,7 @@ namespace Google.Solutions.Ssh
         // Methods for subclasses.
         //---------------------------------------------------------------------
 
-        protected void Connect()
+        protected void StartConnection()
         {
             if (this.workerThread.IsAlive)
             {

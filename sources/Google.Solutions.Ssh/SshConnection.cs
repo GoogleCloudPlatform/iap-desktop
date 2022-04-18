@@ -65,9 +65,9 @@ namespace Google.Solutions.Ssh
         protected override void OnConnected()
         {
             //
-            // Complete task (with asynchronous continuation).
+            // Complete task on callback context.
             //
-            this.connectionCompleted.SetResult(0);
+            this.CallbackContext.Post(() => this.connectionCompleted.SetResult(0));
         }
 
         protected override void OnConnectionError(Exception exception)
@@ -108,7 +108,6 @@ namespace Google.Solutions.Ssh
                 //
                 this.sendQueue.Dequeue();
 
-                // TODO: create helper, also use for connect()
                 this.CallbackContext.Post(() => packet.CompletionSource.SetResult(0));
 
                 if (this.sendQueue.Count == 0)
@@ -216,7 +215,7 @@ namespace Google.Solutions.Ssh
 
         public Task ConnectAsync()
         {
-            Connect(); // TODO: Rename to StartWorkerThread
+            StartConnection();
             return this.connectionCompleted.Task;
         }
 
@@ -288,7 +287,7 @@ namespace Google.Solutions.Ssh
         }
     }
 
-    public abstract class SshAsyncChannelBase : IDisposable
+    public abstract class SshAsyncChannelBase : IDisposable // TODO: add comments
     {
         public abstract SshConnection Connection { get; }
 
@@ -339,7 +338,7 @@ namespace Google.Solutions.Ssh
         // Overrides.
         //---------------------------------------------------------------------
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing) // TODO: Hoist to base class
         {
             if (this.Connection.IsRunningOnWorkerThread)
             {
