@@ -246,7 +246,7 @@ namespace Google.Solutions.Ssh
         // I/O.
         //---------------------------------------------------------------------
 
-        protected Task SendAsync(Action<SshChannelBase> operation)
+        protected Task SendAsync(Action<SshShellChannel> operation)
         {
             if (!this.IsConnected)
             {
@@ -299,7 +299,7 @@ namespace Google.Solutions.Ssh
         {
             return SendAsync(channel =>
             {
-                ((SshShellChannel)channel).ResizePseudoTerminal(
+                channel.ResizePseudoTerminal(
                     size.Columns,
                     size.Rows);
             });
@@ -312,9 +312,9 @@ namespace Google.Solutions.Ssh
         protected internal class SendOperation
         {
             internal readonly TaskCompletionSource<uint> CompletionSource;
-            internal readonly Action<SshChannelBase> Operation;
+            internal readonly Action<SshShellChannel> Operation;
 
-            internal SendOperation(Action<SshChannelBase> operation)
+            internal SendOperation(Action<SshShellChannel> operation)
             {
                 this.Operation = operation;
                 this.CompletionSource = new TaskCompletionSource<uint>();
