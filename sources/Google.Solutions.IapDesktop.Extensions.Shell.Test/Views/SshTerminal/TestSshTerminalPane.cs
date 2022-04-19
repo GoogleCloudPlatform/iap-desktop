@@ -139,6 +139,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 null));
         }
 
+        public async Task CompleteBackgroundWorkAsync()
+        {
+            //
+            // Join worker thread to prevent NUnit from aborting it, 
+            // causing un unorderly cleanup.
+            //
+            await SshWorkerThread
+                .JoinAllWorkerThreadsAsync()
+                .ConfigureAwait(false);
+
+            //
+            // While a worker thread is running down, it might
+            // still post work to the current synchroniation context.
+            //
+            // Drain the synchronization context's backlog to prevent
+            // the dreaded 'Work posted to the synchronization context did
+            // not complete within ten seconds' error.
+            //
+            for (int i = 0; i < 20; i++)
+            {
+                await Task.Yield();
+            }
+        }
+
         //---------------------------------------------------------------------
         // Connect
         //---------------------------------------------------------------------
@@ -165,6 +189,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             Assert.AreEqual(
                 SocketError.ConnectionRefused,
                 ((SocketException)this.ExceptionShown).SocketErrorCode);
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -188,6 +214,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             Assert.AreEqual(
                 SocketError.ConnectionRefused,
                 ((SocketException)this.ExceptionShown).SocketErrorCode);
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -217,6 +245,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             Assert.AreEqual(
                 LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                 ((SshNativeException)this.ExceptionShown).ErrorCode);
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -241,6 +271,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     }
                 })
                 .ConfigureAwait(true);
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
@@ -263,9 +295,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 // Send command and wait for event
                 await AssertRaisesEventAsync<SessionEndedEvent>(
-                        () => pane.SendAsync("exit\n").Wait())
+                        () => pane.SendAsync("exit\n"))
                     .ConfigureAwait(true);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -287,6 +321,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         () => pane.Terminal.SimulateKey(Keys.D | Keys.Control))
                     .ConfigureAwait(true);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -305,8 +341,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 pane.Terminal.SimulateKey(Keys.B);
                 pane.Terminal.SimulateKey(Keys.C);
 
-                pane.Close();
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                    () => pane.Close())
+                    .ConfigureAwait(true);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
@@ -340,6 +380,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     "Usage: whoami",
                     buffer);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
@@ -369,10 +411,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     expectedInitialSize,
                     buffer);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
-        public async Task WhenConnected_ThenPseudoterminalHasRightEncoding( // TODO: Raises debug assertion
+        public async Task WhenConnected_ThenPseudoterminalHasRightEncoding(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
@@ -398,6 +442,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             }
 
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -427,6 +473,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 StringAssert.Contains("ab^C", pane.Terminal.GetBuffer().Trim());
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -463,6 +511,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -499,6 +549,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -524,6 +576,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 StringAssert.Contains("ab", pane.Terminal.GetBuffer().Trim());
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -553,6 +607,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 Assert.IsTrue(pane.Terminal.EnableCtrlC);
                 Assert.IsTrue(pane.Terminal.EnableCtrlV);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
     }
 }

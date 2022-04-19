@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;

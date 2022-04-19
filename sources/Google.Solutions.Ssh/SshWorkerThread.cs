@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Ssh.Auth;
@@ -29,6 +30,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
@@ -43,6 +45,9 @@ namespace Google.Solutions.Ssh
         private readonly WsaEventHandle readyToSend;
 
         private bool disposed;
+
+        private static readonly RundownProtection workerThreadRundownProtection
+            = new RundownProtection();
 
         //---------------------------------------------------------------------
         // Properties.
@@ -206,6 +211,7 @@ namespace Google.Solutions.Ssh
             {
                 try
                 {
+                    using (workerThreadRundownProtection.Acquire())
                     using (var session = new SshSession())
                     {
                         session.SetTraceHandler(
@@ -239,11 +245,20 @@ namespace Google.Solutions.Ssh
                         using (var authenticatedSession = connectedSession.Authenticate(crossContextAuthenticator))
                         {
                             //
+                            // Make sure the readyToSend handle remains valid throughout
+                            // this thread's lifetime.
+                            //
+                            bool readyToSendHandleSafeToUse = false;
+                            this.readyToSend.DangerousAddRef(ref readyToSendHandleSafeToUse);
+                            Debug.Assert(readyToSendHandleSafeToUse);
+
+                            //
                             // With the channel established, switch to non-blocking I/O.
                             // Use a disposable scope to make sure that tearing down the 
                             // connection is done using blocking I/O again.
                             //
                             using (session.AsNonBlocking())
+                            using (Disposable.For(() => this.readyToSend.DangerousRelease()))
                             using (var readyToReceive = UnsafeNativeMethods.WSACreateEvent())
                             {
                                 //
@@ -432,6 +447,15 @@ namespace Google.Solutions.Ssh
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Wait for all worker threads to complete. Typically only needed
+        /// for test cases to prevent worker threads from being aborted.
+        /// </summary>
+        public static Task JoinAllWorkerThreadsAsync()
+        {
+            return workerThreadRundownProtection.AwaitRundown();
         }
 
         //---------------------------------------------------------------------

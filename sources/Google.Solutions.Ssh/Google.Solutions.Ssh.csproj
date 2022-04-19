@@ -84,7 +84,6 @@
     <Compile Include="SshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Auth\ISshKeyPair.cs" />
-    <Compile Include="Native\Disposable.cs" />
     <Compile Include="Native\EnvironmentVariable.cs" />
     <Compile Include="Native\HandleTable.cs" />
     <Compile Include="Native\SshSessionChannel.cs" />
