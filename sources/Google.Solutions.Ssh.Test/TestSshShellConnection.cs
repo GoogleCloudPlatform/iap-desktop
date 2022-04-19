@@ -51,7 +51,7 @@ namespace Google.Solutions.Ssh.Test
                 this.buffer.Append(data);
             }
 
-            public void OnError(Exception exception)
+            public void OnError(TerminalErrorType errorType, Exception exception)
             {
                 Assert.Fail("Unexpected callback");
             }

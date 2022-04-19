@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 new DataReceivedEventArgs(data));
         }
 
-        void ITextTerminal.OnError(Exception exception)
+        void ITextTerminal.OnError(TerminalErrorType errorType, Exception exception)
         {
             if (this.View == null)
             {
@@ -218,16 +218,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(exception))
             {
-                var errorsIndicatingLostConnection = new[]
-                {
-                    LIBSSH2_ERROR.SOCKET_SEND,
-                    LIBSSH2_ERROR.SOCKET_RECV,
-                    LIBSSH2_ERROR.SOCKET_TIMEOUT
-                };
-
                 if (this.ConnectionStatus == Status.Connected &&
-                    exception.Unwrap() is SshNativeException sshEx &&
-                    errorsIndicatingLostConnection.Contains(sshEx.ErrorCode))
+                    errorType == TerminalErrorType.ConnectionLost)
                 {
                     this.ConnectionStatus = Status.ConnectionLost;
                     this.ConnectionLost?.Invoke(

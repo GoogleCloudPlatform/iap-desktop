@@ -47,8 +47,17 @@ namespace Google.Solutions.Ssh
         void OnDataReceived(string data);
 
         /// <summary>
-        /// Handle communication errór.
+        /// Handle communication error.
         /// </summary>
-        void OnError(Exception exception);
+        void OnError(
+            TerminalErrorType errorType,
+            Exception exception);
+    }
+
+    public enum TerminalErrorType
+    {
+        ConnectionFailed,
+        ConnectionLost,
+        TerminalIssue
     }
 }

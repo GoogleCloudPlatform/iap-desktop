@@ -31,13 +31,13 @@ namespace Google.Solutions.Ssh.Native
     /// </summary>
     public abstract class SshChannelBase : IDisposable
     {
-        internal readonly SshChannelHandle channelHandle;
-
         // NB. This object does not own this handle and should not dispose it.
         protected readonly SshSession session;
 
         private bool closedForWriting = false;
         private bool disposed = false;
+
+        internal SshChannelHandle ChannelHandle { get; }
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -48,7 +48,7 @@ namespace Google.Solutions.Ssh.Native
             SshChannelHandle channelHandle)
         {
             this.session = session;
-            this.channelHandle = channelHandle;
+            this.ChannelHandle = channelHandle;
         }
 
         //---------------------------------------------------------------------
@@ -62,12 +62,12 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
-                this.channelHandle.CheckCurrentThreadOwnsHandle();
+                this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
                 using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
                     return UnsafeNativeMethods.libssh2_channel_eof(
-                        this.channelHandle) == 1;
+                        this.ChannelHandle) == 1;
                 }
             }
         }
@@ -76,7 +76,7 @@ namespace Google.Solutions.Ssh.Native
             byte[] buffer,
             LIBSSH2_STREAM streamId = LIBSSH2_STREAM.NORMAL)
         {
-            this.channelHandle.CheckCurrentThreadOwnsHandle();
+            this.ChannelHandle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(buffer, nameof(buffer));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
@@ -89,7 +89,7 @@ namespace Google.Solutions.Ssh.Native
                 }
 
                 var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
-                    this.channelHandle,
+                    this.ChannelHandle,
                     (int)streamId,
                     buffer,
                     new IntPtr(buffer.Length));
@@ -109,7 +109,7 @@ namespace Google.Solutions.Ssh.Native
             byte[] buffer,
             LIBSSH2_STREAM streamId = LIBSSH2_STREAM.NORMAL)
         {
-            this.channelHandle.CheckCurrentThreadOwnsHandle();
+            this.ChannelHandle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(buffer, nameof(buffer));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
@@ -117,7 +117,7 @@ namespace Google.Solutions.Ssh.Native
                 Debug.Assert(!this.closedForWriting);
 
                 var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
-                    this.channelHandle,
+                    this.ChannelHandle,
                     (int)streamId,
                     buffer,
                     new IntPtr(buffer.Length));
@@ -135,12 +135,12 @@ namespace Google.Solutions.Ssh.Native
 
         public void WaitForEndOfStream()
         {
-            this.channelHandle.CheckCurrentThreadOwnsHandle();
+            this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_eof(
-                    this.channelHandle);
+                    this.ChannelHandle);
 
                 if (result != LIBSSH2_ERROR.NONE)
                 {
@@ -151,7 +151,7 @@ namespace Google.Solutions.Ssh.Native
 
         public void Close()
         {
-            this.channelHandle.CheckCurrentThreadOwnsHandle();
+            this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -159,7 +159,7 @@ namespace Google.Solutions.Ssh.Native
                 if (!this.closedForWriting)
                 {
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(
-                        this.channelHandle);
+                        this.ChannelHandle);
 
                     if (result == LIBSSH2_ERROR.SOCKET_SEND)
                     {
@@ -195,7 +195,7 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-                this.channelHandle.Dispose();
+                this.ChannelHandle.Dispose();
                 this.disposed = true;
             }
         }

@@ -47,7 +47,7 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
-                this.channelHandle.CheckCurrentThreadOwnsHandle();
+                this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
                 using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
@@ -56,7 +56,7 @@ namespace Google.Solutions.Ssh.Native
                     // should not block.
                     //
                     return UnsafeNativeMethods.libssh2_channel_get_exit_status(
-                        this.channelHandle);
+                        this.ChannelHandle);
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
-                this.channelHandle.CheckCurrentThreadOwnsHandle();
+                this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
                 using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
@@ -75,7 +75,7 @@ namespace Google.Solutions.Ssh.Native
                     //
 
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_get_exit_signal(
-                        this.channelHandle,
+                        this.ChannelHandle,
                         out IntPtr signalPtr,
                         out IntPtr signalLength,
                         out IntPtr errmsgPtr,
@@ -130,10 +130,10 @@ namespace Google.Solutions.Ssh.Native
             ushort widthInChars,
             ushort heightInChars)
         {
-            this.channelHandle.CheckCurrentThreadOwnsHandle();
+            this.ChannelHandle.CheckCurrentThreadOwnsHandle();
 
             var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_request_pty_size_ex(
-                this.channelHandle,
+                this.ChannelHandle,
                 widthInChars,
                 heightInChars,
                 0,

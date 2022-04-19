@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
@@ -414,7 +415,7 @@ namespace Google.Solutions.Ssh
                 }
                 catch (Exception e)
                 {
-                    this.terminal.OnError(e);
+                    this.terminal.OnError(TerminalErrorType.TerminalIssue, e);
                 }
             });
         }
@@ -423,13 +424,27 @@ namespace Google.Solutions.Ssh
         {
             Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
+            var errorsIndicatingLostConnection = new[]
+            {
+                LIBSSH2_ERROR.SOCKET_SEND,
+                LIBSSH2_ERROR.SOCKET_RECV,
+                LIBSSH2_ERROR.SOCKET_TIMEOUT
+            };
+
+            var lostConnection = exception.Unwrap() is SshNativeException sshEx &&
+                errorsIndicatingLostConnection.Contains(sshEx.ErrorCode);
+
             //
             // Run callback on different context (not on the current
             // worker thread).
             //
             this.Connection.CallbackContext.Post(() =>
             {
-                this.terminal.OnError(exception);
+                this.terminal.OnError(
+                    lostConnection 
+                        ? TerminalErrorType.ConnectionLost
+                        : TerminalErrorType.ConnectionFailed,
+                    exception);
             });
         }
 
