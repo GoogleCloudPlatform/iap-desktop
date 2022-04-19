@@ -288,58 +288,37 @@ namespace Google.Solutions.Ssh
         }
     }
 
-    public abstract class SshAsyncChannelBase : IDisposable // TODO: add comments
+    /// <summary>
+    /// Base class for channels that suppoer async use.
+    /// </summary>
+    public abstract class SshAsyncChannelBase : IDisposable
     {
+        private bool closed = false;
+
         public abstract SshConnection Connection { get; }
 
+        /// <summary>
+        /// Perform receive operation. Called on SSH worker thread.
+        /// </summary>
         internal abstract void OnReceive();
 
+        /// <summary>
+        /// Receive failed. Called on SSH worker thread.
+        /// </summary>
         internal abstract void OnReceiveError(Exception exception);
 
-        protected abstract void Dispose(bool disposing);
+        /// <summary>
+        /// Close handles. Called on SSH worker thread.
+        /// </summary>
+        protected abstract void Close();
 
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-    }
 
-    public class SshAsyncShellChannel : SshAsyncChannelBase // TODO: Rename, put into separate file
-    {
-        public const string DefaultTerminal = "xterm";
-        public static readonly Encoding DefaultEncoding = Encoding.UTF8;
-        public static readonly TerminalSize DefaultTerminalSize = new TerminalSize(80, 24);
-
-        /// <summary>
-        /// Channel handle, must only be accessed on worker thread.
-        /// </summary>
-        private readonly SshShellChannel nativeChannel;
-
-        private readonly ITextTerminal terminal;
-        private readonly StreamingDecoder decoder;
-
-        private readonly byte[] receiveBuffer = new byte[64 * 1024];
-        private bool closed = false;
-
-        public override SshConnection Connection { get; }
-
-        internal SshAsyncShellChannel(
-            SshConnection connection,
-            SshShellChannel nativeChannel,
-            ITextTerminal terminal)
-        {
-            this.Connection = connection;
-            this.nativeChannel = nativeChannel;
-            this.terminal = terminal;
-            this.decoder = new StreamingDecoder(DefaultEncoding);
-        }
-
-        //---------------------------------------------------------------------
-        // Overrides.
-        //---------------------------------------------------------------------
-
-        protected override void Dispose(bool disposing) // TODO: Hoist to base class
+        protected virtual void Dispose(bool disposing) 
         {
             if (this.Connection.IsRunningOnWorkerThread)
             {
@@ -347,8 +326,7 @@ namespace Google.Solutions.Ssh
                 {
                     if (!this.closed)
                     {
-                        this.nativeChannel.Close();
-                        this.nativeChannel.Dispose();
+                        Close();
                         this.closed = true;
                     }
                 }
@@ -370,6 +348,48 @@ namespace Google.Solutions.Ssh
                     .RunSendOperationAsync(_ => this.Dispose())
                     .ContinueWith(_ => { });
             }
+        }
+    }
+
+    public class SshAsyncShellChannel : SshAsyncChannelBase
+    {
+        public const string DefaultTerminal = "xterm";
+        public static readonly Encoding DefaultEncoding = Encoding.UTF8;
+        public static readonly TerminalSize DefaultTerminalSize = new TerminalSize(80, 24);
+
+        /// <summary>
+        /// Channel handle, must only be accessed on worker thread.
+        /// </summary>
+        private readonly SshShellChannel nativeChannel;
+
+        private readonly ITextTerminal terminal;
+        private readonly StreamingDecoder decoder;
+
+        private readonly byte[] receiveBuffer = new byte[64 * 1024];
+
+        public override SshConnection Connection { get; }
+
+        internal SshAsyncShellChannel(
+            SshConnection connection,
+            SshShellChannel nativeChannel,
+            ITextTerminal terminal)
+        {
+            this.Connection = connection;
+            this.nativeChannel = nativeChannel;
+            this.terminal = terminal;
+            this.decoder = new StreamingDecoder(DefaultEncoding);
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        protected override void Close()
+        {
+            Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+
+            this.nativeChannel.Close();
+            this.nativeChannel.Dispose();
         }
 
         internal override void OnReceive()
