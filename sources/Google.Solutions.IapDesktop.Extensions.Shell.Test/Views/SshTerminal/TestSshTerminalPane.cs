@@ -159,6 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             //
             for (int i = 0; i < 20; i++)
             {
+                await Task.Delay(5).ConfigureAwait(true);
                 await Task.Yield();
             }
         }
