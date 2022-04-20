@@ -90,6 +90,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
         public static readonly IHelpTopic ProxyConfiguration = new HelpTopic(
             "Proxy Configuration",
             "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Proxy-Configuration");
+        
+        public static readonly IHelpTopic ReleaseNotes = new HelpTopic(
+           "Release notes",
+           "https://github.com/GoogleCloudPlatform/iap-desktop/releases");
 
         private class HelpTopic : IHelpTopic
         {

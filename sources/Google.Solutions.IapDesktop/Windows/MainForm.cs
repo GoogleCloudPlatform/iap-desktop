@@ -685,6 +685,10 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.Shortcuts);
         }
+        private void releaseNotesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.ReleaseNotes);
+        }
 
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
         {
@@ -820,5 +824,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
+
     }
 }
