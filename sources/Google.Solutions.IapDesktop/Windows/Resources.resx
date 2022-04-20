@@ -182,14 +182,31 @@
     &lt;body&gt;
         &lt;div class="container-outer"&gt;
             &lt;div class="container-middle"&gt;
-                &lt;div class="container-content"&gt;
+                &lt;div class="container-content" id="success"&gt;
                     &lt;h1&gt;&lt;span class='product'&gt;IAP Desktop&lt;/span&gt; is ready to use&lt;/h1&gt;
                     &lt;p&gt;
                         You can now use IAP Desktop to access your VMs.
                     &lt;/p&gt;
                 &lt;/div&gt;
+                &lt;div class="container-content" id="error"&gt;
+                    &lt;h1&gt;Something went wrong&lt;/h1&gt;
+                    &lt;p&gt;
+                         Authentication failed: &lt;code id="error-code"&gt;&lt;/code&gt;.
+                    &lt;/p&gt;
+                &lt;/div&gt;
             &lt;/div&gt;
         &lt;/div&gt;
+        
+        &lt;script language="javascript"&gt;
+            const params = new URLSearchParams(location.search);
+            if (params.has('error')) {
+                document.getElementById('success').style.display = 'none';
+                document.getElementById('error-code').textContent = params.get('error');
+            }
+            else {
+                document.getElementById('error').style.display = 'none';
+            }
+        &lt;/script&gt;
     &lt;/body&gt;
 &lt;/html&gt;</value>
   </data>
