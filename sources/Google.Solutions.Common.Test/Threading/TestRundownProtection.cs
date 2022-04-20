@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,45 +19,44 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Threading;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.Common.Test.Threading
 {
-    public interface ITextTerminal
+    [TestFixture]
+    public class TestRundownProtection
     {
-        /// <summary>
-        /// Return terminal type ($TERM), such as "xterm".
-        /// </summary>
-        string TerminalType { get; }
+        [Test]
+        public async Task WhenRundown_ThenAwaitRundownReturns()
+        {
+            using (var protection = new RundownProtection())
+            {
+                using (protection.Acquire())
+                using (protection.Acquire())
+                {
+                }
 
-        /// <summary>
-        /// Language ($LC_ALL) of terminal.
-        /// </summary>
-        CultureInfo Locale { get; }
+                // back to 0.
 
-        /// <summary>
-        /// Process decoded data received from remote peer.
-        /// </summary>
-        void OnDataReceived(string data);
+                using (protection.Acquire())
+                using (protection.Acquire())
+                {
+                }
 
-        /// <summary>
-        /// Handle communication error.
-        /// </summary>
-        void OnError(
-            TerminalErrorType errorType,
-            Exception exception);
-    }
+                // back to 0.
 
-    public enum TerminalErrorType
-    {
-        ConnectionFailed,
-        ConnectionLost,
-        TerminalIssue
+                await protection
+                    .AwaitRundown()
+                    .ConfigureAwait(false);
+            }
+        }
     }
 }

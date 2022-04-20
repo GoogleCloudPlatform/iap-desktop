@@ -126,6 +126,7 @@
     <Compile Include="Locator\TestDiskTypeLocator.cs" />
     <Compile Include="Integration\InstanceFactory.cs" />
     <Compile Include="Integration\CredentialAttribute.cs" />
+    <Compile Include="Threading\TestRundownProtection.cs" />
     <Compile Include="Threading\TestSingleThreadSynchronizationContext.cs" />
     <Compile Include="Util\TestCancellationTokenExtensions.cs" />
     <Compile Include="Util\TestDateTimeOffsetExtensions.cs" />

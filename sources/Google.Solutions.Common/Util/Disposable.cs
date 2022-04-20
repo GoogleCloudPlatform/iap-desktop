@@ -21,9 +21,9 @@
 
 using System;
 
-namespace Google.Solutions.Ssh.Native
+namespace Google.Solutions.Common
 {
-    internal sealed class Disposable : IDisposable
+    public sealed class Disposable : IDisposable
     {
         private readonly Action dispose;
 

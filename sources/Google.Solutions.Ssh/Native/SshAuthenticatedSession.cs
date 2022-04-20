@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh.Native
     public class SshAuthenticatedSession : IDisposable
     {
         // NB. This object does not own this handle and should not dispose it.
-        private readonly SshSession session;
+        internal SshSession Session { get; }
 
         private bool disposed = false;
 
@@ -47,7 +47,7 @@ namespace Google.Solutions.Ssh.Native
 
         internal SshAuthenticatedSession(SshSession session)
         {
-            this.session = session;
+            this.Session = session;
         }
 
         //---------------------------------------------------------------------
@@ -57,13 +57,13 @@ namespace Google.Solutions.Ssh.Native
         private SshChannelHandle OpenChannelInternal(
             LIBSSH2_CHANNEL_EXTENDED_DATA mode)
         {
-            this.session.Handle.CheckCurrentThreadOwnsHandle();
+            this.Session.Handle.CheckCurrentThreadOwnsHandle();
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(mode))
             {
                 LIBSSH2_ERROR result;
                 var channelHandle = UnsafeNativeMethods.libssh2_channel_open_ex(
-                    this.session.Handle,
+                    this.Session.Handle,
                     SshSessionChannelBase.Type,
                     (uint)SshSessionChannelBase.Type.Length,
                     DefaultWindowSize,
@@ -71,7 +71,7 @@ namespace Google.Solutions.Ssh.Native
                     null,
                     0);
 
-                channelHandle.ValidateAndAttachToSession(this.session);
+                channelHandle.ValidateAndAttachToSession(this.Session);
 
                 //
                 // Configure how extended data (stderr, in particular) should
@@ -83,7 +83,7 @@ namespace Google.Solutions.Ssh.Native
                 if (result != LIBSSH2_ERROR.NONE)
                 {
                     channelHandle.Dispose();
-                    throw this.session.CreateException(result);
+                    throw this.Session.CreateException(result);
                 }
 
                 return channelHandle;
@@ -116,7 +116,7 @@ namespace Google.Solutions.Ssh.Native
                 if (environmentVariable.Required)
                 {
                     channelHandle.Dispose();
-                    throw this.session.CreateException(result);
+                    throw this.Session.CreateException(result);
                 }
                 else
                 {
@@ -143,7 +143,7 @@ namespace Google.Solutions.Ssh.Native
             ushort heightInChars,
             IEnumerable<EnvironmentVariable> environmentVariables = null)
         {
-            this.session.Handle.CheckCurrentThreadOwnsHandle();
+            this.Session.Handle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(term, nameof(term));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(
@@ -182,7 +182,7 @@ namespace Google.Solutions.Ssh.Native
                 if (result != LIBSSH2_ERROR.NONE)
                 {
                     channelHandle.Dispose();
-                    throw this.session.CreateException(result);
+                    throw this.Session.CreateException(result);
                 }
 
                 //
@@ -199,10 +199,10 @@ namespace Google.Solutions.Ssh.Native
                 if (result != LIBSSH2_ERROR.NONE)
                 {
                     channelHandle.Dispose();
-                    throw this.session.CreateException(result);
+                    throw this.Session.CreateException(result);
                 }
 
-                return new SshShellChannel(this.session, channelHandle);
+                return new SshShellChannel(this.Session, channelHandle);
             }
         }
 
@@ -214,11 +214,11 @@ namespace Google.Solutions.Ssh.Native
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var channelHandle = UnsafeNativeMethods.libssh2_sftp_init(
-                    this.session.Handle);
+                    this.Session.Handle);
 
-                channelHandle.ValidateAndAttachToSession(this.session);
+                channelHandle.ValidateAndAttachToSession(this.Session);
 
-                return new SshSftpChannel(this.session, channelHandle);
+                return new SshSftpChannel(this.Session, channelHandle);
             }
         }
 
@@ -242,7 +242,7 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-                this.session.Handle.CheckCurrentThreadOwnsHandle();
+                this.Session.Handle.CheckCurrentThreadOwnsHandle();
                 this.disposed = true;
             }
         }

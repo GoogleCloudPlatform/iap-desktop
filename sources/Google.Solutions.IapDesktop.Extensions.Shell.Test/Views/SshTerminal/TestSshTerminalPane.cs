@@ -101,21 +101,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         CancellationToken.None)
                     .ConfigureAwait(true);
 
-                // Connect and wait for event
-                SessionStartedEvent connectedEvent = null;
-                this.eventService.BindHandler<SessionStartedEvent>(e => connectedEvent = e);
-
                 var broker = new SshTerminalSessionBroker(
                     this.serviceProvider);
-                var pane = await broker.ConnectAsync(
-                        instanceLocator,
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator).ConfigureAwait(true), 22),
-                        authorizedKey,
-                        language,
-                        TimeSpan.FromSeconds(10))
+
+                var address = await PublicAddressFromLocator(instanceLocator)
                     .ConfigureAwait(true);
 
-                Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
+                SshTerminalPane pane = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(
+                    async () =>
+                    {
+                        pane = (SshTerminalPane)await broker.ConnectAsync(
+                                instanceLocator,
+                                new IPEndPoint(address, 22),
+                                authorizedKey,
+                                language,
+                                TimeSpan.FromSeconds(10))
+                            .ConfigureAwait(true);
+                    })
+                    .ConfigureAwait(true);
+
                 PumpWindowMessages();
 
                 return (SshTerminalPane)pane;
@@ -134,6 +139,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 null));
         }
 
+        public async Task CompleteBackgroundWorkAsync()
+        {
+            //
+            // Join worker thread to prevent NUnit from aborting it, 
+            // causing un unorderly cleanup.
+            //
+            await SshWorkerThread
+                .JoinAllWorkerThreadsAsync()
+                .ConfigureAwait(false);
+
+            //
+            // While a worker thread is running down, it might
+            // still post work to the current synchroniation context.
+            //
+            // Drain the synchronization context's backlog to prevent
+            // the dreaded 'Work posted to the synchronization context did
+            // not complete within ten seconds' error.
+            //
+            for (int i = 0; i < 20; i++)
+            {
+                await Task.Delay(5).ConfigureAwait(true);
+                await Task.Yield();
+            }
+        }
+
         //---------------------------------------------------------------------
         // Connect
         //---------------------------------------------------------------------
@@ -142,51 +172,51 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            SessionAbortedEvent deliveredEvent = null;
-            this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
-
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
             var broker = new SshTerminalSessionBroker(
                 this.serviceProvider);
-            await broker.ConnectAsync(
+
+            await AssertRaisesEventAsync<SessionAbortedEvent>(
+                () => broker.ConnectAsync(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
                     UnboundEndpoint,
                     AuthorizedKeyPair.ForMetadata(key, "test", true, null),
                     null,
-                    TimeSpan.FromSeconds(10))
+                    TimeSpan.FromSeconds(10)))
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(deliveredEvent, "Event fired");
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
             Assert.AreEqual(
                 SocketError.ConnectionRefused,
                 ((SocketException)this.ExceptionShown).SocketErrorCode);
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
         public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
-            SessionAbortedEvent deliveredEvent = null;
-            this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
-
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
             var broker = new SshTerminalSessionBroker(
                 this.serviceProvider);
-            await broker.ConnectAsync(
+
+            await AssertRaisesEventAsync<SessionAbortedEvent>(
+                () => broker.ConnectAsync(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
                     NonSshEndpoint,
                     AuthorizedKeyPair.ForMetadata(key, "test", true, null),
                     null,
-                    TimeSpan.FromSeconds(10))
+                    TimeSpan.FromSeconds(10)))
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(deliveredEvent, "Event fired");
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
             Assert.AreEqual(
                 SocketError.ConnectionRefused,
                 ((SocketException)this.ExceptionShown).SocketErrorCode);
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -195,27 +225,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var instanceLocator = await instanceLocatorTask;
-
-            SessionAbortedEvent deliveredEvent = null;
-            this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
-
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
             var broker = new SshTerminalSessionBroker(
                 this.serviceProvider);
-            await broker.ConnectAsync(
-                    instanceLocator,
-                    new IPEndPoint(await PublicAddressFromLocator(instanceLocator).ConfigureAwait(true), 22),
-                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                    null,
-                    TimeSpan.FromSeconds(10))
+
+            var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(deliveredEvent, "Event fired");
+            await AssertRaisesEventAsync<SessionAbortedEvent>(
+                () => broker.ConnectAsync(
+                    instanceLocator,
+                    new IPEndPoint(address, 22),
+                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
+                    null,
+                    TimeSpan.FromSeconds(10)))
+                .ConfigureAwait(true);
+
             Assert.IsInstanceOf(typeof(SshNativeException), this.ExceptionShown);
             Assert.AreEqual(
                 LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                 ((SshNativeException)this.ExceptionShown).ErrorCode);
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -224,22 +256,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            SessionStartedEvent connectedEvent = null;
-            this.eventService.BindHandler<SessionStartedEvent>(e => connectedEvent = e);
+            await AssertRaisesEventAsync<SessionStartedEvent>(
+                async () =>
+                {
+                    using (var pane = await ConnectSshTerminalPane(
+                            await instanceLocatorTask,
+                            await credential,
+                            keyType)
+                        .ConfigureAwait(true))
+                    {
+                        Assert.IsTrue(pane.IsConnected);
 
-            using (var pane = await ConnectSshTerminalPane(
-                    await instanceLocatorTask,
-                    await credential,
-                    keyType)
-                .ConfigureAwait(true))
-            {
-                Assert.IsTrue(pane.IsConnected);
+                        // Close the pane (not the window).
+                        pane.Close();
+                    }
+                })
+                .ConfigureAwait(true);
 
-                // Close the pane (not the window).
-                pane.Close();
-
-                Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
-            }
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
@@ -262,9 +296,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 // Send command and wait for event
                 await AssertRaisesEventAsync<SessionEndedEvent>(
-                        () => pane.SendAsync("exit\n").Wait())
+                        () => pane.SendAsync("exit\n"))
                     .ConfigureAwait(true);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -286,6 +322,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         () => pane.Terminal.SimulateKey(Keys.D | Keys.Control))
                     .ConfigureAwait(true);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -304,8 +342,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 pane.Terminal.SimulateKey(Keys.B);
                 pane.Terminal.SimulateKey(Keys.C);
 
-                pane.Close();
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                    () => pane.Close())
+                    .ConfigureAwait(true);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
@@ -339,6 +381,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     "Usage: whoami",
                     buffer);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
@@ -368,6 +412,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     expectedInitialSize,
                     buffer);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -397,6 +443,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             }
 
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -426,6 +474,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 StringAssert.Contains("ab^C", pane.Terminal.GetBuffer().Trim());
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -462,6 +512,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -498,6 +550,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -523,6 +577,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 StringAssert.Contains("ab", pane.Terminal.GetBuffer().Trim());
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
 
         [Test]
@@ -552,6 +608,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 Assert.IsTrue(pane.Terminal.EnableCtrlC);
                 Assert.IsTrue(pane.Terminal.EnableCtrlV);
             }
+
+            await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
     }
 }

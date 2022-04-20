@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,45 +19,41 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.Common.Threading
 {
-    public interface ITextTerminal
+
+    public static class WaitHandleExtensions
     {
-        /// <summary>
-        /// Return terminal type ($TERM), such as "xterm".
-        /// </summary>
-        string TerminalType { get; }
+        public static Task<bool> Await(this WaitHandle waitHandle)
+        {
+            var tcs = new TaskCompletionSource<object>();
 
-        /// <summary>
-        /// Language ($LC_ALL) of terminal.
-        /// </summary>
-        CultureInfo Locale { get; }
+            var registration = ThreadPool.RegisterWaitForSingleObject(
+                waitHandle,
+                (_, __) => { tcs.SetResult(null); },
+                null,
+                -1,
+                true);
 
-        /// <summary>
-        /// Process decoded data received from remote peer.
-        /// </summary>
-        void OnDataReceived(string data);
-
-        /// <summary>
-        /// Handle communication error.
-        /// </summary>
-        void OnError(
-            TerminalErrorType errorType,
-            Exception exception);
-    }
-
-    public enum TerminalErrorType
-    {
-        ConnectionFailed,
-        ConnectionLost,
-        TerminalIssue
+            return tcs.Task.ContinueWith(t =>
+            {
+                try
+                {
+                    registration.Unregister(waitHandle);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            });
+        }
     }
 }

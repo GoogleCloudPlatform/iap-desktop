@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
@@ -121,6 +122,12 @@ namespace Google.Solutions.Ssh.Native
                     this.sessionHandle,
                     value ? 1 : 0);
             }
+        }
+
+        public IDisposable AsBlocking()
+        {
+            this.IsBlocking = true;
+            return Disposable.For(() => this.IsBlocking = false);
         }
 
         public IDisposable AsNonBlocking()
