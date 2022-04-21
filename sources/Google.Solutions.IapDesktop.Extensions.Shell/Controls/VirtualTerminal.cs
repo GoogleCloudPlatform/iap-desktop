@@ -543,14 +543,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 // Trim end since we might be copying empty rows
                 // instead (if we have not reached the bottom row
                 // yet).
-                Clipboard.SetText(captured.TrimEnd());
+                ClipboardUtil.SetText(captured.TrimEnd());
             }
         }
 
         internal void PasteClipboard()
         {
             // Paste clipboard.
-            var text = Clipboard.GetText();
+            var text = ClipboardUtil.GetText();
             if (!string.IsNullOrEmpty(text))
             {
                 //

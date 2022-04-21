@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using System;
@@ -56,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             copyPasswordButton.Location = new Point(passwordText.ClientSize.Width - copyPasswordButton.Width, -1);
             copyPasswordButton.Image = Resources.Copy_16x;
             copyPasswordButton.Cursor = Cursors.Default;
-            copyPasswordButton.Click += (s, a) => { Clipboard.SetText(passwordText.Text); };
+            copyPasswordButton.Click += (s, a) => { ClipboardUtil.SetText(passwordText.Text); };
             passwordText.Controls.Add(copyPasswordButton);
 
             // Send EM_SETMARGINS to prevent text from disappearing underneath the button

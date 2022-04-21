@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
@@ -368,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 await AssertRaisesEventAsync<SessionEndedEvent>(() =>
                     {
                         // Copy command with a line continuation.
-                        Clipboard.SetText("whoami \\\r\n--help;exit\n\n");
+                        ClipboardUtil.SetText("whoami \\\r\n--help;exit\n\n");
                         pane.Terminal.PasteClipboard();
 
                         return Task.CompletedTask;

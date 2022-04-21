@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
@@ -415,7 +416,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             if (this.sentData.Length > 0)
             {
-                Clipboard.SetText(this.sentData.ToString());
+                ClipboardUtil.SetText(this.sentData.ToString());
             }
         }
 
@@ -423,7 +424,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             if (this.receivedData.Length > 0)
             {
-                Clipboard.SetText(this.receivedData.ToString());
+                ClipboardUtil.SetText(this.receivedData.ToString());
             }
         }
 
