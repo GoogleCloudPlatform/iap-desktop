@@ -270,6 +270,26 @@ namespace Google.Solutions.Ssh
                 .ConfigureAwait(false);
         }
 
+        public async Task<FileTransferChannel> OpenFileChannelAsync()
+        {
+            return await RunSendOperationAsync(
+                session => {
+                    Debug.Assert(this.IsRunningOnWorkerThread);
+
+                    using (session.Session.AsBlocking())
+                    {
+                        var channel = new FileTransferChannel(
+                            this,
+                            session.OpenSftpChannel());
+
+                        this.channels.AddLast(channel);
+
+                        return channel;
+                    }
+                })
+                .ConfigureAwait(false);
+        }
+
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------

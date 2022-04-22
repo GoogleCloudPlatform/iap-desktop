@@ -34,6 +34,9 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace Google.Solutions.Ssh
 {
+    /// <summary>
+    /// Channel for interacting with a remote shell.
+    /// </summary>
     public class ShellChannel : ServerChannelBase
     {
         public const string DefaultTerminal = "xterm";
