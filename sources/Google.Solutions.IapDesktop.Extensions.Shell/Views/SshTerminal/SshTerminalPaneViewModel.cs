@@ -79,11 +79,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         }
 
         //---------------------------------------------------------------------
-        // Observable properties.
-        //---------------------------------------------------------------------
-
-
-        //---------------------------------------------------------------------
         // ISshAuthenticator.
         //---------------------------------------------------------------------
 
@@ -275,7 +270,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     this.sshChannel.Connection.Dispose();
                     this.sshChannel = null;
 
-                    // Notify listeners.
                     await OnDisconnected().ConfigureAwait(true);
                 }
             }

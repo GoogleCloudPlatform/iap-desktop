@@ -225,8 +225,11 @@
     <Compile Include="Views\SshTerminal\SshTerminalPane.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\SshTerminal\SshTerminalPane.Designer.cs">
-      <DependentUpon>SshTerminalPane.cs</DependentUpon>
+    <Compile Include="Views\SshTerminal\TerminalPaneBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SshTerminal\TerminalPaneBase.Designer.cs">
+      <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\SshTerminal\SshTerminalPaneViewModel.cs" />
     <Compile Include="Views\SshTerminal\SshTerminalSessionBroker.cs" />
@@ -312,8 +315,8 @@
     <EmbeddedResource Include="Views\SshTerminal\SshAuthenticationPromptDialog.resx">
       <DependentUpon>SshAuthenticationPromptDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\SshTerminal\SshTerminalPane.resx">
-      <DependentUpon>SshTerminalPane.cs</DependentUpon>
+    <EmbeddedResource Include="Views\SshTerminal\TerminalPaneBase.resx">
+      <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\TunnelsViewer\TunnelsWindow.resx">
       <DependentUpon>TunnelsWindow.cs</DependentUpon>
