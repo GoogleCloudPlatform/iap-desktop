@@ -48,40 +48,16 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    public class SshTerminalPaneViewModel : ViewModelBase, IDisposable, ISshAuthenticator, ITextTerminal
+
+    public class SshTerminalPaneViewModel : TerminalPaneViewModelBase, ISshAuthenticator, ITextTerminal
     {
-        private readonly IEventService eventService;
         private readonly CultureInfo language;
         private readonly IPEndPoint endpoint;
         private readonly AuthorizedKeyPair authorizedKey;
         private readonly TimeSpan connectionTimeout;
-
-        private Status connectionStatus = Status.ConnectionFailed;
         private SshAsyncShellChannel sshChannel = null;
 
-        private readonly StringBuilder receivedData = new StringBuilder();
-        private readonly StringBuilder sentData = new StringBuilder();
-
-        public InstanceLocator Instance { get; }
-
-        public event EventHandler<ConnectionErrorEventArgs> ConnectionFailed;
-        public event EventHandler<ConnectionErrorEventArgs> ConnectionLost;
-        public event EventHandler<DataReceivedEventArgs> DataReceived;
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
-
-        private ISynchronizeInvoke ViewInvoker => (ISynchronizeInvoke)this.View;
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        public enum Status
-        {
-            Connecting,
-            Connected,
-            ConnectionFailed,
-            ConnectionLost
-        }
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -94,12 +70,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             AuthorizedKeyPair authorizedKey,
             CultureInfo language,
             TimeSpan connectionTimeout)
+            : base(eventService, vmInstance)
         {
-            this.eventService = eventService;
             this.endpoint = endpoint;
             this.authorizedKey = authorizedKey;
             this.language = language;
-            this.Instance = vmInstance;
             this.connectionTimeout = connectionTimeout;
         }
 
@@ -107,34 +82,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public Status ConnectionStatus
-        {
-            get => this.connectionStatus;
-            private set
-            {
-                this.connectionStatus = value;
-
-                Debug.Assert(this.ViewInvoker != null);
-                if (this.ViewInvoker != null)
-                {
-                    //
-                    // It's (unlikely but( possible that the View has already been torn down.
-                    // In that case, do not deliver events since they are likely to
-                    // cause trouble and touch disposed objects.
-                    //
-                    Debug.Assert(!this.ViewInvoker.InvokeRequired, "Accessed from UI thread");
-
-                    RaisePropertyChange();
-                    RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsSpinnerVisible);
-                    RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsTerminalVisible);
-                    RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsReconnectPanelVisible);
-                }
-            }
-        }
-
-        public bool IsSpinnerVisible => this.ConnectionStatus == Status.Connecting;
-        public bool IsTerminalVisible => this.ConnectionStatus == Status.Connected;
-        public bool IsReconnectPanelVisible => this.ConnectionStatus == Status.ConnectionLost;
 
         //---------------------------------------------------------------------
         // ISshAuthenticator.
@@ -197,11 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             Debug.Assert(!this.ViewInvoker.InvokeRequired, "On UI thread");
 
-            RecordReceivedData(data);
-
-            this.DataReceived?.Invoke(
-                this,
-                new DataReceivedEventArgs(data));
+            OnDataReceived(new DataEventArgs(data));
         }
 
         void ITextTerminal.OnError(TerminalErrorType errorType, Exception exception)
@@ -222,24 +165,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 if (this.ConnectionStatus == Status.Connected &&
                     errorType == TerminalErrorType.ConnectionLost)
                 {
-                    this.ConnectionStatus = Status.ConnectionLost;
-                    this.ConnectionLost?.Invoke(
-                        this,
-                        new ConnectionErrorEventArgs(exception));
+                    OnConnectionLost(new ConnectionErrorEventArgs(exception))
+                        .ContinueWith(_ => { });
                 }
                 else
                 {
-                    this.ConnectionFailed?.Invoke(
-                        this,
-                        new ConnectionErrorEventArgs(exception));
+                    OnConnectionFailed(new ConnectionErrorEventArgs(exception))
+                        .ContinueWith(_ => { });
                 }
-
-                //
-                // Notify listeners.
-                //
-                this.eventService.FireAsync(
-                    new SessionAbortedEvent(this.Instance, exception))
-                    .ContinueWith(_ => { });
             }
         }
 
@@ -290,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
         }
 
-        public async Task ConnectAsync(TerminalSize initialSize)
+        public override async Task ConnectAsync(TerminalSize initialSize)
         {
             Debug.Assert(this.View != null);
             Debug.Assert(this.ViewInvoker != null);
@@ -313,30 +246,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     // Force all callbacks to run on the current
                     // synchronization context (i.e., the UI thread.
                     //
-                    this.ConnectionStatus = Status.Connecting;
+                    await OnBeginConnect().ConfigureAwait(true);
+
                     this.sshChannel = await ConnectAndTranslateErrorsAsync(
                             initialSize)
                         .ConfigureAwait(true);
 
-                    this.ConnectionStatus = Status.Connected;
-
-                    // Notify listeners.
-                    await this.eventService.FireAsync(
-                        new SessionStartedEvent(this.Instance))
-                        .ConfigureAwait(true);
+                    await OnConnected().ConfigureAwait(true);
                 }
                 catch (Exception e)
                 {
                     ApplicationTraceSources.Default.TraceError(e);
 
-                    this.ConnectionStatus = Status.ConnectionFailed;
-                    this.ConnectionFailed?.Invoke(
-                        this,
-                        new ConnectionErrorEventArgs(e));
-
-                    // Notify listeners.
-                    await this.eventService.FireAsync(
-                        new SessionAbortedEvent(this.Instance, e))
+                    await OnConnectionFailed(new ConnectionErrorEventArgs(e))
                         .ConfigureAwait(true);
 
                     this.sshChannel = null;
@@ -344,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
         }
 
-        public async Task DisconnectAsync()
+        public override async Task DisconnectAsync()
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -354,25 +276,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     this.sshChannel = null;
 
                     // Notify listeners.
-                    await this.eventService.FireAsync(
-                        new SessionEndedEvent(this.Instance))
-                        .ConfigureAwait(true);
+                    await OnDisconnected().ConfigureAwait(true);
                 }
             }
         }
 
-        public async Task SendAsync(string command)
+        public override async Task SendAsync(string command)
         {
             if (this.sshChannel != null)
             {
-                RecordSentData(command);
                 await this.sshChannel.SendAsync(command)
                     .ConfigureAwait(false);
+
+                OnDataSent(new DataEventArgs(command));
             }
         }
 
 
-        public async Task ResizeTerminal(TerminalSize newSize)
+        public override async Task ResizeTerminal(TerminalSize newSize)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(newSize))
             {
@@ -385,97 +306,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         }
 
         //---------------------------------------------------------------------
-        // Diagnostics.
-        //---------------------------------------------------------------------
-
-        private void RecordReceivedData(string data)
-        {
-            // Keep buffer if DEBUG or tracing enabled.
-#if DEBUG
-#else
-            if (ApplicationTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
-#endif
-            {
-                this.receivedData.Append(data);
-            }
-        }
-
-        private void RecordSentData(string data)
-        {
-            // Keep buffer if DEBUG or tracing enabled.
-#if DEBUG
-#else
-            if (ApplicationTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
-#endif
-            {
-                this.sentData.Append(data);
-            }
-        }
-
-        public void CopySentDataToClipboard()
-        {
-            if (this.sentData.Length > 0)
-            {
-                ClipboardUtil.SetText(this.sentData.ToString());
-            }
-        }
-
-        public void CopyReceivedDataToClipboard()
-        {
-            if (this.receivedData.Length > 0)
-            {
-                ClipboardUtil.SetText(this.receivedData.ToString());
-            }
-        }
-
-        //---------------------------------------------------------------------
         // Dispose.
         //---------------------------------------------------------------------
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             if (disposing)
             {
-                // 
-                // Do not invoke any more view callbacks since they can lead to
-                // a deadlock: If the connection is being disposed, odds are
-                // that the window (ViewInvoker) has already been destructed.
-                // That could cause InvokeAndForget to hang, causing a deadlock
-                // between the UI thread and the SSH worker thread.
-                //
-
-                this.View = null;
-
                 this.sshChannel?.Connection.Dispose();
                 this.authorizedKey.Dispose();
             }
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-    }
-
-    public class DataReceivedEventArgs
-    {
-        public string Data { get; }
-
-        public DataReceivedEventArgs(string data)
-        {
-            this.Data = data;
-        }
-    }
-
-    public class ConnectionErrorEventArgs
-    {
-        public Exception Error { get; }
-
-        public ConnectionErrorEventArgs(Exception error)
-        {
-            this.Error = error;
         }
     }
 

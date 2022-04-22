@@ -230,6 +230,7 @@
     </Compile>
     <Compile Include="Views\SshTerminal\SshTerminalPaneViewModel.cs" />
     <Compile Include="Views\SshTerminal\SshTerminalSessionBroker.cs" />
+    <Compile Include="Views\SshTerminal\TerminalPaneViewModelBase.cs" />
     <Compile Include="Views\TunnelsViewer\ITunnelsWindow.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsViewModel.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsWindow.cs">

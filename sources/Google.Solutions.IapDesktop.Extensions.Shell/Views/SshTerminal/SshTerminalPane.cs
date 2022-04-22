@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly IExceptionDialog exceptionDialog;
 
 #pragma warning disable IDE0069 // Disposable fields should be disposed
-        private readonly SshTerminalPaneViewModel viewModel;
+        private readonly TerminalPaneViewModelBase viewModel;
 #pragma warning restore IDE0069 // Disposable fields should be disposed
 
         //---------------------------------------------------------------------
@@ -329,7 +329,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         private void OnDataReceivedFromServerAsync(
             object sender,
-            DataReceivedEventArgs args)
+            DataEventArgs args)
         {
             Debug.Assert(!this.InvokeRequired);
 
