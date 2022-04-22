@@ -401,7 +401,13 @@ namespace Google.Solutions.Ssh
             else
             {
                 this.Connection
-                    .RunSendOperationAsync(_ => this.Dispose())
+                    .RunSendOperationAsync(c =>
+                    {
+                        using (c.Session.AsBlocking())
+                        {
+                            this.Dispose();
+                        }
+                    })
                     .ContinueWith(_ => { });
             }
         }

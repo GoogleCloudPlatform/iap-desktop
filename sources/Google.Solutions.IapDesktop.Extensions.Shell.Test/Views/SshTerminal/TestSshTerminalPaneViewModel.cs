@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -29,8 +30,10 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Shell.Test.Services;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
@@ -72,12 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             }
         }
 
-        private async Task<SshTerminalPaneViewModel> CreateViewModelAsync(
-            IEventService eventService,
-            InstanceLocator instance,
-            ICredential credential,
-            SshKeyType keyType,
-            CultureInfo language = null)
+        private static Mock<IAuthorizationSource> CreateAuthorizationSource()
         {
             var authorization = new Mock<IAuthorization>();
             authorization
@@ -88,13 +86,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .Setup(a => a.Authorization)
                 .Returns(authorization.Object);
 
+            return authorizationSource;
+        }
+
+        private async Task<AuthorizedKeyPair> CreateAuthorizedKeyAsync(
+            InstanceLocator instance,
+            ICredential credential,
+            SshKeyType keyType)
+        {
+            var authorizationSource = CreateAuthorizationSource();
+
             using (var keyAdapter = new KeyAuthorizationService(
                 authorizationSource.Object,
                 new ComputeEngineAdapter(credential),
                 new ResourceManagerAdapter(credential),
                 new Mock<IOsLoginService>().Object))
             {
-                var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
+                return await keyAdapter.AuthorizeKeyAsync(
                         instance,
                         SshKeyPair.NewEphemeralKeyPair(keyType),
                         TimeSpan.FromMinutes(10),
@@ -102,18 +110,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         KeyAuthorizationMethods.InstanceMetadata,
                         CancellationToken.None)
                     .ConfigureAwait(true);
-
-                var address = await PublicAddressFromLocator(instance)
-                    .ConfigureAwait(true);
-
-                return new SshTerminalPaneViewModel(
-                    eventService,
-                    instance,
-                    new IPEndPoint(address, 22),
-                    authorizedKey,
-                    language,
-                    TimeSpan.FromSeconds(10));
             }
+        }
+
+        private async Task<SshTerminalPaneViewModel> CreateViewModelAsync(
+            IEventService eventService,
+            InstanceLocator instance,
+            ICredential credential,
+            SshKeyType keyType,
+            CultureInfo language = null)
+        {
+            var authorizedKey = await CreateAuthorizedKeyAsync(
+                    instance,
+                    credential,
+                    keyType)
+                .ConfigureAwait(false);
+
+            var address = await PublicAddressFromLocator(instance)
+                .ConfigureAwait(true);
+
+            return new SshTerminalPaneViewModel(
+                eventService,
+                new SynchronousJobService(),
+                new Mock<IConfirmationDialog>().Object,
+                instance,
+                new IPEndPoint(address, 22),
+                authorizedKey,
+                language,
+                TimeSpan.FromSeconds(10));
         }
 
         //---------------------------------------------------------------------
@@ -271,6 +295,62 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .ConfigureAwait(false);
         }
 
+
+        [Test]
+        public async Task WhenConnectionFails_ThenEventFires(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var authorizationSource = CreateAuthorizationSource();
+            var eventService = new Mock<IEventService>();
+
+            var nonAuthorizedKey = AuthorizedKeyPair.ForMetadata(
+                SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072),
+                "invalid",
+                true,
+                authorizationSource.Object.Authorization);
+
+            using (var window = new Form())
+            {
+                var instance = await instanceLocatorTask;
+                var address = await PublicAddressFromLocator(instance)
+                    .ConfigureAwait(true);
+
+                var viewModel = new SshTerminalPaneViewModel(
+                    eventService.Object,
+                    new SynchronousJobService(),
+                    new Mock<IConfirmationDialog>().Object,
+                    instance,
+                    new IPEndPoint(address, 22),
+                    nonAuthorizedKey,
+                    null,
+                    TimeSpan.FromSeconds(10));
+
+                viewModel.View = window;
+
+                ConnectionErrorEventArgs argsReceived = null;
+                viewModel.ConnectionFailed += (s, a) =>
+                {
+                    argsReceived = a;
+                };
+
+                await viewModel
+                    .ConnectAsync(new TerminalSize(80, 24))
+                    .ConfigureAwait(true);
+
+                Assert.IsInstanceOf<SshNativeException>(argsReceived.Error);
+                eventService.Verify(s => s.FireAsync(
+                    It.IsAny<SessionAbortedEvent>()), Times.Once());
+
+                Assert.AreEqual(
+                    TerminalPaneViewModelBase.Status.ConnectionFailed,
+                    viewModel.ConnectionStatus);
+            }
+
+            await SshWorkerThread
+                .JoinAllWorkerThreadsAsync()
+                .ConfigureAwait(false);
+        }
+
         //---------------------------------------------------------------------
         // GetDroppableFiles.
         //---------------------------------------------------------------------
@@ -289,6 +369,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var droppableFiles = SshTerminalPaneViewModel.GetDroppableFiles(dropData);
             Assert.AreEqual(1, droppableFiles.Count());
             Assert.AreEqual(existingFile, droppableFiles.First().FullName);
+        }
+
+        //---------------------------------------------------------------------
+        // UploadFiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenFileExistsAndOverwriteDenied_ThenUploadIsCancelled()
+        {
+            await Task.Yield();
+            Assert.Fail();
+        }
+
+        [Test]
+        public async Task WhenFileExistsAndOverwriteConfirmed_ThenUploadSucceeds()
+        {
+            await Task.Yield();
+            Assert.Fail();
         }
     }
 }

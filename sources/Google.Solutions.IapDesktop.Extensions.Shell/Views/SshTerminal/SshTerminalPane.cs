@@ -67,6 +67,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                   serviceProvider,
                   new SshTerminalPaneViewModel(
                     serviceProvider.GetService<IEventService>(),
+                    serviceProvider.GetService<IJobService>(),
+                    serviceProvider.GetService<IConfirmationDialog>(),
                     vmInstance,
                     endpoint,
                     authorizedKey,

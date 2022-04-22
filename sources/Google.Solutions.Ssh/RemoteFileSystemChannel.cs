@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
@@ -102,7 +103,8 @@ namespace Google.Solutions.Ssh
             string remotePath,
             Stream source,
             LIBSSH2_FXF_FLAGS flags,
-            FilePermissions permissions)
+            FilePermissions permissions,
+            CancellationToken cancellationToken)
         {
             Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
             Utilities.ThrowIfNull(source, nameof(source));
@@ -130,6 +132,8 @@ namespace Google.Solutions.Ssh
 
                         while ((bytesRead = source.Read(buffer, 0, buffer.Length)) > 0)
                         {
+                            cancellationToken.ThrowIfCancellationRequested();
+
                             file.Write(buffer, bytesRead);
                         }
 
@@ -140,7 +144,8 @@ namespace Google.Solutions.Ssh
 
         public Task DownloadFileAsync(
             string remotePath,
-            Stream target)
+            Stream target,
+            CancellationToken cancellationToken)
         {
             Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
             Utilities.ThrowIfNull(target, nameof(target));
@@ -168,6 +173,8 @@ namespace Google.Solutions.Ssh
 
                         while ((bytesRead = file.Read(buffer)) > 0)
                         {
+                            cancellationToken.ThrowIfCancellationRequested();
+
                             target.Write(buffer, 0, (int)bytesRead);
                         }
 

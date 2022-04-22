@@ -181,7 +181,8 @@ namespace Google.Solutions.Ssh.Test
                             fileName,
                             data,
                             LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
-                            FilePermissions.OtherRead | FilePermissions.OwnerWrite)
+                            FilePermissions.OtherRead | FilePermissions.OwnerWrite,
+                            CancellationToken.None)
                         .ConfigureAwait(false);
                 }
             }
@@ -218,7 +219,50 @@ namespace Google.Solutions.Ssh.Test
                                 "/etc/passwd",
                                 data,
                                 LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
-                                FilePermissions.OtherRead | FilePermissions.OwnerWrite)
+                                FilePermissions.OtherRead | FilePermissions.OwnerWrite,
+                                CancellationToken.None)
+                            .Wait());
+                }
+            }
+        }
+
+
+        [Test]
+        public async Task WhenUploadCancelled_ThenUploadFileThrowsException(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+
+            using (var connection = new RemoteConnection(
+                endpoint,
+                authenticator,
+                new SynchronizationContext()))
+            {
+                await connection
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
+
+                var channel = await connection.OpenFileSystemAsync()
+                    .ConfigureAwait(false);
+
+                var fileName = $"{Guid.NewGuid()}.txt";
+                using (var cts = new CancellationTokenSource())
+                using (var data = CreateStream("This is some test data"))
+                {
+                    cts.Cancel();
+
+                    ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
+                        () => channel.UploadFileAsync(
+                                fileName,
+                                data,
+                                LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
+                                FilePermissions.OtherRead | FilePermissions.OwnerWrite,
+                                cts.Token)
                             .Wait());
                 }
             }
@@ -255,7 +299,8 @@ namespace Google.Solutions.Ssh.Test
                 {
                     await channel.DownloadFileAsync(
                             "/etc/passwd",
-                            data)
+                            data,
+                            CancellationToken.None)
                         .ConfigureAwait(false);
 
                     Assert.AreNotEqual(0, data.Length);
@@ -292,7 +337,46 @@ namespace Google.Solutions.Ssh.Test
                         LIBSSH2_FX_ERROR.NO_SUCH_FILE,
                         () => channel.DownloadFileAsync(
                                 "/this/file-does-not-exist.txt",
-                                data)
+                                data,
+                                CancellationToken.None)
+                            .Wait());
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenDownloadCancelled_ThenDownloadFileThrowsException(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+
+            using (var connection = new RemoteConnection(
+                endpoint,
+                authenticator,
+                new SynchronizationContext()))
+            {
+                await connection
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
+
+                var channel = await connection.OpenFileSystemAsync()
+                    .ConfigureAwait(false);
+
+                using (var cts = new CancellationTokenSource())
+                using (var data = new MemoryStream())
+                {
+                    cts.Cancel();
+
+                    ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
+                        () => channel.DownloadFileAsync(
+                                "/etc/passwd",
+                                data,
+                                cts.Token)
                             .Wait());
                 }
             }

@@ -58,6 +58,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly AuthorizedKeyPair authorizedKey;
         private readonly TimeSpan connectionTimeout;
         private RemoteShellChannel sshChannel = null;
+        private IConfirmationDialog confirmationDialog;
+        private readonly IJobService jobService;
 
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
 
@@ -67,6 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         public SshTerminalPaneViewModel(
             IEventService eventService,
+            IJobService jobService,
+            IConfirmationDialog confirmationDialog,
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKeyPair authorizedKey,
@@ -74,6 +78,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             TimeSpan connectionTimeout)
             : base(eventService, vmInstance)
         {
+            this.jobService = jobService;
+            this.confirmationDialog = confirmationDialog;
             this.endpoint = endpoint;
             this.authorizedKey = authorizedKey;
             this.language = language;
@@ -301,29 +307,74 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
         }
 
-        public Task UploadFilesAsync(IEnumerable<FileInfo> files)
+        public async Task UploadFilesAsync(IEnumerable<FileInfo> files)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(files))
             {
-                //
-                // Check if any of the files exist already.
-                //
+                using (var fsChannel = await this.sshChannel.Connection
+                    .OpenFileSystemAsync()
+                    .ConfigureAwait(true))
+                {
+                    //
+                    // Check if any of the files exist already.
+                    //
+                    var allFilesInHomeDir = await fsChannel
+                        .ListFilesAsync(".")
+                        .ConfigureAwait(true);
 
+                    var existingFileNames = allFilesInHomeDir
+                        .Where(f => !f.IsDirectory)
+                        .Select(f => f.Name)
+                        .ToHashSet();
 
-                //
-                // Can we overwrite?
-                //
+                    var fileNamesToUpload = files
+                        .Select(f => f.Name);
 
-                //
-                // Upload files in a background job, allowing
-                // cancellation.
-                //
+                    var conflicts = existingFileNames.Intersect(fileNamesToUpload);
+
+                    //
+                    // Can we overwrite?
+                    //
+                    if (conflicts.Any())
+                    {
+                        if (this.confirmationDialog.Confirm(
+                            this.View,
+                            "The following files already exist on the server:\n\n - " + 
+                                string.Join("\n - ", conflicts) + 
+                                "\n\nDo you want to override the existing files?",
+                            "Upload") != DialogResult.Yes)
+                        {
+                            return;
+                        }
+                    }
+
+                    //
+                    // Upload files in a background job, allowing
+                    // cancellation.
+                    //
+                    await this.jobService.RunInBackground<object>(
+                        new JobDescription($"Uploading files to {this.Instance.Name}"),
+                        async cancellationToken =>
+                        {
+                            foreach (var file in files)
+                            {
+                                using (var fileStream = file.OpenRead())
+                                {
+                                    await fsChannel.UploadFileAsync(
+                                            file.Name,  // Relative path -> place in home directory
+                                            fileStream,
+                                            LIBSSH2_FXF_FLAGS.TRUNC | LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
+                                            FilePermissions.OwnerRead | FilePermissions.OwnerWrite, // TODO: sane default?
+                                            cancellationToken)
+                                        .ConfigureAwait(false);
+                                }
+                            }
+
+                            return null;
+                        })
+                        .ConfigureAwait(true);
+                }
             }
-
-            MessageBox.Show(
-                this.View,
-                string.Join("\n", files));
-            return Task.CompletedTask;
         }
 
         public static IEnumerable<FileInfo> GetDroppableFiles(object dropData)
