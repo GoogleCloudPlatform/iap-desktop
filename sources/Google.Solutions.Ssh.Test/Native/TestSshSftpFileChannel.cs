@@ -98,7 +98,7 @@ namespace Google.Solutions.Ssh.Test.Native
                         FilePermissions.OtherWrite))
                 {
                     var buffer = Encoding.ASCII.GetBytes(sendData);
-                    var bytesWritten = file.Write(buffer);
+                    var bytesWritten = file.Write(buffer, buffer.Length);
                     Assert.AreEqual(buffer.Length, bytesWritten);
                 }
 

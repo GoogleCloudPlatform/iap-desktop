@@ -201,13 +201,50 @@ namespace Google.Solutions.Ssh
         {
             TResult result = null;
 
-            await RunSendOperationAsync(session =>
+            await RunSendOperationAsync(
+                session => 
                 {
                     result = sendOperation(session);
                 })
                 .ConfigureAwait(false);
 
             return result;
+        }
+
+        internal async Task<TResult> RunThrowingOperationAsync<TResult>(
+            Func<SshAuthenticatedSession, TResult> sendOperation)
+            where TResult : class
+        {
+            //
+            // Some operations (such as SFTP operations) might throw 
+            // exceptions, and these need to be passed thru to the caller
+            // (as opposed to letting them bubble up to OnReceiveError).
+            //
+            TResult result = null;
+            Exception exception = null;
+
+            await RunSendOperationAsync(
+                session => 
+                {
+                    try
+                    {
+                        result = sendOperation(session);
+                    }
+                    catch (Exception e)
+                    {
+                        exception = e;
+                    }
+                })
+                .ConfigureAwait(false);
+
+            if (exception != null)
+            {
+                throw exception;
+            }
+            else
+            {
+                return result;
+            }
         }
 
         //---------------------------------------------------------------------

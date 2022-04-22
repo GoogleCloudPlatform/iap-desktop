@@ -19,10 +19,12 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,14 +79,60 @@ namespace Google.Solutions.Ssh
         // Publics.
         //---------------------------------------------------------------------
 
-        public Task<IReadOnlyCollection<SshSftpFileInfo>> ListFilesAsync(string remotePath)
+        public Task<IReadOnlyCollection<SshSftpFileInfo>> ListFilesAsync(
+            string remotePath)
         {
+            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
+
             return this.Connection
-                .RunSendOperationAsync(_ =>
+                .RunThrowingOperationAsync(c =>
                 {
                     Debug.Assert(this.Connection.IsRunningOnWorkerThread);
 
-                    return this.nativeChannel.ListFiles(remotePath);
+                    using (c.Session.AsBlocking())
+                    {
+                        return this.nativeChannel.ListFiles(remotePath);
+                    }
+                });
+        }
+
+        public Task UploadFileAsync(
+            string remotePath,
+            Stream data,
+            LIBSSH2_FXF_FLAGS flags,
+            FilePermissions permissions)
+        {
+            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
+            Utilities.ThrowIfNull(data, nameof(data));
+
+            Debug.Assert(data.CanRead);
+
+            return this.Connection
+                .RunThrowingOperationAsync<object>(c =>
+                {
+                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+
+                    //
+                    // Upload the entire file as one operation, possibly
+                    // blocking other channels.
+                    //
+
+                    using (c.Session.AsBlocking())
+                    using (var file = this.nativeChannel.CreateFile(
+                            remotePath,
+                            flags,
+                            permissions))
+                    {
+                        var buffer = new byte[4 * 1024];
+                        int bytesRead;
+
+                        while ((bytesRead = data.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            file.Write(buffer, bytesRead);
+                        }
+
+                        return bytesRead;
+                    }
                 });
         }
     }

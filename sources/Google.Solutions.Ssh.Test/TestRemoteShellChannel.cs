@@ -82,6 +82,10 @@ namespace Google.Solutions.Ssh.Test
             }
         }
 
+        //---------------------------------------------------------------------
+        // Send.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenSendingEchoCommand_ThenEchoIsReceived(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
@@ -124,6 +128,10 @@ namespace Google.Solutions.Ssh.Test
             }
         }
 
+        //---------------------------------------------------------------------
+        // Close.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenChannelClosedExplicitly_ThenDoubleCloseIsPrevented(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
@@ -157,6 +165,10 @@ namespace Google.Solutions.Ssh.Test
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // Environment.
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenServerAcceptsLocale_ThenShellUsesRightLocale(
