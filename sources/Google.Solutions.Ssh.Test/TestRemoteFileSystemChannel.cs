@@ -223,5 +223,79 @@ namespace Google.Solutions.Ssh.Test
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // DownloadFile.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenFileExists_ThenDownloadFileSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+
+            using (var connection = new RemoteConnection(
+                endpoint,
+                authenticator,
+                new SynchronizationContext()))
+            {
+                await connection
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
+
+                var channel = await connection.OpenFileSystemAsync()
+                    .ConfigureAwait(false);
+
+                using (var data = new MemoryStream())
+                {
+                    await channel.DownloadFileAsync(
+                            "/etc/passwd",
+                            data)
+                        .ConfigureAwait(false);
+
+                    Assert.AreNotEqual(0, data.Length);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenFileDoesNotExist_ThenDownloadFileThrowsException(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instance = await instanceLocatorTask;
+            var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
+            var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
+                    instance,
+                    SshKeyType.Rsa3072)
+                .ConfigureAwait(false);
+
+            using (var connection = new RemoteConnection(
+                endpoint,
+                authenticator,
+                new SynchronizationContext()))
+            {
+                await connection
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
+
+                var channel = await connection.OpenFileSystemAsync()
+                    .ConfigureAwait(false);
+
+                using (var data = new MemoryStream())
+                {
+                    SshAssert.ThrowsAggregateExceptionWithError(
+                        LIBSSH2_FX_ERROR.NO_SUCH_FILE,
+                        () => channel.DownloadFileAsync(
+                                "/this/file-does-not-exist.txt",
+                                data)
+                            .Wait());
+                }
+            }
+        }
     }
 }

@@ -36,6 +36,8 @@ namespace Google.Solutions.Ssh
     /// </summary>
     public class RemoteFileSystemChannel : RemoteChannelBase
     {
+        private const int CopyBufferSize = 8 * 1024;
+
         /// <summary>
         /// Channel handle, must only be accessed on worker thread.
         /// </summary>
@@ -98,14 +100,14 @@ namespace Google.Solutions.Ssh
 
         public Task UploadFileAsync(
             string remotePath,
-            Stream data,
+            Stream source,
             LIBSSH2_FXF_FLAGS flags,
             FilePermissions permissions)
         {
             Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
-            Utilities.ThrowIfNull(data, nameof(data));
+            Utilities.ThrowIfNull(source, nameof(source));
 
-            Debug.Assert(data.CanRead);
+            Debug.Assert(source.CanRead);
 
             return this.Connection
                 .RunThrowingOperationAsync<object>(c =>
@@ -123,12 +125,50 @@ namespace Google.Solutions.Ssh
                             flags,
                             permissions))
                     {
-                        var buffer = new byte[4 * 1024];
+                        var buffer = new byte[CopyBufferSize];
                         int bytesRead;
 
-                        while ((bytesRead = data.Read(buffer, 0, buffer.Length)) > 0)
+                        while ((bytesRead = source.Read(buffer, 0, buffer.Length)) > 0)
                         {
                             file.Write(buffer, bytesRead);
+                        }
+
+                        return bytesRead;
+                    }
+                });
+        }
+
+        public Task DownloadFileAsync(
+            string remotePath,
+            Stream target)
+        {
+            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
+            Utilities.ThrowIfNull(target, nameof(target));
+
+            Debug.Assert(target.CanWrite);
+
+            return this.Connection
+                .RunThrowingOperationAsync<object>(c =>
+                {
+                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
+
+                    //
+                    // Upload the entire file as one operation, possibly
+                    // blocking other channels.
+                    //
+
+                    using (c.Session.AsBlocking())
+                    using (var file = this.nativeChannel.CreateFile(
+                            remotePath,
+                            LIBSSH2_FXF_FLAGS.READ,
+                            (FilePermissions)0))
+                    {
+                        var buffer = new byte[CopyBufferSize];
+                        uint bytesRead;
+
+                        while ((bytesRead = file.Read(buffer)) > 0)
+                        {
+                            target.Write(buffer, 0, (int)bytesRead);
                         }
 
                         return bytesRead;
