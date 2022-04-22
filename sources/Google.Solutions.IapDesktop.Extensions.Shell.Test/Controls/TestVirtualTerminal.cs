@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Test;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -108,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [Test]
         public void WhenPastingClipboardContentWithCrlf_ThenTerminalSendsClipboardContentWithNewline()
         {
-            Clipboard.SetText("sample\r\ntext");
+            ClipboardUtil.SetText("sample\r\ntext");
 
             this.terminal.PasteClipboard();
 
@@ -123,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             // you're probably using an unpatched version.
             //
 
-            Clipboard.SetText("text");
+            ClipboardUtil.SetText("text");
 
             this.terminal.ReceiveData($"{Esc}[?2004h"); // Set bracketed paste mode.
             this.terminal.PasteClipboard();
@@ -140,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [Test]
         public void WhenCtrlVIsEnabled_ThenTypingCtrlVSendsClipboardContent()
         {
-            Clipboard.SetText("sample\r\ntext");
+            ClipboardUtil.SetText("sample\r\ntext");
 
             this.terminal.EnableCtrlV = true;
             this.terminal.SimulateKey(Keys.Control | Keys.V);
@@ -151,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [Test]
         public void WhenCtrlVIsDisabled_ThenTypingCtrlVSendsKeystroke()
         {
-            Clipboard.SetText("sample\r\ntext");
+            ClipboardUtil.SetText("sample\r\ntext");
 
             this.terminal.EnableCtrlV = false;
             this.terminal.SimulateKey(Keys.Control | Keys.V);
@@ -166,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [Test]
         public void WhenShiftInsertIsEnabled_ThenTypingShiftInsertSendsClipboardContent()
         {
-            Clipboard.SetText("sample\r\ntext");
+            ClipboardUtil.SetText("sample\r\ntext");
 
             this.terminal.EnableShiftInsert = true;
             this.terminal.SimulateKey(Keys.Shift | Keys.Insert);
@@ -177,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [Test]
         public void WhenShiftInsertIsDisabled_ThenTypingShiftInsertSendsKeystroke()
         {
-            Clipboard.SetText("sample\r\ntext");
+            ClipboardUtil.SetText("sample\r\ntext");
 
             this.terminal.EnableShiftInsert = false;
             this.terminal.SimulateKey(Keys.Shift | Keys.Insert);
@@ -201,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.EnableCtrlC = true;
             this.terminal.SimulateKey(Keys.Control | Keys.C);
 
-            Assert.AreEqual("rst line\nsecond l", Clipboard.GetText());
+            Assert.AreEqual("rst line\nsecond l", ClipboardUtil.GetText());
             Assert.AreEqual(string.Empty, this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
@@ -218,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.EnableCtrlC = true;
             this.terminal.SimulateKey(Keys.Control | Keys.C);
 
-            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("", ClipboardUtil.GetText());
             Assert.AreEqual("\u0003", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
@@ -235,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.EnableCtrlC = false;
             this.terminal.SimulateKey(Keys.Control | Keys.C);
 
-            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("", ClipboardUtil.GetText());
             Assert.AreEqual("", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
@@ -252,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.EnableCtrlC = false;
             this.terminal.SimulateKey(Keys.Control | Keys.C);
 
-            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("", ClipboardUtil.GetText());
             Assert.AreEqual("\u0003", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
@@ -273,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.EnableCtrlInsert = true;
             this.terminal.SimulateKey(Keys.Control | Keys.Insert);
 
-            Assert.AreEqual("rst line\nsecond l", Clipboard.GetText());
+            Assert.AreEqual("rst line\nsecond l", ClipboardUtil.GetText());
             Assert.AreEqual(string.Empty, this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
@@ -290,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.EnableCtrlInsert = true;
             this.terminal.SimulateKey(Keys.Control | Keys.Insert);
 
-            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("", ClipboardUtil.GetText());
             Assert.AreEqual($"{Esc}[2;5~", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
@@ -307,7 +308,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.EnableCtrlInsert = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Insert);
 
-            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("", ClipboardUtil.GetText());
             Assert.AreEqual("", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
@@ -324,7 +325,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.EnableCtrlInsert = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Insert);
 
-            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("", ClipboardUtil.GetText());
             Assert.AreEqual($"{Esc}[2;5~", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
@@ -401,7 +402,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.IsFalse(this.terminal.IsTextSelected);
             Assert.AreEqual(
                 textSmallerThanViewPort.Replace("\r\n", "\n"),
-                Clipboard.GetText());
+                ClipboardUtil.GetText());
         }
 
         [Test]

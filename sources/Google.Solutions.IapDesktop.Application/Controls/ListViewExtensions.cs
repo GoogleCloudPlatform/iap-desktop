@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 DataFormats.Html,
                 HtmlClipboardFormat.Format(listView.ToHtml(selectedItemsOnly)));
 
-            Clipboard.SetDataObject(dataObject);
+            ClipboardUtil.SetDataObject(dataObject);
         }
 
         public static void AddCopyCommands(this ListView listView)
