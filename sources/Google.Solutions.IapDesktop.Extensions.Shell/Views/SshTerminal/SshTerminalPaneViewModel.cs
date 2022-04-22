@@ -309,6 +309,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 // Check if any of the files exist already.
                 //
 
+
                 //
                 // Can we overwrite?
                 //
@@ -325,7 +326,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             return Task.CompletedTask;
         }
 
-        public IEnumerable<FileInfo> GetDroppableFiles(object dropData)
+        public static IEnumerable<FileInfo> GetDroppableFiles(object dropData)
         {
             if (dropData is IEnumerable<string> filePaths)
             {

@@ -40,8 +40,11 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -266,6 +269,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             await SshWorkerThread
                 .JoinAllWorkerThreadsAsync()
                 .ConfigureAwait(false);
+        }
+
+        //---------------------------------------------------------------------
+        // GetDroppableFiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenDropContainsFilesAndDirectories_ThenOnlyFilesAreAccepted()
+        {
+            var existingFile = Assembly.GetExecutingAssembly().Location;
+            var dropData = new string[]
+            {
+                Path.GetTempPath(),
+                "does-not-exist.txt",
+                existingFile
+            };
+
+            var droppableFiles = SshTerminalPaneViewModel.GetDroppableFiles(dropData);
+            Assert.AreEqual(1, droppableFiles.Count());
+            Assert.AreEqual(existingFile, droppableFiles.First().FullName);
         }
     }
 }

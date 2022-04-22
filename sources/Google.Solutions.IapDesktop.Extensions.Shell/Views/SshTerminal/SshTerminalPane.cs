@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private void SshTerminalPane_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
-                this.viewModel
+                SshTerminalPaneViewModel
                     .GetDroppableFiles(e.Data.GetData(DataFormats.FileDrop))
                     .Any())
             {
@@ -133,8 +133,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             await InvokeActionAsync(
                     () =>
                     {
-                        var files = this.viewModel.GetDroppableFiles(
-                            e.Data.GetData(DataFormats.FileDrop));
+                        var files = SshTerminalPaneViewModel
+                            .GetDroppableFiles(e.Data.GetData(DataFormats.FileDrop));
 
                         return this.viewModel.UploadFilesAsync(files);
                     },
