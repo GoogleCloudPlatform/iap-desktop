@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Ssh.Cryptography;
+using Google.Solutions.Ssh.Native;
 using System;
 using System.Diagnostics;
 using System.Reflection;
