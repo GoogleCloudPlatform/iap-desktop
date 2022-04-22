@@ -104,7 +104,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenSftpChannel())
             {
-                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                SshAssert.ThrowsSftpNativeExceptionWithError(
                     LIBSSH2_FX_ERROR.NO_SUCH_FILE,
                     () => channel.ListFiles("/this/does/not/exist"));
             }
@@ -186,7 +186,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenSftpChannel())
             {
-                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                SshAssert.ThrowsSftpNativeExceptionWithError(
                     LIBSSH2_FX_ERROR.NO_SUCH_FILE,
                     () => channel.CreateDirectory(
                         "/this/does/not/exist",
@@ -212,7 +212,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenSftpChannel())
             {
-                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                SshAssert.ThrowsSftpNativeExceptionWithError(
                     LIBSSH2_FX_ERROR.PERMISSION_DENIED,
                     () => channel.CreateDirectory(
                         "/dev/cant-create-a-file-in-dev",
@@ -271,7 +271,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenSftpChannel())
             {
-                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                SshAssert.ThrowsSftpNativeExceptionWithError(
                     LIBSSH2_FX_ERROR.NO_SUCH_FILE,
                     () => channel.DeleteDirectory("/this/does/not/exist"));
             }
@@ -327,7 +327,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenSftpChannel())
             {
-                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                SshAssert.ThrowsSftpNativeExceptionWithError(
                     LIBSSH2_FX_ERROR.NO_SUCH_FILE,
                     () => channel.CreateFile(
                         "/this/does/not/exist",
@@ -354,7 +354,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenSftpChannel())
             {
-                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                SshAssert.ThrowsSftpNativeExceptionWithError(
                     LIBSSH2_FX_ERROR.PERMISSION_DENIED,
                     () => channel.CreateFile(
                         "/dev/cant-create-a-file-in-dev",
@@ -415,7 +415,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenSftpChannel())
             {
-                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                SshAssert.ThrowsSftpNativeExceptionWithError(
                     LIBSSH2_FX_ERROR.NO_SUCH_FILE,
                     () => channel.DeleteFile("/this/does/not/exist"));
             }
@@ -437,7 +437,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenSftpChannel())
             {
-                SshAssert.ThrowsSftpNativeExceptionWithErrno(
+                SshAssert.ThrowsSftpNativeExceptionWithError(
                     LIBSSH2_FX_ERROR.FAILURE,
                     () => channel.DeleteFile("."));
             }

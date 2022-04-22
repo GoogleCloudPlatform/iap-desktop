@@ -49,7 +49,7 @@ namespace Google.Solutions.Ssh.Test
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
             
-            using (var connection = new SshConnection(
+            using (var connection = new RemoteConnection(
                 endpoint,
                 authenticator,
                 new SynchronizationContext()))

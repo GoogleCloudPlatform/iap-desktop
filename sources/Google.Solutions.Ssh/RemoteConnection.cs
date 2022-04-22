@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
-    public class SshConnection : SshWorkerThread
+    public class RemoteConnection : SshWorkerThread
     {
         private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
         private readonly TaskCompletionSource<int> connectionCompleted
@@ -45,10 +45,10 @@ namespace Google.Solutions.Ssh
         // List of open channels. Only accessed on worker thread,
         // so no locking required.
         //
-        private readonly LinkedList<SshAsyncChannelBase> channels
-            = new LinkedList<SshAsyncChannelBase>();
+        private readonly LinkedList<RemoteChannelBase> channels
+            = new LinkedList<RemoteChannelBase>();
 
-        public SshConnection(
+        public RemoteConnection(
             IPEndPoint endpoint,
             ISshAuthenticator authenticator,
             SynchronizationContext callbackContext)
@@ -201,13 +201,50 @@ namespace Google.Solutions.Ssh
         {
             TResult result = null;
 
-            await RunSendOperationAsync(session =>
+            await RunSendOperationAsync(
+                session => 
                 {
                     result = sendOperation(session);
                 })
                 .ConfigureAwait(false);
 
             return result;
+        }
+
+        internal async Task<TResult> RunThrowingOperationAsync<TResult>(
+            Func<SshAuthenticatedSession, TResult> sendOperation)
+            where TResult : class
+        {
+            //
+            // Some operations (such as SFTP operations) might throw 
+            // exceptions, and these need to be passed thru to the caller
+            // (as opposed to letting them bubble up to OnReceiveError).
+            //
+            TResult result = null;
+            Exception exception = null;
+
+            await RunSendOperationAsync(
+                session => 
+                {
+                    try
+                    {
+                        result = sendOperation(session);
+                    }
+                    catch (Exception e)
+                    {
+                        exception = e;
+                    }
+                })
+                .ConfigureAwait(false);
+
+            if (exception != null)
+            {
+                throw exception;
+            }
+            else
+            {
+                return result;
+            }
         }
 
         //---------------------------------------------------------------------
@@ -220,7 +257,7 @@ namespace Google.Solutions.Ssh
             return this.connectionCompleted.Task;
         }
 
-        public async Task<SshAsyncShellChannel> OpenShellChannelAsync(
+        public async Task<RemoteShellChannel> OpenShellAsync(
             ITextTerminal terminal,
             TerminalSize initialSize)
         {
@@ -257,7 +294,7 @@ namespace Google.Solutions.Ssh
                             initialSize.Rows,
                             environmentVariables);
 
-                        var channel = new SshAsyncShellChannel(
+                        var channel = new RemoteShellChannel(
                             this,
                             nativeChannel,
                             terminal);
@@ -270,6 +307,25 @@ namespace Google.Solutions.Ssh
                 .ConfigureAwait(false);
         }
 
+        public async Task<RemoteFileSystemChannel> OpenFileSystemAsync()
+        {
+            return await RunSendOperationAsync(
+                session => {
+                    Debug.Assert(this.IsRunningOnWorkerThread);
+
+                    using (session.Session.AsBlocking())
+                    {
+                        var channel = new RemoteFileSystemChannel(
+                            this,
+                            session.OpenSftpChannel());
+
+                        this.channels.AddLast(channel);
+
+                        return channel;
+                    }
+                })
+                .ConfigureAwait(false);
+        }
 
         //---------------------------------------------------------------------
         // Inner classes.
@@ -289,13 +345,13 @@ namespace Google.Solutions.Ssh
     }
 
     /// <summary>
-    /// Base class for channels that suppoer async use.
+    /// Base class for channels that support async use.
     /// </summary>
-    public abstract class SshAsyncChannelBase : IDisposable
+    public abstract class RemoteChannelBase : IDisposable
     {
         private bool closed = false;
 
-        public abstract SshConnection Connection { get; }
+        public abstract RemoteConnection Connection { get; }
 
         /// <summary>
         /// Perform receive operation. Called on SSH worker thread.
@@ -348,159 +404,6 @@ namespace Google.Solutions.Ssh
                     .RunSendOperationAsync(_ => this.Dispose())
                     .ContinueWith(_ => { });
             }
-        }
-    }
-
-    public class SshAsyncShellChannel : SshAsyncChannelBase
-    {
-        public const string DefaultTerminal = "xterm";
-        public static readonly Encoding DefaultEncoding = Encoding.UTF8;
-        public static readonly TerminalSize DefaultTerminalSize = new TerminalSize(80, 24);
-
-        /// <summary>
-        /// Channel handle, must only be accessed on worker thread.
-        /// </summary>
-        private readonly SshShellChannel nativeChannel;
-
-        private readonly ITextTerminal terminal;
-        private readonly StreamingDecoder decoder;
-
-        private readonly byte[] receiveBuffer = new byte[64 * 1024];
-
-        public override SshConnection Connection { get; }
-
-        internal SshAsyncShellChannel(
-            SshConnection connection,
-            SshShellChannel nativeChannel,
-            ITextTerminal terminal)
-        {
-            this.Connection = connection;
-            this.nativeChannel = nativeChannel;
-            this.terminal = terminal;
-            this.decoder = new StreamingDecoder(DefaultEncoding);
-        }
-
-        //---------------------------------------------------------------------
-        // Overrides.
-        //---------------------------------------------------------------------
-
-        protected override void Close()
-        {
-            Debug.Assert(this.Connection.IsRunningOnWorkerThread);
-
-            this.nativeChannel.Close();
-            this.nativeChannel.Dispose();
-        }
-
-        internal override void OnReceive()
-        {
-            Debug.Assert(this.Connection.IsRunningOnWorkerThread);
-
-            //
-            // NB. This method is always called on the same thread, so it's ok
-            // to reuse the same buffer.
-            //
-
-            var bytesReceived = this.nativeChannel.Read(this.receiveBuffer);
-            var endOfStream = this.nativeChannel.IsEndOfStream;
-
-            //
-            // Run callback asynchronously (post) on different context 
-            // (i.e., not on the current worker thread).
-            //
-            // NB. By decoding the data first, we make sure that the
-            // buffer is ready to be reused while the callback is
-            // running.
-            //
-
-            var receivedData = this.decoder.Decode(
-                this.receiveBuffer,
-                0,
-                (int)bytesReceived);
-
-            this.Connection.CallbackContext.Post(() =>
-            {
-                try
-                {
-                    this.terminal.OnDataReceived(receivedData);
-
-                    //
-                    // In non-blocking mode, we're not always receive a final
-                    // zero-length read.
-                    //
-                    if (bytesReceived > 0 && endOfStream)
-                    {
-                        this.terminal.OnDataReceived(string.Empty);
-                    }
-                }
-                catch (Exception e)
-                {
-                    this.terminal.OnError(TerminalErrorType.TerminalIssue, e);
-                }
-            });
-        }
-
-        internal override void OnReceiveError(Exception exception)
-        {
-            Debug.Assert(this.Connection.IsRunningOnWorkerThread);
-
-            var errorsIndicatingLostConnection = new[]
-            {
-                LIBSSH2_ERROR.SOCKET_SEND,
-                LIBSSH2_ERROR.SOCKET_RECV,
-                LIBSSH2_ERROR.SOCKET_TIMEOUT
-            };
-
-            var lostConnection = exception.Unwrap() is SshNativeException sshEx &&
-                errorsIndicatingLostConnection.Contains(sshEx.ErrorCode);
-
-            //
-            // Run callback on different context (not on the current
-            // worker thread).
-            //
-            this.Connection.CallbackContext.Post(() =>
-            {
-                this.terminal.OnError(
-                    lostConnection 
-                        ? TerminalErrorType.ConnectionLost
-                        : TerminalErrorType.ConnectionFailed,
-                    exception);
-            });
-        }
-
-        //---------------------------------------------------------------------
-        // Publics.
-        //---------------------------------------------------------------------
-
-        public async Task SendAsync(byte[] buffer)
-        {
-            await this.Connection
-                .RunSendOperationAsync(_ =>
-                {
-                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
-
-                    this.nativeChannel.Write(buffer);
-                })
-                .ConfigureAwait(false);
-        }
-
-        public Task SendAsync(string data)
-        {
-            return SendAsync(DefaultEncoding.GetBytes(data));
-        }
-
-        public async Task ResizeTerminalAsync(TerminalSize size)
-        {
-            await this.Connection
-                .RunSendOperationAsync(_ =>
-                {
-                    Debug.Assert(this.Connection.IsRunningOnWorkerThread);
-
-                    this.nativeChannel.ResizePseudoTerminal(
-                        size.Columns,
-                        size.Rows);
-                })
-                .ConfigureAwait(false);
         }
     }
 }

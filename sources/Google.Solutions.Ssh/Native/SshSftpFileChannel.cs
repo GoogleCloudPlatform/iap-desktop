@@ -91,17 +91,20 @@ namespace Google.Solutions.Ssh.Native
                 }
             }
         }
-        public uint Write(byte[] buffer)
+
+        public uint Write(byte[] buffer, int length)
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(buffer, nameof(buffer));
+
+            Debug.Assert(length <= buffer.Length);
 
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var bytesWritten = UnsafeNativeMethods.libssh2_sftp_write(
                     this.fileHandle,
                     buffer,
-                    new IntPtr(buffer.Length));
+                    new IntPtr(length));
 
                 if (bytesWritten >= 0)
                 {

@@ -107,6 +107,7 @@
     <Compile Include="IEnumerable.cs" />
     <Compile Include="Native\TestSshSftpChannel.cs" />
     <Compile Include="Native\TestSshSftpFileChannel.cs" />
+    <Compile Include="TestRemoteFileSystemChannel.cs" />
     <Compile Include="TestSshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Native\InitializeScripts.cs" />
@@ -121,8 +122,8 @@
     <Compile Include="Auth\TestRsaSshKeyPair.cs" />
     <Compile Include="Auth\TestEcdsaSshKeyPair.cs" />
     <Compile Include="Auth\TestSshKeyPair.cs" />
-    <Compile Include="TestSshAsyncShellChannel.cs" />
-    <Compile Include="TestSshShellConnection.cs" />
+    <Compile Include="TestRemoteShellChannel.cs" />
+    <Compile Include="TestRemoteConnection.cs" />
     <Compile Include="TestStreamingDecoder.cs" />
   </ItemGroup>
   <ItemGroup>

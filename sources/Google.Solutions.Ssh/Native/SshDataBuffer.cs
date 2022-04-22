@@ -25,7 +25,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.Ssh.Native
 {
     /// <summary>
     /// Buffer for writing SSH-structured data,

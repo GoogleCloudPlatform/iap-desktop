@@ -51,7 +51,8 @@ namespace Google.Solutions.Ssh.Test
                 }
             }
         }
-        public static void ThrowsSftpNativeExceptionWithErrno(
+
+        public static void ThrowsSftpNativeExceptionWithError(
             LIBSSH2_FX_ERROR expected,
             Action action)
         {
@@ -85,6 +86,25 @@ namespace Google.Solutions.Ssh.Test
                     throw e.Unwrap();
                 }
             });
+        }
+
+        public static void ThrowsAggregateExceptionWithError(
+            LIBSSH2_FX_ERROR expected,
+            TestDelegate code)
+        {
+            ThrowsSftpNativeExceptionWithError(
+                expected,
+                () =>
+                {
+                    try
+                    {
+                        code();
+                    }
+                    catch (AggregateException e)
+                    {
+                        throw e.Unwrap();
+                    }
+                });
         }
     }
 }
