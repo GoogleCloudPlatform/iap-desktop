@@ -121,8 +121,8 @@
     <Compile Include="Auth\TestRsaSshKeyPair.cs" />
     <Compile Include="Auth\TestEcdsaSshKeyPair.cs" />
     <Compile Include="Auth\TestSshKeyPair.cs" />
-    <Compile Include="TestShellChannel.cs" />
-    <Compile Include="TestServerConnection.cs" />
+    <Compile Include="TestRemoteShellChannel.cs" />
+    <Compile Include="TestRemoteConnection.cs" />
     <Compile Include="TestStreamingDecoder.cs" />
   </ItemGroup>
   <ItemGroup>

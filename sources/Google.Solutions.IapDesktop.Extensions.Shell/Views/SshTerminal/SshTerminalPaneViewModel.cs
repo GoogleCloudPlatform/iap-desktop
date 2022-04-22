@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly IPEndPoint endpoint;
         private readonly AuthorizedKeyPair authorizedKey;
         private readonly TimeSpan connectionTimeout;
-        private ShellChannel sshChannel = null;
+        private RemoteShellChannel sshChannel = null;
 
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
 
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // ITextTerminal.
         //---------------------------------------------------------------------
 
-        string ITextTerminal.TerminalType => ShellChannel.DefaultTerminal;
+        string ITextTerminal.TerminalType => RemoteShellChannel.DefaultTerminal;
 
         CultureInfo ITextTerminal.Locale => this.language;
 
@@ -175,12 +175,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Actions.
         //---------------------------------------------------------------------
 
-        private async Task<ShellChannel> ConnectAndTranslateErrorsAsync(
+        private async Task<RemoteShellChannel> ConnectAndTranslateErrorsAsync(
             TerminalSize initialSize)
         {
             try
             {
-                var connection = new ServerConnection(
+                var connection = new RemoteConnection(
                         this.endpoint,
                         (ISshAuthenticator)this,
                         SynchronizationContext.Current)
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 await connection.ConnectAsync()
                     .ConfigureAwait(false);
 
-                return await connection.OpenShellChannelAsync(
+                return await connection.OpenShellAsync(
                         (ITextTerminal)this,
                         initialSize)
                     .ConfigureAwait(false);

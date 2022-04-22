@@ -75,14 +75,14 @@
   <ItemGroup>
     <Compile Include="Auth\SshKeyPair.cs" />
     <Compile Include="Cryptography\ECDsaExtensions.cs" />
-    <Compile Include="FileTransferChannel.cs" />
+    <Compile Include="RemoteFileSystemChannel.cs" />
     <Compile Include="ITextTerminal.cs" />
     <Compile Include="Native\FilePermissions.cs" />
     <Compile Include="Native\ISshAuthenticator.cs" />
     <Compile Include="Native\SshSftpChannel.cs" />
     <Compile Include="Native\SshSftpFileChannel.cs" />
-    <Compile Include="ServerConnection.cs" />
-    <Compile Include="ShellChannel.cs" />
+    <Compile Include="RemoteConnection.cs" />
+    <Compile Include="RemoteShellChannel.cs" />
     <Compile Include="Native\SshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Auth\ISshKeyPair.cs" />

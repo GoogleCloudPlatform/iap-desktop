@@ -32,17 +32,17 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Channel for interacting with remote file.
     /// </summary>
-    public class FileTransferChannel : ServerChannelBase
+    public class RemoteFileSystemChannel : RemoteChannelBase
     {
         /// <summary>
         /// Channel handle, must only be accessed on worker thread.
         /// </summary>
         private readonly SshSftpChannel nativeChannel;
 
-        public override ServerConnection Connection { get; }
+        public override RemoteConnection Connection { get; }
 
-        internal FileTransferChannel(
-            ServerConnection connection,
+        internal RemoteFileSystemChannel(
+            RemoteConnection connection,
             SshSftpChannel nativeChannel)
         {
             this.Connection = connection;

@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
 {
-    public class ServerConnection : SshWorkerThread
+    public class RemoteConnection : SshWorkerThread
     {
         private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
         private readonly TaskCompletionSource<int> connectionCompleted
@@ -45,10 +45,10 @@ namespace Google.Solutions.Ssh
         // List of open channels. Only accessed on worker thread,
         // so no locking required.
         //
-        private readonly LinkedList<ServerChannelBase> channels
-            = new LinkedList<ServerChannelBase>();
+        private readonly LinkedList<RemoteChannelBase> channels
+            = new LinkedList<RemoteChannelBase>();
 
-        public ServerConnection(
+        public RemoteConnection(
             IPEndPoint endpoint,
             ISshAuthenticator authenticator,
             SynchronizationContext callbackContext)
@@ -220,7 +220,7 @@ namespace Google.Solutions.Ssh
             return this.connectionCompleted.Task;
         }
 
-        public async Task<ShellChannel> OpenShellChannelAsync(
+        public async Task<RemoteShellChannel> OpenShellAsync(
             ITextTerminal terminal,
             TerminalSize initialSize)
         {
@@ -257,7 +257,7 @@ namespace Google.Solutions.Ssh
                             initialSize.Rows,
                             environmentVariables);
 
-                        var channel = new ShellChannel(
+                        var channel = new RemoteShellChannel(
                             this,
                             nativeChannel,
                             terminal);
@@ -270,7 +270,7 @@ namespace Google.Solutions.Ssh
                 .ConfigureAwait(false);
         }
 
-        public async Task<FileTransferChannel> OpenFileChannelAsync()
+        public async Task<RemoteFileSystemChannel> OpenFileSystemAsync()
         {
             return await RunSendOperationAsync(
                 session => {
@@ -278,7 +278,7 @@ namespace Google.Solutions.Ssh
 
                     using (session.Session.AsBlocking())
                     {
-                        var channel = new FileTransferChannel(
+                        var channel = new RemoteFileSystemChannel(
                             this,
                             session.OpenSftpChannel());
 
@@ -310,11 +310,11 @@ namespace Google.Solutions.Ssh
     /// <summary>
     /// Base class for channels that support async use.
     /// </summary>
-    public abstract class ServerChannelBase : IDisposable
+    public abstract class RemoteChannelBase : IDisposable
     {
         private bool closed = false;
 
-        public abstract ServerConnection Connection { get; }
+        public abstract RemoteConnection Connection { get; }
 
         /// <summary>
         /// Perform receive operation. Called on SSH worker thread.
