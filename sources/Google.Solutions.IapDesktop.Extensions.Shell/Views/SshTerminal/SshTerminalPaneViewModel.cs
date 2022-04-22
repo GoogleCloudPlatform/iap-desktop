@@ -34,9 +34,11 @@ using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -296,6 +298,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     await this.sshChannel.ResizeTerminalAsync(newSize)
                         .ConfigureAwait(false);
                 }
+            }
+        }
+
+        public Task UploadFilesAsync(IEnumerable<FileInfo> files)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(files))
+            {
+                //
+                // Check if any of the files exist already.
+                //
+
+                //
+                // Can we overwrite?
+                //
+
+                //
+                // Upload files in a background job, allowing
+                // cancellation.
+                //
+            }
+
+            MessageBox.Show(
+                this.View,
+                string.Join("\n", files));
+            return Task.CompletedTask;
+        }
+
+        public IEnumerable<FileInfo> GetDroppableFiles(object dropData)
+        {
+            if (dropData is IEnumerable<string> filePaths)
+            {
+                //
+                // Only allow dropping files, ignore directories.
+                //
+                return filePaths
+                    .Where(f => File.Exists(f))
+                    .Where(f => !File.GetAttributes(f).HasFlag(FileAttributes.Directory))
+                    .Select(f => new FileInfo(f))
+                    .ToList();
+            }
+            else
+            {
+                return Enumerable.Empty<FileInfo>();
             }
         }
 

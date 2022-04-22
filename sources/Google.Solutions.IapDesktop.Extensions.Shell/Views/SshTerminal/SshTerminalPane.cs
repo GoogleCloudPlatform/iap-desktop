@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -44,10 +45,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
     public class SshTerminalPane : TerminalPaneBase, ISshTerminalSession
     {
+        private readonly SshTerminalPaneViewModel viewModel;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
+
+        public SshTerminalPane()
+        {
+            // Constructor is for designer only.
+        }
 
         internal SshTerminalPane(
             IServiceProvider serviceProvider,
@@ -66,8 +73,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     language,
                     connectionTimeout))
         {
-            var viewModel = (SshTerminalPaneViewModel)this.ViewModel;
-            viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
+            this.viewModel = (SshTerminalPaneViewModel)this.ViewModel;
+            this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
+
+            this.AllowDrop = true;
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.SshTerminalPane_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.SshTerminalPane_DragEnter);
         }
 
         private void OnAuthenticationPrompt(object sender, AuthenticationPromptEventArgs e)
@@ -100,6 +111,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             IMainForm mainForm)
         {
             return mainForm.MainPanel.ActiveDocument as SshTerminalPane;
+        }
+
+        //---------------------------------------------------------------------
+        // Window events.
+        //---------------------------------------------------------------------
+
+        private void SshTerminalPane_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
+                this.viewModel
+                    .GetDroppableFiles(e.Data.GetData(DataFormats.FileDrop))
+                    .Any())
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+        }
+
+        private async void SshTerminalPane_DragDrop(object sender, DragEventArgs e)
+        {
+            await InvokeActionAsync(
+                    () =>
+                    {
+                        var files = this.viewModel.GetDroppableFiles(
+                            e.Data.GetData(DataFormats.FileDrop));
+
+                        return this.viewModel.UploadFilesAsync(files);
+                    },
+                    "Uploading files")
+                .ConfigureAwait(true);
         }
     }
 }

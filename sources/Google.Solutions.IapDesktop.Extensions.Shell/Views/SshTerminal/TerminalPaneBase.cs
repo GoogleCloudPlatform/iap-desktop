@@ -72,6 +72,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Ctor.
         //---------------------------------------------------------------------
 
+        public TerminalPaneBase()
+        {
+            // Constructor is for designer only.
+        }
+
         internal TerminalPaneBase(
             IServiceProvider serviceProvider,
             TerminalPaneViewModelBase viewModel)
