@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.DataReceived?.Invoke(this, args);
         }
 
-        protected void OnDataSent(DataEventArgs args) // TODO: make private
+        protected void OnDataSent(DataEventArgs args)
         {
             // Keep buffer if DEBUG or tracing enabled.
 #if DEBUG

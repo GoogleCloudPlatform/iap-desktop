@@ -307,8 +307,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
         }
 
-        public async Task UploadFilesAsync(IEnumerable<FileInfo> files)
+        public async Task<bool> UploadFilesAsync(IEnumerable<FileInfo> files)
         {
+            if (this.sshChannel == null)
+            {
+                return false;
+            }
+
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(files))
             {
                 using (var fsChannel = await this.sshChannel.Connection
@@ -332,27 +337,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
                     var conflicts = existingFileNames.Intersect(fileNamesToUpload);
 
-                    //
-                    // Can we overwrite?
-                    //
+                    var message = "Are you sure you want to upload the following " +
+                        $"file(s) to {this.Instance.Name}?\n\n - " +
+                        string.Join("\n - ", fileNamesToUpload);
                     if (conflicts.Any())
                     {
-                        if (this.confirmationDialog.Confirm(
-                            this.View,
-                            "The following files already exist on the server:\n\n - " + 
-                                string.Join("\n - ", conflicts) + 
-                                "\n\nDo you want to override the existing files?",
-                            "Upload") != DialogResult.Yes)
-                        {
-                            return;
-                        }
+                        message +=
+                            "\n\nThe following files already exist on the server and will be replaced:\n\n - " +
+                            string.Join("\n - ", conflicts);
+                    }
+
+                    if (this.confirmationDialog.Confirm(this.View, message, "Upload") != DialogResult.Yes)
+                    {
+                        return false;
                     }
 
                     //
                     // Upload files in a background job, allowing
                     // cancellation.
                     //
-                    await this.jobService.RunInBackground<object>(
+                    return await this.jobService.RunInBackground<bool>(
                         new JobDescription($"Uploading files to {this.Instance.Name}"),
                         async cancellationToken =>
                         {
@@ -364,13 +368,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                                             file.Name,  // Relative path -> place in home directory
                                             fileStream,
                                             LIBSSH2_FXF_FLAGS.TRUNC | LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
-                                            FilePermissions.OwnerRead | FilePermissions.OwnerWrite, // TODO: sane default?
+                                            FilePermissions.OwnerRead | FilePermissions.OwnerWrite,
                                             cancellationToken)
                                         .ConfigureAwait(false);
                                 }
                             }
 
-                            return null;
+                            return true;
                         })
                         .ConfigureAwait(true);
                 }

@@ -118,7 +118,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             InstanceLocator instance,
             ICredential credential,
             SshKeyType keyType,
-            CultureInfo language = null)
+            CultureInfo language = null,
+            IConfirmationDialog confirmationDialog = null)
         {
             var authorizedKey = await CreateAuthorizedKeyAsync(
                     instance,
@@ -132,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             return new SshTerminalPaneViewModel(
                 eventService,
                 new SynchronousJobService(),
-                new Mock<IConfirmationDialog>().Object,
+                confirmationDialog ?? new Mock<IConfirmationDialog>().Object,
                 instance,
                 new IPEndPoint(address, 22),
                 authorizedKey,
@@ -376,17 +377,69 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileExistsAndOverwriteDenied_ThenUploadIsCancelled()
+        public async Task WhenFileExistsAndOverwriteDenied_ThenUploadIsCancelled(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            await Task.Yield();
-            Assert.Fail();
-        }
+            var confirmationDialog = new Mock<IConfirmationDialog>();
+            var eventService = new Mock<IEventService>();
 
-        [Test]
-        public async Task WhenFileExistsAndOverwriteConfirmed_ThenUploadSucceeds()
-        {
-            await Task.Yield();
-            Assert.Fail();
+            using (var window = new Form())
+            using (var viewModel = await CreateViewModelAsync(
+                    eventService.Object,
+                    await instanceLocatorTask,
+                    await credential,
+                    SshKeyType.Rsa3072,
+                    null,
+                    confirmationDialog.Object)
+                .ConfigureAwait(true))
+            {
+                viewModel.View = window;
+
+                await viewModel
+                    .ConnectAsync(new TerminalSize(80, 24))
+                    .ConfigureAwait(false);
+
+                var tempFilePath = Path.Combine(
+                    Path.GetTempPath(),
+                    $"{Guid.NewGuid()}.txt");
+                File.WriteAllText(tempFilePath, "some data");
+
+                //
+                // First upload -> file does not exist yet.
+                //
+                confirmationDialog
+                    .Setup(d => d.Confirm(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>()))
+                    .Returns(DialogResult.Yes);
+
+                var uploaded = await viewModel
+                    .UploadFilesAsync(new[] { new FileInfo(tempFilePath) })
+                    .ConfigureAwait(true);
+
+                Assert.IsTrue(uploaded);
+
+                //
+                // Second upload -> file exists.
+                //
+                confirmationDialog
+                    .Setup(d => d.Confirm(
+                        It.IsAny<IWin32Window>(),
+                        It.Is<string>(m => m.Contains("exist")),
+                        It.IsAny<string>()))
+                    .Returns(DialogResult.No); // Don't overwrite.
+
+                uploaded = await viewModel
+                    .UploadFilesAsync(new[] { new FileInfo(tempFilePath) })
+                    .ConfigureAwait(true);
+                Assert.IsFalse(uploaded);
+            }
+
+            await SshWorkerThread
+                .JoinAllWorkerThreadsAsync()
+                .ConfigureAwait(false);
         }
     }
 }
