@@ -26,7 +26,9 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Test.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
@@ -47,8 +49,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
     public class TestSshTerminalSessionBroker : WindowTestFixtureBase
     {
         [SetUp]
-        public void SetUpTerminalSettingsRepository()
+        public void SetUpServices()
         {
+            this.serviceRegistry.AddMock<IConfirmationDialog>();
+
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             this.serviceRegistry.AddSingleton(new TerminalSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath)));

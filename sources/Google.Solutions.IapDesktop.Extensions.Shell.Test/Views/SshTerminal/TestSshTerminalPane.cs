@@ -26,8 +26,10 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
@@ -70,6 +72,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ConfigureAwait(true);
                 return instance.PublicAddress();
             }
+        }
+
+        [SetUp]
+        public void SetUpServices()
+        {
+            this.serviceRegistry.AddMock<IConfirmationDialog>();
         }
 
         private async Task<SshTerminalPane> ConnectSshTerminalPane(

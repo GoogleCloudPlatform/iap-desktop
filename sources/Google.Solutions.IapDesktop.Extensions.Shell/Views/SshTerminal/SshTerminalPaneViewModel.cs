@@ -34,9 +34,11 @@ using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -56,6 +58,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly AuthorizedKeyPair authorizedKey;
         private readonly TimeSpan connectionTimeout;
         private RemoteShellChannel sshChannel = null;
+        private IConfirmationDialog confirmationDialog;
+        private readonly IJobService jobService;
 
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
 
@@ -65,6 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         public SshTerminalPaneViewModel(
             IEventService eventService,
+            IJobService jobService,
+            IConfirmationDialog confirmationDialog,
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKeyPair authorizedKey,
@@ -72,6 +78,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             TimeSpan connectionTimeout)
             : base(eventService, vmInstance)
         {
+            this.jobService = jobService;
+            this.confirmationDialog = confirmationDialog;
             this.endpoint = endpoint;
             this.authorizedKey = authorizedKey;
             this.language = language;
@@ -296,6 +304,99 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     await this.sshChannel.ResizeTerminalAsync(newSize)
                         .ConfigureAwait(false);
                 }
+            }
+        }
+
+        public async Task<bool> UploadFilesAsync(IEnumerable<FileInfo> files)
+        {
+            if (this.sshChannel == null)
+            {
+                return false;
+            }
+
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(files))
+            {
+                using (var fsChannel = await this.sshChannel.Connection
+                    .OpenFileSystemAsync()
+                    .ConfigureAwait(true))
+                {
+                    //
+                    // Check if any of the files exist already.
+                    //
+                    var allFilesInHomeDir = await fsChannel
+                        .ListFilesAsync(".")
+                        .ConfigureAwait(true);
+
+                    var existingFileNames = allFilesInHomeDir
+                        .Where(f => !f.IsDirectory)
+                        .Select(f => f.Name)
+                        .ToHashSet();
+
+                    var fileNamesToUpload = files
+                        .Select(f => f.Name);
+
+                    var conflicts = existingFileNames.Intersect(fileNamesToUpload);
+
+                    var message = "Are you sure you want to upload the following " +
+                        $"file(s) to {this.Instance.Name}?\n\n - " +
+                        string.Join("\n - ", fileNamesToUpload);
+                    if (conflicts.Any())
+                    {
+                        message +=
+                            "\n\nThe following files already exist on the server and will be replaced:\n\n - " +
+                            string.Join("\n - ", conflicts);
+                    }
+
+                    if (this.confirmationDialog.Confirm(this.View, message, "Upload") != DialogResult.Yes)
+                    {
+                        return false;
+                    }
+
+                    //
+                    // Upload files in a background job, allowing
+                    // cancellation.
+                    //
+                    return await this.jobService.RunInBackground<bool>(
+                        new JobDescription($"Uploading files to {this.Instance.Name}"),
+                        async cancellationToken =>
+                        {
+                            foreach (var file in files)
+                            {
+                                using (var fileStream = file.OpenRead())
+                                {
+                                    await fsChannel.UploadFileAsync(
+                                            file.Name,  // Relative path -> place in home directory
+                                            fileStream,
+                                            LIBSSH2_FXF_FLAGS.TRUNC | LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
+                                            FilePermissions.OwnerRead | FilePermissions.OwnerWrite,
+                                            cancellationToken)
+                                        .ConfigureAwait(false);
+                                }
+                            }
+
+                            return true;
+                        })
+                        .ConfigureAwait(true);
+                }
+            }
+        }
+
+        public static IEnumerable<FileInfo> GetDroppableFiles(object dropData)
+        {
+            if (dropData is IEnumerable<string> filePaths)
+            {
+                //
+                // Only allow dropping files, ignore directories.
+                //
+                return filePaths
+                    .Where(f => File.Exists(f))
+                    .Where(f => !File.GetAttributes(f).HasFlag(FileAttributes.Directory))
+                    .Select(f => new FileInfo(f))
+                    .ToList();
+            }
+            else
+            {
+                return Enumerable.Empty<FileInfo>();
             }
         }
 

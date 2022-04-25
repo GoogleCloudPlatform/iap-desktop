@@ -77,14 +77,15 @@ namespace Google.Solutions.Common.Test.Threading
                 tokenSource.Cancel();
 
                 var ctx = new SingleThreadSynchronizationContext();
+
+                ctx.Pump(tokenSource.Token);
                 var thread = new Thread(_ =>
                 {
-                    ctx.Pump(tokenSource.Token);
+                    Assert.Throws<InvalidOperationException>(
+                        () => ctx.Pump(tokenSource.Token));
                 });
 
                 thread.Start();
-
-                ctx.Pump(tokenSource.Token);
                 thread.Join();
             }
         }
