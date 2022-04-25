@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         [SetUp]
-        public void SetUpMocks()
+        public void SetUpServices()
         {
             this.serviceRegistry.AddMock<IConfirmationDialog>();
         }
