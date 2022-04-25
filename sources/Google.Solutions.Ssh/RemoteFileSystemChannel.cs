@@ -120,8 +120,9 @@ namespace Google.Solutions.Ssh
                     // Upload the entire file as one operation, possibly
                     // blocking other channels.
                     //
-
-                    using (c.Session.AsBlocking())
+                    // Temporarily disable the timeout.
+                    //
+                    using (c.Session.AsBlocking(TimeSpan.Zero))
                     using (var file = this.nativeChannel.CreateFile(
                             remotePath,
                             flags,
@@ -161,8 +162,9 @@ namespace Google.Solutions.Ssh
                     // Upload the entire file as one operation, possibly
                     // blocking other channels.
                     //
-
-                    using (c.Session.AsBlocking())
+                    // Temporarily disable the timeout.
+                    //
+                    using (c.Session.AsBlocking(TimeSpan.Zero))
                     using (var file = this.nativeChannel.CreateFile(
                             remotePath,
                             LIBSSH2_FXF_FLAGS.READ,

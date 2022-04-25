@@ -130,6 +130,19 @@ namespace Google.Solutions.Ssh.Native
             return Disposable.For(() => this.IsBlocking = false);
         }
 
+        public IDisposable AsBlocking(TimeSpan timeout)
+        {
+            this.IsBlocking = true;
+            var previousTimeout = this.Timeout;
+
+            this.Timeout = timeout;
+            return Disposable.For(() =>
+            {
+                this.IsBlocking = false;
+                this.Timeout = previousTimeout;
+            });
+        }
+
         public IDisposable AsNonBlocking()
         {
             this.IsBlocking = false;
