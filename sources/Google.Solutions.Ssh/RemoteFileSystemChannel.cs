@@ -37,7 +37,13 @@ namespace Google.Solutions.Ssh
     /// </summary>
     public class RemoteFileSystemChannel : RemoteChannelBase
     {
-        internal const int CopyBufferSize = 16 * 1024;
+        //
+        // The buffer size determines the number of bytes written
+        // at once. IAP has a max write size of 16KB. Accounting
+        // for the overhead of SSH, this leaves a bit less than
+        // 16KB as a good write size.
+        //
+        internal const int CopyBufferSize = 15 * 1024;
 
         /// <summary>
         /// Channel handle, must only be accessed on worker thread.
