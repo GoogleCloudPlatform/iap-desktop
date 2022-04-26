@@ -37,7 +37,7 @@ namespace Google.Solutions.Ssh
     /// </summary>
     public class RemoteFileSystemChannel : RemoteChannelBase
     {
-        private const int CopyBufferSize = 8 * 1024;
+        internal const int CopyBufferSize = 16 * 1024;
 
         /// <summary>
         /// Channel handle, must only be accessed on worker thread.
@@ -122,7 +122,7 @@ namespace Google.Solutions.Ssh
                     //
                     // Temporarily disable the timeout.
                     //
-                    using (c.Session.AsBlocking(TimeSpan.Zero))
+                    using (c.Session.AsBlocking())
                     using (var file = this.nativeChannel.CreateFile(
                             remotePath,
                             flags,
@@ -164,7 +164,7 @@ namespace Google.Solutions.Ssh
                     //
                     // Temporarily disable the timeout.
                     //
-                    using (c.Session.AsBlocking(TimeSpan.Zero))
+                    using (c.Session.AsBlocking())
                     using (var file = this.nativeChannel.CreateFile(
                             remotePath,
                             LIBSSH2_FXF_FLAGS.READ,

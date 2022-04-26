@@ -530,7 +530,7 @@ namespace Google.Solutions.Ssh.Native
         [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int libssh2_sftp_write(
             SshSftpFileHandle channel,
-            byte[] buffer,
+            IntPtr buffer,
             IntPtr bufferSize);
 
         //---------------------------------------------------------------------

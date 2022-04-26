@@ -86,7 +86,12 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var authSession = connection.Authenticate(authenticator))
             using (var channel = authSession.OpenSftpChannel())
             {
-                var sendData = "The quick brown fox jumps over the lazy dog";
+                var sendData = new StringBuilder();
+                for (int i = 0; i < 500; i++)
+                {
+                    sendData.Append(i);
+                    sendData.Append("The quick brown fox jumps over the lazy dog\n");
+                }
 
                 var fileName = Guid.NewGuid().ToString();
 
@@ -97,9 +102,8 @@ namespace Google.Solutions.Ssh.Test.Native
                         FilePermissions.OwnerRead |
                         FilePermissions.OtherWrite))
                 {
-                    var buffer = Encoding.ASCII.GetBytes(sendData);
-                    var bytesWritten = file.Write(buffer, buffer.Length);
-                    Assert.AreEqual(buffer.Length, bytesWritten);
+                    var buffer = Encoding.ASCII.GetBytes(sendData.ToString());
+                    file.Write(buffer, buffer.Length);
                 }
 
                 using (var file = channel.CreateFile(
@@ -112,13 +116,13 @@ namespace Google.Solutions.Ssh.Test.Native
                     var receiveData = new StringBuilder();
 
                     uint bytesRead = 0;
-                    var tinyBuffer = new byte[16];
+                    var tinyBuffer = new byte[128];
                     while ((bytesRead = file.Read(tinyBuffer)) > 0)
                     {
                         receiveData.Append(Encoding.ASCII.GetString(tinyBuffer, 0, (int)bytesRead));
                     }
 
-                    Assert.AreEqual(sendData, receiveData.ToString());
+                    Assert.AreEqual(sendData.ToString(), receiveData.ToString());
                 }
             }
         }
