@@ -92,7 +92,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public uint Write(byte[] buffer, int length)
+        public void Write(byte[] buffer, int length)
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(buffer, nameof(buffer));
@@ -101,18 +101,52 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(length))
             {
-                var bytesWritten = UnsafeNativeMethods.libssh2_sftp_write(
-                    this.fileHandle,
-                    buffer,
-                    new IntPtr(length));
+                //
+                // NB. libssh2 doesn't guarantee that all data is written
+                // at once. 
+                //
+                var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                try
+                {
 
-                if (bytesWritten >= 0)
-                {
-                    return (uint)bytesWritten;
+                    int totalBytesWritten = 0;
+                    while (totalBytesWritten < length)
+                    {
+                        var bytesWritten = UnsafeNativeMethods.libssh2_sftp_write(
+                            this.fileHandle,
+                            Marshal.UnsafeAddrOfPinnedArrayElement(buffer, totalBytesWritten),
+                            new IntPtr(length - totalBytesWritten));
+                        Debug.Assert(bytesWritten != 0);
+
+                        if (bytesWritten >= 0)
+                        {
+                            totalBytesWritten += bytesWritten;
+
+                            SshTraceSources.Default.TraceVerbose(
+                                "SFTP wrote {0} bytes, {1} left",
+                                bytesWritten,
+                                length - totalBytesWritten);
+                        }
+                        if (bytesWritten == (int)LIBSSH2_ERROR.TIMEOUT)
+                        {
+                            SshTraceSources.Default.TraceVerbose(
+                                "SFTP write timed out after writing {0} bytes, retrying",
+                                totalBytesWritten);
+                            continue;
+                        }
+                        else if (bytesWritten < 0)
+                        {
+                            SshTraceSources.Default.TraceWarning(
+                                "SFTP write failed after {0} bytes",
+                                totalBytesWritten);
+
+                            throw CreateException((LIBSSH2_ERROR)bytesWritten);
+                        }
+                    }
                 }
-                else
+                finally
                 {
-                    throw CreateException((LIBSSH2_ERROR)bytesWritten);
+                    handle.Free();
                 }
             }
         }
