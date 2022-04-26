@@ -239,6 +239,7 @@ namespace Google.Solutions.Ssh
 
             if (exception != null)
             {
+                SshTraceSources.Default.TraceError(exception);
                 throw exception;
             }
             else

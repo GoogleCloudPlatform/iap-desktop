@@ -99,7 +99,7 @@ namespace Google.Solutions.Ssh.Native
 
             Debug.Assert(length <= buffer.Length);
 
-            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            using (SshTraceSources.Default.TraceMethod().WithParameters(length))
             {
                 var bytesWritten = UnsafeNativeMethods.libssh2_sftp_write(
                     this.fileHandle,
