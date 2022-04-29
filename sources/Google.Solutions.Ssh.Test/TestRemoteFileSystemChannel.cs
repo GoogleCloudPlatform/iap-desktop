@@ -182,6 +182,7 @@ namespace Google.Solutions.Ssh.Test
                             data,
                             LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
                             FilePermissions.OtherRead | FilePermissions.OwnerWrite,
+                            new Progress<uint>(),
                             CancellationToken.None)
                         .ConfigureAwait(false);
                 }
@@ -220,6 +221,7 @@ namespace Google.Solutions.Ssh.Test
                                 data,
                                 LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
                                 FilePermissions.OtherRead | FilePermissions.OwnerWrite,
+                                new Progress<uint>(),
                                 CancellationToken.None)
                             .Wait());
                 }
@@ -262,6 +264,7 @@ namespace Google.Solutions.Ssh.Test
                                 data,
                                 LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
                                 FilePermissions.OtherRead | FilePermissions.OwnerWrite,
+                                new Progress<uint>(),
                                 cts.Token)
                             .Wait());
                 }
@@ -300,6 +303,7 @@ namespace Google.Solutions.Ssh.Test
                     await channel.DownloadFileAsync(
                             "/etc/passwd",
                             data,
+                            new Progress<uint>(),
                             CancellationToken.None)
                         .ConfigureAwait(false);
 
@@ -338,6 +342,7 @@ namespace Google.Solutions.Ssh.Test
                         () => channel.DownloadFileAsync(
                                 "/this/file-does-not-exist.txt",
                                 data,
+                                new Progress<uint>(),
                                 CancellationToken.None)
                             .Wait());
                 }
@@ -376,6 +381,7 @@ namespace Google.Solutions.Ssh.Test
                         () => channel.DownloadFileAsync(
                                 "/etc/passwd",
                                 data,
+                                new Progress<uint>(),
                                 cts.Token)
                             .Wait());
                 }

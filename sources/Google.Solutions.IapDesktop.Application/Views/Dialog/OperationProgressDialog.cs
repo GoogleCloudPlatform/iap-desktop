@@ -71,15 +71,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
             ulong totalItems,
             ulong totalSize)
         {
+            var flags =
+                UnsafeNativeMethods.PROGDLG.OPDONTDISPLAYSOURCEPATH |
+                UnsafeNativeMethods.PROGDLG.OPDONTDISPLAYSOURCEPATH |
+                UnsafeNativeMethods.PROGDLG.OPDONTDISPLAYLOCATIONS |
+                (owner != null
+                    ? UnsafeNativeMethods.PROGDLG.MODAL
+                    : UnsafeNativeMethods.PROGDLG.NORMAL);
+
             return new Operation(
                 owner, 
                 totalItems, 
                 totalSize, 
                 UnsafeNativeMethods.SPACTION.COPYING, 
-                UnsafeNativeMethods.PDMODE.DEFAULT, 
-                owner != null 
-                    ? UnsafeNativeMethods.PROGDLG.MODAL 
-                    : UnsafeNativeMethods.PROGDLG.NORMAL);
+                UnsafeNativeMethods.PDMODE.RUN, 
+                flags);
         }
 
         //---------------------------------------------------------------------
@@ -129,11 +135,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     Activator.CreateInstance(
                         Type.GetTypeFromCLSID(new Guid(CLSID_ProgressDialog)));
 
-                this.dialog.SetOperation(operation);
-                this.dialog.SetMode(mode);
                 this.dialog.StartProgressDialog(
                     owner.Handle,
                     flags);
+                this.dialog.SetOperation(operation);
+                this.dialog.SetMode(mode);
 
                 this.cancellationTokenSource = new CancellationTokenSource();
             }

@@ -356,27 +356,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     // Upload files in a background job, allowing
                     // cancellation.
                     //
-                    return await this.jobService.RunInBackground<bool>(
-                        new JobDescription($"Uploading files to {this.Instance.Name}"),
-                        async cancellationToken =>
-                        {
-                            foreach (var file in files)
+                    // TODO: use injection
+                    using (var progressDialog = new OperationProgressDialog().ShowCopyDialog(
+                        this.View,
+                        (ulong)files.Count(),
+                        (ulong)files.Sum(f => f.Length)))
+                    {
+                        return await this.jobService.RunInBackground<bool>(
+                            new JobDescription(
+                                $"Uploading files to {this.Instance.Name}",
+                                JobUserFeedbackType.BackgroundFeedback),
+                            async _ =>
                             {
-                                using (var fileStream = file.OpenRead())
+                                foreach (var file in files)
                                 {
-                                    await fsChannel.UploadFileAsync(
-                                            file.Name,  // Relative path -> place in home directory
-                                            fileStream,
-                                            LIBSSH2_FXF_FLAGS.TRUNC | LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
-                                            FilePermissions.OwnerRead | FilePermissions.OwnerWrite,
-                                            cancellationToken)
-                                        .ConfigureAwait(false);
-                                }
-                            }
+                                    using (var fileStream = file.OpenRead())
+                                    {
+                                        await fsChannel.UploadFileAsync(
+                                                file.Name,  // Relative path -> place in home directory
+                                                fileStream,
+                                                LIBSSH2_FXF_FLAGS.TRUNC | LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
+                                                FilePermissions.OwnerRead | FilePermissions.OwnerWrite,
+                                                new Progress<uint>(delta => progressDialog.OnBytesCompleted(delta)),
+                                                progressDialog.CancellationToken)
+                                            .ConfigureAwait(false);
+                                    }
 
-                            return true;
-                        })
-                        .ConfigureAwait(true);
+                                    progressDialog.OnItemCompleted();
+                                }
+
+                                return true;
+                            })
+                            .ConfigureAwait(true);
+                    }
                 }
             }
         }
