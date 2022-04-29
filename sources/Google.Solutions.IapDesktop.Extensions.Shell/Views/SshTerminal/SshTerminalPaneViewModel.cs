@@ -58,7 +58,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly AuthorizedKeyPair authorizedKey;
         private readonly TimeSpan connectionTimeout;
         private RemoteShellChannel sshChannel = null;
-        private IConfirmationDialog confirmationDialog;
+        private readonly IConfirmationDialog confirmationDialog;
+        private readonly IOperationProgressDialog operationProgressDialog;
         private readonly IJobService jobService;
 
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
@@ -71,6 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             IEventService eventService,
             IJobService jobService,
             IConfirmationDialog confirmationDialog,
+            IOperationProgressDialog operationProgressDialog,
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKeyPair authorizedKey,
@@ -80,6 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             this.jobService = jobService;
             this.confirmationDialog = confirmationDialog;
+            this.operationProgressDialog = operationProgressDialog;
             this.endpoint = endpoint;
             this.authorizedKey = authorizedKey;
             this.language = language;
@@ -353,11 +356,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     }
 
                     //
-                    // Upload files in a background job, allowing
-                    // cancellation.
+                    // Upload files in a background job. For better UX, wrao 
+                    // the background job using the Shell progress dialog.
                     //
-                    // TODO: use injection
-                    using (var progressDialog = new OperationProgressDialog().ShowCopyDialog(
+                    using (var progressDialog = this.operationProgressDialog.ShowCopyDialog(
                         this.View,
                         (ulong)files.Count(),
                         (ulong)files.Sum(f => f.Length)))

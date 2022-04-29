@@ -113,8 +113,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                 }
 
                 this.dialog.UpdateProgress(
-                    0,
-                    0,
+                    this.sizeCompleted,
+                    this.totalSize,
                     this.sizeCompleted,
                     this.totalSize,
                     this.itemsCompleted,
