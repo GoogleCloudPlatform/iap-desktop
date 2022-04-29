@@ -618,13 +618,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             {
                 LeaveFullScreen();
 
+                //
+                // Force focus back to outer window. This ensures that after the pane is
+                // closed, the focus can move to the next remaining pane.
+                //
+                // If we don't do this, the next remaining pane won't invalidate/repaint
+                // properly.
+                // 
+                this.MainForm.MainPanel.Focus();
+
                 if (!this.connecting && e.IsTimeout)
                 {
+                    //
                     // An already-established connection timed out, this is common when
                     // connecting to Windows 10 VMs.
                     //
                     // NB. The same error code can occur during the initial connection,
                     // but then it should be treated as an error.
+                    //
 
                     this.reconnectPanel.Visible = true;
                 }
@@ -635,7 +646,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 else
                 {
                     await ShowErrorAndClose("Disconnected", e)
-                        .ConfigureAwait(true); ;
+                        .ConfigureAwait(true);
                 }
             }
         }
