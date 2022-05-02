@@ -341,16 +341,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     var conflicts = existingFileNames.Intersect(fileNamesToUpload);
 
                     var message = "Are you sure you want to upload the following " +
-                        $"file(s) to {this.Instance.Name}?\n\n - " +
-                        string.Join("\n - ", fileNamesToUpload);
+                        $"file(s) to your home directory on {this.Instance.Name}?\n\n - " +
+                        string.Join("\n - ", fileNamesToUpload.Select(s => s.Truncate(30)));
                     if (conflicts.Any())
                     {
                         message +=
                             "\n\nThe following files already exist on the server and will be replaced:\n\n - " +
-                            string.Join("\n - ", conflicts);
+                            string.Join("\n - ", conflicts.Select(s => s.Truncate(30)));
                     }
 
-                    if (this.confirmationDialog.Confirm(this.View, message, "Upload") != DialogResult.Yes)
+                    if (this.confirmationDialog.Confirm(
+                        this.View, 
+                        message,
+                        $"Upload file(s) to {this.Instance.Name}") != DialogResult.Yes)
                     {
                         return false;
                     }

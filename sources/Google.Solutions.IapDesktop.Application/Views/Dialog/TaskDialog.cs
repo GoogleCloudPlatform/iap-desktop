@@ -44,6 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
 
     public static class TaskDialogIcons
     {
+        public static readonly IntPtr TD_WARNING_ICON = new IntPtr(65535);
         public static readonly IntPtr TD_ERROR_ICON = new IntPtr(65534);
         public static readonly IntPtr TD_INFORMATION_ICON = new IntPtr(65533);
         public static readonly IntPtr TD_SHIELD_ICON = new IntPtr(65532);
