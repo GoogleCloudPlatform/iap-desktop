@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public void SetUpServices()
         {
             this.serviceRegistry.AddMock<IConfirmationDialog>();
+            this.serviceRegistry.AddMock<IOperationProgressDialog>();
 
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             this.serviceRegistry.AddSingleton(new TerminalSettingsRepository(
