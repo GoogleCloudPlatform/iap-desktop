@@ -19,6 +19,9 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
+using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Dialog
@@ -30,13 +33,41 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
 
     public class ConfirmationDialog : IConfirmationDialog
     {
-        public DialogResult Confirm(IWin32Window parent, string text, string caption)
+        public DialogResult Confirm(IWin32Window parent, string message, string caption)
         {
-            return MessageBox.Show(
-                parent,
-                text,
-                caption,
-                MessageBoxButtons.YesNoCancel);
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(caption, message))
+            {
+                var config = new UnsafeNativeMethods.TASKDIALOGCONFIG()
+                {
+                    cbSize = (uint)Marshal.SizeOf(typeof(UnsafeNativeMethods.TASKDIALOGCONFIG)),
+                    hwndParent = parent?.Handle ?? IntPtr.Zero,
+                    dwFlags = 0,
+                    dwCommonButtons = 
+                        UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_YES_BUTTON |
+                        UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_NO_BUTTON,
+                    pszWindowTitle = "Confirmation required",
+                    pszMainInstruction = caption,
+                    pszContent = message
+                };
+
+                UnsafeNativeMethods.TaskDialogIndirect(
+                    ref config,
+                    out int buttonPressed,
+                    out int _,
+                    out bool __);
+
+                switch (buttonPressed)
+                {
+                    case UnsafeNativeMethods.IDYES:
+                        return DialogResult.Yes;
+
+                    case UnsafeNativeMethods.IDNO:
+                        return DialogResult.No;
+
+                    default:
+                        return DialogResult.Abort;
+                }
+            }
         }
     }
 }
