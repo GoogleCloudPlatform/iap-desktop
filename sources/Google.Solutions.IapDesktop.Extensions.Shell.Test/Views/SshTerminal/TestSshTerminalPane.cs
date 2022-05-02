@@ -78,6 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public void SetUpServices()
         {
             this.serviceRegistry.AddMock<IConfirmationDialog>();
+            this.serviceRegistry.AddMock<IOperationProgressDialog>();
         }
 
         private async Task<SshTerminalPane> ConnectSshTerminalPane(

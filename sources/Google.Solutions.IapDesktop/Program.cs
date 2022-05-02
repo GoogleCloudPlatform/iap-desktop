@@ -293,6 +293,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
             windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
             windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
+            windowAndWorkflowLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
             windowAndWorkflowLayer.AddSingleton<IProjectModelService, ProjectModelService>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();

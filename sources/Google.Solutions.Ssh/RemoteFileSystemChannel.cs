@@ -119,10 +119,12 @@ namespace Google.Solutions.Ssh
             Stream source,
             LIBSSH2_FXF_FLAGS flags,
             FilePermissions permissions,
+            IProgress<uint> progress,
             CancellationToken cancellationToken)
         {
             Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
             Utilities.ThrowIfNull(source, nameof(source));
+            Utilities.ThrowIfNull(progress, nameof(progress));
 
             Debug.Assert(source.CanRead);
 
@@ -151,6 +153,8 @@ namespace Google.Solutions.Ssh
                             cancellationToken.ThrowIfCancellationRequested();
 
                             file.Write(buffer, bytesRead);
+
+                            progress.Report((uint)bytesRead);
                         }
 
                         return bytesRead;
@@ -161,10 +165,12 @@ namespace Google.Solutions.Ssh
         public Task DownloadFileAsync(
             string remotePath,
             Stream target,
+            IProgress<uint> progress,
             CancellationToken cancellationToken)
         {
             Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
             Utilities.ThrowIfNull(target, nameof(target));
+            Utilities.ThrowIfNull(progress, nameof(progress));
 
             Debug.Assert(target.CanWrite);
 
@@ -193,6 +199,8 @@ namespace Google.Solutions.Ssh
                             cancellationToken.ThrowIfCancellationRequested();
 
                             target.Write(buffer, 0, (int)bytesRead);
+
+                            progress.Report((uint)bytesRead);
                         }
 
                         return bytesRead;

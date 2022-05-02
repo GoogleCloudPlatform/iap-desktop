@@ -130,10 +130,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var address = await PublicAddressFromLocator(instance)
                 .ConfigureAwait(true);
 
+            var progressOperation = new Mock<IOperation>();
+            progressOperation
+                .SetupGet(p => p.CancellationToken)
+                .Returns(CancellationToken.None);
+            var progressDialog = new Mock<IOperationProgressDialog>();
+            progressDialog
+                .Setup(d => d.ShowCopyDialog(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<ulong>(),
+                    It.IsAny<ulong>()))
+                .Returns(progressOperation.Object);
+
             return new SshTerminalPaneViewModel(
                 eventService,
                 new SynchronousJobService(),
                 confirmationDialog ?? new Mock<IConfirmationDialog>().Object,
+                progressDialog.Object,
                 instance,
                 new IPEndPoint(address, 22),
                 authorizedKey,
@@ -296,7 +309,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .ConfigureAwait(false);
         }
 
-
         [Test]
         public async Task WhenConnectionFails_ThenEventFires(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
@@ -320,6 +332,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     eventService.Object,
                     new SynchronousJobService(),
                     new Mock<IConfirmationDialog>().Object,
+                    new Mock<IOperationProgressDialog>().Object,
                     instance,
                     new IPEndPoint(address, 22),
                     nonAuthorizedKey,
