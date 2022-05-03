@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,21 +19,28 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Google.Solutions.Ssh.Native
+namespace Google.Solutions.Ssh.Format
 {
     /// <summary>
-    /// Buffer for writing SSH-structured data,
+    /// Writer for SSH-structured data,
     /// see RFC4251 section 5.
     /// </summary>
-    internal sealed class SshDataBuffer : IDisposable
+    internal class SshWriter : IDisposable
     {
-        private readonly MemoryStream buffer = new MemoryStream();
+        private readonly Stream stream;
+
+        public SshWriter(Stream stream)
+        {
+            this.stream = stream.ThrowIfNull(nameof(stream));
+        }
 
         private void WriteRaw(int i)
         {
@@ -43,18 +50,18 @@ namespace Google.Solutions.Ssh.Native
                 Array.Reverse(bytes);
             }
 
-            this.buffer.Write(bytes, 0, 4);
+            this.stream.Write(bytes, 0, 4);
         }
 
         private void WriteRaw(byte b)
         {
-            this.buffer.Write(new byte[] { b }, 0, 1);
+            this.stream.Write(new byte[] { b }, 0, 1);
         }
 
         public void WriteBytes(byte[] bytes)
         {
             WriteRaw(bytes.Length);
-            this.buffer.Write(bytes, 0, bytes.Length);
+            this.stream.Write(bytes, 0, bytes.Length);
         }
 
         public void WriteString(string s)
@@ -85,19 +92,29 @@ namespace Google.Solutions.Ssh.Native
                     WriteRaw(bigEndian.Length);
                 }
 
-                this.buffer.Write(bigEndian, 0, bigEndian.Length);
+                this.stream.Write(bigEndian, 0, bigEndian.Length);
             }
         }
 
-        public byte[] ToArray()
+        public void Flush() => this.stream.Flush();
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        protected virtual void Dispose(bool disposing)
         {
-            this.buffer.Flush();
-            return this.buffer.ToArray();
+            if (disposing)
+            {
+                this.stream.Flush();
+            }
         }
 
         public void Dispose()
         {
-            this.buffer.Dispose();
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

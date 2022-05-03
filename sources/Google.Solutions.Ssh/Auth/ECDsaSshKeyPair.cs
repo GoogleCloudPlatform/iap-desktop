@@ -20,9 +20,11 @@
 //
 
 using Google.Solutions.Ssh.Cryptography;
+using Google.Solutions.Ssh.Format;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 
@@ -91,7 +93,8 @@ namespace Google.Solutions.Ssh.Auth
 
         public byte[] GetPublicKey()
         {
-            using (var writer = new SshDataBuffer())
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
             {
                 //
                 // Encode public key according to RFC5656 section 3.1.
@@ -100,7 +103,9 @@ namespace Google.Solutions.Ssh.Auth
                 writer.WriteString(this.Type);
                 writer.WriteString("nistp" + this.key.KeySize);
                 writer.WriteBytes(this.key.EncodePublicKey());
-                return writer.ToArray();
+                writer.Flush();
+
+                return buffer.ToArray();
             }
         }
 

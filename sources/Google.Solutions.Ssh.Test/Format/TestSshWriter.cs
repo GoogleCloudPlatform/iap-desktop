@@ -20,28 +20,31 @@
 //
 
 using Google.Solutions.Ssh.Cryptography;
+using Google.Solutions.Ssh.Format;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace Google.Solutions.Ssh.Test
+namespace Google.Solutions.Ssh.Test.Format
 {
     [TestFixture]
-    public class TestSshDataBuffer
+    public class TestSshWriter
     {
         [Test]
         public void EmptyString()
         {
-            using (var buffer = new SshDataBuffer())
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
             {
-                buffer.WriteString(string.Empty);
+                writer.WriteString(string.Empty);
+                writer.Flush();
 
                 Assert.AreEqual(
                     new byte[] { 0, 0, 0, 0 },
@@ -52,9 +55,11 @@ namespace Google.Solutions.Ssh.Test
         [Test]
         public void NonEmptyString()
         {
-            using (var buffer = new SshDataBuffer())
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
             {
-                buffer.WriteString("a");
+                writer.WriteString("a");
+                writer.Flush();
 
                 Assert.AreEqual(
                     new byte[] { 0, 0, 0, 1, (byte)'a' },
@@ -65,9 +70,11 @@ namespace Google.Solutions.Ssh.Test
         [Test]
         public void MpintZero()
         {
-            using (var buffer = new SshDataBuffer())
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
             {
-                buffer.WriteMpint(new byte[] { 0 });
+                writer.WriteMpint(new byte[] { 0 });
+                writer.Flush();
 
                 Assert.AreEqual(
                     new byte[] { 0, 0, 0, 0 },
@@ -78,9 +85,11 @@ namespace Google.Solutions.Ssh.Test
         [Test]
         public void MpintNegative()
         {
-            using (var buffer = new SshDataBuffer())
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
             {
-                buffer.WriteMpint(new[] { (byte)0x80 });
+                writer.WriteMpint(new[] { (byte)0x80 });
+                writer.Flush();
 
                 Assert.AreEqual(
                     new byte[] { 0, 0, 0, 2, 0, 0x80 },

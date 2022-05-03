@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Auth\SshKeyPair.cs" />
     <Compile Include="Cryptography\ECDsaExtensions.cs" />
+    <Compile Include="Format\SshWriter.cs" />
     <Compile Include="RemoteFileSystemChannel.cs" />
     <Compile Include="ITextTerminal.cs" />
     <Compile Include="Native\FilePermissions.cs" />
@@ -83,7 +84,6 @@
     <Compile Include="Native\SshSftpFileChannel.cs" />
     <Compile Include="RemoteConnection.cs" />
     <Compile Include="RemoteShellChannel.cs" />
-    <Compile Include="Native\SshDataBuffer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Auth\ISshKeyPair.cs" />
     <Compile Include="Native\EnvironmentVariable.cs" />

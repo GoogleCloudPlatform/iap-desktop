@@ -20,9 +20,11 @@
 //
 
 using Google.Solutions.Ssh.Cryptography;
+using Google.Solutions.Ssh.Format;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -57,7 +59,8 @@ namespace Google.Solutions.Ssh.Auth
 
         public byte[] GetPublicKey()
         {
-            using (var writer = new SshDataBuffer())
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
             {
                 //
                 // Encode public key according to RFC4253 section 6.6.
@@ -75,7 +78,9 @@ namespace Google.Solutions.Ssh.Auth
                 writer.WriteString(this.Type);
                 writer.WriteMpint(parameters.Exponent);
                 writer.WriteMpint(paddedModulus);
-                return writer.ToArray();
+                writer.Flush();
+
+                return buffer.ToArray();
             }
         }
 
