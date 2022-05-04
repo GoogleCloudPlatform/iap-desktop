@@ -38,12 +38,73 @@ namespace Google.Solutions.Ssh.Test.Format
     public class TestSshWriter
     {
         [Test]
+        public void Byte()
+        {
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
+            {
+                writer.Write((byte)0x42);
+                writer.Flush();
+
+                Assert.AreEqual(
+                    new byte[] { 0x42 },
+                    buffer.ToArray());
+            }
+        }
+
+        [Test]
+        public void Boolean()
+        {
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
+            {
+                writer.Write(true);
+                writer.Write(false);
+                writer.Flush();
+
+                Assert.AreEqual(
+                    new byte[] { 1, 0 },
+                    buffer.ToArray());
+            }
+        }
+
+        [Test]
+        public void Uint()
+        {
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
+            {
+                writer.Write(0xAABBCCDD);
+                writer.Flush();
+
+                Assert.AreEqual(
+                    new byte[] { 0xAA, 0xBB, 0xCC, 0xDD },
+                    buffer.ToArray());
+            }
+        }
+
+        [Test]
+        public void Ulong()
+        {
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
+            {
+                writer.Write(0xAABBCCDD00112233);
+                writer.Flush();
+
+                Assert.AreEqual(
+                    new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x00, 0x11, 0x22, 0x33 },
+                    buffer.ToArray());
+            }
+        }
+
+        [Test]
         public void EmptyString()
         {
             using (var buffer = new MemoryStream())
             using (var writer = new SshWriter(buffer))
             {
-                writer.WriteString(string.Empty);
+                writer.Write(string.Empty);
                 writer.Flush();
 
                 Assert.AreEqual(
@@ -58,7 +119,7 @@ namespace Google.Solutions.Ssh.Test.Format
             using (var buffer = new MemoryStream())
             using (var writer = new SshWriter(buffer))
             {
-                writer.WriteString("a");
+                writer.Write("a");
                 writer.Flush();
 
                 Assert.AreEqual(
@@ -68,12 +129,12 @@ namespace Google.Solutions.Ssh.Test.Format
         }
 
         [Test]
-        public void MpintZero()
+        public void ZeroMultiPrecisionInteger()
         {
             using (var buffer = new MemoryStream())
             using (var writer = new SshWriter(buffer))
             {
-                writer.WriteMpint(new byte[] { 0 });
+                writer.WriteMultiPrecisionInteger(new byte[] { 0 });
                 writer.Flush();
 
                 Assert.AreEqual(
@@ -83,12 +144,12 @@ namespace Google.Solutions.Ssh.Test.Format
         }
 
         [Test]
-        public void MpintNegative()
+        public void NegativeMultiPrecisionInteger()
         {
             using (var buffer = new MemoryStream())
             using (var writer = new SshWriter(buffer))
             {
-                writer.WriteMpint(new[] { (byte)0x80 });
+                writer.WriteMultiPrecisionInteger(new[] { (byte)0x80 });
                 writer.Flush();
 
                 Assert.AreEqual(

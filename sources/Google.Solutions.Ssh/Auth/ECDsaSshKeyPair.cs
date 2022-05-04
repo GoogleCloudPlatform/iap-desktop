@@ -100,9 +100,9 @@ namespace Google.Solutions.Ssh.Auth
                 // Encode public key according to RFC5656 section 3.1.
                 //
 
-                writer.WriteString(this.Type);
-                writer.WriteString("nistp" + this.key.KeySize);
-                writer.WriteBytes(this.key.EncodePublicKey());
+                writer.Write(this.Type);
+                writer.Write("nistp" + this.key.KeySize);
+                writer.Write(this.key.EncodePublicKey());
                 writer.Flush();
 
                 return buffer.ToArray();

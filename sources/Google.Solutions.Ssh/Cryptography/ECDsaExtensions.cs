@@ -139,8 +139,8 @@ namespace Google.Solutions.Ssh.Cryptography
             using (var buffer = new MemoryStream())
             using (var writer = new SshWriter(buffer))
             {
-                writer.WriteMpint(this.R);
-                writer.WriteMpint(this.S);
+                writer.WriteMultiPrecisionInteger(this.R);
+                writer.WriteMultiPrecisionInteger(this.S);
                 writer.Flush();
 
                 return buffer.ToArray();
