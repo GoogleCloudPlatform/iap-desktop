@@ -31,15 +31,15 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Format
 {
     /// <summary>
-    /// Writer for SSH-structured data, see RFC4251 section 5.
+    /// Reader for SSH-structured data, see RFC4251 section 5.
     /// </summary>
-    internal class SshWriter : IDisposable
+    internal class SshReader
     {
         private readonly Stream stream;
 
-        public SshWriter(Stream stream)
+        public SshReader(Stream stream)
         {
-            Debug.Assert(stream.CanWrite);
+            Debug.Assert(stream.CanRead);
             this.stream = stream.ThrowIfNull(nameof(stream));
         }
 
@@ -47,17 +47,25 @@ namespace Google.Solutions.Ssh.Format
         // Publics.
         //---------------------------------------------------------------------
 
-        public void WriteByte(byte b)
+        public byte ReadByte()
         {
             //
             // A byte represents an arbitrary 8 - bit value(octet).Fixed length
             // data is sometimes represented as an array of bytes, written
             // byte[n], where n is the number of bytes in the array.
             //
-            this.stream.Write(new byte[] { b }, 0, 1);
+            var buffer = new byte[1];
+            if (this.stream.Read(buffer, 0, buffer.Length) == buffer.Length)
+            {
+                return buffer[0];
+            }
+            else
+            {
+                throw new EndOfStreamException();
+            }
         }
 
-        public void WriteBoolean(bool b)
+        public bool ReadBoolean()
         {
             //
             // A boolean value is stored as a single byte.The value 0
@@ -65,10 +73,10 @@ namespace Google.Solutions.Ssh.Format
             // values MUST be interpreted as TRUE; however, applications MUST NOT
             // store values other than 0 and 1.
             //
-            this.stream.Write(new byte[] { b ? (byte)1 : (byte)0 }, 0, 1);
+            return ReadByte() == 1;
         }
 
-        public void WriteUint32(uint i)
+        public uint ReadUint32()
         {
             //
             // Represents a 32 - bit unsigned integer.  Stored as four bytes in the
@@ -76,31 +84,59 @@ namespace Google.Solutions.Ssh.Format
             // example: the value 699921578(0x29b7f4aa) is stored as 29 b7 f4
             // aa.
             //
-            var bytes = BitConverter.GetBytes(i);
-            if (BitConverter.IsLittleEndian)
+            var buffer = new byte[4];
+            if (this.stream.Read(buffer, 0, buffer.Length) == buffer.Length)
             {
-                Array.Reverse(bytes);
-            }
+                if (BitConverter.IsLittleEndian)
+                {
+                    Array.Reverse(buffer);
+                }
 
-            this.stream.Write(bytes, 0, 4);
+                return BitConverter.ToUInt32(buffer, 0);
+            }
+            else
+            {
+                throw new EndOfStreamException();
+            }
         }
 
-        public void WriteUint64(ulong i)
+        public ulong ReadUint64()
         {
             //
             // Represents a 64 - bit unsigned integer.  Stored as eight bytes in
             // the order of decreasing significance(network byte order).
             //
-            var bytes = BitConverter.GetBytes(i);
-            if (BitConverter.IsLittleEndian)
+            var buffer = new byte[8];
+            if (this.stream.Read(buffer, 0, buffer.Length) == buffer.Length)
             {
-                Array.Reverse(bytes);
-            }
+                if (BitConverter.IsLittleEndian)
+                {
+                    Array.Reverse(buffer);
+                }
 
-            this.stream.Write(bytes, 0, 8);
+                return BitConverter.ToUInt64(buffer, 0);
+            }
+            else
+            {
+                throw new EndOfStreamException();
+            }
         }
 
-        public void WriteString(string s)
+        public byte[] ReadByteString()
+        {
+            var length = ReadUint32();
+            var buffer = new byte[length];
+            if (this.stream.Read(buffer, 0, buffer.Length) == buffer.Length)
+            {
+                return buffer;
+            }
+            else
+            {
+                throw new EndOfStreamException();
+            }
+        }
+
+        public string ReadString()
         {
             //
             // Arbitrary length binary string.Strings are allowed to contain
@@ -119,19 +155,10 @@ namespace Google.Solutions.Ssh.Format
             // string "testing" is represented as 00 00 00 07 t e s t i n g.The
             // UTF-8 mapping does not alter the encoding of US-ASCII characters.
             //
-            WriteString(Encoding.ASCII.GetBytes(s));
+            return Encoding.ASCII.GetString(ReadByteString());
         }
 
-        public void WriteString(byte[] bytes)
-        {
-            //
-            // Write variable-length byte array as a string.
-            //
-            WriteUint32((uint)bytes.Length);
-            this.stream.Write(bytes, 0, bytes.Length);
-        }
-
-        public void WriteMultiPrecisionInteger(byte[] bigEndian)
+        public IEnumerable<byte> ReadMultiPrecisionInteger()
         {
             // 
             // Represents multiple precision integers in two's complement format,
@@ -143,55 +170,30 @@ namespace Google.Solutions.Ssh.Format
             // included.  The value zero MUST be stored as a string with zero
             // bytes of data.
             // 
-            
-            var startIndex = Array.FindIndex(bigEndian, b => b != 0);
-            if (startIndex < 0)
+            var length = ReadUint32();
+            if (length == 0)
             {
-                //
-                // All zeros.
-                //
-                WriteUint32((uint)0);
+                return new byte[] { 0 };
             }
             else
             {
-                if ((bigEndian[startIndex] & 0x80) == 128)
+                var buffer = new byte[length];
+                if (this.stream.Read(buffer, 0, buffer.Length) == buffer.Length)
                 {
-                    //
-                    // If the most significant bit would be set for
-                    // a positive number, the number MUST be preceded
-                    // by a zero byte.
-                    //
-                    WriteUint32((uint)(bigEndian.Length - startIndex + 1));
-                    WriteByte((byte)0);
+                    if (buffer[0] == 0)
+                    {
+                        return buffer.Skip(1);
+                    }
+                    else
+                    {
+                        return buffer;
+                    }
                 }
                 else
                 {
-                    WriteUint32((uint)(bigEndian.Length - startIndex));
+                    throw new EndOfStreamException();
                 }
-
-                this.stream.Write(bigEndian, startIndex, bigEndian.Length - startIndex);
             }
-        }
-
-        public void Flush() => this.stream.Flush();
-
-        //---------------------------------------------------------------------
-        // IDisposable.
-        //---------------------------------------------------------------------
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.stream.Flush();
-            }
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }

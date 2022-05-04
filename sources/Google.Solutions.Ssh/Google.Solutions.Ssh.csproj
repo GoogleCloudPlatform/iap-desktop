@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Auth\SshKeyPair.cs" />
     <Compile Include="Cryptography\ECDsaExtensions.cs" />
+    <Compile Include="Format\SshReader.cs" />
     <Compile Include="Format\SshWriter.cs" />
     <Compile Include="RemoteFileSystemChannel.cs" />
     <Compile Include="ITextTerminal.cs" />

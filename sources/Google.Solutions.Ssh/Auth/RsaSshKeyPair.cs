@@ -75,7 +75,7 @@ namespace Google.Solutions.Ssh.Auth
                     .Concat(parameters.Modulus)
                     .ToArray();
 
-                writer.Write(this.Type);
+                writer.WriteString(this.Type);
                 writer.WriteMultiPrecisionInteger(parameters.Exponent);
                 writer.WriteMultiPrecisionInteger(paddedModulus);
                 writer.Flush();
