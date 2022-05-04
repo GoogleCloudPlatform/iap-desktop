@@ -72,11 +72,11 @@ namespace Google.Solutions.Ssh.Auth
                 // |     384 < b    |     SHA-512    |
                 // +----------------+----------------+
                 //
-                if (key.KeySize <= 256)
+                if (this.key.KeySize <= 256)
                 {
                     return HashAlgorithmName.SHA256;
                 }
-                else if (key.KeySize <= 384)
+                else if (this.key.KeySize <= 384)
                 {
                     return HashAlgorithmName.SHA384;
                 }

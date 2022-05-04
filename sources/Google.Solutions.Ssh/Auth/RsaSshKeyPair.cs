@@ -65,19 +65,11 @@ namespace Google.Solutions.Ssh.Auth
                 //
                 // Encode public key according to RFC4253 section 6.6.
                 //
-                var parameters = key.ExportParameters(false);
-
-                //
-                // Pad modulus with a leading zero, 
-                // cf https://www.cameronmoten.com/2017/12/21/rsacryptoserviceprovider-create-a-ssh-rsa-public-key/
-                //
-                var paddedModulus = (new byte[] { 0 })
-                    .Concat(parameters.Modulus)
-                    .ToArray();
+                var parameters = this.key.ExportParameters(false);
 
                 writer.WriteString(this.Type);
                 writer.WriteMultiPrecisionInteger(parameters.Exponent);
-                writer.WriteMultiPrecisionInteger(paddedModulus);
+                writer.WriteMultiPrecisionInteger(parameters.Modulus);
                 writer.Flush();
 
                 return buffer.ToArray();
