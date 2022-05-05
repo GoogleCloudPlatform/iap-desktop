@@ -104,11 +104,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Format\TestSshReader.cs" />
     <Compile Include="IEnumerable.cs" />
     <Compile Include="Native\TestSshSftpChannel.cs" />
     <Compile Include="Native\TestSshSftpFileChannel.cs" />
     <Compile Include="TestRemoteFileSystemChannel.cs" />
-    <Compile Include="TestSshDataBuffer.cs" />
+    <Compile Include="Format\TestSshWriter.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Native\InitializeScripts.cs" />
     <Compile Include="Native\TestEnvironmentVariable.cs" />

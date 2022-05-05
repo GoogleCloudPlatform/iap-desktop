@@ -20,9 +20,11 @@
 //
 
 using Google.Solutions.Ssh.Cryptography;
+using Google.Solutions.Ssh.Format;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -57,25 +59,20 @@ namespace Google.Solutions.Ssh.Auth
 
         public byte[] GetPublicKey()
         {
-            using (var writer = new SshDataBuffer())
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
             {
                 //
                 // Encode public key according to RFC4253 section 6.6.
                 //
-                var parameters = key.ExportParameters(false);
-
-                //
-                // Pad modulus with a leading zero, 
-                // cf https://www.cameronmoten.com/2017/12/21/rsacryptoserviceprovider-create-a-ssh-rsa-public-key/
-                //
-                var paddedModulus = (new byte[] { 0 })
-                    .Concat(parameters.Modulus)
-                    .ToArray();
+                var parameters = this.key.ExportParameters(false);
 
                 writer.WriteString(this.Type);
-                writer.WriteMpint(parameters.Exponent);
-                writer.WriteMpint(paddedModulus);
-                return writer.ToArray();
+                writer.WriteMultiPrecisionInteger(parameters.Exponent);
+                writer.WriteMultiPrecisionInteger(parameters.Modulus);
+                writer.Flush();
+
+                return buffer.ToArray();
             }
         }
 

@@ -19,10 +19,12 @@
 // under the License.
 //
 
+using Google.Solutions.Ssh.Format;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -134,10 +136,13 @@ namespace Google.Solutions.Ssh.Cryptography
         /// <returns></returns>
         public byte[] ToSshBlob()
         {
-            using (var buffer = new SshDataBuffer())
+            using (var buffer = new MemoryStream())
+            using (var writer = new SshWriter(buffer))
             {
-                buffer.WriteMpint(this.R);
-                buffer.WriteMpint(this.S);
+                writer.WriteMultiPrecisionInteger(this.R);
+                writer.WriteMultiPrecisionInteger(this.S);
+                writer.Flush();
+
                 return buffer.ToArray();
             }
         }
