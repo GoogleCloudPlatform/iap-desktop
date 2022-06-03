@@ -40,9 +40,6 @@ namespace Google.Solutions.IapDesktop.Application.Util
         // HRESULT_FROM_WIN32(ERROR_PIPE_BUSY)
         private const int E_PIPE_BUSY = -2147024665;
 
-        // HRESULT_FROM_WIN32(ERROR_BROKEN_PIPE)
-        private const int E_BROKEN_PIPE = -2147024787;
-
         public string Name { get; }
 
         protected string MutexName => $"Local\\{Name}_{Environment.UserName}";
@@ -114,10 +111,11 @@ namespace Google.Solutions.IapDesktop.Application.Util
                     }
                 }
             }
-            catch (IOException e) when (e.HResult == E_BROKEN_PIPE)
+            catch (IOException e)
             {
                 ApplicationTraceSources.Default.TraceError(
-                    "Singleton: Failed to communicate with mutex owner (broken pipe)");
+                    "Singleton: Failed to communicate with mutex owner ({0})",
+                    e.Message);
 
                 //
                 // Ignore the existing instance and start a new instance.
