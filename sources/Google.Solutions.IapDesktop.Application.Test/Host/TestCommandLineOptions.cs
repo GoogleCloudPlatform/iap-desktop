@@ -35,7 +35,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             Assert.IsFalse(options.IsLoggingEnabled);
             Assert.IsNull(options.StartupUrl);
+            Assert.IsNull(options.Profile);
         }
+
+        //---------------------------------------------------------------------
+        // /url.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenUrlSpecified_ThenParseReturnsValidOptions()
@@ -97,6 +102,50 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             Assert.Throws<InvalidCommandLineException>(
                 () => CommandLineOptions.Parse(
                     new[] { "/url", "iap-rdp:///project-1/us-central1-a/vm-1", "/ debug" }));
+        }
+
+        //---------------------------------------------------------------------
+        // /profile.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProfileSpecified_ThenParseReturnsValidOptions()
+        {
+            var options = CommandLineOptions.Parse(
+                new[] { "/profile", "profile-1" });
+
+            Assert.AreEqual("profile-1", options.Profile);
+        }
+
+        [Test]
+        public void WhenProfileAndDebugAndUrlSpecified_ThenParseReturnsValidOptions()
+        {
+            var options = CommandLineOptions.Parse(
+                new[] { 
+                    "/url", "iap-rdp:///project-1/us-central1-a/vm-1", 
+                    "/debug",
+                    "/profile", "profile-1"});
+
+            Assert.IsTrue(options.IsLoggingEnabled);
+            Assert.IsNotNull(options.StartupUrl);
+            Assert.AreEqual("profile-1", options.Profile);
+        }
+
+        [Test]
+        public void WhenProfileMissesArgument_ThenParseRaisesInvalidCommandLineException()
+        {
+            Assert.Throws<InvalidCommandLineException>(
+                () => CommandLineOptions.Parse(
+                    new[] { "/profile" }));
+        }
+
+        [Test]
+        public void WhenProfileIsEmpty_ThenProfileIsIgnored()
+        {
+            var options = CommandLineOptions.Parse(
+                new[] { "/profile", " " });
+            Assert.IsNull(options.Profile);
+
         }
     }
 }

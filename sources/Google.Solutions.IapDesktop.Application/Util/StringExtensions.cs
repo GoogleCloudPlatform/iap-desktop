@@ -57,5 +57,15 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 ? value
                 : value.Substring(0, maxChars) + "...";
         }
+
+        public static string NullIfEmpty(this string s)
+        {
+            return string.IsNullOrEmpty(s) ? null : s;
+        }
+
+        public static string NullIfEmptyOrWhitespace(this string s)
+        {
+            return string.IsNullOrWhiteSpace(s) ? null : s;
+        }
     }
 }
