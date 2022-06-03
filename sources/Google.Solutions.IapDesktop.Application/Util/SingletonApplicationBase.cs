@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Diagnostics;
@@ -36,6 +37,12 @@ namespace Google.Solutions.IapDesktop.Application.Util
 {
     public abstract class SingletonApplicationBase
     {
+        // HRESULT_FROM_WIN32(ERROR_PIPE_BUSY)
+        private const int E_PIPE_BUSY = -2147024665;
+
+        // HRESULT_FROM_WIN32(ERROR_BROKEN_PIPE)
+        private const int E_BROKEN_PIPE = -2147024787;
+
         public string Name { get; }
 
         protected string MutexName => $"Local\\{Name}_{Environment.UserName}";
@@ -107,8 +114,21 @@ namespace Google.Solutions.IapDesktop.Application.Util
                     }
                 }
             }
+            catch (IOException e) when (e.HResult == E_BROKEN_PIPE)
+            {
+                ApplicationTraceSources.Default.TraceError(
+                    "Singleton: Failed to communicate with mutex owner (broken pipe)");
+
+                //
+                // Ignore the existing instance and start a new instance.
+                //
+                return HandleFirstInvocation(args);
+            }
             catch (UnauthorizedAccessException)
             {
+                ApplicationTraceSources.Default.TraceError(
+                    "Singleton: Failed to access mutex");
+
                 //
                 // Failed to access mutex. Most likely, that's because the Mutex
                 // has been created at a different integrity level (for ex, the first
@@ -187,6 +207,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
                     PipeAccessRights.FullControl,
                     AccessControlType.Allow));
 
+            int failedPipeAttempts = 0;
             while (true)
             {
                 try
@@ -201,6 +222,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
                         0,
                         pipeSecurity))
                     {
+                        failedPipeAttempts = 0;
                         await pipe.WaitForConnectionAsync(token).ConfigureAwait(false);
 
                         //
@@ -239,6 +261,22 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 catch (TaskCanceledException)
                 {
                     return;
+                }
+                catch (IOException e) when (e.HResult == E_PIPE_BUSY)
+                {
+                    //
+                    // Trying to create a new pipe before the previous one
+                    // has been properly closed. Retry.
+                    //
+                    if (++failedPipeAttempts > 3)
+                    {
+                        ApplicationTraceSources.Default.TraceError(e);
+                        return;
+                    }
+                    else
+                    {
+                        await Task.Delay(50);
+                    }
                 }
                 catch (IOException e)
                 {
