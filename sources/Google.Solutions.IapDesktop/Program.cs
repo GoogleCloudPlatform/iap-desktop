@@ -158,15 +158,19 @@ namespace Google.Solutions.IapDesktop
         private MainForm initializedMainForm = null;
         private readonly ManualResetEvent mainFormInitialized = new ManualResetEvent(false);
 
-        internal Program() : base("IapDesktop")
+        private readonly CommandLineOptions commandLineOptions;
+
+        internal Program(
+            string name,
+            CommandLineOptions commandLineOptions) 
+            : base(name)
         {
+            this.commandLineOptions = commandLineOptions;
         }
 
         protected override int HandleFirstInvocation(string[] args)
         {
-            var options = CommandLineOptions.ParseOrExit(args);
-
-            IsLoggingEnabled = options.IsLoggingEnabled;
+            IsLoggingEnabled = this.commandLineOptions.IsLoggingEnabled;
 
             //
             // Set up process mitigations. This must be done early, otherwise it's
@@ -240,7 +244,7 @@ namespace Google.Solutions.IapDesktop
             // 
             // Persistence layer.
             //
-            using (var profile = LoadProfileOrExit(options))
+            using (var profile = LoadProfileOrExit(this.commandLineOptions))
             {
                 persistenceLayer.AddSingleton(profile);
 
@@ -267,7 +271,7 @@ namespace Google.Solutions.IapDesktop
 
                 var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
                 {
-                    StartupUrl = options.StartupUrl
+                    StartupUrl = this.commandLineOptions.StartupUrl
                 };
 
                 //
@@ -397,13 +401,26 @@ namespace Google.Solutions.IapDesktop
         [STAThread]
         static void Main(string[] args)
         {
+            //
             // Parse command line to catch errors before even passing an invalid
             // command line to another instance of the app.
-            CommandLineOptions.ParseOrExit(args);
+            //
+            var options = CommandLineOptions.ParseOrExit(args);
 
             try
             {
-                new Program().Run(args);
+                var appName = "IapDesktop";
+                if (options.Profile != null)
+                {
+                    //
+                    // Incorporate the profile name (if provided) into the
+                    // name of the singleton app so that instances can 
+                    // coexist if thex use different profiles.
+                    //
+                    appName += $"_{options.Profile}";
+                }
+
+                new Program(appName, options).Run(args);
             }
             catch (Exception e)
             {
