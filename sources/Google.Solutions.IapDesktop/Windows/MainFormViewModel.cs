@@ -20,8 +20,10 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Util;
 using Google.Solutions.CloudIap;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
@@ -46,6 +48,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly DockPanelColorPalette colorPalette;
         private readonly AuthSettingsRepository authSettings;
         private readonly ApplicationSettingsRepository applicationSettings;
+        private readonly Profile profile;
 
         // NB. This list is only access from the UI thread, so no locking required.
         private readonly LinkedList<BackgroundJob> backgroundJobs
@@ -61,14 +64,19 @@ namespace Google.Solutions.IapDesktop.Windows
         public MainFormViewModel(
             Control view,
             DockPanelColorPalette colorPalette,
+            Profile profile,
             ApplicationSettingsRepository applicationSettings,
             AuthSettingsRepository authSettings)
         {
             this.View = view;
             this.colorPalette = colorPalette;
-
-            this.applicationSettings = applicationSettings;
-            this.authSettings = authSettings;
+            
+            this.profile = profile
+                .ThrowIfNull(nameof(profile));
+            this.applicationSettings = applicationSettings
+                .ThrowIfNull(nameof(applicationSettings));
+            this.authSettings = authSettings
+                .ThrowIfNull(nameof(authSettings));
         }
 
         //---------------------------------------------------------------------
@@ -280,9 +288,16 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Update window title so that it shows the current document.
             //
-            this.WindowTitle = title == null
+            var newTitle = title == null
                 ? Globals.FriendlyName
                 : $"{title} - {Globals.FriendlyName}";
+
+            if (!this.profile.IsDefault)
+            {
+                newTitle += $" ({this.profile.Name})";
+            }
+
+            this.WindowTitle = newTitle;
         }
 
         //---------------------------------------------------------------------
