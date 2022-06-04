@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenNameIsAlphanumeric_ThenIsValidProfileNameReturnsTrue()
         {
-            Assert.IsFalse(Profile.IsValidProfileName("This is a valid name"));
+            Assert.IsTrue(Profile.IsValidProfileName("This is a valid name"));
         }
 
         //---------------------------------------------------------------------
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenProfileDoesNotExist_ThenOpenProfileThrowsException()
         {
-            Assert.Throws<ArgumentException>(
+            Assert.Throws<ProfileNotFoundException>(
                 () => Profile.OpenProfile("This does not exist"));
         }
 
@@ -131,6 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 Assert.IsNotNull(profile);
                 Assert.AreEqual(TestProfileName, profile.Name);
                 Assert.IsFalse(profile.IsDefault);
+                Assert.IsNotNull(profile.SettingsKey);
             }
         }
 
@@ -160,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             
             Profile.DeleteProfile(TestProfileName);
 
-            Assert.Throws<ArgumentException>(
+            Assert.Throws<ProfileNotFoundException>(
                 () => Profile.OpenProfile(TestProfileName));
         }
 

@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 {
     public sealed class Profile : IDisposable
     {
-        private static readonly Regex ProfileNamePattern = new Regex(@"^[a-zA-Z0-9_\-]+$");
+        private static readonly Regex ProfileNamePattern = new Regex(@"^[a-zA-Z0-9_\-\ ]+$");
 
         /// <summary>
         /// Path containing profiles.
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         {
             if (name != null && !IsValidProfileName(name))
             {
-                throw new ArgumentException("Invalid profile name");
+                throw new ArgumentException($"Invalid profile name: {name}");
             }
 
             using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
@@ -123,10 +123,10 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     //
                     // Open existing profile.
                     //
-                    var settingsKey = hkcu.OpenSubKey($@"{ProfilesKeyPath}\{name}");
+                    var settingsKey = hkcu.OpenSubKey($@"{ProfilesKeyPath}\{name}", true);
                     if (settingsKey == null)
                     {
-                        throw new ArgumentException("Unknown profile: " + name);
+                        throw new ProfileNotFoundException("Unknown profile: " + name);
                     }
 
                     return new Profile()
@@ -177,6 +177,14 @@ namespace Google.Solutions.IapDesktop.Application.Host
             this.SettingsKey.Dispose();
             this.UserPolicyKey?.Dispose();
             this.MachinePolicyKey?.Dispose();
+        }
+    }
+
+    public class ProfileNotFoundException : Exception
+    {
+        public ProfileNotFoundException(string message)
+            : base(message)
+        {
         }
     }
 }
