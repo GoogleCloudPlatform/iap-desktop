@@ -86,6 +86,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         }
 
         [Test]
+        public void WhenProfileNameIsNull_ThenCreateProfileThrowsException()
+        {
+            Assert.Throws<ArgumentException>(
+                () => Profile.CreateProfile(null));
+        }
+
+        [Test]
         public void WhenProfileExists_ThenCreateProfileOpensProfile()
         {
             Profile.CreateProfile(TestProfileName);
@@ -122,7 +129,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var profile = Profile.OpenProfile(TestProfileName))
             {
                 Assert.IsNotNull(profile);
+                Assert.AreEqual(TestProfileName, profile.Name);
+                Assert.IsFalse(profile.IsDefault);
             }
+        }
+
+        [Test]
+        public void WhenProfileNameIsNullThenOpenProfileReturnsDefaultProfile()
+        {
+            var profile = Profile.OpenProfile(null);
+            Assert.AreEqual("Default", profile.Name);
+            Assert.IsTrue(profile.IsDefault);
         }
 
         //---------------------------------------------------------------------

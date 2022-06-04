@@ -59,6 +59,13 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// </summary>
         public RegistryKey UserPolicyKey { get; private set; }
 
+        /// <summary>
+        /// Name of the profile.
+        /// </summary>
+        public string Name { get; private set; }
+
+        public bool IsDefault { get; private set; }
+
         private Profile()
         {
         }
@@ -73,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public static Profile CreateProfile(string name)
         {
-            if (name == null || !IsValidProfileName(name))
+            if (!IsValidProfileName(name))
             {
                 throw new ArgumentException("Invalid profile name");
             }
@@ -88,17 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public static Profile OpenProfile(string name)
         {
-            if (name == null)
-            {
-                //
-                // Open default profile. For backwards compatibility,
-                // this profile uses the registry key "1.0".
-                //
-                // Auto-create profile if it doesn't exist.
-                //
-                return CreateProfile("1.0");
-            }
-            else if (!IsValidProfileName(name))
+            if (name != null && !IsValidProfileName(name))
             {
                 throw new ArgumentException("Invalid profile name");
             }
@@ -106,18 +103,41 @@ namespace Google.Solutions.IapDesktop.Application.Host
             using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
             using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default))
             {
-                var settingsKey = hkcu.OpenSubKey($@"{ProfilesKeyPath}\{name}");
-                if (settingsKey == null)
+                if (name == null)
                 {
-                    throw new ArgumentException("Unknown profile: " + name);
+                    //
+                    // Open or create default profile. For backwards compatbility
+                    // reasons, the default profile uses the key "1.0".
+                    //
+                    return new Profile()
+                    {
+                        Name = "Default",
+                        IsDefault = true,
+                        MachinePolicyKey = hklm.OpenSubKey(PoliciesKeyPath),
+                        UserPolicyKey = hkcu.OpenSubKey(PoliciesKeyPath),
+                        SettingsKey = hkcu.CreateSubKey($@"{ProfilesKeyPath}\1.0")
+                    };
                 }
-
-                return new Profile()
+                else
                 {
-                    MachinePolicyKey = hklm.OpenSubKey(PoliciesKeyPath),
-                    UserPolicyKey = hkcu.OpenSubKey(PoliciesKeyPath),
-                    SettingsKey = settingsKey
-                };
+                    //
+                    // Open existing profile.
+                    //
+                    var settingsKey = hkcu.OpenSubKey($@"{ProfilesKeyPath}\{name}");
+                    if (settingsKey == null)
+                    {
+                        throw new ArgumentException("Unknown profile: " + name);
+                    }
+
+                    return new Profile()
+                    {
+                        Name = name,
+                        IsDefault = false,
+                        MachinePolicyKey = hklm.OpenSubKey(PoliciesKeyPath),
+                        UserPolicyKey = hkcu.OpenSubKey(PoliciesKeyPath),
+                        SettingsKey = settingsKey
+                    };
+                }
             }
         }
 
