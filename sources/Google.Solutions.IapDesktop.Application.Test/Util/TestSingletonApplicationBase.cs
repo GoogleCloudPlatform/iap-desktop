@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             public string[] SubsequentInvocationArgs = null;
             public Exception SubsequentInvocationException = null;
 
-            public Singleton() : base(Guid.NewGuid().ToString())
+            public Singleton(string name) : base(name)
             {
             }
 
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
                 new [] {"one two", "three"}
             )] string[] args)
         {
-            var app = new Singleton();
+            var app = new Singleton(Guid.NewGuid().ToString());
             Task.Factory.StartNew(() =>
             {
                 app.Run(args);
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
                 new [] {"one two", "three"}
             )] string[] args)
         {
-            var app = new Singleton();
+            var app = new Singleton(Guid.NewGuid().ToString());
             Task.Factory.StartNew(() =>
             {
                 app.Run(new[] { "first", "app" });
@@ -131,9 +131,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         }
 
         [Test]
-        public void WhenHandleSubsequentInvocationFailed_ThenHandleSubsequentInvocationExceptionIsCalled()
+        public void WhenNameOnlyDiffersInCasing_ThenArgumentsArePassedToHandleSubsequentInvocation()
         {
-            Assert.Inconclusive();
+            var guid = Guid.NewGuid().ToString();
+            var first = new Singleton("TEST_" + guid);
+            Task.Factory.StartNew(() => first.Run(new[] { "first" }));
+            first.WaitTillRunning();
+
+            var second = new Singleton("test_" + guid);
+            Task.Factory.StartNew(() => second.Run(new[] { "second" }));
+
+            first.WaitTillRunning();
+            Assert.AreEqual(
+                new[] { "second" },
+                first.SubsequentInvocationArgs);
+
+            first.Quit();
+            second.Quit();
         }
     }
 }

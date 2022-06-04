@@ -37,13 +37,18 @@ namespace Google.Solutions.IapDesktop.Application.Util
 {
     public abstract class SingletonApplicationBase
     {
-        // HRESULT_FROM_WIN32(ERROR_PIPE_BUSY)
-        private const int E_PIPE_BUSY = -2147024665;
-
         public string Name { get; }
 
-        protected string MutexName => $"Local\\{Name}_{Environment.UserName}";
-        protected string PipeName => $"{Name}_{Environment.UserName}";
+        //
+        // NB. Mutex names are case-sensitive, but pipes aren't.
+        // Normalize casing to prevent a situation where a second
+        // instance can claim the mutex (because it uses a different
+        // casing) but then can't open another pipe server because
+        // the pipe name is taken (with a different casing).
+        //
+
+        protected string MutexName => $"Local\\{Name.ToLower()}_{Environment.UserName.ToLower()}";
+        protected string PipeName => $"{Name.ToLower()}_{Environment.UserName.ToLower()}";
 
         protected SingletonApplicationBase(string name)
         {
@@ -205,7 +210,6 @@ namespace Google.Solutions.IapDesktop.Application.Util
                     PipeAccessRights.FullControl,
                     AccessControlType.Allow));
 
-            int failedPipeAttempts = 0;
             while (true)
             {
                 try
@@ -220,7 +224,6 @@ namespace Google.Solutions.IapDesktop.Application.Util
                         0,
                         pipeSecurity))
                     {
-                        failedPipeAttempts = 0;
                         await pipe.WaitForConnectionAsync(token).ConfigureAwait(false);
 
                         //
@@ -259,22 +262,6 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 catch (TaskCanceledException)
                 {
                     return;
-                }
-                catch (IOException e) when (e.HResult == E_PIPE_BUSY)
-                {
-                    //
-                    // Trying to create a new pipe before the previous one
-                    // has been properly closed. Retry.
-                    //
-                    if (++failedPipeAttempts > 3)
-                    {
-                        ApplicationTraceSources.Default.TraceError(e);
-                        return;
-                    }
-                    else
-                    {
-                        await Task.Delay(50);
-                    }
                 }
                 catch (IOException e)
                 {
