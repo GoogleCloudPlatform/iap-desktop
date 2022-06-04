@@ -217,16 +217,16 @@ namespace Google.Solutions.IapDesktop
             var integrationLayer = new ServiceRegistry(adapterLayer);
             var windowAndWorkflowLayer = new ServiceRegistry(integrationLayer);
 
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default);
-
             // 
             // Persistence layer.
             //
+            var profile = Profile.OpenProfile(options.Profile);
+            persistenceLayer.AddSingleton(profile);
+
             var appSettingsRepository = new ApplicationSettingsRepository(
-                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Application"),
-                hklm.OpenSubKey($@"{Globals.PoliciesKeyPath}\Application"),
-                hkcu.OpenSubKey($@"{Globals.PoliciesKeyPath}\Application"));
+                profile.SettingsKey.CreateSubKey("Application"),
+                profile.MachinePolicyKey?.OpenSubKey("Application"),
+                profile.UserPolicyKey?.OpenSubKey("Application"));
             if (appSettingsRepository.IsPolicyPresent)
             {
                 //
@@ -239,9 +239,9 @@ namespace Google.Solutions.IapDesktop
             persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
             persistenceLayer.AddSingleton(appSettingsRepository);
             persistenceLayer.AddSingleton(new ToolWindowStateRepository(
-                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\ToolWindows")));
+                profile.SettingsKey.CreateSubKey("ToolWindows")));
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
-                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Auth"),
+                profile.SettingsKey.CreateSubKey("Auth"),
                 SignInAdapter.StoreUserId));
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
@@ -280,7 +280,7 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IEventService>(eventService);
             integrationLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
             integrationLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
-                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Inventory")));
+                profile.SettingsKey.CreateSubKey("Inventory")));
 
             //
             // Window & workflow layer.

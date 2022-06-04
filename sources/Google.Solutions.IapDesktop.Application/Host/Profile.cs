@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Host
 {
-    internal sealed class Profile : IDisposable
+    public sealed class Profile : IDisposable
     {
         private static readonly Regex ProfileNamePattern = new Regex(@"^[a-zA-Z0-9_\-]+$");
 

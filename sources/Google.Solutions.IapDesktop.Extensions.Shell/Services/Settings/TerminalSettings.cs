@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
@@ -48,10 +49,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
             Utilities.ThrowIfNull(baseKey, nameof(baseKey));
         }
 
-        public TerminalSettingsRepository()
-            : this(RegistryKey
-                .OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default)
-                .CreateSubKey($@"{Globals.SettingsKeyPath}\Terminal"))
+        public TerminalSettingsRepository(Profile profile)
+            : this(profile.SettingsKey.CreateSubKey("Terminal"))
+        {
+        }
+
+        public TerminalSettingsRepository(IServiceProvider serviceProvider)
+            : this(serviceProvider.GetService<Profile>())
         {
         }
 
