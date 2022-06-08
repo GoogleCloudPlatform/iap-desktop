@@ -112,6 +112,7 @@
     <Compile Include="Controls\TextBoxExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Host\CommandLineOptions.cs" />
+    <Compile Include="Host\Profile.cs" />
     <Compile Include="ObjectModel\BindingExtensions.cs" />
     <Compile Include="ObjectModel\Command.cs" />
     <Compile Include="ObjectModel\CommandContainer.cs" />

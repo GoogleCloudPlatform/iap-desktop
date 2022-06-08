@@ -27,6 +27,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
     [TestFixture]
     public class TestStringExtensions
     {
+        //---------------------------------------------------------------------
+        // IndexOf.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenTextContainsChar_ThenIndexOfReturnsFirstIndex()
         {
@@ -40,6 +44,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             var text = "a a a";
             Assert.AreEqual(-1, text.IndexOf(c => char.IsDigit(c)));
         }
+
+        //---------------------------------------------------------------------
+        // LastIndexOf.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenTextContainsChar_ThenLastIndexOfReturnsLastIndex()
@@ -55,6 +63,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(-1, text.LastIndexOf(c => char.IsDigit(c)));
         }
 
+        //---------------------------------------------------------------------
+        // Truncate.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenStringShortEnough_ThenTruncateReturnsStringVerbatim()
         {
@@ -66,6 +78,63 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         public void WhenStringTooLong_ThenTruncateReturnsStringWithEllipsis()
         {
             Assert.AreEqual("abc...", "abcd".Truncate(3));
+        }
+
+        //---------------------------------------------------------------------
+        // NullIfEmpty.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenStringIsNull_ThenNullIfEmptyReturnsNull()
+        {
+            string s = null;
+            Assert.IsNull(s.NullIfEmpty());
+        }
+
+        [Test]
+        public void WhenStringIsEmpty_ThenNullIfEmptyReturnsNull()
+        {
+            string s = string.Empty;
+            Assert.IsNull(s.NullIfEmpty());
+        }
+
+        [Test]
+        public void WhenStringIsWhitespace_ThenNullIfEmptyReturnsString()
+        {
+            string s = " ";
+            Assert.AreEqual(" ", s.NullIfEmpty());
+        }
+
+        //---------------------------------------------------------------------
+        // NullIfEmptyOrWhitespace.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenStringIsNull_ThenNullIfEmptyOrWhitespaceReturnsNull()
+        {
+            string s = null;
+            Assert.IsNull(s.NullIfEmptyOrWhitespace());
+        }
+
+        [Test]
+        public void WhenStringIsEmpty_ThenNullIfEmptyOrWhitespaceReturnsNull()
+        {
+            string s = string.Empty;
+            Assert.IsNull(s.NullIfEmptyOrWhitespace());
+        }
+
+        [Test]
+        public void WhenStringIsWhitespace_ThenNullIfEmptyOrWhitespaceReturnsNull()
+        {
+            string s = " ";
+            Assert.IsNull(s.NullIfEmptyOrWhitespace());
+        }
+
+        [Test]
+        public void WhenStringIsNotWhitespace_ThenNullIfEmptyOrWhitespaceReturnsString()
+        {
+            string s = " a ";
+            Assert.AreEqual(" a ", s.NullIfEmptyOrWhitespace());
         }
     }
 }

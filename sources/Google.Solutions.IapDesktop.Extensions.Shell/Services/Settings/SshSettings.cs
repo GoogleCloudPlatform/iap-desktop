@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
@@ -41,28 +42,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
     [Service(ServiceLifetime.Singleton, ServiceVisibility.Global)]
     public class SshSettingsRepository : PolicyEnabledSettingsRepository<SshSettings>
     {
-        private static RegistryKey WithHive(
-            RegistryHive hive,
-            Func<RegistryKey, RegistryKey> openFunc)
-        {
-            using (var hiveKey = RegistryKey.OpenBaseKey(hive, RegistryView.Default))
-            {
-                return openFunc(hiveKey);
-            }
-        }
-
         public SshSettingsRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey) : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
+            Utilities.ThrowIfNull(settingsKey, nameof(settingsKey));
         }
 
-        public SshSettingsRepository()
+        public SshSettingsRepository(Profile profile)
             : this(
-                WithHive(RegistryHive.CurrentUser, hive => hive.CreateSubKey($@"{Globals.SettingsKeyPath}\Ssh")),
-                WithHive(RegistryHive.LocalMachine, hive => hive.OpenSubKey($@"{Globals.PoliciesKeyPath}\Ssh")),
-                WithHive(RegistryHive.CurrentUser, hive => hive.OpenSubKey($@"{Globals.PoliciesKeyPath}\Ssh")))
+                  profile.SettingsKey.CreateSubKey("Ssh"),
+                  profile.MachinePolicyKey?.OpenSubKey("Ssh"),
+                  profile.UserPolicyKey?.OpenSubKey("Ssh"))
+        {
+        }
+
+        public SshSettingsRepository(IServiceProvider serviceProvider)
+            : this(serviceProvider.GetService<Profile>())
         {
         }
 

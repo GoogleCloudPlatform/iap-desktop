@@ -27,8 +27,20 @@ namespace Google.Solutions.IapDesktop.Application.Host
 {
     public class CommandLineOptions
     {
+        /// <summary>
+        /// URL of VM to connect to (for browser integration).
+        /// </summary>
         public IapRdpUrl StartupUrl { get; private set; } = null;
+
+        /// <summary>
+        /// Enable logging.
+        /// </summary>
         public bool IsLoggingEnabled { get; private set; } = false;
+
+        /// <summary>
+        /// Custom profile to load.
+        /// </summary>
+        public string Profile { get; private set; } = null;
 
         private CommandLineOptions()
         {
@@ -46,11 +58,11 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 }
                 else if (args[i] == "/url" && i + 1 < args.Length)
                 {
-
+                    //
                     // Certain legacy browsers do not properly quote URLs when passing them
                     // as command line arguments. If the URL contains a space, it might be
                     // delivered as two separate arguments.
-
+                    //
                     var url = string.Join(" ", args[++i]).Trim();
 
                     try
@@ -62,6 +74,12 @@ namespace Google.Solutions.IapDesktop.Application.Host
                         throw new InvalidCommandLineException(
                             "Invalid startup URL:\n\n" + e.Message);
                     }
+                }
+                else if (args[i] == "/profile" && i + 1 < args.Length)
+                {
+                    options.Profile = args[++i]
+                        .Trim()
+                        .NullIfEmptyOrWhitespace();
                 }
                 else
                 {

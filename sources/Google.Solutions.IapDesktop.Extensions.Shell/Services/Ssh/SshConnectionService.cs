@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
@@ -68,8 +69,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly IAuthorizationSource authorizationSource;
         private readonly SshSettingsRepository sshSettingsRepository;
         private readonly IProjectModelService projectModelService;
-
-        private static string NullIfEmpty(string s) => string.IsNullOrEmpty(s) ? null : s;
 
         public SshConnectionService(IServiceProvider serviceProvider)
         {
@@ -201,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                                 vmNode.Instance,
                                 sshKey,
                                 TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue),
-                                NullIfEmpty(settings.SshUsername.StringValue),
+                                settings.SshUsername.StringValue.NullIfEmpty(),
                                 KeyAuthorizationMethods.All,
                                 token)
                             .ConfigureAwait(true);

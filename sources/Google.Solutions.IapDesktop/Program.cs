@@ -51,6 +51,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Forms;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
@@ -131,6 +132,25 @@ namespace Google.Solutions.IapDesktop
                 .Select(dllPath => Assembly.LoadFrom(dllPath));
         }
 
+        private static Profile LoadProfileOrExit(CommandLineOptions options)
+        {
+            try
+            {
+                return Profile.OpenProfile(options.Profile);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(
+                    e.Message,
+                    "Profile", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
+
+                Environment.Exit(1);
+                throw new InvalidOperationException();
+            }
+        }
+
         //---------------------------------------------------------------------
         // SingletonApplicationBase overrides.
         //---------------------------------------------------------------------
@@ -138,15 +158,19 @@ namespace Google.Solutions.IapDesktop
         private MainForm initializedMainForm = null;
         private readonly ManualResetEvent mainFormInitialized = new ManualResetEvent(false);
 
-        internal Program() : base("IapDesktop")
+        private readonly CommandLineOptions commandLineOptions;
+
+        internal Program(
+            string name,
+            CommandLineOptions commandLineOptions) 
+            : base(name)
         {
+            this.commandLineOptions = commandLineOptions;
         }
 
         protected override int HandleFirstInvocation(string[] args)
         {
-            var options = CommandLineOptions.ParseOrExit(args);
-
-            IsLoggingEnabled = options.IsLoggingEnabled;
+            IsLoggingEnabled = this.commandLineOptions.IsLoggingEnabled;
 
             //
             // Set up process mitigations. This must be done early, otherwise it's
@@ -217,124 +241,126 @@ namespace Google.Solutions.IapDesktop
             var integrationLayer = new ServiceRegistry(adapterLayer);
             var windowAndWorkflowLayer = new ServiceRegistry(integrationLayer);
 
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default);
-
             // 
             // Persistence layer.
             //
-            var appSettingsRepository = new ApplicationSettingsRepository(
-                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Application"),
-                hklm.OpenSubKey($@"{Globals.PoliciesKeyPath}\Application"),
-                hkcu.OpenSubKey($@"{Globals.PoliciesKeyPath}\Application"));
-            if (appSettingsRepository.IsPolicyPresent)
+            using (var profile = LoadProfileOrExit(this.commandLineOptions))
             {
+                persistenceLayer.AddSingleton(profile);
+
+                var appSettingsRepository = new ApplicationSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Application"),
+                    profile.MachinePolicyKey?.OpenSubKey("Application"),
+                    profile.UserPolicyKey?.OpenSubKey("Application"));
+                if (appSettingsRepository.IsPolicyPresent)
+                {
+                    //
+                    // If there are policies in place, mark the UA as
+                    // Enterprise-managed.
+                    //
+                    Globals.UserAgent.Extensions = "Enterprise";
+                }
+
+                persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
+                persistenceLayer.AddSingleton(appSettingsRepository);
+                persistenceLayer.AddSingleton(new ToolWindowStateRepository(
+                    profile.SettingsKey.CreateSubKey("ToolWindows")));
+                persistenceLayer.AddSingleton(new AuthSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Auth"),
+                    SignInAdapter.StoreUserId));
+
+                var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
+                {
+                    StartupUrl = this.commandLineOptions.StartupUrl
+                };
+
                 //
-                // If there are policies in place, mark the UA as
-                // Enterprise-managed.
+                // Adapter layer.
                 //
-                Globals.UserAgent.Extensions = "Enterprise";
-            }
+                adapterLayer.AddSingleton<IAuthorizationSource>(mainForm);
+                adapterLayer.AddSingleton<IJobHost>(mainForm);
+                adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
+                adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
+                adapterLayer.AddTransient<IWindowsCredentialAdapter, WindowsCredentialAdapter>();
+                adapterLayer.AddTransient<GithubAdapter>();
+                adapterLayer.AddTransient<BuganizerAdapter>();
+                adapterLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
-            persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
-            persistenceLayer.AddSingleton(appSettingsRepository);
-            persistenceLayer.AddSingleton(new ToolWindowStateRepository(
-                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\ToolWindows")));
-            persistenceLayer.AddSingleton(new AuthSettingsRepository(
-                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Auth"),
-                SignInAdapter.StoreUserId));
+                try
+                {
+                    // Activate proxy settings based on app settings.
+                    adapterLayer.GetService<IHttpProxyAdapter>().ActivateSettings(
+                        adapterLayer.GetService<ApplicationSettingsRepository>().GetSettings());
+                }
+                catch (Exception)
+                {
+                    // Settings invalid -> ignore.
+                }
 
-            var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
-            {
-                StartupUrl = options.StartupUrl
-            };
+                //
+                // Integration layer.
+                //
+                var eventService = new EventService(mainForm);
+                integrationLayer.AddSingleton<IJobService, JobService>();
+                integrationLayer.AddSingleton<IEventService>(eventService);
+                integrationLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
+                integrationLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
+                    profile.SettingsKey.CreateSubKey("Inventory")));
 
-            //
-            // Adapter layer.
-            //
-            adapterLayer.AddSingleton<IAuthorizationSource>(mainForm);
-            adapterLayer.AddSingleton<IJobHost>(mainForm);
-            adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
-            adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
-            adapterLayer.AddTransient<IWindowsCredentialAdapter, WindowsCredentialAdapter>();
-            adapterLayer.AddTransient<GithubAdapter>();
-            adapterLayer.AddTransient<BuganizerAdapter>();
-            adapterLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
-
-            try
-            {
-                // Activate proxy settings based on app settings.
-                adapterLayer.GetService<IHttpProxyAdapter>().ActivateSettings(
-                    adapterLayer.GetService<ApplicationSettingsRepository>().GetSettings());
-            }
-            catch (Exception)
-            {
-                // Settings invalid -> ignore.
-            }
-
-            //
-            // Integration layer.
-            //
-            var eventService = new EventService(mainForm);
-            integrationLayer.AddSingleton<IJobService, JobService>();
-            integrationLayer.AddSingleton<IEventService>(eventService);
-            integrationLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
-            integrationLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
-                hkcu.CreateSubKey($@"{Globals.SettingsKeyPath}\Inventory")));
-
-            //
-            // Window & workflow layer.
-            //
-            windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
-            windowAndWorkflowLayer.AddTransient<ICloudConsoleService, CloudConsoleService>();
-            windowAndWorkflowLayer.AddTransient<HelpService>();
-            windowAndWorkflowLayer.AddTransient<IProjectPickerWindow, ProjectPickerWindow>();
-            windowAndWorkflowLayer.AddTransient<AboutWindow>();
-            windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
-            windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
-            windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
-            windowAndWorkflowLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
-            windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
-            windowAndWorkflowLayer.AddSingleton<IProjectModelService, ProjectModelService>();
-            windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
-            windowAndWorkflowLayer.AddTransient<OptionsDialog>();
+                //
+                // Window & workflow layer.
+                //
+                windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
+                windowAndWorkflowLayer.AddTransient<ICloudConsoleService, CloudConsoleService>();
+                windowAndWorkflowLayer.AddTransient<HelpService>();
+                windowAndWorkflowLayer.AddTransient<IProjectPickerWindow, ProjectPickerWindow>();
+                windowAndWorkflowLayer.AddTransient<AboutWindow>();
+                windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
+                windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
+                windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
+                windowAndWorkflowLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
+                windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
+                windowAndWorkflowLayer.AddSingleton<IProjectModelService, ProjectModelService>();
+                windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
+                windowAndWorkflowLayer.AddTransient<OptionsDialog>();
 
 #if DEBUG
-            windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();
-            windowAndWorkflowLayer.AddSingleton<DebugDockingWindow>();
-            windowAndWorkflowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
-            windowAndWorkflowLayer.AddSingleton<DebugFullScreenPane>();
-            windowAndWorkflowLayer.AddSingleton<DebugFocusWindow>();
+                windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();
+                windowAndWorkflowLayer.AddSingleton<DebugDockingWindow>();
+                windowAndWorkflowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
+                windowAndWorkflowLayer.AddSingleton<DebugFullScreenPane>();
+                windowAndWorkflowLayer.AddSingleton<DebugFocusWindow>();
 #endif
-            //
-            // Extension layer.
-            //
-            var extensionLayer = new ServiceRegistry(windowAndWorkflowLayer);
-            foreach (var extension in LoadExtensionAssemblies())
-            {
-                extensionLayer.AddExtensionAssembly(extension);
+                //
+                // Extension layer.
+                //
+                var extensionLayer = new ServiceRegistry(windowAndWorkflowLayer);
+                foreach (var extension in LoadExtensionAssemblies())
+                {
+                    extensionLayer.AddExtensionAssembly(extension);
+                }
+
+                //
+                // Run app.
+                //
+                this.initializedMainForm = mainForm;
+                this.mainFormInitialized.Set();
+
+                //
+                // Replace the standard WinForms exception dialog.
+                //
+                System.Windows.Forms.Application.ThreadException += (_, exArgs)
+                    => ShowFatalError(exArgs.Exception);
+
+                System.Windows.Forms.Application.Run(mainForm);
+
+                //
+                // Ensure logs are flushed.
+                //
+                IsLoggingEnabled = false;
+
+                return 0;
             }
-
-            //
-            // Run app.
-            //
-            this.initializedMainForm = mainForm;
-            this.mainFormInitialized.Set();
-
-            //
-            // Replace the standard WinForms exception dialog.
-            //
-            System.Windows.Forms.Application.ThreadException += (_, exArgs)
-                => ShowFatalError(exArgs.Exception);
-
-            System.Windows.Forms.Application.Run(mainForm);
-
-            //
-            // Ensure logs are flushed.
-            //
-            IsLoggingEnabled = false;
-
-            return 0;
         }
 
         protected override int HandleSubsequentInvocation(string[] args)
@@ -375,13 +401,26 @@ namespace Google.Solutions.IapDesktop
         [STAThread]
         static void Main(string[] args)
         {
+            //
             // Parse command line to catch errors before even passing an invalid
             // command line to another instance of the app.
-            CommandLineOptions.ParseOrExit(args);
+            //
+            var options = CommandLineOptions.ParseOrExit(args);
 
             try
             {
-                new Program().Run(args);
+                var appName = "IapDesktop";
+                if (options.Profile != null)
+                {
+                    //
+                    // Incorporate the profile name (if provided) into the
+                    // name of the singleton app so that instances can 
+                    // coexist if thex use different profiles.
+                    //
+                    appName += $"_{options.Profile}";
+                }
+
+                new Program(appName, options).Run(args);
             }
             catch (Exception e)
             {

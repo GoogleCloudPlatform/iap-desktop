@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System;
 using System.Collections.Generic;
@@ -29,8 +30,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
     public abstract class EventBase
     {
-        private static string NullIfEmpty(string s) => string.IsNullOrEmpty(s) ? null : s;
-
         public abstract EventCategory Category { get; }
         public LogRecord LogRecord { get; }
 
@@ -88,10 +87,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
         }
 
         public string DeviceState
-            => NullIfEmpty(this.LogRecord.ProtoPayload?.Metadata?.Value<string>("device_state"));
+            => this.LogRecord
+                .ProtoPayload?
+                .Metadata?
+                .Value<string>("device_state")
+                .NullIfEmpty();
 
         public string DeviceId
-            => NullIfEmpty(this.LogRecord.ProtoPayload?.Metadata?.Value<string>("device_id"));
+            => this.LogRecord
+                .ProtoPayload?
+                .Metadata?
+                .Value<string>("device_id")
+                .NullIfEmpty();
 
         public abstract string Message { get; }
 

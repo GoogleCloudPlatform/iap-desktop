@@ -103,6 +103,7 @@
     <Compile Include="Controls\TestFontExtensions.cs" />
     <Compile Include="Controls\TestScreenPicker.cs" />
     <Compile Include="Controls\TestListViewExtensions.cs" />
+    <Compile Include="Host\TestProfile.cs" />
     <Compile Include="ObjectModel\MoqExtensions.cs" />
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
     <Compile Include="ObjectModel\TestCommandContainerForToolbar.cs" />
