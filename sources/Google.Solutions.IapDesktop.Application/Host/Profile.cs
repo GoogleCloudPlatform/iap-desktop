@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,10 @@ namespace Google.Solutions.IapDesktop.Application.Host
 {
     public sealed class Profile : IDisposable
     {
+        private const string DefaultProfileName = "Default";
+        private const string DefaultProfileKey = "1.0";
+        private const string ProfileKeyPrefix = DefaultProfileKey + ".";
+
         private static readonly Regex ProfileNamePattern = new Regex(@"^[a-zA-Z0-9_\-\ ]+$");
 
         /// <summary>
@@ -87,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
             using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
             {
-                hkcu.CreateSubKey($@"{ProfilesKeyPath}\{name}");
+                hkcu.CreateSubKey($@"{ProfilesKeyPath}\{ProfileKeyPrefix}{name}");
             }
 
             return OpenProfile(name);
@@ -111,11 +116,11 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     //
                     return new Profile()
                     {
-                        Name = "Default",
+                        Name = DefaultProfileName,
                         IsDefault = true,
                         MachinePolicyKey = hklm.OpenSubKey(PoliciesKeyPath),
                         UserPolicyKey = hkcu.OpenSubKey(PoliciesKeyPath),
-                        SettingsKey = hkcu.CreateSubKey($@"{ProfilesKeyPath}\1.0")
+                        SettingsKey = hkcu.CreateSubKey($@"{ProfilesKeyPath}\{DefaultProfileKey}")
                     };
                 }
                 else
@@ -123,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     //
                     // Open existing profile.
                     //
-                    var settingsKey = hkcu.OpenSubKey($@"{ProfilesKeyPath}\{name}", true);
+                    var settingsKey = hkcu.OpenSubKey($@"{ProfilesKeyPath}\{ProfileKeyPrefix}{name}", true);
                     if (settingsKey == null)
                     {
                         throw new ProfileNotFoundException("Unknown profile: " + name);
@@ -145,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         {
             using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
             {
-                var path = $@"{Profile.ProfilesKeyPath}\{name}";
+                var path = $@"{Profile.ProfilesKeyPath}\{ProfileKeyPrefix}{name}";
                 using (var key = hkcu.OpenSubKey(path))
                 {
                     if (key != null)
@@ -167,7 +172,11 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 }
                 else
                 {
-                    return profiles.GetSubKeyNames();
+                    return profiles.GetSubKeyNames()
+                        .EnsureNotNull()
+                        .Select(n => n == DefaultProfileKey
+                            ? DefaultProfileName
+                            : n.Substring(ProfileKeyPrefix.Length));
                 }
             }
         }
