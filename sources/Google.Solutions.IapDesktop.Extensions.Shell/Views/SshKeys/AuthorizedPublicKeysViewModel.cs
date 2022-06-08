@@ -192,7 +192,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 .Confirm(
                     this.View,
                     question,
-                    "Delete key for user " + this.selectedItem.Key.Email) != DialogResult.Yes)
+                    "Delete key for user " + this.selectedItem.Key.Email,
+                    "Delete key") != DialogResult.Yes)
             {
                 return;
             }

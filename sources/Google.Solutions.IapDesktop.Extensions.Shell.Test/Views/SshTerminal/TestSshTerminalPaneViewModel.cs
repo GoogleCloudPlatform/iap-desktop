@@ -425,6 +425,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .Setup(d => d.Confirm(
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
+                        It.IsAny<string>(),
                         It.IsAny<string>()))
                     .Returns(DialogResult.Yes);
 
@@ -441,6 +442,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .Setup(d => d.Confirm(
                         It.IsAny<IWin32Window>(),
                         It.Is<string>(m => m.Contains("exist")),
+                        It.IsAny<string>(),
                         It.IsAny<string>()))
                     .Returns(DialogResult.No); // Don't overwrite.
 

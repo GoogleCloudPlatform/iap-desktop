@@ -43,6 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.TunnelsViewer
             confirmationDialog.Setup(d => d.Confirm(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<string>(),
+                It.IsAny<string>(),
                 It.IsAny<string>())).Returns(result);
             return confirmationDialog;
         }
