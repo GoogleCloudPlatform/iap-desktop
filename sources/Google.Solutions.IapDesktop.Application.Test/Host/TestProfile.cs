@@ -99,6 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var profile = Profile.CreateProfile(TestProfileName))
             {
                 Assert.IsNotNull(profile);
+                Assert.AreEqual(TestProfileName, profile.Name);
             }
         }
 
@@ -172,11 +173,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenProfileCreated_ThenListProfilesIncludesProfile()
         {
-            Profile.CreateProfile(TestProfileName);
+            using (Profile.CreateProfile(TestProfileName))
+            { }
+                
             var list = Profile.ListProfiles();
 
             Assert.IsNotNull(list);
             CollectionAssert.Contains(list, TestProfileName);
+        }
+
+        [Test]
+        public void WhenDefaultProfileCreated_ThenListProfilesIncludesDefaultProfile()
+        {
+            using (Profile.OpenProfile(null))
+            { }
+
+            var list = Profile.ListProfiles();
+
+            Assert.IsNotNull(list);
+            CollectionAssert.Contains(list, "Default");
         }
     }
 }
