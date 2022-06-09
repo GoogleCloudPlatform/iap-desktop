@@ -28,12 +28,20 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
 {
     public interface IConfirmationDialog
     {
-        DialogResult Confirm(IWin32Window parent, string text, string caption);
+        DialogResult Confirm(
+            IWin32Window parent, 
+            string text, 
+            string caption,
+            string title);
     }
 
     public class ConfirmationDialog : IConfirmationDialog
     {
-        public DialogResult Confirm(IWin32Window parent, string message, string caption)
+        public DialogResult Confirm(
+            IWin32Window parent, 
+            string message, 
+            string caption,
+            string title)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(caption, message))
             {
@@ -45,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     dwCommonButtons = 
                         UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_YES_BUTTON |
                         UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_NO_BUTTON,
-                    pszWindowTitle = "Confirmation required",
+                    pszWindowTitle = title,
                     pszMainInstruction = caption,
                     pszContent = message
                 };

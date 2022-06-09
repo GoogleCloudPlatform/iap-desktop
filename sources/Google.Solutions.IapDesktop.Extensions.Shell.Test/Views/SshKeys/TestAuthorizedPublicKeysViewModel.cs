@@ -290,6 +290,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
             confirmationMock.Setup(d => d.Confirm(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(DialogResult.Cancel);
 

@@ -353,7 +353,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     if (this.confirmationDialog.Confirm(
                         this.View, 
                         message,
-                        $"Upload file(s) to {this.Instance.Name}") != DialogResult.Yes)
+                        $"Upload file(s) to {this.Instance.Name}",
+                        "Upload file") != DialogResult.Yes)
                     {
                         return false;
                     }

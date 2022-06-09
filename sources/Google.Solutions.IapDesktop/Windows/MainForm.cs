@@ -633,6 +633,41 @@ namespace Google.Solutions.IapDesktop.Windows
             try
             {
                 await this.viewModel.RevokeAuthorizationAsync().ConfigureAwait(true);
+
+                var profile = this.serviceProvider.GetService<Profile>();
+                if (!profile.IsDefault)
+                {
+                    if (this.serviceProvider
+                        .GetService<IConfirmationDialog>()
+                        .Confirm(
+                            this,
+                            $"Would you like to keep the current profile '{profile.Name}'?",
+                            "Keep profile",
+                            "Sign out") == DialogResult.No)
+                    {
+                        //
+                        // Delete current profile.
+                        //
+                        // Because of the single-instance behavior of this app, we know
+                        // (with reasonable certainty) that this is the only instance 
+                        // that's currently using this profile. Therefore, it's safe
+                        // to perform the deletion here.
+                        //
+                        // If we provided a "Delete profile" option in the profile
+                        // selection, we couldn't know for sure that the profile
+                        // isn't currently being used by another instance.
+                        //
+                        Profile.DeleteProfile(profile.Name);
+
+                        //
+                        // Perform a hard exit to avoid touching the
+                        // registry keys (which are now marked for deletion)
+                        // again.
+                        //
+                        Environment.Exit(0);
+                    }
+                }
+
                 Close();
             }
             catch (Exception e)

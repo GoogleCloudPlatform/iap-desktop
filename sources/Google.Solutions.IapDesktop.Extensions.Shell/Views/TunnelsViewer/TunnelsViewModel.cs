@@ -110,7 +110,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
                 this.View,
                 "Are you sure you wish to terminate the tunnel to " +
                     this.selectedTunnel.Destination.Instance + "?",
-                "Terminate tunnel") == DialogResult.Yes)
+                "Terminate tunnel",
+                "IAP tunnel") == DialogResult.Yes)
             {
                 await this
                     .tunnelBrokerService
