@@ -191,6 +191,18 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        public string CurrentProfileName
+        {
+            get => this.profile.Name;
+        }
+
+        public IEnumerable<string> AlternativeProfileNames
+        {
+            get => Profile
+                .ListProfiles()
+                .Where(name => name != this.profile.Name);
+        }
+
         //---------------------------------------------------------------------
         // Background job actions.
         //---------------------------------------------------------------------
@@ -298,6 +310,20 @@ namespace Google.Solutions.IapDesktop.Windows
             }
 
             this.WindowTitle = newTitle;
+        }
+
+        public void LaunchInstanceWithProfile(string profileName)
+        {
+            //
+            // Launch a new instance, passing the specified profile
+            // as parameter (unless it's the default profile).
+            // 
+            Program.LaunchNewInstance(new CommandLineOptions()
+            {
+                Profile = profileName != Profile.DefaultProfileName
+                    ? profileName
+                    : null
+            });
         }
 
         //---------------------------------------------------------------------

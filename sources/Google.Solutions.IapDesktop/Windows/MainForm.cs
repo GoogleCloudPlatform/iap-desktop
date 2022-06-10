@@ -179,21 +179,59 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel,
                 m => m.BackgroundJobStatus,
                 this.components);
-            this.toolStripSignInStateButton.BindProperty(
+            this.signInStateButton.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.SignInStateCaption,
                 this.components);
-            this.toolStripDeviceStateButton.BindProperty(
+            this.deviceStateButton.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.DeviceStateCaption,
                 this.components);
-            this.toolStripDeviceStateButton.BindProperty(
+            this.deviceStateButton.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsDeviceStateVisible,
                 this.components);
+            this.profileButton.BindReadonlyProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.CurrentProfileName,
+                this.components);
+
+            //
+            // Profile chooser.
+            //
+            var dynamicProfileMenuItemTag = new object();
+            this.profileButton.DropDownOpening += (sender, args) =>
+            {
+                //
+                // Re-populate list of profile menu items.
+                //
+                // Mark dynamic menu items with a tag so that we don't
+                // accidentally remove any static menu items.
+                //
+                this.profileButton
+                    .DropDownItems
+                    .RemoveAll(item => item.Tag == dynamicProfileMenuItemTag)
+                    .AddRange(this.viewModel
+                        .AlternativeProfileNames
+                        .Select(name => new ToolStripMenuItem(name)
+                        {
+                            Name = name,
+                            Tag = dynamicProfileMenuItemTag
+                        })
+                        .ToArray());
+            };
+
+            this.profileButton.DropDownItemClicked += (sender, args) =>
+            {
+                if (args.ClickedItem.Tag == dynamicProfileMenuItemTag)
+                {
+                    this.viewModel.LaunchInstanceWithProfile(args.ClickedItem.Name);
+                }
+            };
 
             //
             // Logging.
@@ -780,6 +818,47 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+#pragma warning disable IDE0067 // Dispose objects before losing scope
+
+        private void signInStateButton_Click(object sender, EventArgs e)
+        {
+            var button = (ToolStripItem)sender;
+            var screenPosition = new Rectangle(
+                this.statusStrip.PointToScreen(button.Bounds.Location),
+                button.Size);
+
+            new UserFlyoutWindow(
+                    new UserFlyoutViewModel(
+                        this.Authorization,
+                        this.serviceProvider.GetService<ICloudConsoleService>()))
+                .Show(
+                    this,
+                    screenPosition,
+                    ContentAlignment.TopLeft);
+        }
+
+        private void deviceStateButton_Click(object sender, EventArgs e)
+        {
+            var button = (ToolStripItem)sender;
+            var screenPosition = new Rectangle(
+                this.statusStrip.PointToScreen(button.Bounds.Location),
+                button.Size);
+
+            new DeviceFlyoutWindow(
+                    new DeviceFlyoutViewModel(this, this.Authorization.DeviceEnrollment))
+                .Show(
+                    this,
+                    screenPosition,
+                    ContentAlignment.TopLeft);
+        }
+
+#pragma warning restore IDE0067 // Dispose objects before losing scope
+
+        private void addProfileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // TODO: Open dialog.
+        }
+
         //---------------------------------------------------------------------
         // IJobHost.
         //---------------------------------------------------------------------
@@ -816,42 +895,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void cancelBackgroundJobsButton_Click(object sender, EventArgs e)
             => this.viewModel.CancelBackgroundJobs();
-
-#pragma warning disable IDE0067 // Dispose objects before losing scope
-
-        private void toolStripEmailButton_Click(object sender, EventArgs e)
-        {
-            var button = (ToolStripItem)sender;
-            var screenPosition = new Rectangle(
-                this.statusStrip.PointToScreen(button.Bounds.Location),
-                button.Size);
-
-            new UserFlyoutWindow(
-                    new UserFlyoutViewModel(
-                        this.Authorization,
-                        this.serviceProvider.GetService<ICloudConsoleService>()))
-                .Show(
-                    this,
-                    screenPosition,
-                    ContentAlignment.TopLeft);
-        }
-
-        private void toolStripDeviceStateButton_Click(object sender, EventArgs e)
-        {
-            var button = (ToolStripItem)sender;
-            var screenPosition = new Rectangle(
-                this.statusStrip.PointToScreen(button.Bounds.Location),
-                button.Size);
-
-            new DeviceFlyoutWindow(
-                    new DeviceFlyoutViewModel(this, this.Authorization.DeviceEnrollment))
-                .Show(
-                    this,
-                    screenPosition,
-                    ContentAlignment.TopLeft);
-        }
-
-#pragma warning restore IDE0067 // Dispose objects before losing scope
 
         //---------------------------------------------------------------------
         // IAuthorizationSource.

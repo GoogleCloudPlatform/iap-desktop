@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 {
     public sealed class Profile : IDisposable
     {
-        private const string DefaultProfileName = "Default";
+        public const string DefaultProfileName = "Default";
         private const string DefaultProfileKey = "1.0";
         private const string ProfileKeyPrefix = DefaultProfileKey + ".";
 

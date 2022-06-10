@@ -21,6 +21,8 @@
 
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Host
@@ -30,19 +32,19 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// URL of VM to connect to (for browser integration).
         /// </summary>
-        public IapRdpUrl StartupUrl { get; private set; } = null;
+        public IapRdpUrl StartupUrl { get; set; } = null;
 
         /// <summary>
         /// Enable logging.
         /// </summary>
-        public bool IsLoggingEnabled { get; private set; } = false;
+        public bool IsLoggingEnabled { get; set; } = false;
 
         /// <summary>
         /// Custom profile to load.
         /// </summary>
-        public string Profile { get; private set; } = null;
+        public string Profile { get; set; } = null;
 
-        private CommandLineOptions()
+        public CommandLineOptions()
         {
         }
 
@@ -109,6 +111,28 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
                 throw new InvalidOperationException();
             }
+        }
+
+        public override string ToString()
+        {
+            var parameters = new LinkedList<string>();
+
+            if (this.IsLoggingEnabled)
+            {
+                parameters.AddLast("/debug");
+            }
+
+            if (this.StartupUrl != null)
+            {
+                parameters.AddLast($"/url \"{this.StartupUrl}\"");
+            }
+
+            if (this.Profile != null)
+            {
+                parameters.AddLast($"/profile \"{this.Profile}\"");
+            }
+
+            return string.Join(" ", parameters);
         }
     }
 
