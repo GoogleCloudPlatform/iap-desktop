@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         }
     }
 
-    public class GenerateCredentialsDialogResult
+    public struct GenerateCredentialsDialogResult
     {
         public DialogResult Result { get; }
         public string Username { get; }

@@ -1,4 +1,25 @@
-﻿namespace Google.Solutions.IapDesktop.Application.Views.Authorization
+﻿//
+// Copyright 2022 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
     partial class NewProfileDialog
     {
@@ -28,24 +49,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.usernameReservedLabel = new System.Windows.Forms.Label();
+            this.profileNameInvalidLabel = new System.Windows.Forms.Label();
             this.headlineLabel = new System.Windows.Forms.Label();
             this.titleLabel = new System.Windows.Forms.Label();
-            this.usernameText = new System.Windows.Forms.TextBox();
+            this.profileNameTextBox = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.descriptionLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // usernameReservedLabel
+            // profileNameInvalidLabel
             // 
-            this.usernameReservedLabel.AutoSize = true;
-            this.usernameReservedLabel.ForeColor = System.Drawing.Color.Red;
-            this.usernameReservedLabel.Location = new System.Drawing.Point(25, 186);
-            this.usernameReservedLabel.Name = "usernameReservedLabel";
-            this.usernameReservedLabel.Size = new System.Drawing.Size(271, 16);
-            this.usernameReservedLabel.TabIndex = 13;
-            this.usernameReservedLabel.Text = "This profile name contains invalid characters";
+            this.profileNameInvalidLabel.AutoSize = true;
+            this.profileNameInvalidLabel.ForeColor = System.Drawing.Color.Red;
+            this.profileNameInvalidLabel.Location = new System.Drawing.Point(25, 186);
+            this.profileNameInvalidLabel.Name = "profileNameInvalidLabel";
+            this.profileNameInvalidLabel.Size = new System.Drawing.Size(271, 16);
+            this.profileNameInvalidLabel.TabIndex = 13;
+            this.profileNameInvalidLabel.Text = "This profile name contains invalid characters";
             // 
             // headlineLabel
             // 
@@ -67,16 +88,16 @@
             this.titleLabel.TabIndex = 11;
             this.titleLabel.Text = "Profile name:";
             // 
-            // usernameText
+            // profileNameTextBox
             // 
-            this.usernameText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.usernameText.Location = new System.Drawing.Point(28, 149);
-            this.usernameText.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.usernameText.MaxLength = 20;
-            this.usernameText.Multiline = true;
-            this.usernameText.Name = "usernameText";
-            this.usernameText.Size = new System.Drawing.Size(337, 29);
-            this.usernameText.TabIndex = 9;
+            this.profileNameTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.profileNameTextBox.Location = new System.Drawing.Point(28, 149);
+            this.profileNameTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.profileNameTextBox.MaxLength = 20;
+            this.profileNameTextBox.Multiline = true;
+            this.profileNameTextBox.Name = "profileNameTextBox";
+            this.profileNameTextBox.Size = new System.Drawing.Size(337, 29);
+            this.profileNameTextBox.TabIndex = 9;
             // 
             // okButton
             // 
@@ -112,15 +133,17 @@
             // 
             // NewProfileDialog
             // 
+            this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(399, 271);
-            this.Controls.Add(this.usernameReservedLabel);
+            this.Controls.Add(this.profileNameInvalidLabel);
             this.Controls.Add(this.headlineLabel);
             this.Controls.Add(this.descriptionLabel);
             this.Controls.Add(this.titleLabel);
-            this.Controls.Add(this.usernameText);
+            this.Controls.Add(this.profileNameTextBox);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -139,10 +162,10 @@
 
         #endregion
 
-        private System.Windows.Forms.Label usernameReservedLabel;
+        private System.Windows.Forms.Label profileNameInvalidLabel;
         private System.Windows.Forms.Label headlineLabel;
         private System.Windows.Forms.Label titleLabel;
-        private System.Windows.Forms.TextBox usernameText;
+        private System.Windows.Forms.TextBox profileNameTextBox;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Label descriptionLabel;

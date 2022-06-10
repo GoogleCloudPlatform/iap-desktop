@@ -184,6 +184,7 @@
     <Compile Include="Views\Authorization\NewProfileDialog.Designer.cs">
       <DependentUpon>NewProfileDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Authorization\NewProfileViewModel.cs" />
     <Compile Include="Views\Authorization\UserFlyoutViewModel.cs" />
     <Compile Include="Views\Authorization\DeviceFlyoutWindow.cs">
       <SubType>Form</SubType>
