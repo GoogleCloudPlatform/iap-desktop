@@ -64,9 +64,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(219, 178);
+            this.cancelButton.Location = new System.Drawing.Point(263, 211);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelButton.Size = new System.Drawing.Size(100, 28);
             this.cancelButton.TabIndex = 4;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
@@ -74,9 +75,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(138, 178);
+            this.okButton.Location = new System.Drawing.Point(155, 211);
+            this.okButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(75, 23);
+            this.okButton.Size = new System.Drawing.Size(100, 28);
             this.okButton.TabIndex = 3;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
@@ -84,42 +86,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // usernameText
             // 
             this.usernameText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.usernameText.Location = new System.Drawing.Point(40, 95);
-            this.usernameText.Margin = new System.Windows.Forms.Padding(2);
+            this.usernameText.Location = new System.Drawing.Point(26, 101);
+            this.usernameText.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.usernameText.MaxLength = 20;
             this.usernameText.Multiline = true;
             this.usernameText.Name = "usernameText";
-            this.usernameText.Size = new System.Drawing.Size(254, 24);
+            this.usernameText.Size = new System.Drawing.Size(337, 29);
             this.usernameText.TabIndex = 1;
             this.usernameText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.usernameText_KeyPress);
             // 
             // titleLabel
             // 
             this.titleLabel.AutoSize = true;
-            this.titleLabel.Location = new System.Drawing.Point(19, 71);
-            this.titleLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.titleLabel.Location = new System.Drawing.Point(25, 78);
             this.titleLabel.Name = "titleLabel";
-            this.titleLabel.Size = new System.Drawing.Size(191, 13);
+            this.titleLabel.Size = new System.Drawing.Size(237, 16);
             this.titleLabel.TabIndex = 4;
             this.titleLabel.Text = "Name of local user to create or update:";
             // 
             // savePwdNote
             // 
             this.savePwdNote.AutoSize = true;
-            this.savePwdNote.Location = new System.Drawing.Point(37, 144);
-            this.savePwdNote.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.savePwdNote.Location = new System.Drawing.Point(47, 172);
             this.savePwdNote.Name = "savePwdNote";
-            this.savePwdNote.Size = new System.Drawing.Size(238, 13);
+            this.savePwdNote.Size = new System.Drawing.Size(298, 16);
             this.savePwdNote.TabIndex = 5;
             this.savePwdNote.Text = "Connection settings will be updated automatically";
             // 
             // statusIcon
             // 
             this.statusIcon.Image = ((System.Drawing.Image)(resources.GetObject("statusIcon.Image")));
-            this.statusIcon.Location = new System.Drawing.Point(22, 143);
-            this.statusIcon.Margin = new System.Windows.Forms.Padding(2);
+            this.statusIcon.Location = new System.Drawing.Point(26, 171);
+            this.statusIcon.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.statusIcon.Name = "statusIcon";
-            this.statusIcon.Size = new System.Drawing.Size(23, 24);
+            this.statusIcon.Size = new System.Drawing.Size(31, 30);
             this.statusIcon.TabIndex = 6;
             this.statusIcon.TabStop = false;
             // 
@@ -127,9 +127,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // 
             this.headlineLabel.AutoSize = true;
             this.headlineLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.headlineLabel.Location = new System.Drawing.Point(11, 15);
+            this.headlineLabel.Location = new System.Drawing.Point(19, 18);
+            this.headlineLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.headlineLabel.Name = "headlineLabel";
-            this.headlineLabel.Size = new System.Drawing.Size(274, 30);
+            this.headlineLabel.Size = new System.Drawing.Size(337, 37);
             this.headlineLabel.TabIndex = 8;
             this.headlineLabel.Text = "Generate logon credentials";
             // 
@@ -137,21 +138,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // 
             this.usernameReservedLabel.AutoSize = true;
             this.usernameReservedLabel.ForeColor = System.Drawing.Color.Red;
-            this.usernameReservedLabel.Location = new System.Drawing.Point(37, 125);
-            this.usernameReservedLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.usernameReservedLabel.Location = new System.Drawing.Point(22, 138);
             this.usernameReservedLabel.Name = "usernameReservedLabel";
-            this.usernameReservedLabel.Size = new System.Drawing.Size(228, 13);
+            this.usernameReservedLabel.Size = new System.Drawing.Size(287, 16);
             this.usernameReservedLabel.TabIndex = 5;
             this.usernameReservedLabel.Text = "This username is reserved and cannot be used";
             // 
             // GenerateCredentialsDialog
             // 
             this.AcceptButton = this.okButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(320, 215);
+            this.ClientSize = new System.Drawing.Size(394, 267);
             this.ControlBox = false;
             this.Controls.Add(this.usernameReservedLabel);
             this.Controls.Add(this.savePwdNote);
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "GenerateCredentialsDialog";

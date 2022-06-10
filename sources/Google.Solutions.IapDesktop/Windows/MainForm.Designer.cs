@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.helpToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(1312, 28);
+            this.mainMenu.Size = new System.Drawing.Size(1640, 38);
             this.mainMenu.TabIndex = 3;
             this.mainMenu.Text = "menuStrip1";
             // 
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.signoutToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 34);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // addProjectToolStripMenuItem
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.projectExplorerToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(55, 34);
             this.viewToolStripMenuItem.Text = "&View";
             // 
             // projectExplorerToolStripMenuItem
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.enableloggingToolStripMenuItem,
             this.optionsToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(58, 24);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(58, 34);
             this.toolsToolStripMenuItem.Text = "&Tools";
             // 
             // enableloggingToolStripMenuItem
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // windowToolStripMenuItem
             // 
             this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
-            this.windowToolStripMenuItem.Size = new System.Drawing.Size(78, 24);
+            this.windowToolStripMenuItem.Size = new System.Drawing.Size(78, 34);
             this.windowToolStripMenuItem.Text = "&Window";
             // 
             // helpToolStripMenuItem
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.reportInternalIssueToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(55, 34);
             this.helpToolStripMenuItem.Text = "&Help";
             // 
             // viewHelpToolStripMenuItem
@@ -405,10 +405,10 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockPanel.DockLeftPortion = 0.15D;
             this.dockPanel.DockRightPortion = 0.15D;
-            this.dockPanel.Location = new System.Drawing.Point(0, 28);
+            this.dockPanel.Location = new System.Drawing.Point(0, 48);
             this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
             this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Size = new System.Drawing.Size(1312, 760);
+            this.dockPanel.Size = new System.Drawing.Size(1640, 938);
             this.dockPanel.TabIndex = 9;
             this.dockPanel.ActiveContentChanged += new System.EventHandler(this.dockPanel_ActiveContentChanged);
             // 
