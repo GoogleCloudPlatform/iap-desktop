@@ -85,10 +85,10 @@ namespace Google.Solutions.IapDesktop.Windows
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripSignInStateButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDeviceStateButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.profileButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.addProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -344,7 +344,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(672, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(641, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -370,6 +370,31 @@ namespace Google.Solutions.IapDesktop.Windows
             this.toolStripDeviceStateButton.Text = "(not verified)";
             this.toolStripDeviceStateButton.Click += new System.EventHandler(this.toolStripDeviceStateButton_Click);
             // 
+            // profileButton
+            // 
+            this.profileButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.profileButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addProfileToolStripMenuItem,
+            this.toolStripMenuItem1});
+            this.profileButton.Image = ((System.Drawing.Image)(resources.GetObject("profileButton.Image")));
+            this.profileButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.profileButton.Name = "profileButton";
+            this.profileButton.Size = new System.Drawing.Size(62, 20);
+            this.profileButton.Text = "(Profile)";
+            // 
+            // addProfileToolStripMenuItem
+            // 
+            this.addProfileToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.NewProfile_16;
+            this.addProfileToolStripMenuItem.Name = "addProfileToolStripMenuItem";
+            this.addProfileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addProfileToolStripMenuItem.Text = "&Add profile...";
+            this.addProfileToolStripMenuItem.Click += new System.EventHandler(this.addProfileToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            // 
             // dockPanel
             // 
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -380,30 +405,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.Size = new System.Drawing.Size(984, 615);
             this.dockPanel.TabIndex = 9;
             this.dockPanel.ActiveContentChanged += new System.EventHandler(this.dockPanel_ActiveContentChanged);
-            // 
-            // profileDropDownButton
-            // 
-            this.profileButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.profileButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addProfileToolStripMenuItem,
-            this.toolStripMenuItem1});
-            this.profileButton.Image = ((System.Drawing.Image)(resources.GetObject("profileDropDownButton.Image")));
-            this.profileButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.profileButton.Name = "profileDropDownButton";
-            this.profileButton.Size = new System.Drawing.Size(62, 20);
-            this.profileButton.Text = "(Profile)";
-            // 
-            // addProfileToolStripMenuItem
-            // 
-            this.addProfileToolStripMenuItem.Name = "addProfileToolStripMenuItem";
-            this.addProfileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.addProfileToolStripMenuItem.Text = "&Add profile...";
-            this.addProfileToolStripMenuItem.Click += new System.EventHandler(this.addProfileToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // MainForm
             // 
