@@ -185,18 +185,11 @@
       <DependentUpon>NewProfileDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Authorization\NewProfileViewModel.cs" />
-    <Compile Include="Views\Authorization\UserFlyoutViewModel.cs" />
     <Compile Include="Views\Authorization\DeviceFlyoutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\Authorization\DeviceFlyoutWindow.Designer.cs">
       <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Authorization\UserFlyoutWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Authorization\UserFlyoutWindow.Designer.cs">
-      <DependentUpon>UserFlyoutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\CloudConsoleService.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
@@ -388,9 +381,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Authorization\NewProfileDialog.resx">
       <DependentUpon>NewProfileDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Authorization\UserFlyoutWindow.resx">
-      <DependentUpon>UserFlyoutWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugDockingWindow.resx">
       <DependentUpon>DebugDockingWindow.cs</DependentUpon>

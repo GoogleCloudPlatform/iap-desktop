@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private string windowTitle = Globals.FriendlyName;
         private bool isBackgroundJobStatusVisible = false;
-        private string signInState = null;
+        private string profileState = null;
         private string deviceState = null;
         private bool isDeviceStateVisible = false;
         private bool isReportInternalIssueVisible;
@@ -151,12 +151,12 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        public string SignInStateCaption
+        public string ProfileStateCaption
         {
-            get => this.signInState;
+            get => this.profileState;
             set
             {
-                this.signInState = value;
+                this.profileState = value;
                 RaisePropertyChange();
             }
         }
@@ -189,11 +189,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.isReportInternalIssueVisible = value;
                 RaisePropertyChange();
             }
-        }
-
-        public string CurrentProfileName
-        {
-            get => this.profile.Name;
         }
 
         public IEnumerable<string> AlternativeProfileNames
@@ -258,12 +253,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 return;
             }
 
-            this.SignInStateCaption = this.Authorization.Email;
+            this.ProfileStateCaption = this.Authorization.Email;
             this.DeviceStateCaption = "Endpoint Verification";
             this.IsDeviceStateVisible = this.Authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
             this.IsReportInternalIssueVisible = this.Authorization.UserInfo?.HostedDomain == "google.com";
 
-            Debug.Assert(this.SignInStateCaption != null);
+            Debug.Assert(this.ProfileStateCaption != null);
             Debug.Assert(this.Authorization.DeviceEnrollment != null);
         }
 
@@ -276,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Windows
             await this.Authorization.ReauthorizeAsync(token)
                 .ConfigureAwait(true);
 
-            this.SignInStateCaption = this.Authorization.Email;
+            this.ProfileStateCaption = this.Authorization.Email;
         }
 
         public Task RevokeAuthorizationAsync()

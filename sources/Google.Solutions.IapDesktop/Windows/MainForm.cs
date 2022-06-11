@@ -179,32 +179,27 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel,
                 m => m.BackgroundJobStatus,
                 this.components);
-            this.toolStripSignInStateButton.BindProperty(
-                c => c.Text,
-                this.viewModel,
-                m => m.SignInStateCaption,
-                this.components);
-            this.toolStripDeviceStateButton.BindProperty(
+            this.deviceStateButton.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.DeviceStateCaption,
                 this.components);
-            this.toolStripDeviceStateButton.BindProperty(
+            this.deviceStateButton.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsDeviceStateVisible,
                 this.components);
-            this.profileButton.BindReadonlyProperty(
+            this.profileStateButton.BindReadonlyProperty(
                 c => c.Text,
                 this.viewModel,
-                m => m.CurrentProfileName,
+                m => m.ProfileStateCaption,
                 this.components);
 
             //
             // Profile chooser.
             //
             var dynamicProfileMenuItemTag = new object();
-            this.profileButton.DropDownOpening += (sender, args) =>
+            this.profileStateButton.DropDownOpening += (sender, args) =>
             {
                 //
                 // Re-populate list of profile menu items.
@@ -212,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 // Mark dynamic menu items with a tag so that we don't
                 // accidentally remove any static menu items.
                 //
-                this.profileButton
+                this.profileStateButton
                     .DropDownItems
                     .RemoveAll(item => item.Tag == dynamicProfileMenuItemTag)
                     .AddRange(this.viewModel
@@ -225,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         .ToArray());
             };
 
-            this.profileButton.DropDownItemClicked += (sender, args) =>
+            this.profileStateButton.DropDownItemClicked += (sender, args) =>
             {
                 if (args.ClickedItem.Tag == dynamicProfileMenuItemTag)
                 {
@@ -816,23 +811,6 @@ namespace Google.Solutions.IapDesktop.Windows
                     .GetService<IExceptionDialog>()
                     .Show(this, "Opening Options window failed", e);
             }
-        }
-
-        private void toolStripEmailButton_Click(object sender, EventArgs e)
-        {
-            var button = (ToolStripItem)sender;
-            var screenPosition = new Rectangle(
-                this.statusStrip.PointToScreen(button.Bounds.Location),
-                button.Size);
-
-            new UserFlyoutWindow(
-                    new UserFlyoutViewModel(
-                        this.Authorization,
-                        this.serviceProvider.GetService<ICloudConsoleService>()))
-                .Show(
-                    this,
-                    screenPosition,
-                    ContentAlignment.TopLeft);
         }
 
         private void toolStripDeviceStateButton_Click(object sender, EventArgs e)
