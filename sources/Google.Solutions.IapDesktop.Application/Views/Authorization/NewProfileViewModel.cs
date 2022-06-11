@@ -39,15 +39,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 
         public string ProfileName
         {
-            get => this.ProfileName;
+            get => this.profileName;
             set
             {
                 this.profileName = value;
                 RaisePropertyChange();
+                RaisePropertyChange((NewProfileViewModel m) => m.IsProfileNameInvalid);
+                RaisePropertyChange((NewProfileViewModel m) => m.IsOkButtonEnabled);
             }
         }
 
-        public bool IsProfileNameValid
-            => Profile.IsValidProfileName(this.ProfileName);
+        public bool IsProfileNameInvalid
+            => !string.IsNullOrEmpty(this.profileName) &&
+               !Profile.IsValidProfileName(this.ProfileName);
+
+        public bool IsOkButtonEnabled
+            => !string.IsNullOrWhiteSpace(this.profileName) &&
+               !this.IsProfileNameInvalid;
     }
 }

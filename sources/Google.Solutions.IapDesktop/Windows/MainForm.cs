@@ -854,9 +854,28 @@ namespace Google.Solutions.IapDesktop.Windows
 
 #pragma warning restore IDE0067 // Dispose objects before losing scope
 
-        private void addProfileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addProfileToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            // TODO: Open dialog.
+            try
+            {
+                using (var dialog = new NewProfileDialog())
+                {
+                    var result = dialog.ShowDialog(this);
+                    if (result.Result == DialogResult.OK)
+                    {
+                        using (var profile = Profile.CreateProfile(result.ProfileName))
+                        {
+                            this.viewModel.LaunchInstanceWithProfile(profile.Name);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "New profile", e);
+            }
         }
 
         //---------------------------------------------------------------------

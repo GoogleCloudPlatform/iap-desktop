@@ -51,7 +51,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             this.profileNameInvalidLabel.BindReadonlyProperty(
                 c => c.Visible,
                 this.viewModel,
-                m => m.IsProfileNameValid,
+                m => m.IsProfileNameInvalid,
+                this.components);
+
+            // Bind buttons.
+            this.okButton.BindReadonlyProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsOkButtonEnabled,
                 this.components);
 
             this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;

@@ -155,6 +155,7 @@
     <Compile Include="Util\TestStringExtensions.cs" />
     <Compile Include="Util\TestTypographicQuotes.cs" />
     <Compile Include="Views\Authorization\TestDeviceFlyoutViewModel.cs" />
+    <Compile Include="Views\Authorization\TestNewProfileViewModel.cs" />
     <Compile Include="Views\Authorization\TestUserFlyoutViewModel.cs" />
     <Compile Include="Views\Options\TestScreenOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestNetworkOptionsViewModel.cs" />
