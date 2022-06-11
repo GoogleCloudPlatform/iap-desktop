@@ -194,10 +194,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                         // a browser - show the WaitDialog in the meantime.
                         await RunInBackgroundWithUserFeedback(
                             new JobDescription("Authorizing..."),
-                            async _ =>
+                            async reauthCancellationToken =>
                             {
                                 await this.authService
-                                    .ReauthorizeAsync(CancellationToken.None)
+                                    .ReauthorizeAsync(reauthCancellationToken)
                                     .ConfigureAwait(true);  // Continue on UI thread.
                                 return default(T);
                             }).ConfigureAwait(true);        // Continue on UI thread.
