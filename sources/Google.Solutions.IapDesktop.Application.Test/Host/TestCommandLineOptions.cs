@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Host;
+using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
 using System;
 
@@ -146,6 +147,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 new[] { "/profile", " " });
             Assert.IsNull(options.Profile);
 
+        }
+
+        //---------------------------------------------------------------------
+        // ToString
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenAllOptionsClear_ThenToStringReturnsEmptyString()
+        {
+            var options = new CommandLineOptions();
+            Assert.AreEqual(string.Empty, options.ToString());
+        }
+
+        [Test]
+        public void WhenOptionsSpecified_ThenToStringReturnsQuotedString()
+        {
+            var options = new CommandLineOptions()
+            {
+                IsLoggingEnabled = true,
+                Profile = "some profile",
+                StartupUrl = IapRdpUrl.FromString("iap-rdp:///project-1/us-central1-a/vm-1")
+            };
+
+            Assert.AreEqual(
+                "/debug /url \"iap-rdp:///project-1/us-central1-a/vm-1?\" /profile \"some profile\"",
+                options.ToString());
         }
     }
 }

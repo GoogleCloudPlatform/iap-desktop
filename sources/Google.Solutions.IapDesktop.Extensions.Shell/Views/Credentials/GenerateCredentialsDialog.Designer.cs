@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(219, 178);
+            this.cancelButton.Location = new System.Drawing.Point(200, 180);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 4;
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(138, 178);
+            this.okButton.Location = new System.Drawing.Point(119, 180);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 3;
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // usernameText
             // 
             this.usernameText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.usernameText.Location = new System.Drawing.Point(40, 95);
+            this.usernameText.Location = new System.Drawing.Point(22, 95);
             this.usernameText.Margin = new System.Windows.Forms.Padding(2);
             this.usernameText.MaxLength = 20;
             this.usernameText.Multiline = true;
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // 
             this.usernameReservedLabel.AutoSize = true;
             this.usernameReservedLabel.ForeColor = System.Drawing.Color.Red;
-            this.usernameReservedLabel.Location = new System.Drawing.Point(37, 125);
+            this.usernameReservedLabel.Location = new System.Drawing.Point(19, 125);
             this.usernameReservedLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.usernameReservedLabel.Name = "usernameReservedLabel";
             this.usernameReservedLabel.Size = new System.Drawing.Size(228, 13);
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(320, 215);
+            this.ClientSize = new System.Drawing.Size(304, 221);
             this.ControlBox = false;
             this.Controls.Add(this.usernameReservedLabel);
             this.Controls.Add(this.savePwdNote);

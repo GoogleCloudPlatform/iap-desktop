@@ -427,5 +427,19 @@ namespace Google.Solutions.IapDesktop
                 ShowFatalError(e);
             }
         }
+
+        internal static void LaunchNewInstance(CommandLineOptions options)
+        {
+            using (var process = new Process())
+            {
+                process.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = Assembly.GetExecutingAssembly().Location,
+                    Arguments = options.ToString(),
+                    WindowStyle = ProcessWindowStyle.Normal
+                };
+                process.Start();
+            }
+        }
     }
 }
