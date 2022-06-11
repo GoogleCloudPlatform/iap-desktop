@@ -74,6 +74,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.openIapFirewallDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openIapAccessDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
+            this.releaseNotesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportInternalIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,7 +86,9 @@ namespace Google.Solutions.IapDesktop.Windows
             this.toolStripSignInStateButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDeviceStateButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.releaseNotesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.profileButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.addProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -274,6 +277,13 @@ namespace Google.Solutions.IapDesktop.Windows
             this.aboutSeparatorToolStripMenuItem.Name = "aboutSeparatorToolStripMenuItem";
             this.aboutSeparatorToolStripMenuItem.Size = new System.Drawing.Size(263, 6);
             // 
+            // releaseNotesToolStripMenuItem
+            // 
+            this.releaseNotesToolStripMenuItem.Name = "releaseNotesToolStripMenuItem";
+            this.releaseNotesToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.releaseNotesToolStripMenuItem.Text = "Release &notes";
+            this.releaseNotesToolStripMenuItem.Click += new System.EventHandler(this.releaseNotesToolStripMenuItem_Click);
+            // 
             // reportIssueToolStripMenuItem
             // 
             this.reportIssueToolStripMenuItem.Name = "reportIssueToolStripMenuItem";
@@ -306,7 +316,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.cancelBackgroundJobsButton,
             this.toolStripStatus,
             this.toolStripSignInStateButton,
-            this.toolStripDeviceStateButton});
+            this.toolStripDeviceStateButton,
+            this.profileButton});
             this.statusStrip.Location = new System.Drawing.Point(0, 639);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(984, 22);
@@ -333,7 +344,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(734, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(672, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -370,12 +381,29 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.TabIndex = 9;
             this.dockPanel.ActiveContentChanged += new System.EventHandler(this.dockPanel_ActiveContentChanged);
             // 
-            // releaseNotesToolStripMenuItem
+            // profileDropDownButton
             // 
-            this.releaseNotesToolStripMenuItem.Name = "releaseNotesToolStripMenuItem";
-            this.releaseNotesToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.releaseNotesToolStripMenuItem.Text = "Release &notes";
-            this.releaseNotesToolStripMenuItem.Click += new System.EventHandler(this.releaseNotesToolStripMenuItem_Click);
+            this.profileButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.profileButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addProfileToolStripMenuItem,
+            this.toolStripMenuItem1});
+            this.profileButton.Image = ((System.Drawing.Image)(resources.GetObject("profileDropDownButton.Image")));
+            this.profileButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.profileButton.Name = "profileDropDownButton";
+            this.profileButton.Size = new System.Drawing.Size(62, 20);
+            this.profileButton.Text = "(Profile)";
+            // 
+            // addProfileToolStripMenuItem
+            // 
+            this.addProfileToolStripMenuItem.Name = "addProfileToolStripMenuItem";
+            this.addProfileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addProfileToolStripMenuItem.Text = "&Add profile...";
+            this.addProfileToolStripMenuItem.Click += new System.EventHandler(this.addProfileToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // MainForm
             // 
@@ -438,5 +466,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewShortcutsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem releaseNotesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripDropDownButton profileButton;
+        private System.Windows.Forms.ToolStripMenuItem addProfileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
     }
 }
