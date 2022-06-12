@@ -74,6 +74,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             Assert.IsTrue(Profile.IsValidProfileName("This is a valid name"));
         }
 
+        [Test]
+        public void WhenNameIsDefault_ThenIsValidProfileNameReturnsFalse()
+        {
+            Assert.IsFalse(Profile.IsValidProfileName(Profile.DefaultProfileName.ToLower()));
+        }
+
         //---------------------------------------------------------------------
         // CreateProfile.
         //---------------------------------------------------------------------

@@ -78,6 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         public static bool IsValidProfileName(string name)
         {
             return name != null &&
+                !name.Equals(DefaultProfileName, StringComparison.OrdinalIgnoreCase) &&
                 name.Trim() == name &&
                 name.Length < 32 &&
                 ProfileNamePattern.IsMatch(name);
