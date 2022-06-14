@@ -20,7 +20,7 @@
     <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -237,7 +237,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="icon.ico" />
     <Content Include="logo.ico" />
+    <Content Include="ProductIcon.ico" />
     <None Include="Resources\NewProfile_16.png" />
     <None Include="Resources\Documentation_16.png" />
     <None Include="Resources\Splash.png" />
