@@ -98,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CertificateUtil.cs" />
+    <Compile Include="Controls\TestBadgeIcon.cs" />
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
     <Compile Include="Controls\TestFontExtensions.cs" />
