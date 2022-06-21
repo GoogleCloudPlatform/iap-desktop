@@ -121,11 +121,11 @@ Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow
 # Find Google Cloud credentials and project (for tests)
 #------------------------------------------------------------------------------
 
-if (Test-Path "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json")
+if (Test-Path "${env:KOKORO_GFILE_DIR}\iapdesktop-kokoro.json")
 {
 	if (!$Env:GOOGLE_APPLICATION_CREDENTIALS)
 	{
-		$Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json"
+		$Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iapdesktop-kokoro.json"
 	}
 
 	if (!${Env:GOOGLE_CLOUD_PROJECT})
