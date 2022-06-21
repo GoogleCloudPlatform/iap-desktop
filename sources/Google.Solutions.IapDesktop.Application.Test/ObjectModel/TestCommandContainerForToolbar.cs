@@ -27,6 +27,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
+#pragma warning disable CA1806 // Do not ignore method results
+
 namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
     [TestFixture]

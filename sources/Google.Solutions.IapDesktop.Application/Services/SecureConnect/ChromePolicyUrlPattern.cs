@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             {
                 return false;
             }
-            else if (this.scheme != null && scheme != input.Scheme)
+            else if (this.scheme != null && this.scheme != input.Scheme)
             {
                 return false;
             }
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                 ? domainAndPort.Substring(0, colonIndex)
                 : domainAndPort;
 
-            if (domain == string.Empty)
+            if (string.IsNullOrEmpty(domain))
             {
                 throw new ArgumentException(nameof(pattern));
             }

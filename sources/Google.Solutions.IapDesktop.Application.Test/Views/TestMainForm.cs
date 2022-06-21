@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
         public IAuthorization Authorization => new SimpleAuthorization(TestProject.GetAdminCredential());
 
-        public IDeviceEnrollment DeviceEnrollment => new SimpleDeviceEnrollment();
+        public static IDeviceEnrollment DeviceEnrollment => new SimpleDeviceEnrollment();
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.Authorization.ReauthorizeAsync(token);

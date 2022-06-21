@@ -61,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                 UnsafeNativeMethods.TaskDialogIndirect(
                     ref config,
                     out int buttonPressed,
-                    out int _,
-                    out bool __);
+                    out _,
+                    out _);
 
                 switch (buttonPressed)
                 {

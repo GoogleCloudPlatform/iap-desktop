@@ -127,6 +127,7 @@ namespace Google.Solutions.Ssh.Native
                                 bytesWritten,
                                 length - totalBytesWritten);
                         }
+                        
                         if (bytesWritten == (int)LIBSSH2_ERROR.TIMEOUT)
                         {
                             SshTraceSources.Default.TraceVerbose(

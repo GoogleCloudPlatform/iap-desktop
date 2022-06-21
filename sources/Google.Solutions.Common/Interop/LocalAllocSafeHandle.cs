@@ -34,7 +34,7 @@ namespace Google.Solutions.Common.Interop
     /// </summary>
     public sealed class LocalAllocSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
-        public static LocalAllocSafeHandle Zero = new LocalAllocSafeHandle(ownsHandle: false);
+        public static readonly LocalAllocSafeHandle Zero = new LocalAllocSafeHandle(ownsHandle: false);
 
         private LocalAllocSafeHandle()
             : base(ownsHandle: true)

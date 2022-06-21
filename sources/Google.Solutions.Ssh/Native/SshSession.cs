@@ -30,6 +30,8 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline
+
 namespace Google.Solutions.Ssh.Native
 {
     /// <summary>

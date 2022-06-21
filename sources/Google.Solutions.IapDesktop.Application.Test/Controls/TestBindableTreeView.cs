@@ -42,8 +42,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             private string name;
             private bool expanded = false;
 
-            public bool IsLeaf => false;
-
             public ObservableCollection<ModelNode> Children = new ObservableCollection<ModelNode>();
 
             public string Name
@@ -123,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenNoOtherPropertiesBound_ThenBindSucceeds()
         {
-            tree.Bind(new ModelNode());
+            this.tree.Bind(new ModelNode());
 
             Assert.AreEqual(1, this.tree.Nodes.Count);
         }
@@ -145,9 +143,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "child-2"
             });
 
-            tree.BindChildren(m => m.GetChildren());
-            tree.BindIsExpanded(m => m.IsExpanded);
-            tree.Bind(root);
+            this.tree.BindChildren(m => m.GetChildren());
+            this.tree.BindIsExpanded(m => m.IsExpanded);
+            this.tree.Bind(root);
             RunPendingAsyncTasks();
 
             Assert.AreEqual(1, this.tree.Nodes.Count);
@@ -173,9 +171,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "child-2"
             });
 
-            tree.BindChildren(m => m.GetChildren());
-            tree.BindIsExpanded(m => m.IsExpanded);
-            tree.Bind(root);
+            this.tree.BindChildren(m => m.GetChildren());
+            this.tree.BindIsExpanded(m => m.IsExpanded);
+            this.tree.Bind(root);
             RunPendingAsyncTasks();
 
             Assert.AreEqual(1, this.tree.Nodes.Count);
@@ -194,16 +192,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             };
 
             int eventCount = 0;
-            tree.LoadingChildrenFailed += (sender, args) =>
+            this.tree.LoadingChildrenFailed += (sender, args) =>
             {
                 eventCount++;
                 Assert.IsInstanceOf<ModelNode>(sender);
                 Assert.IsInstanceOf<ArgumentException>(args.Exception.Unwrap());
             };
 
-            tree.BindChildren(m => m.Throw());
-            tree.BindIsExpanded(m => m.IsExpanded);
-            tree.Bind(root);
+            this.tree.BindChildren(m => m.Throw());
+            this.tree.BindIsExpanded(m => m.IsExpanded);
+            this.tree.Bind(root);
             RunPendingAsyncTasks();
 
             Assert.AreEqual(1, eventCount);
@@ -218,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             Assert.AreEqual(2, eventCount);
 
             // Try again, but this time let loading succeed.
-            tree.BindChildren(m => m.GetChildren());
+            this.tree.BindChildren(m => m.GetChildren());
             rootTreeNode.Expand();
             RunPendingAsyncTasks();
             Assert.AreEqual(2, eventCount);
@@ -238,8 +236,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "root"
             };
 
-            tree.BindText(m => m.Name);
-            tree.Bind(root);
+            this.tree.BindText(m => m.Name);
+            this.tree.Bind(root);
 
             Assert.AreEqual(1, this.tree.Nodes.Count);
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
@@ -259,9 +257,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 ImageIndex = 1
             };
 
-            tree.BindImageIndex(m => m.ImageIndex);
-            tree.BindSelectedImageIndex(m => m.ImageIndex);
-            tree.Bind(root);
+            this.tree.BindImageIndex(m => m.ImageIndex);
+            this.tree.BindSelectedImageIndex(m => m.ImageIndex);
+            this.tree.Bind(root);
 
             Assert.AreEqual(1, this.tree.Nodes.Count);
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
@@ -290,9 +288,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "child-2"
             });
 
-            tree.BindChildren(m => m.GetChildren());
-            tree.BindIsExpanded(m => m.IsExpanded);
-            tree.Bind(root);
+            this.tree.BindChildren(m => m.GetChildren());
+            this.tree.BindIsExpanded(m => m.IsExpanded);
+            this.tree.Bind(root);
             RunPendingAsyncTasks();
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
@@ -323,9 +321,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "child-2"
             });
 
-            tree.BindChildren(m => m.GetChildren());
-            tree.BindIsExpanded(m => m.IsExpanded);
-            tree.Bind(root);
+            this.tree.BindChildren(m => m.GetChildren());
+            this.tree.BindIsExpanded(m => m.IsExpanded);
+            this.tree.Bind(root);
             RunPendingAsyncTasks();
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
@@ -353,9 +351,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "child-2"
             });
 
-            tree.BindChildren(m => m.GetChildren());
-            tree.BindIsExpanded(m => m.IsExpanded);
-            tree.Bind(root);
+            this.tree.BindChildren(m => m.GetChildren());
+            this.tree.BindIsExpanded(m => m.IsExpanded);
+            this.tree.Bind(root);
             RunPendingAsyncTasks();
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
@@ -387,9 +385,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
 
             root.Children.Add(child);
 
-            tree.BindChildren(m => m.GetChildren());
-            tree.BindIsExpanded(m => m.IsExpanded);
-            tree.Bind(root);
+            this.tree.BindChildren(m => m.GetChildren());
+            this.tree.BindIsExpanded(m => m.IsExpanded);
+            this.tree.Bind(root);
             RunPendingAsyncTasks();
 
             Assert.IsTrue(child.HasPropertyChangeListeners);
@@ -405,9 +403,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "root"
             };
 
-            tree.BindChildren(m => m.GetChildren());
-            tree.BindIsExpanded(m => m.IsExpanded);
-            tree.Bind(root);
+            this.tree.BindChildren(m => m.GetChildren());
+            this.tree.BindIsExpanded(m => m.IsExpanded);
+            this.tree.Bind(root);
             RunPendingAsyncTasks();
 
             Assert.IsTrue(root.HasPropertyChangeListeners);
@@ -417,7 +415,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "root2"
             };
 
-            tree.Bind(newRoot);
+            this.tree.Bind(newRoot);
 
             Assert.IsFalse(root.HasPropertyChangeListeners);
             Assert.IsTrue(newRoot.HasPropertyChangeListeners);
