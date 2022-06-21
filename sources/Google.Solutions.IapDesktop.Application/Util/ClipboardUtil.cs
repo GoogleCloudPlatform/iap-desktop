@@ -29,7 +29,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Util
 {
-    public class ClipboardUtil
+    public static class ClipboardUtil
     {
         public static string GetText()
         {

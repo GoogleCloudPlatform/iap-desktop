@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public ObservableCollection<ScreenDevice> Devices;
+        public ObservableCollection<ScreenDevice> Devices { get; }
 
         //---------------------------------------------------------------------
         // Actions.

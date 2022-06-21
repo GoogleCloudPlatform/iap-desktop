@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 null));
         }
 
-        public async Task CompleteBackgroundWorkAsync()
+        public static async Task CompleteBackgroundWorkAsync()
         {
             //
             // Join worker thread to prevent NUnit from aborting it, 
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectAsync(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
-                    UnboundEndpoint,
+                    this.UnboundEndpoint,
                     AuthorizedKeyPair.ForMetadata(key, "test", true, null),
                     null,
                     TimeSpan.FromSeconds(10)))
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectAsync(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
-                    NonSshEndpoint,
+                    this.NonSshEndpoint,
                     AuthorizedKeyPair.ForMetadata(key, "test", true, null),
                     null,
                     TimeSpan.FromSeconds(10)))

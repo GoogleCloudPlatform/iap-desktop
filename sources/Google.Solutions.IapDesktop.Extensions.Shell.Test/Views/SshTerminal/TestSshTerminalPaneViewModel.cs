@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             return authorizationSource;
         }
 
-        private async Task<AuthorizedKeyPair> CreateAuthorizedKeyAsync(
+        private static async Task<AuthorizedKeyPair> CreateAuthorizedKeyAsync(
             InstanceLocator instance,
             ICredential credential,
             SshKeyType keyType)

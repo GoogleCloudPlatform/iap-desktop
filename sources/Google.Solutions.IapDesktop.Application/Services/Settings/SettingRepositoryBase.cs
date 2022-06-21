@@ -32,29 +32,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     public abstract class SettingsRepositoryBase<TSettings> : IDisposable
         where TSettings : IRegistrySettingsCollection
     {
-        protected readonly RegistryKey baseKey;
+        protected RegistryKey BaseKey { get; }
 
         protected SettingsRepositoryBase(RegistryKey baseKey)
         {
-            this.baseKey = baseKey;
+            this.BaseKey = baseKey;
         }
 
         public virtual TSettings GetSettings()
         {
-            return LoadSettings(this.baseKey);
+            return LoadSettings(this.BaseKey);
         }
 
         public virtual void SetSettings(TSettings settings)
         {
-            settings.Save(this.baseKey);
+            settings.Save(this.BaseKey);
         }
 
         public void ClearSettings()
         {
             // Delete values, but keep any subkeys.
-            foreach (string valueName in this.baseKey.GetValueNames())
+            foreach (string valueName in this.BaseKey.GetValueNames())
             {
-                this.baseKey.DeleteValue(valueName);
+                this.BaseKey.DeleteValue(valueName);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         {
             if (disposing)
             {
-                this.baseKey.Dispose();
+                this.BaseKey.Dispose();
             }
         }
     }
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         private readonly RegistryKey machinePolicyKey;
         private readonly RegistryKey userPolicyKey;
 
-        public PolicyEnabledSettingsRepository(
+        protected PolicyEnabledSettingsRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey) : base(settingsKey)

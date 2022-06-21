@@ -46,7 +46,7 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = await GetPublicSshEndpointAsync(instance).ConfigureAwait(false);
             var authenticator = await CreateEphemeralAuthenticatorForInstanceAsync(
                     instance,
-                    SshKeyType.Rsa3072)
+                    keyType)
                 .ConfigureAwait(false);
 
             using (var session = CreateSession())

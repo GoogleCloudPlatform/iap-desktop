@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         private const string KeyPath = @"SOFTWARE\Policies\Google\Chrome\AutoSelectCertificateForUrls";
 
         public static ChromeAutoSelectCertificateForUrlsPolicy Default =
-            new ChromeAutoSelectCertificateForUrlsPolicy(new ChromeCertificateSelector[0]);
+            new ChromeAutoSelectCertificateForUrlsPolicy(Array.Empty<ChromeCertificateSelector>());
 
         public IReadOnlyCollection<ChromeCertificateSelector> Entries { get; }
 

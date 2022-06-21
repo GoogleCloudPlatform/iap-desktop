@@ -84,7 +84,7 @@ namespace Google.Solutions.Ssh.Native
                         out IntPtr langTagLength);
                     if (result != LIBSSH2_ERROR.NONE)
                     {
-                        throw this.session.CreateException(result);
+                        throw this.Session.CreateException(result);
                     }
 
                     //
@@ -141,7 +141,7 @@ namespace Google.Solutions.Ssh.Native
 
             if (result != LIBSSH2_ERROR.NONE)
             {
-                throw this.session.CreateException(result);
+                throw this.Session.CreateException(result);
             }
         }
     }

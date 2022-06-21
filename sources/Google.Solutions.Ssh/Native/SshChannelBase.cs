@@ -32,12 +32,12 @@ namespace Google.Solutions.Ssh.Native
     public abstract class SshChannelBase : IDisposable
     {
         // NB. This object does not own this handle and should not dispose it.
-        protected readonly SshSession session;
+        protected SshSession Session { get; }
+
+        internal SshChannelHandle ChannelHandle { get; }
 
         private bool closedForWriting = false;
         private bool disposed = false;
-
-        internal SshChannelHandle ChannelHandle { get; }
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -47,7 +47,7 @@ namespace Google.Solutions.Ssh.Native
             SshSession session,
             SshChannelHandle channelHandle)
         {
-            this.session = session;
+            this.Session = session;
             this.ChannelHandle = channelHandle;
         }
 
@@ -100,7 +100,7 @@ namespace Google.Solutions.Ssh.Native
                 }
                 else
                 {
-                    throw this.session.CreateException((LIBSSH2_ERROR)bytesRead);
+                    throw this.Session.CreateException((LIBSSH2_ERROR)bytesRead);
                 }
             }
         }
@@ -128,7 +128,7 @@ namespace Google.Solutions.Ssh.Native
                 }
                 else
                 {
-                    throw this.session.CreateException((LIBSSH2_ERROR)bytesWritten);
+                    throw this.Session.CreateException((LIBSSH2_ERROR)bytesWritten);
                 }
             }
         }
@@ -144,7 +144,7 @@ namespace Google.Solutions.Ssh.Native
 
                 if (result != LIBSSH2_ERROR.NONE)
                 {
-                    throw this.session.CreateException((LIBSSH2_ERROR)result);
+                    throw this.Session.CreateException((LIBSSH2_ERROR)result);
                 }
             }
         }
@@ -167,7 +167,7 @@ namespace Google.Solutions.Ssh.Native
                     }
                     else if (result != LIBSSH2_ERROR.NONE)
                     {
-                        throw this.session.CreateException((LIBSSH2_ERROR)result);
+                        throw this.Session.CreateException((LIBSSH2_ERROR)result);
                     }
 
                     this.closedForWriting = true;

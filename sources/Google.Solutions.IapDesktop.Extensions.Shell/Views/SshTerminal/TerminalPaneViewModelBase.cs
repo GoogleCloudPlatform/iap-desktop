@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         protected ISynchronizeInvoke ViewInvoker => (ISynchronizeInvoke)this.View;
 
-        public TerminalPaneViewModelBase(
+        protected TerminalPaneViewModelBase(
             IEventService eventService,
             InstanceLocator vmInstance)
         {

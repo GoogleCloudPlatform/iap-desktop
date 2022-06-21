@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             return authorization;
         }
 
-        private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+        private static Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
             Metadata projectMetadata,
             Metadata instanceMetadata)
         {
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             return adapter;
         }
 
-        private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
+        private static Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
            bool legacySshKeyPresent,
            bool projectWideKeysBlockedForProject,
            bool projectWideKeysBlockedForInstance,
