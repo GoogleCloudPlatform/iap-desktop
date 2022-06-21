@@ -38,7 +38,7 @@ VCPKG_URL = https://github.com/microsoft/vcpkg.git
 LIBSSH2_VERSION = 1.10.0.$(TAG)
 
 # GCS bucket used for storing results
-PACKAGES_BUCKET = iap-windows-rdc-plugin
+PACKAGES_BUCKET = iapdesktop-kokoro-artifacts
 
 default: dependencies
 
