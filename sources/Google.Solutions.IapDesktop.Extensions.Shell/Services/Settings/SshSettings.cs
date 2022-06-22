@@ -42,19 +42,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
     [Service(ServiceLifetime.Singleton, ServiceVisibility.Global)]
     public class SshSettingsRepository : PolicyEnabledSettingsRepository<SshSettings>
     {
+        private readonly Profile.SchemaVersion schemaVersion;
+
         public SshSettingsRepository(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey) : base(settingsKey, machinePolicyKey, userPolicyKey)
+            RegistryKey userPolicyKey,
+            Profile.SchemaVersion schemaVersion) : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
             Utilities.ThrowIfNull(settingsKey, nameof(settingsKey));
+            this.schemaVersion = schemaVersion;
         }
 
-        public SshSettingsRepository(Profile profile)
+        private SshSettingsRepository(Profile profile)
             : this(
                   profile.SettingsKey.CreateSubKey("Ssh"),
                   profile.MachinePolicyKey?.OpenSubKey("Ssh"),
-                  profile.UserPolicyKey?.OpenSubKey("Ssh"))
+                  profile.UserPolicyKey?.OpenSubKey("Ssh"),
+                  profile.Version)
         {
         }
 
@@ -70,7 +75,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
             => SshSettings.FromKey(
                 settingsKey,
                 machinePolicyKey,
-                userPolicyKey);
+                userPolicyKey,
+                this.schemaVersion);
     }
 
     public class SshSettings : IRegistrySettingsCollection
@@ -81,9 +87,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
-            IsPropagateLocaleEnabled,
-            PublicKeyValidity,
-            PublicKeyType
+            this.IsPropagateLocaleEnabled,
+            this.PublicKeyValidity,
+            this.PublicKeyType
         };
 
         private SshSettings()
@@ -93,7 +99,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public static SshSettings FromKey(
             RegistryKey settingsKey,
             RegistryKey machinePolicyKey,
-            RegistryKey userPolicyKey)
+            RegistryKey userPolicyKey,
+            Profile.SchemaVersion schemaVersion)
         {
             return new SshSettings()
             {
@@ -105,12 +112,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                 // NB. Machine policies override user policies, and
                 //     user policies override settings.
                 //
+
+                // 
+                // NB. Initially, the default key type was Rsa3072,
+                // but rsa-ssh is deprecated and many users's machines
+                // aren't allowed to use RSA. Therefore, use ECDSA as
+                // default for newly created profiles.
+                //
                 PublicKeyType = RegistryEnumSetting<SshKeyType>.FromKey(
                         "PublicKeyType",
                         "PublicKeyType",
                         "Key type for public key authentication",
                         null,
-                        SshKeyType.Rsa3072,
+                        schemaVersion >= Profile.SchemaVersion.Version229
+                            ? SshKeyType.EcdsaNistp384
+                            : SshKeyType.Rsa3072,
                         settingsKey)
                     .ApplyPolicy(userPolicyKey)
                     .ApplyPolicy(machinePolicyKey), // TODO: Extend ADMX

@@ -209,8 +209,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             using (var profile = Profile.CreateProfile(TestProfileName))
             {
-                Assert.AreNotEqual(1, profile.SchemaVersion);
-                Assert.AreEqual(Profile.CurrentSchemaVersion, profile.SchemaVersion);
+                Assert.AreNotEqual(Profile.SchemaVersion.Initial, profile.Version);
+                Assert.AreEqual(Profile.SchemaVersion.Current, profile.Version);
             }
         }
 
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             using (var profile = Profile.CreateProfile(TestProfileName))
             {
                 profile.SettingsKey.DeleteValue("SchemaVersion");
-                Assert.AreEqual(1, profile.SchemaVersion);
+                Assert.AreEqual(Profile.SchemaVersion.Initial, profile.Version);
             }
         }
 
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             {
                 profile.SettingsKey.DeleteValue("SchemaVersion");
                 profile.SettingsKey.SetValue("SchemaVersion", "junk");
-                Assert.AreEqual(1, profile.SchemaVersion);
+                Assert.AreEqual(Profile.SchemaVersion.Initial, profile.Version);
             }
         }
     }

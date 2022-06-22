@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
@@ -111,7 +112,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             this.serviceRegistry.AddSingleton(new SshSettingsRepository(
                 hkcu.CreateSubKey(@"Software\Google\__Test"),
                 null,
-                null));
+                null,
+                Profile.SchemaVersion.Current));
         }
 
         private Mock<IProjectModelInstanceNode> CreateInstanceNodeMock()

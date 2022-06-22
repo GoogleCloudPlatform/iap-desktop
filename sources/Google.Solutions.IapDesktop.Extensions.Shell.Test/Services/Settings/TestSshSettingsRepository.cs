@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Ssh;
@@ -54,12 +55,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new SshSettingsRepository(settingsKey, null, null);
+                var repository = new SshSettingsRepository(
+                    settingsKey, 
+                    null, 
+                    null, 
+                    Profile.SchemaVersion.Current);
                 var settings = repository.GetSettings();
 
                 Assert.IsTrue(settings.IsPropagateLocaleEnabled.BoolValue);
                 Assert.AreEqual(60 * 60 * 24 * 30, settings.PublicKeyValidity.IntValue);
-                Assert.AreEqual(SshKeyType.Rsa3072, settings.PublicKeyType.EnumValue);
             }
         }
 
@@ -68,7 +72,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new SshSettingsRepository(settingsKey, null, null);
+                var repository = new SshSettingsRepository(
+                    settingsKey, 
+                    null, 
+                    null, 
+                    Profile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
                 settings.IsPropagateLocaleEnabled.BoolValue = false;
@@ -88,11 +96,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
         //---------------------------------------------------------------------
 
         [Test]
+        public void WhenPublicKeyTypeNotSetAndSchemaVersionIsOld_ThenKeyTypeIsRsa()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    null,
+                    null,
+                    Profile.SchemaVersion.Initial);
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual(SshKeyType.Rsa3072, settings.PublicKeyType.Value);
+            }
+        }
+
+        [Test]
+        public void WhenPublicKeyTypeNotSetAndSchemaVersionIsNew_ThenKeyTypeIsEcdsa()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    null,
+                    null,
+                    Profile.SchemaVersion.Version229);
+
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.Value);
+            }
+        }
+
+        [Test]
         public void WhenPublicKeyTypeInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new SshSettingsRepository(settingsKey, null, null);
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    null,
+                    null,
+                    Profile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
                 settings.PublicKeyType.Reset();
@@ -112,7 +158,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
                 var repository = new SshSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    Profile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
                 userPolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp384, RegistryValueKind.DWord);
@@ -133,7 +180,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
                 var repository = new SshSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    Profile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
                 machinePolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp521, RegistryValueKind.DWord);
@@ -154,7 +202,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
                 var repository = new SshSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    Profile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp256, RegistryValueKind.DWord);
                 userPolicyKey.SetValue("PublicKeyType", SshKeyType.EcdsaNistp384, RegistryValueKind.DWord);
@@ -175,7 +224,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var repository = new SshSettingsRepository(settingsKey, null, null);
+                var repository = new SshSettingsRepository(
+                    settingsKey, 
+                    null, 
+                    null,
+                    Profile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
                 settings.PublicKeyValidity.Reset();
@@ -195,7 +248,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
                 var repository = new SshSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    Profile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyValidity", 60);
                 userPolicyKey.SetValue("PublicKeyValidity", 2 * 60);
@@ -216,7 +270,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
                 var repository = new SshSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    Profile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyValidity", 60);
                 machinePolicyKey.SetValue("PublicKeyValidity", 3 * 60);
@@ -237,7 +292,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
                 var repository = new SshSettingsRepository(
                     settingsKey,
                     machinePolicyKey,
-                    userPolicyKey);
+                    userPolicyKey,
+                    Profile.SchemaVersion.Current);
 
                 settingsKey.SetValue("PublicKeyValidity", 60);
                 userPolicyKey.SetValue("PublicKeyValidity", 2 * 60);

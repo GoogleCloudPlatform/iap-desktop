@@ -24,6 +24,7 @@ using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -36,13 +37,14 @@ namespace Google.Solutions.IapDesktop.Application.Host
     /// </summary>
     public sealed class Profile : IDisposable
     {
-        //
-        // Schema version  Releases
-        // --------------  -----------
-        // 1               2.0  - 2.28
-        // 2               2.29 - *
-        //
-        public const uint CurrentSchemaVersion = 2;
+        [SuppressMessage("Design", "CA1027:Mark enums with FlagsAttribute")]
+        public enum SchemaVersion : uint
+        {
+            Initial = 1,
+            Version229 = 2,
+            Current = Version229
+        }
+
         public const string DefaultProfileName = "Default";
 
         private const string DefaultProfileKey = "1.0";
@@ -88,10 +90,10 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// subkeys and values reader can expect, and which default
         /// to apply.
         /// </summary>
-        public uint SchemaVersion
+        public SchemaVersion Version
             => this.SettingsKey.GetValue(SchemaVersionValueName, null) is int version
-                ? (uint)version
-                : 1;
+                ? (SchemaVersion)(uint)version
+                : SchemaVersion.Initial;
 
         private Profile()
         {
@@ -124,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     //
                     profileKey.SetValue(
                         SchemaVersionValueName, 
-                        CurrentSchemaVersion,
+                        SchemaVersion.Current,
                         RegistryValueKind.DWord);
                 }
             }

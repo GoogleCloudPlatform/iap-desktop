@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
@@ -146,7 +147,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             this.serviceRegistry.AddSingleton(new SshSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath),
                 null,
-                null));
+                null,
+                Profile.SchemaVersion.Current));
         }
 
         public static async Task CompleteBackgroundWorkAsync()
