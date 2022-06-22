@@ -31,11 +31,23 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Host
 {
+    /// <summary>
+    /// User profile containing settings.
+    /// </summary>
     public sealed class Profile : IDisposable
     {
+        //
+        // Schema version  Releases
+        // --------------  -----------
+        // 1               2.0  - 2.28
+        // 2               2.29 - *
+        //
+        public const uint CurrentSchemaVersion = 2;
         public const string DefaultProfileName = "Default";
+
         private const string DefaultProfileKey = "1.0";
         private const string ProfileKeyPrefix = DefaultProfileKey + ".";
+        private const string SchemaVersionValueName = "SchemaVersion";
 
         private static readonly Regex ProfileNamePattern = new Regex(@"^[a-zA-Z0-9_\-\ ]+$");
 
@@ -71,6 +83,16 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public bool IsDefault { get; private set; }
 
+        /// <summary>
+        /// Version of the profile schema. The schema defines which
+        /// subkeys and values reader can expect, and which default
+        /// to apply.
+        /// </summary>
+        public uint SchemaVersion
+            => this.SettingsKey.GetValue(SchemaVersionValueName, null) is int version
+                ? (uint)version
+                : 1;
+
         private Profile()
         {
         }
@@ -93,7 +115,18 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
             using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
             {
-                hkcu.CreateSubKey($@"{ProfilesKeyPath}\{ProfileKeyPrefix}{name}");
+                using (var profileKey = hkcu.CreateSubKey($@"{ProfilesKeyPath}\{ProfileKeyPrefix}{name}"))
+                {
+                    //
+                    // Store the current schema version to allow future readers
+                    // to decide whether certain backward-compatibility is needed
+                    // or not.
+                    //
+                    profileKey.SetValue(
+                        SchemaVersionValueName, 
+                        CurrentSchemaVersion,
+                        RegistryValueKind.DWord);
+                }
             }
 
             return OpenProfile(name);

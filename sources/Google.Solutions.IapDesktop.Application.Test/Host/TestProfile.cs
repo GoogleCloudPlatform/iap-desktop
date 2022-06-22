@@ -199,5 +199,40 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
             Assert.IsNotNull(list);
             CollectionAssert.Contains(list, "Default");
         }
+
+        //---------------------------------------------------------------------
+        // SchemaVersion.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNewProfileCreated_ThenSchemaVersionIsCurrent()
+        {
+            using (var profile = Profile.CreateProfile(TestProfileName))
+            {
+                Assert.AreNotEqual(1, profile.SchemaVersion);
+                Assert.AreEqual(Profile.CurrentSchemaVersion, profile.SchemaVersion);
+            }
+        }
+
+        [Test]
+        public void WhenProfileLacksVersionValue_ThenSchemaVersionIsOne()
+        {
+            using (var profile = Profile.CreateProfile(TestProfileName))
+            {
+                profile.SettingsKey.DeleteValue("SchemaVersion");
+                Assert.AreEqual(1, profile.SchemaVersion);
+            }
+        }
+
+        [Test]
+        public void WhenProfileVersionInvalid_ThenSchemaVersionIsOne()
+        {
+            using (var profile = Profile.CreateProfile(TestProfileName))
+            {
+                profile.SettingsKey.DeleteValue("SchemaVersion");
+                profile.SettingsKey.SetValue("SchemaVersion", "junk");
+                Assert.AreEqual(1, profile.SchemaVersion);
+            }
+        }
     }
 }
