@@ -51,23 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
         }
 
         [Test]
-        public void WhenKeyEmpty_ThenDefaultsAreProvided()
-        {
-            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var repository = new SshSettingsRepository(
-                    settingsKey, 
-                    null, 
-                    null, 
-                    Profile.SchemaVersion.Current);
-                var settings = repository.GetSettings();
-
-                Assert.IsTrue(settings.IsPropagateLocaleEnabled.BoolValue);
-                Assert.AreEqual(60 * 60 * 24 * 30, settings.PublicKeyValidity.IntValue);
-            }
-        }
-
-        [Test]
         public void WhenSettingsSaved_ThenSettingsCanBeRead()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
@@ -91,12 +74,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             }
         }
 
+
+        //---------------------------------------------------------------------
+        // IsPropagateLocaleEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenKeyEmpty_ThenIsPropagateLocaleEnabledIsTrue()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    null,
+                    null,
+                    Profile.SchemaVersion.Current);
+                var settings = repository.GetSettings();
+
+                Assert.IsTrue(settings.IsPropagateLocaleEnabled.BoolValue);
+            }
+        }
+
         //---------------------------------------------------------------------
         // PublicKeyType.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPublicKeyTypeNotSetAndSchemaVersionIsOld_ThenKeyTypeIsRsa()
+        public void WhenSchemaVersionIsOld_ThenPublicKeyTypeIsRsa()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -113,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
         }
 
         [Test]
-        public void WhenPublicKeyTypeNotSetAndSchemaVersionIsNew_ThenKeyTypeIsEcdsa()
+        public void WhenSchemaVersionIsNew_ThenPublicKeyTypeIsEcdsa()
         {
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -218,6 +222,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
         //---------------------------------------------------------------------
         // PublicKeyValidity.
         //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenKeyEmpty_ThenPublicKeyValidityIs30days()
+        {
+            using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var repository = new SshSettingsRepository(
+                    settingsKey,
+                    null,
+                    null,
+                    Profile.SchemaVersion.Current);
+                var settings = repository.GetSettings();
+
+                Assert.AreEqual(60 * 60 * 24 * 30, settings.PublicKeyValidity.IntValue);
+            }
+        }
 
         [Test]
         public void WhenPublicKeyValidityInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
