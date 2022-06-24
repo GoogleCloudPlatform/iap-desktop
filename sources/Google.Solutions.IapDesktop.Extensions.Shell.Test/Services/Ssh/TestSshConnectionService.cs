@@ -109,6 +109,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .ReturnsAsync(CreateInstanceNodeMock().Object);
 
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+            hkcu.DeleteSubKeyTree(@"Software\Google\__Test", false);
+
             this.serviceRegistry.AddSingleton(new SshSettingsRepository(
                 hkcu.CreateSubKey(@"Software\Google\__Test"),
                 null,
@@ -162,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .ConfigureAwait(false);
 
             this.keyStore.Verify(k => k.OpenSshKeyPair(
-                It.Is<SshKeyType>(t => t == SshKeyType.Rsa3072),
+                It.Is<SshKeyType>(t => t == SshKeyType.EcdsaNistp384),
                 It.IsAny<IAuthorization>(),
                 It.Is<bool>(create => true),
                 It.IsAny<IWin32Window>()), Times.Once);
