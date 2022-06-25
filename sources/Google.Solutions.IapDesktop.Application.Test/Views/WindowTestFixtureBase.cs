@@ -45,11 +45,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
     {
         protected const string TestKeyPath = @"Software\Google\__Test";
 
-        protected ServiceRegistry serviceRegistry;
-        protected IServiceProvider serviceProvider;
-        protected IMainForm mainForm;
-        protected IEventService eventService;
         private MockExceptionDialog exceptionDialog;
+
+        protected ServiceRegistry ServiceRegistry { get; private set; }
+        protected IServiceProvider ServiceProvider { get; private set; }
+        protected IMainForm MainForm { get; private set; }
+        protected IEventService EventService { get; private set; }
 
         protected Exception ExceptionShown => this.exceptionDialog.ExceptionShown;
 
@@ -70,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
             var mainForm = new TestMainForm();
-            this.eventService = new EventService(mainForm);
+            this.EventService = new EventService(mainForm);
 
             var registry = new ServiceRegistry();
             registry.AddSingleton<IProjectRepository>(new ProjectRepository(
@@ -87,14 +88,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             registry.AddSingleton<IAuthorizationSource>(mainForm);
             registry.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
 
-            registry.AddSingleton<IEventService>(this.eventService);
+            registry.AddSingleton<IEventService>(this.EventService);
 
             this.exceptionDialog = new MockExceptionDialog();
             registry.AddSingleton<IExceptionDialog>(this.exceptionDialog);
 
-            this.mainForm = mainForm;
-            this.serviceRegistry = registry;
-            this.serviceProvider = registry;
+            this.MainForm = mainForm;
+            this.ServiceRegistry = registry;
+            this.ServiceProvider = registry;
 
             mainForm.Show();
 
@@ -105,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public void TearDown()
         {
             PumpWindowMessages();
-            this.mainForm.Close();
+            this.MainForm.Close();
         }
 
         protected static void PumpWindowMessages()
@@ -121,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             // Set up event handler.
             //
             TEvent deliveredEvent = null;
-            this.eventService.BindHandler<TEvent>(e =>
+            this.EventService.BindHandler<TEvent>(e =>
             {
                 deliveredEvent = e;
             });

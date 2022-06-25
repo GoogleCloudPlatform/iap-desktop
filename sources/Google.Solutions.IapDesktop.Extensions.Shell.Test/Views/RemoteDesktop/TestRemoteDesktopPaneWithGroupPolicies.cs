@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             InstanceLocator instanceLocator)
         {
             using (var credentialAdapter = new WindowsCredentialAdapter(
-                new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationSource>())))
+                new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                     instanceLocator,
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             IapTunnel tunnel,
             InstanceLocator instanceLocator)
         {
-            var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
+            var rdpService = new RemoteDesktopSessionBroker(this.ServiceProvider);
             var settings = await CreateSettingsAsync(instanceLocator).ConfigureAwait(true);
 
             return rdpService.Connect(
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
                 settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
 
-                var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
+                var rdpService = new RemoteDesktopSessionBroker(this.ServiceProvider);
 
                 await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
                         locator,
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
                 settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
 
-                var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
+                var rdpService = new RemoteDesktopSessionBroker(this.ServiceProvider);
                 var session = rdpService.Connect(
                     locator,
                     "localhost",
@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 ((RemoteDesktopPane)session).AuthenticationWarningDisplayed += (sender, args) =>
                 {
                     serverAuthWarningIsDisplayed = true;
-                    mainForm.Close();
+                    MainForm.Close();
                 };
 
                 var deadline = DateTime.Now.AddSeconds(45);

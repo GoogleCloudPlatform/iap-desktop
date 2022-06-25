@@ -78,8 +78,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         [SetUp]
         public void SetUpServices()
         {
-            this.serviceRegistry.AddMock<IConfirmationDialog>();
-            this.serviceRegistry.AddMock<IOperationProgressDialog>();
+            this.ServiceRegistry.AddMock<IConfirmationDialog>();
+            this.ServiceRegistry.AddMock<IOperationProgressDialog>();
         }
 
         private async Task<SshTerminalPane> ConnectSshTerminalPane(
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ConfigureAwait(true);
 
                 var broker = new SshTerminalSessionBroker(
-                    this.serviceProvider);
+                    this.ServiceProvider);
 
                 var address = await PublicAddressFromLocator(instanceLocator)
                     .ConfigureAwait(true);
@@ -142,9 +142,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public void SetUpTerminalSettingsRepository()
         {
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            this.serviceRegistry.AddSingleton(new TerminalSettingsRepository(
+            this.ServiceRegistry.AddSingleton(new TerminalSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath)));
-            this.serviceRegistry.AddSingleton(new SshSettingsRepository(
+            this.ServiceRegistry.AddSingleton(new SshSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath),
                 null,
                 null,
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
             var broker = new SshTerminalSessionBroker(
-                this.serviceProvider);
+                this.ServiceProvider);
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectAsync(
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
             var broker = new SshTerminalSessionBroker(
-                this.serviceProvider);
+                this.ServiceProvider);
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectAsync(
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
             var broker = new SshTerminalSessionBroker(
-                this.serviceProvider);
+                this.ServiceProvider);
 
             var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
@@ -599,7 +599,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             // Disable Ctrl+C/V.
-            var settingsRepository = this.serviceProvider.GetService<TerminalSettingsRepository>();
+            var settingsRepository = this.ServiceProvider.GetService<TerminalSettingsRepository>();
             var settings = settingsRepository.GetSettings();
             settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = false;
             settingsRepository.SetSettings(settings);

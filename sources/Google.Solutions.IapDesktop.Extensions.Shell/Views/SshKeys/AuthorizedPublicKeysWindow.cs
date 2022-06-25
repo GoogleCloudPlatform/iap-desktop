@@ -48,8 +48,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             InitializeComponent();
             this.theme.ApplyTo(this.toolStrip);
 
-            this.viewModel = new AuthorizedPublicKeysViewModel(serviceProvider);
-            this.viewModel.View = this;
+            this.viewModel = new AuthorizedPublicKeysViewModel(serviceProvider)
+            {
+                View = this
+            };
 
             this.infoLabel.BindReadonlyProperty(
                 c => c.Text,
