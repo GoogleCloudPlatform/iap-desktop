@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Options;
@@ -54,7 +55,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
                 policyKey.SetValue(policy.Key, policy.Value);
             }
 
-            return new SshSettingsRepository(baseKey, policyKey, null);
+            return new SshSettingsRepository(
+                baseKey, 
+                policyKey, 
+                null,
+                Profile.SchemaVersion.Current);
         }
 
         //---------------------------------------------------------------------
