@@ -87,6 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
         }
 
         [Test]
+        [Ignore("b/237135402")]
         public async Task WhenDeviceEnrolled_ThenAuditLogIndicatesDevice(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
