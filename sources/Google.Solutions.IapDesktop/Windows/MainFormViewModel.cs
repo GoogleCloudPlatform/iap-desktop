@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 return;
             }
 
-            this.ProfileStateCaption = this.Authorization.Email;
+            this.ProfileStateCaption = $"{this.profile.Name}: {this.Authorization.Email}";
             this.DeviceStateCaption = "Endpoint Verification";
             this.IsDeviceStateVisible = this.Authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
             this.IsReportInternalIssueVisible = this.Authorization.UserInfo?.HostedDomain == "google.com";
@@ -264,13 +264,13 @@ namespace Google.Solutions.IapDesktop.Windows
             Debug.Assert(this.ProfileStateCaption != null);
             Debug.Assert(this.Authorization.DeviceEnrollment != null);
 
-            if (!profile.IsDefault)
+            if (!this.profile.IsDefault)
             {
                 //
                 // Add taskbar badge to help distinguish this profile
                 // from other profiles.
                 //
-                using (var badge = BadgeIcon.ForTextInitial(profile.Name))
+                using (var badge = BadgeIcon.ForTextInitial(this.profile.Name))
                 using (var taskbar = ComReference.For((ITaskbarList3)new TaskbarList()))
                 {
                     taskbar.Object.HrInit();
