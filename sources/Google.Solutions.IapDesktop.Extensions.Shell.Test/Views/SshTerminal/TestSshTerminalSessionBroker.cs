@@ -51,11 +51,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         [SetUp]
         public void SetUpServices()
         {
-            this.serviceRegistry.AddMock<IConfirmationDialog>();
-            this.serviceRegistry.AddMock<IOperationProgressDialog>();
+            this.ServiceRegistry.AddMock<IConfirmationDialog>();
+            this.ServiceRegistry.AddMock<IOperationProgressDialog>();
 
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            this.serviceRegistry.AddSingleton(new TerminalSettingsRepository(
+            this.ServiceRegistry.AddSingleton(new TerminalSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath)));
         }
 
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public void WhenNotConnected_ThenTryActivateReturnsFalse()
         {
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
-            var broker = new SshTerminalSessionBroker(this.serviceProvider);
+            var broker = new SshTerminalSessionBroker(this.ServiceProvider);
             Assert.IsFalse(broker.TryActivate(sampleLocator));
         }
 
@@ -80,9 +80,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072);
 
             using (var gceAdapter = new ComputeEngineAdapter(
-                this.serviceProvider.GetService<IAuthorizationSource>()))
+                this.ServiceProvider.GetService<IAuthorizationSource>()))
             using (var keyAdapter = new KeyAuthorizationService(
-                this.serviceProvider.GetService<IAuthorizationSource>(),
+                this.ServiceProvider.GetService<IAuthorizationSource>(),
                 new ComputeEngineAdapter(await credential),
                 new ResourceManagerAdapter(await credential),
                 new Mock<IOsLoginService>().Object))
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ConfigureAwait(true);
 
                 // Connect
-                var broker = new SshTerminalSessionBroker(this.serviceProvider);
+                var broker = new SshTerminalSessionBroker(this.ServiceProvider);
 
                 ISshTerminalSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
@@ -117,8 +117,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 Assert.IsNull(this.ExceptionShown);
 
-                Assert.AreSame(session, SshTerminalPane.TryGetActivePane(this.mainForm));
-                Assert.AreSame(session, SshTerminalPane.TryGetExistingPane(this.mainForm, locator));
+                Assert.AreSame(session, SshTerminalPane.TryGetActivePane(this.MainForm));
+                Assert.AreSame(session, SshTerminalPane.TryGetExistingPane(this.MainForm, locator));
                 Assert.IsTrue(broker.IsConnected(locator));
                 Assert.IsTrue(broker.TryActivate(locator));
 
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public void WhenNotConnected_ThenIsConnectedIsFalse()
         {
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
-            var broker = new SshTerminalSessionBroker(this.serviceProvider);
+            var broker = new SshTerminalSessionBroker(this.ServiceProvider);
             Assert.IsFalse(broker.IsConnected(sampleLocator));
         }
 
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         [Test]
         public void WhenNotConnected_ThenActiveSessionReturnsNull()
         {
-            var broker = new SshTerminalSessionBroker(this.serviceProvider);
+            var broker = new SshTerminalSessionBroker(this.ServiceProvider);
             Assert.IsNull(broker.ActiveSshTerminalSession);
         }
     }

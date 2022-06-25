@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     }
 
     [Service(typeof(IOsLoginService))]
-    public class OsLoginService : IOsLoginService
+    public sealed class OsLoginService : IOsLoginService
     {
         private static readonly ProjectLocator WellKnownProject 
             = new ProjectLocator("windows-cloud");

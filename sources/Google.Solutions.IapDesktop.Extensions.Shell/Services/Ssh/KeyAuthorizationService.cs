@@ -94,10 +94,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
             {
                 var metdataKeyProcessor = await MetadataAuthorizedPublicKeyProcessor.ForInstance(
-                    this.computeEngineAdapter,
-                    this.resourceManagerAdapter,
-                    instance,
-                    token);
+                        this.computeEngineAdapter,
+                        this.resourceManagerAdapter,
+                        instance,
+                        token)
+                    .ConfigureAwait(false);
 
                 var osLoginEnabled = metdataKeyProcessor.IsOsLoginEnabled;
 
@@ -136,12 +137,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     // metadata.
                     //
                     return await metdataKeyProcessor.AuthorizeKeyPairAsync(
-                        key,
-                        validity,
-                        preferredPosixUsername,
-                        allowedMethods,
-                        this.authorizationSource.Authorization,
-                        token);
+                            key,
+                            validity,
+                            preferredPosixUsername,
+                            allowedMethods,
+                            this.authorizationSource.Authorization,
+                            token)
+                        .ConfigureAwait(false);
                 }
             }
         }

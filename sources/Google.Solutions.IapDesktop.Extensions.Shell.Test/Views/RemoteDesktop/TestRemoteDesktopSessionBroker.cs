@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         public void WhenNotConnected_ThenTryActivateReturnsFalse()
         {
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
-            var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
+            var broker = new RemoteDesktopSessionBroker(this.ServiceProvider);
             Assert.IsFalse(broker.TryActivate(sampleLocator));
         }
 
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             using (var credentialAdapter = new WindowsCredentialAdapter(
-                new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationSource>())))
+                new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                         locator,
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpPassword.Value = credentials.SecurePassword;
 
                 // Connect
-                var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
+                var broker = new RemoteDesktopSessionBroker(this.ServiceProvider);
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
                         () => session = (RemoteDesktopPane)broker.Connect(
@@ -97,8 +97,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
                 Assert.IsNull(this.ExceptionShown);
 
-                Assert.AreSame(session, RemoteDesktopPane.TryGetActivePane(this.mainForm));
-                Assert.AreSame(session, RemoteDesktopPane.TryGetExistingPane(this.mainForm, locator));
+                Assert.AreSame(session, RemoteDesktopPane.TryGetActivePane(this.MainForm));
+                Assert.AreSame(session, RemoteDesktopPane.TryGetExistingPane(this.MainForm, locator));
                 Assert.IsTrue(broker.IsConnected(locator));
                 Assert.IsTrue(broker.TryActivate(locator));
 
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         public void WhenNotConnected_ThenIsConnectedIsFalse()
         {
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
-            var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
+            var broker = new RemoteDesktopSessionBroker(this.ServiceProvider);
             Assert.IsFalse(broker.IsConnected(sampleLocator));
         }
 
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         [Test]
         public void WhenNotConnected_ThenActiveSessionReturnsNull()
         {
-            var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
+            var broker = new RemoteDesktopSessionBroker(this.ServiceProvider);
             Assert.IsNull(broker.ActiveSession);
         }
     }

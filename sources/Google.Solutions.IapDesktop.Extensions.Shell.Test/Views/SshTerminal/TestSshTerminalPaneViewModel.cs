@@ -337,9 +337,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new IPEndPoint(address, 22),
                     nonAuthorizedKey,
                     null,
-                    TimeSpan.FromSeconds(10));
-
-                viewModel.View = window;
+                    TimeSpan.FromSeconds(10))
+                {
+                    View = window
+                };
 
                 ConnectionErrorEventArgs argsReceived = null;
                 viewModel.ConnectionFailed += (s, a) =>
