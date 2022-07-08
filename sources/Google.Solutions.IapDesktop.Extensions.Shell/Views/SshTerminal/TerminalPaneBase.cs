@@ -188,19 +188,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             //
             var copyReceivedData = new ToolStripMenuItem("Copy received data");
             copyReceivedData.Click += (sender, args) => this.ViewModel.CopyReceivedDataToClipboard();
-            this.TabContextStrip.Opening += (sender, args) =>
+            this.TabPageContextMenuStrip.Opening += (sender, args) =>
             {
                 copyReceivedData.Visible = Control.ModifierKeys.HasFlag(Keys.Shift);
             };
-            this.TabContextStrip.Items.Add(copyReceivedData);
+            this.TabPageContextMenuStrip.Items.Add(copyReceivedData);
 
             var copySentData = new ToolStripMenuItem("Copy sent data");
             copySentData.Click += (sender, args) => this.ViewModel.CopySentDataToClipboard();
-            this.TabContextStrip.Opening += (sender, args) =>
+            this.TabPageContextMenuStrip.Opening += (sender, args) =>
             {
                 copySentData.Visible = Control.ModifierKeys.HasFlag(Keys.Shift);
             };
-            this.TabContextStrip.Items.Add(copySentData);
+            this.TabPageContextMenuStrip.Items.Add(copySentData);
         }
 
         private void ApplyTerminalSettings(TerminalSettings settings)
