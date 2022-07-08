@@ -23,7 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Support.Nunit.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;

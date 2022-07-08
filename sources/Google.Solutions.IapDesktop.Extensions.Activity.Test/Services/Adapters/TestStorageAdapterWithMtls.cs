@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Support.Nunit.Integration;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using NUnit.Framework;

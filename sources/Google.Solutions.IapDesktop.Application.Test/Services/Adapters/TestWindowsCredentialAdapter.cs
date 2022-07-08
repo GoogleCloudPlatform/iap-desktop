@@ -24,7 +24,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Services;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Support.Nunit.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
 using System;

@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 #pragma warning disable CA1000 // Do not declare static members on generic types
 
-namespace Google.Solutions.Common.Test.Integration
+namespace Google.Solutions.Support.Nunit.Integration
 {
     public class ResourceTask<T>
     {

@@ -27,7 +27,7 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 
-namespace Google.Solutions.Common.Test.Integration
+namespace Google.Solutions.Support.Nunit.Integration
 {
     public sealed class CredentialAttribute : NUnitAttribute, IParameterDataSource
     {

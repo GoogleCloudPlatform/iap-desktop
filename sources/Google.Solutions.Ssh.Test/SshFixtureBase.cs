@@ -33,7 +33,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Support.Nunit.Integration;
 using Google.Apis.Compute.v1.Data;
 using System.Threading;
 using Google.Solutions.Common.ApiExtensions.Instance;

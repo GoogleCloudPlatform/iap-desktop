@@ -23,7 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Services;
 using Google.Solutions.Common.ApiExtensions.Request;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Support.Nunit.Integration;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
