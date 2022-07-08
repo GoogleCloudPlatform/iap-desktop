@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
@@ -77,6 +78,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.passwordText.Text = password;
 
             this.ShowDialog(owner);
+        }
+
+        //---------------------------------------------------------------------
+        // P/Invoke definitions.
+        //---------------------------------------------------------------------
+
+        private static class UnsafeNativeMethods
+        {
+            internal const int EM_SETMARGINS = 0xd3;
+
+            [DllImport("user32.dll")]
+            internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
         }
     }
 }

@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -52,6 +53,60 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 inputLocaleIdentifier);
 
             return result.ToString();
+        }
+
+        //---------------------------------------------------------------------
+        // P/Invoke definitions.
+        //---------------------------------------------------------------------
+
+        private static class UnsafeNativeMethods
+        {
+            //---------------------------------------------------------------------
+            // Caret.
+            //---------------------------------------------------------------------
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct POINT
+            {
+                public int X;
+                public int Y;
+
+                public POINT(int x, int y)
+                {
+                    this.X = x;
+                    this.Y = y;
+                }
+
+                public static implicit operator System.Drawing.Point(POINT p)
+                {
+                    return new System.Drawing.Point(p.X, p.Y);
+                }
+
+                public static implicit operator POINT(System.Drawing.Point p)
+                {
+                    return new POINT(p.X, p.Y);
+                }
+            }
+
+            [DllImport("user32.dll")]
+            internal static extern bool GetKeyboardState(byte[] lpKeyState);
+
+            [DllImport("user32.dll")]
+            internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+            [DllImport("user32.dll")]
+            internal static extern IntPtr GetKeyboardLayout(uint idThread);
+
+            [DllImport("user32.dll")]
+            internal static extern int ToUnicodeEx(
+                uint wVirtKey,
+                uint wScanCode,
+                byte[] lpKeyState,
+                [Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pwszBuff,
+                int cchBuff,
+                uint wFlags,
+                IntPtr dwhkl);
+
         }
     }
 }

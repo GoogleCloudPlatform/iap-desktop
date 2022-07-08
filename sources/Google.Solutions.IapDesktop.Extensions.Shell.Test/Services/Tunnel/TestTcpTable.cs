@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
         public void WhenRunningOnWindows_ThenGetTcpTable2ReturnsEntryForNetlogon()
         {
             var netlogonListeningPorts = TcpTable.GetTcpTable2()
-                .Where(r => r.State == UnsafeNativeMethods.MibTcpState.MIB_TCP_STATE_LISTEN)
+                .Where(r => r.State == TcpTable.MibTcpState.MIB_TCP_STATE_LISTEN)
                 .Where(r => r.LocalEndpoint.Port == 445);
             Assert.AreEqual(1, netlogonListeningPorts.Count());
         }

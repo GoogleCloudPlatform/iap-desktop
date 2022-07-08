@@ -81,8 +81,8 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Interop\ComReference.cs" />
     <Compile Include="Interop\GlobalAllocSafeHandle.cs" />
+    <Compile Include="Interop\Hresult.cs" />
     <Compile Include="Interop\LocalAllocSafeHandle.cs" />
-    <Compile Include="Interop\UnsafeNativeMethods.cs" />
     <Compile Include="Locator\AccessLevelLocator.cs" />
     <Compile Include="Locator\GlobalResourceLocator.cs">
       <AutoGen>True</AutoGen>

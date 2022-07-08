@@ -21,6 +21,7 @@
 
 using AxMSTSCLib;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
@@ -453,7 +454,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                                 1,  // No desktop scaling
                                 1); // No device scaling
                         }
-                        catch (COMException e) when ((uint)e.HResult == UnsafeNativeMethods.E_UNEXPECTED)
+                        catch (COMException e) when ((uint)e.HResult == Hresult.E_UNEXPECTED)
                         {
                             ApplicationTraceSources.Default.TraceWarning("Adjusting desktop size (w/o) reconnect failed.");
 

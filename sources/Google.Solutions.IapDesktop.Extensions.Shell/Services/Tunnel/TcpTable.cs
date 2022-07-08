@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
     {
         internal struct Entry
         {
-            public UnsafeNativeMethods.MibTcpState State;
+            public MibTcpState State;
             public IPEndPoint LocalEndpoint;
             public IPEndPoint RemoteEndpoint;
             public uint ProcessId;
@@ -129,6 +129,59 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                         (int)ConvertPort(row.dwRemotePort)),
                     ProcessId = row.dwOwningPid
                 });
+        }
+
+        //---------------------------------------------------------------------
+        // P/Invoke definitions.
+        //---------------------------------------------------------------------
+
+        internal enum MibTcpState : uint
+        {
+            MIB_TCP_STATE_CLOSED = 1,
+            MIB_TCP_STATE_LISTEN = 2,
+            MIB_TCP_STATE_SYN_SENT = 3,
+            MIB_TCP_STATE_SYN_RCVD = 4,
+            MIB_TCP_STATE_ESTAB = 5,
+            MIB_TCP_STATE_FIN_WAIT1 = 6,
+            MIB_TCP_STATE_FIN_WAIT2 = 7,
+            MIB_TCP_STATE_CLOSE_WAIT = 8,
+            MIB_TCP_STATE_CLOSING = 9,
+            MIB_TCP_STATE_LAST_ACK = 10,
+            MIB_TCP_STATE_TIME_WAIT = 11,
+            MIB_TCP_STATE_DELETE_TCB = 12
+        }
+
+        private static class UnsafeNativeMethods
+        {
+            public const uint NO_ERROR = 0;
+            public const uint ERROR_INSUFFICIENT_BUFFER = 122;
+            public const uint ERROR_NO_DATA = 232;
+
+            [DllImport("iphlpapi.dll")]
+            internal static extern uint GetTcpTable2(
+                LocalAllocSafeHandle pTcpTable,
+                ref uint dwOutBufLen,
+                bool order);
+
+            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+            internal struct MIB_TCPTABLE2
+            {
+                internal uint dwNumEntries;
+
+                // Followed by an anysize-array of MIB_TCPROW2.
+            }
+
+            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+            internal struct MIB_TCPROW2
+            {
+                internal MibTcpState dwState;
+                internal uint dwLocalAddr;
+                internal uint dwLocalPort;
+                internal uint dwRemoteAddr;
+                internal uint dwRemotePort;
+                internal uint dwOwningPid;
+                internal uint dwOffloadState;
+            }
         }
     }
 }
