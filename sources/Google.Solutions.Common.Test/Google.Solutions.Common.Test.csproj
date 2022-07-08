@@ -133,6 +133,10 @@
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Support.Nunit\Google.Solutions.Support.Nunit.csproj">
+      <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
+      <Name>Google.Solutions.Support.Nunit</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

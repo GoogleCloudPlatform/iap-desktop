@@ -139,6 +139,10 @@
       <Project>{3e4a828d-819b-40d2-89b3-47d5b52f67fb}</Project>
       <Name>Google.Solutions.Ssh</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Support.Nunit\Google.Solutions.Support.Nunit.csproj">
+      <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
+      <Name>Google.Solutions.Support.Nunit</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

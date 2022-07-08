@@ -128,6 +128,10 @@
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.IapTunneling</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Support.Nunit\Google.Solutions.Support.Nunit.csproj">
+      <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
+      <Name>Google.Solutions.Support.Nunit</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
