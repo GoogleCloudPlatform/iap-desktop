@@ -140,16 +140,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             var singleScreenFullScreenMenuItem = new ToolStripMenuItem("&Full screen");
             singleScreenFullScreenMenuItem.Click += (sender, _)
                 => TrySetFullscreen(FullScreenMode.SingleScreen);
-            this.TabContextStrip.Items.Add(singleScreenFullScreenMenuItem);
+            this.TabPageContextMenuStrip.Items.Add(singleScreenFullScreenMenuItem);
 
             var allScreensFullScreenMenuItem = new ToolStripMenuItem("&Full screen (multiple displays)");
             allScreensFullScreenMenuItem.Click += (sender, _)
                 => TrySetFullscreen(FullScreenMode.AllScreens);
-            this.TabContextStrip.Items.Add(allScreensFullScreenMenuItem);
+            this.TabPageContextMenuStrip.Items.Add(allScreensFullScreenMenuItem);
 
-            this.TabContextStrip.Opening += (sender, _) =>
+            this.TabPageContextMenuStrip.Opening += (sender, _) =>
             {
-                foreach (var menuItem in this.TabContextStrip.Items.Cast<ToolStripDropDownItem>())
+                foreach (var menuItem in this.TabPageContextMenuStrip.Items.Cast<ToolStripDropDownItem>())
                 {
                     //
                     // Disable all commands while connecting.
