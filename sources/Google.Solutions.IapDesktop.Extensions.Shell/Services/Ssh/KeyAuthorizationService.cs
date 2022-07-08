@@ -114,7 +114,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     if (!allowedMethods.HasFlag(KeyAuthorizationMethods.Oslogin))
                     {
                         throw new InvalidOperationException(
-                            $"{instance} requires OS Login to beused");
+                            $"{instance.Name} requires OS Login");
+                    }
+
+                    if (metdataKeyProcessor.IsOsLoginWithSecurityKeyEnabled)
+                    {
+                        //
+                        // VM requires security keys.
+                        //
+                        throw new NotImplementedException(
+                            $"{instance.Name} requires a security key for authentication. " +
+                            "This is currently not supported by IAP Desktop.");
                     }
 
                     //
