@@ -51,32 +51,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
         private readonly Instance instanceDetails;
         private readonly GuestOsInfo guestOsInfo;
 
-        private string GetMetadata(string key)
-        {
-            //
-            // Check instance-specific metadata.
-            //
-            var value = this.instanceDetails.Metadata?.Items
-                .EnsureNotNull()
-                .FirstOrDefault(item => item.Key == key)?.Value;
-            if (value != null)
-            {
-                return value;
-            }
-
-            //
-            // Check common instance metadata.
-            //
-            return this.projectDetails.CommonInstanceMetadata?.Items
-                .EnsureNotNull()
-                .FirstOrDefault(item => item.Key == key)?.Value;
-        }
-
         private FeatureFlag GetMetadataFeatureFlag(string key, bool trueMeansEnabled)
         {
-            var isTrue = "true".Equals(GetMetadata(key), StringComparison.OrdinalIgnoreCase);
-            var effectiveValue = trueMeansEnabled ? isTrue : !isTrue;
-            return effectiveValue
+            var effectiveValue = this.instanceDetails.GetFlag(this.projectDetails, key);
+            return effectiveValue == trueMeansEnabled
                 ? FeatureFlag.Enabled
                 : FeatureFlag.Disabled;
         }
@@ -255,6 +233,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 
         [Browsable(true)]
         [Category(SshConfigurationCategory)]
+        [Description("Require security key for SSH authentication, " +
+                     "see https://cloud.google.com/compute/docs/oslogin/security-keys.")]
+        [DisplayName("OS Login Security Key")]
+        public FeatureFlag OsLoginWithSecurityKey => GetMetadataFeatureFlag("enable-oslogin-sk", true);
+
+        [Browsable(true)]
+        [Category(SshConfigurationCategory)]
         [DisplayName("Block project-wide SSH keys")]
         [Description("Disallow project-side SSH keys, " +
                      "see https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys#block-project-keys.")]
@@ -278,13 +263,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
         [Description("Enable guest attributes, " +
                      "see https://cloud.google.com/compute/docs/storing-retrieving-metadata#enable_attributes")]
         public FeatureFlag GuestAttributes => GetMetadataFeatureFlag("enable-guest-attributes", true);
-
-        [Browsable(true)]
-        [Category(InstanceConfigurationCategory)]
-        [DisplayName("Internal DNS mode")]
-        [Description("Resolution mode for internal DNS queries, " +
-                     "see https://cloud.google.com/compute/docs/internal-dns")]
-        public string InternalDnsMode => GetMetadata("VmDnsSetting");
 
         //---------------------------------------------------------------------
         // Loading.

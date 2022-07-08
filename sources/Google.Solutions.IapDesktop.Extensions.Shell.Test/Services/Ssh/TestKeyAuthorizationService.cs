@@ -65,7 +65,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
             bool? osLoginEnabledForProject,
             bool? osLoginEnabledForInstance,
-            bool osLogin2fa)
+            bool osLogin2fa,
+            bool osLoginSk)
         {
             var projectMetadata = new Metadata();
             if (osLoginEnabledForProject.HasValue)
@@ -89,6 +90,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             if (osLoginEnabledForInstance.HasValue && osLogin2fa)
             {
                 instanceMetadata.Add("enable-oslogin-2fa", "true");
+            }
+
+            if (osLoginEnabledForInstance.HasValue && osLoginSk)
+            {
+                instanceMetadata.Add("enable-oslogin-sk", "true");
             }
 
             var adapter = new Mock<IComputeEngineAdapter>();
@@ -142,7 +148,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
                     osLoginEnabledForInstance: null,
-                    osLogin2fa: false).Object,
+                    osLogin2fa: false,
+                    osLoginSk: false).Object,
                 new Mock<IResourceManagerAdapter>().Object,
                 CreateOsLoginServiceMock().Object);
 
@@ -169,7 +176,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
-                    osLogin2fa: false).Object,
+                    osLogin2fa: false,
+                    osLoginSk: false).Object,
                 new Mock<IResourceManagerAdapter>().Object,
                 CreateOsLoginServiceMock().Object);
 
@@ -196,7 +204,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: false,
                     osLoginEnabledForInstance: true,
-                    osLogin2fa: false).Object,
+                    osLogin2fa: false,
+                    osLoginSk: false).Object,
                 new Mock<IResourceManagerAdapter>().Object,
                 CreateOsLoginServiceMock().Object);
 
@@ -221,7 +230,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
                 osLoginEnabledForProject: true,
                 osLoginEnabledForInstance: false,
-                osLogin2fa: false);
+                osLogin2fa: false,
+                osLoginSk: false);
             var service = new KeyAuthorizationService(
                 CreateAuthorizationSourceMock().Object,
                 computeEngineAdapter.Object,
@@ -259,7 +269,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
                     osLoginEnabledForInstance: null,
-                    osLogin2fa: false).Object,
+                    osLogin2fa: false,
+                    osLoginSk: false).Object,
                 new Mock<IResourceManagerAdapter>().Object,
                 CreateOsLoginServiceMock().Object);
 
@@ -281,7 +292,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
-                    osLogin2fa: false).Object,
+                    osLogin2fa: false,
+                    osLoginSk: false).Object,
                 new Mock<IResourceManagerAdapter>().Object,
                 CreateOsLoginServiceMock().Object);
 
@@ -292,6 +304,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     TimeSpan.FromMinutes(1),
                     null,
                     KeyAuthorizationMethods.InstanceMetadata,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public void WhenOsLoginWithSecurityKeyEnabledForInstance_ThenAuthorizeKeyThrowsNotImplementedException()
+        {
+            var service = new KeyAuthorizationService(
+                CreateAuthorizationSourceMock().Object,
+                CreateComputeEngineAdapterMock(
+                    osLoginEnabledForProject: null,
+                    osLoginEnabledForInstance: true,
+                    osLogin2fa: false,
+                    osLoginSk: true).Object,
+                new Mock<IResourceManagerAdapter>().Object,
+                CreateOsLoginServiceMock().Object);
+
+            ExceptionAssert.ThrowsAggregateException<NotImplementedException>(
+                () => service.AuthorizeKeyAsync(
+                    SampleLocator,
+                    new Mock<ISshKeyPair>().Object,
+                    TimeSpan.FromMinutes(1),
+                    null,
+                    KeyAuthorizationMethods.All,
                     CancellationToken.None).Wait());
         }
     }

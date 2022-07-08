@@ -46,9 +46,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     public abstract class MetadataAuthorizedPublicKeyProcessor
     {
         public const string EnableOsLoginFlag = "enable-oslogin";
+        public const string EnableOsLoginWithSecurityKeyFlag = "enable-oslogin-sk";
         public const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
 
         public abstract bool IsOsLoginEnabled { get; }
+        public abstract bool IsOsLoginWithSecurityKeyEnabled { get; }
         public abstract bool AreProjectSshKeysBlocked { get; }
 
         internal static void AddPublicKeyToMetadata(
@@ -77,43 +79,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 .FromMetadata(metadata)
                 .Remove(key);
             metadata.Add(MetadataAuthorizedPublicKeySet.MetadataKey, newKeySet.ToString());
-        }
-
-        protected bool? GetFlag(Metadata metadata, string flag)
-        {
-            var value = metadata?.GetValue(flag);
-
-            if (value == null)
-            {
-                //
-                // Undefined.
-                //
-                return null;
-            }
-            else
-            {
-                //
-                // Evaluate "truthyness" using same rules as
-                // CheckMetadataFeatureEnabled()
-                //
-                switch (value.Trim().ToLower())
-                {
-                    case "true":
-                    case "1":
-                    case "y":
-                    case "yes":
-                        return true;
-
-                    case "false":
-                    case "0":
-                    case "n":
-                        case "no":
-                        return false;
-
-                    default:
-                        return null;
-                }
-            }
         }
 
         protected async Task ModifyMetadataAndHandleErrorsAsync(
@@ -226,11 +191,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly Project projectDetails;
 
         public override bool IsOsLoginEnabled
-            => GetFlag(this.projectDetails.CommonInstanceMetadata, EnableOsLoginFlag) == true;
+            => this.projectDetails.GetFlag(EnableOsLoginFlag) == true;
+
+        public override bool IsOsLoginWithSecurityKeyEnabled
+             => this.projectDetails.GetFlag(EnableOsLoginWithSecurityKeyFlag) == true;
 
         public override bool AreProjectSshKeysBlocked
-            => GetFlag(this.projectDetails.CommonInstanceMetadata, BlockProjectSshKeysFlag) == true;
-
+            => this.projectDetails.GetFlag(BlockProjectSshKeysFlag) == true;
 
         internal ProjectMetadataAuthorizedPublicKeyProcessor(
             IComputeEngineAdapter computeEngineAdapter,
@@ -290,33 +257,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.projectDetails = projectDetails;
         }
 
-        private bool? GetFlag(string flag)
-        {
-            //
-            // NB. The instance value always takes precedence,
-            // even if it's false.
-            //
-
-            var instanceValue = GetFlag(this.instanceDetails.Metadata, flag);
-            if (instanceValue != null)
-            {
-                return instanceValue.Value;
-            }
-
-            var projectValue = GetFlag(this.projectDetails.CommonInstanceMetadata, flag);
-            if (projectValue != null)
-            {
-                return projectValue.Value;
-            }
-
-            return null;
-        }
-
         public override bool IsOsLoginEnabled
-            => GetFlag(EnableOsLoginFlag) == true;
+            => this.instanceDetails.GetFlag(this.projectDetails, EnableOsLoginFlag) == true;
+
+        public override bool IsOsLoginWithSecurityKeyEnabled
+            => this.instanceDetails.GetFlag(this.projectDetails, EnableOsLoginWithSecurityKeyFlag) == true;
 
         public override bool AreProjectSshKeysBlocked
-            => GetFlag(BlockProjectSshKeysFlag) == true;
+            => this.instanceDetails.GetFlag(this.projectDetails, BlockProjectSshKeysFlag) == true;
 
         private bool IsLegacySshKeyPresent 
             => !string.IsNullOrEmpty(this.instanceDetails

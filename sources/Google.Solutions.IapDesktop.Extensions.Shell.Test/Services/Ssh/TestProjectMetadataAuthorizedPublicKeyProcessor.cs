@@ -114,6 +114,69 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         //---------------------------------------------------------------------
+        // IsOsLoginWithSecurityKeyEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenValueIsTruthy_ThenIsOsLoginWithSecurityKeyEnabledReturnsTrue(
+            [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+                    CreateComputeEngineAdapterMock(
+                        new Metadata()
+                        {
+                            Items = new[]
+                            {
+                                new Metadata.ItemsData()
+                                {
+                                    Key = "Enable-OsLogin-sk",
+                                    Value = truthyValue
+                                }
+                            }
+                        }).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsTrue(processor.IsOsLoginWithSecurityKeyEnabled);
+        }
+
+        [Test]
+        public async Task WhenValueIsNotTruthy_ThenIsOsLoginWithSecurityKeyEnabledReturnsFalse(
+            [Values("N", " no\n", "FALSE", " 0 ", null, "", "junk")] string truthyValue)
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+                    CreateComputeEngineAdapterMock(
+                        new Metadata()
+                        {
+                            Items = new[]
+                            {
+                                new Metadata.ItemsData()
+                                {
+                                    Key = "Enable-OsLogin-sk",
+                                    Value = truthyValue
+                                }
+                            }
+                        }).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsFalse(processor.IsOsLoginWithSecurityKeyEnabled);
+        }
+        [Test]
+        public async Task WhenValueIsMissing_ThenIsOsLoginWithSecurityKeyEnabledReturnsFalse()
+        {
+            var processor = await MetadataAuthorizedPublicKeyProcessor.ForProject(
+                    CreateComputeEngineAdapterMock(new Metadata()).Object,
+                    SampleLocator,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsFalse(processor.IsOsLoginWithSecurityKeyEnabled);
+        }
+
+        //---------------------------------------------------------------------
         // ListAuthorizedKeys.
         //---------------------------------------------------------------------
 

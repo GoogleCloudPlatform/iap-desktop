@@ -64,7 +64,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                 ? FeatureFlag.Enabled : FeatureFlag.Disabled, model.OsInventory);
             Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
             Assert.AreEqual(FeatureFlag.Enabled, model.GuestAttributes);
-            Assert.IsNull(model.InternalDnsMode);
             Assert.IsFalse(model.IsSoleTenant);
             Assert.AreEqual(WindowsInstanceAttribute.DefaultMachineType, model.MachineType);
             Assert.IsNull(model.Tags);
@@ -119,7 +118,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
             Assert.AreEqual(FeatureFlag.Disabled, model.SerialPortAccess);
             Assert.AreEqual(FeatureFlag.Disabled, model.GuestAttributes);
-            Assert.IsNull(model.InternalDnsMode);
         }
 
         [Test]
@@ -186,10 +184,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             };
 
             var model = new InstancePropertiesInspectorModel(project, instance, null);
-            Assert.AreEqual("ZonalPreferred", model.InternalDnsMode);
             Assert.AreEqual(FeatureFlag.Disabled, model.OsLogin);
             Assert.AreEqual(FeatureFlag.Disabled, model.OsLogin2FA);
             Assert.AreEqual(FeatureFlag.Enabled, model.BlockProjectSshKeys);
+            Assert.AreEqual(FeatureFlag.Disabled, model.OsLoginWithSecurityKey);
         }
 
         [Test]
@@ -211,41 +209,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                         {
                             Key = "enable-oslogin-2fa",
                             Value = "true"
-                        }
-                    }
-                }
-            };
-
-            var model = new InstancePropertiesInspectorModel(project, instance, null);
-            Assert.AreEqual("ZonalPreferred", model.InternalDnsMode);
-            Assert.AreEqual(FeatureFlag.Enabled, model.OsLogin2FA);
-        }
-
-        [Test]
-        public void WhenFlagSetInCommonInstanceMetadataOnly_ThenInstanceCommonInstanceMetadataPrevails()
-        {
-            var project = new Project()
-            {
-                CommonInstanceMetadata = new Metadata()
-                {
-                    Items = new[]
-                    {
+                        },
                         new Metadata.ItemsData()
                         {
-                            Key = "VmDnsSetting",
-                            Value = "ZonalOnly"
+                            Key = "enable-oslogin-sk",
+                            Value = "true"
                         }
                     }
                 }
             };
 
-            var instance = new Instance
-            {
-                Metadata = new Metadata()
-            };
-
             var model = new InstancePropertiesInspectorModel(project, instance, null);
-            Assert.AreEqual("ZonalOnly", model.InternalDnsMode);
+            Assert.AreEqual(FeatureFlag.Enabled, model.OsLogin2FA);
+            Assert.AreEqual(FeatureFlag.Enabled, model.OsLoginWithSecurityKey);
         }
     }
 }
