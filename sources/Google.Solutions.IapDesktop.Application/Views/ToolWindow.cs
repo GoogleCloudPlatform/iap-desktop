@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
@@ -112,6 +113,26 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         "Saving tool window state failed: {0}", e.Message);
                 }
             };
+
+            //
+            // When a tool window contains an ActiveX control, then
+            // it's possible that we receive mouse events while
+            // the window is being disposed (reentrancy).
+            //
+            // If we let these mouse events touch the context menu, then
+            // we're causing an ObjectDisposedException (b/237985825, 
+            // b/238222518).
+            //
+            // To prevent this from happening, we have to detach the context
+            // menu *before* the ActiveX is disposed. The Dispose event
+            // is called *after* the ActiveX is disposed -- therefore,
+            // register as a component.
+            //
+            this.components.Add(Disposable.For(() =>
+            {
+                this.TabPageContextMenu = null;
+                this.TabPageContextMenuStrip = null;
+            }));
         }
 
         //---------------------------------------------------------------------
