@@ -26,10 +26,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
 {
     internal static class UnsafeNativeMethods
     {
-        //---------------------------------------------------------------------
-        // Task Dialog definitions.
-        //---------------------------------------------------------------------
-
         [Flags]
         internal enum TASKDIALOG_FLAGS : uint
         {

@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -66,6 +67,18 @@ namespace Google.Solutions.Common.Interop
             UnsafeNativeMethods.LocalFree(this.handle);
             SetHandleAsInvalid();
             return true;
+        }
+
+        //---------------------------------------------------------------------
+        // P/Invoke definitions.
+        //---------------------------------------------------------------------
+        private class UnsafeNativeMethods
+        {
+            [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
+            internal static extern LocalAllocSafeHandle LocalAlloc(int uFlags, UIntPtr sizetdwBytes);
+
+            [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
+            internal static extern IntPtr LocalFree(IntPtr handle);
         }
     }
 }

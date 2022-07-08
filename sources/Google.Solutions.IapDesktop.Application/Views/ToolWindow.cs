@@ -49,8 +49,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public ToolWindow()
         {
-            InitializeComponent();
-            AutoScaleMode = AutoScaleMode.Dpi;
+            this.InitializeComponent();
+            this.AutoScaleMode = AutoScaleMode.Dpi;
         }
 
         public ToolWindow(

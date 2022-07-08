@@ -336,7 +336,6 @@
       <DependentUpon>ToolWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\UiColors.cs" />
-    <Compile Include="Views\UnsafeNativeMethods.cs" />
     <Compile Include="Views\WaitDialog.cs">
       <SubType>Form</SubType>
     </Compile>

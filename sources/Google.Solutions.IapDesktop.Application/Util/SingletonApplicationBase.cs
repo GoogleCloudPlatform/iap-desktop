@@ -25,6 +25,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
@@ -268,6 +269,24 @@ namespace Google.Solutions.IapDesktop.Application.Util
                     HandleSubsequentInvocationException(e);
                 }
             }
+        }
+
+        //---------------------------------------------------------------------
+        // P/Invoke definitions.
+        //---------------------------------------------------------------------
+
+        private static class UnsafeNativeMethods
+        {
+            [DllImport("user32.dll")]
+            public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+            [DllImport("user32.dll")]
+            public static extern bool IsIconic(IntPtr hWnd);
+
+            [DllImport("user32.dll")]
+            public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+            public const int SW_RESTORE = 9;
         }
     }
 }

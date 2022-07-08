@@ -20,6 +20,8 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Views;
+using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 #pragma warning disable CA1806 // Do not ignore method results
@@ -48,6 +50,36 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 UnsafeNativeMethods.EM_SETRECT,
                 0,
                 ref newRect);
+        }
+
+        //---------------------------------------------------------------------
+        // P/Invoke definitions.
+        //---------------------------------------------------------------------
+
+        private static class UnsafeNativeMethods
+        {
+            internal const int EM_GETRECT = 0xB2;
+            internal const int EM_SETRECT = 0xB3;
+
+            [StructLayout(LayoutKind.Sequential)]
+            internal struct RECT
+            {
+                public readonly int Left;
+                public readonly int Top;
+                public readonly int Right;
+                public readonly int Bottom;
+
+                internal RECT(int left, int top, int right, int bottom)
+                {
+                    Left = left;
+                    Top = top;
+                    Right = right;
+                    Bottom = bottom;
+                }
+            }
+
+            [DllImport("user32.dll", EntryPoint = @"SendMessage", CharSet = CharSet.Auto)]
+            internal static extern int SendMessageRect(IntPtr hWnd, uint msg, int wParam, ref RECT rect);
         }
     }
 }
