@@ -103,9 +103,6 @@
     <Compile Include="CommonFixtureBase.cs" />
     <Compile Include="Diagnostics\TestTraceSourceExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Integration\CredentialFactory.cs" />
-    <Compile Include="Integration\PredefinedRole.cs" />
-    <Compile Include="Integration\ResourceTask.cs" />
     <Compile Include="Interop\TestGlobalAllocSafeHandle.cs" />
     <Compile Include="Interop\TestLocalAllocSafeHandle.cs" />
     <Compile Include="Locator\TestAccessLevelLocator.cs" />
@@ -119,13 +116,9 @@
     <Compile Include="Net\NetTracing.cs" />
     <Compile Include="Net\TestRestClient.cs" />
     <Compile Include="Net\TestUserAgent.cs" />
-    <Compile Include="Integration\TestProject.cs" />
-    <Compile Include="Integration\InstanceAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Locator\TestImageLocator.cs" />
     <Compile Include="Locator\TestDiskTypeLocator.cs" />
-    <Compile Include="Integration\InstanceFactory.cs" />
-    <Compile Include="Integration\CredentialAttribute.cs" />
     <Compile Include="Threading\TestRundownProtection.cs" />
     <Compile Include="Threading\TestSingleThreadSynchronizationContext.cs" />
     <Compile Include="Util\TestCancellationTokenExtensions.cs" />
