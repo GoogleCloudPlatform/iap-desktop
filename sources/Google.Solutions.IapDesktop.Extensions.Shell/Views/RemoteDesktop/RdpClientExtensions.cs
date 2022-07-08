@@ -21,6 +21,7 @@
 
 using MSTSCLib;
 using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
@@ -69,6 +70,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             // There is something about wrapping this key in a special method.
             // Without the wrapper method, marshaling does not work properly.
             nonScriptable.SendKeys(keyDataLength, ref *keyUpPtr, ref *keyDataPtr);
+        }
+
+        //---------------------------------------------------------------------
+        // P/Invoke definitions.
+        //---------------------------------------------------------------------
+
+        private static class UnsafeNativeMethods
+        {
+            public const uint E_UNEXPECTED = 0x8000ffff;
+
+            [DllImport("user32.dll")]
+            internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
         }
     }
 }

@@ -115,7 +115,6 @@
   <ItemGroup>
     <Compile Include="Controls\KeyUtil.cs" />
     <Compile Include="Controls\TerminalFont.cs" />
-    <Compile Include="Controls\UnsafeNativeMethods.cs" />
     <Compile Include="Controls\VirtualTerminal.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -152,7 +151,6 @@
     <Compile Include="Services\Ssh\SshConnectionService.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
-    <Compile Include="Services\Tunnel\UnsafeNativeMethods.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsViewModel.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsWindow.cs">
       <SubType>Form</SubType>
@@ -203,7 +201,6 @@
     <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.Designer.cs">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\RemoteDesktop\UnsafeNativeMethods.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysModel.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysViewModel.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysWindow.cs">
@@ -245,7 +242,6 @@
     <Compile Include="Services\Tunnel\Tunnel.cs" />
     <Compile Include="Services\Tunnel\TunnelBrokerService.cs" />
     <Compile Include="Services\Tunnel\TunnelService.cs" />
-    <Compile Include="Views\Credentials\UnsafeNativeMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

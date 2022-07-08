@@ -72,6 +72,7 @@ namespace Google.Solutions.Common.Interop
         //---------------------------------------------------------------------
         // P/Invoke definitions.
         //---------------------------------------------------------------------
+
         private class UnsafeNativeMethods
         {
             [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
