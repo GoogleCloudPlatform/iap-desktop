@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
@@ -27,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.Testing.Common;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -36,12 +36,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views
+namespace Google.Solutions.Testing.Application.Views
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
     [Timeout(10 * 60 * 1000)]
-    public class WindowTestFixtureBase : ApplicationFixtureBase
+    public class WindowTestFixtureBase : FixtureBase // TODO: use ApplicationFixtureBase
     {
         protected const string TestKeyPath = @"Software\Google\__Test";
 

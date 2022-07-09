@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views
+namespace Google.Solutions.Testing.Application.Views
 {
     public partial class TestMainForm : Form, IMainForm, IAuthorizationSource, IJobService
     {

@@ -43,6 +43,7 @@ using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.Testing.Application.ObjectModel;
+using Google.Solutions.Testing.Application.Views;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {

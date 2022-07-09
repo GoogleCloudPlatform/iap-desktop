@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.Testing.Application.Views
 {
-    internal static class ControlExtensions
+    public static class ControlExtensions
     {
         public static IEnumerable<Control> GetAllControls(this Control parent)
         {
