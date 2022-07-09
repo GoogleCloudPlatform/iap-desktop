@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
+using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;

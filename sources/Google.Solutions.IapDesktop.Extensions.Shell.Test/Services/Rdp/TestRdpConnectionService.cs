@@ -36,6 +36,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;
