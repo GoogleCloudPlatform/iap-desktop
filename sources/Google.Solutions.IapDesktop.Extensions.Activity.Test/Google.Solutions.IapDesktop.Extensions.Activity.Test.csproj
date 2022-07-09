@@ -142,7 +142,6 @@
     <Compile Include="Services\Adapters\GcsTestData.cs" />
     <Compile Include="Services\Adapters\TestAuditLogAdapter.cs" />
     <Compile Include="Logs\TestListLogEntriesParser.cs" />
-    <Compile Include="ActivityFixtureBase.cs" />
     <Compile Include="History\TestDataPoint.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
     <Compile Include="Services\Adapters\TestAuditLogAdapterWithMtls.cs" />

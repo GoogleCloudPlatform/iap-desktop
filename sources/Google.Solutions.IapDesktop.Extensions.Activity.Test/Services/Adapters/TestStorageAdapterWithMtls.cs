@@ -25,13 +25,14 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Application.Mocks;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("SecureConnect")]
-    public class TestStorageAdapterWithMtls : ActivityFixtureBase
+    public class TestStorageAdapterWithMtls : ApplicationFixtureBase
     {
         [Test]
         public async Task WhenNoEnrollmentProvided_ThenDeviceCertiticateAuthenticationIsOff(

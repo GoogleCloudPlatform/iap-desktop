@@ -21,13 +21,14 @@
 
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events
 {
     [TestFixture]
-    public class TestEventFactory : ActivityFixtureBase
+    public class TestEventFactory : ApplicationFixtureBase
     {
         [Test]
         public void WhenRecordIsLegacyRecord_ThenFromRecordThrowsArgumentException()

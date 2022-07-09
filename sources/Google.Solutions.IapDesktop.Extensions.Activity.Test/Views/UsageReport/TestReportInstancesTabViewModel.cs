@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
 using Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -31,7 +32,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
 {
     [TestFixture]
-    public class TestReportInstancesTabViewModel : ActivityFixtureBase
+    public class TestReportInstancesTabViewModel : ApplicationFixtureBase
     {
         private static readonly DateTime BaselineTime = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private ulong instanceIdSequence;

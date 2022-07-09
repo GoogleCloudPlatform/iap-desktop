@@ -31,12 +31,13 @@ using NUnit.Framework;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestSerialOutputModel : ActivityFixtureBase
+    public class TestSerialOutputModel : ApplicationFixtureBase
     {
         public const ushort ConsolePort = 1;
 

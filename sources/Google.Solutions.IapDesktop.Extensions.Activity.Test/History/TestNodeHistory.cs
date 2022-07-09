@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -28,7 +29,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestNodeHistory : ActivityFixtureBase
+    public class TestNodeHistory : ApplicationFixtureBase
     {
         [Test]
         public void WhenNodeHasNoPlacements_ThenZoneAndProjectIdAreNull()

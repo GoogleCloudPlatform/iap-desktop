@@ -32,6 +32,7 @@ using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Testing.Application.Test;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
 
@@ -39,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestSerialOutputViewModel : ActivityFixtureBase
+    public class TestSerialOutputViewModel : ApplicationFixtureBase
     {
         private class MockJobService : IJobService
         {

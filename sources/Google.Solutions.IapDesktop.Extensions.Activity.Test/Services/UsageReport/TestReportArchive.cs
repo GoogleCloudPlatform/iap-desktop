@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 using System.IO;
@@ -30,7 +31,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageReport
 {
     [TestFixture]
-    public class TestReportArchive : ActivityFixtureBase
+    public class TestReportArchive : ApplicationFixtureBase
     {
         [Test]
         public void WhenSerializedAndDeserialized_ThenObjectsAreEquivalent()

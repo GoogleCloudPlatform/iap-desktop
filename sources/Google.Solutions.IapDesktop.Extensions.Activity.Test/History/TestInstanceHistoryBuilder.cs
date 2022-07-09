@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -29,7 +30,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestInstanceHistoryBuilder : ActivityFixtureBase
+    public class TestInstanceHistoryBuilder : ApplicationFixtureBase
     {
         private static readonly InstanceLocator SampleReference = new InstanceLocator("pro", "zone", "name");
         private static readonly ImageLocator SampleImage

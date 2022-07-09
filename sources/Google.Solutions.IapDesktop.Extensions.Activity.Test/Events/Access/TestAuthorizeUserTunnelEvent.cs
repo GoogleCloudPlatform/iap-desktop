@@ -23,13 +23,14 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Access;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
 {
     [TestFixture]
-    public class TestAuthorizeUserTunnelEvent : ActivityFixtureBase
+    public class TestAuthorizeUserTunnelEvent : ApplicationFixtureBase
     {
         [Test]
         public void WhenSeverityIsInfo_ThenFieldsAreExtracted()

@@ -29,12 +29,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestStorageAdapter : ActivityFixtureBase
+    public class TestStorageAdapter : ApplicationFixtureBase
     {
         private static readonly StorageObjectLocator SampleLocator = new StorageObjectLocator(
             GcsTestData.Bucket,

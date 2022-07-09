@@ -30,13 +30,14 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageReport
 {
 
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestLicenseLoader : ActivityFixtureBase
+    public class TestLicenseLoader : ApplicationFixtureBase
     {
         private ReportArchive CreateSet(ImageLocator image)
         {

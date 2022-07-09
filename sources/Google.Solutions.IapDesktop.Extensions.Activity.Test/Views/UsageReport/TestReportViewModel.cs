@@ -22,13 +22,14 @@
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
 using Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
 {
     [TestFixture]
-    public class TestReportViewModel : ActivityFixtureBase
+    public class TestReportViewModel : ApplicationFixtureBase
     {
         private static readonly DateTime BaselineTime = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 

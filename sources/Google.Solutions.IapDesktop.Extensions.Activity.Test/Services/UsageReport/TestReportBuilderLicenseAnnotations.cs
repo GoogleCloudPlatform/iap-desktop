@@ -30,12 +30,13 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageReport
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestReportBuilderLicenseAnnotations : ActivityFixtureBase
+    public class TestReportBuilderLicenseAnnotations : ApplicationFixtureBase
     {
         [Test]
         public async Task WhenWindowsInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -27,7 +28,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
-    public class TestDateRange : ActivityFixtureBase
+    public class TestDateRange : ApplicationFixtureBase
     {
         [Test]
         public void WhenStartEqualsEnd_ThenRangeContainsSingleRange()

@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.Testing.Application.Test;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
@@ -36,7 +37,7 @@ using System.Reflection;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestInstanceSetHistoryBuilder : ActivityFixtureBase
+    public class TestInstanceSetHistoryBuilder : ApplicationFixtureBase
     {
         private static readonly InstanceLocator SampleReference = new InstanceLocator("pro", "zone", "name");
         private static readonly ImageLocator SampleImage

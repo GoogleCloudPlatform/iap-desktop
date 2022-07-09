@@ -35,12 +35,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestAuditLogAdapter : ActivityFixtureBase
+    public class TestAuditLogAdapter : ApplicationFixtureBase
     {
         //---------------------------------------------------------------------
         // ListEventsAsync
