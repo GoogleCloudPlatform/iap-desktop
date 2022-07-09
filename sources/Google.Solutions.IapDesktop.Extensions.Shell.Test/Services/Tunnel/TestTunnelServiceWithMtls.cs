@@ -33,7 +33,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.Testing.Application.Mocks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
