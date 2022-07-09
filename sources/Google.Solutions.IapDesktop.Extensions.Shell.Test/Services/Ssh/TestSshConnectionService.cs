@@ -40,7 +40,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;

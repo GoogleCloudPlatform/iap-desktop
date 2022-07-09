@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties;
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System;

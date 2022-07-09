@@ -22,7 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Support.Nunit.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;
@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {

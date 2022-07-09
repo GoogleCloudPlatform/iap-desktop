@@ -21,7 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Support.Nunit.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;

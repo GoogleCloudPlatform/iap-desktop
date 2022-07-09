@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Support.Nunit.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Moq;

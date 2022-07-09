@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System.Diagnostics;
 using System.Net.WebSockets;

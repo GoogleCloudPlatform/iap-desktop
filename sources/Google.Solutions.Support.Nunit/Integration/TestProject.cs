@@ -32,7 +32,7 @@ using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.Support.Nunit.Integration
+namespace Google.Solutions.Testing.Common.Integration
 {
     public static class TestProject
     {

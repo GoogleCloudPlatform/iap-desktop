@@ -27,7 +27,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Google.Solutions.Support.Nunit
+namespace Google.Solutions.Testing.Common
 {
     public static class ExceptionAssert
     {

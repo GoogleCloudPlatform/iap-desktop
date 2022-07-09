@@ -32,12 +32,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Google.Solutions.Support.Nunit.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Apis.Compute.v1.Data;
 using System.Threading;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 
 namespace Google.Solutions.Ssh.Test
 {

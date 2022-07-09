@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common;
 using Google.Solutions.IapTunneling;
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

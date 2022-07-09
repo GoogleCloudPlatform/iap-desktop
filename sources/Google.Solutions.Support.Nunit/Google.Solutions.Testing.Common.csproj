@@ -9,8 +9,8 @@
     <ProjectGuid>{E72548F1-13AF-4888-8A5E-3D58B1B456AE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.Support.Nunit</RootNamespace>
-    <AssemblyName>Google.Solutions.Support.Nunit</AssemblyName>
+    <RootNamespace>Google.Solutions.Testing.Common</RootNamespace>
+    <AssemblyName>Google.Solutions.Testing.Common</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -102,6 +102,7 @@
     <Compile Include="Integration\ResourceTask.cs" />
     <Compile Include="Integration\TestProject.cs" />
     <Compile Include="Net\InprocHttpProxy.cs" />
+    <Compile Include="Net\NetTracing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

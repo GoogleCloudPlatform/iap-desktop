@@ -25,7 +25,7 @@ using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System.Threading;

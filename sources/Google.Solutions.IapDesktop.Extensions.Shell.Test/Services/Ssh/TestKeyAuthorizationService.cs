@@ -29,7 +29,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System;

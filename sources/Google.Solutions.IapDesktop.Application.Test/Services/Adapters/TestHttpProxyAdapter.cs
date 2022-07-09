@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.Support.Nunit.Net;
+using Google.Solutions.Testing.Common.Net;
 using NUnit.Framework;
 using System;
 using System.Linq;

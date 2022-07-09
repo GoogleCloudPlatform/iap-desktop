@@ -24,7 +24,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 
-namespace Google.Solutions.Common.Test.Net
+namespace Google.Solutions.Testing.Common.Net
 {
     /// <summary>
     /// Helper class to enable System.Net tracing programatically. This

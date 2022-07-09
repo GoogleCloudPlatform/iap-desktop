@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System;

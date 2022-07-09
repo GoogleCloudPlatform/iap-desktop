@@ -22,7 +22,7 @@
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Support.Nunit.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;

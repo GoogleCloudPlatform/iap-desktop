@@ -22,7 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Support.Nunit.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties;

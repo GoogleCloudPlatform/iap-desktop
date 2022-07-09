@@ -35,7 +35,7 @@ using ServiceAccount = Google.Apis.Compute.v1.Data.ServiceAccount;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
-namespace Google.Solutions.Support.Nunit.Integration
+namespace Google.Solutions.Testing.Common.Integration
 {
     public static class InstanceFactory
     {

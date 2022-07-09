@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.Support.Nunit.Integration
+namespace Google.Solutions.Testing.Common.Integration
 {
     public static class PredefinedRole
     {

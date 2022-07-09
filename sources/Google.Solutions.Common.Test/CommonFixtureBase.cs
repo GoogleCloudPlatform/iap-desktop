@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

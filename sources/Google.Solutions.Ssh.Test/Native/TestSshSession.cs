@@ -20,14 +20,14 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Support.Nunit.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Google.Solutions.Support.Nunit;
+using Google.Solutions.Testing.Common;
 
 namespace Google.Solutions.Ssh.Test.Native
 {
