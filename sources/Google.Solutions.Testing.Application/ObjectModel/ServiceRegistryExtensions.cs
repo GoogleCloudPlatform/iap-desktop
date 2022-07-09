@@ -23,7 +23,7 @@ using Moq;
 
 namespace Google.Solutions.Testing.Application.ObjectModel
 {
-    public static class MoqExtensions // TODO: rename to ServiceRegistryExtensions
+    public static class ServiceRegistryExtensions
     {
         public static Mock<T> AddMock<T>(this ServiceRegistry registry)
             where T : class

@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mocks\AuthorizationSourceMocks.cs" />
-    <Compile Include="ObjectModel\MoqExtensions.cs" />
+    <Compile Include="ObjectModel\ServiceRegistryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
