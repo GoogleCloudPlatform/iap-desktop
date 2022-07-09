@@ -19,21 +19,23 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.Support.Nunit;
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Google.Solutions.Common.Test
+
+namespace Google.Solutions.IapDesktop.Extensions.Os.Test
 {
-    public abstract class CommonFixtureBase : FixtureBase
+    public abstract class OsFixtureBase : FixtureBase
     {
         protected override IEnumerable<TraceSource> Sources
-            => base.Sources.Concat(new []
+            => base.Sources.Concat(new[]
             {
                 CommonTraceSources.Default,
+                ApplicationTraceSources.Default
             });
     }
 }

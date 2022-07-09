@@ -23,14 +23,13 @@ using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Support.Nunit;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -41,7 +40,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 {
     [TestFixture]
-    public class TestKeyAuthorizationService : ApplicationFixtureBase
+    public class TestKeyAuthorizationService : ShellFixtureBase
     {
         private const string SampleEmailAddress = "bob@example.com";
         private readonly static InstanceLocator SampleLocator

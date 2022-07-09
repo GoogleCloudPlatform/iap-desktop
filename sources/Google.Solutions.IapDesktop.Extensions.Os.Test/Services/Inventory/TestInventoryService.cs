@@ -21,7 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Support.Nunit.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
@@ -29,12 +28,13 @@ using NUnit.Framework;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Support.Nunit;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestInventoryService : CommonFixtureBase
+    public class TestInventoryService : OsFixtureBase
     {
         // Publish dummy OS inventory data. The real data is published asynchronously,
         // so it's difficult to rely on it in integration tests.

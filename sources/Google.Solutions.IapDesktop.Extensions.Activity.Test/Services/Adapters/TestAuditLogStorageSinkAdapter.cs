@@ -21,7 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Support.Nunit.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
@@ -36,6 +35,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GcsObject = Google.Apis.Storage.v1.Data.Object;
+using Google.Solutions.Support.Nunit;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {

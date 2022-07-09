@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using NUnit.Framework;
@@ -35,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestVirtualTerminal : ApplicationFixtureBase
+    public class TestVirtualTerminal : ShellFixtureBase
     {
         private readonly string Esc = "\u001b";
 

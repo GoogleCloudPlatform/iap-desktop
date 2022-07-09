@@ -20,13 +20,13 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties;
+using Google.Solutions.Support.Nunit;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstanceProperties
 {
     [TestFixture]
-    public class TestInstancePropertiesInspectorViewModel : CommonFixtureBase
+    public class TestInstancePropertiesInspectorViewModel : OsFixtureBase
     {
         private class JobServiceMock : IJobService
         {

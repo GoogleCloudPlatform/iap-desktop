@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
@@ -32,7 +31,7 @@ using System.Collections.Generic;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionSettings
 {
     [TestFixture]
-    public class TestConnectionSettingsRepository : CommonFixtureBase
+    public class TestConnectionSettingsRepository : ShellFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(

@@ -19,9 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Support.Nunit;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;

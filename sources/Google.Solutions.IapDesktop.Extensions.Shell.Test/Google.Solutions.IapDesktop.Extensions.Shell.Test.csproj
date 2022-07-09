@@ -148,6 +148,7 @@
     <Compile Include="Services\ConnectionSettings\TestIapRdpUrlConnectionSettings.cs" />
     <Compile Include="Services\Tunnel\TestTcpTable.cs" />
     <Compile Include="Services\Tunnel\TestTunnelServiceWithMtls.cs" />
+    <Compile Include="ShellFixtureBase.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
     <Compile Include="Views\Credentials\TestAuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\TestCredentialPrompt.cs" />
@@ -174,10 +175,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
-      <Project>{aa8cd2fb-d463-42bd-a880-9247c93f9395}</Project>
-      <Name>Google.Solutions.Common.Test</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>

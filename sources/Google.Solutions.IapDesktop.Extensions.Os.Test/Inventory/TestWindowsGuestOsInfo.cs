@@ -21,7 +21,6 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using NUnit.Framework;
 using System;
@@ -31,7 +30,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
 {
     [TestFixture]
-    public class TestWindowsGuestOsInfo : CommonFixtureBase
+    public class TestWindowsGuestOsInfo : OsFixtureBase
     {
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");

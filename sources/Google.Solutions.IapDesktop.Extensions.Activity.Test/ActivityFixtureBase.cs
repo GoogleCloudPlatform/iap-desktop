@@ -19,11 +19,22 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Test;
+using Google.Solutions.Common;
+using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.Support.Nunit;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test
 {
-    public abstract class ActivityFixtureBase : ApplicationFixtureBase
+    public abstract class ActivityFixtureBase : FixtureBase
     {
+        protected override IEnumerable<TraceSource> Sources
+            => base.Sources.Concat(new[]
+            {
+                CommonTraceSources.Default,
+                ApplicationTraceSources.Default
+            });
     }
 }

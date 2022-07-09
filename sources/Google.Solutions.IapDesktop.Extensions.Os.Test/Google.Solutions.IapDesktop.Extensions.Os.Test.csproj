@@ -113,6 +113,7 @@
     <Compile Include="Inventory\TestZypperPatch.cs" />
     <Compile Include="Inventory\TestWuaPackage.cs" />
     <Compile Include="Inventory\TestWuaPackageType.cs" />
+    <Compile Include="OsFixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorViewModel.cs" />
@@ -126,10 +127,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
-      <Project>{aa8cd2fb-d463-42bd-a880-9247c93f9395}</Project>
-      <Name>Google.Solutions.Common.Test</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>

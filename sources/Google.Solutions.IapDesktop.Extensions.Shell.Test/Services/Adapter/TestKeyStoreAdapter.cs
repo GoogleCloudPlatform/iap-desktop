@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.Ssh.Auth;
 using Moq;
@@ -32,7 +31,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 {
     [TestFixture]
-    public class TestKeyStoreAdapter : ApplicationFixtureBase
+    public class TestKeyStoreAdapter : ShellFixtureBase
     {
         // This is for testing only, so use a weak key size.
         private static readonly string KeyName = "test-" + typeof(TestKeyStoreAdapter).Name;

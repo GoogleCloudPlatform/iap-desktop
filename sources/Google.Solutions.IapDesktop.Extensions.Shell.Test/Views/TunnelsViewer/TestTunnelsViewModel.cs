@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
@@ -35,7 +34,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.TunnelsViewer
 {
     [TestFixture]
-    public class TestTunnelsViewModel : CommonFixtureBase
+    public class TestTunnelsViewModel : ShellFixtureBase
     {
         private static Mock<IConfirmationDialog> CreateConfirmationDialog(DialogResult result)
         {

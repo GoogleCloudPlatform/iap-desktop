@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
@@ -32,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
 {
     [TestFixture]
 
-    public class TestSshSettingsRepository : ApplicationFixtureBase
+    public class TestSshSettingsRepository : ShellFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";

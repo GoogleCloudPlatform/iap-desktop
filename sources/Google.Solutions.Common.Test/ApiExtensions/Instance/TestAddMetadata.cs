@@ -22,6 +22,7 @@
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Support.Nunit;
 using Google.Solutions.Support.Nunit.Integration;
 using NUnit.Framework;
 using System;

@@ -23,7 +23,6 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Moq;
@@ -38,7 +37,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
 {
     [TestFixture]
-    public class TestAuthorizedPublicKeysModel : ApplicationFixtureBase
+    public class TestAuthorizedPublicKeysModel : ShellFixtureBase
     {
         private static Mock<IProjectModelProjectNode> CreateProjectNodeMock(
             string projectId,

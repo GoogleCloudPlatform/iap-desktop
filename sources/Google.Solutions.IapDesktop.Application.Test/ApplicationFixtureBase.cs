@@ -20,20 +20,22 @@
 //
 
 using Google.Solutions.Common;
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapTunneling;
+using Google.Solutions.Support.Nunit;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Test
 {
-    public abstract class ApplicationFixtureBase : CommonFixtureBase
+    public abstract class ApplicationFixtureBase : FixtureBase
     {
-        protected override IEnumerable<TraceSource> Sources => new[]
-        {
-            CommonTraceSources.Default,
-            IapTraceSources.Default,
-            ApplicationTraceSources.Default
-        };
+        protected override IEnumerable<TraceSource> Sources
+            => base.Sources.Concat(new[]
+            {
+                CommonTraceSources.Default,
+                IapTraceSources.Default,
+                ApplicationTraceSources.Default
+            });
     }
 }

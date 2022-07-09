@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
@@ -43,7 +42,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
 {
     [TestFixture]
-    public class TestAuthorizedPublicKeysViewModel : ApplicationFixtureBase
+    public class TestAuthorizedPublicKeysViewModel : ShellFixtureBase
     {
         private class JobServiceMock : IJobService
         {

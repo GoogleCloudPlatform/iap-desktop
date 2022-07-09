@@ -24,7 +24,6 @@ using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Support.Nunit.Integration;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;
 using Microsoft.Win32;
@@ -34,6 +33,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
 {

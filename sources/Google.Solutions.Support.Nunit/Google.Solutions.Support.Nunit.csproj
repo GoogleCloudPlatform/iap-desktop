@@ -92,6 +92,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assert.cs" />
+    <Compile Include="FixtureBase.cs" />
     <Compile Include="Integration\CredentialAttribute.cs" />
     <Compile Include="Integration\CredentialFactory.cs" />
     <Compile Include="Integration\InstanceAttribute.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="Integration\PredefinedRole.cs" />
     <Compile Include="Integration\ResourceTask.cs" />
     <Compile Include="Integration\TestProject.cs" />
+    <Compile Include="Net\InprocHttpProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

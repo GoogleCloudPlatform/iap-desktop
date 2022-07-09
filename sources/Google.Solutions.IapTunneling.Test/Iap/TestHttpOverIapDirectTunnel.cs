@@ -21,7 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Support.Nunit.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
@@ -30,6 +29,7 @@ using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Support.Nunit;
 
 namespace Google.Solutions.IapTunneling.Test.Iap
 {

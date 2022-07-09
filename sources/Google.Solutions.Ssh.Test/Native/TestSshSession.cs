@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Support.Nunit.Integration;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
@@ -28,6 +27,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Google.Solutions.Support.Nunit;
 
 namespace Google.Solutions.Ssh.Test.Native
 {
