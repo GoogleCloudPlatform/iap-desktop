@@ -19,16 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.Testing.Common.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.Testing.Common.Integration;
 using Moq;
 
-namespace Google.Solutions.IapDesktop.Application.Test
+
+namespace Google.Solutions.Testing.Application.Mocks
 {
-    public class SecureConnectFixtureBase : ApplicationFixtureBase
+    public static class AuthorizationSourceMocks
     {
-        protected static IAuthorizationSource CreateAuthorizationSourceForSecureConnectUser()
+        public static IAuthorizationSource ForSecureConnectUser()
         {
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State)

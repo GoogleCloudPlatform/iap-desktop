@@ -110,7 +110,6 @@
     <Compile Include="ObjectModel\TestCommandContainerForContextMenu.cs" />
     <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
-    <Compile Include="SecureConnectFixtureBase.cs" />
     <Compile Include="Services\Adapters\TestCertificateStoreAdapter.cs" />
     <Compile Include="Services\Adapters\TestComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\TestComputeEngineAdapterWithMtls.cs" />

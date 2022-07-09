@@ -24,14 +24,14 @@ using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Application.Test;
+using Google.Solutions.Testing.Application.Mocks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("SecureConnect")]
-    public class TestAuditLogAdapterWithMtls : SecureConnectFixtureBase
+    public class TestAuditLogAdapterWithMtls : ActivityFixtureBase
     {
         [Test]
         public async Task WhenNoEnrollmentProvided_ThenDeviceCertiticateAuthenticationIsOff(
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         [Test]
         public void WhenEnrollmentProvided_ThenDeviceCertiticateAuthenticationIsOn()
         {
-            var adapter = new AuditLogAdapter(CreateAuthorizationSourceForSecureConnectUser());
+            var adapter = new AuditLogAdapter(AuthorizationSourceMocks.ForSecureConnectUser());
             Assert.IsTrue(adapter.IsDeviceCertiticateAuthenticationEnabled);
         }
     }

@@ -34,13 +34,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.Test;
+using Google.Solutions.Testing.Application.Mocks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
 {
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("SecureConnect")]
-    public class TestTunnelServiceWithMtls : SecureConnectFixtureBase
+    public class TestTunnelServiceWithMtls : ShellFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 
@@ -91,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
         public async Task WhenDeviceEnrolled_ThenAuditLogIndicatesDevice(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            var service = new TunnelService(CreateAuthorizationSourceForSecureConnectUser());
+            var service = new TunnelService(AuthorizationSourceMocks.ForSecureConnectUser());
 
             // Probe a random port so that we have something unique to look for
             // in the audit log.
