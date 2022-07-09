@@ -30,7 +30,7 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test
 {
-    public abstract class ShellFixtureBase : ApplicationFixtureBase
+    public abstract class ShellFixtureBase : ApplicationFixtureBase // TODO: Remove
     {
     }
 }
