@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -34,7 +35,7 @@ using ServiceAccount = Google.Apis.Compute.v1.Data.ServiceAccount;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
-namespace Google.Solutions.Common.Test.Integration
+namespace Google.Solutions.Testing.Common.Integration
 {
     public static class InstanceFactory
     {

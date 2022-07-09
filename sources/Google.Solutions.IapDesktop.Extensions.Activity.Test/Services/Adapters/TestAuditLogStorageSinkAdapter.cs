@@ -21,8 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
-using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
@@ -36,12 +35,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GcsObject = Google.Apis.Storage.v1.Data.Object;
+using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestAuditLogStorageSinkAdapter : ActivityFixtureBase
+    public class TestAuditLogStorageSinkAdapter : ApplicationFixtureBase
     {
         private static readonly StorageObjectLocator GarbageLocator = new StorageObjectLocator(
             GcsTestData.Bucket,

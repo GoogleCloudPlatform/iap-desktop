@@ -126,10 +126,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
-      <Project>{aa8cd2fb-d463-42bd-a880-9247c93f9395}</Project>
-      <Name>Google.Solutions.Common.Test</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
@@ -141,6 +137,14 @@
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Os\Google.Solutions.IapDesktop.Extensions.Os.csproj">
       <Project>{387693ff-20d9-4f26-92c4-9b6f630767ac}</Project>
       <Name>Google.Solutions.IapDesktop.Extensions.Os</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Support.Nunit\Google.Solutions.Testing.Common.csproj">
+      <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
+      <Name>Google.Solutions.Testing.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Testing.Application\Google.Solutions.Testing.Application.csproj">
+      <Project>{7BDC9ED7-1830-47D9-AF55-AB50C584E526}</Project>
+      <Name>Google.Solutions.Testing.Application</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

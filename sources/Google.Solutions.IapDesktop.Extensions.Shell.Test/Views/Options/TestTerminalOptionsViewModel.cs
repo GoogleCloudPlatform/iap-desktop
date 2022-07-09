@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Options;
 using Microsoft.Win32;
@@ -28,7 +27,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 {
     [TestFixture]
-    public class TestTerminalOptionsViewModel : ApplicationFixtureBase
+    public class TestTerminalOptionsViewModel : ShellFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey

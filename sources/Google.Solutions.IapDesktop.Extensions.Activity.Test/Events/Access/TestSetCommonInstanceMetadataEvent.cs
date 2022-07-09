@@ -22,12 +22,13 @@
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Access;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
 {
     [TestFixture]
-    public class TestSetCommonInstanceMetadataEvent : ActivityFixtureBase
+    public class TestSetCommonInstanceMetadataEvent : ApplicationFixtureBase
     {
         [Test]
         public void WhenOperationIsFirst_ThenFieldsAreExtracted()

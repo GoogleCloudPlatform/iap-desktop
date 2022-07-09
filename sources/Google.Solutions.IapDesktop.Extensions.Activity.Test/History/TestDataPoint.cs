@@ -20,13 +20,14 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestDataPoint : ActivityFixtureBase
+    public class TestDataPoint : ApplicationFixtureBase
     {
         private static readonly DateTime SampleDate = new DateTime(2020, 1, 2, 3, 4, 5, 6);
 

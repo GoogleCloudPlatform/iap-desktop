@@ -28,7 +28,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Google.Solutions.Common.Test.Integration
+namespace Google.Solutions.Testing.Common.Integration
 {
     public abstract class InstanceAttribute : NUnitAttribute, IParameterDataSource
     {

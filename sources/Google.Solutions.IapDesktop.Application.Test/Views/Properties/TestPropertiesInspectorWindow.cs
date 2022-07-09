@@ -25,6 +25,8 @@ using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.Testing.Application.ObjectModel;
+using Google.Solutions.Testing.Application.Views;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.ComponentModel;

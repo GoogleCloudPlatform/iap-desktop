@@ -19,15 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Test;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {
     [TestFixture]
-    public class TestSshAuthenticationPromptViewModel : ApplicationFixtureBase
+    public class TestSshAuthenticationPromptViewModel : ShellFixtureBase
     {
         [Test]
         public void WhenTitleSet_ThenNotificationIsRaised()

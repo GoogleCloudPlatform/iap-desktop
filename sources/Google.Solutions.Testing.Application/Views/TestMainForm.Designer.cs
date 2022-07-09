@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views
+namespace Google.Solutions.Testing.Application.Views
 {
     partial class TestMainForm
     {

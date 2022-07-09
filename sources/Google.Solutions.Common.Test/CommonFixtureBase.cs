@@ -19,66 +19,21 @@
 // under the License.
 //
 
+using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.Common.Test
 {
-    public abstract class CommonFixtureBase
+    public abstract class CommonFixtureBase : FixtureBase
     {
-        private static readonly TestCaseTraceListener listener = new TestCaseTraceListener();
-
-        protected virtual IEnumerable<TraceSource> Sources => new[]
-        {
-            CommonTraceSources.Default
-        };
-
-        [SetUp]
-        public void SetUpTracing()
-        {
-            foreach (var trace in this.Sources)
+        protected override IEnumerable<TraceSource> Sources
+            => base.Sources.Concat(new []
             {
-                if (!trace.Listeners.Contains(listener))
-                {
-                    trace.Listeners.Add(listener);
-                    trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
-                }
-            }
-
-            //
-            // Enable System.Net tracing.
-            //
-            //NetTracing.Enabled = true;
-            //NetTracing.Web.Switch.Level = System.Diagnostics.SourceLevels.Information;
-            //NetTracing.Web.Listeners.Add(new TestCaseTraceListener());
-        }
-
-        private class TestCaseTraceListener : ConsoleTraceListener
-        {
-            private static string Prefix =>
-                $"[{TestContext.CurrentContext?.Test?.Name} {DateTime.Now:o}] ";
-
-            public override void WriteLine(object o)
-            {
-                base.WriteLine(o);
-            }
-
-            public override void WriteLine(object o, string category)
-            {
-                base.WriteLine(o, category);
-            }
-
-            public override void WriteLine(string message)
-            {
-                base.WriteLine(Prefix + message);
-            }
-
-            public override void WriteLine(string message, string category)
-            {
-                base.WriteLine(Prefix + message, category);
-            }
-        }
+                CommonTraceSources.Default,
+            });
     }
 }

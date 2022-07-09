@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -18,19 +18,25 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Moq;
 
-namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
+using Google.Solutions.Common;
+using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapTunneling;
+using Google.Solutions.Testing.Common;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
+namespace Google.Solutions.Testing.Application.Test
 {
-    public static class MoqExtensions
+    public abstract class ApplicationFixtureBase : FixtureBase
     {
-        public static Mock<T> AddMock<T>(this ServiceRegistry registry)
-            where T : class
-        {
-            var mock = new Mock<T>();
-            registry.AddSingleton<T>(mock.Object);
-            return mock;
-        }
+        protected override IEnumerable<TraceSource> Sources
+            => base.Sources.Concat(new[]
+            {
+                CommonTraceSources.Default,
+                IapTraceSources.Default,
+                ApplicationTraceSources.Default
+            });
     }
 }

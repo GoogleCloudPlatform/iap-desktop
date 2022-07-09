@@ -142,7 +142,6 @@
     <Compile Include="Services\Adapters\GcsTestData.cs" />
     <Compile Include="Services\Adapters\TestAuditLogAdapter.cs" />
     <Compile Include="Logs\TestListLogEntriesParser.cs" />
-    <Compile Include="ActivityFixtureBase.cs" />
     <Compile Include="History\TestDataPoint.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
     <Compile Include="Services\Adapters\TestAuditLogAdapterWithMtls.cs" />
@@ -175,17 +174,9 @@
     <Compile Include="Views\SerialOutput\TestSerialOutputViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
-      <Project>{aa8cd2fb-d463-42bd-a880-9247c93f9395}</Project>
-      <Name>Google.Solutions.Common.Test</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application.Test\Google.Solutions.IapDesktop.Application.Test.csproj">
-      <Project>{BD834B99-2AEE-4160-BC38-1821695D4174}</Project>
-      <Name>Google.Solutions.IapDesktop.Application.Test</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
       <Project>{842B003E-6EEB-429D-A3A1-53B4E642E83B}</Project>
@@ -194,6 +185,14 @@
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Activity\Google.Solutions.IapDesktop.Extensions.Activity.csproj">
       <Project>{b804d76c-e02e-4320-94a7-579034644aa0}</Project>
       <Name>Google.Solutions.IapDesktop.Extensions.Activity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Support.Nunit\Google.Solutions.Testing.Common.csproj">
+      <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
+      <Name>Google.Solutions.Testing.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Testing.Application\Google.Solutions.Testing.Application.csproj">
+      <Project>{7BDC9ED7-1830-47D9-AF55-AB50C584E526}</Project>
+      <Name>Google.Solutions.Testing.Application</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

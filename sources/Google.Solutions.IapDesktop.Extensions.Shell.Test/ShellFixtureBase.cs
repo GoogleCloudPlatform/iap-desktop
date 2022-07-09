@@ -19,18 +19,18 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.Test.Integration
-{
-    public static class PredefinedRole
-    {
-        public const string ComputeViewer = "roles/compute.viewer";
-        public const string ComputeInstanceAdminV1 = "roles/compute.instanceAdmin.v1";
-        public const string LogsViewer = "roles/logging.viewer";
-        public const string ServiceAccountUser = "roles/iam.serviceAccountUser";
-        public const string StorageObjectViewer = "roles/storage.objectViewer";
-        public const string StorageAdmin = "roles/storage.admin";
+using Google.Solutions.Common;
+using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapTunneling;
+using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
-        // NB. This role takes ~1 minute to take effect.
-        public const string IapTunnelUser = "roles/iap.tunnelResourceAccessor";
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test
+{
+    public abstract class ShellFixtureBase : ApplicationFixtureBase // TODO: Remove
+    {
     }
 }

@@ -20,13 +20,14 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Logs
 {
     [TestFixture]
-    public class TestLogRecord : ActivityFixtureBase
+    public class TestLogRecord : ApplicationFixtureBase
     {
         [Test]
         public void WhenSystemEventJsonValid_ThenFieldsAreDeserialized()

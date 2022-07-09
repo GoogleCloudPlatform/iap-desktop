@@ -21,12 +21,13 @@
 
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events
 {
     [TestFixture]
-    public class TestUnknownEvent : ActivityFixtureBase
+    public class TestUnknownEvent : ApplicationFixtureBase
     {
         [Test]
         public void WhenSeverityIsNotice_ThenFieldsAreExtracted()

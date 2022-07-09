@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
@@ -33,21 +32,23 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Apis.Compute.v1.Data;
 using System.Threading;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Testing.Common;
 
 namespace Google.Solutions.Ssh.Test
 {
-    public abstract class SshFixtureBase : CommonFixtureBase
+    public abstract class SshFixtureBase : FixtureBase
     {
-        protected override IEnumerable<TraceSource> Sources => new[]
-        {
-            CommonTraceSources.Default,
-            SshTraceSources.Default,
-        };
+        protected override IEnumerable<TraceSource> Sources
+            => base.Sources.Concat(new[]
+            {
+                CommonTraceSources.Default,
+                SshTraceSources.Default
+            });
 
         //---------------------------------------------------------------------
         // Handle tracking.

@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog;
+using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -42,7 +43,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
 {
     [TestFixture]
-    public class TestEventLogViewModel : ActivityFixtureBase
+    public class TestEventLogViewModel : ApplicationFixtureBase
     {
         private JobServiceMock jobServiceMock;
         private AuditLogAdapterMock auditLogAdapter;

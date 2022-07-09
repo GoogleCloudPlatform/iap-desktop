@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Storage.v1;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System.IO;
 

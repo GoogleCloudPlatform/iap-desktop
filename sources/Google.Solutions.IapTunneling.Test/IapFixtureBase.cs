@@ -20,18 +20,20 @@
 //
 
 using Google.Solutions.Common;
-using Google.Solutions.Common.Test;
+using Google.Solutions.Testing.Common;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.IapTunneling.Test
 {
-    public abstract class IapFixtureBase : CommonFixtureBase
+    public abstract class IapFixtureBase : FixtureBase
     {
-        protected override IEnumerable<TraceSource> Sources => new[]
-        {
-            CommonTraceSources.Default,
-            IapTraceSources.Default
-        };
+        protected override IEnumerable<TraceSource> Sources
+            => base.Sources.Concat(new[]
+            {
+                CommonTraceSources.Default,
+                IapTraceSources.Default
+            });
     }
 }

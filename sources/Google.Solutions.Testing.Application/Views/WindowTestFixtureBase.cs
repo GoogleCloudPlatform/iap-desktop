@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
@@ -27,6 +26,8 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -36,7 +37,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views
+namespace Google.Solutions.Testing.Application.Views
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
@@ -195,34 +196,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         protected static string CreateRandomUsername()
         {
             return "test" + Guid.NewGuid().ToString().Substring(0, 4);
-        }
-    }
-
-    internal static class ControlTestExtensions
-    {
-        public static IEnumerable<Control> GetAllControls(this Control parent)
-        {
-            foreach (Control control in parent.Controls)
-            {
-                yield return control;
-                foreach (Control descendant in control.GetAllControls())
-                {
-                    yield return descendant;
-                }
-            }
-        }
-
-        public static T GetChild<T>(this Control control, string name) where T : Control
-        {
-            if (control.Controls.ContainsKey(name))
-            {
-                return (T)control.Controls[name];
-            }
-            else
-            {
-                throw new KeyNotFoundException(
-                    $"Control {control.Name} does not have a child control named {name}");
-            }
         }
     }
 }

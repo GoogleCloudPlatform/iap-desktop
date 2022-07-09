@@ -20,12 +20,13 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
-    public class TestStorageObjectLocator : ActivityFixtureBase
+    public class TestStorageObjectLocator : ApplicationFixtureBase
     {
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()

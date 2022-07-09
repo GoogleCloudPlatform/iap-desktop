@@ -22,12 +22,13 @@
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Access;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
 {
     [TestFixture]
-    public class TestSetMetadataEvent : ActivityFixtureBase
+    public class TestSetMetadataEvent : ApplicationFixtureBase
     {
         [Test]
         public void WhenOperationIsFirstAndRecordContainsWindowsKeys_ThenFieldsAreExtracted()

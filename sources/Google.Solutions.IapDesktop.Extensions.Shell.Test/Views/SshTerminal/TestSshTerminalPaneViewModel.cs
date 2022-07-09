@@ -21,14 +21,11 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Test;
-using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
@@ -57,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestSshTerminalPaneViewModel : ApplicationFixtureBase
+    public class TestSshTerminalPaneViewModel : ShellFixtureBase
     {
         private static async Task<IPAddress> PublicAddressFromLocator(
             InstanceLocator instanceLocator)

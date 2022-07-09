@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.Testing.Application.Test;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Logs
 {
     [TestFixture]
-    public class TestListLogEntriesParser : ActivityFixtureBase
+    public class TestListLogEntriesParser : ApplicationFixtureBase
     {
         [Test]
         public void WhenPageIsEmpty_ThenReadPageReturnsEmptySequence()

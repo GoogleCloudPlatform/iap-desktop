@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.Testing.Application.Test;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
@@ -27,7 +28,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Logs
 {
     [TestFixture]
-    public class TestAuditLogRecord : ActivityFixtureBase
+    public class TestAuditLogRecord : ApplicationFixtureBase
     {
         [Test]
         public void WhenJsonContainsAuditLogRecord_ThenAuditLogRecordIsDeserialized()

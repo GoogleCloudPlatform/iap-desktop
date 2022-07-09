@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
@@ -31,7 +30,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 {
     [TestFixture]
-    public class TestAuthorizedKey : ApplicationFixtureBase
+    public class TestAuthorizedKey : ShellFixtureBase
     {
         //---------------------------------------------------------------------
         // Metadata with preferred username.

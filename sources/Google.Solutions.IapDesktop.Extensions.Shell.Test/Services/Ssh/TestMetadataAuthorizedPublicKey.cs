@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using NUnit.Framework;
@@ -28,7 +27,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 {
     [TestFixture]
-    public class TestMetadataAuthorizedPublicKey : ApplicationFixtureBase
+    public class TestMetadataAuthorizedPublicKey : ShellFixtureBase
     {
         //---------------------------------------------------------------------
         // Parse.

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Moq;
@@ -29,7 +28,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 {
     [TestFixture]
-    public class TestAuthorizationExtensions : CommonFixtureBase
+    public class TestAuthorizationExtensions : ShellFixtureBase
     {
         [Test]
         public void WhenAuthorizationEmailIsNull_ThenSuggestWindowsUsernameReturnsWindowsUsername()

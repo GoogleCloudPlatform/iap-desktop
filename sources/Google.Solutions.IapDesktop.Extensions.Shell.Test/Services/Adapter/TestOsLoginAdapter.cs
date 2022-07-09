@@ -21,12 +21,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.Ssh.Auth;
 using Moq;
@@ -37,11 +35,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Testing.Common;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 {
     [TestFixture]
-    public class TestOsLoginAdapter : ApplicationFixtureBase
+    public class TestOsLoginAdapter : ShellFixtureBase
     {
         private OsLoginAdapter CreateAdapter(string email)
         {

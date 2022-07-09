@@ -19,9 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System;
 using System.Net.WebSockets;

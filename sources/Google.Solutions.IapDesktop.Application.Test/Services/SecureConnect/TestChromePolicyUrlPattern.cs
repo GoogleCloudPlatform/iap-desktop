@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

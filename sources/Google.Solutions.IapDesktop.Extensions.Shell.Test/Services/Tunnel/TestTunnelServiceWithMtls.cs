@@ -22,9 +22,8 @@
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;
 using Microsoft.Win32;
@@ -34,13 +33,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Solutions.Testing.Application.Mocks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
 {
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("SecureConnect")]
-    public class TestTunnelServiceWithMtls : SecureConnectFixtureBase
+    public class TestTunnelServiceWithMtls : ShellFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
         public async Task WhenDeviceEnrolled_ThenAuditLogIndicatesDevice(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            var service = new TunnelService(CreateAuthorizationSourceForSecureConnectUser());
+            var service = new TunnelService(AuthorizationSourceMocks.ForSecureConnectUser());
 
             // Probe a random port so that we have something unique to look for
             // in the audit log.

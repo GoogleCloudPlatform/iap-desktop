@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Options;
 using Google.Solutions.Ssh.Auth;
@@ -34,7 +33,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 {
     [TestFixture]
-    public class TestSshOptionsViewModel : ApplicationFixtureBase
+    public class TestSshOptionsViewModel : ShellFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private const string TestMachinePolicyKeyPath = @"Software\Google\__TestMachinePolicy";

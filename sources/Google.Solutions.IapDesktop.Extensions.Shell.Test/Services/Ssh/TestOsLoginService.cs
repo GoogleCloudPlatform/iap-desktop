@@ -21,14 +21,13 @@
 
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
-using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -40,7 +39,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 {
     [TestFixture]
-    public class TestOsLoginService : ApplicationFixtureBase
+    public class TestOsLoginService : ShellFixtureBase
     {
         //---------------------------------------------------------------------
         // AuthorizeKeyPairAsync.

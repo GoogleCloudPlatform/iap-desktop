@@ -30,7 +30,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Test.Net
+namespace Google.Solutions.Testing.Common.Net
 {
     /// <summary>
     /// Simple implementation of a HTTP proxy that can be used in tests.

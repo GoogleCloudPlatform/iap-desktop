@@ -22,13 +22,14 @@
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.System
 {
     [TestFixture]
-    public class TestNotifyInstanceLocationEvent : ActivityFixtureBase
+    public class TestNotifyInstanceLocationEvent : ApplicationFixtureBase
     {
         [Test]
         public void WhenRecordContainsNodeType_ThenFieldsAreExtracted()

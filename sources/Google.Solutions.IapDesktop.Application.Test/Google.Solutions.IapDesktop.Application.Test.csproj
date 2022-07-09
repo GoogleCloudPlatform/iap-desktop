@@ -105,18 +105,15 @@
     <Compile Include="Controls\TestScreenPicker.cs" />
     <Compile Include="Controls\TestListViewExtensions.cs" />
     <Compile Include="Host\TestProfile.cs" />
-    <Compile Include="ObjectModel\MoqExtensions.cs" />
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
     <Compile Include="ObjectModel\TestCommandContainerForToolbar.cs" />
     <Compile Include="ObjectModel\TestCommandContainerForContextMenu.cs" />
     <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
-    <Compile Include="SecureConnectFixtureBase.cs" />
     <Compile Include="Services\Adapters\TestCertificateStoreAdapter.cs" />
     <Compile Include="Services\Adapters\TestComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\TestComputeEngineAdapterWithMtls.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
-    <Compile Include="ApplicationFixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Adapters\TestHttpProxyAdapter.cs" />
     <Compile Include="Services\Adapters\TestInstanceExtensions.cs" />
@@ -162,28 +159,13 @@
     <Compile Include="Views\Options\TestGeneralOptionsViewModel.cs" />
     <Compile Include="Views\ProjectExplorer\TestProjectExplorerViewModel.cs" />
     <Compile Include="Views\ProjectPicker\TestProjectPickerViewModel.cs" />
-    <Compile Include="Views\TestMainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\TestMainForm.Designer.cs">
-      <DependentUpon>TestMainForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\Properties\TestPropertiesInspectorWindow.cs" />
-    <Compile Include="Views\WindowTestFixtureBase.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
-      <Project>{aa8cd2fb-d463-42bd-a880-9247c93f9395}</Project>
-      <Name>Google.Solutions.Common.Test</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapTunneling.Test\Google.Solutions.IapTunneling.Test.csproj">
-      <Project>{9c1aa910-798a-4571-9266-7280a677fe9f}</Project>
-      <Name>Google.Solutions.IapTunneling.Test</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
       <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
@@ -193,15 +175,18 @@
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.IapTunneling</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Support.Nunit\Google.Solutions.Testing.Common.csproj">
+      <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
+      <Name>Google.Solutions.Testing.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Testing.Application\Google.Solutions.Testing.Application.csproj">
+      <Project>{7bdc9ed7-1830-47d9-af55-ab50c584e526}</Project>
+      <Name>Google.Solutions.Testing.Application</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\TestMainForm.resx">
-      <DependentUpon>TestMainForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

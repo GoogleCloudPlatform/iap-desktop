@@ -22,7 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput;
@@ -31,12 +31,13 @@ using NUnit.Framework;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestSerialOutputModel : ActivityFixtureBase
+    public class TestSerialOutputModel : ApplicationFixtureBase
     {
         public const ushort ConsolePort = 1;
 

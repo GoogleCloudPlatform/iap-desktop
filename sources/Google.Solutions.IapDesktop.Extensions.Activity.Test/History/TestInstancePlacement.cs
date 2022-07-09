@@ -21,13 +21,14 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestInstancePlacement : ActivityFixtureBase
+    public class TestInstancePlacement : ApplicationFixtureBase
     {
         private static readonly NodeTypeLocator SampleNodeType
             = NodeTypeLocator.FromString("projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240");
