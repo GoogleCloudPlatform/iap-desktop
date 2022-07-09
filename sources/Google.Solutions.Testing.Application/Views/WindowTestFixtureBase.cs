@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -41,7 +42,7 @@ namespace Google.Solutions.Testing.Application.Views
     [TestFixture]
     [Apartment(ApartmentState.STA)]
     [Timeout(10 * 60 * 1000)]
-    public class WindowTestFixtureBase : FixtureBase // TODO: use ApplicationFixtureBase
+    public class WindowTestFixtureBase : ApplicationFixtureBase
     {
         protected const string TestKeyPath = @"Software\Google\__Test";
 

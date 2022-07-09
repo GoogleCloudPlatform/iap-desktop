@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;

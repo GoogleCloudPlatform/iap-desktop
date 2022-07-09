@@ -87,6 +87,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationFixtureBase.cs" />
     <Compile Include="Mocks\AuthorizationSourceMocks.cs" />
     <Compile Include="ObjectModel\ServiceRegistryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -100,9 +101,17 @@
     <Compile Include="Views\WindowTestFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
+      <Project>{FB4C6F4D-32B1-4B0B-BA79-FD47FC4D7912}</Project>
+      <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
       <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
       <Name>Google.Solutions.IapDesktop.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj">
+      <Project>{D9493479-1751-402B-880F-60ED33EBB885}</Project>
+      <Name>Google.Solutions.IapTunneling</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Support.Nunit\Google.Solutions.Testing.Common.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>

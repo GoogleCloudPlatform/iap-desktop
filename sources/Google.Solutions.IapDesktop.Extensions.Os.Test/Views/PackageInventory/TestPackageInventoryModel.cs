@@ -23,6 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory;
+using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System.Linq;
@@ -32,7 +33,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 {
     [TestFixture]
-    public class TestPackageInventoryModel : OsFixtureBase
+    public class TestPackageInventoryModel : ApplicationFixtureBase
     {
         [Test]
         public async Task WhenGuestAttributesDisabledByPolicy_ThenPackageListIsEmpty()

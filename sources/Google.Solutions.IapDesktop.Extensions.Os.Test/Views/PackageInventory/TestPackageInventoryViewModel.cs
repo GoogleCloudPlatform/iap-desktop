@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory;
+using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -38,7 +39,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 {
     [TestFixture]
-    public class TestPackageInventoryViewModel : OsFixtureBase
+    public class TestPackageInventoryViewModel : ApplicationFixtureBase
     {
         private static GuestOsInfo CreateGuestOsInfo(
             InstanceLocator locator,

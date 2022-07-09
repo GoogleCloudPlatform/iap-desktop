@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
+using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Linq;

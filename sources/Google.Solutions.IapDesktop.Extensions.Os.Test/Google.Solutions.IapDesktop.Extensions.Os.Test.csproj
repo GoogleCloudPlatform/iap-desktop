@@ -113,7 +113,6 @@
     <Compile Include="Inventory\TestZypperPatch.cs" />
     <Compile Include="Inventory\TestWuaPackage.cs" />
     <Compile Include="Inventory\TestWuaPackageType.cs" />
-    <Compile Include="OsFixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorViewModel.cs" />
@@ -142,6 +141,10 @@
     <ProjectReference Include="..\Google.Solutions.Support.Nunit\Google.Solutions.Testing.Common.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
       <Name>Google.Solutions.Testing.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Testing.Application\Google.Solutions.Testing.Application.csproj">
+      <Project>{7BDC9ED7-1830-47D9-AF55-AB50C584E526}</Project>
+      <Name>Google.Solutions.Testing.Application</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

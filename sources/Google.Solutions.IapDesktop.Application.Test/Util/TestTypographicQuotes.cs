@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Util

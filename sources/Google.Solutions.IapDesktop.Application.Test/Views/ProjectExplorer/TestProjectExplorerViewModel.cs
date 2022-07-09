@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Testing.Application.ObjectModel;
+using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;

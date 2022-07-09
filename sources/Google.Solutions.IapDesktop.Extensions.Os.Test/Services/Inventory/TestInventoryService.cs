@@ -29,12 +29,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestInventoryService : OsFixtureBase
+    public class TestInventoryService : ApplicationFixtureBase
     {
         // Publish dummy OS inventory data. The real data is published asynchronously,
         // so it's difficult to rely on it in integration tests.

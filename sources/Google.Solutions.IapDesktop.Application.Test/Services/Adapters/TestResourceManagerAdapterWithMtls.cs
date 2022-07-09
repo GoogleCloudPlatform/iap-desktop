@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Application.Mocks;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {

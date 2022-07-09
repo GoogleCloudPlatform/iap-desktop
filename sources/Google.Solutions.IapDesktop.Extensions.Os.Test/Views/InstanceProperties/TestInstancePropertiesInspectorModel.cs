@@ -30,12 +30,13 @@ using Moq;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstanceProperties
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestInstancePropertiesInspectorModel : OsFixtureBase
+    public class TestInstancePropertiesInspectorModel : ApplicationFixtureBase
     {
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(
