@@ -31,6 +31,7 @@ using System.Text;
 using System.Windows.Forms;
 using VtNetCore.VirtualTerminal;
 using VtNetCore.VirtualTerminal.Layout;
+using VtNetCore.VirtualTerminal.Model;
 using VtNetCore.XTermParser;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
@@ -111,7 +112,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             InitializeComponent();
 
-            this.controller = new VirtualTerminalController();
+            var defaultAttributes = TerminalAttribute.CreateDefault();
+#if DEBUG
+            defaultAttributes.BackgroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Blue;
+            defaultAttributes.ForegroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Yellow;
+#endif
+            this.controller = new VirtualTerminalController(defaultAttributes);
+
             this.controllerSink = new DataConsumer(this.controller);
             this.keyHandler = new VirtualTerminalKeyHandler(this.controller);
 
