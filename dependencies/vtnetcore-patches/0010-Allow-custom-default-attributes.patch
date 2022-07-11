@@ -1,4 +1,4 @@
-From d6747c2b09bdf3d8f8a6b4e051c73bb590180683 Mon Sep 17 00:00:00 2001
+From a2bc4187ebd8b57988f4a474faffe0974e6c270d Mon Sep 17 00:00:00 2001
 From: IAP Desktop Build <iap-desktop+build@google.com>
 Date: Mon, 11 Jul 2022 09:56:25 +1000
 Subject: [PATCH 10/10] Allow custom default attributes
@@ -7,9 +7,92 @@ Enables applications to specify a custom background,
 foreground color etc. These attributes are used to
 determine the null- and cursor attributes.
 ---
- .../VirtualTerminalController.cs              | 47 ++++++++++++-------
- 1 file changed, 29 insertions(+), 18 deletions(-)
+ VtNetCore.Unit.Tests/VirtualTerminal.cs       | 65 +++++++++++++++++++
+ .../VirtualTerminalController.cs              | 47 +++++++++-----
+ 2 files changed, 94 insertions(+), 18 deletions(-)
 
+diff --git a/VtNetCore.Unit.Tests/VirtualTerminal.cs b/VtNetCore.Unit.Tests/VirtualTerminal.cs
+index 0d659e9..39daaf1 100644
+--- a/VtNetCore.Unit.Tests/VirtualTerminal.cs
++++ b/VtNetCore.Unit.Tests/VirtualTerminal.cs
+@@ -1,6 +1,7 @@
+ using System;
+ using System.Linq;
+ using VtNetCore.VirtualTerminal;
++using VtNetCore.VirtualTerminal.Model;
+ using VtNetCore.XTermParser;
+ using Xunit;
+ 
+@@ -500,5 +501,69 @@ namespace VtNetCore.Unit.Tests
+ 
+             ConsumeSequence("\u001b", length);
+         }
++
++        [Fact]
++        public void FullResetAppliesDefaultAttributes()
++        {
++            var attributes = TerminalAttribute.CreateDefault();
++            attributes.BackgroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Red;
++            attributes.ForegroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Green;
++
++            var controller = new VirtualTerminalController(attributes);
++            controller.CursorState.Attributes.BackgroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Black;
++            controller.CursorState.Attributes.ForegroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Black;
++            controller.FullReset();
++
++            Assert.Equal(attributes.BackgroundColor, controller.CursorState.Attributes.BackgroundColor);
++            Assert.Equal(attributes.ForegroundColor, controller.CursorState.Attributes.ForegroundColor);
++        }
++
++        [Fact]
++        public void SetCharacterAttribute0AppliesDefaultAttributes()
++        {
++            var attributes = TerminalAttribute.CreateDefault();
++            attributes.BackgroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Red;
++            attributes.ForegroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Green;
++
++            var controller = new VirtualTerminalController(attributes);
++            controller.CursorState.Attributes.BackgroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Black;
++            controller.CursorState.Attributes.ForegroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Black;
++            controller.SetCharacterAttribute(0);
++
++            Assert.Equal(attributes.BackgroundColor, controller.CursorState.Attributes.BackgroundColor);
++            Assert.Equal(attributes.ForegroundColor, controller.CursorState.Attributes.ForegroundColor);
++        }
++
++        [Fact]
++        public void SetCharacterAttribute39AppliesDefaultAttributes()
++        {
++            var attributes = TerminalAttribute.CreateDefault();
++            attributes.BackgroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Red;
++            attributes.ForegroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Green;
++
++            var controller = new VirtualTerminalController(attributes);
++            controller.CursorState.Attributes.BackgroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Black;
++            controller.CursorState.Attributes.ForegroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Black;
++            controller.SetCharacterAttribute(39);
++
++            Assert.Equal(VtNetCore.VirtualTerminal.Enums.ETerminalColor.Black, controller.CursorState.Attributes.BackgroundColor);
++            Assert.Equal(attributes.ForegroundColor, controller.CursorState.Attributes.ForegroundColor);
++        }
++
++        [Fact]
++        public void SetCharacterAttribute49AppliesDefaultAttributes()
++        {
++            var attributes = TerminalAttribute.CreateDefault();
++            attributes.BackgroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Red;
++            attributes.ForegroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Green;
++
++            var controller = new VirtualTerminalController(attributes);
++            controller.CursorState.Attributes.BackgroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Black;
++            controller.CursorState.Attributes.ForegroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Black;
++            controller.SetCharacterAttribute(49);
++
++            Assert.Equal(attributes.BackgroundColor, controller.CursorState.Attributes.BackgroundColor);
++            Assert.Equal(VtNetCore.VirtualTerminal.Enums.ETerminalColor.Black, controller.CursorState.Attributes.ForegroundColor);
++        }
+     }
+ }
 diff --git a/VtNetCore/VirtualTerminal/VirtualTerminalController.cs b/VtNetCore/VirtualTerminal/VirtualTerminalController.cs
 index 75981bd..d5213ee 100644
 --- a/VtNetCore/VirtualTerminal/VirtualTerminalController.cs
