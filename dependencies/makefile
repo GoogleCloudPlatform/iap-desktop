@@ -112,6 +112,23 @@ clean-vtnetcore:
     -rd /S /Q $(MAKEDIR)\NuGetPackages\vtnetcore\$(VTNETCORE_VERSION)
     -rd /S /Q $(MAKEDIR)\..\sources\packages\vtnetcore.$(VTNETCORE_VERSION)
     
+debug-vtnetcore: clean-vtnetcore vtnetcore
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.dll $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop.Extensions.Shell\bin\x86\$(CONFIGURATION)
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.dll $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\x86\$(CONFIGURATION)
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.dll $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop\bin\x86\$(CONFIGURATION)
+
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.pdb $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop.Extensions.Shell\bin\x86\$(CONFIGURATION)
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.pdb $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\x86\$(CONFIGURATION)
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.pdb $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop\bin\x86\$(CONFIGURATION)
+
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.dll $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop.Extensions.Shell\bin\x64\$(CONFIGURATION)
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.dll $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\x64\$(CONFIGURATION)
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.dll $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop\bin\x64\$(CONFIGURATION)
+
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.pdb $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop.Extensions.Shell\bin\x64\$(CONFIGURATION)
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.pdb $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\x64\$(CONFIGURATION)
+    copy /Y $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.pdb $(MAKEDIR)\..\sources\Google.Solutions.IapDesktop\bin\x64\$(CONFIGURATION)
+
 #------------------------------------------------------------------------------
 # vcpkg
 #------------------------------------------------------------------------------
