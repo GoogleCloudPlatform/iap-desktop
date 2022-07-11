@@ -168,8 +168,7 @@
     <Compile Include="Views\UsageReport\TestReportInstancesTabViewModel.cs" />
     <Compile Include="Views\UsageReport\TestReportNodesTabViewModel.cs" />
     <Compile Include="Views\UsageReport\TestReportViewModel.cs" />
-    <Compile Include="Views\SerialOutput\TestAnsiTextReader.cs" />
-    <Compile Include="Views\SerialOutput\TestAnsiTokenReader.cs" />
+    <Compile Include="Views\SerialOutput\TestXtermReader.cs" />
     <Compile Include="Views\SerialOutput\TestSerialOutputModel.cs" />
     <Compile Include="Views\SerialOutput\TestSerialOutputViewModel.cs" />
   </ItemGroup>

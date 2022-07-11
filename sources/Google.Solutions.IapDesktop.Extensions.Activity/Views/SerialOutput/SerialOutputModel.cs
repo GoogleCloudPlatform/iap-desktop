@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
             // As there is not much value in preserving these, use an
             // AnsiTextReader to filter out all escape sequences.
 
-            var stream = new AnsiTextReader(
+            var stream = new XtermReader(
                 adapter.GetSerialPortOutput(instanceLocator, portNumber));
             var model = new SerialOutputModel(displayName, stream);
 
