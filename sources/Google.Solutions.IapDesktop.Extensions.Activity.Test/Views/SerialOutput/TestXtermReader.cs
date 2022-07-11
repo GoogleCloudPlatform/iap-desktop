@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
 {
     [TestFixture]
-    public class TestAnsiTextReader : ApplicationFixtureBase
+    public class TestXtermReader : ApplicationFixtureBase
     {
         [Test]
         public async Task WhenStreamContainsPlainTextOnly_ThenTextIsReturnedVerbatim()
@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                 " and more text"
             };
 
-            var reader = new AnsiTextReader(new EnumerationReader<string>(input));
+            var reader = new XtermReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
                 "some text",
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                 " and more text\u001B[2J"
             };
 
-            var reader = new AnsiTextReader(new EnumerationReader<string>(input));
+            var reader = new XtermReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
                 "some text",
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         }
 
         [Test]
-        public async Task WhenStreamContainsImproperlyTerminatedTokens_ThenTokensAreFilteredOut()
+        public async Task WhenStreamContainsImproperlyTerminatedTokens_ThenTokensAreIgnored()
         {
             var input = new[]
             {
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                 "[01;01H and more text\u001B[2J"
             };
 
-            var reader = new AnsiTextReader(new EnumerationReader<string>(input));
+            var reader = new XtermReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
                 "some text",
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
             Assert.AreEqual(
-                " and more text",
+                "[01;01H and more text",
                 await reader
                     .ReadAsync(CancellationToken.None)
                     .ConfigureAwait(false));
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                 "[2Jsome text\u001B"
             };
 
-            var reader = new AnsiTextReader(new EnumerationReader<string>(input));
+            var reader = new XtermReader(new EnumerationReader<string>(input));
 
             Assert.AreEqual(
                 "[2Jsome text",
