@@ -227,6 +227,57 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
             Assert.IsTrue(instanceSettings.TypedCollection.RdpUsername.IsDefault);
         }
 
+        [Test]
+        public void WhenPortSetInProject_ProjectValueIsInheritedDownToVm(
+            [Values("user", null)]
+                string username)
+        {
+            var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
+            projectSettings.TypedCollection.RdpPort.IntValue = 13389;
+            projectSettings.Save();
+
+            // Inherited value is shown...
+            var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            Assert.AreEqual(13389, instanceSettings.TypedCollection.RdpPort.Value);
+            Assert.IsTrue(instanceSettings.TypedCollection.RdpPort.IsDefault);
+        }
+
+        [Test]
+        public void WhenPortSetInZoneAndResetInVm_ZoneVmValueApplies()
+        {
+            var zoneSettings = this.service.GetConnectionSettings(CreateZoneNode());
+            zoneSettings.TypedCollection.RdpPort.IntValue = 13389;
+            zoneSettings.Save();
+
+            // Reset to default...
+            var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            instanceSettings.TypedCollection.RdpPort.IntValue = 3389;
+            instanceSettings.Save();
+
+            // Own value is shown...
+            var effectiveSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            Assert.AreEqual(3389, effectiveSettings.TypedCollection.RdpPort.Value);
+            Assert.IsFalse(effectiveSettings.TypedCollection.RdpPort.IsDefault);
+        }
+
+        [Test]
+        public void WhenPortSetInProjectAndResetInVm_ZoneVmValueApplies()
+        {
+            var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
+            projectSettings.TypedCollection.RdpPort.IntValue = 13389;
+            projectSettings.Save();
+
+            // Reset to default...
+            var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            instanceSettings.TypedCollection.RdpPort.IntValue = 3389;
+            instanceSettings.Save();
+
+            // Own value is shown...
+            var effectiveSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            Assert.AreEqual(3389, effectiveSettings.TypedCollection.RdpPort.Value);
+            Assert.IsFalse(effectiveSettings.TypedCollection.RdpPort.IsDefault);
+        }
+
         //---------------------------------------------------------------------
         // Filtering.
         //---------------------------------------------------------------------

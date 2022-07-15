@@ -295,6 +295,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
                 this.repository.GetVmInstanceSettings("pro-1", "vm-1");
             });
         }
-
     }
 }

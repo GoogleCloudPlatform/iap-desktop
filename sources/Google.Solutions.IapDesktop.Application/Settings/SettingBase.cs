@@ -48,11 +48,14 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         //---------------------------------------------------------------------
 
         public bool IsReadOnly { get; }
+
         public bool IsDirty { get; private set; } = false;
 
         public T DefaultValue { get; }
 
         public bool IsDefault => Equals(this.DefaultValue, this.Value);
+
+        public bool IsSpecified { get; }
 
         public object Value
         {
@@ -100,20 +103,24 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         public ISetting<T> OverlayBy(ISetting<T> overlaySetting)
         {
+            //
             // NB. The idea of overlaying is that you use a base setting
             // (root), overlay it with a more specific setting, overlay
             // it with a more specific setting one again, etc... walking
             // your way from the root to the leaf.
+            //
 
             Debug.Assert(overlaySetting.Key == this.Key);
             Debug.Assert(overlaySetting.Title == this.Title);
             Debug.Assert(overlaySetting.Description == this.Description);
             Debug.Assert(overlaySetting.Category == this.Category);
 
-            if (overlaySetting.IsDefault)
+            if (!overlaySetting.IsSpecified)
             {
+                //
                 // Overlay does not add anything new, but own setting
                 // becomes new default.
+                //
                 return CreateNew(
                     (T)this.Value,
                     (T)this.Value,
@@ -121,8 +128,10 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             }
             else
             {
+                //
                 // Overlay changes the effective setting, with
                 // own setting serving as the new default.
+                //
                 return CreateNew(
                     (T)overlaySetting.Value,
                     (T)this.Value,
@@ -144,6 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string category,
             T initialValue,
             T defaultValue,
+            bool isSpecified,
             bool readOnly)
         {
             this.Key = key;
@@ -152,8 +162,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             this.Category = category;
             this.currentValue = initialValue;
             this.DefaultValue = defaultValue;
+            this.IsSpecified = isSpecified;
             this.IsReadOnly = readOnly;
-
             Debug.Assert(!this.IsDirty);
         }
 

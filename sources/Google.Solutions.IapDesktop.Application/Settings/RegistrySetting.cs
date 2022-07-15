@@ -57,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string category,
             string defaultValue,
             string value,
+            bool isSpecified,
             Func<string, bool> validate,
             bool readOnly)
             : base(
@@ -66,6 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   category,
                   value,
                   defaultValue,
+                  isSpecified,
                   readOnly)
         {
             this.validate = validate;
@@ -79,17 +81,19 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string defaultValue,
             RegistryKey backingKey,
             Func<string, bool> validate)
-            => new RegistryStringSetting(
+        {
+            var value = (string)backingKey?.GetValue(key);
+            return new RegistryStringSetting(
                   key,
                   title,
                   description,
                   category,
                   defaultValue,
-                  backingKey == null
-                    ? defaultValue
-                    : (string)backingKey.GetValue(key, defaultValue),
+                  value ?? defaultValue,
+                  value != null,
                   validate,
                   false);
+        }
 
         protected override SettingBase<string> CreateNew(string value, string defaultValue, bool readOnly)
             => new RegistryStringSetting(
@@ -99,6 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Category,
                 defaultValue,
                 value,
+                value == defaultValue,
                 this.validate,
                 readOnly);
 
@@ -141,6 +146,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string category,
             SecureString defaultValue,
             SecureString value,
+            bool isSpecified,
             DataProtectionScope protectionScope,
             bool readOnly)
             : base(
@@ -150,6 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   category,
                   value,
                   defaultValue,
+                  isSpecified,
                   readOnly)
         {
             this.protectionScope = protectionScope;
@@ -162,7 +169,9 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string category,
             RegistryKey backingKey,
             DataProtectionScope protectionScope)
-            => new RegistrySecureStringSetting(
+        {
+            var value = (byte[])backingKey?.GetValue(key);
+            return new RegistrySecureStringSetting(
                   key,
                   title,
                   description,
@@ -171,9 +180,11 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   Decrypt(
                       key,
                       protectionScope,
-                      (byte[])backingKey?.GetValue(key)),
+                      value),
+                  value != null,
                   protectionScope,
                   false);
+        }
 
         protected override SettingBase<SecureString> CreateNew(
             SecureString value,
@@ -186,6 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Category,
                 defaultValue,
                 value,
+                value == defaultValue,
                 this.protectionScope,
                 readOnly);
 
@@ -261,6 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string category,
             bool defaultValue,
             bool value,
+            bool isSpecified,
             bool readOnly)
             : base(
                   key,
@@ -269,6 +282,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   category,
                   value,
                   defaultValue,
+                  isSpecified,
                   readOnly)
         {
         }
@@ -280,14 +294,20 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string category,
             bool defaultValue,
             RegistryKey backingKey)
-            => new RegistryBoolSetting(
+        {
+            var value = (int?)backingKey?.GetValue(key);
+            return new RegistryBoolSetting(
                   key,
                   title,
                   description,
                   category,
                   defaultValue,
-                  (int?)backingKey?.GetValue(key, defaultValue ? 1 : 0) != 0,
+                  value == null
+                    ? defaultValue
+                    : value != 0,
+                  value != null,
                   false);
+        }
 
         protected override SettingBase<bool> CreateNew(bool value, bool defaultValue, bool readOnly)
             => new RegistryBoolSetting(
@@ -296,6 +316,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Description,
                 this.Category,
                 defaultValue,
+                value == defaultValue,
                 value,
                 readOnly);
 
@@ -337,6 +358,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string category,
             int defaultValue,
             int value,
+            bool isSpecified,
             int minInclusive,
             int maxInclusive,
             bool readOnly)
@@ -347,6 +369,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   category,
                   value,
                   defaultValue,
+                  isSpecified,
                   readOnly)
         {
             this.minInclusive = minInclusive;
@@ -362,18 +385,22 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             RegistryKey backingKey,
             int minInclusive,
             int maxInclusive)
-            => new RegistryDwordSetting(
+        {
+            var value = (int?)backingKey?.GetValue(key);
+            return new RegistryDwordSetting(
                   key,
                   title,
                   description,
                   category,
                   defaultValue,
-                  backingKey == null
-                    ? defaultValue
-                    : (int)backingKey.GetValue(key, defaultValue),
+                  value != null
+                    ? value.Value
+                    : defaultValue,
+                  value != null,
                   minInclusive,
                   maxInclusive,
                   false);
+        }
 
         protected override SettingBase<int> CreateNew(int value, int defaultValue, bool readOnly)
             => new RegistryDwordSetting(
@@ -383,6 +410,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Category,
                 defaultValue,
                 value,
+                value == defaultValue,
                 this.minInclusive,
                 this.maxInclusive,
                 readOnly);
@@ -425,6 +453,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string category,
             long defaultValue,
             long value,
+            bool isSpecified,
             long minInclusive,
             long maxInclusive,
             bool readOnly)
@@ -435,6 +464,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   category,
                   value,
                   defaultValue,
+                  isSpecified,
                   readOnly)
         {
             this.minInclusive = minInclusive;
@@ -450,18 +480,22 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             RegistryKey backingKey,
             long minInclusive,
             long maxInclusive)
-            => new RegistryQwordSetting(
+        {
+            var value = (long?)backingKey?.GetValue(key);
+            return new RegistryQwordSetting(
                   key,
                   title,
                   description,
                   category,
                   defaultValue,
-                  backingKey == null
-                    ? defaultValue
-                    : (long)backingKey.GetValue(key, defaultValue),
+                  value != null
+                    ? value.Value
+                    : defaultValue,
+                  value != null,
                   minInclusive,
                   maxInclusive,
                   false);
+        }
 
         protected override SettingBase<long> CreateNew(long value, long defaultValue, bool readOnly)
             => new RegistryQwordSetting(
@@ -471,6 +505,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Category,
                 defaultValue,
                 value,
+                value == defaultValue,
                 this.minInclusive,
                 this.maxInclusive,
                 readOnly);
@@ -511,6 +546,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string category,
             TEnum defaultValue,
             TEnum value,
+            bool isSpecified,
             bool readOnly)
             : base(
                   key,
@@ -519,6 +555,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   category,
                   value,
                   defaultValue,
+                  isSpecified,
                   readOnly)
         {
         }
@@ -530,16 +567,20 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string category,
             TEnum defaultValue,
             RegistryKey backingKey)
-            => new RegistryEnumSetting<TEnum>(
+        {
+            var value = backingKey?.GetValue(key);
+            return new RegistryEnumSetting<TEnum>(
                   key,
                   title,
                   description,
                   category,
                   defaultValue,
-                  backingKey == null
-                    ? defaultValue
-                    : (TEnum)backingKey.GetValue(key, defaultValue),
+                  value != null
+                    ? (TEnum)value
+                    : defaultValue,
+                  value != null,
                   false);
+        }
 
         protected override SettingBase<TEnum> CreateNew(TEnum value, TEnum defaultValue, bool readOnly)
             => new RegistryEnumSetting<TEnum>(
@@ -549,6 +590,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Category,
                 defaultValue,
                 value,
+                Equals(value, defaultValue),
                 readOnly);
 
         protected override bool IsValid(TEnum value)
