@@ -138,7 +138,7 @@
       <Project>{387693ff-20d9-4f26-92c4-9b6f630767ac}</Project>
       <Name>Google.Solutions.IapDesktop.Extensions.Os</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Support.Nunit\Google.Solutions.Testing.Common.csproj">
+    <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Common.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
       <Name>Google.Solutions.Testing.Common</Name>
     </ProjectReference>
