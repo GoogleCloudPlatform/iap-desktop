@@ -39,8 +39,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestPolicyKeyPath, false);
         }
 
         //---------------------------------------------------------------------
@@ -394,7 +394,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     false,
                     key);
                 Assert.IsTrue(parent.IsDefault);
+                Assert.IsFalse(parent.IsSpecified);
 
+                key.SetValue("test", 1);
                 var child = RegistryBoolSetting.FromKey(
                     "test",
                     "title",
@@ -402,8 +404,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     "category",
                     false,
                     key);
-                child.Value = true;
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);

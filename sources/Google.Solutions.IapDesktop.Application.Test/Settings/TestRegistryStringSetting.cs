@@ -369,7 +369,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     key,
                     _ => true);
                 Assert.IsTrue(parent.IsDefault);
+                Assert.IsFalse(parent.IsSpecified);
 
+                key.SetValue("test", "yellow");
                 var child = RegistryStringSetting.FromKey(
                     "test",
                     "title",
@@ -378,8 +380,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     "black",
                     key,
                     _ => true);
-                child.Value = "yellow";
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
@@ -396,6 +398,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
+                key.SetValue("test", "red");
                 var parent = RegistryStringSetting.FromKey(
                     "test",
                     "title",
@@ -404,9 +407,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     "black",
                     key,
                     _ => true);
-                parent.Value = "red";
                 Assert.IsFalse(parent.IsDefault);
+                Assert.IsTrue(parent.IsSpecified);
 
+                key.SetValue("test", "green");
                 var child = RegistryStringSetting.FromKey(
                     "test",
                     "title",
@@ -415,8 +419,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     "black",
                     key,
                     _ => true);
-                child.Value = "green";
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
