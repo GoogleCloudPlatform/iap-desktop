@@ -425,7 +425,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     key,
                     0, 100);
                 Assert.IsTrue(parent.IsDefault);
+                Assert.IsFalse(parent.IsSpecified);
 
+                key.SetValue("test", 1);
                 var child = RegistryDwordSetting.FromKey(
                     "test",
                     "title",
@@ -434,8 +436,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     10,
                     key,
                     0, 100);
-                child.Value = 1;
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
@@ -452,6 +454,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
+                key.SetValue("test", 42);
                 var parent = RegistryDwordSetting.FromKey(
                     "test",
                     "title",
@@ -460,9 +463,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     10,
                     key,
                     0, 100);
-                parent.Value = 42;
                 Assert.IsFalse(parent.IsDefault);
+                Assert.IsTrue(parent.IsSpecified);
 
+                key.SetValue("test", 1);
                 var child = RegistryDwordSetting.FromKey(
                     "test",
                     "title",
@@ -471,8 +475,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     10,
                     key,
                     0, 100);
-                child.Value = 1;
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);

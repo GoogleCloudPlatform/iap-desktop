@@ -425,7 +425,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     key,
                     0L, 100L);
                 Assert.IsTrue(parent.IsDefault);
+                Assert.IsFalse(parent.IsSpecified);
 
+                key.SetValue("test", 1L, RegistryValueKind.QWord);
                 var child = RegistryQwordSetting.FromKey(
                     "test",
                     "title",
@@ -434,8 +436,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     10L,
                     key,
                     0L, 100L);
-                child.Value = 1L;
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
@@ -452,6 +454,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
+                key.SetValue("test", 42L, RegistryValueKind.QWord);
                 var parent = RegistryQwordSetting.FromKey(
                     "test",
                     "title",
@@ -460,9 +463,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     10L,
                     key,
                     0L, 100L);
-                parent.Value = 42L;
                 Assert.IsFalse(parent.IsDefault);
+                Assert.IsTrue(parent.IsSpecified);
 
+                key.SetValue("test", 1L, RegistryValueKind.QWord);
                 var child = RegistryQwordSetting.FromKey(
                     "test",
                     "title",
@@ -471,8 +475,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     10L,
                     key,
                     0L, 100L);
-                child.Value = 1L;
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);

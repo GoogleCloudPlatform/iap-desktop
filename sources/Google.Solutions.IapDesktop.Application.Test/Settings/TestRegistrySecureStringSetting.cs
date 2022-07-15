@@ -426,7 +426,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     key,
                     DataProtectionScope.CurrentUser);
                 Assert.IsTrue(parent.IsDefault);
+                Assert.IsFalse(parent.IsSpecified);
 
+                key.SetValue(
+                    "test",
+                    RegistrySecureStringSetting.Encrypt(
+                        "test",
+                        DataProtectionScope.CurrentUser,
+                        SecureStringExtensions.FromClearText("yellow")));
                 var child = RegistrySecureStringSetting.FromKey(
                     "test",
                     "title",
@@ -434,8 +441,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     "category",
                     key,
                     DataProtectionScope.CurrentUser);
-                child.Value = "yellow";
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
@@ -452,6 +459,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
+                key.SetValue(
+                    "test",
+                    RegistrySecureStringSetting.Encrypt(
+                        "test",
+                        DataProtectionScope.CurrentUser,
+                        SecureStringExtensions.FromClearText("red")));
                 var parent = RegistrySecureStringSetting.FromKey(
                     "test",
                     "title",
@@ -459,9 +472,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     "category",
                     key,
                     DataProtectionScope.CurrentUser);
-                parent.Value = "red";
                 Assert.IsFalse(parent.IsDefault);
+                Assert.IsTrue(parent.IsSpecified);
 
+                key.SetValue(
+                    "test",
+                    RegistrySecureStringSetting.Encrypt(
+                        "test",
+                        DataProtectionScope.CurrentUser,
+                        SecureStringExtensions.FromClearText("green")));
                 var child = RegistrySecureStringSetting.FromKey(
                     "test",
                     "title",
@@ -469,8 +488,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     "category",
                     key,
                     DataProtectionScope.CurrentUser);
-                child.Value = "green";
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);

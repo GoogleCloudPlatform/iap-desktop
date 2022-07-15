@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         protected override SecureString Parse(string value)
             => SecureStringExtensions.FromClearText(value);
 
-        private static byte[] Encrypt(
+        internal static byte[] Encrypt(
             string key,
             DataProtectionScope scope,
             SecureString secureString)
@@ -316,8 +316,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Description,
                 this.Category,
                 defaultValue,
-                value == defaultValue,
                 value,
+                value == defaultValue,
                 readOnly);
 
         protected override bool IsValid(bool value) => true;

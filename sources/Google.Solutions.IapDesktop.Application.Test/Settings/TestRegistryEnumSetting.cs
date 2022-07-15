@@ -386,7 +386,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     ConsoleColor.Black,
                     key);
                 Assert.IsTrue(parent.IsDefault);
+                Assert.IsFalse(parent.IsSpecified);
 
+                key.SetValue("test", (int)ConsoleColor.Yellow);
                 var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
@@ -394,8 +396,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     "category",
                     ConsoleColor.Black,
                     key);
-                child.Value = ConsoleColor.Yellow;
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
@@ -412,6 +414,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
+                key.SetValue("test", (int)ConsoleColor.Red);
                 var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
@@ -419,9 +422,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     "category",
                     ConsoleColor.Black,
                     key);
-                parent.Value = ConsoleColor.Red;
                 Assert.IsFalse(parent.IsDefault);
+                Assert.IsTrue(parent.IsSpecified);
 
+                key.SetValue("test", (int)ConsoleColor.Green);
                 var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
@@ -429,8 +433,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                     "category",
                     ConsoleColor.Black,
                     key);
-                child.Value = ConsoleColor.Green;
                 Assert.IsFalse(child.IsDefault);
+                Assert.IsTrue(child.IsSpecified);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
