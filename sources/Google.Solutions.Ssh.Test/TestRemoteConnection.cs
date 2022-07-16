@@ -35,6 +35,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
+    [UsesCloudResources]
     public class TestSshConnection : SshFixtureBase
     {
         [Test]

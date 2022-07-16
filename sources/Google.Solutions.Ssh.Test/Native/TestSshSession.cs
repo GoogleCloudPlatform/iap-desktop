@@ -32,6 +32,7 @@ using Google.Solutions.Testing.Common;
 namespace Google.Solutions.Ssh.Test.Native
 {
     [TestFixture]
+    [UsesCloudResources]
     public class TestSshSession : SshFixtureBase
     {
         private readonly IPEndPoint NonSshEndpoint =

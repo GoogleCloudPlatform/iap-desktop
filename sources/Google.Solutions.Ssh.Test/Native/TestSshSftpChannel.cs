@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Test.Native
 {
     [TestFixture]
+    [UsesCloudResources]
     public class TestSshSftpChannel : SshFixtureBase
     {
         //---------------------------------------------------------------------

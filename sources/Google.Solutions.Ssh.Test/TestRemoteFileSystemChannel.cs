@@ -37,6 +37,7 @@ using Google.Solutions.Testing.Common;
 namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
+    [UsesCloudResources]
     public class TestRemoteFileSystemChannel : SshFixtureBase
     {
         public static Stream CreateStream(string content)
