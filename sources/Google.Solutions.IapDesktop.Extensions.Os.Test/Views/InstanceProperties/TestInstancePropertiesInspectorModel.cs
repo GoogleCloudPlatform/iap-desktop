@@ -35,7 +35,7 @@ using Google.Solutions.Testing.Application.Test;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstanceProperties
 {
     [TestFixture]
-    [Category("IntegrationTest")]
+    [UsesCloudResources]
     public class TestInstancePropertiesInspectorModel : ApplicationFixtureBase
     {
         [Test]

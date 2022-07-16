@@ -40,6 +40,7 @@ using Google.Solutions.Testing.Common;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 {
     [TestFixture]
+    [UsesCloudResources]
     public class TestOsLoginAdapter : ShellFixtureBase
     {
         private OsLoginAdapter CreateAdapter(string email)

@@ -33,7 +33,6 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Common.Test.Net
 {
     [TestFixture]
-    [Category("IntegrationTest")]
     public class TestRestClient : CommonFixtureBase
     {
         private const string SampleRestUrl = "https://accounts.google.com/.well-known/openid-configuration";

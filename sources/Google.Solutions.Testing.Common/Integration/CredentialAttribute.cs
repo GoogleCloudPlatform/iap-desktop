@@ -62,6 +62,7 @@ namespace Google.Solutions.Testing.Common.Integration
                 var fingerprint = CreateSpecificationFingerprint();
                 return new[] {
                     ResourceTask<ICredential>.ProvisionOnce(
+                        parameter.Method,
                         fingerprint,
                         () => CredentialFactory.CreateServiceAccountCredentialAsync(
                             fingerprint,

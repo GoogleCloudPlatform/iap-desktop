@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using NUnit.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -56,9 +58,32 @@ namespace Google.Solutions.Testing.Common.Integration
             => this.task.GetAwaiter();
 
         public static ResourceTask<T> ProvisionOnce(
+            IMethodInfo method,
             string fingerprint,
             Func<Task<T>> provisionFunc)
         {
+            //
+            // Check for annotation.
+            //
+            if (!method.TypeInfo.Type
+                .CustomAttributes
+                .Where(a => a.AttributeType == typeof(UsesCloudResourcesAttribute))
+                .Any())
+            {
+                //
+                // Don't fail immediately by throwing an exception as this
+                // code is run during discovery. Instead, return a task
+                // that throws an exception. That way, we fail the test case.
+                //
+                return new ResourceTask<T>(
+                    string.Empty,
+                    Task.FromException<T>(
+                        new MissingTestAnnotationException(
+                            $"Test class {method.TypeInfo.Type.Name} must be marked with " +
+                            $"[{typeof(UsesCloudResourcesAttribute).Name}] attribute to " +
+                            "access cloud resources")));
+            }
+
             lock (cache)
             {
                 if (cache.TryGetValue(fingerprint, out ResourceTask<T> cached))

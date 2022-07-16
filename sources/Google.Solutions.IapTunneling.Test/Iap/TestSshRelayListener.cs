@@ -35,8 +35,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("IAP")]
+    [UsesCloudResources]
     public class TestSshRelayListener : IapFixtureBase
     {
         private static void FillArray(byte[] array)

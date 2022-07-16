@@ -30,8 +30,7 @@ using Google.Solutions.Testing.Application.Test;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("SecureConnect")]
+    [UsesCloudResources]
     public class TestAuditLogAdapterWithMtls : ApplicationFixtureBase
     {
         [Test]

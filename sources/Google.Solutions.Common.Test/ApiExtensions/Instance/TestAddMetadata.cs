@@ -33,8 +33,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Common.Test.Extensions
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("Windows")]
+    [UsesCloudResources]
     public class TestAddMetadata : CommonFixtureBase
     {
         private InstancesResource instancesResource;

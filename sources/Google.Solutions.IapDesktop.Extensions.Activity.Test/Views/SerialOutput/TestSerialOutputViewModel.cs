@@ -39,7 +39,7 @@ using Google.Solutions.Testing.Application.Test;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
 {
     [TestFixture]
-    [Category("IntegrationTest")]
+    [UsesCloudResources]
     public class TestSerialOutputViewModel : ApplicationFixtureBase
     {
         private class MockJobService : IJobService

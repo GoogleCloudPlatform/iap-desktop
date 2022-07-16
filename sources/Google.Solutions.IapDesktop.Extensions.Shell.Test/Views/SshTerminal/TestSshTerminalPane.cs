@@ -52,6 +52,7 @@ using Google.Solutions.Testing.Application.Views;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {
     [TestFixture]
+    [UsesCloudResources]
     public class TestSshTerminalPane : WindowTestFixtureBase
     {
         private readonly IPEndPoint NonSshEndpoint =
