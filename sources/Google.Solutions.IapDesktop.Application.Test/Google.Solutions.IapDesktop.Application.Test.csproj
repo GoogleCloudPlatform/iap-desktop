@@ -175,7 +175,7 @@
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.IapTunneling</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Support.Nunit\Google.Solutions.Testing.Common.csproj">
+    <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Common.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
       <Name>Google.Solutions.Testing.Common</Name>
     </ProjectReference>
