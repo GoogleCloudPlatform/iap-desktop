@@ -381,6 +381,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             Action action,
             string actionName)
         {
+            Debug.Assert(
+                actionName.Contains("ing "),
+                "Action name should be formatted like 'Doing something'");
+
             try
             {
                 action();
@@ -400,6 +404,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             Func<Task> action,
             string actionName)
         {
+            Debug.Assert(
+                actionName.Contains("ing "),
+                "Action name should be formatted like 'Doing something'");
+
             try
             {
                 await action().ConfigureAwait(true);
