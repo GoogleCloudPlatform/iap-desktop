@@ -31,7 +31,10 @@
           Compressed="yes" 
           InstallScope="perUser" 
           InstallPrivileges="limited"
-          Platform="$(var.PLATFORM)" />
+          Platform="$(var.PLATFORM)" 
+          Description="IAP Desktop version $(var.VERSION)"
+          Comments="Per-user installation package"
+          Keywords="Google Cloud, SSH, RDP, IAP"/>
 
     <Icon Id="IapDesktopIco" SourceFile="$(var.BASEDIR)\icon.ico" />
     <Property Id='ARPHELPLINK'>https://github.com/GoogleCloudPlatform/iap-desktop/</Property>
