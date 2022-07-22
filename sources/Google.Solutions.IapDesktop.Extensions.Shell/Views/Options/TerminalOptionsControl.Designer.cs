@@ -65,9 +65,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.scrollUsingCtrlHomeEndcheckBox = new System.Windows.Forms.CheckBox();
             this.scrollingIcon = new System.Windows.Forms.PictureBox();
             this.themeBox = new System.Windows.Forms.GroupBox();
-            this.selectFontButton = new System.Windows.Forms.Button();
-            this.terminalLook = new System.Windows.Forms.Label();
             this.fontIcon = new System.Windows.Forms.PictureBox();
+            this.terminalLook = new System.Windows.Forms.Label();
+            this.selectBackgroundColorButton = new System.Windows.Forms.Button();
+            this.selectForegroundColorButton = new System.Windows.Forms.Button();
+            this.selectFontButton = new System.Windows.Forms.Button();
             this.clipboardBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).BeginInit();
             this.textSelectionBox.SuspendLayout();
@@ -235,6 +237,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             this.themeBox.Controls.Add(this.fontIcon);
             this.themeBox.Controls.Add(this.terminalLook);
+            this.themeBox.Controls.Add(this.selectBackgroundColorButton);
+            this.themeBox.Controls.Add(this.selectForegroundColorButton);
             this.themeBox.Controls.Add(this.selectFontButton);
             this.themeBox.Location = new System.Drawing.Point(4, 282);
             this.themeBox.Name = "themeBox";
@@ -242,27 +246,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.themeBox.TabIndex = 8;
             this.themeBox.TabStop = false;
             this.themeBox.Text = "Theme:";
-            // 
-            // selectFontButton
-            // 
-            this.selectFontButton.Location = new System.Drawing.Point(255, 19);
-            this.selectFontButton.Name = "selectFontButton";
-            this.selectFontButton.Size = new System.Drawing.Size(75, 23);
-            this.selectFontButton.TabIndex = 9;
-            this.selectFontButton.Text = "Font...";
-            this.selectFontButton.UseVisualStyleBackColor = true;
-            this.selectFontButton.Click += new System.EventHandler(this.selectFontButton_Click);
-            // 
-            // terminalLook
-            // 
-            this.terminalLook.BackColor = System.Drawing.Color.Black;
-            this.terminalLook.ForeColor = System.Drawing.Color.White;
-            this.terminalLook.Location = new System.Drawing.Point(55, 19);
-            this.terminalLook.Name = "terminalLook";
-            this.terminalLook.Padding = new System.Windows.Forms.Padding(3);
-            this.terminalLook.Size = new System.Drawing.Size(194, 51);
-            this.terminalLook.TabIndex = 1;
-            this.terminalLook.Text = "[user@host ~]$";
             // 
             // fontIcon
             // 
@@ -272,6 +255,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.fontIcon.Size = new System.Drawing.Size(36, 36);
             this.fontIcon.TabIndex = 4;
             this.fontIcon.TabStop = false;
+            // 
+            // terminalLook
+            // 
+            this.terminalLook.BackColor = System.Drawing.Color.Black;
+            this.terminalLook.ForeColor = System.Drawing.Color.White;
+            this.terminalLook.Location = new System.Drawing.Point(55, 19);
+            this.terminalLook.Name = "terminalLook";
+            this.terminalLook.Padding = new System.Windows.Forms.Padding(3);
+            this.terminalLook.Size = new System.Drawing.Size(203, 51);
+            this.terminalLook.TabIndex = 1;
+            this.terminalLook.Text = "[user@host ~]$";
+            // 
+            // selectBackgroundColorButton
+            // 
+            this.selectBackgroundColorButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.BackgroundColor_16;
+            this.selectBackgroundColorButton.Location = new System.Drawing.Point(300, 47);
+            this.selectBackgroundColorButton.Name = "selectBackgroundColorButton";
+            this.selectBackgroundColorButton.Size = new System.Drawing.Size(30, 23);
+            this.selectBackgroundColorButton.TabIndex = 9;
+            this.selectBackgroundColorButton.UseVisualStyleBackColor = true;
+            this.selectBackgroundColorButton.Click += new System.EventHandler(this.selectTerminalColorButton_Click);
+            // 
+            // selectForegroundColorButton
+            // 
+            this.selectForegroundColorButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.TextColor_16;
+            this.selectForegroundColorButton.Location = new System.Drawing.Point(266, 47);
+            this.selectForegroundColorButton.Name = "selectForegroundColorButton";
+            this.selectForegroundColorButton.Size = new System.Drawing.Size(30, 23);
+            this.selectForegroundColorButton.TabIndex = 9;
+            this.selectForegroundColorButton.UseVisualStyleBackColor = true;
+            this.selectForegroundColorButton.Click += new System.EventHandler(this.selectTerminalColorButton_Click);
+            // 
+            // selectFontButton
+            // 
+            this.selectFontButton.Location = new System.Drawing.Point(266, 19);
+            this.selectFontButton.Name = "selectFontButton";
+            this.selectFontButton.Size = new System.Drawing.Size(64, 23);
+            this.selectFontButton.TabIndex = 9;
+            this.selectFontButton.Text = "Font...";
+            this.selectFontButton.UseVisualStyleBackColor = true;
+            this.selectFontButton.Click += new System.EventHandler(this.selectFontButton_Click);
             // 
             // TerminalOptionsControl
             // 
@@ -319,5 +343,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         private System.Windows.Forms.Button selectFontButton;
         private System.Windows.Forms.Label terminalLook;
         private System.Windows.Forms.PictureBox fontIcon;
+        private System.Windows.Forms.Button selectForegroundColorButton;
+        private System.Windows.Forms.Button selectBackgroundColorButton;
     }
 }

@@ -48,6 +48,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         private bool isScrollingUsingCtrlUpDownEnabled;
         private bool isScrollingUsingCtrlHomeEndEnabled;
         private Font terminalFont;
+        private Color terminalForegroundColor;
+        private Color terminalBackgroundColor;
 
         private readonly TerminalSettingsRepository settingsRepository;
 
@@ -85,6 +87,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.terminalFont = new Font(
                 settings.FontFamily.StringValue,
                 TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
+
+            // TODO: Read color.
 
             this.isDirty = false;
         }
@@ -143,6 +147,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.terminalFont.FontFamily.Name;
             settings.FontSizeAsDword.IntValue =
                 TerminalSettings.DwordFromFontSize(this.terminalFont.Size);
+
+            // TODO: Save color.
 
             this.settingsRepository.SetSettings(settings);
 
@@ -241,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             }
         }
 
-        public Font Font
+        public Font TerminalFont
         {
             get => this.terminalFont;
             set
@@ -252,7 +258,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             }
         }
 
-        public float MaximumFontSize => TerminalFont.MaximumSize;
-        public float MinimumFontSize => TerminalFont.MinimumSize;
+        public float MaximumFontSize => Controls.TerminalFont.MaximumSize;
+        public float MinimumFontSize => Controls.TerminalFont.MinimumSize;
+
+        public Color TerminalForegroundColor // TODO: Test color.
+        {
+            get => this.terminalForegroundColor;
+            set
+            {
+                this.terminalForegroundColor = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public Color TerminalBackgroundColor // TODO: Test color.
+        {
+            get => this.terminalBackgroundColor;
+            set
+            {
+                this.terminalBackgroundColor = value;
+                RaisePropertyChange();
+            }
+        }
     }
 }
