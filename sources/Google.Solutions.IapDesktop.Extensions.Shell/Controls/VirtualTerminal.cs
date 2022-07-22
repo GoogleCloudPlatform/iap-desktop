@@ -108,16 +108,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
+        internal Color TerminalBackgroundColor
+        {
+            get => ColorFromTerminalColor(this.controller.BackgroundColor);
+            set => this.controller.BackgroundColor = TerminalColorFromColor(value);
+        }
+
+        internal Color TerminalForegroundColor
+        {
+            get => ColorFromTerminalColor(this.controller.ForegroundColor);
+            set => this.controller.ForegroundColor = TerminalColorFromColor(value);
+        }
+
         public VirtualTerminal()
         {
             InitializeComponent();
 
-            var defaultAttributes = TerminalAttribute.CreateDefault();
-#if DEBUG
-            defaultAttributes.BackgroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Blue;
-            defaultAttributes.ForegroundColor = VtNetCore.VirtualTerminal.Enums.ETerminalColor.Yellow;
-#endif
-            this.controller = new VirtualTerminalController(defaultAttributes);
+            this.controller = new VirtualTerminalController(
+                TerminalAttribute.CreateDefault());
 
             this.controllerSink = new DataConsumer(this.controller);
             this.keyHandler = new VirtualTerminalKeyHandler(this.controller);
@@ -161,6 +169,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         //---------------------------------------------------------------------
         // Painting.
         //---------------------------------------------------------------------
+        private static Color ColorFromTerminalColor(TerminalColor c)
+        {
+            return Color.FromArgb((int)c.Red, (int)c.Green, (int)c.Blue);
+        }
+
+        private static TerminalColor TerminalColorFromColor(Color c)
+        {
+            return new TerminalColor()
+            {
+                Red = c.R,
+                Green = c.G,
+                Blue = c.B
+            };
+        }
 
         private static Color GetSolidColorBrush(string hex)
         {

@@ -169,7 +169,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 {
                     AllowFullOpen = true,
                     AnyColor = true,
-                    SolidColorOnly = true
+                    SolidColorOnly = true,
+                    Color = sender == this.selectBackgroundColorButton
+                        ? this.viewModel.TerminalBackgroundColor
+                        : this.viewModel.TerminalForegroundColor
                 })
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)

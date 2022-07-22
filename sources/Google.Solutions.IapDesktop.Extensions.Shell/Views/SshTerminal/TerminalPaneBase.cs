@@ -225,6 +225,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.terminal.TerminalFont = new TerminalFont(
                 settings.FontFamily.StringValue,
                 TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
+
+            this.terminal.TerminalBackgroundColor = Color.FromArgb(settings.BackgroundColorArgb.IntValue);
+            this.terminal.TerminalForegroundColor = Color.FromArgb(settings.ForegroundColorArgb.IntValue);
         }
 
         //---------------------------------------------------------------------
