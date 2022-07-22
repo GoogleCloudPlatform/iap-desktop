@@ -241,27 +241,27 @@
     </Compile>
     <Compile Include="Views\HelpService.cs" />
     <Compile Include="Views\Options\ScreenOptionsViewModel.cs" />
-    <Compile Include="Views\Options\ScreenOptionsControl.cs">
+    <Compile Include="Views\Options\ScreenOptionsSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\Options\ScreenOptionsControl.Designer.cs">
-      <DependentUpon>ScreenOptionsControl.cs</DependentUpon>
+    <Compile Include="Views\Options\ScreenOptionsSheet.Designer.cs">
+      <DependentUpon>ScreenOptionsSheet.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Options\GeneralOptionsControl.cs">
+    <Compile Include="Views\Options\GeneralOptionsSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\Options\GeneralOptionsControl.Designer.cs">
-      <DependentUpon>GeneralOptionsControl.cs</DependentUpon>
+    <Compile Include="Views\Options\GeneralOptionsSheet.Designer.cs">
+      <DependentUpon>GeneralOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Options\GeneralOptionsViewModel.cs" />
     <Compile Include="Views\Options\OptionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Options\NetworkOptionsControl.cs">
+    <Compile Include="Views\Options\NetworkOptionsSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\Options\NetworkOptionsControl.Designer.cs">
-      <DependentUpon>NetworkOptionsControl.cs</DependentUpon>
+    <Compile Include="Views\Options\NetworkOptionsSheet.Designer.cs">
+      <DependentUpon>NetworkOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Options\NetworkOptionsViewModel.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
@@ -278,7 +278,7 @@
     <Compile Include="Views\ProjectPicker\ProjectPickerWindow.Designer.cs">
       <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Properties\IPropertiesDialogPane.cs" />
+    <Compile Include="Views\Properties\IPropertiesSheet.cs" />
     <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
     <Compile Include="Views\Properties\PropertiesDialog.cs">
       <SubType>Form</SubType>
@@ -400,14 +400,14 @@
     <EmbeddedResource Include="Views\FlyoutWindow.resx">
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Options\ScreenOptionsControl.resx">
-      <DependentUpon>ScreenOptionsControl.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Options\ScreenOptionsSheet.resx">
+      <DependentUpon>ScreenOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Options\GeneralOptionsControl.resx">
-      <DependentUpon>GeneralOptionsControl.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Options\GeneralOptionsSheet.resx">
+      <DependentUpon>GeneralOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Options\NetworkOptionsControl.resx">
-      <DependentUpon>NetworkOptionsControl.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Options\NetworkOptionsSheet.resx">
+      <DependentUpon>NetworkOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProjectPicker\ProjectPickerWindow.resx">
       <DependentUpon>ProjectPickerWindow.cs</DependentUpon>

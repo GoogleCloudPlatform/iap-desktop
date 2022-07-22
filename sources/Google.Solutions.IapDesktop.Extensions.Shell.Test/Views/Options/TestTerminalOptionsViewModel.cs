@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
                 viewModel,
                 () => viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled = false,
                 v => v.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
-            
+
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
@@ -504,7 +504,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             var settings = this.settingsRepository.GetSettings();
             Assert.AreEqual(font.Name, settings.FontFamily.StringValue);
             Assert.AreEqual(
-                TerminalSettings.DwordFromFontSize(font.Size), 
+                TerminalSettings.DwordFromFontSize(font.Size),
                 settings.FontSizeAsDword.IntValue);
         }
 

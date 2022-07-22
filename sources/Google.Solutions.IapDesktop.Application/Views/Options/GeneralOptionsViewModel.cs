@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -29,7 +30,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    public class GeneralOptionsViewModel : ViewModelBase, IOptionsDialogPane
+    public class GeneralOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
     {
         private readonly ApplicationSettingsRepository settingsRepository;
         private readonly IAppProtocolRegistry protocolRegistry;
@@ -76,26 +77,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 ExecutableLocation);
         }
 
-
-        public GeneralOptionsViewModel(IServiceProvider serviceProvider)
-            : this(
-                  serviceProvider.GetService<ApplicationSettingsRepository>(),
-                  serviceProvider.GetService<IAppProtocolRegistry>(),
-                  serviceProvider.GetService<HelpService>())
-        {
-        }
-
         // NB. GetEntryAssembly returns the .exe, but this does not work during tests.
         private static string ExecutableLocation =>
             (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
 
         //---------------------------------------------------------------------
-        // IOptionsDialogPane.
+        // IPropertiesSheetViewModel.
         //---------------------------------------------------------------------
 
         public string Title => "General";
-
-        public UserControl CreateControl() => new GeneralOptionsControl(this);
 
         public bool IsDirty
         {
@@ -107,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             }
         }
 
-        public void ApplyChanges()
+        public DialogResult ApplyChanges()
         {
             Debug.Assert(this.IsDirty);
 
@@ -133,6 +123,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             }
 
             this.IsDirty = false;
+
+            return DialogResult.OK;
         }
 
         //---------------------------------------------------------------------

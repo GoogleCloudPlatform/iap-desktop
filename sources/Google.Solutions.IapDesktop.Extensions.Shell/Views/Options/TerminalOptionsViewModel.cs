@@ -20,7 +20,9 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using System;
@@ -32,12 +34,10 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    public interface ITerminalDialogPane : IOptionsDialogPane
+    public interface ITerminalOptionsSheet : IPropertiesSheet
     { }
 
-    [Service(typeof(ITerminalDialogPane), ServiceLifetime.Transient, ServiceVisibility.Global)]
-    [ServiceCategory(typeof(IOptionsDialogPane))]
-    public class TerminalOptionsViewModel : ViewModelBase, ITerminalDialogPane
+    public class TerminalOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
     {
         private bool isCopyPasteUsingCtrlCAndCtrlVEnabled;
         private bool isSelectAllUsingCtrlAEnabled;
@@ -95,20 +95,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.isDirty = false;
         }
 
-
-        public TerminalOptionsViewModel(IServiceProvider serviceProvider)
-            : this(
-                  serviceProvider.GetService<TerminalSettingsRepository>())
-        {
-        }
-
         //---------------------------------------------------------------------
         // IOptionsDialogPane.
         //---------------------------------------------------------------------
 
         public string Title => "Terminal";
-
-        public UserControl CreateControl() => new TerminalOptionsControl(this);
 
         public bool IsDirty
         {
@@ -120,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             }
         }
 
-        public void ApplyChanges()
+        public DialogResult ApplyChanges()
         {
             Debug.Assert(this.IsDirty);
 
@@ -157,6 +148,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.settingsRepository.SetSettings(settings);
 
             this.IsDirty = false;
+
+            return DialogResult.OK;
         }
 
         //---------------------------------------------------------------------

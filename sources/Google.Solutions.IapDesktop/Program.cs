@@ -248,6 +248,10 @@ namespace Google.Solutions.IapDesktop
             {
                 persistenceLayer.AddSingleton(profile);
 
+                persistenceLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
+                persistenceLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
+                persistenceLayer.AddTransient<ITaskDialog, TaskDialog>();
+
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
                     profile.MachinePolicyKey?.OpenSubKey("Application"),
@@ -315,9 +319,6 @@ namespace Google.Solutions.IapDesktop
                 windowAndWorkflowLayer.AddTransient<HelpService>();
                 windowAndWorkflowLayer.AddTransient<IProjectPickerWindow, ProjectPickerWindow>();
                 windowAndWorkflowLayer.AddTransient<AboutWindow>();
-                windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
-                windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
-                windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
                 windowAndWorkflowLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
                 windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
                 windowAndWorkflowLayer.AddSingleton<IProjectModelService, ProjectModelService>();

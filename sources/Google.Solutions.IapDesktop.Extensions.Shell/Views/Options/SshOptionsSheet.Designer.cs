@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    partial class SshOptionsControl
+    partial class SshOptionsSheet
     {
         /// <summary> 
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SshOptionsControl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SshOptionsSheet));
             this.authBox = new System.Windows.Forms.GroupBox();
             this.keyTypeLabel = new System.Windows.Forms.Label();
             this.publicKeyType = new System.Windows.Forms.ComboBox();

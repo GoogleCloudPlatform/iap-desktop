@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    partial class ScreenOptionsControl
+    partial class ScreenOptionsSheet
     {
         /// <summary> 
         /// Required designer variable.

@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -30,7 +31,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    public class NetworkOptionsViewModel : ViewModelBase, IOptionsDialogPane
+    public class NetworkOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
     {
         private readonly IHttpProxyAdapter proxyAdapter;
         private readonly ApplicationSettingsRepository settingsRepository;
@@ -82,20 +83,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             }
         }
 
-        public NetworkOptionsViewModel(IServiceProvider serviceProvider)
-            : this(
-                  serviceProvider.GetService<ApplicationSettingsRepository>(),
-                  serviceProvider.GetService<IHttpProxyAdapter>())
-        {
-        }
-
         //---------------------------------------------------------------------
-        // IOptionsDialogPane.
+        // IPropertiesSheetViewModel.
         //---------------------------------------------------------------------
 
         public string Title => "Network";
-
-        public UserControl CreateControl() => new NetworkOptionsControl(this);
 
         public bool IsDirty
         {
@@ -107,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             }
         }
 
-        public void ApplyChanges()
+        public DialogResult ApplyChanges()
         {
             Debug.Assert(this.IsDirty);
 
@@ -179,6 +171,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.proxyAdapter.ActivateSettings(settings);
 
             this.IsDirty = false;
+
+            return DialogResult.OK;
         }
 
         //---------------------------------------------------------------------

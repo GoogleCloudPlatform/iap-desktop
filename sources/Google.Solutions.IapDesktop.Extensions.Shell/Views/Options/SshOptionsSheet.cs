@@ -22,7 +22,10 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Ssh.Auth;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Windows.Forms;
@@ -30,13 +33,16 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    public partial class SshOptionsControl : UserControl
+    [Service(typeof(ISshOptionsSheet), ServiceLifetime.Transient, ServiceVisibility.Global)]
+    [ServiceCategory(typeof(IPropertiesSheet))]
+    public partial class SshOptionsSheet : UserControl, ISshOptionsSheet
     {
         private readonly SshOptionsViewModel viewModel;
 
-        public SshOptionsControl(SshOptionsViewModel viewModel)
+        public SshOptionsSheet(
+            SshSettingsRepository settingsRepository)
         {
-            this.viewModel = viewModel;
+            this.viewModel = new SshOptionsViewModel(settingsRepository);
 
             InitializeComponent();
 
@@ -86,5 +92,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 m => m.IsPropagateLocaleEnabled,
                 this.Container);
         }
+
+        public SshOptionsSheet(IServiceProvider serviceProvider)
+            : this(serviceProvider.GetService<SshSettingsRepository>())
+        {
+        }
+
+        //---------------------------------------------------------------------
+        // IPropertiesSheet.
+        //---------------------------------------------------------------------
+
+        public IPropertiesSheetViewModel ViewModel => this.viewModel;
     }
 }

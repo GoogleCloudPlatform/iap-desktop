@@ -21,20 +21,30 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    public partial class TerminalOptionsControl : UserControl
+    [Service(typeof(ITerminalOptionsSheet), ServiceLifetime.Transient, ServiceVisibility.Global)]
+    [ServiceCategory(typeof(IPropertiesSheet))]
+    public partial class TerminalOptionsSheet : UserControl, ITerminalOptionsSheet
     {
         private readonly TerminalOptionsViewModel viewModel;
+        private readonly IExceptionDialog exceptionDialog;
 
-        public TerminalOptionsControl(TerminalOptionsViewModel viewModel)
+        public TerminalOptionsSheet(
+            TerminalSettingsRepository settingsRepository,
+            IExceptionDialog exceptionDialog)
         {
-            this.viewModel = viewModel;
+            this.viewModel = new TerminalOptionsViewModel(settingsRepository);
+            this.exceptionDialog = exceptionDialog;
 
             InitializeComponent();
 
@@ -110,6 +120,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.Container);
         }
 
+        public TerminalOptionsSheet(IServiceProvider serviceProvider)
+            : this(
+                  serviceProvider.GetService<TerminalSettingsRepository>(),
+                  serviceProvider.GetService<IExceptionDialog>())
+        {
+        }
+
+        //---------------------------------------------------------------------
+        // IPropertiesSheet.
+        //---------------------------------------------------------------------
+
+        public IPropertiesSheetViewModel ViewModel => this.viewModel;
+
+        //---------------------------------------------------------------------
+        // Events.
+        //---------------------------------------------------------------------
+
         private float PointsToPixelRatio
         {
             get
@@ -150,14 +177,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                     }
                 }
             }
-            catch (Exception e) // TODO: Use common wrapper method
+            catch (Exception e)
             {
-                MessageBox.Show(
-                    this,
-                    e.Message,
-                    "Selecting font failed",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                this.exceptionDialog.Show(this, "Selecting font failed", e);
             }
         }
 
@@ -188,14 +210,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                     }
                 }
             }
-            catch (Exception e) // TODO: Use common wrapper method
+            catch (Exception e)
             {
-                MessageBox.Show(
-                    this,
-                    e.Message,
-                    "Selecting color failed",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                this.exceptionDialog.Show(this, "Selecting font failed", e);
             }
         }
     }
