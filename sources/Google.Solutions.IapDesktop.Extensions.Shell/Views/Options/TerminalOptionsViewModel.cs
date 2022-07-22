@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
@@ -32,12 +33,12 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    public interface ITerminalDialogPane : IOptionsDialogPane
+    public interface ITerminalOptionaDialogPane : IOptionsDialogPane
     { }
 
-    [Service(typeof(ITerminalDialogPane), ServiceLifetime.Transient, ServiceVisibility.Global)]
+    [Service(typeof(ITerminalOptionaDialogPane), ServiceLifetime.Transient, ServiceVisibility.Global)]
     [ServiceCategory(typeof(IOptionsDialogPane))]
-    public class TerminalOptionsViewModel : ViewModelBase, ITerminalDialogPane
+    public class TerminalOptionsViewModel : ViewModelBase, ITerminalOptionaDialogPane
     {
         private bool isCopyPasteUsingCtrlCAndCtrlVEnabled;
         private bool isSelectAllUsingCtrlAEnabled;
@@ -51,14 +52,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         private Color terminalForegroundColor;
         private Color terminalBackgroundColor;
 
+        private readonly IExceptionDialog exceptionDialog;
         private readonly TerminalSettingsRepository settingsRepository;
 
         private bool isDirty;
 
         public TerminalOptionsViewModel(
-            TerminalSettingsRepository settingsRepository)
+            TerminalSettingsRepository settingsRepository,
+            IExceptionDialog exceptionDialog)
         {
             this.settingsRepository = settingsRepository;
+            this.exceptionDialog = exceptionDialog;
 
             //
             // Read current settings.
@@ -98,7 +102,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 
         public TerminalOptionsViewModel(IServiceProvider serviceProvider)
             : this(
-                  serviceProvider.GetService<TerminalSettingsRepository>())
+                  serviceProvider.GetService<TerminalSettingsRepository>(),
+                  serviceProvider.GetService<IExceptionDialog>())
         {
         }
 
@@ -108,7 +113,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 
         public string Title => "Terminal";
 
-        public UserControl CreateControl() => new TerminalOptionsControl(this);
+        public UserControl CreateControl() 
+            => new TerminalOptionsControl(this, this.exceptionDialog);
 
         public bool IsDirty
         {

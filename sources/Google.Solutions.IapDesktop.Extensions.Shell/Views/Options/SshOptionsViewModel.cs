@@ -33,12 +33,12 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    public interface ISshDialogPane : IOptionsDialogPane
+    public interface ISshOptionsDialogPane : IOptionsDialogPane
     { }
 
-    [Service(typeof(ISshDialogPane), ServiceLifetime.Transient, ServiceVisibility.Global)]
+    [Service(typeof(ISshOptionsDialogPane), ServiceLifetime.Transient, ServiceVisibility.Global)]
     [ServiceCategory(typeof(IOptionsDialogPane))]
-    public class SshOptionsViewModel : ViewModelBase, ISshDialogPane
+    public class SshOptionsViewModel : ViewModelBase, ISshOptionsDialogPane
     {
         private static readonly SshKeyType[] publicKeyTypes =
             Enum.GetValues(typeof(SshKeyType))

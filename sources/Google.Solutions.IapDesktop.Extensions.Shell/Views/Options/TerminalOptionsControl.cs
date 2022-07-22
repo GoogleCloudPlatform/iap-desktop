@@ -21,7 +21,9 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -31,10 +33,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
     public partial class TerminalOptionsControl : UserControl
     {
         private readonly TerminalOptionsViewModel viewModel;
+        private readonly IExceptionDialog exceptionDialog;
 
-        public TerminalOptionsControl(TerminalOptionsViewModel viewModel)
+        public TerminalOptionsControl(
+            TerminalOptionsViewModel viewModel,
+            IExceptionDialog exceptionDialog)
         {
             this.viewModel = viewModel;
+            this.exceptionDialog = exceptionDialog;
 
             InitializeComponent();
 
@@ -150,14 +156,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                     }
                 }
             }
-            catch (Exception e) // TODO: Use common wrapper method
+            catch (Exception e)
             {
-                MessageBox.Show(
-                    this,
-                    e.Message,
-                    "Selecting font failed",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                this.exceptionDialog.Show(this, "Selecting font failed", e);
             }
         }
 
@@ -188,14 +189,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                     }
                 }
             }
-            catch (Exception e) // TODO: Use common wrapper method
+            catch (Exception e)
             {
-                MessageBox.Show(
-                    this,
-                    e.Message,
-                    "Selecting color failed",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                this.exceptionDialog.Show(this, "Selecting font failed", e);
             }
         }
     }
