@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 26
+TAG = 27
 
 VTNETCORE_TAG = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
@@ -80,6 +80,7 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj:
     git am $(MAKEDIR)\vtnetcore-patches\0008-Handle-xterm-input-errors-more-gracefully.patch
     git am $(MAKEDIR)\vtnetcore-patches\0009-Propagate-terminal-attributes.patch
     git am $(MAKEDIR)\vtnetcore-patches\0010-Allow-custom-default-attributes.patch
+	git am $(MAKEDIR)\vtnetcore-patches\0011-Expose-properties-for-back-foreground-color.patch
 
 	cd $(MAKEDIR)
 
