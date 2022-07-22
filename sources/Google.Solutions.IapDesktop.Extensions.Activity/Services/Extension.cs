@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
 using Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput;
-using Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport;
 using System;
 using System.Linq;
 using System.Windows.Forms;
