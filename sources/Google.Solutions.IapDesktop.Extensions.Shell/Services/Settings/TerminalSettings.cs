@@ -81,6 +81,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public RegistryBoolSetting IsScrollingUsingCtrlHomeEndEnabled { get; private set; }
         public RegistryStringSetting FontFamily { get; private set; }
         public RegistryDwordSetting FontSizeAsDword { get; private set; }
+        public RegistryDwordSetting ForegroundColorArgb { get; private set; }
+        public RegistryDwordSetting BackgroundColorArgb { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
@@ -93,7 +95,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
             this.IsScrollingUsingCtrlUpDownEnabled,
             this.IsScrollingUsingCtrlHomeEndEnabled,
             this.FontFamily,
-            this.FontSizeAsDword
+            this.FontSizeAsDword,
+            this.ForegroundColorArgb,
+            this.BackgroundColorArgb
         };
 
         private TerminalSettings()
@@ -176,7 +180,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                     DwordFromFontSize(TerminalFont.DefaultSize),
                     registryKey,
                     DwordFromFontSize(TerminalFont.MinimumSize),
-                    DwordFromFontSize(TerminalFont.MaximumSize))
+                    DwordFromFontSize(TerminalFont.MaximumSize)),
+                ForegroundColorArgb = RegistryDwordSetting.FromKey(
+                    "ForegroundColor",
+                    "ForegroundColor",
+                    null,
+                    null,
+                    Color.White.ToArgb(),
+                    registryKey,
+                    Color.Black.ToArgb(),
+                    Color.White.ToArgb()),
+                BackgroundColorArgb = RegistryDwordSetting.FromKey(
+                    "BackgroundColor",
+                    "BackgroundColor",
+                    null,
+                    null,
+                    DefaultBackgroundColor.ToArgb(),
+                    registryKey,
+                    Color.Black.ToArgb(),
+                    Color.White.ToArgb())
             };
         }
 
@@ -187,5 +209,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
 
         public static float FontSizeFromDword(int dw) => (float)dw / 100;
         public static int DwordFromFontSize(float fontSize) => (int)(fontSize * 100);
+
+        //
+        // Use a dark gray as default, same as Cloud Shell.
+        //
+#if DEBUG
+        internal static Color DefaultBackgroundColor = Color.DarkBlue;
+#else
+        internal static Color DefaultBackgroundColor = Color.FromArgb(34, 34, 34);
+#endif
     }
 }

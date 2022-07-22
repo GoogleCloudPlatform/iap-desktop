@@ -96,7 +96,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.terminalLook.BindReadonlyProperty(
                 c => c.Font,
                 viewModel,
-                m => m.Font,
+                m => m.TerminalFont,
+                this.Container);
+            this.terminalLook.BindReadonlyProperty(
+                c => c.ForeColor,
+                viewModel,
+                m => m.TerminalForegroundColor,
+                this.Container);
+            this.terminalLook.BindReadonlyProperty(
+                c => c.BackColor,
+                viewModel,
+                m => m.TerminalBackgroundColor,
                 this.Container);
         }
 
@@ -128,24 +138,62 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                     MinSize = (int)Math.Ceiling(this.viewModel.MinimumFontSize * PointsToPixelRatio),
                     MaxSize = (int)Math.Floor(this.viewModel.MaximumFontSize * PointsToPixelRatio),
 
-                    Font = this.viewModel.Font
+                    Font = this.viewModel.TerminalFont
                 })
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
                         // Strip the font style.
-                        this.viewModel.Font = new Font(
+                        this.viewModel.TerminalFont = new Font(
                             dialog.Font.FontFamily,
                             dialog.Font.Size);
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception e) // TODO: Use common wrapper method
             {
                 MessageBox.Show(
                     this,
                     e.Message,
                     "Selecting font failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void selectTerminalColorButton_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                using (var dialog = new ColorDialog()
+                {
+                    AllowFullOpen = true,
+                    AnyColor = true,
+                    SolidColorOnly = true,
+                    Color = sender == this.selectBackgroundColorButton
+                        ? this.viewModel.TerminalBackgroundColor
+                        : this.viewModel.TerminalForegroundColor
+                })
+                {
+                    if (dialog.ShowDialog(this) == DialogResult.OK)
+                    {
+                        if (sender == this.selectBackgroundColorButton)
+                        {
+                            this.viewModel.TerminalBackgroundColor = dialog.Color;
+                        }
+                        else
+                        {
+                            this.viewModel.TerminalForegroundColor = dialog.Color;
+                        }
+                    }
+                }
+            }
+            catch (Exception e) // TODO: Use common wrapper method
+            {
+                MessageBox.Show(
+                    this,
+                    e.Message,
+                    "Selecting color failed",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
