@@ -19,12 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Options;
 using Google.Solutions.Testing.Common;
 using Microsoft.Win32;
-using Moq;
 using NUnit.Framework;
 using System.Drawing;
 
@@ -59,9 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsTrue(viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
         }
@@ -73,9 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
         }
@@ -87,15 +81,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
                 () => viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled = false,
                 v => v.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
-            
+
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
@@ -105,9 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         [Test]
         public void WhenIsCopyPasteUsingCtrlCAndCtrlVEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
         {
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsDirty);
 
@@ -128,9 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsTrue(viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled);
         }
@@ -142,9 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled);
         }
@@ -156,9 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
@@ -174,9 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         [Test]
         public void WhenIsCopyPasteUsingShiftInsertAndCtrlInsertEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
         {
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsDirty);
 
@@ -196,9 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsSelectAllUsingCtrlAEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsTrue(viewModel.IsSelectAllUsingCtrlAEnabled);
         }
@@ -210,9 +190,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsSelectAllUsingCtrlAEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsSelectAllUsingCtrlAEnabled);
         }
@@ -224,9 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsSelectAllUsingCtrlAEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
@@ -242,9 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         [Test]
         public void WhenIsSelectAllUsingCtrlAEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
         {
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsDirty);
 
@@ -264,9 +238,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsSelectUsingShiftArrrowEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsTrue(viewModel.IsSelectUsingShiftArrrowEnabled);
         }
@@ -278,9 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsSelectUsingShiftArrrowEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsSelectUsingShiftArrrowEnabled);
         }
@@ -292,9 +262,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsSelectUsingShiftArrrowEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
@@ -310,9 +278,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         [Test]
         public void WhenIsSelectUsingShiftArrrowEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
         {
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsDirty);
 
@@ -332,9 +298,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsQuoteConvertionOnPasteEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsTrue(viewModel.IsQuoteConvertionOnPasteEnabled);
         }
@@ -346,9 +310,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsQuoteConvertionOnPasteEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsQuoteConvertionOnPasteEnabled);
         }
@@ -360,9 +322,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsQuoteConvertionOnPasteEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
@@ -378,9 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         [Test]
         public void WhenIsQuoteConvertionOnPasteEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
         {
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsDirty);
 
@@ -400,9 +358,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsTrue(viewModel.IsScrollingUsingCtrlUpDownEnabled);
         }
@@ -414,9 +370,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsScrollingUsingCtrlUpDownEnabled);
         }
@@ -428,9 +382,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
@@ -446,9 +398,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         [Test]
         public void WhenIsScrollingUsingCtrlUpDownEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
         {
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsDirty);
 
@@ -468,9 +418,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsTrue(viewModel.IsScrollingUsingCtrlHomeEndEnabled);
         }
@@ -482,9 +430,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsScrollingUsingCtrlHomeEndEnabled);
         }
@@ -496,9 +442,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
@@ -514,9 +458,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         [Test]
         public void WhenIsScrollingUsingCtrlHomeEndEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
         {
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.IsFalse(viewModel.IsDirty);
 
@@ -538,9 +480,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.FontSizeAsDword.IntValue = TerminalSettings.DwordFromFontSize(font.Size);
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.AreEqual(font.Name, viewModel.TerminalFont.Name);
             Assert.AreEqual(font.Size, viewModel.TerminalFont.Size);
@@ -550,9 +490,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         public void WhenFontChanged_ThenChangeIsApplied()
         {
             var font = new Font(FontFamily.GenericMonospace, 24.0f);
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
@@ -566,7 +504,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             var settings = this.settingsRepository.GetSettings();
             Assert.AreEqual(font.Name, settings.FontFamily.StringValue);
             Assert.AreEqual(
-                TerminalSettings.DwordFromFontSize(font.Size), 
+                TerminalSettings.DwordFromFontSize(font.Size),
                 settings.FontSizeAsDword.IntValue);
         }
 
@@ -583,9 +521,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.ForegroundColorArgb.IntValue = color.ToArgb();
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.AreEqual(color.R, viewModel.TerminalForegroundColor.R);
             Assert.AreEqual(color.G, viewModel.TerminalForegroundColor.G);
@@ -596,9 +532,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         public void WhenForegroundColorChanged_ThenChangeIsApplied()
         {
             var color = Color.Yellow;
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
@@ -626,9 +560,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.BackgroundColorArgb.IntValue = color.ToArgb();
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             Assert.AreEqual(color.R, viewModel.TerminalBackgroundColor.R);
             Assert.AreEqual(color.G, viewModel.TerminalBackgroundColor.G);
@@ -639,9 +571,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         public void WhenBackgroundColorChanged_ThenChangeIsApplied()
         {
             var color = Color.Yellow;
-            var viewModel = new TerminalOptionsViewModel(
-                this.settingsRepository,
-                new Mock<IExceptionDialog>().Object);
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
 
             PropertyAssert.RaisesPropertyChangedNotification(
                 viewModel,
