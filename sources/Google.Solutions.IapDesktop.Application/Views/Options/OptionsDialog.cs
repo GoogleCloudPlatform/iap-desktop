@@ -40,14 +40,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             var appSettingsRepository = 
                 serviceProvider.GetService<ApplicationSettingsRepository>();
 
-            AddSheet(new GeneralOptionsControl(
+            AddSheet(new GeneralOptionsSheet(
                 appSettingsRepository,
                 serviceProvider.GetService<IAppProtocolRegistry>(),
                 serviceProvider.GetService<HelpService>()));
-            AddSheet(new NetworkOptionsControl(
+            AddSheet(new NetworkOptionsSheet(
                 appSettingsRepository,
                 serviceProvider.GetService<IHttpProxyAdapter>()));
-            AddSheet(new ScreenOptionsControl(appSettingsRepository));
+            AddSheet(new ScreenOptionsSheet(appSettingsRepository));
 
             // Load all services implementing IOptionsDialogPane and
             // add them automatically. This gives extensions a chance

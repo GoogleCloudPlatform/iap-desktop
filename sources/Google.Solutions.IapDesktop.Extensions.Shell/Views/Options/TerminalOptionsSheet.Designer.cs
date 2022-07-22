@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    partial class TerminalOptionsControl
+    partial class TerminalOptionsSheet
     {
         /// <summary> 
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TerminalOptionsControl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TerminalOptionsSheet));
             this.clipboardBox = new System.Windows.Forms.GroupBox();
             this.keyboardIcon = new System.Windows.Forms.PictureBox();
             this.convertTypographicQuotesCheckBox = new System.Windows.Forms.CheckBox();

@@ -35,11 +35,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
     [SkipCodeCoverage("UI code")]
     [Service(typeof(ISshOptionsSheet), ServiceLifetime.Transient, ServiceVisibility.Global)]
     [ServiceCategory(typeof(IPropertiesSheet))]
-    public partial class SshOptionsControl : UserControl, ISshOptionsSheet
+    public partial class SshOptionsSheet : UserControl, ISshOptionsSheet
     {
         private readonly SshOptionsViewModel viewModel;
 
-        public SshOptionsControl(
+        public SshOptionsSheet(
             SshSettingsRepository settingsRepository)
         {
             this.viewModel = new SshOptionsViewModel(settingsRepository);
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.Container);
         }
 
-        public SshOptionsControl(IServiceProvider serviceProvider)
+        public SshOptionsSheet(IServiceProvider serviceProvider)
             : this(serviceProvider.GetService<SshSettingsRepository>())
         {
         }

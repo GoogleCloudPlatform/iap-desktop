@@ -34,12 +34,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
     [SkipCodeCoverage("UI code")]
     [Service(typeof(ITerminalOptionsSheet), ServiceLifetime.Transient, ServiceVisibility.Global)]
     [ServiceCategory(typeof(IPropertiesSheet))]
-    public partial class TerminalOptionsControl : UserControl, ITerminalOptionsSheet // TODO: Rename *Control to *Sheet
+    public partial class TerminalOptionsSheet : UserControl, ITerminalOptionsSheet
     {
         private readonly TerminalOptionsViewModel viewModel;
         private readonly IExceptionDialog exceptionDialog;
 
-        public TerminalOptionsControl(
+        public TerminalOptionsSheet(
             TerminalSettingsRepository settingsRepository,
             IExceptionDialog exceptionDialog)
         {
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.Container);
         }
 
-        public TerminalOptionsControl(IServiceProvider serviceProvider)
+        public TerminalOptionsSheet(IServiceProvider serviceProvider)
             : this(
                   serviceProvider.GetService<TerminalSettingsRepository>(),
                   serviceProvider.GetService<IExceptionDialog>())

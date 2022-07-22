@@ -28,11 +28,11 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    internal partial class GeneralOptionsControl : UserControl, IPropertiesSheet
+    internal partial class GeneralOptionsSheet : UserControl, IPropertiesSheet
     {
         private readonly GeneralOptionsViewModel viewModel;
 
-        public GeneralOptionsControl(
+        public GeneralOptionsSheet(
             ApplicationSettingsRepository settingsRepository,
             IAppProtocolRegistry protocolRegistry,
             HelpService helpService)

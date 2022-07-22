@@ -29,11 +29,11 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    public partial class NetworkOptionsControl : UserControl, IPropertiesSheet
+    public partial class NetworkOptionsSheet : UserControl, IPropertiesSheet
     {
         private readonly NetworkOptionsViewModel viewModel;
 
-        public NetworkOptionsControl(
+        public NetworkOptionsSheet(
             ApplicationSettingsRepository settingsRepository,
             IHttpProxyAdapter proxyAdapter)
         {

@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    partial class NetworkOptionsControl
+    partial class NetworkOptionsSheet
     {
         /// <summary> 
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NetworkOptionsControl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NetworkOptionsSheet));
             this.proxyBox = new System.Windows.Forms.GroupBox();
             this.proxyAuthCheckBox = new System.Windows.Forms.CheckBox();
             this.linkIcon = new System.Windows.Forms.PictureBox();

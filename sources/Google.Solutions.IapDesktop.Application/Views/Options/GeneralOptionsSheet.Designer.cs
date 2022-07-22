@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    partial class GeneralOptionsControl
+    partial class GeneralOptionsSheet
     {
         /// <summary> 
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GeneralOptionsControl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GeneralOptionsSheet));
             this.updateBox = new System.Windows.Forms.GroupBox();
             this.updateIcon = new System.Windows.Forms.PictureBox();
             this.lastCheckLabel = new System.Windows.Forms.Label();
