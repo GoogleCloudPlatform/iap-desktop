@@ -30,7 +30,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    internal partial class ScreenOptionsControl : UserControl, Properties.IPropertiesSheet
+    internal partial class ScreenOptionsControl : UserControl, IPropertiesSheet
     {
         private readonly ScreenOptionsViewModel viewModel;
 

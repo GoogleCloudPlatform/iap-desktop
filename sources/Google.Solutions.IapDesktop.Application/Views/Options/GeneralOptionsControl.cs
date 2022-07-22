@@ -28,7 +28,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    internal partial class GeneralOptionsControl : UserControl, Properties.IPropertiesSheet
+    internal partial class GeneralOptionsControl : UserControl, IPropertiesSheet
     {
         private readonly GeneralOptionsViewModel viewModel;
 

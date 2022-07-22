@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Options;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Ssh.Auth;
 using System;
@@ -33,12 +34,10 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    public interface ISshOptionsDialogPane : IOptionsDialogPane
+    public interface ISshOptionsSheet : IPropertiesSheet
     { }
 
-    [Service(typeof(ISshOptionsDialogPane), ServiceLifetime.Transient, ServiceVisibility.Global)]
-    [ServiceCategory(typeof(IOptionsDialogPane))]
-    public class SshOptionsViewModel : ViewModelBase, ISshOptionsDialogPane
+    public class SshOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
     {
         private static readonly SshKeyType[] publicKeyTypes =
             Enum.GetValues(typeof(SshKeyType))
@@ -79,19 +78,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.isDirty = false;
         }
 
-
-        public SshOptionsViewModel(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<SshSettingsRepository>())
-        {
-        }
-
         //---------------------------------------------------------------------
         // IOptionsDialogPane.
         //---------------------------------------------------------------------
 
         public string Title => "SSH";
-
-        public UserControl CreateControl() => new SshOptionsControl(this);
 
         public bool IsDirty
         {
@@ -103,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             }
         }
 
-        public void ApplyChanges()
+        public DialogResult ApplyChanges()
         {
             Debug.Assert(this.IsDirty);
 
@@ -121,6 +112,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.settingsRepository.SetSettings(settings);
 
             this.IsDirty = false;
+
+            return DialogResult.OK;
         }
 
         //---------------------------------------------------------------------

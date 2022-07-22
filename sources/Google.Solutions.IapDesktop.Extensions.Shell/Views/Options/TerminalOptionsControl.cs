@@ -22,6 +22,8 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -30,16 +32,18 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    public partial class TerminalOptionsControl : UserControl
+    [Service(typeof(ITerminalOptionsSheet), ServiceLifetime.Transient, ServiceVisibility.Global)]
+    [ServiceCategory(typeof(IPropertiesSheet))]
+    public partial class TerminalOptionsControl : UserControl, ITerminalOptionsSheet // TODO: Rename *Control to *Sheet
     {
         private readonly TerminalOptionsViewModel viewModel;
         private readonly IExceptionDialog exceptionDialog;
 
         public TerminalOptionsControl(
-            TerminalOptionsViewModel viewModel,
+            TerminalSettingsRepository settingsRepository,
             IExceptionDialog exceptionDialog)
         {
-            this.viewModel = viewModel;
+            this.viewModel = new TerminalOptionsViewModel(settingsRepository);
             this.exceptionDialog = exceptionDialog;
 
             InitializeComponent();
@@ -115,6 +119,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 m => m.TerminalBackgroundColor,
                 this.Container);
         }
+
+        public TerminalOptionsControl(IServiceProvider serviceProvider)
+            : this(
+                  serviceProvider.GetService<TerminalSettingsRepository>(),
+                  serviceProvider.GetService<IExceptionDialog>())
+        {
+        }
+
+        //---------------------------------------------------------------------
+        // IPropertiesSheet.
+        //---------------------------------------------------------------------
+
+        public IPropertiesSheetViewModel ViewModel => this.viewModel;
+
+        //---------------------------------------------------------------------
+        // Events.
+        //---------------------------------------------------------------------
 
         private float PointsToPixelRatio
         {
