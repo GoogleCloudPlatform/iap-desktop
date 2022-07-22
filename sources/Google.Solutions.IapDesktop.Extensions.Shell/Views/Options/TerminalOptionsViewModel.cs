@@ -84,11 +84,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue;
             this.IsScrollingUsingCtrlHomeEndEnabled =
                 settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
-            this.terminalFont = new Font(
+            this.TerminalFont = new Font(
                 settings.FontFamily.StringValue,
                 TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
-
-            // TODO: Read color.
+            this.TerminalForegroundColor = Color.FromArgb(
+                settings.ForegroundColorArgb.IntValue);
+            this.TerminalBackgroundColor = Color.FromArgb(
+                settings.BackgroundColorArgb.IntValue);
 
             this.isDirty = false;
         }
@@ -147,8 +149,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.terminalFont.FontFamily.Name;
             settings.FontSizeAsDword.IntValue =
                 TerminalSettings.DwordFromFontSize(this.terminalFont.Size);
-
-            // TODO: Save color.
+            settings.ForegroundColorArgb.IntValue =
+                this.TerminalForegroundColor.ToArgb();
+            settings.BackgroundColorArgb.IntValue =
+                this.TerminalBackgroundColor.ToArgb();
 
             this.settingsRepository.SetSettings(settings);
 
@@ -261,21 +265,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         public float MaximumFontSize => Controls.TerminalFont.MaximumSize;
         public float MinimumFontSize => Controls.TerminalFont.MinimumSize;
 
-        public Color TerminalForegroundColor // TODO: Test color.
+        public Color TerminalForegroundColor
         {
             get => this.terminalForegroundColor;
             set
             {
+                this.IsDirty = true;
                 this.terminalForegroundColor = value;
                 RaisePropertyChange();
             }
         }
 
-        public Color TerminalBackgroundColor // TODO: Test color.
+        public Color TerminalBackgroundColor
         {
             get => this.terminalBackgroundColor;
             set
             {
+                this.IsDirty = true;
                 this.terminalBackgroundColor = value;
                 RaisePropertyChange();
             }
