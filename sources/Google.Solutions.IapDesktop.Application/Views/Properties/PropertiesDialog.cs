@@ -44,24 +44,32 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             InitializeComponent();
         }
 
-        private bool ApplyChanges()
+        private DialogResult ApplyChanges()
         {
             try
             {
-                foreach (var tab in this.Panes
-                    .Where(t => t.IsDirty))
+                foreach (var tab in this.Sheets
+                    .Where(t => t.ViewModel.IsDirty))
                 {
-                    tab.ApplyChanges();
-                    Debug.Assert(!tab.IsDirty);
+                    var result = tab.ViewModel.ApplyChanges();
+
+                    if (result == DialogResult.OK)
+                    {
+                        Debug.Assert(!tab.ViewModel.IsDirty);
+                    }
+                    else
+                    {
+                        return result;
+                    }
                 }
 
-                return true;
+                return DialogResult.OK;
             }
             catch (Exception e)
             {
                 this.serviceProvider.GetService<IExceptionDialog>()
                     .Show(this, "Applying changes failed", e);
-                return false;
+                return DialogResult.Cancel;
             }
         }
 
@@ -69,38 +77,49 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         // Publics.
         //---------------------------------------------------------------------
 
-        public IEnumerable<IPropertiesDialogPane> Panes => this.tabs.TabPages
+        public IEnumerable<IPropertiesSheet> Sheets => this.tabs.TabPages
             .Cast<TabPage>()
             .Select(tab => tab.Tag)
-            .Cast<IPropertiesDialogPane>();
+            .Cast<IPropertiesSheet>();
 
-        public void AddPane(IPropertiesDialogPane pane)
+        internal void AddSheet(UserControl sheet, IPropertiesSheet sheetInterface)
         {
+            Debug.Assert(sheet == sheetInterface);
+
+            //
             // Create control and add it to tabs.
+            //
             var tab = new TabPage();
-            var control = pane.CreateControl();
-            control.Location = new Point(0, 0);
-            control.Dock = DockStyle.Fill;
-            control.BackColor = Color.White;
-            tab.Controls.Add(control);
+            sheet.Location = new Point(0, 0);
+            sheet.Dock = DockStyle.Fill;
+            sheet.BackColor = Color.White;
+            tab.Controls.Add(sheet);
             this.tabs.TabPages.Add(tab);
 
-            tab.BindProperty(
+            tab.BindReadonlyProperty(
                 t => t.Text,
-                pane,
+                sheetInterface.ViewModel,
                 m => m.Title,
                 this.Container);
-            pane.OnPropertyChange(
+            sheetInterface.ViewModel.OnPropertyChange(
                 m => m.IsDirty,
                 _ =>
                 {
+                    //
                     // Enable the Apply button if any of the panes goes dirty.
-                    this.applyButton.Enabled = this.Panes.Any(p => p.IsDirty);
+                    //
+                    this.applyButton.Enabled = this.Sheets.Any(p => p.ViewModel.IsDirty);
                 });
 
+            //
             // Set tag so that we can access the object later.
-            tab.Tag = pane;
+            //
+            tab.Tag = sheet;
         }
+
+        internal void AddSheet<TSheet>(TSheet sheet)
+            where TSheet : UserControl, IPropertiesSheet
+            => AddSheet(sheet, sheet);
 
         //---------------------------------------------------------------------
         // Window events.
@@ -108,17 +127,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
 
         private void okButton_Click(object sender, EventArgs e)
         {
-            if (ApplyChanges())
-            {
-                this.DialogResult = DialogResult.OK;
-                Close();
-            }
+            this.DialogResult = ApplyChanges();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
-            Close();
         }
 
         private void applyButton_Click(object sender, EventArgs e)

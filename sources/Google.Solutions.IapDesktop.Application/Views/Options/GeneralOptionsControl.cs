@@ -21,18 +21,26 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    internal partial class GeneralOptionsControl : UserControl
+    internal partial class GeneralOptionsControl : UserControl, Properties.IPropertiesSheet
     {
         private readonly GeneralOptionsViewModel viewModel;
 
-        public GeneralOptionsControl(GeneralOptionsViewModel viewModel)
+        public GeneralOptionsControl(
+            ApplicationSettingsRepository settingsRepository,
+            IAppProtocolRegistry protocolRegistry,
+            HelpService helpService)
         {
-            this.viewModel = viewModel;
+            this.viewModel = new GeneralOptionsViewModel(
+                settingsRepository,
+                protocolRegistry,
+                helpService);
 
             InitializeComponent();
 
@@ -68,6 +76,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 m => m.IsBrowserIntegrationEnabled,
                 this.Container);
         }
+
+        //---------------------------------------------------------------------
+        // IPropertiesSheet.
+        //---------------------------------------------------------------------
+
+        public IPropertiesSheetViewModel ViewModel => this.viewModel;
+
+        //---------------------------------------------------------------------
+        // Events.
+        //---------------------------------------------------------------------
 
         private void browserIntegrationLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
             => this.viewModel.OpenBrowserIntegrationDocs();

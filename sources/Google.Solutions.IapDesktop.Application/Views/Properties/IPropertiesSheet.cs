@@ -24,12 +24,31 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Properties
 {
-    public interface IPropertiesDialogPane : INotifyPropertyChanged
+    public interface IPropertiesSheet
     {
+        /// <summary>
+        /// View model backing this property sheet
+        /// page.
+        /// </summary>
+        IPropertiesSheetViewModel ViewModel { get; }
+    }
+
+    public interface IPropertiesSheetViewModel : INotifyPropertyChanged
+    {
+        /// <summary>
+        /// Title of property sheet.
+        /// </summary>
         string Title { get; }
+
+        /// <summary>
+        /// True if any values on property sheet have been
+        /// changed.
+        /// </summary>
         bool IsDirty { get; }
 
-        void ApplyChanges();
-        UserControl CreateControl();
+        /// <summary>
+        /// Apply and persist changes.
+        /// </summary>
+        DialogResult ApplyChanges();
     }
 }

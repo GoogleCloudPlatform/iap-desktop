@@ -21,18 +21,25 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    public partial class NetworkOptionsControl : UserControl
+    public partial class NetworkOptionsControl : UserControl, Properties.IPropertiesSheet
     {
         private readonly NetworkOptionsViewModel viewModel;
 
-        public NetworkOptionsControl(NetworkOptionsViewModel viewModel)
+        public NetworkOptionsControl(
+            ApplicationSettingsRepository settingsRepository,
+            IHttpProxyAdapter proxyAdapter)
         {
-            this.viewModel = viewModel;
+            this.viewModel = new NetworkOptionsViewModel(
+                settingsRepository,
+                proxyAdapter);
 
             InitializeComponent();
 
@@ -154,7 +161,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         }
 
         //---------------------------------------------------------------------
-        // Window events.
+        // IPropertiesSheet.
+        //---------------------------------------------------------------------
+
+        public IPropertiesSheetViewModel ViewModel => this.viewModel;
+
+        //---------------------------------------------------------------------
+        // Events.
         //---------------------------------------------------------------------
 
         private void openProxyControlPanelAppletButton_Click(object sender, System.EventArgs e)

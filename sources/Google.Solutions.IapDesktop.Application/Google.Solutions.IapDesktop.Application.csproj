@@ -278,7 +278,7 @@
     <Compile Include="Views\ProjectPicker\ProjectPickerWindow.Designer.cs">
       <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Properties\IPropertiesDialogPane.cs" />
+    <Compile Include="Views\Properties\IPropertiesSheet.cs" />
     <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
     <Compile Include="Views\Properties\PropertiesDialog.cs">
       <SubType>Form</SubType>

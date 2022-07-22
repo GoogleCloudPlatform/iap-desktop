@@ -23,6 +23,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -32,7 +33,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    public class ScreenOptionsViewModel : ViewModelBase, IOptionsDialogPane
+    public class ScreenOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
     {
         private readonly ApplicationSettingsRepository settingsRepository;
 
@@ -65,20 +66,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.isDirty = false;
         }
 
-
-        public ScreenOptionsViewModel(IServiceProvider serviceProvider)
-            : this(
-                  serviceProvider.GetService<ApplicationSettingsRepository>())
-        {
-        }
-
         //---------------------------------------------------------------------
-        // IOptionsDialogPane.
+        // IPropertiesSheetViewModel.
         //---------------------------------------------------------------------
 
         public string Title => "Display";
-
-        public UserControl CreateControl() => new ScreenOptionsControl(this);
 
         public bool IsDirty
         {
@@ -90,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             }
         }
 
-        public void ApplyChanges()
+        public DialogResult ApplyChanges()
         {
             Debug.Assert(this.IsDirty);
 
@@ -112,6 +104,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.settingsRepository.SetSettings(settings);
 
             this.IsDirty = false;
+
+            return DialogResult.OK;
         }
 
         //---------------------------------------------------------------------
