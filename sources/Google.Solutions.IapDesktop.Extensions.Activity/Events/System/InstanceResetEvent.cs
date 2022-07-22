@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
 {
-    public class InstanceResetEvent : SystemEventBase, IInstanceStateChangeEvent
+    public class InstanceResetEvent : SystemEventBase
     {
         public const string Method = "compute.instances.reset";
 
@@ -40,13 +40,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
             return record.IsSystemEvent &&
                 record.ProtoPayload.MethodName == Method;
         }
-
-        //---------------------------------------------------------------------
-        // IInstanceStateChangeEvent.
-        //---------------------------------------------------------------------
-
-        public bool IsStartingInstance => false;
-
-        public bool IsTerminatingInstance => false;
     }
 }

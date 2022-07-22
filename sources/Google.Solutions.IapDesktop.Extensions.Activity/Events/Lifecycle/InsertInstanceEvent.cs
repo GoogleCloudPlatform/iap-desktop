@@ -26,7 +26,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class InsertInstanceEvent : InstanceOperationEventBase, IInstanceStateChangeEvent
+    public class InsertInstanceEvent : InstanceOperationEventBase
     {
         public const string Method = "v1.compute.instances.insert";
         public const string BetaMethod = "beta.compute.instances.insert";
@@ -69,14 +69,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
                 (record.ProtoPayload.MethodName == Method ||
                  record.ProtoPayload.MethodName == BetaMethod);
         }
-
-
-        //---------------------------------------------------------------------
-        // IInstanceStateChangeEvent.
-        //---------------------------------------------------------------------
-
-        public bool IsStartingInstance => !this.IsError;
-
-        public bool IsTerminatingInstance => false;
     }
 }

@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class ResetInstanceEvent : InstanceOperationEventBase, IInstanceStateChangeEvent
+    public class ResetInstanceEvent : InstanceOperationEventBase
     {
         public const string Method = "v1.compute.instances.reset";
 
@@ -42,14 +42,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
             return record.IsActivityEvent &&
                 (record.ProtoPayload.MethodName == Method);
         }
-
-        //---------------------------------------------------------------------
-        // IInstanceStateChangeEvent.
-        //---------------------------------------------------------------------
-
-        public bool IsStartingInstance => false;
-
-        public bool IsTerminatingInstance => false;
-
     }
 }

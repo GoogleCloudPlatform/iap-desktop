@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class StopInstanceEvent : InstanceOperationEventBase, IInstanceStateChangeEvent
+    public class StopInstanceEvent : InstanceOperationEventBase
     {
         public const string BetaMethod = "beta.compute.instances.stop";
         public const string Method = "v1.compute.instances.stop";
@@ -44,13 +44,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
                 (record.ProtoPayload.MethodName == BetaMethod ||
                  record.ProtoPayload.MethodName == Method);
         }
-
-        //---------------------------------------------------------------------
-        // IInstanceStateChangeEvent.
-        //---------------------------------------------------------------------
-
-        public bool IsStartingInstance => false;
-
-        public bool IsTerminatingInstance => !IsError;
     }
 }

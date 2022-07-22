@@ -139,23 +139,10 @@
     <Compile Include="Events\System\TestTerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\TestEventFactory.cs" />
     <Compile Include="Events\TestUnknownEvent.cs" />
-    <Compile Include="Services\Adapters\GcsTestData.cs" />
     <Compile Include="Services\Adapters\TestAuditLogAdapter.cs" />
     <Compile Include="Logs\TestListLogEntriesParser.cs" />
-    <Compile Include="History\TestDataPoint.cs" />
-    <Compile Include="History\TestInstanceHistoryBuilder.cs" />
     <Compile Include="Services\Adapters\TestAuditLogAdapterWithMtls.cs" />
-    <Compile Include="Services\Adapters\TestAuditLogStorageSinkAdapter.cs" />
-    <Compile Include="Services\Adapters\TestDateRange.cs" />
-    <Compile Include="Services\Adapters\TestStorageAdapter.cs" />
-    <Compile Include="Services\Adapters\TestStorageAdapterWithMtls.cs" />
-    <Compile Include="Services\Adapters\TestStorageObjectLocator.cs" />
     <Compile Include="Views\EventLog\TestEventLogViewModel.cs" />
-    <Compile Include="History\TestInstanceSetHistoryBuilder.cs" />
-    <Compile Include="History\TestInstancePlacement.cs" />
-    <Compile Include="History\TestNodeHistory.cs" />
-    <Compile Include="History\TestNodeSetHistory.cs" />
-    <Compile Include="History\TestTimeseriesUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\TestAuditLogRecord.cs" />
     <Compile Include="Logs\TestLogRecord.cs" />
@@ -186,13 +173,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="History\instance-1.json" />
-    <EmbeddedResource Include="History\instance-2.json" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="History\instance-3.json" />
-    <EmbeddedResource Include="History\instance-4.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

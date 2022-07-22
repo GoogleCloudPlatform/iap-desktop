@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class DeleteInstanceEvent : InstanceOperationEventBase, IInstanceStateChangeEvent
+    public class DeleteInstanceEvent : InstanceOperationEventBase
     {
         public const string Method = "v1.compute.instances.delete";
 
@@ -42,13 +42,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
             return record.IsActivityEvent &&
                 record.ProtoPayload.MethodName == Method;
         }
-
-        //---------------------------------------------------------------------
-        // IInstanceStateChangeEvent.
-        //---------------------------------------------------------------------
-
-        public bool IsStartingInstance => false;
-
-        public bool IsTerminatingInstance => !this.IsError;
     }
 }

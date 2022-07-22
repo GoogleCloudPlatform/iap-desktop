@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Application.Test;
+using Moq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
@@ -73,7 +74,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             };
 
             var events = new List<EventBase>();
-            var instanceBuilder = new InstanceSetHistoryBuilder(startDate, endDate);
 
             // Creating the VM might be quicker than the logs become available.
             for (int retry = 0; retry < 4 && !events.Any(); retry++)
@@ -101,63 +101,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceCreated_ThenProcessInstanceEventsAsyncCanFeedHistorySetBuilder(
-            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Roles = new[] {
-                PredefinedRole.ComputeViewer,
-                PredefinedRole.LogsViewer })] ResourceTask<ICredential> credential)
-        {
-            await testInstance;
-            var instanceRef = await testInstance;
-
-            var instanceBuilder = new InstanceSetHistoryBuilder(
-                DateTime.UtcNow.AddDays(-7),
-                DateTime.UtcNow);
-
-            var computeAdapter = new ComputeEngineAdapter(await credential);
-            instanceBuilder.AddExistingInstances(
-                await computeAdapter.ListInstancesAsync(
-                        TestProject.ProjectId,
-                        CancellationToken.None)
-                    .ConfigureAwait(false),
-                await computeAdapter.ListNodesAsync
-                        (TestProject.ProjectId,
-                        CancellationToken.None)
-                    .ConfigureAwait(false),
-                await computeAdapter.ListDisksAsync(
-                        TestProject.ProjectId,
-                        CancellationToken.None)
-                    .ConfigureAwait(false),
-                TestProject.ProjectId);
-
-            var adapter = new AuditLogAdapter(await credential);
-
-            await adapter.ProcessInstanceEventsAsync(
-                    new[] { TestProject.ProjectId },
-                    null,  // all zones.
-                    null,  // all instances.
-                    instanceBuilder.StartDate,
-                    instanceBuilder,
-                    CancellationToken.None)
-                .ConfigureAwait(false);
-
-            var set = instanceBuilder.Build();
-            var testInstanceHistory = set.Instances.FirstOrDefault(i => i.Reference == instanceRef);
-
-            Assert.IsNotNull(testInstanceHistory, "Instance found in history");
-        }
-
-        [Test]
         public async Task WhenUserNotInRole_ThenProcessInstanceEventsAsyncThrowsResourceAccessDeniedException(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             await testInstance;
             var instanceRef = await testInstance;
-
-            var instanceBuilder = new InstanceSetHistoryBuilder(
-                DateTime.UtcNow.AddDays(-7),
-                DateTime.UtcNow);
 
             var adapter = new AuditLogAdapter(await credential);
 
@@ -166,8 +115,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                     new[] { TestProject.ProjectId },
                     null,  // all zones.
                     null,  // all instances.
-                    instanceBuilder.StartDate,
-                    instanceBuilder,
+                    DateTime.UtcNow.AddDays(-1),
+                    new Mock<IEventProcessor>().Object,
                     CancellationToken.None).Wait());
         }
 
@@ -284,36 +233,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 "AND resource.type=(\"gce_instance\" OR \"gce_project\" OR \"audited_resource\") " +
                 "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
-        }
-
-        //---------------------------------------------------------------------
-        // ListCloudStorageSinksAsync.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenUserNotInRole_ThenListCloudStorageSinksAsyncThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
-        {
-            var adapter = new AuditLogAdapter(await credential);
-
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ListCloudStorageSinksAsync(
-                    TestProject.ProjectId,
-                    CancellationToken.None).Wait());
-        }
-
-        [Test]
-        public async Task WhenSinkExists_ThenListCloudStorageSinksAsyncReturnsList(
-            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
-        {
-            var adapter = new AuditLogAdapter(await credential);
-
-            var buckets = await adapter.ListCloudStorageSinksAsync(
-                    TestProject.ProjectId,
-                    CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.IsNotNull(buckets);
         }
     }
 }
