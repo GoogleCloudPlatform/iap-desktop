@@ -150,15 +150,9 @@
     <Compile Include="Services\Adapters\TestStorageAdapter.cs" />
     <Compile Include="Services\Adapters\TestStorageAdapterWithMtls.cs" />
     <Compile Include="Services\Adapters\TestStorageObjectLocator.cs" />
-    <Compile Include="Services\UsageReport\TestNodeAnnotation.cs" />
-    <Compile Include="Services\UsageReport\TestReportBuilderSources.cs" />
     <Compile Include="Views\EventLog\TestEventLogViewModel.cs" />
-    <Compile Include="Services\UsageReport\TestReportBuilderLicenseAnnotations.cs" />
-    <Compile Include="Services\UsageReport\TestImageAnnotation.cs" />
-    <Compile Include="Services\UsageReport\TestReportArchive.cs" />
     <Compile Include="History\TestInstanceSetHistoryBuilder.cs" />
     <Compile Include="History\TestInstancePlacement.cs" />
-    <Compile Include="Services\UsageReport\TestLicenseLoader.cs" />
     <Compile Include="History\TestNodeHistory.cs" />
     <Compile Include="History\TestNodeSetHistory.cs" />
     <Compile Include="History\TestTimeseriesUtil.cs" />

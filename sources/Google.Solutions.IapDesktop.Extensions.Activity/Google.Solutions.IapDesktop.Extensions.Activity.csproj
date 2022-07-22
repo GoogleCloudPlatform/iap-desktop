@@ -172,14 +172,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Extension.cs" />
-    <Compile Include="Services\UsageReport\ImageAnnotation.cs" />
     <Compile Include="History\InstanceHistory.cs" />
     <Compile Include="History\InstanceHistoryBuilder.cs" />
     <Compile Include="History\InstanceSetHistory.cs" />
     <Compile Include="History\InstanceSetHistoryBuilder.cs" />
-    <Compile Include="Services\UsageReport\NodeAnnotation.cs" />
-    <Compile Include="Services\UsageReport\ReportArchive.cs" />
-    <Compile Include="Services\UsageReport\LicenseLoader.cs" />
     <Compile Include="History\NodePlacement.cs" />
     <Compile Include="History\NodeSetHistory.cs" />
     <Compile Include="History\InstancePlacement.cs" />
@@ -188,7 +184,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\AuditLogRecord.cs" />
     <Compile Include="Logs\LogRecord.cs" />
-    <Compile Include="Services\UsageReport\ReportBuilder.cs" />
     <Compile Include="Views\SerialOutput\XtermReader.cs" />
     <Compile Include="Views\SerialOutput\SerialOutputModel.cs" />
     <Compile Include="Views\SerialOutput\SerialOutputViewModel.cs" />
