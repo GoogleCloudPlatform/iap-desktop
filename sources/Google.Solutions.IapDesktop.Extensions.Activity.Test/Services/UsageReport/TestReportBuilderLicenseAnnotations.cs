@@ -35,7 +35,7 @@ using Google.Solutions.Testing.Application.Test;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageReport
 {
     [TestFixture]
-    [Category("IntegrationTest")]
+    [UsesCloudResources]
     public class TestReportBuilderLicenseAnnotations : ApplicationFixtureBase
     {
         [Test]

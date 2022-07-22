@@ -91,6 +91,7 @@ namespace Google.Solutions.Testing.Common.Integration
                 var fingerprint = CreateSpecificationFingerprint();
                 return new[] {
                     ResourceTask<InstanceLocator>.ProvisionOnce(
+                        parameter.Method,
                         fingerprint,
                         () => InstanceFactory.CreateOrStartInstanceAsync(
                             fingerprint,

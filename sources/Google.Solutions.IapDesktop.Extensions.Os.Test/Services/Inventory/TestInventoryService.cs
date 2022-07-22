@@ -34,7 +34,7 @@ using Google.Solutions.Testing.Application.Test;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
 {
     [TestFixture]
-    [Category("IntegrationTest")]
+    [UsesCloudResources]
     public class TestInventoryService : ApplicationFixtureBase
     {
         // Publish dummy OS inventory data. The real data is published asynchronously,

@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System.Text;
 
 namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
+    [UsesCloudResources]
     public class TestStreamingDecoder : SshFixtureBase
     {
         private StreamingDecoder decoder;

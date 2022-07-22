@@ -53,6 +53,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {
     [TestFixture]
+    [UsesCloudResources]
     [Apartment(ApartmentState.STA)]
     public class TestSshTerminalPaneViewModel : ShellFixtureBase
     {

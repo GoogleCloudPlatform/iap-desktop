@@ -34,8 +34,7 @@ using Google.Solutions.Testing.Common;
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("IAP")]
+    [UsesCloudResources]
     public class TestHttpOverIapDirectTunnel : TestHttpOverIapTunnelBase
     {
         protected override INetworkStream ConnectToWebServer(

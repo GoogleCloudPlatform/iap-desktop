@@ -37,7 +37,7 @@ using Google.Solutions.Testing.Common;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
 {
     [TestFixture]
-    [Category("IntegrationTest")]
+    [UsesCloudResources]
     public class TestTunnelService : ShellFixtureBase
     {
         private IAuthorizationSource CreateAuthorizationSourceMock(

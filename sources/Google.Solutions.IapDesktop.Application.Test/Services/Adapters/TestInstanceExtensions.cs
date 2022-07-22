@@ -31,7 +31,7 @@ using Google.Solutions.Testing.Application.Test;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
     [TestFixture]
-    [Category("IntegrationTest")]
+    [UsesCloudResources]
     public class TestInstanceExtensions : ApplicationFixtureBase
     {
         [Test]

@@ -36,7 +36,7 @@ using Google.Solutions.Testing.Application.Test;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
 {
     [TestFixture]
-    [Category("IntegrationTest")]
+    [UsesCloudResources]
     public class TestSerialOutputModel : ApplicationFixtureBase
     {
         public const ushort ConsolePort = 1;

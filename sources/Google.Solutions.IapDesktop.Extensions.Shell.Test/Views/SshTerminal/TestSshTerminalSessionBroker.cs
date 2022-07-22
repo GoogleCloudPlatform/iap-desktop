@@ -46,6 +46,7 @@ using Google.Solutions.Testing.Application.Views;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {
     [TestFixture]
+    [UsesCloudResources]
     public class TestSshTerminalSessionBroker : WindowTestFixtureBase
     {
         [SetUp]

@@ -36,6 +36,7 @@ using Google.Solutions.Testing.Common;
 namespace Google.Solutions.Ssh.Test
 {
     [TestFixture]
+    [UsesCloudResources]
     public class TestRemoteShellChannel : SshFixtureBase
     {
         private class BufferingTerminal : ITextTerminal

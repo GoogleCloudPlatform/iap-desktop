@@ -19,30 +19,27 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
-using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
+using System;
 
-namespace Google.Solutions.IapTunneling.Test.Iap
+namespace Google.Solutions.Testing.Common.Integration
 {
-    [TestFixture]
-    [UsesCloudResources]
-    public class TestEchoOverIapDirectTunnel : TestEchoOverIapBase
+    /// <summary>
+    /// Annotation for test fixtures that use cloud resources
+    /// such as VM instances.
+    /// </summary>
+    public class UsesCloudResourcesAttribute : CategoryAttribute
     {
-        protected override INetworkStream ConnectToEchoServer(
-            InstanceLocator vmRef,
-            ICredential credential)
+        public UsesCloudResourcesAttribute() : base("CloudIntegrationTest")
         {
-            return new FragmentingStream(new SshRelayStream(
-                new IapTunnelingEndpoint(
-                    credential,
-                    vmRef,
-                    7,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
-                    TestProject.UserAgent)));
+        }
+    }
+
+    public class MissingTestAnnotationException : Exception
+    {
+        public MissingTestAnnotationException(string message) 
+            : base(message)
+        {
         }
     }
 }

@@ -37,8 +37,7 @@ using Google.Solutions.Testing.Application.Views;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("IAP")]
+    [UsesCloudResources]
     public class TestRemoteDesktopWithServerSideGroupPolicies : WindowTestFixtureBase
     {
         private async Task<InstanceConnectionSettings> CreateSettingsAsync(

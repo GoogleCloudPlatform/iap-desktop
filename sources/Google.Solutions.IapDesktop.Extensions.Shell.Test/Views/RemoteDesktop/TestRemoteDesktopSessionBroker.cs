@@ -37,6 +37,7 @@ using Google.Solutions.Testing.Application.Views;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 {
     [TestFixture]
+    [UsesCloudResources]
     public class TestRemoteDesktopSessionBroker : WindowTestFixtureBase
     {
         // Use a larger machine type as all this RDP'ing consumes a fair

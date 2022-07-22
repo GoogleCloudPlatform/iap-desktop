@@ -35,8 +35,7 @@ using Google.Solutions.Testing.Application.Test;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("Windows")]
+    [UsesCloudResources]
     public class TestWindowsCredentialAdapter : ApplicationFixtureBase
     {
         [Test]

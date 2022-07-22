@@ -38,8 +38,7 @@ using Google.Solutions.Testing.Application.Mocks;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("SecureConnect")]
+    [UsesCloudResources]
     public class TestTunnelServiceWithMtls : ShellFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";

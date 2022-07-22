@@ -41,7 +41,7 @@ using Google.Solutions.Testing.Application.Test;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
-    [Category("IntegrationTest")]
+    [UsesCloudResources]
     public class TestAuditLogStorageSinkAdapter : ApplicationFixtureBase
     {
         private static readonly StorageObjectLocator GarbageLocator = new StorageObjectLocator(

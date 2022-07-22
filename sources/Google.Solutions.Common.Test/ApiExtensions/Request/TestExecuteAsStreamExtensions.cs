@@ -31,9 +31,8 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Test.Extensions
 {
-
     [TestFixture]
-    [Category("IntegrationTest")]
+    [UsesCloudResources]
     public class TestExecuteAsStreamExtensions : CommonFixtureBase
     {
         [Test]

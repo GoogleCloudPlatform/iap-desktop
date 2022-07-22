@@ -32,8 +32,7 @@ using System.Threading;
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("IAP")]
+    [UsesCloudResources]
     public class TestEchoOverIapIndirectTunnel : TestEchoOverIapBase
     {
         protected override INetworkStream ConnectToEchoServer(

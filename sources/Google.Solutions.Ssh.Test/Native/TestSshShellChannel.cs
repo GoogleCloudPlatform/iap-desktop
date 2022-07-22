@@ -33,6 +33,7 @@ namespace Google.Solutions.Ssh.Test.Native
 {
 
     [TestFixture]
+    [UsesCloudResources]
     public class TestSshShellChannel : SshFixtureBase
     {
         private const string DefaultTerminal = "vanilla";
