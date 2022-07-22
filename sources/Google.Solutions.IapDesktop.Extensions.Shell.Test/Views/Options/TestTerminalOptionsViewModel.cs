@@ -81,10 +81,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(this.settingsRepository)
-            {
-                IsCopyPasteUsingCtrlCAndCtrlVEnabled = false
-            };
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            PropertyAssert.RaisesPropertyChangedNotification(
+                viewModel,
+                () => viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled = false,
+                v => v.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
+            
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
@@ -139,10 +142,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(this.settingsRepository)
-            {
-                IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled = false
-            };
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            PropertyAssert.RaisesPropertyChangedNotification(
+                viewModel,
+                () => viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled = false,
+                v => v.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled);
+
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
@@ -196,10 +202,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsSelectAllUsingCtrlAEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(this.settingsRepository)
-            {
-                IsSelectAllUsingCtrlAEnabled = false
-            };
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            PropertyAssert.RaisesPropertyChangedNotification(
+                viewModel,
+                () => viewModel.IsSelectAllUsingCtrlAEnabled = false,
+                v => v.IsSelectAllUsingCtrlAEnabled);
+
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
@@ -253,10 +262,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsSelectUsingShiftArrrowEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(this.settingsRepository)
-            {
-                IsSelectUsingShiftArrrowEnabled = false
-            };
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            PropertyAssert.RaisesPropertyChangedNotification(
+                viewModel,
+                () => viewModel.IsSelectUsingShiftArrrowEnabled = false,
+                v => v.IsSelectUsingShiftArrrowEnabled);
+
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
@@ -310,10 +322,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsQuoteConvertionOnPasteEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(this.settingsRepository)
-            {
-                IsQuoteConvertionOnPasteEnabled = false
-            };
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            PropertyAssert.RaisesPropertyChangedNotification(
+                viewModel,
+                () => viewModel.IsQuoteConvertionOnPasteEnabled = false,
+                v => v.IsQuoteConvertionOnPasteEnabled);
+
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
@@ -367,10 +382,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(this.settingsRepository)
-            {
-                IsScrollingUsingCtrlUpDownEnabled = false
-            };
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            PropertyAssert.RaisesPropertyChangedNotification(
+                viewModel,
+                () => viewModel.IsScrollingUsingCtrlUpDownEnabled = false,
+                v => v.IsScrollingUsingCtrlUpDownEnabled);
+
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
@@ -424,10 +442,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModel = new TerminalOptionsViewModel(this.settingsRepository)
-            {
-                IsScrollingUsingCtrlHomeEndEnabled = false
-            };
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            PropertyAssert.RaisesPropertyChangedNotification(
+                viewModel,
+                () => viewModel.IsScrollingUsingCtrlHomeEndEnabled = false,
+                v => v.IsScrollingUsingCtrlHomeEndEnabled);
+
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
