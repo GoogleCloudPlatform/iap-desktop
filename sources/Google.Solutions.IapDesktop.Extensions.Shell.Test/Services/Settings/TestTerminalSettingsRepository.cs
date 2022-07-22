@@ -64,8 +64,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
                 TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
             Assert.AreEqual(
                 TerminalSettings.DefaultBackgroundColor.ToArgb(),
-                settings.BackgroundColorArgb);
-            Assert.AreEqual(Color.White.ToArgb(), settings.ForegroundColorArgb);
+                settings.BackgroundColorArgb.IntValue);
+            Assert.AreEqual(
+                Color.White.ToArgb(), 
+                settings.ForegroundColorArgb.IntValue);
         }
 
         [Test]
