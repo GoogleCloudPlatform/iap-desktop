@@ -281,12 +281,6 @@
           Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Logging.v2.dll"
           Vital="yes"/>
         <File
-          Id="FileGoogleApisStorageV1Dll"
-          Name="Google.Apis.Storage.v1.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Apis.Storage.v1.dll"
-          Vital="yes"/>
-        <File
           Id="FileGoogleApisCoreDll"
           Name="Google.Apis.Core.dll"
           DiskId="1"
