@@ -57,7 +57,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.deleteToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -181,7 +180,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         private System.Windows.Forms.Label infoLabel;
         private System.Windows.Forms.PictureBox infoIcon;
         private System.Windows.Forms.ToolStrip toolStrip;
-        private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
         private System.Windows.Forms.ToolStripButton refreshToolStripButton;
         private System.Windows.Forms.ToolStripButton deleteToolStripButton;
     }

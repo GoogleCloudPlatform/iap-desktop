@@ -56,6 +56,7 @@ namespace Google.Solutions.IapDesktop.Windows
     {
         private readonly MainFormViewModel viewModel;
 
+        private readonly IThemeService themeService;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly IServiceProvider serviceProvider;
         private IIapUrlHandler urlHandler;
@@ -68,6 +69,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.serviceProvider = serviceProvider;
 
+            this.themeService = this.serviceProvider.GetService<IThemeService>();
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
 
             // 
@@ -91,6 +93,14 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 InitializeComponent();
             }
+
+            SuspendLayout();
+
+            this.themeService.ApplyTheme(this.dockPanel);
+            this.themeService.ApplyTheme(this.mainMenu);
+            this.themeService.ApplyTheme(this.statusStrip);
+
+            ResumeLayout();
 
             // Set fixed size for the left/right panels (in pixels).
             this.dockPanel.DockLeftPortion =
@@ -135,10 +145,10 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.viewModel = new MainFormViewModel(
                 this,
-                this.vs2015LightTheme.ColorPalette,
                 bootstrappingServiceProvider.GetService<Profile>(),
                 bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
-                bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
+                bootstrappingServiceProvider.GetService<AuthSettingsRepository>(),
+                themeService);
 
             this.BindProperty(
                 c => c.Text,
@@ -347,23 +357,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 }
             }
 
-            // 
-            // Set up sub-windows.
-            //
-            SuspendLayout();
-
-            this.dockPanel.Theme = this.vs2015LightTheme;
-            this.vsToolStripExtender.SetStyle(
-                this.mainMenu,
-                VisualStudioToolStripExtender.VsVersion.Vs2015,
-                this.vs2015LightTheme);
-            this.vsToolStripExtender.SetStyle(
-                this.statusStrip,
-                VisualStudioToolStripExtender.VsVersion.Vs2015,
-                this.vs2015LightTheme);
-
-            ResumeLayout();
-
             if (this.StartupUrl != null)
             {
                 // Dispatch URL.
@@ -492,6 +485,10 @@ namespace Google.Solutions.IapDesktop.Windows
                 "Track window focus",
                 _ => CommandState.Enabled,
                 _ => this.serviceProvider.GetService<DebugFocusWindow>().ShowWindow()));
+            debugCommand.AddCommand(new Command<IMainForm>(
+                "Theme",
+                _ => CommandState.Enabled,
+                _ => this.serviceProvider.GetService<DebugThemeWindow>().ShowWindow()));
 #endif
         }
 

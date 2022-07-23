@@ -236,8 +236,8 @@ namespace Google.Solutions.IapDesktop
             // Set up layers. Services in a layer can lookup services in a lower layer,
             // but not in a higher layer.
             //
-            var persistenceLayer = new ServiceRegistry();
-            var adapterLayer = new ServiceRegistry(persistenceLayer);
+            var baseLayer = new ServiceRegistry();
+            var adapterLayer = new ServiceRegistry(baseLayer);
             var integrationLayer = new ServiceRegistry(adapterLayer);
             var windowAndWorkflowLayer = new ServiceRegistry(integrationLayer);
 
@@ -246,11 +246,12 @@ namespace Google.Solutions.IapDesktop
             //
             using (var profile = LoadProfileOrExit(this.commandLineOptions))
             {
-                persistenceLayer.AddSingleton(profile);
+                baseLayer.AddSingleton(profile);
 
-                persistenceLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
-                persistenceLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
-                persistenceLayer.AddTransient<ITaskDialog, TaskDialog>();
+                baseLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
+                baseLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
+                baseLayer.AddTransient<ITaskDialog, TaskDialog>();
+                baseLayer.AddSingleton<IThemeService, ThemeService>();
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
@@ -265,15 +266,15 @@ namespace Google.Solutions.IapDesktop
                     Globals.UserAgent.Extensions = "Enterprise";
                 }
 
-                persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
-                persistenceLayer.AddSingleton(appSettingsRepository);
-                persistenceLayer.AddSingleton(new ToolWindowStateRepository(
+                baseLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
+                baseLayer.AddSingleton(appSettingsRepository);
+                baseLayer.AddSingleton(new ToolWindowStateRepository(
                     profile.SettingsKey.CreateSubKey("ToolWindows")));
-                persistenceLayer.AddSingleton(new AuthSettingsRepository(
+                baseLayer.AddSingleton(new AuthSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Auth"),
                     SignInAdapter.StoreUserId));
 
-                var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
+                var mainForm = new MainForm(baseLayer, windowAndWorkflowLayer)
                 {
                     StartupUrl = this.commandLineOptions.StartupUrl
                 };
@@ -331,6 +332,7 @@ namespace Google.Solutions.IapDesktop
                 windowAndWorkflowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
                 windowAndWorkflowLayer.AddSingleton<DebugFullScreenPane>();
                 windowAndWorkflowLayer.AddSingleton<DebugFocusWindow>();
+                windowAndWorkflowLayer.AddTransient<DebugThemeWindow>();
 #endif
                 //
                 // Extension layer.

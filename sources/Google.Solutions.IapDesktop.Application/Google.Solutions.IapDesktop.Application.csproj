@@ -166,6 +166,7 @@
     <Compile Include="Services\Settings\ProjectRepository.cs" />
     <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
     <Compile Include="Services\Settings\ToolWindowStateRepository.cs" />
+    <Compile Include="Services\ThemeService.cs" />
     <Compile Include="Settings\ISetting.cs" />
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
@@ -208,6 +209,12 @@
     </Compile>
     <Compile Include="Views\Diagnostics\DebugFocusWindow.Designer.cs">
       <DependentUpon>DebugFocusWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugThemeWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugThemeWindow.Designer.cs">
+      <DependentUpon>DebugThemeWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialog\ConfirmationDialog.cs" />
     <Compile Include="Views\Diagnostics\DebugDockingWindow.cs">
@@ -396,6 +403,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugJobServiceWindow.resx">
       <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugThemeWindow.resx">
+      <DependentUpon>DebugThemeWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FlyoutWindow.resx">
       <DependentUpon>FlyoutWindow.cs</DependentUpon>

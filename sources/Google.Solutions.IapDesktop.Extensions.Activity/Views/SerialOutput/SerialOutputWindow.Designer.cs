@@ -50,7 +50,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SerialOutputWindow));
-            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.enableTailButton = new System.Windows.Forms.ToolStripButton();
             this.output = new System.Windows.Forms.TextBox();
@@ -108,8 +107,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
         }
 
         #endregion
-
-        private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.TextBox output;
         private System.Windows.Forms.ToolStripButton enableTailButton;
