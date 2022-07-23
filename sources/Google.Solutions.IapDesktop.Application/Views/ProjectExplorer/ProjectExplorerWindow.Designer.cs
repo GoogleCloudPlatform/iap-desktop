@@ -60,8 +60,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.windowsInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.linuxInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
-            this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.treeView = new Google.Solutions.IapDesktop.Application.Views.ProjectExplorer.ProjectExplorerWindow.NodeTreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -143,10 +141,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // 
             this.vmToolStripSeparator.Name = "vmToolStripSeparator";
             this.vmToolStripSeparator.Size = new System.Drawing.Size(6, 25);
-            // 
-            // vsToolStripExtender
-            // 
-            this.vsToolStripExtender.DefaultRenderer = null;
             // 
             // treeView
             // 
@@ -246,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.searchTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.searchTextBox.Location = new System.Drawing.Point(0, 28);
             this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.Size = new System.Drawing.Size(800, 22);
+            this.searchTextBox.Size = new System.Drawing.Size(800, 20);
             this.searchTextBox.TabIndex = 1;
             // 
             // progressBar
@@ -263,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // 
             // ProjectExplorerWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.searchTextBox);
@@ -285,8 +279,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         #endregion
 
         private System.Windows.Forms.ToolStrip toolStrip;
-        private WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender vsToolStripExtender;
-        private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme vs2015LightTheme;
         private System.Windows.Forms.ToolStripButton refreshButton;
         private System.Windows.Forms.ToolStripButton addButton;
         private NodeTreeView treeView;

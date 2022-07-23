@@ -51,7 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EventLogWindow));
-            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -147,21 +146,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             // 
             this.includeLifecycleEventsButton.CheckOnClick = true;
             this.includeLifecycleEventsButton.Name = "includeLifecycleEventsButton";
-            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(175, 22);
             this.includeLifecycleEventsButton.Text = "VM lifecycle events";
             // 
             // includeSystemEventsButton
             // 
             this.includeSystemEventsButton.CheckOnClick = true;
             this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(175, 22);
             this.includeSystemEventsButton.Text = "VM system events";
             // 
             // includeAccessEventsButton
             // 
             this.includeAccessEventsButton.CheckOnClick = true;
             this.includeAccessEventsButton.Name = "includeAccessEventsButton";
-            this.includeAccessEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeAccessEventsButton.Size = new System.Drawing.Size(175, 22);
             this.includeAccessEventsButton.Text = "VM access events";
             // 
             // timeFrameComboBox
@@ -272,7 +271,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
 
         #endregion
         private System.Windows.Forms.ToolStrip toolStrip;
-        private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
         private System.Windows.Forms.ToolStripButton refreshButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripDropDownButton lifecycleEventsDropDown;

@@ -67,7 +67,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.protocolHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.disconnectTunnelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.toolStrip.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -217,7 +216,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
         private System.Windows.Forms.ColumnHeader localPortHeader;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem disconnectTunnelToolStripMenuItem;
-        private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
         private System.Windows.Forms.ColumnHeader transmittedHeader;
         private System.Windows.Forms.ColumnHeader receivedHeader;
         private System.Windows.Forms.ToolStripButton refreshToolStripButton;

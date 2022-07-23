@@ -17,10 +17,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
     public class ThemeService : IThemeService
     {
-        private readonly ThemeBase theme = new VS2015DarkTheme();
-        private readonly VisualStudioToolStripExtender toolStripExtender
-            = new VisualStudioToolStripExtender();
-
+        private readonly ThemeBase theme = new VS2015LightTheme();
 
         //---------------------------------------------------------------------
         // IThemeService.
@@ -35,10 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
         public void ApplyTheme(ToolStrip toolStrip)
         {
-            this.toolStripExtender.SetStyle(
-                toolStrip,
-                VisualStudioToolStripExtender.VsVersion.Vs2015,
-                this.theme);
+            this.theme.ApplyTo(toolStrip);
         }
     }
 }

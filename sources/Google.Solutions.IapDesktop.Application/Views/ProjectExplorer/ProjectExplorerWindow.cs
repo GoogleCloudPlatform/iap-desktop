@@ -26,6 +26,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Properties;
+using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -77,10 +78,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             this.HideOnClose = true;
 
-            this.vsToolStripExtender.SetStyle(
-                this.toolStrip,
-                VisualStudioToolStripExtender.VsVersion.Vs2015,
-                this.vs2015LightTheme);
+            serviceProvider
+                .GetService<IThemeService>()
+                .ApplyTheme(this.toolStrip);
 
             this.mainForm = serviceProvider.GetService<IMainForm>();
             this.jobService = serviceProvider.GetService<IJobService>();

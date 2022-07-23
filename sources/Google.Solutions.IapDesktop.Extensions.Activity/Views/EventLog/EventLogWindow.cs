@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
@@ -46,7 +47,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         {
             InitializeComponent();
 
-            this.theme.ApplyTo(this.toolStrip);
+            serviceProvider
+                .GetService<IThemeService>()
+                .ApplyTheme(this.toolStrip);
 
             this.viewModel = new EventLogViewModel(this, serviceProvider);
 

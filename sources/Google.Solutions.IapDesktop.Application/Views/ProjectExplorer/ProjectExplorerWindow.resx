@@ -147,12 +147,6 @@
         GmBgAABnEjQVGJhjVAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <metadata name="vsToolStripExtender.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>115, 17</value>
-  </metadata>
-  <metadata name="vs2015LightTheme.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>329, 17</value>
-  </metadata>
   <metadata name="contextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>586, 17</value>
   </metadata>
@@ -164,7 +158,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADG
-        CwAAAk1TRnQBSQFMAgEBCQEAARgBAgEYAQIBEAEAARABAAT/ARkBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        CwAAAk1TRnQBSQFMAgEBCQEAASABAgEgAQIBEAEAARABAAT/ARkBAAj/AUIBTQE2BwABNgMAASgDAAFA
         AwABMAMAAQEBAAEYBgABJBIAMP+QAA//AfQBhQFCAfQBhQFCAfQBhQFCAfQBhQFCAfQBhQFCAfQBhQFC
         AfQBhQFCAfQBhQFCAfQBhQFCAfQBhQFCA/+QAAP/CX4D/wH0AYUBQhj/AfQBhQFCA/+QAAP/CX4D/wH0
         AYUBQgP/AfQBhQFCAfQBhQFCAfQBhQFCDP8B9AGFAUID/5AAA/8DfgPAA34D/wH0AYUBQhj/AfQBhQFC

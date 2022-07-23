@@ -94,7 +94,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 InitializeComponent();
             }
 
-
             SuspendLayout();
 
             this.themeService.ApplyTheme(this.dockPanel);

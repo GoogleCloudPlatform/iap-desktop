@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
@@ -44,7 +45,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
-            this.theme.ApplyTo(this.toolStrip);
+
+            serviceProvider
+                .GetService<IThemeService>()
+                .ApplyTheme(this.toolStrip);
 
             this.viewModel = new SerialOutputViewModel(serviceProvider, serialPortNumber);
 
