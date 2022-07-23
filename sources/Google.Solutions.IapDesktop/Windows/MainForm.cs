@@ -94,6 +94,15 @@ namespace Google.Solutions.IapDesktop.Windows
                 InitializeComponent();
             }
 
+
+            SuspendLayout();
+
+            this.themeService.ApplyTheme(this.dockPanel);
+            this.themeService.ApplyTheme(this.mainMenu);
+            this.themeService.ApplyTheme(this.statusStrip);
+
+            ResumeLayout();
+
             // Set fixed size for the left/right panels (in pixels).
             this.dockPanel.DockLeftPortion =
                 this.dockPanel.DockRightPortion = 300.0f;
@@ -348,17 +357,6 @@ namespace Google.Solutions.IapDesktop.Windows
                     return;
                 }
             }
-
-            // 
-            // Set up sub-windows.
-            //
-            SuspendLayout();
-
-            this.themeService.ApplyTheme(this.dockPanel);   // TODO: Move to ctor?
-            this.themeService.ApplyTheme(this.mainMenu);
-            this.themeService.ApplyTheme(this.statusStrip);
-
-            ResumeLayout();
 
             if (this.StartupUrl != null)
             {
