@@ -56,6 +56,7 @@ namespace Google.Solutions.IapDesktop.Windows
     {
         private readonly MainFormViewModel viewModel;
 
+        private readonly IThemeService themeService;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly IServiceProvider serviceProvider;
         private IIapUrlHandler urlHandler;
@@ -68,6 +69,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.serviceProvider = serviceProvider;
 
+            this.themeService = this.serviceProvider.GetService<IThemeService>();
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
 
             // 
@@ -135,10 +137,10 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.viewModel = new MainFormViewModel(
                 this,
-                this.vs2015LightTheme.ColorPalette,
                 bootstrappingServiceProvider.GetService<Profile>(),
                 bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
-                bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
+                bootstrappingServiceProvider.GetService<AuthSettingsRepository>(),
+                themeService);
 
             this.BindProperty(
                 c => c.Text,
@@ -352,15 +354,9 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             SuspendLayout();
 
-            this.dockPanel.Theme = this.vs2015LightTheme;
-            this.vsToolStripExtender.SetStyle(
-                this.mainMenu,
-                VisualStudioToolStripExtender.VsVersion.Vs2015,
-                this.vs2015LightTheme);
-            this.vsToolStripExtender.SetStyle(
-                this.statusStrip,
-                VisualStudioToolStripExtender.VsVersion.Vs2015,
-                this.vs2015LightTheme);
+            this.themeService.ApplyTheme(this.dockPanel);   // TODO: Move to ctor?
+            this.themeService.ApplyTheme(this.mainMenu);
+            this.themeService.ApplyTheme(this.statusStrip);
 
             ResumeLayout();
 

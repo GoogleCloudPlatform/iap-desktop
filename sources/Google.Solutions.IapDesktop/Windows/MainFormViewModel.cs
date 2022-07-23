@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -48,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Windows
 {
     internal class MainFormViewModel : ViewModelBase
     {
-        private readonly DockPanelColorPalette colorPalette;
+        private readonly IThemeService themeService;
         private readonly AuthSettingsRepository authSettings;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly Profile profile;
@@ -66,13 +67,13 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public MainFormViewModel(
             Control view,
-            DockPanelColorPalette colorPalette,
             Profile profile,
             ApplicationSettingsRepository applicationSettings,
-            AuthSettingsRepository authSettings)
+            AuthSettingsRepository authSettings,
+            IThemeService themeService)
         {
             this.View = view;
-            this.colorPalette = colorPalette;
+            this.themeService = themeService;
             
             this.profile = profile
                 .ThrowIfNull(nameof(profile));
@@ -112,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             get => this.IsLoggingEnabled
                 ? Color.Red
-                : this.colorPalette.ToolWindowCaptionActive.Background;
+                : this.themeService.ColorPalette.ToolWindowCaptionActive.Background;
         }
 
         public string StatusText
