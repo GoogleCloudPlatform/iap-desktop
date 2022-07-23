@@ -332,6 +332,7 @@ namespace Google.Solutions.IapDesktop
                 windowAndWorkflowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
                 windowAndWorkflowLayer.AddSingleton<DebugFullScreenPane>();
                 windowAndWorkflowLayer.AddSingleton<DebugFocusWindow>();
+                windowAndWorkflowLayer.AddTransient<DebugThemeWindow>();
 #endif
                 //
                 // Extension layer.
