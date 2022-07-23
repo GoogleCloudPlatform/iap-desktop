@@ -217,7 +217,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock(SampleProjectId).Object);
-            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock(SampleProjectId).Object);
+
+            var computeEngineAdapter = CreateComputeEngineAdapterMock(SampleProjectId);
+            serviceRegistry.AddSingleton(computeEngineAdapter.Object);
 
             var resourceManagerAdapter = CreateResourceManagerAdapterMock();
             serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
@@ -235,6 +237,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                     It.Is<string>(id => id == SampleProjectId),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
+            computeEngineAdapter.Verify(a => a.ListInstancesAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
         }
 
         [Test]
@@ -243,7 +249,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock(SampleProjectId).Object);
-            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock(SampleProjectId).Object);
+
+            var computeEngineAdapter = CreateComputeEngineAdapterMock(SampleProjectId);
+            serviceRegistry.AddSingleton(computeEngineAdapter.Object);
 
             var resourceManagerAdapter = CreateResourceManagerAdapterMock();
             serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
@@ -262,6 +270,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                     It.Is<string>(id => id == SampleProjectId),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
+            computeEngineAdapter.Verify(a => a.ListInstancesAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
         }
 
         [Test]
@@ -270,7 +282,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock(SampleProjectId).Object);
-            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock(SampleProjectId).Object);
+
+            var computeEngineAdapter = CreateComputeEngineAdapterMock(SampleProjectId);
+            serviceRegistry.AddSingleton(computeEngineAdapter.Object);
 
             var resourceManagerAdapter = CreateResourceManagerAdapterMock();
             serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
@@ -287,6 +301,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             resourceManagerAdapter.Verify(a => a.GetProjectAsync(
                     It.Is<string>(id => id == SampleProjectId),
+                    It.IsAny<CancellationToken>()),
+                Times.Exactly(2));
+            computeEngineAdapter.Verify(a => a.ListInstancesAsync(
+                    It.IsAny<string>(),
                     It.IsAny<CancellationToken>()),
                 Times.Exactly(2));
         }

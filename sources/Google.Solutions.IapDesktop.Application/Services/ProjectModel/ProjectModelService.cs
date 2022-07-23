@@ -303,6 +303,34 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                     //
                     this.cachedRoot = await LoadProjectsAsync(token)
                         .ConfigureAwait(false);
+
+                    //
+                    // Load zones for projects. This serves two purposes:
+                    // - On startup, it ensures that all zones are loaded in 
+                    //   parallel, resulting in faster startup experience.
+                    // - On force-reload, it ensures that we not only reload
+                    //   the list of projects, but also their contents (zones).
+                    //
+                    var loadProjectTasks = this.cachedRoot
+                        .Projects
+                        .Select(p => new
+                        {
+                            Project = p.Project,
+                            Zones = LoadZones(p.Project, token)
+                        })
+
+                        //
+                        // Force eager evaluation, otherwise we're not triggering
+                        // the network call.
+                        //
+                        .ToList();
+
+                    foreach (var loadProjectTask in loadProjectTasks)
+                    {
+                        this.cachedZones[loadProjectTask.Project] = await loadProjectTask
+                            .Zones
+                            .ConfigureAwait(false);
+                    }
                 }
             }
 
