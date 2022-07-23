@@ -54,10 +54,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             DateTime startTime,
             IEventProcessor processor,
             CancellationToken cancellationToken);
-
-        Task<IEnumerable<LogSink>> ListCloudStorageSinksAsync(
-            string projectId,
-            CancellationToken cancellationToken);
     }
 
     [Service(typeof(IAuditLogAdapter), ServiceLifetime.Transient)]
@@ -202,33 +198,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         // IAuditLogAdapter
         //---------------------------------------------------------------------
 
-        public async Task<IEnumerable<LogSink>> ListCloudStorageSinksAsync(
-            string projectId,
-            CancellationToken cancellationToken)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
-            {
-                try
-                {
-                    var sinks = await this.service.Sinks.List($"projects/{projectId}")
-                        .ExecuteAsync(cancellationToken)
-                        .ConfigureAwait(false);
-
-                    return sinks.Sinks
-                        .EnsureNotNull()
-                        .Where(s => s.IsCloudStorageSink());
-                }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
-                {
-                    throw new ResourceAccessDeniedException(
-                        "You do not have sufficient permissions to list log sinks. " +
-                        "You need the 'Logs Viewer' role (or an equivalent custom role) " +
-                        "to perform this action.",
-                        e);
-                }
-            }
-        }
-
         public async Task ProcessInstanceEventsAsync(
             IEnumerable<string> projectIds,
             IEnumerable<string> zones,
@@ -261,28 +230,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     processor.Process,
                     new ExponentialBackOff(initialBackOff, MaxRetries),
                     cancellationToken).ConfigureAwait(false);
-            }
-        }
-    }
-
-    public static class LogSinkExtensions
-    {
-        private const string CloudStorageDestinationPrefix = "storage.googleapis.com/";
-
-        public static bool IsCloudStorageSink(this LogSink sink)
-        {
-            return sink.Destination.StartsWith(CloudStorageDestinationPrefix);
-        }
-
-        public static string GetDestinationBucket(this LogSink sink)
-        {
-            if (sink.Destination.StartsWith(CloudStorageDestinationPrefix))
-            {
-                return sink.Destination.Substring(CloudStorageDestinationPrefix.Length);
-            }
-            else
-            {
-                throw new ArgumentException("Not a Cloud Storage sink");
             }
         }
     }

@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class StartWithEncryptionKeyEvent : InstanceOperationEventBase, IInstanceStateChangeEvent
+    public class StartWithEncryptionKeyEvent : InstanceOperationEventBase
     {
         public const string Method = "v1.compute.instances.startWithEncryptionKey";
         public const string BetaMethod = "beta.compute.instances.startWithEncryptionKey";
@@ -44,13 +44,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
                 (record.ProtoPayload.MethodName == Method ||
                  record.ProtoPayload.MethodName == BetaMethod);
         }
-
-        //---------------------------------------------------------------------
-        // IInstanceStateChangeEvent.
-        //---------------------------------------------------------------------
-
-        public bool IsStartingInstance => !IsError;
-
-        public bool IsTerminatingInstance => false;
     }
 }

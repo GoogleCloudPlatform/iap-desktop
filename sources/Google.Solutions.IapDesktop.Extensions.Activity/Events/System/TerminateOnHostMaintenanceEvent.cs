@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
 {
-    public class TerminateOnHostMaintenanceEvent : SystemEventBase, IInstanceStateChangeEvent
+    public class TerminateOnHostMaintenanceEvent : SystemEventBase
     {
         public const string Method = "compute.instances.terminateOnHostMaintenance";
 
@@ -40,13 +40,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
             return record.IsSystemEvent &&
                 record.ProtoPayload.MethodName == Method;
         }
-
-        //---------------------------------------------------------------------
-        // IInstanceStateChangeEvent.
-        //---------------------------------------------------------------------
-
-        public bool IsStartingInstance => false;
-
-        public bool IsTerminatingInstance => true;
     }
 }

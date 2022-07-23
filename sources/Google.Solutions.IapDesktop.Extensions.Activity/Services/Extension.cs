@@ -26,10 +26,8 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Properties;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
 using Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput;
-using Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport;
 using System;
 using System.Linq;
 using System.Windows.Forms;
@@ -43,38 +41,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
     public class Extension
     {
         private readonly IServiceProvider serviceProvider;
-
-        private void CreateReport(IProjectModelNode contextNode)
-        {
-            var dialog = this.serviceProvider.GetService<CreateReportDialog>();
-            if (contextNode is IProjectModelProjectNode projectNode)
-            {
-                dialog.SelectProjectId(projectNode.Project.ProjectId);
-            }
-
-            var mainForm = this.serviceProvider.GetService<IMainForm>();
-            if (dialog.ShowDialog(mainForm.Window) == DialogResult.Cancel ||
-                !dialog.SelectedProjectIds.Any())
-            {
-                return;
-            }
-
-            var projectIds = dialog.SelectedProjectIds;
-
-            var builder = new ReportBuilder(
-                this.serviceProvider.GetService<IAuditLogAdapter>(),
-                this.serviceProvider.GetService<IAuditLogStorageSinkAdapter>(),
-                this.serviceProvider.GetService<IComputeEngineAdapter>(),
-                AuditLogSources.Api | AuditLogSources.StorageExport,
-                projectIds,
-                dialog.SelectedStartDate);
-
-            var view = new ReportPaneView(
-                ReportViewModel.CreateReportName(projectIds),
-                builder,
-                serviceProvider);
-            view.ShowWindow();
-        }
 
         public Extension(IServiceProvider serviceProvider)
         {
@@ -96,9 +62,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 
             reportCommand.AddCommand(
                 new Command<IProjectModelNode>(
-                    "New instance/node usage report...",
+                    "Analyze VM and sole-tenant node usage...",
                     context => CommandState.Enabled,
-                    context => CreateReport(context))
+                    context => this.serviceProvider
+                        .GetService<HelpService>()
+                        .OpenTopic(HelpTopics.NodeUsageReporting))
                 {
                     Image = Resources.Report_16
                 });
