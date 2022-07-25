@@ -301,6 +301,20 @@ namespace Google.Solutions.IapDesktop.Windows
                     // NB. If the user cancels, no exception is thrown.
                     this.viewModel.Authorize();
                 }
+                catch (OAuthScopeNotGrantedException)
+                {
+                    //
+                    // User did not grant 'cloud-platform' scope.
+                    //
+                    using (var dialog = new OAuthScopeNotGrantedErrorDialog())
+                    {
+                        if (dialog.ShowDialog(this) == DialogResult.OK)
+                        {
+                            // Retry sign-in.
+                            continue;
+                        }
+                    }
+                }
                 catch (AuthorizationFailedException e)
                 {
                     //

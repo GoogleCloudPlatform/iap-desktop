@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                 receiver.Object,
                 _ => flow.Object);
 
-            ExceptionAssert.ThrowsAggregateException<AuthorizationFailedException>(
+            ExceptionAssert.ThrowsAggregateException<OAuthScopeNotGrantedException>(
                 () => adapter.SignInWithBrowserAsync(
                     "bob@example.com",
                     CancellationToken.None).Wait());
