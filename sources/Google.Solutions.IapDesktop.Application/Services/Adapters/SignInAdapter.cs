@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 if (this.scopes.Any(
                     requestedScope => !grantedScopes.Contains(requestedScope)))
                 {
-                    throw new AuthorizationFailedException(
+                    throw new OAuthScopeNotGrantedException(
                         "Authorization failed because you have denied access to a " +
                         "required resource. Sign in again and make sure " +
                         "to grant access to all requested resources.");
@@ -343,6 +343,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     public class AuthorizationFailedException : Exception
     {
         public AuthorizationFailedException(string message) : base(message)
+        {
+        }
+    }
+    public class OAuthScopeNotGrantedException : AuthorizationFailedException
+    {
+        public OAuthScopeNotGrantedException(string message) : base(message)
         {
         }
     }

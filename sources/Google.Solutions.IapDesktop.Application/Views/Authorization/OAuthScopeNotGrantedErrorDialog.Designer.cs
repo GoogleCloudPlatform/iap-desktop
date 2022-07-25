@@ -1,7 +1,7 @@
 ﻿
 namespace Google.Solutions.IapDesktop.Windows
 {
-    partial class ScopeErrorDialog
+    partial class OAuthScopeNotGrantedErrorDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -29,13 +29,14 @@ namespace Google.Solutions.IapDesktop.Windows
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScopeErrorDialog));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OAuthScopeNotGrantedErrorDialog));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.headlineLabel = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.okBurtton = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.cancelButton = new System.Windows.Forms.Button();
+            this.okButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -49,8 +50,18 @@ namespace Google.Solutions.IapDesktop.Windows
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(419, 450);
+            this.panel1.Size = new System.Drawing.Size(398, 441);
             this.panel1.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(19, 382);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(329, 26);
+            this.label2.TabIndex = 19;
+            this.label2.Text = "Without access to your Google Cloud data, IAP Desktop can\'t list or \r\naccess any " +
+    "of your VM instances.";
             // 
             // label1
             // 
@@ -80,41 +91,43 @@ namespace Google.Solutions.IapDesktop.Windows
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // okBurtton
+            // cancelButton
             // 
-            this.okBurtton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.okBurtton.Location = new System.Drawing.Point(305, 459);
-            this.okBurtton.Name = "okBurtton";
-            this.okBurtton.Size = new System.Drawing.Size(75, 23);
-            this.okBurtton.TabIndex = 2;
-            this.okBurtton.Text = "OK";
-            this.okBurtton.UseVisualStyleBackColor = true;
+            this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cancelButton.Location = new System.Drawing.Point(295, 456);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelButton.TabIndex = 2;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // okButton
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(19, 382);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(329, 26);
-            this.label2.TabIndex = 19;
-            this.label2.Text = "Without access to your Google Cloud data, IAP Desktop can\'t list or \r\naccess any " +
-    "of your VM instances.";
+            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.okButton.Location = new System.Drawing.Point(214, 456);
+            this.okButton.Name = "okButton";
+            this.okButton.Size = new System.Drawing.Size(75, 23);
+            this.okButton.TabIndex = 2;
+            this.okButton.Text = "OK";
+            this.okButton.UseVisualStyleBackColor = true;
             // 
-            // ScopeErrorDialog
+            // OAuthScopeNotGrantedErrorDialog
             // 
-            this.AcceptButton = this.okBurtton;
+            this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.okBurtton;
-            this.ClientSize = new System.Drawing.Size(386, 491);
+            this.CancelButton = this.cancelButton;
+            this.ClientSize = new System.Drawing.Size(382, 490);
             this.ControlBox = false;
-            this.Controls.Add(this.okBurtton);
+            this.Controls.Add(this.okButton);
+            this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "ScopeErrorDialog";
+            this.Name = "OAuthScopeNotGrantedErrorDialog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Authorization failed";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -129,7 +142,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label headlineLabel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button okBurtton;
+        private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button okButton;
     }
 }

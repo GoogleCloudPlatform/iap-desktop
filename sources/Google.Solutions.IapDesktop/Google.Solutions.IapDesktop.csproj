@@ -150,12 +150,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Interop\TaskBarList.cs" />
-    <Compile Include="Windows\ScopeErrorDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Windows\ScopeErrorDialog.Designer.cs">
-      <DependentUpon>ScopeErrorDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Windows\ToolStripExtensions.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -180,9 +174,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Windows\ScopeErrorDialog.resx">
-      <DependentUpon>ScopeErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />

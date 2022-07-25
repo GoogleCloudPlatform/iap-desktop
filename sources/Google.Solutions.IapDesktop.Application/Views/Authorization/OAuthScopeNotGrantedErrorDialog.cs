@@ -11,9 +11,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public partial class ScopeErrorDialog : Form
+    public partial class OAuthScopeNotGrantedErrorDialog : Form
     {
-        public ScopeErrorDialog()
+        public OAuthScopeNotGrantedErrorDialog()
         {
             InitializeComponent();
             this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
