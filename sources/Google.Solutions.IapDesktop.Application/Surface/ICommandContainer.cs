@@ -18,6 +18,10 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             int? index);
 
         void AddSeparator(int? index = null);
+
+        void ExecuteCommandByKey(Keys keys);
+
+        void ExecuteDefaultCommand();
     }
 
     public interface ICommand<TContext>

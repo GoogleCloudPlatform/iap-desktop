@@ -11,8 +11,6 @@ namespace Google.Solutions.IapDesktop.Application.Surface
     public interface ICommandSurface<TContext>
         where TContext : class
     {
-        void ApplyTo(ToolStripMenuItem menu);
-
         ICommandContainer<TContext> Commands { get; }
     }
 }

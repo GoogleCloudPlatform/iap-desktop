@@ -1,0 +1,256 @@
+﻿using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Controls;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Google.Solutions.IapDesktop.Application.Surface
+{
+
+    public abstract class CommandSurfaceBase<TContext> : ICommandSurface<TContext>
+        where TContext : class
+    {
+        private readonly UnboundCommandContainer<TContext> commands;
+
+
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
+        public event EventHandler<ExceptionEventArgs> CommandFailed;
+
+        protected CommandSurfaceBase(ToolStripItemDisplayStyle displayStyle)
+        {
+            this.commands = new UnboundCommandContainer<TContext>(
+                displayStyle,
+                e => this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e)),
+                null);
+        }
+
+        public void ApplyTo(ToolStripDropDown menu)
+        {
+            menu.Items.AddRange(this.commands.MenuItems.ToArray());
+
+            menu.Opening += (s, a) =>
+            {
+                //
+                // Set context to update menu states.
+                //
+                var newContext = this.Context;
+                Debug.Assert(newContext != null);
+                this.commands.Context = newContext;
+            };
+            menu.Closed += (s, a) =>
+            {
+                //
+                // Reset context as it's not needed and valid
+                // anymore now.
+                //
+                this.commands.Context = null;
+            };
+        }
+
+        //---------------------------------------------------------------------
+        // Abstracts.
+        //---------------------------------------------------------------------
+
+        protected abstract TContext Context { get; }
+
+        //---------------------------------------------------------------------
+        // ICommandSurface.
+        //---------------------------------------------------------------------
+
+        public ICommandContainer<TContext> Commands => this.commands;
+
+    }
+
+    /// <summary>
+    /// Command container that can be bound to multiple controls.
+    /// </summary>
+    internal class UnboundCommandContainer<TContext> : ICommandContainer<TContext> // TODO: Rename class
+        where TContext : class
+    {
+        private TContext context;
+        private readonly UnboundCommandContainer<TContext> parent;
+        private readonly List<ToolStripItem> menuItems = new List<ToolStripItem>();
+        
+        private readonly ToolStripItemDisplayStyle displayStyle;
+        private readonly Action<Exception> exceptionHandler;
+
+        private void UpdateMenuItemState(
+            TContext context)
+        {
+            // Update state of each menu item.
+            foreach (var menuItem in menuItems
+                .OfType<ToolStripMenuItem>()
+                .Where(m => m.Tag is ICommand<TContext>))
+            {
+                switch (((ICommand<TContext>)menuItem.Tag).QueryState(context))
+                {
+                    case CommandState.Disabled:
+                        menuItem.Visible = true;
+                        menuItem.Enabled = false;
+                        break;
+
+                    case CommandState.Enabled:
+                        menuItem.Enabled = menuItem.Visible = true;
+                        break;
+
+                    case CommandState.Unavailable:
+                        menuItem.Visible = false;
+                        break;
+                }
+
+                //
+                // NB. Only the top-most container has its context set.
+                // Therefore, recursively update child menus as well.
+                //
+                UpdateMenuItemState(context);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
+        public UnboundCommandContainer(
+            ToolStripItemDisplayStyle displayStyle,
+            Action<Exception> exceptionHandler,
+            UnboundCommandContainer<TContext> parent)
+        {
+            this.displayStyle = displayStyle;
+            this.exceptionHandler = exceptionHandler;
+            this.parent = parent;
+        }
+
+
+        /// <summary>
+        /// Set the context that determines the state of
+        /// menu items.
+        /// </summary>
+        public TContext Context
+        {
+            get => this.context ?? (this.parent?.Context);
+            set
+            {
+                this.context = value;
+
+                UpdateMenuItemState(value);
+            }
+        }
+
+        public IList<ToolStripItem> MenuItems => this.menuItems;
+
+        //---------------------------------------------------------------------
+        // ICommandContainer.
+        //---------------------------------------------------------------------
+
+        public ICommandContainer<TContext> AddCommand(ICommand<TContext> command) 
+            => AddCommand(command, null);
+
+        public ICommandContainer<TContext> AddCommand(ICommand<TContext> command, int? index)
+        {
+            var menuItem = new ToolStripMenuItem(
+                command.Text,
+                command.Image,
+                (sender, args) =>
+                {
+                    try
+                    {
+                        Debug.Assert(this.Context != null);
+                        command.Execute(this.Context);
+                    }
+                    catch (Exception e) when (e.IsCancellation())
+                    {
+                        // Ignore.
+                    }
+                    catch (Exception e)
+                    {
+                        this.exceptionHandler(e);
+                    }
+                })
+            {
+                Tag = command,
+                ShortcutKeys = command.ShortcutKeys,
+
+                // If only an image is displayed (typically in a toolbar),
+                // display the text as tool tip - but without the mnemonics.
+                DisplayStyle = this.displayStyle,
+                ToolTipText = this.displayStyle == ToolStripItemDisplayStyle.Image
+                    ? command.Text.Replace("&", "")
+                    : null
+            };
+
+            if (index.HasValue)
+            {
+                this.menuItems.Insert(Math.Min(index.Value, this.menuItems.Count), menuItem);
+            }
+            else
+            {
+                this.menuItems.Add(menuItem);
+            }
+
+            // Return a new contains that enables registering sub-commands.
+            return new UnboundCommandContainer<TContext>(
+                this.displayStyle,
+                this.exceptionHandler,
+                this);
+        }
+
+        public void AddSeparator(int? index = null)
+        {
+            var menuItem = new ToolStripSeparator();
+
+            if (index.HasValue)
+            {
+                this.menuItems.Insert(Math.Min(index.Value, this.menuItems.Count), menuItem);
+            }
+            else
+            {
+                this.menuItems.Add(menuItem);
+            }
+        }
+
+
+        public void ExecuteCommandByKey(Keys keys)
+        {
+            Debug.Assert(this.Context != null);
+
+            //
+            // Only search top-level menu.
+            //
+            var menuItem = this.menuItems
+                .OfType<ToolStripMenuItem>()
+                .FirstOrDefault(m => m.ShortcutKeys == keys);
+            if (menuItem?.Tag is Command<TContext> command)
+            {
+                if (command.QueryState(this.Context) == CommandState.Enabled)
+                {
+                    command.Execute(this.Context);
+                }
+            }
+        }
+
+        public void ExecuteDefaultCommand()
+        {
+            Debug.Assert(this.Context != null);
+
+            //
+            // Only search top-level menu.
+            //
+            var firstDefaultCommand = this.menuItems
+                .OfType<ToolStripMenuItem>()
+                .Select(item => item.Tag)
+                .EnsureNotNull()
+                .OfType<Command<TContext>>()
+                .Where(cmd => cmd.IsDefault)
+                .Where(cmd => cmd.QueryState(this.Context) == CommandState.Enabled)
+                .FirstOrDefault();
+            firstDefaultCommand?.Execute(this.Context);
+        }
+    }
+}
