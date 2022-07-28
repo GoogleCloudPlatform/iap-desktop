@@ -29,7 +29,20 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
-    public class CommandContainer<TContext>
+    public interface ICommandContainer<TContext>
+        where TContext : class
+    {
+        ICommandContainer<TContext> AddCommand(
+            ICommand<TContext> command);
+
+        ICommandContainer<TContext> AddCommand(
+            ICommand<TContext> command,
+            int? index);
+
+        void AddSeparator(int? index = null);
+    }
+
+    public class CommandContainer<TContext> : ICommandContainer<TContext>
         where TContext : class
     {
         private TContext context;
@@ -121,10 +134,10 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             }
         }
 
-        public CommandContainer<TContext> AddCommand(
+        public ICommandContainer<TContext> AddCommand(
             ICommand<TContext> command) => AddCommand(command, null);
 
-        public CommandContainer<TContext> AddCommand(
+        public ICommandContainer<TContext> AddCommand(
             ICommand<TContext> command,
             int? index)
         {

@@ -205,12 +205,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         [Test]
         public void WhenSubMenuAdded_ThenContextIsShared()
         {
-            var parentMenu = this.commandContainer.AddCommand(
+            var parentMenu = (CommandContainer<string>)this.commandContainer.AddCommand(
                 new Command<string>(
                     "parent",
                     ctx => CommandState.Enabled,
                     ctx => throw new InvalidOperationException()));
-            var subMenu = parentMenu.AddCommand(
+            var subMenu = (CommandContainer<string>)parentMenu.AddCommand(
                     new Command<string>(
                         "test",
                         ctx => CommandState.Disabled,
