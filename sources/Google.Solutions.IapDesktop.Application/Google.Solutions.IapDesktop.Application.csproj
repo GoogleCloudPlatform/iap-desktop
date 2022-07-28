@@ -115,8 +115,8 @@
     <Compile Include="Host\CommandLineOptions.cs" />
     <Compile Include="Host\Profile.cs" />
     <Compile Include="ObjectModel\BindingExtensions.cs" />
-    <Compile Include="ObjectModel\Command.cs" />
-    <Compile Include="ObjectModel\CommandContainer.cs" />
+    <Compile Include="Surface\Command.cs" />
+    <Compile Include="Surface\CommandContainer.cs" />
     <Compile Include="ObjectModel\IServiceCategoryProvider.cs" />
     <Compile Include="ObjectModel\ModelCachingViewModel.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />
@@ -171,6 +171,7 @@
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
+    <Compile Include="Surface\ICommandContainer.cs" />
     <Compile Include="Surface\ICommandSurface.cs" />
     <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />

@@ -23,25 +23,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.IapDesktop.Application.Surface
 {
-    public interface ICommand<TContext>
-    {
-        string Text { get; }
-        System.Drawing.Image Image { get; }
-        Keys ShortcutKeys { get; }
-
-        CommandState QueryState(TContext context);
-        void Execute(TContext context);
-    }
-
-    public enum CommandState
-    {
-        Enabled,
-        Disabled,
-        Unavailable
-    }
-
     /// <summary>
     /// Helper class for creating simple commands.
     /// </summary>

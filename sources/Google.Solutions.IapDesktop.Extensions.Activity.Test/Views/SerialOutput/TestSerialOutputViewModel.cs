@@ -33,6 +33,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.IapDesktop.Application.Surface;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
 

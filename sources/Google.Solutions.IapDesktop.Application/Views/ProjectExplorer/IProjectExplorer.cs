@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Surface;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer

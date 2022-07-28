@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Linq;
@@ -27,20 +28,8 @@ using System.Windows.Forms;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.IapDesktop.Application.Surface
 {
-    public interface ICommandContainer<TContext>
-        where TContext : class
-    {
-        ICommandContainer<TContext> AddCommand(
-            ICommand<TContext> command);
-
-        ICommandContainer<TContext> AddCommand(
-            ICommand<TContext> command,
-            int? index);
-
-        void AddSeparator(int? index = null);
-    }
 
     public class CommandContainer<TContext> : ICommandContainer<TContext>
         where TContext : class
