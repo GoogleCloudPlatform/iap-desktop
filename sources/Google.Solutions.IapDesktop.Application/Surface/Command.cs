@@ -58,4 +58,20 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             return this.queryStateFunc(context);
         }
     }
+
+    public static class CommandExtensions
+    {
+        public static ICommandContainer<TContext> AddCommand<TContext>(
+            this ICommandContainer<TContext> container,
+            string text,
+            Func<TContext, CommandState> queryStateFunc,
+            Action<TContext> executeFunc)
+            where TContext : class
+        {
+            return container.AddCommand(new Command<TContext>(
+                text,
+                queryStateFunc,
+                executeFunc));
+        }
+    }
 }

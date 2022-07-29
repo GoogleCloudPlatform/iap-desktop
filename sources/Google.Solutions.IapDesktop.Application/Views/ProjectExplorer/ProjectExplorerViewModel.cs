@@ -309,9 +309,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         this.RootNode.DebugIsValidNode(this.selectedNode),
                     "Node detached");
 
-                this.selectedNode = value;
-                RaisePropertyChange();
-
                 this.IsUnloadProjectCommandVisible = value is ProjectViewModelNode;
                 this.IsRefreshAllProjectsCommandVisible = value is CloudViewModelNode;
                 this.IsRefreshProjectsCommandVisible =
@@ -323,6 +320,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     value is ZoneViewModelNode ||
                     value is InstanceViewModelNode;
 
+                this.selectedNode = value;
+                RaisePropertyChange();
 
                 // 
                 // Update active node in model.

@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                 this.menuItems.Add(menuItem);
             }
 
-            OnMenuItemsChanged(); // TODO: Test
+            OnMenuItemsChanged();
 
             // Return a new contains that enables registering sub-commands.
             return new CommandContainer<TContext>(
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                 this.menuItems.Add(menuItem);
             }
 
-            OnMenuItemsChanged(); // TODO: Test
+            OnMenuItemsChanged();
         }
 
 

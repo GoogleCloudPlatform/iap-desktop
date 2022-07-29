@@ -183,8 +183,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //searchButton.Click += (s, a) => StartSearch();
 
             //
-            // Bind toolbar controls.
-            //
+            // Toolbar.
+            // TODO: Resurface standard toolbar buttons
+
             this.linuxInstancesToolStripMenuItem.BindProperty(
                 c => c.Checked,
                 this.viewModel,
@@ -197,43 +198,59 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.Container);
 
             //
-            // Bind menu items.
+            // Context menu.
             //
-            this.unloadProjectToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsUnloadProjectCommandVisible,
-                this.Container);
-            this.refreshToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsRefreshProjectsCommandVisible,
-                this.Container);
-            this.refreshAllProjectsToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsRefreshAllProjectsCommandVisible,
-                this.Container);
-            this.openInCloudConsoleToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsCloudConsoleCommandVisible,
-                this.Container);
-            this.iapSeparatorToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsCloudConsoleCommandVisible,
-                this.Container);
-            this.cloudConsoleSeparatorToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsCloudConsoleCommandVisible,
-                this.Container);
-            this.configureIapAccessToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsCloudConsoleCommandVisible,
-                this.Container);
+            this.contextMenuSurface.Commands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Refresh project",
+                    _ => this.viewModel.IsRefreshProjectsCommandVisible
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => InvokeActionNoawaitAsync(
+                        () => this.viewModel.RefreshSelectedNodeAsync(),
+                        "Refreshing project"))
+                {
+                    Image = Resources.Refresh_161
+                });
+            this.contextMenuSurface.Commands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Refresh &all projects",
+                    _ => this.viewModel.IsRefreshAllProjectsCommandVisible
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => InvokeActionNoawaitAsync(
+                        () => this.viewModel.RefreshAsync(false),
+                        "Refreshing projects"))
+                {
+                    Image = Resources.Refresh_161
+                });
+            this.contextMenuSurface.Commands.AddCommand(
+                "&Unload project",
+                _ => this.viewModel.IsUnloadProjectCommandVisible
+                    ? CommandState.Enabled
+                    : CommandState.Unavailable,
+                _ => InvokeActionNoawaitAsync(
+                    () => this.viewModel.UnloadSelectedProjectAsync(),
+                    "Unloading project"));
+
+            this.contextMenuSurface.Commands.AddSeparator();
+            this.contextMenuSurface.Commands.AddCommand(
+                "Open in Cloud Consol&e",
+                _ => this.viewModel.IsCloudConsoleCommandVisible
+                    ? CommandState.Enabled
+                    : CommandState.Unavailable,
+                _ => InvokeAction(
+                    () => this.viewModel.OpenInCloudConsole(),
+                    "Opening Cloud Console"));
+            this.contextMenuSurface.Commands.AddCommand(
+                "Configure IAP a&ccess",
+                _ => this.viewModel.IsCloudConsoleCommandVisible
+                    ? CommandState.Enabled
+                    : CommandState.Unavailable,
+                _ => InvokeAction(
+                    () => this.viewModel.ConfigureIapAccess(),
+                    "Opening Cloud Console"));
+            this.contextMenuSurface.Commands.AddSeparator();
         }
 
         private async Task<bool> AddNewProjectAsync()
@@ -274,38 +291,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 return false;
             }
         }
-
-        //---------------------------------------------------------------------
-        // Context menu event handlers.
-        //---------------------------------------------------------------------
-
-        private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs _)
-            => await InvokeActionAsync(
-                () => this.viewModel.RefreshAsync(false),
-                "Refreshing projects")
-            .ConfigureAwait(true);
-
-        private async void refreshToolStripMenuItem_Click(object sender, EventArgs _)
-            => await InvokeActionAsync(
-                () => this.viewModel.RefreshSelectedNodeAsync(),
-                "Refreshing projects")
-            .ConfigureAwait(true);
-
-        private async void unloadProjectToolStripMenuItem_Click(object sender, EventArgs _)
-            => await InvokeActionAsync(
-                () => this.viewModel.UnloadSelectedProjectAsync(),
-                "Unloading projects")
-            .ConfigureAwait(true);
-
-        private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs _)
-            => InvokeAction(
-                () => this.viewModel.OpenInCloudConsole(),
-                "Opening Cloud Console");
-
-        private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs _)
-            => InvokeAction(
-                () => this.viewModel.ConfigureIapAccess(),
-                "Opening Cloud Console");
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {

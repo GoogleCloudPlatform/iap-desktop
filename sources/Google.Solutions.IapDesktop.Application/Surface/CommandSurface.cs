@@ -45,7 +45,16 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
             this.commands.MenuItemsChanged += (s, e) =>
             {
-                menu.Items.Clear();
+                var oldMenuItemsWithCommand = this.commands
+                    .MenuItems
+                    .Where(i => i.Tag is ICommand<TContext>)
+                    .ToList();
+
+                foreach (var item in oldMenuItemsWithCommand)
+                {
+                    menu.Items.Remove(item);
+                }
+
                 menu.Items.AddRange(this.commands.MenuItems.ToArray());
             };
         }
