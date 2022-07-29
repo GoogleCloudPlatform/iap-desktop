@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Surface
 {
 
-    public abstract class CommandSurfaceBase<TContext> : ICommandSurface<TContext>
+    public class CommandSurface<TContext> : ICommandSurface<TContext>
         where TContext : class
     {
         private readonly CommandContainer<TContext> commands;
@@ -23,40 +23,13 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
         public event EventHandler<ExceptionEventArgs> CommandFailed;
 
-        protected CommandSurfaceBase(ToolStripItemDisplayStyle displayStyle)
+        public CommandSurface(ToolStripItemDisplayStyle displayStyle)
         {
             this.commands = new CommandContainer<TContext>(
                 displayStyle,
                 e => this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e)),
                 null);
         }
-
-        //public void ApplyToMenu(ToolStripDropDown menu)
-        //{
-        //    menu.Opening += (s, a) =>
-        //    {
-        //        //
-        //        // Set context to update menu states.
-        //        //
-        //        var newContext = this.CurrentContext;
-        //        Debug.Assert(newContext != null);
-        //        this.commands.Context = newContext;
-
-        //        //
-        //        // Update menu since the items might have changed.
-        //        //
-        //        menu.Items.Clear();
-        //        menu.Items.AddRange(this.commands.MenuItems.ToArray());
-        //    };
-        //    menu.Closed += (s, a) =>
-        //    {
-        //        //
-        //        // Reset context as it's not needed and valid
-        //        // anymore now.
-        //        //
-        //        this.commands.Context = null;
-        //    };
-        //}
 
         public void ApplyTo(ToolStrip toolBar)
         {
@@ -69,11 +42,11 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             };
         }
 
-        //---------------------------------------------------------------------
-        // Abstracts.
-        //---------------------------------------------------------------------
-
-        protected abstract TContext CurrentContext { get; }
+        public TContext CurrentContext
+        {
+            get => this.commands.Context;
+            set => this.commands.Context = value;
+        }
 
         //---------------------------------------------------------------------
         // ICommandSurface.
@@ -240,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                 this.menuItems.Add(menuItem);
             }
 
-            OnMenuItemsChanged();
+            OnMenuItemsChanged(); // TODO: Test
 
             // Return a new contains that enables registering sub-commands.
             return new CommandContainer<TContext>(
@@ -261,13 +234,13 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             {
                 this.menuItems.Add(menuItem);
             }
+
+            OnMenuItemsChanged(); // TODO: Test
         }
 
 
         public void ExecuteCommandByKey(Keys keys)
         {
-            Debug.Assert(this.Context != null);
-
             //
             // Only search top-level menu.
             //
@@ -276,6 +249,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                 .FirstOrDefault(m => m.ShortcutKeys == keys);
             if (menuItem?.Tag is Command<TContext> command)
             {
+                Debug.Assert(this.Context != null);
                 if (command.QueryState(this.Context) == CommandState.Enabled)
                 {
                     command.Execute(this.Context);

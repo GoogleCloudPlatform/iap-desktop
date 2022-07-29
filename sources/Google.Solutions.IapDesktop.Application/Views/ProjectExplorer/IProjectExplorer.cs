@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         IProjectModelNode SelectedNode { get; }
 
-        CommandContainer<IProjectModelNode> ContextMenuCommands { get; }
-        CommandContainer<IProjectModelNode> ToolbarCommands { get; }
+        ICommandContainer<IProjectModelNode> ContextMenuCommands { get; }
+        ICommandContainer<IProjectModelNode> ToolbarCommands { get; }
     }
 }

@@ -61,9 +61,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private readonly ProjectExplorerViewModel viewModel;
 
-        public CommandContainer<IProjectModelNode> ContextMenuCommands { get; }
-        public CommandContainer<IProjectModelNode> ToolbarCommands { get; }
+        public ICommandContainer<IProjectModelNode> ContextMenuCommands { get; }
+        public ICommandContainer<IProjectModelNode> ToolbarCommands { get; }
 
+        private CommandSurface<IProjectModelNode> contextMenuSurface;
+        private CommandSurface<IProjectModelNode> toolbarSurface;
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockLeft)
@@ -89,18 +91,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.authService = serviceProvider.GetService<IAuthorizationSource>();
 
             var exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            
-            this.ContextMenuCommands = new CommandContainer<IProjectModelNode>(
-                ToolStripItemDisplayStyle.ImageAndText,
-                e => exceptionDialog.Show(this, "Failed to execute command", e),
-                null);
-            this.contextMenu.Items.AddRange(this.ContextMenuCommands.MenuItems.ToArray());
 
-            this.ToolbarCommands = new CommandContainer<IProjectModelNode>(
-                ToolStripItemDisplayStyle.Image,
-                e => exceptionDialog.Show(this, "Failed to execute command", e),
-                null);
-            this.toolStrip.Items.AddRange(this.ToolbarCommands.MenuItems.ToArray());
+            // TODO: Move to separate classes
+            // TODO: Add Refresh, separators etc (from designer)
+            this.contextMenuSurface = new CommandSurface<IProjectModelNode>(
+                ToolStripItemDisplayStyle.ImageAndText);
+            this.contextMenuSurface.ApplyTo(this.contextMenu);
+            this.contextMenuSurface.CommandFailed += (s, a) =>
+                exceptionDialog.Show(this, "Failed to execute command", a.Exception);
+            this.ContextMenuCommands = this.contextMenuSurface.Commands;
+
+            this.toolbarSurface = new CommandSurface<IProjectModelNode>(
+                ToolStripItemDisplayStyle.Image);
+            this.toolbarSurface.ApplyTo(this.toolStrip);
+            this.toolbarSurface.CommandFailed += (s, a) =>
+                exceptionDialog.Show(this, "Failed to execute command", a.Exception);
+            this.ToolbarCommands = this.toolbarSurface.Commands;
 
             this.viewModel = new ProjectExplorerViewModel(
                 this,
@@ -121,8 +127,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     //
                     if (node?.ModelNode != null)
                     {
-                        this.ContextMenuCommands.Context = node.ModelNode;
-                        this.ToolbarCommands.Context = node.ModelNode;
+                        this.contextMenuSurface.CurrentContext = node.ModelNode;
+                        this.toolbarSurface.CurrentContext = node.ModelNode;
                     }
                 });
 
@@ -303,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            this.ContextMenuCommands.ExecuteDefaultCommand();
+            this.contextMenuSurface.Commands.ExecuteDefaultCommand();
         }
 
         //---------------------------------------------------------------------
@@ -338,8 +344,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 //
                 // Force-select the root node to update menus.
                 //
-                this.ContextMenuCommands.Context = this.viewModel.RootNode.ModelNode;
-                this.ToolbarCommands.Context = this.viewModel.RootNode.ModelNode;
+                this.contextMenuSurface.CurrentContext = this.viewModel.RootNode.ModelNode;
+                this.toolbarSurface.CurrentContext = this.viewModel.RootNode.ModelNode;
 
                 if (!projects.Any())
                 {
@@ -385,11 +391,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
             else if (e.KeyCode == Keys.Enter)
             {
-                this.ContextMenuCommands.ExecuteDefaultCommand();
+                this.contextMenuSurface.Commands.ExecuteDefaultCommand();
             }
             else
             {
-                this.ContextMenuCommands.ExecuteCommandByKey(e.KeyCode);
+                this.contextMenuSurface.Commands.ExecuteCommandByKey(e.KeyCode);
             }
         }
 
