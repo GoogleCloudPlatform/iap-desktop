@@ -61,11 +61,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private readonly ProjectExplorerViewModel viewModel;
 
-        public ICommandContainer<IProjectModelNode> ContextMenuCommands { get; }
-        public ICommandContainer<IProjectModelNode> ToolbarCommands { get; }
-
         private readonly ToolStripCommandSurface<IProjectModelNode> contextMenuSurface;
         private readonly ToolStripCommandSurface<IProjectModelNode> toolbarSurface;
+
+        public ICommandContainer<IProjectModelNode> ContextMenuCommands 
+            => this.contextMenuSurface.Commands;
+
+        public ICommandContainer<IProjectModelNode> ToolbarCommands
+            => this.toolbarSurface.Commands;
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockLeft)
@@ -93,20 +96,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             var exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
             // TODO: Move to separate classes
-            // TODO: Add Refresh, separators etc (from designer)
             this.contextMenuSurface = new ToolStripCommandSurface<IProjectModelNode>(
                 ToolStripItemDisplayStyle.ImageAndText);
+            this.contextMenuSurface.CommandFailed += Surface_CommandFailed;
             this.contextMenuSurface.ApplyTo(this.contextMenu);
-            this.contextMenuSurface.CommandFailed += (s, a) =>
-                exceptionDialog.Show(this, "Failed to execute command", a.Exception);
-            this.ContextMenuCommands = this.contextMenuSurface.Commands;
 
             this.toolbarSurface = new ToolStripCommandSurface<IProjectModelNode>(
                 ToolStripItemDisplayStyle.Image);
+            this.toolbarSurface.CommandFailed += Surface_CommandFailed;
             this.toolbarSurface.ApplyTo(this.toolStrip);
-            this.toolbarSurface.CommandFailed += (s, a) =>
-                exceptionDialog.Show(this, "Failed to execute command", a.Exception);
-            this.ToolbarCommands = this.toolbarSurface.Commands;
 
             this.viewModel = new ProjectExplorerViewModel(
                 this,
@@ -312,6 +310,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
+
+        private void Surface_CommandFailed(object sender, ExceptionEventArgs e)
+        {
+            this.serviceProvider
+                .GetService<IExceptionDialog>()
+                .Show(this, "Executing command failed", e.Exception);
+        }
 
         private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
         {

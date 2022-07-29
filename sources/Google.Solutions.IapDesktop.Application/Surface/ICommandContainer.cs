@@ -22,6 +22,8 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         void ExecuteCommandByKey(Keys keys);
 
         void ExecuteDefaultCommand();
+
+        void ForceRefresh();
     }
 
     public interface ICommand<TContext>

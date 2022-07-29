@@ -34,9 +34,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
         void Close();
         void Minimize();
 
-        CommandContainer<IMainForm> ViewMenu { get; }
+        ICommandContainer<IMainForm> ViewMenu { get; }
 
-        CommandContainer<IMainForm> AddMenu(string caption, int? index);
+        ICommandContainer<IMainForm> AddMenu(string caption, int? index);
 
         void SetUrlHandler(IIapUrlHandler handler);
     }

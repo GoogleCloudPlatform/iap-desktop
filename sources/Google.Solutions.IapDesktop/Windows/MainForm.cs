@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
@@ -63,9 +64,14 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IExceptionDialog exceptionDialog;
         private IIapUrlHandler urlHandler;
 
+        private readonly ToolStripCommandSurface<IMainForm> viewMenuSurface;
+        private readonly ToolStripCommandSurface<ToolWindow> windowMenuSurface;
+
         public IapRdpUrl StartupUrl { get; set; }
-        public CommandContainer<IMainForm> ViewMenu { get; }
-        public CommandContainer<ToolWindow> WindowMenu { get; }
+        public ICommandContainer<IMainForm> ViewMenu
+            => this.viewMenuSurface.Commands;
+        public ICommandContainer<ToolWindow> WindowMenu
+            => this.windowMenuSurface.Commands;
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
@@ -112,24 +118,20 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Bind controls.
             //
+            this.viewMenuSurface = new ToolStripCommandSurface<IMainForm>(
+                ToolStripItemDisplayStyle.ImageAndText);
+            this.viewMenuSurface.CommandFailed += Surface_CommandFailed;
+            this.viewMenuSurface.CurrentContext = this;
+            this.viewMenuSurface.ApplyTo(this.viewToolStripMenuItem.DropDownItems);
 
-            this.ViewMenu = new CommandContainer<IMainForm>(
-                ToolStripItemDisplayStyle.ImageAndText,
-                e => this.exceptionDialog.Show(this, "Failed to execute command", e),
-                null)
-            {
-                Context = this // There is no real context for this.
-            };
-            this.viewToolStripMenuItem.DropDownItems.AddRange(this.ViewMenu.MenuItems.ToArray());
+            this.windowMenuSurface = new ToolStripCommandSurface<ToolWindow>(
+                ToolStripItemDisplayStyle.ImageAndText);
+            this.windowMenuSurface.CommandFailed += Surface_CommandFailed;
+            this.windowMenuSurface.ApplyTo(this.windowToolStripMenuItem);
 
-            this.WindowMenu = new CommandContainer<ToolWindow>(
-                ToolStripItemDisplayStyle.ImageAndText,
-                e => this.exceptionDialog.Show(this, "Failed to execute command", e),
-                null);
-            this.windowToolStripMenuItem.DropDownItems.AddRange(this.WindowMenu.MenuItems.ToArray());
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
-                this.WindowMenu.Context = this.dockPanel.ActiveContent as ToolWindow;
+                this.windowMenuSurface.CurrentContext = this.dockPanel.ActiveContent as ToolWindow;
             };
 
             this.dockPanel.ActiveContentChanged += (sender, args) =>
@@ -140,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 // focus is released from an RDP window by using a keyboard
                 // shortcut.
                 //
-                this.WindowMenu.Context =
+                this.windowMenuSurface.CurrentContext =
                     (this.dockPanel.ActiveContent ?? this.dockPanel.ActiveDocumentPane?.ActiveContent)
                         as ToolWindow;
             };
@@ -253,6 +255,13 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
         // Window events.
         //---------------------------------------------------------------------
+
+        private void Surface_CommandFailed(object sender, ExceptionEventArgs e)
+        {
+            this.serviceProvider
+                .GetService<IExceptionDialog>()
+                .Show(this, "Executing command failed", e.Exception);
+        }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -562,7 +571,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // bypassing the menu-open event (which normally
             // updates the context).
             //
-            this.WindowMenu.ForceRefresh();
+            this.windowMenuSurface.Commands.ForceRefresh();
         }
 
         internal void ConnectToUrl(IapRdpUrl url)
@@ -622,7 +631,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.urlHandler = handler;
         }
 
-        public CommandContainer<IMainForm> AddMenu(string caption, int? index)
+        public ICommandContainer<IMainForm> AddMenu(string caption, int? index)
         {
             var menu = new ToolStripMenuItem(caption);
 
@@ -637,22 +646,18 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.mainMenu.Items.Add(menu);
             }
 
-            var commandContainer = new CommandContainer<IMainForm>(
-                ToolStripItemDisplayStyle.ImageAndText,
-                e => this.exceptionDialog.Show(this, "Failed to execute command", e),
-                null)
-            {
-                Context = this // There is no real context for this.
-            };
-            menu.DropDownItems.AddRange(commandContainer.MenuItems.ToArray());
+            var surface = new ToolStripCommandSurface<IMainForm>(
+                ToolStripItemDisplayStyle.ImageAndText);
+            surface.CommandFailed += Surface_CommandFailed;
+            surface.CurrentContext = this;
+            surface.ApplyTo(menu);
 
             menu.DropDownOpening += (sender, args) =>
             {
-                // Force re-evaluation of context.
-                commandContainer.Context = this;
+                surface.Commands.ForceRefresh();
             };
 
-            return commandContainer;
+            return surface.Commands;
         }
 
         public void Minimize()

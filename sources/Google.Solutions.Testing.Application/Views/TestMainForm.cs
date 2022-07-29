@@ -50,14 +50,14 @@ namespace Google.Solutions.Testing.Application.Views
 
         public IWin32Window Window => this;
         public DockPanel MainPanel => this.dockPanel;
-        public CommandContainer<IMainForm> ViewMenu => null;
+        public ICommandContainer<IMainForm> ViewMenu => null;
 
         public void SetUrlHandler(IIapUrlHandler handler)
         {
             throw new NotImplementedException();
         }
 
-        public CommandContainer<IMainForm> AddMenu(string caption, int? index)
+        public ICommandContainer<IMainForm> AddMenu(string caption, int? index)
         {
             throw new NotImplementedException();
         }

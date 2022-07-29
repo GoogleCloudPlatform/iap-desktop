@@ -18,7 +18,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
     {
         private TContext context;
         private readonly CommandContainer<TContext> parent;
-        private readonly List<ToolStripItem> menuItems = new List<ToolStripItem>();
+        private readonly System.Collections.IList /* of ToolStripMenuItem */ menuItems;
 
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly Action<Exception> exceptionHandler;
@@ -43,36 +43,30 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         }
 
         private static void UpdateMenuItemState(
-            IEnumerable<ToolStripItem> menuItems,
+            System.Collections.IList menuItems,
             TContext context)
         {
             // Update state of each menu item.
             foreach (var menuItem in menuItems
+                .Cast<ToolStripItem>()
                 .Where(m => m.Tag is ICommand<TContext>))
             {
                 var command = (ICommand<TContext>)menuItem.Tag;
-                if (context == null)
+                switch (command.QueryState(context))
                 {
-                    menuItem.Visible = false;
-                }
-                else
-                {
-                    switch (command.QueryState(context))
-                    {
-                        case CommandState.Disabled:
-                            menuItem.Visible = true;
-                            menuItem.Enabled = false;
-                            break;
+                    case CommandState.Disabled:
+                        menuItem.Visible = true;
+                        menuItem.Enabled = false;
+                        break;
 
-                        case CommandState.Enabled:
-                            menuItem.Visible = true;
-                            menuItem.Enabled = true;
-                            break;
+                    case CommandState.Enabled:
+                        menuItem.Visible = true;
+                        menuItem.Enabled = true;
+                        break;
 
-                        case CommandState.Unavailable:
-                            menuItem.Visible = false;
-                            break;
-                    }
+                    case CommandState.Unavailable:
+                        menuItem.Visible = false;
+                        break;
                 }
 
                 //
@@ -83,11 +77,24 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                 if (menuItem is ToolStripDropDownItem dropDown)
                 {
                     UpdateMenuItemState(
-                        dropDown.DropDownItems.Cast<ToolStripDropDownItem>(),
+                        dropDown.DropDownItems,
                         context);
                 }
             }
         }
+
+        private CommandContainer(
+            ToolStripItemDisplayStyle displayStyle,
+            Action<Exception> exceptionHandler,
+            CommandContainer<TContext> parent,
+            System.Collections.IList menuItems)
+        {
+            this.displayStyle = displayStyle;
+            this.exceptionHandler = exceptionHandler;
+            this.parent = parent;
+            this.menuItems = menuItems;
+        }
+
 
         //---------------------------------------------------------------------
         // Publics.
@@ -95,12 +102,12 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
         public CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
-            Action<Exception> exceptionHandler,
-            CommandContainer<TContext> parent)
+            Action<Exception> exceptionHandler)
+            : this(displayStyle, 
+                   exceptionHandler,
+                   null,
+                   new System.Collections.ArrayList())
         {
-            this.displayStyle = displayStyle;
-            this.exceptionHandler = exceptionHandler;
-            this.parent = parent;
         }
 
 
@@ -119,7 +126,8 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             }
         }
 
-        public IList<ToolStripItem> MenuItems => this.menuItems;
+        public IEnumerable<ToolStripItem> MenuItems => this.menuItems
+            .Cast<ToolStripItem>();
 
         /// <summary>
         /// Refresh the state of menu items.
@@ -145,7 +153,6 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                 {
                     try
                     {
-                        Debug.Assert(this.Context != null);
                         command.Execute(this.Context);
                     }
                     catch (Exception e) when (e.IsCancellation())
@@ -184,7 +191,8 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             return new CommandContainer<TContext>(
                 this.displayStyle,
                 this.exceptionHandler,
-                this);
+                this,
+                menuItem.DropDownItems);
         }
 
         public void AddSeparator(int? index = null)

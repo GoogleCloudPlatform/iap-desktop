@@ -32,32 +32,34 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         {
             this.commands = new CommandContainer<TContext>(
                 displayStyle,
-                e => this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e)),
-                null);
+                e => this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e)));
         }
 
-        public void ApplyTo(ToolStrip menu)
+        public void ApplyTo(ToolStripItemCollection menu)
         {
             //
             // Populate eagerly.
             //
-            menu.Items.AddRange(this.commands.MenuItems.ToArray());
+            menu.AddRange(this.commands.MenuItems.ToArray());
 
             this.commands.MenuItemsChanged += (s, e) =>
             {
-                var oldMenuItemsWithCommand = this.commands
-                    .MenuItems
+                var oldMenuItemsWithCommand = menu
+                    .Cast<ToolStripItem>()
                     .Where(i => i.Tag is ICommand<TContext>)
                     .ToList();
 
                 foreach (var item in oldMenuItemsWithCommand)
                 {
-                    menu.Items.Remove(item);
+                    menu.Remove(item);
                 }
 
-                menu.Items.AddRange(this.commands.MenuItems.ToArray());
+                menu.AddRange(this.commands.MenuItems.ToArray());
             };
         }
+
+        public void ApplyTo(ToolStrip menu) => ApplyTo(menu.Items);
+        public void ApplyTo(ToolStripMenuItem menu) => ApplyTo(menu.DropDownItems);
 
         public TContext CurrentContext
         {
@@ -91,8 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             this.source = source;
             this.commands = new CommandContainer<TContext>(
                 displayStyle,
-                e => this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e)),
-                null);
+                e => this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e)));
         }
 
         public void ApplyTo(ToolStripDropDown dropDownMenu)
