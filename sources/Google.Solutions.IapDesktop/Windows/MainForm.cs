@@ -118,13 +118,13 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             this.viewMenuCommands = new ToolStripCommandContainer<IMainForm>(
                 ToolStripItemDisplayStyle.ImageAndText);
-            this.viewMenuCommands.CommandFailed += Surface_CommandFailed;
+            this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
             this.viewMenuCommands.Context = this;
-            this.viewMenuCommands.ApplyTo(this.viewToolStripMenuItem.DropDownItems);
+            this.viewMenuCommands.ApplyTo(this.viewToolStripMenuItem);
 
             this.windowMenuCommands = new ToolStripCommandContainer<ToolWindow>(
                 ToolStripItemDisplayStyle.ImageAndText);
-            this.windowMenuCommands.CommandFailed += Surface_CommandFailed;
+            this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;
             this.windowMenuCommands.ApplyTo(this.windowToolStripMenuItem);
 
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Windows
         // Window events.
         //---------------------------------------------------------------------
 
-        private void Surface_CommandFailed(object sender, ExceptionEventArgs e)
+        private void CommandContainer_CommandFailed(object sender, ExceptionEventArgs e)
         {
             this.serviceProvider
                 .GetService<IExceptionDialog>()
@@ -645,9 +645,11 @@ namespace Google.Solutions.IapDesktop.Windows
             }
 
             var container = new ToolStripCommandContainer<IMainForm>(
-                ToolStripItemDisplayStyle.ImageAndText);
-            container.CommandFailed += Surface_CommandFailed;
-            container.Context = this;
+                ToolStripItemDisplayStyle.ImageAndText)
+            {
+                Context = this
+            };
+            container.CommandFailed += CommandContainer_CommandFailed;
             container.ApplyTo(menu);
 
             menu.DropDownOpening += (sender, args) =>

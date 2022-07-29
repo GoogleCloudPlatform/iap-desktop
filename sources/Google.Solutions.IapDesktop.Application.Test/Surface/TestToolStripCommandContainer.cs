@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
 
             Assert.AreEqual(1, queryCalls);
 
-            ((CommandContainer<string>)this.commandContainer).ForceRefresh();
+            this.commandContainer.ForceRefresh();
 
             Assert.AreEqual(2, queryCalls);
         }

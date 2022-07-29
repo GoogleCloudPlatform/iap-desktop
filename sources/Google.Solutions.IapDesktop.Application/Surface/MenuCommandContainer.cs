@@ -31,45 +31,46 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Surface
 {
-    /// <summary>
-    /// Command container that can be applied to one or more tool strips.
-    /// </summary>
-    public class ToolStripCommandContainer<TContext> : CommandContainer<TContext>
+    public class MenuCommandContainer<TContext> : CommandContainer<TContext>
         where TContext : class
     {
+        private readonly IMenuContextSource<TContext> source;
+
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
 
-        public ToolStripCommandContainer(ToolStripItemDisplayStyle displayStyle)
+        public MenuCommandContainer(
+            ToolStripItemDisplayStyle displayStyle,
+            IMenuContextSource<TContext> source)
             : base(displayStyle)
         {
+            this.source = source;
         }
 
-        private void ApplyTo(ToolStripItemCollection menu)
+        public void ApplyTo(ToolStripDropDown dropDownMenu)
         {
             //
-            // Populate eagerly.
+            // Populate lazily when opened.
             //
-            menu.AddRange(this.MenuItems.ToArray());
-
-            this.MenuItemsChanged += (s, e) =>
+            dropDownMenu.Opening += (s, a) =>
             {
-                var oldMenuItemsWithCommand = menu
-                    .Cast<ToolStripItem>()
-                    .Where(i => i.Tag is ICommand<TContext>)
-                    .ToList();
+                //
+                // Query and set new context.
+                //
+                this.Context = this.source.CurrentContext;
 
-                foreach (var item in oldMenuItemsWithCommand)
-                {
-                    menu.Remove(item);
-                }
-
-                menu.AddRange(this.MenuItems.ToArray());
+                //
+                // Update menu items.
+                //
+                dropDownMenu.Items.Clear();
+                dropDownMenu.Items.AddRange(this.MenuItems.ToArray());
             };
         }
+    }
 
-        public void ApplyTo(ToolStrip menu) => ApplyTo(menu.Items);
-        public void ApplyTo(ToolStripMenuItem menu) => ApplyTo(menu.DropDownItems);
+    public interface IMenuContextSource<TContext>
+    {
+        TContext CurrentContext { get; }
     }
 }

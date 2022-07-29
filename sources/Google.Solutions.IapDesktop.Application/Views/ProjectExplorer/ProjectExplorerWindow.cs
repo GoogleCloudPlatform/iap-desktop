@@ -92,17 +92,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.jobService = serviceProvider.GetService<IJobService>();
             this.authService = serviceProvider.GetService<IAuthorizationSource>();
 
-            var exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-
             this.contextMenuCommands = new ToolStripCommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.ImageAndText);
             this.contextMenuCommands.CommandFailed += Surface_CommandFailed;
-            this.contextMenuCommands.ApplyTo(this.contextMenu);
 
             this.toolbarCommands = new ToolStripCommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.Image);
             this.toolbarCommands.CommandFailed += Surface_CommandFailed;
-            this.toolbarCommands.ApplyTo(this.toolStrip);
 
             this.viewModel = new ProjectExplorerViewModel(
                 this,
@@ -176,7 +172,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 viewModel,
                 m => m.InstanceFilter,
                 this.Container);
-            //searchButton.Click += (s, a) => StartSearch();
 
             //
             // Toolbar.
@@ -246,6 +241,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     () => this.viewModel.ConfigureIapAccess(),
                     "Opening Cloud Console"));
             this.contextMenuCommands.AddSeparator();
+
+            //
+            // All commands added, apply to menu.
+            //
+            this.contextMenuCommands.ApplyTo(this.contextMenu);
+            this.toolbarCommands.ApplyTo(this.toolStrip);
         }
 
         private async Task<bool> AddNewProjectAsync()
