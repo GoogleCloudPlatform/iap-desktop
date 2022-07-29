@@ -64,8 +64,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         public ICommandContainer<IProjectModelNode> ContextMenuCommands { get; }
         public ICommandContainer<IProjectModelNode> ToolbarCommands { get; }
 
-        private CommandSurface<IProjectModelNode> contextMenuSurface;
-        private CommandSurface<IProjectModelNode> toolbarSurface;
+        private readonly ToolStripCommandSurface<IProjectModelNode> contextMenuSurface;
+        private readonly ToolStripCommandSurface<IProjectModelNode> toolbarSurface;
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockLeft)
@@ -94,14 +94,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             // TODO: Move to separate classes
             // TODO: Add Refresh, separators etc (from designer)
-            this.contextMenuSurface = new CommandSurface<IProjectModelNode>(
+            this.contextMenuSurface = new ToolStripCommandSurface<IProjectModelNode>(
                 ToolStripItemDisplayStyle.ImageAndText);
             this.contextMenuSurface.ApplyTo(this.contextMenu);
             this.contextMenuSurface.CommandFailed += (s, a) =>
                 exceptionDialog.Show(this, "Failed to execute command", a.Exception);
             this.ContextMenuCommands = this.contextMenuSurface.Commands;
 
-            this.toolbarSurface = new CommandSurface<IProjectModelNode>(
+            this.toolbarSurface = new ToolStripCommandSurface<IProjectModelNode>(
                 ToolStripItemDisplayStyle.Image);
             this.toolbarSurface.ApplyTo(this.toolStrip);
             this.toolbarSurface.CommandFailed += (s, a) =>

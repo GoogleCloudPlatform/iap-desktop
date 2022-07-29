@@ -29,15 +29,15 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
+namespace Google.Solutions.IapDesktop.Application.Test.Surface
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestCommandContainerForContextMenu : ApplicationFixtureBase
+    public class TestToolStripCommandSurface : ApplicationFixtureBase
     {
         private Form form;
         private ContextMenuStrip contextMenu;
-        private CommandContainer<string> commandContainer;
+        private ToolStripCommandSurface<string> commandSurface;
 
         [SetUp]
         public void SetUp()
@@ -51,11 +51,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             this.contextMenu.Items.Add(new ToolStripSeparator());
             this.form.Show();
 
-            this.commandContainer = new CommandContainer<string>(
-                this.form,
-                this.contextMenu.Items,
-                ToolStripItemDisplayStyle.ImageAndText,
-                new Mock<IServiceProvider>().Object);
+            this.commandSurface = new ToolStripCommandSurface<string>(
+                ToolStripItemDisplayStyle.ImageAndText);
+            this.commandSurface.ApplyTo(this.contextMenu);
         }
 
         [TearDown]
@@ -65,13 +63,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         }
 
         //---------------------------------------------------------------------
-        // Top-level commands.
+        // Menu enabling/disabling.
         //---------------------------------------------------------------------
 
         [Test]
         public void WhenQueryStateReturnsUnavailable_ThenMenuItemIsHidden()
         {
-            this.commandContainer.AddCommand(
+            this.commandSurface.Commands.AddCommand(
                 new Command<string>(
                     "test",
                     ctx => CommandState.Unavailable,
@@ -80,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             var menuItem = this.contextMenu.Items
                 .OfType<ToolStripMenuItem>()
                 .First(i => i.Text == "test");
-            this.commandContainer.Context = "ctx";
+            this.commandSurface.CurrentContext = "ctx";
             this.contextMenu.Show();
 
             Assert.IsFalse(menuItem.Visible);
@@ -89,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         [Test]
         public void WhenQueryStateReturnsDisabled_ThenMenuItemIsDisabled()
         {
-            this.commandContainer.AddCommand(
+            this.commandSurface.Commands.AddCommand(
                 new Command<string>(
                     "test",
                     ctx => CommandState.Disabled,
@@ -98,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             var menuItem = this.contextMenu.Items
                 .OfType<ToolStripMenuItem>()
                 .First(i => i.Text == "test");
-            this.commandContainer.Context = "ctx";
+            this.commandSurface.CurrentContext = "ctx";
             this.contextMenu.Show();
 
             Assert.IsTrue(menuItem.Visible);
@@ -108,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         [Test]
         public void WhenQueryStateReturnsEnabled_ThenMenuItemIsEnabled()
         {
-            this.commandContainer.AddCommand(
+            this.commandSurface.Commands.AddCommand(
                 new Command<string>(
                     "test",
                     ctx => CommandState.Enabled,
@@ -117,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             var menuItem = this.contextMenu.Items
                 .OfType<ToolStripMenuItem>()
                 .First(i => i.Text == "test");
-            this.commandContainer.Context = "ctx";
+            this.commandSurface.CurrentContext = "ctx";
             this.contextMenu.Show();
 
             Assert.IsTrue(menuItem.Visible);
@@ -125,17 +123,34 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.IsNull(menuItem.ToolTipText);
         }
 
+        //---------------------------------------------------------------------
+        // ExecuteCommandByKey.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenKeyIsUnknown_ThenExecuteCommandByKeyDoesNothing()
         {
-            this.commandContainer.ExecuteCommandByKey(Keys.A);
+            this.commandSurface.Commands.ExecuteCommandByKey(Keys.A);
+        }
+
+        [Test]
+        public void WhenContextIsNull_ThenExecuteCommandByKeyDoesNothing()
+        {
+            this.commandSurface.Commands.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Enabled,
+                    ctx => Assert.Fail("Unexpected callback")));
+
+            this.commandSurface.CurrentContext = null;
+            this.commandSurface.Commands.ExecuteCommandByKey(Keys.F4);
         }
 
         [Test]
         public void WhenKeyIsMappedAndCommandIsEnabled_ThenExecuteCommandInvokesHandler()
         {
             string contextOfCallback = null;
-            this.commandContainer.AddCommand(
+            this.commandSurface.Commands.AddCommand(
                 new Command<string>(
                     "test",
                     ctx => CommandState.Enabled,
@@ -147,9 +162,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                     ShortcutKeys = Keys.F4
                 });
 
-            this.commandContainer.Context = "foo";
+            this.commandSurface.CurrentContext = "foo";
 
-            this.commandContainer.ExecuteCommandByKey(Keys.F4);
+            this.commandSurface.Commands.ExecuteCommandByKey(Keys.F4);
 
             Assert.AreEqual("foo", contextOfCallback);
         }
@@ -157,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         [Test]
         public void WhenKeyIsMappedAndCommandIsDisabled_ThenExecuteCommandByKeyDoesNothing()
         {
-            this.commandContainer.AddCommand(
+            this.commandSurface.Commands.AddCommand(
                 new Command<string>(
                     "test",
                     ctx => CommandState.Disabled,
@@ -169,16 +184,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                     ShortcutKeys = Keys.F4
                 });
 
-            this.commandContainer.Context = "foo";
+            this.commandSurface.CurrentContext = "foo";
 
-            this.commandContainer.ExecuteCommandByKey(Keys.F4);
+            this.commandSurface.Commands.ExecuteCommandByKey(Keys.F4);
         }
 
+        //---------------------------------------------------------------------
+        // ForceRefresh.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenContainerHasCommands_ThenRefreshCallsQueryState()
+        public void WhenContainerHasCommands_ThenForceRefreshCallsQueryState()
         {
             int queryCalls = 0;
-            this.commandContainer.AddCommand(
+            this.commandSurface.Commands.AddCommand(
                 new Command<string>(
                     "test",
                     ctx =>
@@ -189,12 +208,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                     },
                     ctx => throw new InvalidOperationException()));
 
-            this.commandContainer.Context = "ctx";
+            this.commandSurface.CurrentContext = "ctx";
             this.contextMenu.Show();
 
             Assert.AreEqual(1, queryCalls);
 
-            this.commandContainer.Refresh();
+            ((CommandContainer<string>)this.commandSurface.Commands).ForceRefresh();
 
             Assert.AreEqual(2, queryCalls);
         }
@@ -206,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         [Test]
         public void WhenSubMenuAdded_ThenContextIsShared()
         {
-            var parentMenu = (CommandContainer<string>)this.commandContainer.AddCommand(
+            var parentMenu = (CommandContainer<string>)this.commandSurface.Commands.AddCommand(
                 new Command<string>(
                     "parent",
                     ctx => CommandState.Enabled,
@@ -222,51 +241,92 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.AreEqual("ctx", subMenu.Context);
         }
 
+        [Test]
+        public void WhenSubCommandsAdded_ThenOnMenuItemsChangedEventIsRaised()
+        {
+            var root = (CommandContainer<string>)this.commandSurface.Commands;
+
+            int eventsReceived = 0;
+            root.MenuItemsChanged += (s, a) =>
+            {
+                eventsReceived++;
+            };
+
+            var parentMenu = root.AddCommand(
+                new Command<string>(
+                    "parent",
+                    ctx => CommandState.Enabled,
+                    ctx => throw new InvalidOperationException()));
+            var subMenu = (CommandContainer<string>)parentMenu.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Disabled,
+                    ctx => throw new InvalidOperationException()));
+            subMenu.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Disabled,
+                    ctx => throw new InvalidOperationException()));
+            subMenu.AddSeparator();
+
+            Assert.AreEqual(4, eventsReceived);
+        }
+
         //---------------------------------------------------------------------
-        // Default commands.
+        // ExecuteDefaultCommand.
         //---------------------------------------------------------------------
 
         [Test]
         public void WhenContainerDoesNotHaveDefaultCommand_ThenExecuteDefaultCommandDoesNothing()
         {
-            this.commandContainer.AddCommand(
+            this.commandSurface.Commands.AddCommand(
                 new Command<string>(
                     "test",
                     ctx => CommandState.Enabled,
-                    ctx =>
-                    {
-                        Assert.Fail();
-                    })
+                    ctx => Assert.Fail("Unexpected callback"))
                 {
                 });
 
-            this.commandContainer.ExecuteDefaultCommand();
+            this.commandSurface.Commands.ExecuteDefaultCommand();
         }
 
         [Test]
         public void WhenDefaultCommandIsDisabled_ThenExecuteDefaultCommandDoesNothing()
         {
 
-            this.commandContainer.AddCommand(
+            this.commandSurface.Commands.AddCommand(
                 new Command<string>(
                     "test",
                     ctx => CommandState.Disabled,
-                    ctx =>
-                    {
-                        Assert.Fail();
-                    })
+                    ctx => Assert.Fail("Unexpected callback"))
                 {
                     IsDefault = true
                 });
 
-            this.commandContainer.ExecuteDefaultCommand();
+            this.commandSurface.Commands.ExecuteDefaultCommand();
+        }
+
+        [Test]
+        public void WhenContextIsNull_ThenExecuteDefaultCommandDoesNothing()
+        {
+
+            this.commandSurface.Commands.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Enabled,
+                    ctx => Assert.Fail("Unexpected callback"))
+                {
+                    IsDefault = true
+                });
+
+            this.commandSurface.Commands.ExecuteDefaultCommand();
         }
 
         [Test]
         public void WhenDefaultCommandIsEnabled_ThenExecuteDefaultExecutesCommand()
         {
             bool commandExecuted = false;
-            this.commandContainer.AddCommand(
+            this.commandSurface.Commands.AddCommand(
                 new Command<string>(
                     "test",
                     ctx => CommandState.Enabled,
@@ -278,7 +338,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                     IsDefault = true
                 });
 
-            this.commandContainer.ExecuteDefaultCommand();
+            this.commandSurface.CurrentContext = "test";
+            this.commandSurface.Commands.ExecuteDefaultCommand();
             Assert.IsTrue(commandExecuted);
         }
     }
