@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -26,7 +26,28 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Surface
 {
     /// <summary>
-    /// Helper class for creating simple commands.
+    /// A command that can be sufaced in a menu or some other
+    /// control.
+    /// </summary>
+    public interface ICommand<TContext>
+    {
+        string Text { get; }
+        System.Drawing.Image Image { get; }
+        Keys ShortcutKeys { get; }
+
+        CommandState QueryState(TContext context);
+        void Execute(TContext context);
+    }
+
+    public enum CommandState
+    {
+        Enabled,
+        Disabled,
+        Unavailable
+    }
+
+    /// <summary>
+    /// Basic command implementation.
     /// </summary>
     public class Command<TContext> : ICommand<TContext>
     {

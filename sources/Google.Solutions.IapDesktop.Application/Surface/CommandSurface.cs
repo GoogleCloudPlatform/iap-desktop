@@ -10,6 +10,10 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Surface
 {
+    /// <summary>
+    /// UI that surfaces a set of commands.
+    /// </summary>
+    /// <typeparam name="TContext"></typeparam>
     public interface ICommandSurface<TContext>
         where TContext : class
     {
@@ -20,7 +24,6 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         where TContext : class
     {
         private readonly CommandContainer<TContext> commands;
-
 
         //---------------------------------------------------------------------
         // Publics.

@@ -95,7 +95,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             var exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
-            // TODO: Move to separate classes
             this.contextMenuSurface = new ToolStripCommandSurface<IProjectModelNode>(
                 ToolStripItemDisplayStyle.ImageAndText);
             this.contextMenuSurface.CommandFailed += Surface_CommandFailed;
@@ -182,8 +181,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             //
             // Toolbar.
-            // TODO: Resurface standard toolbar buttons
-
+            // 
             this.linuxInstancesToolStripMenuItem.BindProperty(
                 c => c.Checked,
                 this.viewModel,
