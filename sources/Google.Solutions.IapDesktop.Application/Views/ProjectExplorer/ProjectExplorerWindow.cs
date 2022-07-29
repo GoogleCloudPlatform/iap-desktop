@@ -64,6 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         public CommandContainer<IProjectModelNode> ContextMenuCommands { get; }
         public CommandContainer<IProjectModelNode> ToolbarCommands { get; }
 
+
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockLeft)
         {
@@ -87,16 +88,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.jobService = serviceProvider.GetService<IJobService>();
             this.authService = serviceProvider.GetService<IAuthorizationSource>();
 
+            var exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
+            
             this.ContextMenuCommands = new CommandContainer<IProjectModelNode>(
-                this,
-                this.contextMenu.Items,
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.serviceProvider);
+                e => exceptionDialog.Show(this, "Failed to execute command", e),
+                null);
+            this.contextMenu.Items.AddRange(this.ContextMenuCommands.MenuItems.ToArray());
+
             this.ToolbarCommands = new CommandContainer<IProjectModelNode>(
-                this,
-                this.toolStrip.Items,
                 ToolStripItemDisplayStyle.Image,
-                this.serviceProvider);
+                e => exceptionDialog.Show(this, "Failed to execute command", e),
+                null);
+            this.toolStrip.Items.AddRange(this.ToolbarCommands.MenuItems.ToArray());
 
             this.viewModel = new ProjectExplorerViewModel(
                 this,

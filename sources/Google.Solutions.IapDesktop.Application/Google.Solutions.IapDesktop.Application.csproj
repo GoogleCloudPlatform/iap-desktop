@@ -171,6 +171,7 @@
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
+    <Compile Include="Surface\CommandSurfaceBase.cs" />
     <Compile Include="Surface\ICommandContainer.cs" />
     <Compile Include="Surface\ICommandSurface.cs" />
     <Compile Include="Util\AsyncLock.cs" />

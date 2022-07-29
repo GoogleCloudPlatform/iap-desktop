@@ -14,7 +14,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
     public abstract class CommandSurfaceBase<TContext> : ICommandSurface<TContext>
         where TContext : class
     {
-        private readonly UnboundCommandContainer<TContext> commands;
+        private readonly CommandContainer<TContext> commands;
 
 
         //---------------------------------------------------------------------
@@ -25,32 +25,47 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
         protected CommandSurfaceBase(ToolStripItemDisplayStyle displayStyle)
         {
-            this.commands = new UnboundCommandContainer<TContext>(
+            this.commands = new CommandContainer<TContext>(
                 displayStyle,
                 e => this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e)),
                 null);
         }
 
-        public void ApplyTo(ToolStripDropDown menu)
-        {
-            menu.Items.AddRange(this.commands.MenuItems.ToArray());
+        //public void ApplyToMenu(ToolStripDropDown menu)
+        //{
+        //    menu.Opening += (s, a) =>
+        //    {
+        //        //
+        //        // Set context to update menu states.
+        //        //
+        //        var newContext = this.CurrentContext;
+        //        Debug.Assert(newContext != null);
+        //        this.commands.Context = newContext;
 
-            menu.Opening += (s, a) =>
+        //        //
+        //        // Update menu since the items might have changed.
+        //        //
+        //        menu.Items.Clear();
+        //        menu.Items.AddRange(this.commands.MenuItems.ToArray());
+        //    };
+        //    menu.Closed += (s, a) =>
+        //    {
+        //        //
+        //        // Reset context as it's not needed and valid
+        //        // anymore now.
+        //        //
+        //        this.commands.Context = null;
+        //    };
+        //}
+
+        public void ApplyTo(ToolStrip toolBar)
+        {
+            toolBar.Items.AddRange(this.commands.MenuItems.ToArray());
+
+            this.commands.MenuItemsChanged += (s, e) =>
             {
-                //
-                // Set context to update menu states.
-                //
-                var newContext = this.Context;
-                Debug.Assert(newContext != null);
-                this.commands.Context = newContext;
-            };
-            menu.Closed += (s, a) =>
-            {
-                //
-                // Reset context as it's not needed and valid
-                // anymore now.
-                //
-                this.commands.Context = null;
+                toolBar.Items.Clear();
+                toolBar.Items.AddRange(this.commands.MenuItems.ToArray());
             };
         }
 
@@ -58,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         // Abstracts.
         //---------------------------------------------------------------------
 
-        protected abstract TContext Context { get; }
+        protected abstract TContext CurrentContext { get; }
 
         //---------------------------------------------------------------------
         // ICommandSurface.
@@ -71,22 +86,39 @@ namespace Google.Solutions.IapDesktop.Application.Surface
     /// <summary>
     /// Command container that can be bound to multiple controls.
     /// </summary>
-    internal class UnboundCommandContainer<TContext> : ICommandContainer<TContext> // TODO: Rename class
+    public class CommandContainer<TContext> : ICommandContainer<TContext>
         where TContext : class
     {
         private TContext context;
-        private readonly UnboundCommandContainer<TContext> parent;
+        private readonly CommandContainer<TContext> parent;
         private readonly List<ToolStripItem> menuItems = new List<ToolStripItem>();
         
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly Action<Exception> exceptionHandler;
 
-        private void UpdateMenuItemState(
+        public EventHandler<EventArgs> MenuItemsChanged;
+
+        protected void OnMenuItemsChanged()
+        {
+            if (this.parent != null)
+            {
+                //
+                // Let the parent fire the event.
+                //
+                this.parent.OnMenuItemsChanged();
+            }
+            else
+            {
+                this.MenuItemsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private static void UpdateMenuItemState(
+            IEnumerable<ToolStripItem> menuItems,
             TContext context)
         {
             // Update state of each menu item.
             foreach (var menuItem in menuItems
-                .OfType<ToolStripMenuItem>()
                 .Where(m => m.Tag is ICommand<TContext>))
             {
                 switch (((ICommand<TContext>)menuItem.Tag).QueryState(context))
@@ -109,7 +141,13 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                 // NB. Only the top-most container has its context set.
                 // Therefore, recursively update child menus as well.
                 //
-                UpdateMenuItemState(context);
+
+                if (menuItem is ToolStripDropDownItem dropDown)
+                {
+                    UpdateMenuItemState(
+                        dropDown.DropDownItems.Cast<ToolStripDropDownItem>(),
+                        context);
+                }
             }
         }
 
@@ -117,10 +155,10 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         // Publics.
         //---------------------------------------------------------------------
 
-        public UnboundCommandContainer(
+        public CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
             Action<Exception> exceptionHandler,
-            UnboundCommandContainer<TContext> parent)
+            CommandContainer<TContext> parent)
         {
             this.displayStyle = displayStyle;
             this.exceptionHandler = exceptionHandler;
@@ -139,11 +177,19 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             {
                 this.context = value;
 
-                UpdateMenuItemState(value);
+                UpdateMenuItemState(this.menuItems, value);
             }
         }
 
         public IList<ToolStripItem> MenuItems => this.menuItems;
+
+        /// <summary>
+        /// Refresh the state of menu items.
+        /// </summary>
+        public void ForceRefresh()
+        {
+            UpdateMenuItemState(this.menuItems, this.context);
+        }
 
         //---------------------------------------------------------------------
         // ICommandContainer.
@@ -194,8 +240,10 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                 this.menuItems.Add(menuItem);
             }
 
+            OnMenuItemsChanged();
+
             // Return a new contains that enables registering sub-commands.
-            return new UnboundCommandContainer<TContext>(
+            return new CommandContainer<TContext>(
                 this.displayStyle,
                 this.exceptionHandler,
                 this);

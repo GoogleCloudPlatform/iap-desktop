@@ -60,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IThemeService themeService;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly IServiceProvider serviceProvider;
+        private readonly IExceptionDialog exceptionDialog;
         private IIapUrlHandler urlHandler;
 
         public IapRdpUrl StartupUrl { get; set; }
@@ -72,6 +73,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.themeService = this.serviceProvider.GetService<IThemeService>();
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
             // 
             // Restore window settings.
@@ -110,27 +112,26 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Bind controls.
             //
+
             this.ViewMenu = new CommandContainer<IMainForm>(
-                this,
-                this.viewToolStripMenuItem.DropDownItems,
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.serviceProvider)
+                e => this.exceptionDialog.Show(this, "Failed to execute command", e),
+                null)
             {
                 Context = this // There is no real context for this.
             };
+            this.viewToolStripMenuItem.DropDownItems.AddRange(this.ViewMenu.MenuItems.ToArray());
 
             this.WindowMenu = new CommandContainer<ToolWindow>(
-                this,
-                this.windowToolStripMenuItem.DropDownItems,
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.serviceProvider)
-            {
-                Context = null
-            };
+                e => this.exceptionDialog.Show(this, "Failed to execute command", e),
+                null);
+            this.windowToolStripMenuItem.DropDownItems.AddRange(this.WindowMenu.MenuItems.ToArray());
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
                 this.WindowMenu.Context = this.dockPanel.ActiveContent as ToolWindow;
             };
+
             this.dockPanel.ActiveContentChanged += (sender, args) =>
             {
                 //
@@ -561,7 +562,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // bypassing the menu-open event (which normally
             // updates the context).
             //
-            this.WindowMenu.Refresh();
+            this.WindowMenu.ForceRefresh();
         }
 
         internal void ConnectToUrl(IapRdpUrl url)
@@ -637,13 +638,13 @@ namespace Google.Solutions.IapDesktop.Windows
             }
 
             var commandContainer = new CommandContainer<IMainForm>(
-                this,
-                menu.DropDownItems,
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.serviceProvider)
+                e => this.exceptionDialog.Show(this, "Failed to execute command", e),
+                null)
             {
                 Context = this // There is no real context for this.
             };
+            menu.DropDownItems.AddRange(commandContainer.MenuItems.ToArray());
 
             menu.DropDownOpening += (sender, args) =>
             {
