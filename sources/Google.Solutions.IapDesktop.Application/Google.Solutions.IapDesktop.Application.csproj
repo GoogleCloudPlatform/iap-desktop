@@ -170,6 +170,7 @@
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
+    <Compile Include="ObjectModel\ToolStripMenuBindingExtensions.cs" />
     <Compile Include="Surface\CommandContainer.cs" />
     <Compile Include="Surface\MenuCommandContainer.cs" />
     <Compile Include="Surface\ToolStripCommandContainer.cs" />

@@ -106,6 +106,8 @@
     <Compile Include="Controls\TestListViewExtensions.cs" />
     <Compile Include="Host\TestProfile.cs" />
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
+    <Compile Include="ObjectModel\TestToolStripMenuBindingExtensions.cs" />
+    <Compile Include="Surface\TestCommandContainer.cs" />
     <Compile Include="Surface\TestToolStripCommandContainer.cs" />
     <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />

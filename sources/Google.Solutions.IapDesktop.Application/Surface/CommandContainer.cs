@@ -168,6 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             }
         }
 
+        // TODO: Create fresh menu tree to avoid sharing items
         public IEnumerable<ToolStripItem> MenuItems => this.menuItems
             .Cast<ToolStripItem>();
 
