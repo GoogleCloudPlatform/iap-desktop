@@ -50,14 +50,12 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         void ExecuteCommandByKey(Keys keys);
 
         void ExecuteDefaultCommand();
-
-        void ForceRefresh();
     }
 
     /// <summary>
     /// Set of commands that is not tied to any specific UI control.
     /// </summary>
-    internal class CommandContainer<TContext> : ICommandContainer<TContext>
+    public class CommandContainer<TContext> : ICommandContainer<TContext>
         where TContext : class
     {
         private TContext context;
@@ -65,9 +63,9 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         private readonly System.Collections.IList /* of ToolStripMenuItem */ menuItems;
 
         private readonly ToolStripItemDisplayStyle displayStyle;
-        private readonly Action<Exception> exceptionHandler;
 
         public EventHandler<EventArgs> MenuItemsChanged;
+        public event EventHandler<ExceptionEventArgs> CommandFailed;
 
         protected void OnMenuItemsChanged()
         {
@@ -84,6 +82,10 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             {
                 this.MenuItemsChanged?.Invoke(this, EventArgs.Empty);
             }
+        }
+        protected void OnCommandFailed(Exception e)
+        {
+            this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e));
         }
 
         private static void UpdateMenuItemState(
@@ -129,12 +131,10 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
         private CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
-            Action<Exception> exceptionHandler,
             CommandContainer<TContext> parent,
             System.Collections.IList menuItems)
         {
             this.displayStyle = displayStyle;
-            this.exceptionHandler = exceptionHandler;
             this.parent = parent;
             this.menuItems = menuItems;
         }
@@ -145,10 +145,8 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         //---------------------------------------------------------------------
 
         public CommandContainer(
-            ToolStripItemDisplayStyle displayStyle,
-            Action<Exception> exceptionHandler)
+            ToolStripItemDisplayStyle displayStyle)
             : this(displayStyle, 
-                   exceptionHandler,
                    null,
                    new System.Collections.ArrayList())
         {
@@ -205,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                     }
                     catch (Exception e)
                     {
-                        this.exceptionHandler(e);
+                        OnCommandFailed(e);
                     }
                 })
             {
@@ -234,7 +232,6 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             // Return a new contains that enables registering sub-commands.
             return new CommandContainer<TContext>(
                 this.displayStyle,
-                this.exceptionHandler,
                 this,
                 menuItem.DropDownItems);
         }

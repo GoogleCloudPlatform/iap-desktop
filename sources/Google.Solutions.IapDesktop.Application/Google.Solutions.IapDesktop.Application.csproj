@@ -171,8 +171,7 @@
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Surface\CommandContainer.cs" />
-    <Compile Include="Surface\CommandSurface.cs" />
-    <Compile Include="Surface\ICommandContainer.cs" />
+    <Compile Include="Surface\ToolStripCommandContainer.cs" />
     <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\ClipboardUtil.cs" />

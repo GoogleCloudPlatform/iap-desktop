@@ -64,14 +64,12 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IExceptionDialog exceptionDialog;
         private IIapUrlHandler urlHandler;
 
-        private readonly ToolStripCommandSurface<IMainForm> viewMenuSurface;
-        private readonly ToolStripCommandSurface<ToolWindow> windowMenuSurface;
+        private readonly ToolStripCommandContainer<IMainForm> viewMenuCommands;
+        private readonly ToolStripCommandContainer<ToolWindow> windowMenuCommands;
 
         public IapRdpUrl StartupUrl { get; set; }
-        public ICommandContainer<IMainForm> ViewMenu
-            => this.viewMenuSurface.Commands;
-        public ICommandContainer<ToolWindow> WindowMenu
-            => this.windowMenuSurface.Commands;
+        public ICommandContainer<IMainForm> ViewMenu => this.viewMenuCommands;
+        public ICommandContainer<ToolWindow> WindowMenu => this.windowMenuCommands;
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
@@ -118,20 +116,20 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Bind controls.
             //
-            this.viewMenuSurface = new ToolStripCommandSurface<IMainForm>(
+            this.viewMenuCommands = new ToolStripCommandContainer<IMainForm>(
                 ToolStripItemDisplayStyle.ImageAndText);
-            this.viewMenuSurface.CommandFailed += Surface_CommandFailed;
-            this.viewMenuSurface.CurrentContext = this;
-            this.viewMenuSurface.ApplyTo(this.viewToolStripMenuItem.DropDownItems);
+            this.viewMenuCommands.CommandFailed += Surface_CommandFailed;
+            this.viewMenuCommands.Context = this;
+            this.viewMenuCommands.ApplyTo(this.viewToolStripMenuItem.DropDownItems);
 
-            this.windowMenuSurface = new ToolStripCommandSurface<ToolWindow>(
+            this.windowMenuCommands = new ToolStripCommandContainer<ToolWindow>(
                 ToolStripItemDisplayStyle.ImageAndText);
-            this.windowMenuSurface.CommandFailed += Surface_CommandFailed;
-            this.windowMenuSurface.ApplyTo(this.windowToolStripMenuItem);
+            this.windowMenuCommands.CommandFailed += Surface_CommandFailed;
+            this.windowMenuCommands.ApplyTo(this.windowToolStripMenuItem);
 
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
-                this.windowMenuSurface.CurrentContext = this.dockPanel.ActiveContent as ToolWindow;
+                this.windowMenuCommands.Context = this.dockPanel.ActiveContent as ToolWindow;
             };
 
             this.dockPanel.ActiveContentChanged += (sender, args) =>
@@ -142,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 // focus is released from an RDP window by using a keyboard
                 // shortcut.
                 //
-                this.windowMenuSurface.CurrentContext =
+                this.windowMenuCommands.Context =
                     (this.dockPanel.ActiveContent ?? this.dockPanel.ActiveDocumentPane?.ActiveContent)
                         as ToolWindow;
             };
@@ -571,7 +569,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // bypassing the menu-open event (which normally
             // updates the context).
             //
-            this.windowMenuSurface.Commands.ForceRefresh();
+            this.windowMenuCommands.ForceRefresh();
         }
 
         internal void ConnectToUrl(IapRdpUrl url)
@@ -646,18 +644,18 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.mainMenu.Items.Add(menu);
             }
 
-            var surface = new ToolStripCommandSurface<IMainForm>(
+            var container = new ToolStripCommandContainer<IMainForm>(
                 ToolStripItemDisplayStyle.ImageAndText);
-            surface.CommandFailed += Surface_CommandFailed;
-            surface.CurrentContext = this;
-            surface.ApplyTo(menu);
+            container.CommandFailed += Surface_CommandFailed;
+            container.Context = this;
+            container.ApplyTo(menu);
 
             menu.DropDownOpening += (sender, args) =>
             {
-                surface.Commands.ForceRefresh();
+                container.ForceRefresh();
             };
 
-            return surface.Commands;
+            return container;
         }
 
         public void Minimize()

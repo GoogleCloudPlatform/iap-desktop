@@ -60,15 +60,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IServiceProvider serviceProvider;
 
         private readonly ProjectExplorerViewModel viewModel;
-
-        private readonly ToolStripCommandSurface<IProjectModelNode> contextMenuSurface;
-        private readonly ToolStripCommandSurface<IProjectModelNode> toolbarSurface;
+        private readonly ToolStripCommandContainer<IProjectModelNode> contextMenuCommands;
+        private readonly ToolStripCommandContainer<IProjectModelNode> toolbarCommands;
 
         public ICommandContainer<IProjectModelNode> ContextMenuCommands 
-            => this.contextMenuSurface.Commands;
+            => this.contextMenuCommands;
 
         public ICommandContainer<IProjectModelNode> ToolbarCommands
-            => this.toolbarSurface.Commands;
+            => this.toolbarCommands;
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockLeft)
@@ -95,15 +94,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             var exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
-            this.contextMenuSurface = new ToolStripCommandSurface<IProjectModelNode>(
+            this.contextMenuCommands = new ToolStripCommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.ImageAndText);
-            this.contextMenuSurface.CommandFailed += Surface_CommandFailed;
-            this.contextMenuSurface.ApplyTo(this.contextMenu);
+            this.contextMenuCommands.CommandFailed += Surface_CommandFailed;
+            this.contextMenuCommands.ApplyTo(this.contextMenu);
 
-            this.toolbarSurface = new ToolStripCommandSurface<IProjectModelNode>(
+            this.toolbarCommands = new ToolStripCommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.Image);
-            this.toolbarSurface.CommandFailed += Surface_CommandFailed;
-            this.toolbarSurface.ApplyTo(this.toolStrip);
+            this.toolbarCommands.CommandFailed += Surface_CommandFailed;
+            this.toolbarCommands.ApplyTo(this.toolStrip);
 
             this.viewModel = new ProjectExplorerViewModel(
                 this,
@@ -124,8 +123,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     //
                     if (node?.ModelNode != null)
                     {
-                        this.contextMenuSurface.CurrentContext = node.ModelNode;
-                        this.toolbarSurface.CurrentContext = node.ModelNode;
+                        this.contextMenuCommands.Context = node.ModelNode;
+                        this.toolbarCommands.Context = node.ModelNode;
                     }
                 });
 
@@ -196,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             // Context menu.
             //
-            this.contextMenuSurface.Commands.AddCommand(
+            this.contextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "&Refresh project",
                     _ => this.viewModel.IsRefreshProjectsCommandVisible
@@ -208,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 {
                     Image = Resources.Refresh_161
                 });
-            this.contextMenuSurface.Commands.AddCommand(
+            this.contextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Refresh &all projects",
                     _ => this.viewModel.IsRefreshAllProjectsCommandVisible
@@ -220,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 {
                     Image = Resources.Refresh_161
                 });
-            this.contextMenuSurface.Commands.AddCommand(
+            this.contextMenuCommands.AddCommand(
                 "&Unload project",
                 _ => this.viewModel.IsUnloadProjectCommandVisible
                     ? CommandState.Enabled
@@ -229,8 +228,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     () => this.viewModel.UnloadSelectedProjectAsync(),
                     "Unloading project"));
 
-            this.contextMenuSurface.Commands.AddSeparator();
-            this.contextMenuSurface.Commands.AddCommand(
+            this.contextMenuCommands.AddSeparator();
+            this.contextMenuCommands.AddCommand(
                 "Open in Cloud Consol&e",
                 _ => this.viewModel.IsCloudConsoleCommandVisible
                     ? CommandState.Enabled
@@ -238,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 _ => InvokeAction(
                     () => this.viewModel.OpenInCloudConsole(),
                     "Opening Cloud Console"));
-            this.contextMenuSurface.Commands.AddCommand(
+            this.contextMenuCommands.AddCommand(
                 "Configure IAP a&ccess",
                 _ => this.viewModel.IsCloudConsoleCommandVisible
                     ? CommandState.Enabled
@@ -246,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 _ => InvokeAction(
                     () => this.viewModel.ConfigureIapAccess(),
                     "Opening Cloud Console"));
-            this.contextMenuSurface.Commands.AddSeparator();
+            this.contextMenuCommands.AddSeparator();
         }
 
         private async Task<bool> AddNewProjectAsync()
@@ -290,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            this.contextMenuSurface.Commands.ExecuteDefaultCommand();
+            this.contextMenuCommands.ExecuteDefaultCommand();
         }
 
         //---------------------------------------------------------------------
@@ -332,8 +331,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 //
                 // Force-select the root node to update menus.
                 //
-                this.contextMenuSurface.CurrentContext = this.viewModel.RootNode.ModelNode;
-                this.toolbarSurface.CurrentContext = this.viewModel.RootNode.ModelNode;
+                this.contextMenuCommands.Context = this.viewModel.RootNode.ModelNode;
+                this.toolbarCommands.Context = this.viewModel.RootNode.ModelNode;
 
                 if (!projects.Any())
                 {
@@ -379,11 +378,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
             else if (e.KeyCode == Keys.Enter)
             {
-                this.contextMenuSurface.Commands.ExecuteDefaultCommand();
+                this.contextMenuCommands.ExecuteDefaultCommand();
             }
             else
             {
-                this.contextMenuSurface.Commands.ExecuteCommandByKey(e.KeyCode);
+                this.contextMenuCommands.ExecuteCommandByKey(e.KeyCode);
             }
         }
 
