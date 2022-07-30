@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
 {
     [TestFixture]
     public class TestNewCommandContainer
-    {// TODO: using(command container)
+    {
         //---------------------------------------------------------------------
         // Context.
         //---------------------------------------------------------------------

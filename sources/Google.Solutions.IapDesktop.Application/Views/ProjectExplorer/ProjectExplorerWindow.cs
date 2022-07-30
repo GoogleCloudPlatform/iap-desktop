@@ -60,8 +60,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IServiceProvider serviceProvider;
 
         private readonly ProjectExplorerViewModel viewModel;
-        private readonly ToolStripCommandContainer<IProjectModelNode> contextMenuCommands;
-        private readonly ToolStripCommandContainer<IProjectModelNode> toolbarCommands;
+        private readonly NewCommandContainer<IProjectModelNode> contextMenuCommands;
+        private readonly NewCommandContainer<IProjectModelNode> toolbarCommands;
 
         public ICommandContainer<IProjectModelNode> ContextMenuCommands 
             => this.contextMenuCommands;
@@ -92,14 +92,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.jobService = serviceProvider.GetService<IJobService>();
             this.authService = serviceProvider.GetService<IAuthorizationSource>();
 
-            this.contextMenuCommands = new ToolStripCommandContainer<IProjectModelNode>(
-                ToolStripItemDisplayStyle.ImageAndText);
-            this.contextMenuCommands.CommandFailed += Surface_CommandFailed;
-
-            this.toolbarCommands = new ToolStripCommandContainer<IProjectModelNode>(
-                ToolStripItemDisplayStyle.Image);
-            this.toolbarCommands.CommandFailed += Surface_CommandFailed;
-
             this.viewModel = new ProjectExplorerViewModel(
                 this,
                 serviceProvider.GetService<ApplicationSettingsRepository>(),
@@ -108,21 +100,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 serviceProvider.GetService<IGlobalSessionBroker>(),
                 serviceProvider.GetService<IProjectModelService>(),
                 serviceProvider.GetService<ICloudConsoleService>());
-
-            this.viewModel.OnPropertyChange(
-                m => m.SelectedNode,
-                node =>
-                {
-                    //
-                    // NB. Due to lazily loading and inaccessible projects,
-                    // ModelNode can be null.
-                    //
-                    if (node?.ModelNode != null)
-                    {
-                        this.contextMenuCommands.Context = node.ModelNode;
-                        this.toolbarCommands.Context = node.ModelNode;
-                    }
-                });
 
             this.Disposed += (sender, args) =>
             {
@@ -172,6 +149,35 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 viewModel,
                 m => m.InstanceFilter,
                 this.Container);
+
+            //
+            // Menus.
+            //
+            var contextSource = new ContextSource<IProjectModelNode>();
+            this.viewModel.OnPropertyChange(
+                m => m.SelectedNode,
+                node =>
+                {
+                    //
+                    // NB. Due to lazily loading and inaccessible projects,
+                    // ModelNode can be null.
+                    //
+                    if (node?.ModelNode != null)
+                    {
+                        contextSource.Context = node.ModelNode;
+                    }
+                });
+
+            this.contextMenuCommands = NewCommandContainer<IProjectModelNode>.Create(
+                ToolStripItemDisplayStyle.ImageAndText,
+                contextSource);
+            this.contextMenuCommands.CommandFailed += Surface_CommandFailed;
+
+            this.toolbarCommands = NewCommandContainer<IProjectModelNode>.Create(
+                ToolStripItemDisplayStyle.Image,
+                contextSource);
+            this.toolbarCommands.CommandFailed += Surface_CommandFailed;
+
 
             //
             // Toolbar.
@@ -245,8 +251,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             // All commands added, apply to menu.
             //
-            this.contextMenuCommands.ApplyTo(this.contextMenu);
-            this.toolbarCommands.ApplyTo(this.toolStrip);
+            this.contextMenuCommands.BindTo(this.contextMenu.Items);
+            this.toolbarCommands.BindTo(this.toolStrip.Items);
         }
 
         private async Task<bool> AddNewProjectAsync()

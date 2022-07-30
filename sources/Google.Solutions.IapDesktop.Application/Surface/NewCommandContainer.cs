@@ -19,7 +19,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface // TODO: change namesp
         TContext Context { get; }
     }
 
-    // TODO: Move to separate file
+    // TODO: Move to separate file or delete?
     public class ContextSource<TContext> : ViewModelBase, ICommandContextSource<TContext>
     {
         private TContext context;
