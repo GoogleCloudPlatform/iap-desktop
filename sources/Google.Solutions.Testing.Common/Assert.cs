@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
@@ -105,6 +106,32 @@ namespace Google.Solutions.Testing.Common
             {
                 throw new ArgumentException("Expression does not resolve to a property");
             }
+        }
+
+        public static void RaisesCollectionChangedNotification(
+            INotifyCollectionChanged obj,
+            Action action,
+            NotifyCollectionChangedAction expected)
+        {
+            var callbacks = 0;
+
+            void handler(object sender, NotifyCollectionChangedEventArgs args)
+            {
+                Assert.AreSame(obj, sender);
+                if (args.Action == expected)
+                {
+                    callbacks++;
+                }
+            }
+
+            obj.CollectionChanged += handler;
+            action();
+            obj.CollectionChanged -= handler;
+
+            Assert.AreEqual(
+                1,
+                callbacks,
+                $"Expected CollectionChanged callback for {expected}");
         }
     }
 }

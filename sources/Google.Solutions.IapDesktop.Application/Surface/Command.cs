@@ -37,6 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
         CommandState QueryState(TContext context);
         void Execute(TContext context);
+        bool IsDefault { get; }
     }
 
     public enum CommandState

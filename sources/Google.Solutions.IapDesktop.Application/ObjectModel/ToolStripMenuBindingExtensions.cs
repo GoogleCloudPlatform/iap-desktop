@@ -151,6 +151,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                     {
                         Tag = model
                     };
+
                     item.BindItem(
                         model,
                         isSeparator,
@@ -164,6 +165,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                         getChildren,
                         click,
                         container);
+
                     return item;
                 }
             }
