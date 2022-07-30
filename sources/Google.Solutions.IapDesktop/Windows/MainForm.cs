@@ -63,8 +63,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IServiceProvider serviceProvider;
         private IIapUrlHandler urlHandler;
 
-        private readonly ContextSource<IMainForm> viewMenuContextSource;
-        private readonly ContextSource<ToolWindow> windowMenuContextSource;
+        private readonly CommandContextSource<IMainForm> viewMenuContextSource;
+        private readonly CommandContextSource<ToolWindow> windowMenuContextSource;
 
         private readonly CommandContainer<IMainForm> viewMenuCommands;
         private readonly CommandContainer<ToolWindow> windowMenuCommands;
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // View menu.
             //
-            this.viewMenuContextSource = new ContextSource<IMainForm>()
+            this.viewMenuContextSource = new CommandContextSource<IMainForm>()
             {
                 Context = this // Pseudo-context, never changes
             };
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Window menu.
             //
-            this.windowMenuContextSource = new ContextSource<ToolWindow>();
+            this.windowMenuContextSource = new CommandContextSource<ToolWindow>();
 
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
@@ -661,7 +661,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             var container = CommandContainer<IMainForm>.Create(
                 ToolStripItemDisplayStyle.ImageAndText,
-                new ContextSource<IMainForm>()
+                new CommandContextSource<IMainForm>()
                 {
                     Context = this
                 });

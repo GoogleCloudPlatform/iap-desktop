@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenContextChanged_ThenQueryStateIsCalledOnTopLevelCommands()
         {
-            var source = new ContextSource<string>()
+            var source = new CommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenContextChanged_ThenQueryStateIsCalledOnChildCommands()
         {
-            var source = new ContextSource<string>()
+            var source = new CommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenContextChanged_ThenExecuteUsesLatestContext()
         {
-            var source = new ContextSource<string>()
+            var source = new CommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         {
             using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>()))
+                new CommandContextSource<string>()))
             {
                 PropertyAssert.RaisesCollectionChangedNotification(
                     container.MenuItems,
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         {
             using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>()))
+                new CommandContextSource<string>()))
             {
                 PropertyAssert.RaisesCollectionChangedNotification(
                     container.MenuItems,
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         {
             using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>()))
+                new CommandContextSource<string>()))
             {
                 container.ExecuteCommandByKey(Keys.A);
             }
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenKeyIsMappedAndCommandIsEnabled_ThenExecuteCommandInvokesHandler()
         {
-            var source = new ContextSource<string>()
+            var source = new CommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenKeyIsMappedAndCommandIsDisabled_ThenExecuteCommandByKeyDoesNothing()
         {
-            var source = new ContextSource<string>()
+            var source = new CommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenContainerDoesNotHaveDefaultCommand_ThenExecuteDefaultCommandDoesNothing()
         {
-            var source = new ContextSource<string>()
+            var source = new CommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -269,7 +269,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenDefaultCommandIsDisabled_ThenExecuteDefaultCommandDoesNothing()
         {
-            var source = new ContextSource<string>()
+            var source = new CommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -294,7 +294,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenDefaultCommandIsEnabled_ThenExecuteDefaultExecutesCommand()
         {
-            var source = new ContextSource<string>()
+            var source = new CommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -330,7 +330,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         {
             using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>()))
+                new CommandContextSource<string>()))
             {
                 Exception exception = null;
                 container.CommandFailed += (s, a) =>
@@ -359,7 +359,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         {
             using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>()))
+                new CommandContextSource<string>()))
             {
                 container.CommandFailed += (s, a) => Assert.Fail();
 
