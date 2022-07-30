@@ -38,11 +38,11 @@ namespace Google.Solutions.IapDesktop.Application.Surface
     public sealed class CommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
         where TContext : class
     {
-        private IDisposable binding;
+        private readonly IDisposable binding;
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly ObservableCollection<MenuItemViewModelBase> menuItems;
-        
-        internal Func<TContext> GetContext { get; }
+
+        internal ICommandContextSource<TContext> ContextSource { get; }
 
         internal ObservableCollection<MenuItemViewModelBase> MenuItems => this.menuItems;
 
@@ -50,47 +50,32 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
         private CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
-            Func<TContext> getContext,
+            ICommandContextSource<TContext> contextSource,
             ObservableCollection<MenuItemViewModelBase> items)
         {
             this.displayStyle = displayStyle;
             this.menuItems = items;
-            this.GetContext = getContext;
+            this.ContextSource = contextSource;
+        }
+
+        public CommandContainer(
+            ToolStripItemDisplayStyle displayStyle,
+            ICommandContextSource<TContext> contextSource)
+            : this(
+                  displayStyle, 
+                  contextSource,
+                  new ObservableCollection<MenuItemViewModelBase>())
+        {
+            this.binding = this.ContextSource.OnPropertyChange(
+                s => s.Context,
+                context => {
+                    MenuItemViewModel.OnContextUpdated(this.menuItems);
+                });
         }
 
         private void OnCommandFailed(Exception e)
         {
             this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e));
-        }
-
-        public static CommandContainer<TContext> Create<TSource>(
-            ToolStripItemDisplayStyle displayStyle,
-            TSource contextSource,
-            Expression<Func<TSource, TContext>> contextProperty)
-            where TSource : INotifyPropertyChanged
-        {
-            var contextAccessor = contextProperty.Compile();
-
-            var container = new CommandContainer<TContext>(
-                displayStyle,
-                () => contextAccessor(contextSource),
-                new ObservableCollection<MenuItemViewModelBase>());
-
-            container.binding = contextSource.OnPropertyChange(
-                contextProperty,
-                context => container.ForceRefresh());
-
-            return container;
-        }
-
-        public static CommandContainer<TContext> Create(
-            ToolStripItemDisplayStyle displayStyle,
-            ICommandContextSource<TContext> source)
-        {
-            return Create(
-                displayStyle,
-                source,
-                s => s.Context);
         }
 
         public void BindTo(
@@ -155,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
             return new CommandContainer<TContext>(
                 this.displayStyle,
-                this.GetContext,
+                this.ContextSource,
                 item.Children);
         }
 
@@ -278,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
             internal void OnContextUpdated()
             {
-                switch (this.command.QueryState(this.container.GetContext()))
+                switch (this.command.QueryState(this.container.ContextSource.Context))
                 {
                     case CommandState.Disabled:
                         this.IsVisible = true;
@@ -332,7 +317,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             {
                 try
                 {
-                    this.command.Execute(this.container.GetContext());
+                    this.command.Execute(this.container.ContextSource.Context);
                 }
                 catch (Exception e) when (e.IsCancellation())
                 {

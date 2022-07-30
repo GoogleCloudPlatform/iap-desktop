@@ -168,12 +168,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     }
                 });
 
-            this.contextMenuCommands = CommandContainer<IProjectModelNode>.Create(
+            this.contextMenuCommands = new CommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.ImageAndText,
                 contextSource);
             this.contextMenuCommands.CommandFailed += Surface_CommandFailed;
 
-            this.toolbarCommands = CommandContainer<IProjectModelNode>.Create(
+            this.toolbarCommands = new CommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.Image,
                 contextSource);
             this.toolbarCommands.CommandFailed += Surface_CommandFailed;
