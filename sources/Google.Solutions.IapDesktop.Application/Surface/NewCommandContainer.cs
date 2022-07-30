@@ -96,6 +96,11 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                 container);
         }
 
+        public void ForceRefresh()
+        {
+            MenuItemViewModel.OnContextUpdated(this.menuItems);
+        }
+
         //---------------------------------------------------------------------
         // IDisposable.
         //---------------------------------------------------------------------
@@ -120,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
                 this);
             if (index != null)
             {
-                this.menuItems.Insert(index.Value, item);
+                this.menuItems.Insert(Math.Min(index.Value, this.menuItems.Count), item);
             }
             else
             {

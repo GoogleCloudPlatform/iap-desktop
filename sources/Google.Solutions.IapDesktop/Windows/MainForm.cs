@@ -61,11 +61,13 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IThemeService themeService;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly IServiceProvider serviceProvider;
-        private readonly IExceptionDialog exceptionDialog;
         private IIapUrlHandler urlHandler;
 
-        private readonly ToolStripCommandContainer<IMainForm> viewMenuCommands;
-        private readonly ToolStripCommandContainer<ToolWindow> windowMenuCommands;
+        private readonly ContextSource<IMainForm> viewMenuContextSource;
+        private readonly ContextSource<ToolWindow> windowMenuContextSource;
+
+        private readonly NewCommandContainer<IMainForm> viewMenuCommands;
+        private readonly NewCommandContainer<ToolWindow> windowMenuCommands;
 
         public IapRdpUrl StartupUrl { get; set; }
         public ICommandContainer<IMainForm> ViewMenu => this.viewMenuCommands;
@@ -77,7 +79,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.themeService = this.serviceProvider.GetService<IThemeService>();
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
-            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
             // 
             // Restore window settings.
@@ -114,22 +115,27 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.dockPanel.DockRightPortion = 300.0f;
 
             //
-            // Bind controls.
+            // View menu.
             //
-            this.viewMenuCommands = new ToolStripCommandContainer<IMainForm>(
-                ToolStripItemDisplayStyle.ImageAndText);
-            this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
-            this.viewMenuCommands.Context = this;
-            this.viewMenuCommands.ApplyTo(this.viewToolStripMenuItem);
+            this.viewMenuContextSource = new ContextSource<IMainForm>()
+            {
+                Context = this // Pseudo-context, never changes
+            };
 
-            this.windowMenuCommands = new ToolStripCommandContainer<ToolWindow>(
-                ToolStripItemDisplayStyle.ImageAndText);
-            this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;
-            this.windowMenuCommands.ApplyTo(this.windowToolStripMenuItem);
+            this.viewMenuCommands = new NewCommandContainer<IMainForm>(
+                ToolStripItemDisplayStyle.ImageAndText,
+                this.viewMenuContextSource);
+            this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
+            this.viewMenuCommands.BindTo(this.viewToolStripMenuItem.DropDownItems);
+
+            //
+            // Window menu.
+            //
+            this.windowMenuContextSource = new ContextSource<ToolWindow>();
 
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
-                this.windowMenuCommands.Context = this.dockPanel.ActiveContent as ToolWindow;
+                windowMenuContextSource.Context = this.dockPanel.ActiveContent as ToolWindow;
             };
 
             this.dockPanel.ActiveContentChanged += (sender, args) =>
@@ -140,11 +146,20 @@ namespace Google.Solutions.IapDesktop.Windows
                 // focus is released from an RDP window by using a keyboard
                 // shortcut.
                 //
-                this.windowMenuCommands.Context =
+                windowMenuContextSource.Context =
                     (this.dockPanel.ActiveContent ?? this.dockPanel.ActiveDocumentPane?.ActiveContent)
                         as ToolWindow;
             };
 
+            this.windowMenuCommands = new NewCommandContainer<ToolWindow>(
+                ToolStripItemDisplayStyle.ImageAndText,
+                this.windowMenuContextSource);
+            this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;
+            this.windowMenuCommands.BindTo(this.windowToolStripMenuItem.DropDownItems);
+
+            //
+            // Bind controls.
+            //
             this.viewModel = new MainFormViewModel(
                 this,
                 bootstrappingServiceProvider.GetService<Profile>(),
