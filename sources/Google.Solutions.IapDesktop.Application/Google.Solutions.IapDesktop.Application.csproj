@@ -172,7 +172,7 @@
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="ObjectModel\ToolStripMenuBindingExtensions.cs" />
     <Compile Include="Surface\ICommandContainer.cs" />
-    <Compile Include="Surface\NewCommandContainer.cs" />
+    <Compile Include="Surface\CommandContainer.cs" />
     <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\ClipboardUtil.cs" />

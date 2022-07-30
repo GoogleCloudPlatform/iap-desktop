@@ -19,7 +19,6 @@ namespace Google.Solutions.IapDesktop.Application.Surface // TODO: change namesp
         TContext Context { get; }
     }
 
-    // TODO: Move to separate file or delete?
     public class ContextSource<TContext> : ViewModelBase, ICommandContextSource<TContext>
     {
         private TContext context;
@@ -35,8 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface // TODO: change namesp
         }
     }
 
-    // TODO: Rename class
-    public sealed class NewCommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
+    public sealed class CommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
         where TContext : class
     {
         private IDisposable binding;
@@ -49,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface // TODO: change namesp
 
         public event EventHandler<ExceptionEventArgs> CommandFailed;
 
-        private NewCommandContainer(
+        private CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
             Func<TContext> getContext,
             ObservableCollection<MenuItemViewModelBase> items)
@@ -64,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface // TODO: change namesp
             this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e));
         }
 
-        public static NewCommandContainer<TContext> Create<TSource>(
+        public static CommandContainer<TContext> Create<TSource>(
             ToolStripItemDisplayStyle displayStyle,
             TSource contextSource,
             Expression<Func<TSource, TContext>> contextProperty)
@@ -72,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface // TODO: change namesp
         {
             var contextAccessor = contextProperty.Compile();
 
-            var container = new NewCommandContainer<TContext>(
+            var container = new CommandContainer<TContext>(
                 displayStyle,
                 () => contextAccessor(contextSource),
                 new ObservableCollection<MenuItemViewModelBase>());
@@ -84,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface // TODO: change namesp
             return container;
         }
 
-        public static NewCommandContainer<TContext> Create(
+        public static CommandContainer<TContext> Create(
             ToolStripItemDisplayStyle displayStyle,
             ICommandContextSource<TContext> source)
         {
@@ -154,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface // TODO: change namesp
             //
             item.OnContextUpdated();
 
-            return new NewCommandContainer<TContext>(
+            return new CommandContainer<TContext>(
                 this.displayStyle,
                 this.GetContext,
                 item.Children);
@@ -265,12 +263,12 @@ namespace Google.Solutions.IapDesktop.Application.Surface // TODO: change namesp
         internal class MenuItemViewModel : MenuItemViewModelBase
         {
             private readonly ICommand<TContext> command;
-            private readonly NewCommandContainer<TContext> container;
+            private readonly CommandContainer<TContext> container;
 
             public MenuItemViewModel(
                 ToolStripItemDisplayStyle displayStyle,
                 ICommand<TContext> command,
-                NewCommandContainer<TContext> container)
+                CommandContainer<TContext> container)
                 : base(displayStyle)
             {
                 this.command = command;

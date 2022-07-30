@@ -36,7 +36,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Test.Surface
 {
     [TestFixture]
-    public class TestNewCommandContainer
+    public class TestCommandContainer
     {
         //---------------------------------------------------------------------
         // Context.
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 source))
             {
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 source))
             {
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 source))
             {
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenAddingCommand_ThenCollectionChangedEventIsRaised()
         {
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 new ContextSource<string>()))
             {
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenAddingSeparator_ThenCollectionChangedEventIsRaised()
         {
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 new ContextSource<string>()))
             {
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenKeyIsUnknown_ThenExecuteCommandByKeyDoesNothing()
         {
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 new ContextSource<string>()))
             {
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 source))
             {
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 source))
             {
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 source))
             {
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 source))
             {
@@ -299,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 source))
             {
@@ -328,7 +328,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenInvokeThrowsException_ThenEventIsFired()
         {
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 new ContextSource<string>()))
             {
@@ -357,7 +357,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenInvokeThrowsCancellationException_ThenExceptionIsSwallowed()
         {
-            using (var container = NewCommandContainer<string>.Create(
+            using (var container = CommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
                 new ContextSource<string>()))
             {

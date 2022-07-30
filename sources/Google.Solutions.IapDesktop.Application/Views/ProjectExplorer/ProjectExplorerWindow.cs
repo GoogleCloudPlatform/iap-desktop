@@ -60,8 +60,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IServiceProvider serviceProvider;
 
         private readonly ProjectExplorerViewModel viewModel;
-        private readonly NewCommandContainer<IProjectModelNode> contextMenuCommands;
-        private readonly NewCommandContainer<IProjectModelNode> toolbarCommands;
+        private readonly CommandContainer<IProjectModelNode> contextMenuCommands;
+        private readonly CommandContainer<IProjectModelNode> toolbarCommands;
 
         public ICommandContainer<IProjectModelNode> ContextMenuCommands 
             => this.contextMenuCommands;
@@ -168,12 +168,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     }
                 });
 
-            this.contextMenuCommands = NewCommandContainer<IProjectModelNode>.Create(
+            this.contextMenuCommands = CommandContainer<IProjectModelNode>.Create(
                 ToolStripItemDisplayStyle.ImageAndText,
                 contextSource);
             this.contextMenuCommands.CommandFailed += Surface_CommandFailed;
 
-            this.toolbarCommands = NewCommandContainer<IProjectModelNode>.Create(
+            this.toolbarCommands = CommandContainer<IProjectModelNode>.Create(
                 ToolStripItemDisplayStyle.Image,
                 contextSource);
             this.toolbarCommands.CommandFailed += Surface_CommandFailed;

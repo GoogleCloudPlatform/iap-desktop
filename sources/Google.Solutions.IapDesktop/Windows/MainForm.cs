@@ -66,8 +66,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly ContextSource<IMainForm> viewMenuContextSource;
         private readonly ContextSource<ToolWindow> windowMenuContextSource;
 
-        private readonly NewCommandContainer<IMainForm> viewMenuCommands;
-        private readonly NewCommandContainer<ToolWindow> windowMenuCommands;
+        private readonly CommandContainer<IMainForm> viewMenuCommands;
+        private readonly CommandContainer<ToolWindow> windowMenuCommands;
 
         public IapRdpUrl StartupUrl { get; set; }
         public ICommandContainer<IMainForm> ViewMenu => this.viewMenuCommands;
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 Context = this // Pseudo-context, never changes
             };
 
-            this.viewMenuCommands = NewCommandContainer<IMainForm>.Create(
+            this.viewMenuCommands = CommandContainer<IMainForm>.Create(
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.viewMenuContextSource);
             this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         as ToolWindow;
             };
 
-            this.windowMenuCommands = NewCommandContainer<ToolWindow>.Create(
+            this.windowMenuCommands = CommandContainer<ToolWindow>.Create(
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.windowMenuContextSource);
             this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;
@@ -659,7 +659,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.mainMenu.Items.Add(menu);
             }
 
-            var container = NewCommandContainer<IMainForm>.Create(
+            var container = CommandContainer<IMainForm>.Create(
                 ToolStripItemDisplayStyle.ImageAndText,
                 new ContextSource<IMainForm>()
                 {
