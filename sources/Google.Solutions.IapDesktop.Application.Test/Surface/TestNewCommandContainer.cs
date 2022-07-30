@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Surface
@@ -37,20 +38,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
     [TestFixture]
     public class TestNewCommandContainer
     {
-        private class ContextSource<T> : ViewModelBase, ICommandContextSource<T>
-        {
-            private T context;
-
-            public T Context
-            {
-                get => this.context;
-                set
-                {
-                    this.context = value;
-                    RaisePropertyChange();
-                }
-            }
-        }
         //---------------------------------------------------------------------
         // Context.
         //---------------------------------------------------------------------
@@ -322,6 +309,59 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
 
             container.ExecuteDefaultCommand();
             Assert.IsTrue(commandExecuted);
+        }
+
+        //---------------------------------------------------------------------
+        // Invoke.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenInvokeThrowsException_ThenEventIsFired()
+        {
+            var container = new NewCommandContainer<string>(
+                ToolStripItemDisplayStyle.Text,
+                new ContextSource<string>());
+
+            Exception exception = null;
+            container.CommandFailed += (s, a) =>
+            {
+                exception = a.Exception;
+            };
+
+            container.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Enabled,
+                    ctx => throw new ArgumentException())
+                {
+                    IsDefault = true
+                });
+
+            container.ExecuteDefaultCommand();
+
+            Assert.IsNotNull(exception);
+            Assert.IsInstanceOf<ArgumentException>(exception);
+        }
+
+        [Test]
+        public void WhenInvokeThrowsCancellationException_ThenExceptionIsSwallowed()
+        {
+            var container = new NewCommandContainer<string>(
+                ToolStripItemDisplayStyle.Text,
+                new ContextSource<string>());
+
+            container.CommandFailed += (s, a) => Assert.Fail();
+
+            container.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Enabled,
+                    ctx => throw new TaskCanceledException())
+                {
+                    IsDefault = true
+                });
+
+            container.ExecuteDefaultCommand();
         }
     }
 }

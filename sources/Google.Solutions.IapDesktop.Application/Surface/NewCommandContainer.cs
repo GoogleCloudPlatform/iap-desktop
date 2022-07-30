@@ -1,4 +1,6 @@
-﻿using Google.Solutions.IapDesktop.Application.ObjectModel;
+﻿using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Controls;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +18,21 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         TContext Context { get; }
     }
 
+    public class ContextSource<TContext> : ViewModelBase, ICommandContextSource<TContext>
+    {
+        private TContext context;
+
+        public TContext Context
+        {
+            get => this.context;
+            set
+            {
+                this.context = value;
+                RaisePropertyChange();
+            }
+        }
+    }
+
     // TODO: Rename class
     public sealed class NewCommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
         where TContext : class
@@ -23,9 +40,12 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         private readonly IDisposable bindings;
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly ObservableCollection<MenuItemViewModelBase> menuItems;
-        private readonly ICommandContextSource<TContext> contextSource;
+        
+        internal ICommandContextSource<TContext> ContextSource { get; }
 
         internal ObservableCollection<MenuItemViewModelBase> MenuItems => this.menuItems;
+
+        public event EventHandler<ExceptionEventArgs> CommandFailed;
 
         private NewCommandContainer(
             ToolStripItemDisplayStyle displayStyle,
@@ -34,13 +54,17 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         {
             this.displayStyle = displayStyle;
             this.menuItems = items;
-            this.contextSource = contextSource;
+            this.ContextSource = contextSource;
 
-            this.bindings = this.contextSource.OnPropertyChange(
+            this.bindings = this.ContextSource.OnPropertyChange(
                 s => s.Context,
                 context => {
                     MenuItemViewModel.OnContextUpdated(this.menuItems);
                 });
+        }
+        private void OnCommandFailed(Exception e)
+        {
+            this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e));
         }
 
         public NewCommandContainer(
@@ -93,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             var item = new MenuItemViewModel(
                 this.displayStyle,
                 command,
-                contextSource);
+                this);
             if (index != null)
             {
                 this.menuItems.Insert(index.Value, item);
@@ -110,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
             return new NewCommandContainer<TContext>(
                 this.displayStyle,
-                this.contextSource,
+                this.ContextSource,
                 item.Children);
         }
 
@@ -219,21 +243,21 @@ namespace Google.Solutions.IapDesktop.Application.Surface
         internal class MenuItemViewModel : MenuItemViewModelBase
         {
             private readonly ICommand<TContext> command;
-            private readonly ICommandContextSource<TContext> contextSource;
+            private readonly NewCommandContainer<TContext> container;
 
             public MenuItemViewModel(
                 ToolStripItemDisplayStyle displayStyle,
                 ICommand<TContext> command,
-                 ICommandContextSource<TContext> contextSource)
+                NewCommandContainer<TContext> container)
                 : base(displayStyle)
             {
                 this.command = command;
-                this.contextSource = contextSource;
+                this.container = container;
             }
 
             internal void OnContextUpdated()
             {
-                switch (this.command.QueryState(this.contextSource.Context))
+                switch (this.command.QueryState(this.container.ContextSource.Context))
                 {
                     case CommandState.Disabled:
                         this.IsVisible = true;
@@ -285,7 +309,18 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
             public override void Invoke()
             {
-                this.command.Execute(this.contextSource.Context);
+                try
+                {
+                    this.command.Execute(this.container.ContextSource.Context);
+                }
+                catch (Exception e) when (e.IsCancellation())
+                {
+                    // Ignore.
+                }
+                catch (Exception e)
+                {
+                    this.container.OnCommandFailed(e);
+                }
             }
         }
     }
