@@ -31,46 +31,24 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Surface
 {
-    public class MenuCommandContainer<TContext> : CommandContainer<TContext>
+    /// <summary>
+    /// Set of commands.
+    /// </summary>
+    /// <typeparam name="TContext"></typeparam>
+    public interface ICommandContainer<TContext>
         where TContext : class
     {
-        private readonly IMenuContextSource<TContext> source;
+        ICommandContainer<TContext> AddCommand(
+            ICommand<TContext> command);
 
-        //---------------------------------------------------------------------
-        // Publics.
-        //---------------------------------------------------------------------
+        ICommandContainer<TContext> AddCommand(
+            ICommand<TContext> command,
+            int? index);
 
-        public MenuCommandContainer(
-            ToolStripItemDisplayStyle displayStyle,
-            IMenuContextSource<TContext> source)
-            : base(displayStyle)
-        {
-            this.source = source;
-        }
+        void AddSeparator(int? index = null);
 
-        public void ApplyTo(ToolStripDropDown dropDownMenu)
-        {
-            //
-            // Populate lazily when opened.
-            //
-            dropDownMenu.Opening += (s, a) =>
-            {
-                //
-                // Query and set new context.
-                //
-                this.Context = this.source.CurrentContext;
+        void ExecuteCommandByKey(Keys keys);
 
-                //
-                // Update menu items.
-                //
-                dropDownMenu.Items.Clear();
-                dropDownMenu.Items.AddRange(this.MenuItems.ToArray());
-            };
-        }
-    }
-
-    public interface IMenuContextSource<TContext>
-    {
-        TContext CurrentContext { get; }
+        void ExecuteDefaultCommand();
     }
 }

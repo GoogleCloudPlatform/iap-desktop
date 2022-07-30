@@ -659,13 +659,14 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.mainMenu.Items.Add(menu);
             }
 
-            var container = new ToolStripCommandContainer<IMainForm>(
-                ToolStripItemDisplayStyle.ImageAndText)
-            {
-                Context = this
-            };
+            var container = NewCommandContainer<IMainForm>.Create(
+                ToolStripItemDisplayStyle.ImageAndText,
+                new ContextSource<IMainForm>()
+                {
+                    Context = this
+                });
             container.CommandFailed += CommandContainer_CommandFailed;
-            container.ApplyTo(menu);
+            container.BindTo(menu.DropDownItems);
 
             menu.DropDownOpening += (sender, args) =>
             {
