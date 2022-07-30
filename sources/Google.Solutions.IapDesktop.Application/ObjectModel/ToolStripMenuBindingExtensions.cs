@@ -40,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public static void BindItem<TModel>(
             this ToolStripMenuItem item,
             TModel model,
+            Func<TModel, bool> isSeparator,
             Expression<Func<TModel, string>> getText,
             Expression<Func<TModel, string>> getToolTip,
             Expression<Func<TModel, Image>> getImage,
@@ -105,6 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             {
                 item.DropDownItems.BindCollection(
                     subCommands,
+                    isSeparator,
                     getText,
                     getToolTip,
                     getImage,
@@ -121,6 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public static void BindCollection<TModel>(
             this ToolStripItemCollection view,
             ObservableCollection<TModel> modelCollection,
+            Func<TModel, bool> isSeparator,
             Expression<Func<TModel, string>> getText,
             Expression<Func<TModel, string>> getToolTip,
             Expression<Func<TModel, Image>> getImage,
@@ -133,23 +136,36 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             IContainer container = null)
             where TModel : INotifyPropertyChanged
         {
-            ToolStripMenuItem CreateMenuItem(TModel model)
+            ToolStripItem CreateMenuItem(TModel model)
             {
-                var item = new ToolStripMenuItem();
-                item.BindItem(
-                    model,
-                    getText,
-                    getToolTip,
-                    getImage,
-                    getShortcuts,
-                    isVisible,
-                    isEnabled,
-                    getStyle,
-                    getChildren,
-                    click,
-                    container);
-                item.Tag = model;
-                return item;
+                if (isSeparator(model))
+                {
+                    return new ToolStripSeparator()
+                    {
+                        Tag = model
+                    };
+                }
+                else
+                {
+                    var item = new ToolStripMenuItem()
+                    {
+                        Tag = model
+                    };
+                    item.BindItem(
+                        model,
+                        isSeparator,
+                        getText,
+                        getToolTip,
+                        getImage,
+                        getShortcuts,
+                        isVisible,
+                        isEnabled,
+                        getStyle,
+                        getChildren,
+                        click,
+                        container);
+                    return item;
+                }
             }
 
             //
@@ -176,12 +192,12 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         {
             private readonly ToolStripItemCollection view;
             private readonly ObservableCollection<TModel> model;
-            private readonly Func<TModel, ToolStripMenuItem> createMenuItem;
+            private readonly Func<TModel, ToolStripItem> createMenuItem;
 
             public Binding(
                 ToolStripItemCollection view,
                 ObservableCollection<TModel> model,
-                Func<TModel, ToolStripMenuItem> createMenuItem)
+                Func<TModel, ToolStripItem> createMenuItem)
             {
                 this.view = view;
                 this.model = model;

@@ -77,6 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
             menuItem.BindItem(
                 model,
+                m => m.IsSeparator,
                 m => m.Text,
                 m => m.ToolTip,
                 m => m.Image,
@@ -113,6 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
             menuItem.BindItem(
                 model,
+                m => m.IsSeparator,
                 m => m.Text,
                 m => m.ToolTip,
                 m => m.Image,
@@ -160,6 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
             this.contextMenu.Items.BindCollection(
                 model,
+                m => m.IsSeparator,
                 m => m.Text,
                 m => m.ToolTip,
                 m => m.Image,
@@ -172,6 +175,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 null);
 
             Assert.AreEqual(model.Count + 1, this.contextMenu.Items.Count);
+        }
+
+        [Test]
+        public void WhenCollectionWithSeparatorBound_ThenMenuItemsAreUpdated()
+        {
+            var model = new ObservableCollection<Observable>();
+            model.Add(new Observable()
+            {
+                IsSeparator = true
+            });
+
+            this.contextMenu.Items.BindCollection(
+                model,
+                m => m.IsSeparator,
+                m => m.Text,
+                m => m.ToolTip,
+                m => m.Image,
+                m => m.ShortcutKeys,
+                m => m.IsVisible,
+                m => m.IsEnabled,
+                m => m.Style,
+                m => m.Children,
+                _ => { },
+                null);
+
+            Assert.AreEqual(1, this.contextMenu.Items.Count);
+            Assert.IsInstanceOf<ToolStripSeparator>(this.contextMenu.Items[0]);
         }
 
         [Test]
@@ -190,6 +220,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
             this.contextMenu.Items.BindCollection(
                 model,
+                m => m.IsSeparator,
                 m => m.Text,
                 m => m.ToolTip,
                 m => m.Image,
@@ -236,6 +267,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
             this.contextMenu.Items.BindCollection(
                 model,
+                m => m.IsSeparator,
                 m => m.Text,
                 m => m.ToolTip,
                 m => m.Image,
@@ -269,6 +301,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             private Keys shortcutKeys;
             private bool isVisible;
             private bool isEnabled;
+            private bool isSeparator;
 
             public ToolStripItemDisplayStyle Style => ToolStripItemDisplayStyle.Text;
 
@@ -330,6 +363,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 set
                 {
                     this.isEnabled = value;
+                    RaisePropertyChange();
+                }
+            }
+
+            public bool IsSeparator
+            {
+                get => this.isSeparator;
+                set
+                {
+                    this.isSeparator = value;
                     RaisePropertyChange();
                 }
             }
