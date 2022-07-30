@@ -332,8 +332,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 //
                 // Force-select the root node to update menus.
                 //
-                this.contextMenuCommands.Context = this.viewModel.RootNode.ModelNode;
-                this.toolbarCommands.Context = this.viewModel.RootNode.ModelNode;
+                this.viewModel.SelectedNode = this.viewModel.RootNode;
 
                 if (!projects.Any())
                 {

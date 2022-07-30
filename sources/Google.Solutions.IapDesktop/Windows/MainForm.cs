@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 Context = this // Pseudo-context, never changes
             };
 
-            this.viewMenuCommands = new NewCommandContainer<IMainForm>(
+            this.viewMenuCommands = NewCommandContainer<IMainForm>.Create(
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.viewMenuContextSource);
             this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         as ToolWindow;
             };
 
-            this.windowMenuCommands = new NewCommandContainer<ToolWindow>(
+            this.windowMenuCommands = NewCommandContainer<ToolWindow>.Create(
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.windowMenuContextSource);
             this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;

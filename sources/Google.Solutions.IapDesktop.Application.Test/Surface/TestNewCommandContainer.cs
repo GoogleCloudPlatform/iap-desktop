@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
 {
     [TestFixture]
     public class TestNewCommandContainer
-    {
+    {// TODO: using(command container)
         //---------------------------------------------------------------------
         // Context.
         //---------------------------------------------------------------------
@@ -50,25 +50,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                source);
+                source))
+            {
+                var observedContexts = new List<string>();
+                container.AddCommand(
+                    "toplevel",
+                    ctx =>
+                    {
+                        observedContexts.Add(ctx);
+                        return CommandState.Enabled;
+                    },
+                    ctx => Assert.Fail());
 
-            var observedContexts = new List<string>();
-            container.AddCommand(
-                "toplevel",
-                ctx =>
-                {
-                    observedContexts.Add(ctx);
-                    return CommandState.Enabled;
-                },
-                ctx => Assert.Fail());
+                source.Context = "ctx-2";
 
-            source.Context = "ctx-2";
-
-            CollectionAssert.AreEquivalent(
-                new[] { "ctx-1", "ctx-2" },
-                observedContexts);
+                CollectionAssert.AreEquivalent(
+                    new[] { "ctx-1", "ctx-2" },
+                    observedContexts);
+            }
         }
 
         [Test]
@@ -79,30 +80,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                source);
-            var subContainer = container.AddCommand(
-                "parent",
-                ctx => CommandState.Enabled,
-                ctx => { });
+                source))
+            {
+                var subContainer = container.AddCommand(
+                    "parent",
+                    ctx => CommandState.Enabled,
+                    ctx => { });
 
-            var observedContexts = new List<string>();
-            
-            subContainer.AddCommand(
-                "child",
-                ctx =>
-                {
-                    observedContexts.Add(ctx);
-                    return CommandState.Enabled;
-                },
-                ctx => Assert.Fail());
+                var observedContexts = new List<string>();
 
-            source.Context = "ctx-2";
+                subContainer.AddCommand(
+                    "child",
+                    ctx =>
+                    {
+                        observedContexts.Add(ctx);
+                        return CommandState.Enabled;
+                    },
+                    ctx => Assert.Fail());
 
-            CollectionAssert.AreEquivalent(
-                new[] { "ctx-1", "ctx-2", "ctx-2" },
-                observedContexts);
+                source.Context = "ctx-2";
+
+                CollectionAssert.AreEquivalent(
+                    new[] { "ctx-1", "ctx-2" },
+                    observedContexts);
+            }
         }
 
         [Test]
@@ -113,16 +116,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                source);
+                source))
+            {
+                container.AddCommand(
+                    "toplevel",
+                    ctx => CommandState.Enabled,
+                    ctx => Assert.AreEqual("ctx-2", ctx));
 
-            container.AddCommand(
-                "toplevel",
-                ctx => CommandState.Enabled,
-                ctx => Assert.AreEqual("ctx-2", ctx));
-
-            source.Context = "ctx-2";
+                source.Context = "ctx-2";
+            }
         }
 
         //---------------------------------------------------------------------
@@ -132,30 +136,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenAddingCommand_ThenCollectionChangedEventIsRaised()
         {
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>());
-
-            PropertyAssert.RaisesCollectionChangedNotification(
-                container.MenuItems,
-                () => container.AddCommand(
-                    "toplevel",
-                    ctx => CommandState.Enabled,
-                    ctx => Assert.Fail()),
-                NotifyCollectionChangedAction.Add);
+                new ContextSource<string>()))
+            {
+                PropertyAssert.RaisesCollectionChangedNotification(
+                    container.MenuItems,
+                    () => container.AddCommand(
+                        "toplevel",
+                        ctx => CommandState.Enabled,
+                        ctx => Assert.Fail()),
+                    NotifyCollectionChangedAction.Add);
+            }
         }
 
         [Test]
         public void WhenAddingSeparator_ThenCollectionChangedEventIsRaised()
         {
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>());
-
-            PropertyAssert.RaisesCollectionChangedNotification(
-                container.MenuItems,
-                () => container.AddSeparator(0),
-                NotifyCollectionChangedAction.Add);
+                new ContextSource<string>()))
+            {
+                PropertyAssert.RaisesCollectionChangedNotification(
+                    container.MenuItems,
+                    () => container.AddSeparator(0),
+                    NotifyCollectionChangedAction.Add);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -165,14 +171,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenKeyIsUnknown_ThenExecuteCommandByKeyDoesNothing()
         {
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>());
-
-            container.ExecuteCommandByKey(Keys.A);
+                new ContextSource<string>()))
+            {
+                container.ExecuteCommandByKey(Keys.A);
+            }
         }
-
-
 
         [Test]
         public void WhenKeyIsMappedAndCommandIsEnabled_ThenExecuteCommandInvokesHandler()
@@ -182,26 +187,27 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                source);
-
-            string contextOfCallback = null;
-            container.AddCommand(
-                new Command<string>(
-                    "test",
-                    ctx => CommandState.Enabled,
-                    ctx =>
+                source))
+            {
+                string contextOfCallback = null;
+                container.AddCommand(
+                    new Command<string>(
+                        "test",
+                        ctx => CommandState.Enabled,
+                        ctx =>
+                        {
+                            contextOfCallback = ctx;
+                        })
                     {
-                        contextOfCallback = ctx;
-                    })
-                {
-                    ShortcutKeys = Keys.F4
-                });
+                        ShortcutKeys = Keys.F4
+                    });
 
-            container.ExecuteCommandByKey(Keys.F4);
+                container.ExecuteCommandByKey(Keys.F4);
 
-            Assert.AreEqual("ctx-1", contextOfCallback);
+                Assert.AreEqual("ctx-1", contextOfCallback);
+            }
         }
 
         [Test]
@@ -212,23 +218,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                source);
-
-            container.AddCommand(
-                new Command<string>(
-                    "test",
-                    ctx => CommandState.Disabled,
-                    ctx =>
+                source))
+            {
+                container.AddCommand(
+                    new Command<string>(
+                        "test",
+                        ctx => CommandState.Disabled,
+                        ctx =>
+                        {
+                            Assert.Fail();
+                        })
                     {
-                        Assert.Fail();
-                    })
-                {
-                    ShortcutKeys = Keys.F4
-                });
+                        ShortcutKeys = Keys.F4
+                    });
 
-            container.ExecuteCommandByKey(Keys.F4);
+                container.ExecuteCommandByKey(Keys.F4);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -243,19 +250,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                source);
+                source))
+            {
+                container.AddCommand(
+                    new Command<string>(
+                        "test",
+                        ctx => CommandState.Enabled,
+                        ctx => Assert.Fail("Unexpected callback"))
+                    {
+                    });
 
-            container.AddCommand(
-                new Command<string>(
-                    "test",
-                    ctx => CommandState.Enabled,
-                    ctx => Assert.Fail("Unexpected callback"))
-                {
-                });
-
-            container.ExecuteDefaultCommand();
+                container.ExecuteDefaultCommand();
+            }
         }
 
         [Test]
@@ -266,20 +274,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                source);
+                source))
+            {
+                container.AddCommand(
+                    new Command<string>(
+                        "test",
+                        ctx => CommandState.Disabled,
+                        ctx => Assert.Fail("Unexpected callback"))
+                    {
+                        IsDefault = true
+                    });
 
-            container.AddCommand(
-                new Command<string>(
-                    "test",
-                    ctx => CommandState.Disabled,
-                    ctx => Assert.Fail("Unexpected callback"))
-                {
-                    IsDefault = true
-                });
-
-            container.ExecuteDefaultCommand();
+                container.ExecuteDefaultCommand();
+            }
         }
 
         [Test]
@@ -290,25 +299,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
                 Context = "ctx-1"
             };
 
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                source);
-
-            bool commandExecuted = false;
-            container.AddCommand(
-                new Command<string>(
-                    "test",
-                    ctx => CommandState.Enabled,
-                    ctx =>
+                source))
+            {
+                bool commandExecuted = false;
+                container.AddCommand(
+                    new Command<string>(
+                        "test",
+                        ctx => CommandState.Enabled,
+                        ctx =>
+                        {
+                            commandExecuted = true;
+                        })
                     {
-                        commandExecuted = true;
-                    })
-                {
-                    IsDefault = true
-                });
+                        IsDefault = true
+                    });
 
-            container.ExecuteDefaultCommand();
-            Assert.IsTrue(commandExecuted);
+                container.ExecuteDefaultCommand();
+                Assert.IsTrue(commandExecuted);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -318,50 +328,52 @@ namespace Google.Solutions.IapDesktop.Application.Test.Surface
         [Test]
         public void WhenInvokeThrowsException_ThenEventIsFired()
         {
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>());
-
-            Exception exception = null;
-            container.CommandFailed += (s, a) =>
+                new ContextSource<string>()))
             {
-                exception = a.Exception;
-            };
-
-            container.AddCommand(
-                new Command<string>(
-                    "test",
-                    ctx => CommandState.Enabled,
-                    ctx => throw new ArgumentException())
+                Exception exception = null;
+                container.CommandFailed += (s, a) =>
                 {
-                    IsDefault = true
-                });
+                    exception = a.Exception;
+                };
 
-            container.ExecuteDefaultCommand();
+                container.AddCommand(
+                    new Command<string>(
+                        "test",
+                        ctx => CommandState.Enabled,
+                        ctx => throw new ArgumentException())
+                    {
+                        IsDefault = true
+                    });
 
-            Assert.IsNotNull(exception);
-            Assert.IsInstanceOf<ArgumentException>(exception);
+                container.ExecuteDefaultCommand();
+
+                Assert.IsNotNull(exception);
+                Assert.IsInstanceOf<ArgumentException>(exception);
+            }
         }
 
         [Test]
         public void WhenInvokeThrowsCancellationException_ThenExceptionIsSwallowed()
         {
-            var container = new NewCommandContainer<string>(
+            using (var container = NewCommandContainer<string>.Create(
                 ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>());
+                new ContextSource<string>()))
+            {
+                container.CommandFailed += (s, a) => Assert.Fail();
 
-            container.CommandFailed += (s, a) => Assert.Fail();
+                container.AddCommand(
+                    new Command<string>(
+                        "test",
+                        ctx => CommandState.Enabled,
+                        ctx => throw new TaskCanceledException())
+                    {
+                        IsDefault = true
+                    });
 
-            container.AddCommand(
-                new Command<string>(
-                    "test",
-                    ctx => CommandState.Enabled,
-                    ctx => throw new TaskCanceledException())
-                {
-                    IsDefault = true
-                });
-
-            container.ExecuteDefaultCommand();
+                container.ExecuteDefaultCommand();
+            }
         }
     }
 }

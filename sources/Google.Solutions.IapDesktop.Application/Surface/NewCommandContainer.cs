@@ -7,17 +7,19 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Surface
+namespace Google.Solutions.IapDesktop.Application.Surface // TODO: change namespace
 {
     public interface ICommandContextSource<TContext> : INotifyPropertyChanged
     {
         TContext Context { get; }
     }
 
+    // TODO: Move to separate file
     public class ContextSource<TContext> : ViewModelBase, ICommandContextSource<TContext>
     {
         private TContext context;
@@ -37,11 +39,11 @@ namespace Google.Solutions.IapDesktop.Application.Surface
     public sealed class NewCommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
         where TContext : class
     {
-        private readonly IDisposable bindings;
+        private IDisposable binding;
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly ObservableCollection<MenuItemViewModelBase> menuItems;
         
-        internal ICommandContextSource<TContext> ContextSource { get; }
+        internal Func<TContext> GetContext { get; }
 
         internal ObservableCollection<MenuItemViewModelBase> MenuItems => this.menuItems;
 
@@ -49,32 +51,47 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
         private NewCommandContainer(
             ToolStripItemDisplayStyle displayStyle,
-            ICommandContextSource<TContext> contextSource,
+            Func<TContext> getContext,
             ObservableCollection<MenuItemViewModelBase> items)
         {
             this.displayStyle = displayStyle;
             this.menuItems = items;
-            this.ContextSource = contextSource;
-
-            this.bindings = this.ContextSource.OnPropertyChange(
-                s => s.Context,
-                context => {
-                    MenuItemViewModel.OnContextUpdated(this.menuItems);
-                });
+            this.GetContext = getContext;
         }
+
         private void OnCommandFailed(Exception e)
         {
             this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e));
         }
 
-        public NewCommandContainer(
+        public static NewCommandContainer<TContext> Create<TSource>(
             ToolStripItemDisplayStyle displayStyle,
-            ICommandContextSource<TContext> contextSource)
-            : this(
-                  displayStyle, 
-                  contextSource,
-                  new ObservableCollection<MenuItemViewModelBase>())
+            TSource contextSource,
+            Expression<Func<TSource, TContext>> contextProperty)
+            where TSource : INotifyPropertyChanged
         {
+            var contextAccessor = contextProperty.Compile();
+
+            var container = new NewCommandContainer<TContext>(
+                displayStyle,
+                () => contextAccessor(contextSource),
+                new ObservableCollection<MenuItemViewModelBase>());
+
+            container.binding = contextSource.OnPropertyChange(
+                contextProperty,
+                context => container.ForceRefresh());
+
+            return container;
+        }
+
+        public static NewCommandContainer<TContext> Create(
+            ToolStripItemDisplayStyle displayStyle,
+            ICommandContextSource<TContext> source)
+        {
+            return Create(
+                displayStyle,
+                source,
+                s => s.Context);
         }
 
         public void BindTo(
@@ -107,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
         public void Dispose()
         {
-            this.bindings.Dispose();
+            this.binding?.Dispose();
         }
 
         //---------------------------------------------------------------------
@@ -139,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
             return new NewCommandContainer<TContext>(
                 this.displayStyle,
-                this.ContextSource,
+                this.GetContext,
                 item.Children);
         }
 
@@ -262,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
 
             internal void OnContextUpdated()
             {
-                switch (this.command.QueryState(this.container.ContextSource.Context))
+                switch (this.command.QueryState(this.container.GetContext()))
                 {
                     case CommandState.Disabled:
                         this.IsVisible = true;
@@ -316,7 +333,7 @@ namespace Google.Solutions.IapDesktop.Application.Surface
             {
                 try
                 {
-                    this.command.Execute(this.container.ContextSource.Context);
+                    this.command.Execute(this.container.GetContext());
                 }
                 catch (Exception e) when (e.IsCancellation())
                 {
