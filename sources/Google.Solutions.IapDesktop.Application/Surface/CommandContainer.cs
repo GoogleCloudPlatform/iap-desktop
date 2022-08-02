@@ -35,6 +35,27 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Surface
 {
+    /// <summary>
+    /// Set of commands.
+    /// </summary>
+    /// <typeparam name="TContext"></typeparam>
+    public interface ICommandContainer<TContext>
+        where TContext : class
+    {
+        ICommandContainer<TContext> AddCommand(
+            ICommand<TContext> command);
+
+        ICommandContainer<TContext> AddCommand(
+            ICommand<TContext> command,
+            int? index);
+
+        void AddSeparator(int? index = null);
+
+        void ExecuteCommandByKey(Keys keys);
+
+        void ExecuteDefaultCommand();
+    }
+
     public sealed class CommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
         where TContext : class
     {

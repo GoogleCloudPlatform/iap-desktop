@@ -35,11 +35,19 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Surface
 {
+    /// <summary>
+    /// Source (typically a view model) for the context that
+    /// determines the availability of commands.
+    /// </summary>
+    /// <typeparam name="TContext"></typeparam>
     public interface ICommandContextSource<TContext> : INotifyPropertyChanged
     {
         TContext Context { get; }
     }
 
+    /// <summary>
+    /// Basic context source implementation.
+    /// </summary>
     public class CommandContextSource<TContext> : ViewModelBase, ICommandContextSource<TContext>
     {
         private TContext context;
