@@ -201,6 +201,7 @@
     <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.Designer.cs">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\SessionPaneBase.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysModel.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysViewModel.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysWindow.cs">

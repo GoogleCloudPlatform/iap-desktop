@@ -54,6 +54,10 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
         void ExecuteCommandByKey(Keys keys);
 
         void ExecuteDefaultCommand();
+
+        void BindTo(
+            ToolStripItemCollection view,
+            IContainer container = null);
     }
 
     public sealed class CommandContainer<TContext> : ICommandContainer<TContext>, IDisposable

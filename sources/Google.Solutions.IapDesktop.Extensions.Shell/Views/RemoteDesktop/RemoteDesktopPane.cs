@@ -48,7 +48,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     [ComVisible(false)]
-    public partial class RemoteDesktopPane : DocumentWindow, IRemoteDesktopSession
+    public partial class RemoteDesktopPane : SessionPaneBase, IRemoteDesktopSession
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;

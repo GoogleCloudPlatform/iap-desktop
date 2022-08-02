@@ -44,7 +44,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    public partial class TerminalPaneBase : DocumentWindow
+    public partial class TerminalPaneBase : SessionPaneBase
     {
         private readonly IExceptionDialog exceptionDialog;
 
