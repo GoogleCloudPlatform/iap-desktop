@@ -644,7 +644,11 @@ namespace Google.Solutions.IapDesktop.Windows
             this.urlHandler = handler;
         }
 
-        public ICommandContainer<IMainForm> AddMenu(string caption, int? index)
+        public ICommandContainer<TContext> AddMenu<TContext>(
+            string caption, 
+            int? index,
+            Func<TContext> queryCurrentContextFunc)
+            where TContext : class
         {
             var menu = new ToolStripMenuItem(caption);
 
@@ -659,19 +663,20 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.mainMenu.Items.Add(menu);
             }
 
-            var container = new CommandContainer<IMainForm>(
-                ToolStripItemDisplayStyle.ImageAndText,
-                new CommandContextSource<IMainForm>()
-                {
-                    Context = this
-                });
-            container.CommandFailed += CommandContainer_CommandFailed;
-            container.BindTo(menu.DropDownItems);
-
+            var contextSource = new CommandContextSource<TContext>();
             menu.DropDownOpening += (sender, args) =>
             {
-                container.ForceRefresh();
+                //
+                // Query current context and update commands.
+                //
+                contextSource.Context = queryCurrentContextFunc();
             };
+
+            var container = new CommandContainer<TContext>(
+                ToolStripItemDisplayStyle.ImageAndText,
+                contextSource);
+            container.CommandFailed += CommandContainer_CommandFailed;
+            container.BindTo(menu.DropDownItems);
 
             return container;
         }

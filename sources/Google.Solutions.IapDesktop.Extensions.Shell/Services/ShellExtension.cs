@@ -116,17 +116,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             }
         }
 
-        private CommandState GetCommandStateWhenActiveSessionRequired<TSession>(
-            Predicate<TSession> predicate)
-            where TSession : class, ISession
+        private CommandState GetSessionMenuCommandState<TRequiredSession>(
+            ISession session,
+            Predicate<TRequiredSession> predicate)
+            where TRequiredSession : class, ISession
         {
-            var activeSession = this.serviceProvider
-                .GetService<IGlobalSessionBroker>()
-                .ActiveSession as TSession;
-
-            return (activeSession != null && predicate(activeSession))
-                ? CommandState.Enabled
-                : CommandState.Disabled;
+            if (session is TRequiredSession typedSession)
+            {
+                return predicate(typedSession)
+                    ? CommandState.Enabled
+                    : CommandState.Disabled;
+            }
+            else
+            {
+                //
+                // If it doesn't apply, we're still showing it as
+                // disabled.
+                //
+                return CommandState.Disabled;
+            }
         }
 
         //---------------------------------------------------------------------
@@ -390,75 +398,62 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // Session menu.
             //
-            var desktopMenu = mainForm.AddMenu("&Session", 1);
-            desktopMenu.AddCommand(
-                new Command<IMainForm>(
+            // On pop-up of the menu, query the active session and use it as context.
+            //
+            var sessionMenu = mainForm.AddMenu(
+                "&Session", 1,
+                () => this.serviceProvider
+                    .GetService<IGlobalSessionBroker>()
+                    .ActiveSession);
+
+            sessionMenu.AddCommand(
+                new Command<ISession>(
                     "&Full screen",
-                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(
-                        session => session.IsConnected && session.CanEnterFullScreen),
-                    _ => DoWithActiveSession<IRemoteDesktopSession>(
-                        session => session.TrySetFullscreen(FullScreenMode.SingleScreen)))
+                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
+                        session,
+                        rdpSession => rdpSession.IsConnected && rdpSession.CanEnterFullScreen),
+                    session => (session as IRemoteDesktopSession)?.TrySetFullscreen(FullScreenMode.SingleScreen))
                 {
                     Image = Resources.Fullscreen_16,
                     ShortcutKeys = DocumentWindow.EnterFullScreenHotKey
                 });
-            desktopMenu.AddCommand(
-                new Command<IMainForm>(
+            sessionMenu.AddCommand(
+                new Command<ISession>(
                     "&Full screen (multiple displays)",
-                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(
-                        session => session.IsConnected && session.CanEnterFullScreen),
-                    _ => DoWithActiveSession<IRemoteDesktopSession>(
-                        session => session.TrySetFullscreen(FullScreenMode.AllScreens)))
+                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
+                        session,
+                        rdpSession => rdpSession.IsConnected && rdpSession.CanEnterFullScreen),
+                    session => (session as IRemoteDesktopSession)?.TrySetFullscreen(FullScreenMode.AllScreens))
                 {
                     Image = Resources.Fullscreen_16,
                     ShortcutKeys = Keys.F11 | Keys.Shift
                 });
-            desktopMenu.AddCommand(
-                new Command<IMainForm>(
+            sessionMenu.AddCommand(
+                new Command<ISession>(
                     "&Disconnect",
-                    _ => GetCommandStateWhenActiveSessionRequired<ISession>(
-                        session => session.IsConnected),
-                    _ => DoWithActiveSession<ISession>(
-                        session => session.Close()))
+                    session => GetSessionMenuCommandState<ISession>(
+                        session,
+                        anySession => anySession.IsConnected),
+                    session => session.Close())
                 {
                     Image = Resources.Disconnect_16,
                     ShortcutKeys = Keys.Control | Keys.F4
                 });
-            desktopMenu.AddSeparator();
-            desktopMenu.AddCommand(
-                new Command<IMainForm>(
+            sessionMenu.AddSeparator();
+            sessionMenu.AddCommand(
+                new Command<ISession>(
                     "Show &security screen (send Ctrl+Alt+Esc)",
-                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(
-                        session => session.IsConnected),
-                    _ => DoWithActiveSession<IRemoteDesktopSession>(
-                        session => session.ShowSecurityScreen())));
-            desktopMenu.AddCommand(
-                new Command<IMainForm>(
+                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
+                        session,
+                        rdpSession => rdpSession.IsConnected),
+                    session => (session as IRemoteDesktopSession)?.ShowSecurityScreen()));
+            sessionMenu.AddCommand(
+                new Command<ISession>(
                     "Open &task manager (send Ctrl+Shift+Esc)",
-                    _ => GetCommandStateWhenActiveSessionRequired<IRemoteDesktopSession>(
-                        session => session.IsConnected),
-                    _ => DoWithActiveSession<IRemoteDesktopSession>(
-                        session => session.ShowTaskManager())));
-        }
-
-        private void DoWithActiveSession<TSession>(Action<TSession> action)
-            where TSession : class, ISession
-        {
-            try
-            {
-                if (this.serviceProvider
-                    .GetService<IGlobalSessionBroker>()
-                    .ActiveSession is TSession session && session != null)
-                {
-                    action(session);
-                }
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this.window, "Command failed", e);
-            }
+                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
+                        session,
+                        rdpSession => rdpSession.IsConnected),
+                    session => (session as IRemoteDesktopSession)?.ShowTaskManager()));
         }
     }
 }
