@@ -140,9 +140,9 @@ namespace Google.Solutions.Ssh.Test.Native
                 new[]
                 {
                     new EnvironmentVariable(
-                        "LANG",
                         "LC_ALL",
-                        true) // LANG is whitelisted by sshd by default.
+                        "en_AU",
+                        true) // LC_* is whitelisted by sshd by default.
                 }))
             {
                 var bytesWritten = channel.Write(Encoding.ASCII.GetBytes("echo $LANG;exit\n"));
@@ -151,8 +151,13 @@ namespace Google.Solutions.Ssh.Test.Native
                 var output = ReadToEnd(channel, Encoding.ASCII);
                 channel.Close();
 
+                //
+                // The locale might be unknown, but then there'll be an error by
+                // setlocale. In either case, we should find "en_AU" somewhere in
+                // the output, confirming that it has been passed to the VM.
+                //
                 StringAssert.Contains(
-                    "en_US.UTF-8",
+                    "en_AU",
                     output);
 
                 Assert.AreEqual(0, channel.ExitCode);
