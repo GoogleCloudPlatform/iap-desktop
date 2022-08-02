@@ -116,20 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             }
         }
 
-        private CommandState GetCommandStateWhenActiveSessionRequired<TSession>(
-            Predicate<TSession> predicate)
-            where TSession : class, ISession
-        {
-            var activeSession = this.serviceProvider
-                .GetService<IGlobalSessionBroker>()
-                .ActiveSession as TSession;
-
-            return (activeSession != null && predicate(activeSession))
-                ? CommandState.Enabled
-                : CommandState.Disabled;
-        }
-
-        private CommandState MenuCommandStateFor<TRequiredSession>(
+        private CommandState GetSessionMenuCommandState<TRequiredSession>(
             ISession session,
             Predicate<TRequiredSession> predicate)
             where TRequiredSession : class, ISession
@@ -422,7 +409,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             sessionMenu.AddCommand(
                 new Command<ISession>(
                     "&Full screen",
-                    session => MenuCommandStateFor<IRemoteDesktopSession>(
+                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
                         session,
                         rdpSession => rdpSession.IsConnected && rdpSession.CanEnterFullScreen),
                     session => (session as IRemoteDesktopSession)?.TrySetFullscreen(FullScreenMode.SingleScreen))
@@ -433,7 +420,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             sessionMenu.AddCommand(
                 new Command<ISession>(
                     "&Full screen (multiple displays)",
-                    session => MenuCommandStateFor<IRemoteDesktopSession>(
+                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
                         session,
                         rdpSession => rdpSession.IsConnected && rdpSession.CanEnterFullScreen),
                     session => (session as IRemoteDesktopSession)?.TrySetFullscreen(FullScreenMode.AllScreens))
@@ -444,7 +431,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             sessionMenu.AddCommand(
                 new Command<ISession>(
                     "&Disconnect",
-                    session => MenuCommandStateFor<ISession>(
+                    session => GetSessionMenuCommandState<ISession>(
                         session,
                         anySession => anySession.IsConnected),
                     session => session.Close())
@@ -456,14 +443,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             sessionMenu.AddCommand(
                 new Command<ISession>(
                     "Show &security screen (send Ctrl+Alt+Esc)",
-                    session => MenuCommandStateFor<IRemoteDesktopSession>(
+                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
                         session,
                         rdpSession => rdpSession.IsConnected),
                     session => (session as IRemoteDesktopSession)?.ShowSecurityScreen()));
             sessionMenu.AddCommand(
                 new Command<ISession>(
                     "Open &task manager (send Ctrl+Shift+Esc)",
-                    session => MenuCommandStateFor<IRemoteDesktopSession>(
+                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
                         session,
                         rdpSession => rdpSession.IsConnected),
                     session => (session as IRemoteDesktopSession)?.ShowTaskManager()));
