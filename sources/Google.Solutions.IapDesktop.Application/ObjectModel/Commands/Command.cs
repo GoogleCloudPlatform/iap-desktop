@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -23,8 +23,12 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
 {
+    /// <summary>
+    /// A command that can be sufaced in a menu or some other
+    /// control.
+    /// </summary>
     public interface ICommand<TContext>
     {
         string Text { get; }
@@ -33,6 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         CommandState QueryState(TContext context);
         void Execute(TContext context);
+        bool IsDefault { get; }
     }
 
     public enum CommandState
@@ -43,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     }
 
     /// <summary>
-    /// Helper class for creating simple commands.
+    /// Basic command implementation.
     /// </summary>
     public class Command<TContext> : ICommand<TContext>
     {
@@ -73,6 +78,22 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public CommandState QueryState(TContext context)
         {
             return this.queryStateFunc(context);
+        }
+    }
+
+    public static class CommandExtensions
+    {
+        public static ICommandContainer<TContext> AddCommand<TContext>(
+            this ICommandContainer<TContext> container,
+            string text,
+            Func<TContext, CommandState> queryStateFunc,
+            Action<TContext> executeFunc)
+            where TContext : class
+        {
+            return container.AddCommand(new Command<TContext>(
+                text,
+                queryStateFunc,
+                executeFunc));
         }
     }
 }

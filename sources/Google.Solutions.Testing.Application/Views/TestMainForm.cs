@@ -33,6 +33,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using Google.Solutions.IapDesktop.Application.ObjectModel.Commands;
 
 namespace Google.Solutions.Testing.Application.Views
 {
@@ -49,14 +50,14 @@ namespace Google.Solutions.Testing.Application.Views
 
         public IWin32Window Window => this;
         public DockPanel MainPanel => this.dockPanel;
-        public CommandContainer<IMainForm> ViewMenu => null;
+        public ICommandContainer<IMainForm> ViewMenu => null;
 
         public void SetUrlHandler(IIapUrlHandler handler)
         {
             throw new NotImplementedException();
         }
 
-        public CommandContainer<IMainForm> AddMenu(string caption, int? index)
+        public ICommandContainer<IMainForm> AddMenu(string caption, int? index)
         {
             throw new NotImplementedException();
         }

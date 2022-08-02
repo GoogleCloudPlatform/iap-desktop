@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.ObjectModel.Commands;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
@@ -33,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         IProjectModelNode SelectedNode { get; }
 
-        CommandContainer<IProjectModelNode> ContextMenuCommands { get; }
-        CommandContainer<IProjectModelNode> ToolbarCommands { get; }
+        ICommandContainer<IProjectModelNode> ContextMenuCommands { get; }
+        ICommandContainer<IProjectModelNode> ToolbarCommands { get; }
     }
 }

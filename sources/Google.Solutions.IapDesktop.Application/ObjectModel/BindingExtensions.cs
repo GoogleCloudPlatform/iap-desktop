@@ -145,7 +145,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             Expression<Func<TModel, TProperty>> modelProperty,
             IContainer container = null)
             where TModel : INotifyPropertyChanged
-            where TControl : IComponent
         {
             // Apply initial value.
             var modelValue = modelProperty.Compile()(model);

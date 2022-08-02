@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.ObjectModel.Commands;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using System;
@@ -59,9 +60,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IServiceProvider serviceProvider;
 
         private readonly ProjectExplorerViewModel viewModel;
+        private readonly CommandContainer<IProjectModelNode> contextMenuCommands;
+        private readonly CommandContainer<IProjectModelNode> toolbarCommands;
 
-        public CommandContainer<IProjectModelNode> ContextMenuCommands { get; }
-        public CommandContainer<IProjectModelNode> ToolbarCommands { get; }
+        public ICommandContainer<IProjectModelNode> ContextMenuCommands 
+            => this.contextMenuCommands;
+
+        public ICommandContainer<IProjectModelNode> ToolbarCommands
+            => this.toolbarCommands;
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockLeft)
@@ -86,17 +92,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.jobService = serviceProvider.GetService<IJobService>();
             this.authService = serviceProvider.GetService<IAuthorizationSource>();
 
-            this.ContextMenuCommands = new CommandContainer<IProjectModelNode>(
-                this,
-                this.contextMenu.Items,
-                ToolStripItemDisplayStyle.ImageAndText,
-                this.serviceProvider);
-            this.ToolbarCommands = new CommandContainer<IProjectModelNode>(
-                this,
-                this.toolStrip.Items,
-                ToolStripItemDisplayStyle.Image,
-                this.serviceProvider);
-
             this.viewModel = new ProjectExplorerViewModel(
                 this,
                 serviceProvider.GetService<ApplicationSettingsRepository>(),
@@ -105,21 +100,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 serviceProvider.GetService<IGlobalSessionBroker>(),
                 serviceProvider.GetService<IProjectModelService>(),
                 serviceProvider.GetService<ICloudConsoleService>());
-
-            this.viewModel.OnPropertyChange(
-                m => m.SelectedNode,
-                node =>
-                {
-                    //
-                    // NB. Due to lazily loading and inaccessible projects,
-                    // ModelNode can be null.
-                    //
-                    if (node?.ModelNode != null)
-                    {
-                        this.ContextMenuCommands.Context = node.ModelNode;
-                        this.ToolbarCommands.Context = node.ModelNode;
-                    }
-                });
 
             this.Disposed += (sender, args) =>
             {
@@ -169,11 +149,39 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 viewModel,
                 m => m.InstanceFilter,
                 this.Container);
-            //searchButton.Click += (s, a) => StartSearch();
 
             //
-            // Bind toolbar controls.
+            // Menus.
             //
+            var contextSource = new CommandContextSource<IProjectModelNode>();
+            this.viewModel.OnPropertyChange(
+                m => m.SelectedNode,
+                node =>
+                {
+                    //
+                    // NB. Due to lazily loading and inaccessible projects,
+                    // ModelNode can be null.
+                    //
+                    if (node?.ModelNode != null)
+                    {
+                        contextSource.Context = node.ModelNode;
+                    }
+                });
+
+            this.contextMenuCommands = new CommandContainer<IProjectModelNode>(
+                ToolStripItemDisplayStyle.ImageAndText,
+                contextSource);
+            this.contextMenuCommands.CommandFailed += Command_CommandFailed;
+
+            this.toolbarCommands = new CommandContainer<IProjectModelNode>(
+                ToolStripItemDisplayStyle.Image,
+                contextSource);
+            this.toolbarCommands.CommandFailed += Command_CommandFailed;
+
+
+            //
+            // Toolbar.
+            // 
             this.linuxInstancesToolStripMenuItem.BindProperty(
                 c => c.Checked,
                 this.viewModel,
@@ -186,43 +194,65 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.Container);
 
             //
-            // Bind menu items.
+            // Context menu.
             //
-            this.unloadProjectToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsUnloadProjectCommandVisible,
-                this.Container);
-            this.refreshToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsRefreshProjectsCommandVisible,
-                this.Container);
-            this.refreshAllProjectsToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsRefreshAllProjectsCommandVisible,
-                this.Container);
-            this.openInCloudConsoleToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsCloudConsoleCommandVisible,
-                this.Container);
-            this.iapSeparatorToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsCloudConsoleCommandVisible,
-                this.Container);
-            this.cloudConsoleSeparatorToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsCloudConsoleCommandVisible,
-                this.Container);
-            this.configureIapAccessToolStripMenuItem.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsCloudConsoleCommandVisible,
-                this.Container);
+            this.contextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Refresh project",
+                    _ => this.viewModel.IsRefreshProjectsCommandVisible
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => InvokeActionNoawaitAsync(
+                        () => this.viewModel.RefreshSelectedNodeAsync(),
+                        "Refreshing project"))
+                {
+                    Image = Resources.Refresh_161
+                });
+            this.contextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Refresh &all projects",
+                    _ => this.viewModel.IsRefreshAllProjectsCommandVisible
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => InvokeActionNoawaitAsync(
+                        () => this.viewModel.RefreshAsync(false),
+                        "Refreshing projects"))
+                {
+                    Image = Resources.Refresh_161
+                });
+            this.contextMenuCommands.AddCommand(
+                "&Unload project",
+                _ => this.viewModel.IsUnloadProjectCommandVisible
+                    ? CommandState.Enabled
+                    : CommandState.Unavailable,
+                _ => InvokeActionNoawaitAsync(
+                    () => this.viewModel.UnloadSelectedProjectAsync(),
+                    "Unloading project"));
+
+            this.contextMenuCommands.AddSeparator();
+            this.contextMenuCommands.AddCommand(
+                "Open in Cloud Consol&e",
+                _ => this.viewModel.IsCloudConsoleCommandVisible
+                    ? CommandState.Enabled
+                    : CommandState.Unavailable,
+                _ => InvokeAction(
+                    () => this.viewModel.OpenInCloudConsole(),
+                    "Opening Cloud Console"));
+            this.contextMenuCommands.AddCommand(
+                "Configure IAP a&ccess",
+                _ => this.viewModel.IsCloudConsoleCommandVisible
+                    ? CommandState.Enabled
+                    : CommandState.Unavailable,
+                _ => InvokeAction(
+                    () => this.viewModel.ConfigureIapAccess(),
+                    "Opening Cloud Console"));
+            this.contextMenuCommands.AddSeparator();
+
+            //
+            // All commands added, apply to menu.
+            //
+            this.contextMenuCommands.BindTo(this.contextMenu.Items);
+            this.toolbarCommands.BindTo(this.toolStrip.Items);
         }
 
         private async Task<bool> AddNewProjectAsync()
@@ -264,41 +294,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        //---------------------------------------------------------------------
-        // Context menu event handlers.
-        //---------------------------------------------------------------------
-
-        private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs _)
-            => await InvokeActionAsync(
-                () => this.viewModel.RefreshAsync(false),
-                "Refreshing projects")
-            .ConfigureAwait(true);
-
-        private async void refreshToolStripMenuItem_Click(object sender, EventArgs _)
-            => await InvokeActionAsync(
-                () => this.viewModel.RefreshSelectedNodeAsync(),
-                "Refreshing projects")
-            .ConfigureAwait(true);
-
-        private async void unloadProjectToolStripMenuItem_Click(object sender, EventArgs _)
-            => await InvokeActionAsync(
-                () => this.viewModel.UnloadSelectedProjectAsync(),
-                "Unloading projects")
-            .ConfigureAwait(true);
-
-        private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs _)
-            => InvokeAction(
-                () => this.viewModel.OpenInCloudConsole(),
-                "Opening Cloud Console");
-
-        private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs _)
-            => InvokeAction(
-                () => this.viewModel.ConfigureIapAccess(),
-                "Opening Cloud Console");
-
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            this.ContextMenuCommands.ExecuteDefaultCommand();
+            this.contextMenuCommands.ExecuteDefaultCommand();
         }
 
         //---------------------------------------------------------------------
@@ -317,6 +315,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Other Windows event handlers.
         //---------------------------------------------------------------------
 
+        private void Command_CommandFailed(object sender, ExceptionEventArgs e)
+        {
+            this.serviceProvider
+                .GetService<IExceptionDialog>()
+                .Show(this, "Executing command failed", e.Exception);
+        }
+
         private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
         {
             try
@@ -333,8 +338,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 //
                 // Force-select the root node to update menus.
                 //
-                this.ContextMenuCommands.Context = this.viewModel.RootNode.ModelNode;
-                this.ToolbarCommands.Context = this.viewModel.RootNode.ModelNode;
+                this.viewModel.SelectedNode = this.viewModel.RootNode;
 
                 if (!projects.Any())
                 {
@@ -380,11 +384,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
             else if (e.KeyCode == Keys.Enter)
             {
-                this.ContextMenuCommands.ExecuteDefaultCommand();
+                this.contextMenuCommands.ExecuteDefaultCommand();
             }
             else
             {
-                this.ContextMenuCommands.ExecuteCommandByKey(e.KeyCode);
+                this.contextMenuCommands.ExecuteCommandByKey(e.KeyCode);
             }
         }
 

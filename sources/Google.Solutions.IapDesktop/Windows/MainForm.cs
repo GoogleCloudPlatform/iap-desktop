@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
@@ -29,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.ObjectModel.Commands;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
@@ -61,9 +63,15 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IServiceProvider serviceProvider;
         private IIapUrlHandler urlHandler;
 
+        private readonly CommandContextSource<IMainForm> viewMenuContextSource;
+        private readonly CommandContextSource<ToolWindow> windowMenuContextSource;
+
+        private readonly CommandContainer<IMainForm> viewMenuCommands;
+        private readonly CommandContainer<ToolWindow> windowMenuCommands;
+
         public IapRdpUrl StartupUrl { get; set; }
-        public CommandContainer<IMainForm> ViewMenu { get; }
-        public CommandContainer<ToolWindow> WindowMenu { get; }
+        public ICommandContainer<IMainForm> ViewMenu => this.viewMenuCommands;
+        public ICommandContainer<ToolWindow> WindowMenu => this.windowMenuCommands;
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
@@ -107,29 +115,29 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.dockPanel.DockRightPortion = 300.0f;
 
             //
-            // Bind controls.
+            // View menu.
             //
-            this.ViewMenu = new CommandContainer<IMainForm>(
-                this,
-                this.viewToolStripMenuItem.DropDownItems,
-                ToolStripItemDisplayStyle.ImageAndText,
-                this.serviceProvider)
+            this.viewMenuContextSource = new CommandContextSource<IMainForm>()
             {
-                Context = this // There is no real context for this.
+                Context = this // Pseudo-context, never changes
             };
 
-            this.WindowMenu = new CommandContainer<ToolWindow>(
-                this,
-                this.windowToolStripMenuItem.DropDownItems,
+            this.viewMenuCommands = new CommandContainer<IMainForm>(
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.serviceProvider)
-            {
-                Context = null
-            };
+                this.viewMenuContextSource);
+            this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
+            this.viewMenuCommands.BindTo(this.viewToolStripMenuItem.DropDownItems);
+
+            //
+            // Window menu.
+            //
+            this.windowMenuContextSource = new CommandContextSource<ToolWindow>();
+
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
-                this.WindowMenu.Context = this.dockPanel.ActiveContent as ToolWindow;
+                windowMenuContextSource.Context = this.dockPanel.ActiveContent as ToolWindow;
             };
+
             this.dockPanel.ActiveContentChanged += (sender, args) =>
             {
                 //
@@ -138,11 +146,20 @@ namespace Google.Solutions.IapDesktop.Windows
                 // focus is released from an RDP window by using a keyboard
                 // shortcut.
                 //
-                this.WindowMenu.Context =
+                windowMenuContextSource.Context =
                     (this.dockPanel.ActiveContent ?? this.dockPanel.ActiveDocumentPane?.ActiveContent)
                         as ToolWindow;
             };
 
+            this.windowMenuCommands = new CommandContainer<ToolWindow>(
+                ToolStripItemDisplayStyle.ImageAndText,
+                this.windowMenuContextSource);
+            this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;
+            this.windowMenuCommands.BindTo(this.windowToolStripMenuItem.DropDownItems);
+
+            //
+            // Bind controls.
+            //
             this.viewModel = new MainFormViewModel(
                 this,
                 bootstrappingServiceProvider.GetService<Profile>(),
@@ -251,6 +268,13 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
         // Window events.
         //---------------------------------------------------------------------
+
+        private void CommandContainer_CommandFailed(object sender, ExceptionEventArgs e)
+        {
+            this.serviceProvider
+                .GetService<IExceptionDialog>()
+                .Show(this, "Executing command failed", e.Exception);
+        }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -560,7 +584,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // bypassing the menu-open event (which normally
             // updates the context).
             //
-            this.WindowMenu.Refresh();
+            this.windowMenuCommands.ForceRefresh();
         }
 
         internal void ConnectToUrl(IapRdpUrl url)
@@ -620,7 +644,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.urlHandler = handler;
         }
 
-        public CommandContainer<IMainForm> AddMenu(string caption, int? index)
+        public ICommandContainer<IMainForm> AddMenu(string caption, int? index)
         {
             var menu = new ToolStripMenuItem(caption);
 
@@ -635,22 +659,21 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.mainMenu.Items.Add(menu);
             }
 
-            var commandContainer = new CommandContainer<IMainForm>(
-                this,
-                menu.DropDownItems,
+            var container = new CommandContainer<IMainForm>(
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.serviceProvider)
-            {
-                Context = this // There is no real context for this.
-            };
+                new CommandContextSource<IMainForm>()
+                {
+                    Context = this
+                });
+            container.CommandFailed += CommandContainer_CommandFailed;
+            container.BindTo(menu.DropDownItems);
 
             menu.DropDownOpening += (sender, args) =>
             {
-                // Force re-evaluation of context.
-                commandContainer.Context = this;
+                container.ForceRefresh();
             };
 
-            return commandContainer;
+            return container;
         }
 
         public void Minimize()
