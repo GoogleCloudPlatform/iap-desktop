@@ -174,7 +174,7 @@ namespace Google.Solutions.Testing.Common.Integration
     public sealed class LinuxInstanceAttribute : InstanceAttribute
     {
         public const string DefaultMachineType = "f1-micro";
-        public const string Debian9 = "projects/debian-cloud/global/images/family/debian-9";
+        public const string Debian9 = "projects/debian-cloud/global/images/family/debian-11";
 
         protected override string InstanceNamePrefix => "u";
 
