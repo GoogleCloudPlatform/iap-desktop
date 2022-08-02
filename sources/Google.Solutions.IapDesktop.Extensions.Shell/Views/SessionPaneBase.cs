@@ -67,10 +67,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                         "Context commands have already been set");
                 }
 
-                this.contextCommands = value;
-                this.contextCommands.BindTo(
-                    this.TabPageContextMenuStrip,
-                    this.Container);
+                if (this.TabPageContextMenuStrip == null)
+                {
+                    //
+                    // There's a rare chance that the context menu is
+                    // null because the window is being closed. In that
+                    // case, do nothing.
+                    //
+                }
+                else
+                {
+                    this.contextCommands = value;
+                    this.contextCommands.BindTo(
+                        this.TabPageContextMenuStrip,
+                        this.Container);
+                }
 
                 //
                 // Hide the Close menu item since it's most

@@ -217,7 +217,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     Debug.Assert(session != null);
                 }
 
-                if (session is SessionPaneBase sessionPane)
+                if (session is SessionPaneBase sessionPane && 
+                    sessionPane.ContextCommands == null)
                 {
                     //
                     // Use commands from Session menu as
