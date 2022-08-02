@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ObjectModel.Commands;
 using Google.Solutions.IapDesktop.Application.Util;
+using System;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -29,14 +30,36 @@ namespace Google.Solutions.IapDesktop.Application.Views
 {
     public interface IMainForm
     {
+        /// <summary>
+        /// Handle for the main window.
+        /// </summary>
         IWin32Window Window { get; }
+
+        /// <summary>
+        /// Dock panel of main window.
+        /// </summary>
         DockPanel MainPanel { get; }
+
+        /// <summary>
+        /// Close window and exit application.
+        /// </summary>
         void Close();
+
+        /// <summary>
+        /// Minimize the main window.
+        /// </summary>
         void Minimize();
 
         ICommandContainer<IMainForm> ViewMenu { get; }
 
-        ICommandContainer<IMainForm> AddMenu(string caption, int? index);
+        /// <summary>
+        /// Add an item to the main menu.
+        /// </summary>
+        ICommandContainer<TContext> AddMenu<TContext>(
+            string caption,
+            int? index,
+            Func<TContext> queryCurrentContextFunc)
+            where TContext : class;
 
         void SetUrlHandler(IIapUrlHandler handler);
     }

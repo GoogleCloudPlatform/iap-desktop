@@ -57,7 +57,11 @@ namespace Google.Solutions.Testing.Application.Views
             throw new NotImplementedException();
         }
 
-        public ICommandContainer<IMainForm> AddMenu(string caption, int? index)
+        public ICommandContainer<TContext> AddMenu<TContext>(
+            string caption,
+            int? index,
+            Func<TContext> queryCurrentContextFunc)
+            where TContext : class
         {
             throw new NotImplementedException();
         }
