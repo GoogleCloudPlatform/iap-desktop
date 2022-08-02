@@ -23,7 +23,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Surface
+namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
 {
     /// <summary>
     /// A command that can be sufaced in a menu or some other

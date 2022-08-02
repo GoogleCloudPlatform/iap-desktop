@@ -33,7 +33,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Surface
+namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
 {
     /// <summary>
     /// Set of commands.

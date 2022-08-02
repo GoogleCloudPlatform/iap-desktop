@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Surface;
+using Google.Solutions.IapDesktop.Application.ObjectModel.Commands;
 using Google.Solutions.IapDesktop.Application.Util;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;

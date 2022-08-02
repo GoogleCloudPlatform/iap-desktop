@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Surface;
+using Google.Solutions.IapDesktop.Application.ObjectModel.Commands;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common;
 using Moq;
