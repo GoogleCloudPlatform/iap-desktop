@@ -33,7 +33,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Surface
+namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
 {
     [TestFixture]
     public class TestCommandContainer

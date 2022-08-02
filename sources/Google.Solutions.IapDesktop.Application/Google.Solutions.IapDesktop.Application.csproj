@@ -115,7 +115,7 @@
     <Compile Include="Host\CommandLineOptions.cs" />
     <Compile Include="Host\Profile.cs" />
     <Compile Include="ObjectModel\BindingExtensions.cs" />
-    <Compile Include="Surface\Command.cs" />
+    <Compile Include="ObjectModel\Commands\Command.cs" />
     <Compile Include="ObjectModel\IServiceCategoryProvider.cs" />
     <Compile Include="ObjectModel\ModelCachingViewModel.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />
@@ -171,8 +171,8 @@
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="ObjectModel\ToolStripMenuBindingExtensions.cs" />
-    <Compile Include="Surface\CommandContextSource.cs" />
-    <Compile Include="Surface\CommandContainer.cs" />
+    <Compile Include="ObjectModel\Commands\CommandContextSource.cs" />
+    <Compile Include="ObjectModel\Commands\CommandContainer.cs" />
     <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\ClipboardUtil.cs" />

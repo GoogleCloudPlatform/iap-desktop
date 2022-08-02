@@ -171,12 +171,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.contextMenuCommands = new CommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.ImageAndText,
                 contextSource);
-            this.contextMenuCommands.CommandFailed += Surface_CommandFailed;
+            this.contextMenuCommands.CommandFailed += Command_CommandFailed;
 
             this.toolbarCommands = new CommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.Image,
                 contextSource);
-            this.toolbarCommands.CommandFailed += Surface_CommandFailed;
+            this.toolbarCommands.CommandFailed += Command_CommandFailed;
 
 
             //
@@ -315,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Other Windows event handlers.
         //---------------------------------------------------------------------
 
-        private void Surface_CommandFailed(object sender, ExceptionEventArgs e)
+        private void Command_CommandFailed(object sender, ExceptionEventArgs e)
         {
             this.serviceProvider
                 .GetService<IExceptionDialog>()
