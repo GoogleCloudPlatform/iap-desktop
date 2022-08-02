@@ -71,6 +71,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 this.contextCommands.BindTo(
                     this.TabPageContextMenuStrip.Items,
                     this.Container);
+
+                this.TabPageContextMenuStrip.Opening += (sender, args) =>
+                {
+                    this.contextCommands.ForceRefresh(); // TODO: Move to BindTo
+                };
             }
         }
     }

@@ -75,12 +75,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             Assert.IsNotNull(window.ContextCommands);
             Assert.IsNotNull(window.TabPageContextMenuStrip);
 
-            var items = window.TabPageContextMenuStrip.Items
-                .Cast<ToolStripMenuItem>()
-                .Select(i => i.Text)
-                .ToList();
-
-            CollectionAssert.Contains(items, "test-command");
+            CollectionAssert.Contains(
+                window.TabPageContextMenuStrip.Items
+                    .Cast<ToolStripMenuItem>()
+                    .Select(i => i.Text)
+                    .ToList(), 
+                "test-command");
         }
 
         [Test]
@@ -93,7 +93,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
                 "test-command",
                 s => CommandState.Enabled,
                 s => { });
-
 
             var window = new SessionPane()
             {

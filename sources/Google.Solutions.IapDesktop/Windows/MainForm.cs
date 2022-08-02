@@ -645,7 +645,7 @@ namespace Google.Solutions.IapDesktop.Windows
         }
 
         public ICommandContainer<TContext> AddMenu<TContext>(
-            string caption, 
+            string caption,
             int? index,
             Func<TContext> queryCurrentContextFunc)
             where TContext : class
@@ -663,22 +663,35 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.mainMenu.Items.Add(menu);
             }
 
-            var contextSource = new CommandContextSource<TContext>();
-            menu.DropDownOpening += (sender, args) =>
-            {
-                //
-                // Query current context and update commands.
-                //
-                contextSource.Context = queryCurrentContextFunc();
-            };
-
             var container = new CommandContainer<TContext>(
                 ToolStripItemDisplayStyle.ImageAndText,
-                contextSource);
+                new CallbackSource<TContext>(queryCurrentContextFunc));
             container.CommandFailed += CommandContainer_CommandFailed;
             container.BindTo(menu.DropDownItems);
 
+            menu.DropDownOpening += (sender, args) =>
+            {
+                //
+                // Force refresh since we can't know if the context
+                // has changed or not.
+                //
+                container.ForceRefresh();
+            };
+
             return container;
+        }
+
+        private class CallbackSource<TContext> : ICommandContextSource<TContext> // TODO: Move elsewhere
+        {
+            private readonly Func<TContext> queryCurrentContextFunc;
+
+            public CallbackSource(Func<TContext> queryCurrentContextFunc)
+            {
+                this.queryCurrentContextFunc = queryCurrentContextFunc;
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+            public TContext Context => this.queryCurrentContextFunc();
         }
 
         public void Minimize()

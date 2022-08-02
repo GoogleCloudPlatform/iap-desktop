@@ -58,6 +58,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
         void BindTo(
             ToolStripItemCollection view,
             IContainer container = null);
+
+        void ForceRefresh();
     }
 
     public sealed class CommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
