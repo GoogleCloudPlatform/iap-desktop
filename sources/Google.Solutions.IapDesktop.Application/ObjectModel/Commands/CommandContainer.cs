@@ -56,10 +56,12 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
         void ExecuteDefaultCommand();
 
         void BindTo(
-            ToolStripItemCollection view,
+            ToolStripDropDownMenu menu,
             IContainer container = null);
 
-        void ForceRefresh();
+        void BindTo(
+            ToolStripMenuItem menu,
+            IContainer container = null);
     }
 
     public sealed class CommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
@@ -93,11 +95,15 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
                   contextSource,
                   new ObservableCollection<MenuItemViewModelBase>())
         {
-            this.binding = this.ContextSource.OnPropertyChange(
-                s => s.Context,
-                context => {
-                    MenuItemViewModel.OnContextUpdated(this.menuItems);
-                });
+            if (this.ContextSource is INotifyPropertyChanged observable)
+            {
+                this.binding = observable.OnPropertyChange(
+                    s => ((ICommandContextSource<TContext>)s).Context,
+                    context =>
+                    {
+                        MenuItemViewModel.OnContextUpdated(this.menuItems);
+                    });
+            }
         }
 
         private void OnCommandFailed(Exception e)
@@ -105,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
             this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e));
         }
 
-        public void BindTo(
+        internal void BindTo(
             ToolStripItemCollection view,
             IContainer container = null)
         {
@@ -141,6 +147,38 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
         //---------------------------------------------------------------------
         // ICommandContainer.
         //---------------------------------------------------------------------
+
+        public void BindTo(
+            ToolStripDropDownMenu menu,
+            IContainer container = null)
+        {
+            BindTo(menu.Items, container);
+
+            if (!(this.ContextSource is INotifyPropertyChanged))
+            {
+                //
+                // The source isn't observable. Peform an explicit
+                // refresh every time the menu is opened.
+                //
+                menu.Opening += (sender, args) => ForceRefresh();
+            }
+        }
+
+        public void BindTo(
+            ToolStripMenuItem menu,
+            IContainer container = null)
+        {
+            BindTo(menu.DropDownItems, container);
+
+            if (!(this.ContextSource is INotifyPropertyChanged))
+            {
+                //
+                // The source isn't observable. Peform an explicit
+                // refresh every time the menu is opened.
+                //
+                menu.DropDownOpening += (sender, args) => ForceRefresh();
+            }
+        }
 
         public ICommandContainer<TContext> AddCommand(ICommand<TContext> command)
             => AddCommand(command, null);

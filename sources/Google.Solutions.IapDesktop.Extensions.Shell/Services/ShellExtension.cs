@@ -224,8 +224,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     // context menu.
                     //
                     sessionPane.ContextCommands = this.sessionCommands;
-
-                    // TODO: Remove redundant commands.
                 }
             }
             catch (Exception e) when (e.IsCancellation())

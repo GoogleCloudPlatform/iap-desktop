@@ -67,20 +67,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
                 s => { });
 
 
-            var window = new SessionPane()
+            using (var window = new SessionPane()
             {
                 ContextCommands = commands
-            };
+            })
+            {
 
-            Assert.IsNotNull(window.ContextCommands);
-            Assert.IsNotNull(window.TabPageContextMenuStrip);
+                Assert.IsNotNull(window.ContextCommands);
+                Assert.IsNotNull(window.TabPageContextMenuStrip);
 
-            CollectionAssert.Contains(
-                window.TabPageContextMenuStrip.Items
-                    .Cast<ToolStripMenuItem>()
-                    .Select(i => i.Text)
-                    .ToList(), 
-                "test-command");
+                CollectionAssert.Contains(
+                    window.TabPageContextMenuStrip.Items
+                        .Cast<ToolStripMenuItem>()
+                        .Select(i => i.Text)
+                        .ToList(),
+                    "test-command");
+            }
         }
 
         [Test]
@@ -94,13 +96,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
                 s => CommandState.Enabled,
                 s => { });
 
-            var window = new SessionPane()
+            using (var window = new SessionPane()
             {
                 ContextCommands = commands
-            };
+            })
+            {
+                Assert.Throws<InvalidOperationException>(
+                    () => window.ContextCommands = commands);
+            }
+        }
 
-            Assert.Throws<InvalidOperationException>(
-                () => window.ContextCommands = commands);
+        [Test]
+        public void WhenContextCommandsSet_ThenDefaultCloseMenuIsReplaced()
+        {
+            using (var window = new SessionPane())
+            {
+                window.Show();
+
+                var commands = new CommandContainer<ISession>(
+                    ToolStripItemDisplayStyle.Text,
+                    new Mock<ICommandContextSource<ISession>>().Object);
+                commands.AddCommand(
+                    "test-command",
+                    s => CommandState.Enabled,
+                    s => { });
+                window.ContextCommands = commands;
+                Assert.IsFalse(window.ShowCloseMenuItemInContextMenu);
+
+                window.Close();
+            }
         }
     }
 }

@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             // Menus.
             //
-            var contextSource = new CommandContextSource<IProjectModelNode>();
+            var contextSource = new ObservableCommandContextSource<IProjectModelNode>();
             this.viewModel.OnPropertyChange(
                 m => m.SelectedNode,
                 node =>

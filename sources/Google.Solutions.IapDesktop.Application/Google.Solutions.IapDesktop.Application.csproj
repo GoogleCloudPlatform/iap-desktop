@@ -171,7 +171,7 @@
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="ObjectModel\ToolStripMenuBindingExtensions.cs" />
-    <Compile Include="ObjectModel\Commands\CommandContextSource.cs" />
+    <Compile Include="ObjectModel\Commands\ObservableCommandContextSource.cs" />
     <Compile Include="ObjectModel\Commands\CommandContainer.cs" />
     <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />

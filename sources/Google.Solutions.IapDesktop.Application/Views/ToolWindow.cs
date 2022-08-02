@@ -46,6 +46,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public bool IsClosed { get; private set; } = false;
 
+        public bool ShowCloseMenuItemInContextMenu
+        {
+            get => this.closeMenuItem.Visible;
+            set => this.closeMenuItem.Visible = false;
+        }
+
         public ToolWindow()
         {
             this.InitializeComponent();

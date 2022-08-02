@@ -69,13 +69,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
 
                 this.contextCommands = value;
                 this.contextCommands.BindTo(
-                    this.TabPageContextMenuStrip.Items,
+                    this.TabPageContextMenuStrip,
                     this.Container);
 
-                this.TabPageContextMenuStrip.Opening += (sender, args) =>
-                {
-                    this.contextCommands.ForceRefresh(); // TODO: Move to BindTo
-                };
+                //
+                // Hide the Close menu item since it's most
+                // likely redundant now.
+                //
+                this.ShowCloseMenuItemInContextMenu = false;
             }
         }
     }

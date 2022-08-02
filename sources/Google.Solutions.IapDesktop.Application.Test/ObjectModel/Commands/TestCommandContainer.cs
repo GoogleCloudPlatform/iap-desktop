@@ -38,14 +38,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
     [TestFixture]
     public class TestCommandContainer
     {
+        private class NonObservableCommandContextSource<TContext> : ICommandContextSource<TContext>
+        {
+            public TContext Context { get; set; }
+        }
+
         //---------------------------------------------------------------------
         // Context.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenContextChanged_ThenQueryStateIsCalledOnTopLevelCommands()
+        public void WhenObservableContextChanged_ThenQueryStateIsCalledOnTopLevelCommands()
         {
-            var source = new CommandContextSource<string>()
+            var source = new ObservableCommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -73,9 +78,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         }
 
         [Test]
-        public void WhenContextChanged_ThenQueryStateIsCalledOnChildCommands()
+        public void WhenObservableContextChanged_ThenQueryStateIsCalledOnChildCommands()
         {
-            var source = new CommandContextSource<string>()
+            var source = new ObservableCommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -109,9 +114,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         }
 
         [Test]
-        public void WhenContextChanged_ThenExecuteUsesLatestContext()
+        public void WhenObservableContextChanged_ThenExecuteUsesLatestContext()
         {
-            var source = new CommandContextSource<string>()
+            var source = new ObservableCommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -129,6 +134,27 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
             }
         }
 
+        [Test]
+        public void WhenNonObservableContextChanged_ThenExecuteUsesOldContext()
+        {
+            var source = new NonObservableCommandContextSource<string>()
+            {
+                Context = "ctx-1"
+            };
+
+            using (var container = new CommandContainer<string>(
+                ToolStripItemDisplayStyle.Text,
+                source))
+            {
+                container.AddCommand(
+                    "toplevel",
+                    ctx => CommandState.Enabled,
+                    ctx => Assert.AreEqual("ctx-1", ctx));
+
+                source.Context = "ctx-2";
+            }
+        }
+
         //---------------------------------------------------------------------
         // AddCommand.
         //---------------------------------------------------------------------
@@ -138,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new CommandContextSource<string>()))
+                new ObservableCommandContextSource<string>()))
             {
                 PropertyAssert.RaisesCollectionChangedNotification(
                     container.MenuItems,
@@ -155,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new CommandContextSource<string>()))
+                new ObservableCommandContextSource<string>()))
             {
                 PropertyAssert.RaisesCollectionChangedNotification(
                     container.MenuItems,
@@ -173,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new CommandContextSource<string>()))
+                new ObservableCommandContextSource<string>()))
             {
                 container.ExecuteCommandByKey(Keys.A);
             }
@@ -182,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         [Test]
         public void WhenKeyIsMappedAndCommandIsEnabled_ThenExecuteCommandInvokesHandler()
         {
-            var source = new CommandContextSource<string>()
+            var source = new ObservableCommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -213,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         [Test]
         public void WhenKeyIsMappedAndCommandIsDisabled_ThenExecuteCommandByKeyDoesNothing()
         {
-            var source = new CommandContextSource<string>()
+            var source = new ObservableCommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -245,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         [Test]
         public void WhenContainerDoesNotHaveDefaultCommand_ThenExecuteDefaultCommandDoesNothing()
         {
-            var source = new CommandContextSource<string>()
+            var source = new ObservableCommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -269,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         [Test]
         public void WhenDefaultCommandIsDisabled_ThenExecuteDefaultCommandDoesNothing()
         {
-            var source = new CommandContextSource<string>()
+            var source = new ObservableCommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -294,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         [Test]
         public void WhenDefaultCommandIsEnabled_ThenExecuteDefaultExecutesCommand()
         {
-            var source = new CommandContextSource<string>()
+            var source = new ObservableCommandContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -330,7 +356,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new CommandContextSource<string>()))
+                new ObservableCommandContextSource<string>()))
             {
                 Exception exception = null;
                 container.CommandFailed += (s, a) =>
@@ -359,7 +385,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new CommandContextSource<string>()))
+                new ObservableCommandContextSource<string>()))
             {
                 container.CommandFailed += (s, a) => Assert.Fail();
 
