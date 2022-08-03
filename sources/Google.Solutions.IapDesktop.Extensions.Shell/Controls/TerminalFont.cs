@@ -38,6 +38,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             TextFormatFlags.NoPrefix |
             TextFormatFlags.PreserveGraphicsClipping;
 
+        private readonly StringFormat format;
+
         internal Font Font { get; private set; }
 
         //---------------------------------------------------------------------
@@ -71,6 +73,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public TerminalFont(string fontFamily, float emSize)
         {
             this.Font = new Font(fontFamily, emSize);
+            this.format = StringFormat.GenericTypographic;
+
+            //
+            // Controrary to what the documentation states, 
+            // the Alignment is sometimes not Near, but Center.
+            //
+            this.format.Alignment = StringAlignment.Near;
+            this.format.LineAlignment = StringAlignment.Near;
         }
 
         public TerminalFont() : this(DefaultFontFamily, DefaultSize)
@@ -121,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     font,
                     brush,
                     point,
-                    StringFormat.GenericTypographic);
+                    this.format);
             }
         }
 
@@ -145,6 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public void Dispose()
         {
             this.Font.Dispose();
+            this.format.Dispose();
         }
     }
 }
