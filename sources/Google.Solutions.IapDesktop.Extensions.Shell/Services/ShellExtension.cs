@@ -43,6 +43,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 {
@@ -54,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IWin32Window window;
+        private readonly ICommandContainer<ISession> sessionCommands;
 
         private static CommandState GetToolbarCommandStateWhenRunningInstanceRequired(
             IProjectModelNode node)
@@ -183,31 +185,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         {
             try
             {
+                ISession session = null;
                 if (node is IProjectModelInstanceNode rdpNode && rdpNode.IsRdpSupported())
                 {
-                    await this.serviceProvider
+                    session = await this.serviceProvider
                         .GetService<IRdpConnectionService>()
                         .ActivateOrConnectInstanceAsync(
                             rdpNode,
                             allowPersistentCredentials)
                         .ConfigureAwait(true);
+
+                    Debug.Assert(session != null);
                 }
                 else if (node is IProjectModelInstanceNode sshNode && sshNode.IsSshSupported())
                 {
                     if (forceNewConnection)
                     {
-                        await this.serviceProvider
+                        session = await this.serviceProvider
                             .GetService<ISshConnectionService>()
                             .ConnectInstanceAsync(sshNode)
                             .ConfigureAwait(true);
                     }
                     else
                     {
-                        await this.serviceProvider
+                        session = await this.serviceProvider
                             .GetService<ISshConnectionService>()
                             .ActivateOrConnectInstanceAsync(sshNode)
                             .ConfigureAwait(true);
                     }
+
+                    Debug.Assert(session != null);
+                }
+
+                if (session is SessionPaneBase sessionPane && 
+                    sessionPane.ContextCommands == null)
+                {
+                    //
+                    // Use commands from Session menu as
+                    // context menu.
+                    //
+                    sessionPane.ContextCommands = this.sessionCommands;
                 }
             }
             catch (Exception e) when (e.IsCancellation())
@@ -400,13 +417,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // On pop-up of the menu, query the active session and use it as context.
             //
-            var sessionMenu = mainForm.AddMenu(
+            this.sessionCommands = mainForm.AddMenu(
                 "&Session", 1,
                 () => this.serviceProvider
                     .GetService<IGlobalSessionBroker>()
                     .ActiveSession);
 
-            sessionMenu.AddCommand(
+            this.sessionCommands.AddCommand(
                 new Command<ISession>(
                     "&Full screen",
                     session => GetSessionMenuCommandState<IRemoteDesktopSession>(
@@ -417,7 +434,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     Image = Resources.Fullscreen_16,
                     ShortcutKeys = DocumentWindow.EnterFullScreenHotKey
                 });
-            sessionMenu.AddCommand(
+            this.sessionCommands.AddCommand(
                 new Command<ISession>(
                     "&Full screen (multiple displays)",
                     session => GetSessionMenuCommandState<IRemoteDesktopSession>(
@@ -428,7 +445,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     Image = Resources.Fullscreen_16,
                     ShortcutKeys = Keys.F11 | Keys.Shift
                 });
-            sessionMenu.AddCommand(
+            this.sessionCommands.AddCommand(
                 new Command<ISession>(
                     "&Disconnect",
                     session => GetSessionMenuCommandState<ISession>(
@@ -439,15 +456,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     Image = Resources.Disconnect_16,
                     ShortcutKeys = Keys.Control | Keys.F4
                 });
-            sessionMenu.AddSeparator();
-            sessionMenu.AddCommand(
+            this.sessionCommands.AddSeparator();
+            this.sessionCommands.AddCommand(
                 new Command<ISession>(
                     "Show &security screen (send Ctrl+Alt+Esc)",
                     session => GetSessionMenuCommandState<IRemoteDesktopSession>(
                         session,
                         rdpSession => rdpSession.IsConnected),
                     session => (session as IRemoteDesktopSession)?.ShowSecurityScreen()));
-            sessionMenu.AddCommand(
+            this.sessionCommands.AddCommand(
                 new Command<ISession>(
                     "Open &task manager (send Ctrl+Shift+Esc)",
                     session => GetSessionMenuCommandState<IRemoteDesktopSession>(

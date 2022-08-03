@@ -48,7 +48,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     [ComVisible(false)]
-    public partial class RemoteDesktopPane : DocumentWindow, IRemoteDesktopSession
+    public partial class RemoteDesktopPane : SessionPaneBase, IRemoteDesktopSession
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
@@ -137,35 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.eventService = serviceProvider.GetService<IEventService>();
             this.Instance = vmInstance;
-
-            var singleScreenFullScreenMenuItem = new ToolStripMenuItem("&Full screen");
-            singleScreenFullScreenMenuItem.Click += (sender, _)
-                => TrySetFullscreen(FullScreenMode.SingleScreen);
-            this.TabPageContextMenuStrip.Items.Add(singleScreenFullScreenMenuItem);
-
-            var allScreensFullScreenMenuItem = new ToolStripMenuItem("&Full screen (multiple displays)");
-            allScreensFullScreenMenuItem.Click += (sender, _)
-                => TrySetFullscreen(FullScreenMode.AllScreens);
-            this.TabPageContextMenuStrip.Items.Add(allScreensFullScreenMenuItem);
-
-            this.TabPageContextMenuStrip.Opening += (sender, _) =>
-            {
-                foreach (var menuItem in this.TabPageContextMenuStrip.Items.Cast<ToolStripDropDownItem>())
-                {
-                    //
-                    // Disable all commands while connecting.
-                    //
-                    menuItem.Enabled = !this.IsConnecting;
-                }
-
-                //
-                // Disable full-screen if some other window is full-screen already.
-                //
-                singleScreenFullScreenMenuItem.Enabled &= this.CanEnterFullScreen;
-                allScreensFullScreenMenuItem.Enabled &= this.CanEnterFullScreen;
-            };
         }
-
 
         //---------------------------------------------------------------------
         // Publics.

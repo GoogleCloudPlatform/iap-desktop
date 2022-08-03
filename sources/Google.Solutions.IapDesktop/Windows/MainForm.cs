@@ -63,8 +63,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IServiceProvider serviceProvider;
         private IIapUrlHandler urlHandler;
 
-        private readonly CommandContextSource<IMainForm> viewMenuContextSource;
-        private readonly CommandContextSource<ToolWindow> windowMenuContextSource;
+        private readonly ObservableCommandContextSource<IMainForm> viewMenuContextSource;
+        private readonly ObservableCommandContextSource<ToolWindow> windowMenuContextSource;
 
         private readonly CommandContainer<IMainForm> viewMenuCommands;
         private readonly CommandContainer<ToolWindow> windowMenuCommands;
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // View menu.
             //
-            this.viewMenuContextSource = new CommandContextSource<IMainForm>()
+            this.viewMenuContextSource = new ObservableCommandContextSource<IMainForm>()
             {
                 Context = this // Pseudo-context, never changes
             };
@@ -126,12 +126,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.viewMenuContextSource);
             this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
-            this.viewMenuCommands.BindTo(this.viewToolStripMenuItem.DropDownItems);
+            this.viewMenuCommands.BindTo(this.viewToolStripMenuItem, this.Container);
 
             //
             // Window menu.
             //
-            this.windowMenuContextSource = new CommandContextSource<ToolWindow>();
+            this.windowMenuContextSource = new ObservableCommandContextSource<ToolWindow>();
 
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.windowMenuContextSource);
             this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;
-            this.windowMenuCommands.BindTo(this.windowToolStripMenuItem.DropDownItems);
+            this.windowMenuCommands.BindTo(this.windowToolStripMenuItem, this.Container);
 
             //
             // Bind controls.
@@ -645,7 +645,7 @@ namespace Google.Solutions.IapDesktop.Windows
         }
 
         public ICommandContainer<TContext> AddMenu<TContext>(
-            string caption, 
+            string caption,
             int? index,
             Func<TContext> queryCurrentContextFunc)
             where TContext : class
@@ -663,20 +663,20 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.mainMenu.Items.Add(menu);
             }
 
-            var contextSource = new CommandContextSource<TContext>();
+            var container = new CommandContainer<TContext>(
+                ToolStripItemDisplayStyle.ImageAndText,
+                new CallbackSource<TContext>(queryCurrentContextFunc));
+            container.CommandFailed += CommandContainer_CommandFailed;
+            container.BindTo(menu, this.Container);
+
             menu.DropDownOpening += (sender, args) =>
             {
                 //
-                // Query current context and update commands.
+                // Force refresh since we can't know if the context
+                // has changed or not.
                 //
-                contextSource.Context = queryCurrentContextFunc();
+                container.ForceRefresh();
             };
-
-            var container = new CommandContainer<TContext>(
-                ToolStripItemDisplayStyle.ImageAndText,
-                contextSource);
-            container.CommandFailed += CommandContainer_CommandFailed;
-            container.BindTo(menu.DropDownItems);
 
             return container;
         }
@@ -938,5 +938,21 @@ namespace Google.Solutions.IapDesktop.Windows
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
 
+
+        //---------------------------------------------------------------------
+        // Helper classes.
+        //---------------------------------------------------------------------
+        
+        private class CallbackSource<TContext> : ICommandContextSource<TContext>
+        {
+            private readonly Func<TContext> queryCurrentContextFunc;
+
+            public CallbackSource(Func<TContext> queryCurrentContextFunc)
+            {
+                this.queryCurrentContextFunc = queryCurrentContextFunc;
+            }
+
+            public TContext Context => this.queryCurrentContextFunc();
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
     /// determines the availability of commands.
     /// </summary>
     /// <typeparam name="TContext"></typeparam>
-    public interface ICommandContextSource<TContext> : INotifyPropertyChanged
+    public interface ICommandContextSource<TContext>
     {
         TContext Context { get; }
     }
@@ -48,7 +48,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
     /// <summary>
     /// Basic context source implementation.
     /// </summary>
-    public class CommandContextSource<TContext> : ViewModelBase, ICommandContextSource<TContext>
+    public class ObservableCommandContextSource<TContext> 
+        : ViewModelBase, ICommandContextSource<TContext>
     {
         private TContext context;
 

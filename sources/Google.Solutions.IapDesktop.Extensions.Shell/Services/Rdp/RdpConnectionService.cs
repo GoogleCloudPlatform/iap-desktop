@@ -42,11 +42,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
 {
     public interface IRdpConnectionService
     {
-        Task ActivateOrConnectInstanceAsync(
+        Task<IRemoteDesktopSession> ActivateOrConnectInstanceAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials);
 
-        Task ActivateOrConnectInstanceAsync(IapRdpUrl url);
+        Task<IRemoteDesktopSession> ActivateOrConnectInstanceAsync(IapRdpUrl url);
     }
 
     [Service(typeof(IRdpConnectionService))]
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             this.window = serviceProvider.GetService<IMainForm>().Window;
         }
 
-        private async Task ConnectInstanceAsync(
+        private async Task<IRemoteDesktopSession> ConnectInstanceAsync(
             InstanceLocator instance,
             InstanceConnectionSettings settings)
         {
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                     }
                 }).ConfigureAwait(true);
 
-            this.sessionBroker.Connect(
+            return this.sessionBroker.Connect(
                 instance,
                 "localhost",
                 (ushort)tunnel.LocalPort,
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         // IRdpConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task ActivateOrConnectInstanceAsync(
+        public async Task<IRemoteDesktopSession> ActivateOrConnectInstanceAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials)
         {
@@ -145,7 +145,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             if (this.sessionBroker.TryActivate(vmNode.Instance))
             {
                 // RDP session was active, nothing left to do.
-                return;
+                var activeSession = this.sessionBroker.ActiveSession;
+
+                Debug.Assert(activeSession != null);
+                Debug.Assert(activeSession is IRemoteDesktopSession);
+
+                return (IRemoteDesktopSession)activeSession;
             }
 
             // Select node so that tracking windows are updated.
@@ -171,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             else
             {
                 //
-                //Temporarily clear persisted credentials so that the
+                // Temporarily clear persisted credentials so that the
                 // default credential prompt is triggered.
                 //
                 // NB. Use an empty string (as opposed to null) to
@@ -180,18 +185,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                 settings.TypedCollection.RdpPassword.Value = string.Empty;
             }
 
-            await ConnectInstanceAsync(
+            return await ConnectInstanceAsync(
                     vmNode.Instance,
                     (InstanceConnectionSettings)settings.TypedCollection)
                 .ConfigureAwait(true);
         }
 
-        public async Task ActivateOrConnectInstanceAsync(IapRdpUrl url)
+        public async Task<IRemoteDesktopSession> ActivateOrConnectInstanceAsync(IapRdpUrl url)
         {
             if (this.sessionBroker.TryActivate(url.Instance))
             {
                 // RDP session was active, nothing left to do.
-                return;
+                var activeSession = this.sessionBroker.ActiveSession;
+
+                Debug.Assert(activeSession != null);
+                Debug.Assert(activeSession is IRemoteDesktopSession);
+
+                return (IRemoteDesktopSession)activeSession;
             }
 
             InstanceConnectionSettings settings;
@@ -219,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                     false)
                 .ConfigureAwait(true);
 
-            await ConnectInstanceAsync(
+            return await ConnectInstanceAsync(
                     url.Instance,
                     settings)
                 .ConfigureAwait(true);

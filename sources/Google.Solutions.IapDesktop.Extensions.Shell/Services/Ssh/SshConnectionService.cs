@@ -49,10 +49,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
     public interface ISshConnectionService
     {
-        Task ActivateOrConnectInstanceAsync(
+        Task<ISshTerminalSession> ActivateOrConnectInstanceAsync(
             IProjectModelInstanceNode vmNode);
 
-        Task ConnectInstanceAsync(
+        Task<ISshTerminalSession> ConnectInstanceAsync(
             IProjectModelInstanceNode vmNode);
     }
 
@@ -88,20 +88,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // ISshConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task ActivateOrConnectInstanceAsync(IProjectModelInstanceNode vmNode)
+        public async Task<ISshTerminalSession> ActivateOrConnectInstanceAsync(
+            IProjectModelInstanceNode vmNode)
         {
             Debug.Assert(vmNode.IsSshSupported());
 
             if (this.sessionBroker.TryActivate(vmNode.Instance))
             {
                 // SSH session was active, nothing left to do.
-                return;
+                var activeSession = this.sessionBroker.ActiveSession;
+
+                Debug.Assert(activeSession != null);
+                Debug.Assert(activeSession is ISshTerminalSession);
+
+                return (ISshTerminalSession)activeSession;
             }
 
-            await ConnectInstanceAsync(vmNode).ConfigureAwait(true);
+            return await ConnectInstanceAsync(vmNode).ConfigureAwait(true);
         }
 
-        public async Task ConnectInstanceAsync(IProjectModelInstanceNode vmNode)
+        public async Task<ISshTerminalSession> ConnectInstanceAsync(
+            IProjectModelInstanceNode vmNode)
         {
             Debug.Assert(vmNode.IsSshSupported());
 
@@ -221,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 // NB. ConnectAsync takes ownership of the key and will retain
                 // it for the lifetime of the session.
                 //
-                await this.sessionBroker.ConnectAsync(
+                return await this.sessionBroker.ConnectAsync(
                         instance,
                         new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
                         authorizedKeyTask.Result,
