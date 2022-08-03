@@ -43,6 +43,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
@@ -236,6 +237,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 this.serviceProvider
                     .GetService<IExceptionDialog>()
                     .Show(this.window, "Connecting to VM instance failed", e);
+            }
+        }
+
+        private async void DuplicateSession(ISshTerminalSession session)
+        {
+            //
+            // Try to lookup node for this session. In some cases,
+            // we might not find it (for example, if the project has
+            // been unloaded in the meantime).
+            //
+            var node = await this.serviceProvider
+                .GetService<IProjectModelService>()
+                .GetNodeAsync(session.Instance, CancellationToken.None)
+                .ConfigureAwait(true);
+
+            if (node is IProjectModelInstanceNode vmNode && vmNode != null)
+            {
+                Connect(vmNode, false, true);
             }
         }
 
@@ -444,6 +463,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 {
                     Image = Resources.Fullscreen_16,
                     ShortcutKeys = Keys.F11 | Keys.Shift
+                });
+            this.sessionCommands.AddCommand(
+                new Command<ISession>(
+                    "D&uplicate",
+                    session => GetSessionMenuCommandState<ISshTerminalSession>(
+                        session,
+                        sshSession => sshSession.IsConnected),
+                    session => DuplicateSession((ISshTerminalSession)session))
+                {
+                    Image = Resources.Connect_16
                 });
             this.sessionCommands.AddCommand(
                 new Command<ISession>(
