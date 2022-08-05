@@ -111,7 +111,7 @@ namespace Google.Solutions.Testing.Common.Integration
     }
 
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
-    public sealed class WindowsInstanceAttribute : InstanceAttribute
+    public class WindowsInstanceAttribute : InstanceAttribute
     {
         public const string DefaultMachineType = "n1-standard-2";
 

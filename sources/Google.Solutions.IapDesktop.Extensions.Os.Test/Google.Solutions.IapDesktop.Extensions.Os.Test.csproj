@@ -114,6 +114,8 @@
     <Compile Include="Inventory\TestWuaPackage.cs" />
     <Compile Include="Inventory\TestWuaPackageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DomainJoin\TestDomainJoinService.cs" />
+    <Compile Include="Services\DomainJoin\TestDomainJoinServiceStartupScript.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorViewModel.cs" />
     <Compile Include="Services\Inventory\TestInventoryService.cs" />

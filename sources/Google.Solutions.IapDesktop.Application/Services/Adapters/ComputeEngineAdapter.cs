@@ -387,6 +387,35 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         //---------------------------------------------------------------------
+        // Start/stop/...
+        //---------------------------------------------------------------------
+
+        public async Task ResetInstanceAsync(
+           InstanceLocator instanceLocator,
+           CancellationToken cancellationToken)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceLocator))
+            {
+                try
+                {
+                    await this.service.Instances.Reset(
+                            instanceLocator.ProjectId,
+                            instanceLocator.Zone,
+                            instanceLocator.Name)
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to VM instance {instanceLocator.Name} has been denied",
+                        HelpTopics.ProjectAccessControl,
+                        e);
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Permission check.
         //---------------------------------------------------------------------
 
