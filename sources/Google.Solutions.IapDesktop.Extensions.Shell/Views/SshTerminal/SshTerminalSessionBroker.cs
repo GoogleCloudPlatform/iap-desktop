@@ -33,6 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
     public interface ISshTerminalSession : ISession
     {
+        InstanceLocator Instance { get; }
     }
 
     public interface ISshTerminalSessionBroker : ISessionBroker
