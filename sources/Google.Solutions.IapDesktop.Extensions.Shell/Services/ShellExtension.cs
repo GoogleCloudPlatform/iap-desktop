@@ -334,7 +334,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     Image = Resources.Connect_16
                 },
                 2);
-
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Connect",
@@ -472,7 +471,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                         sshSession => sshSession.IsConnected),
                     session => DuplicateSession((ISshTerminalSession)session))
                 {
-                    Image = Resources.Connect_16
+                    Image = Resources.Copy_16x
                 });
             this.sessionCommands.AddCommand(
                 new Command<ISession>(
