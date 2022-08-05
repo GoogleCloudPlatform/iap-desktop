@@ -120,11 +120,11 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\libssh2.1.10.0.26\build\libssh2.targets" Condition="Exists('..\packages\libssh2.1.10.0.26\build\libssh2.targets')" />
+  <Import Project="..\packages\libssh2.1.10.0.27\build\libssh2.targets" Condition="Exists('..\packages\libssh2.1.10.0.27\build\libssh2.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\libssh2.1.10.0.26\build\libssh2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libssh2.1.10.0.26\build\libssh2.targets'))" />
+    <Error Condition="!Exists('..\packages\libssh2.1.10.0.27\build\libssh2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libssh2.1.10.0.27\build\libssh2.targets'))" />
   </Target>
 </Project>
