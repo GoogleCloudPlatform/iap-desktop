@@ -31,17 +31,20 @@ namespace Google.Solutions.Common.Util
     {
         public static Exception Unwrap(this Exception e)
         {
-            if (e is AggregateException aggregate)
+            if (e is AggregateException aggregate &&
+                aggregate.InnerException != null)
             {
-                e = aggregate.InnerException;
+                return aggregate.InnerException.Unwrap();
             }
-
-            if (e is TargetInvocationException target)
+            else if (e is TargetInvocationException target &&
+                target.InnerException != null)
             {
-                e = target.InnerException;
+                return target.InnerException.Unwrap();
             }
-
-            return e;
+            else
+            {
+                return e;
+            }
         }
 
         public static bool Is<T>(this Exception e) where T : Exception
