@@ -46,6 +46,28 @@
            DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes" />
 
+    <Property Id="DISABLEMSI">
+      <!-- https://docs.microsoft.com/en-us/windows/win32/msi/disablemsi -->
+      <RegistrySearch
+        Id="DisableMsiSearch"
+        Root="HKLM"
+        Key="Software\Policies\Microsoft\Windows\Installer"
+        Name ="DisableMSI"
+        Win64="yes"
+        Type="raw"/>
+    </Property>
+
+    <Property Id="DISABLEUSERINSTALLS">
+      <!-- https://docs.microsoft.com/en-us/windows/win32/msi/disableuserinstalls -->
+      <RegistrySearch
+        Id="DisableUserInstallsSearch"
+        Root="HKLM"
+        Key="Software\Policies\Microsoft\Windows\Installer"
+        Name ="DisableUserInstalls"
+        Win64="yes"
+        Type="raw"/>
+    </Property>
+
     <Condition Message="This application is only supported on Windows 8, Windows Server 2012, or higher.">
       <!-- 
         The WebSocket implementation is only available in Windows 8/2012 and higher,
@@ -56,12 +78,12 @@
     </Condition>
     <Condition Message="You need administrative privileges to install IAP Desktop on Windows Server. For more details, see https://bit.ly/iapdesktop-install.">
       <!-- 
-        On Workstation SKU, non-elevated installs are fine, but on Server, they
-        are disallowed by policy (by default, anyway).
+        On Workstation SKU (MsiNTProductType = 1), non-elevated installs are fine, 
+        but on Server, they are disallowed by policy (by default, anyway).
         
         See https://serverfault.com/questions/580972/why-is-this-preventing-me-installing-an-msi-the-system-administrator-has-set-po.
       -->
-      <![CDATA[Installed OR (MsiNTProductType = 1) OR MsiRunningElevated]]>
+      <![CDATA[Installed OR (MsiNTProductType = 1) OR MsiRunningElevated OR (DISABLEUSERINSTALLS = "#0" AND DISABLEMSI = "#0")]]>
     </Condition>
     
 		<Feature Id="ProductFeature" Title="IAP Desktop" Level="1">
