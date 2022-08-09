@@ -116,8 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
         private const string SampleProjectId = "project-1";
 
-        private static Mock<IResourceManagerAdapter> CreateResourceManagerAdapterMock(
-)
+        private static Mock<IResourceManagerAdapter> CreateResourceManagerAdapterMock()
         {
             var resourceManagerAdapter = new Mock<IResourceManagerAdapter>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
@@ -241,6 +240,57 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
+        }
+
+        [Test]
+        public async Task WhenSomeProjectsInaccessible_ThenGetRootNodeLoadsOtherProjects()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            var eventService = serviceRegistry.AddMock<IEventService>();
+
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock(
+                "accessible-project",
+                "inaccessible-project").Object);
+
+            var computeAdapter = serviceRegistry.AddMock<IComputeEngineAdapter>();
+            computeAdapter.Setup(a => a.ListInstancesAsync(
+                    It.Is<string>(id => id == "accessible-project"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Instance[0]);
+            computeAdapter.Setup(a => a.ListInstancesAsync(
+                    It.Is<string>(id => id == "inaccessible-project"),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ResourceAccessDeniedException("test", new Exception()));
+
+            var resourceManagerAdapter = serviceRegistry.AddMock<IResourceManagerAdapter>();
+            resourceManagerAdapter.Setup(a => a.GetProjectAsync(
+                    It.Is<string>(id => id == "accessible-project"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
+                {
+                    ProjectId = "accessible-project",
+                    Name = "accessible-project"
+                });
+            resourceManagerAdapter.Setup(a => a.GetProjectAsync(
+                    It.Is<string>(id => id == "inaccessible-project"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
+                {
+                    ProjectId = "inaccessible-project",
+                    Name = "inaccessible-project"
+                });
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            var model = await modelService
+                .GetRootNodeAsync(false, CancellationToken.None)
+                .ConfigureAwait(true);
+
+            CollectionAssert.AreEquivalent(
+                new[] { "accessible-project", "inaccessible-project" },
+                model.Projects.Select(p => p.Project.Name).ToList());
+
+            // Only 1 or 2 projects should have been cached.
+            Assert.AreEqual(1, modelService.CachedProjectsCount);
         }
 
         [Test]
