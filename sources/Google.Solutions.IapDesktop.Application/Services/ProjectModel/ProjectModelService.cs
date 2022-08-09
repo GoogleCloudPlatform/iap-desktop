@@ -113,6 +113,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         private readonly IDictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>> cachedZones =
             new Dictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>>();
 
+        // For testing only.
+        internal int CachedProjectsCount => this.cachedZones.Count;
+
         //---------------------------------------------------------------------
         // Data loading (uncached).
         //---------------------------------------------------------------------
@@ -327,9 +330,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
                     foreach (var loadProjectTask in loadProjectTasks)
                     {
-                        this.cachedZones[loadProjectTask.Project] = await loadProjectTask
-                            .Zones
-                            .ConfigureAwait(false);
+                        try
+                        {
+                            this.cachedZones[loadProjectTask.Project] = await loadProjectTask
+                                .Zones
+                                .ConfigureAwait(false);
+                        }
+                        catch (ResourceAccessDeniedException)
+                        {
+                            //
+                            // Project inaccessible, ignore. The project will till show up
+                            // in the model, but it won't have its zones pre-loaded.
+                            //
+                        }
                     }
                 }
             }
