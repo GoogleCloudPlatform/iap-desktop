@@ -49,7 +49,7 @@
     <Property Id="DISABLEMSI">
       <!-- https://docs.microsoft.com/en-us/windows/win32/msi/disablemsi -->
       <RegistrySearch
-        Id="DisableUserInstallsSearch"
+        Id="DisableMsiSearch"
         Root="HKLM"
         Key="Software\Policies\Microsoft\Windows\Installer"
         Name ="DisableMSI"
