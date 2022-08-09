@@ -29,8 +29,12 @@ namespace Google.Solutions.Common.Test.Util
     [TestFixture]
     public class TestExceptionExtensions : CommonFixtureBase
     {
+        //---------------------------------------------------------------------
+        // Unwrap.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenRegularException_UnwrapDoesNothing()
+        public void WhenRegularException_ThenUnwrapDoesNothing()
         {
             var ex = new ApplicationException();
 
@@ -40,7 +44,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenAggregateException_UnwrapReturnsFirstInnerException()
+        public void WhenAggregateException_ThenUnwrapReturnsFirstInnerException()
         {
             var inner1 = new ApplicationException();
             var inner2 = new ApplicationException();
@@ -52,7 +56,30 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenTargetInvocationException_UnwrapReturnsInnerException()
+        public void WhenAggregateExceptionContainsAggregateException_ThenUnwrapReturnsFirstInnerException()
+        {
+            var inner1 = new ApplicationException();
+            var inner2 = new ApplicationException();
+            var aggregate = new AggregateException(
+                new AggregateException(
+                    new TargetInvocationException(inner1)), inner2);
+
+            var unwrapped = aggregate.Unwrap();
+
+            Assert.AreSame(inner1, unwrapped);
+        }
+
+        [Test]
+        public void WhenAggregateExceptionWithoutInnerException_ThenUnwrapDoesNothing()
+        {
+            var aggregate = new AggregateException();
+            var unwrapped = aggregate.Unwrap();
+
+            Assert.AreSame(aggregate, unwrapped);
+        }
+
+        [Test]
+        public void WhenTargetInvocationException_ThenUnwrapReturnsInnerException()
         {
             var inner = new ApplicationException();
             var target = new TargetInvocationException("", inner);
@@ -61,6 +88,10 @@ namespace Google.Solutions.Common.Test.Util
 
             Assert.AreSame(inner, unwrapped);
         }
+
+        //---------------------------------------------------------------------
+        // FillMessage.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenExceptionHasNoInnerException_ThenFullMessageIsSameAsMessage()
