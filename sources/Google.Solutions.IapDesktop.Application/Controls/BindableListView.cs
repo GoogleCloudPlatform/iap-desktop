@@ -110,11 +110,14 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             {
                 this.SelectedIndices.Clear();
 
-                foreach (var selectedItem in value)
+                if (value != null)
                 {
-                    var index = this.Items.IndexOf(FindViewItem(selectedItem));
-                    Debug.Assert(index >= 0);
-                    this.SelectedIndices.Add(index);
+                    foreach (var selectedItem in value)
+                    {
+                        var index = this.Items.IndexOf(FindViewItem(selectedItem));
+                        Debug.Assert(index >= 0);
+                        this.SelectedIndices.Add(index);
+                    }
                 }
 
                 this.SelectedModelItemsChanged?.Invoke(this, EventArgs.Empty);
