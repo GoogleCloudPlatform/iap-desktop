@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             | System.Windows.Forms.AnchorStyles.Right)));
             this.projectList.Loading = true;
             this.projectList.Location = new System.Drawing.Point(15, 60);
-            this.projectList.MultiSelect = false;
+            this.projectList.MultiSelect = true;
             this.projectList.Name = "projectList";
             this.projectList.SearchOnKeyDown = true;
             this.projectList.SearchTerm = "";

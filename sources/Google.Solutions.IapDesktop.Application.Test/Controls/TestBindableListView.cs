@@ -23,7 +23,10 @@ using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -33,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestBindableListView : ApplicationFixtureBase
     {
-        private class ModelItem : ViewModelBase
+        private class ViewModelItem : ViewModelBase
         {
             private string name;
             private int imageIndex;
@@ -59,7 +62,34 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             }
         }
 
-        private class ModelListView : BindableListView<ModelItem>
+        private class ViewModel : ViewModelBase
+        {
+            private ViewModelItem selectedItem = null;
+            private IEnumerable<ViewModelItem> selectedItems = null;
+
+            public ObservableCollection<ViewModelItem> Items { get; set; }
+
+            public ViewModelItem SelectedItem
+            {
+                get => this.selectedItem;
+                set
+                {
+                    this.selectedItem = value;
+                    RaisePropertyChange();
+                }
+            }
+            public IEnumerable<ViewModelItem> SelectedItems
+            {
+                get => this.selectedItems;
+                set
+                {
+                    this.selectedItems = value;
+                    RaisePropertyChange();
+                }
+            }
+        }
+
+        private class ModelListView : BindableListView<ViewModelItem>
         {
         }
 
@@ -97,9 +127,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenNoOtherPropertiesBound_ThenBindCollectionSucceeds()
         {
-            var items = new ObservableCollection<ModelItem>
+            var items = new ObservableCollection<ViewModelItem>
             {
-                new ModelItem()
+                new ViewModelItem()
             };
 
             this.listView.BindCollection(items);
@@ -108,18 +138,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // Binding.
+        // BindCollection.
         //---------------------------------------------------------------------
 
         [Test]
         public void WhenModelPropertyIsUpdated_ThenColumnIsUpdated()
         {
-            var item = new ModelItem()
+            var item = new ViewModelItem()
             {
                 Name = "initial name"
             };
 
-            var items = new ObservableCollection<ModelItem>
+            var items = new ObservableCollection<ViewModelItem>
             {
                 item
             };
@@ -137,9 +167,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelAddsItems_ThenListViewIsUpdated()
         {
-            var items = new ObservableCollection<ModelItem>
+            var items = new ObservableCollection<ViewModelItem>
             {
-                new ModelItem()
+                new ViewModelItem()
                 {
                     Name = "one"
                 }
@@ -150,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
 
             Assert.AreEqual(1, this.listView.Items.Count);
 
-            items.Add(new ModelItem()
+            items.Add(new ViewModelItem()
             {
                 Name = "two"
             });
@@ -161,13 +191,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelRemovesItems_ThenListViewIsUpdated()
         {
-            var items = new ObservableCollection<ModelItem>
+            var items = new ObservableCollection<ViewModelItem>
             {
-                new ModelItem()
+                new ViewModelItem()
                 {
                     Name = "one"
                 },
-                new ModelItem()
+                new ViewModelItem()
                 {
                     Name = "two"
                 }
@@ -186,13 +216,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelReplacesItem_ThenListViewIsUpdated()
         {
-            var items = new ObservableCollection<ModelItem>
+            var items = new ObservableCollection<ViewModelItem>
             {
-                new ModelItem()
+                new ViewModelItem()
                 {
                     Name = "one"
                 },
-                new ModelItem()
+                new ViewModelItem()
                 {
                     Name = "two"
                 }
@@ -204,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             Assert.AreEqual(2, this.listView.Items.Count);
             Assert.AreEqual("one", this.listView.Items[0].SubItems[0].Text);
 
-            items[0] = new ModelItem()
+            items[0] = new ViewModelItem()
             {
                 Name = "three"
             };
@@ -216,12 +246,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelRemovesItem_ThenEventListenersAreRemoved()
         {
-            var item = new ModelItem()
+            var item = new ViewModelItem()
             {
                 Name = "initial name"
             };
 
-            var items = new ObservableCollection<ModelItem>
+            var items = new ObservableCollection<ViewModelItem>
             {
                 item
             };
@@ -239,12 +269,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelCleared_ThenEventListenersAreRemoved()
         {
-            var item = new ModelItem()
+            var item = new ViewModelItem()
             {
                 Name = "initial name"
             };
 
-            var items = new ObservableCollection<ModelItem>
+            var items = new ObservableCollection<ViewModelItem>
             {
                 item
             };
@@ -262,12 +292,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelIsRebound_ThenEventListenersAreRemoved()
         {
-            var item = new ModelItem()
+            var item = new ViewModelItem()
             {
                 Name = "initial name"
             };
 
-            var items = new ObservableCollection<ModelItem>
+            var items = new ObservableCollection<ViewModelItem>
             {
                 item
             };
@@ -277,7 +307,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
 
             Assert.IsTrue(item.HasPropertyChangeListeners);
 
-            this.listView.BindCollection(new ObservableCollection<ModelItem>());
+            this.listView.BindCollection(new ObservableCollection<ViewModelItem>());
 
             Assert.IsFalse(item.HasPropertyChangeListeners);
         }
@@ -285,18 +315,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelChangesImageIndex_ThenControlIsUpdated()
         {
-            var item1 = new ModelItem()
+            var item1 = new ViewModelItem()
             {
                 Name = "one",
                 ImageIndex = 1
             };
-            var item2 = new ModelItem()
+            var item2 = new ViewModelItem()
             {
                 Name = "two",
                 ImageIndex = 2
             };
 
-            var items = new ObservableCollection<ModelItem>
+            var items = new ObservableCollection<ViewModelItem>
             {
                 item1,
                 item2
@@ -312,6 +342,160 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             item1.ImageIndex = 0;
             Assert.AreEqual(0, this.listView.Items[0].ImageIndex);
             Assert.AreEqual(2, this.listView.Items[1].ImageIndex);
+        }
+
+        //---------------------------------------------------------------------
+        // SelectedModelItem.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenControlChangesSelectedItem_ThenModelIsUpdated()
+        {
+            var viewModel = new ViewModel()
+            {
+                Items = new ObservableCollection<ViewModelItem>
+                {
+                    new ViewModelItem()
+                    {
+                        Name = "one",
+                        ImageIndex = 1
+                    },
+                    new ViewModelItem()
+                    {
+                        Name = "two",
+                        ImageIndex = 2
+                    }
+                }
+            };
+
+            this.listView.BindColumn(0, m => m.Name);
+            this.listView.BindImageIndex(m => m.ImageIndex);
+            this.listView.BindCollection(viewModel.Items);
+            this.listView.BindProperty(
+                c => c.SelectedModelItem,
+                viewModel,
+                m => m.SelectedItem,
+                null);
+
+            this.listView.Items[0].Selected = true;
+
+            Assert.IsNotNull(viewModel.SelectedItem);
+            Assert.AreEqual("one", viewModel.SelectedItem.Name);
+        }
+
+        [Test]
+        public void WhenModelChangesSelectedItem_ThenControlIsUpdated()
+        {
+            var viewModel = new ViewModel()
+            {
+                Items = new ObservableCollection<ViewModelItem>
+                {
+                    new ViewModelItem()
+                    {
+                        Name = "one",
+                        ImageIndex = 1
+                    },
+                    new ViewModelItem()
+                    {
+                        Name = "two",
+                        ImageIndex = 2
+                    }
+                }
+            };
+
+            this.listView.BindColumn(0, m => m.Name);
+            this.listView.BindImageIndex(m => m.ImageIndex);
+            this.listView.BindCollection(viewModel.Items);
+            this.listView.BindProperty(
+                c => c.SelectedModelItem,
+                viewModel,
+                m => m.SelectedItem,
+                null);
+
+            Assert.IsFalse(this.listView.Items[0].Selected);
+            
+            viewModel.SelectedItem = viewModel.Items[0];
+
+            Assert.IsTrue(this.listView.Items[0].Selected);
+            Assert.IsFalse(this.listView.Items[1].Selected);
+        }
+
+
+        //---------------------------------------------------------------------
+        // SelectedModelItems.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenControlChangesSelectedItems_ThenModelIsUpdated()
+        {
+            var viewModel = new ViewModel()
+            {
+                Items = new ObservableCollection<ViewModelItem>
+                {
+                    new ViewModelItem()
+                    {
+                        Name = "one",
+                        ImageIndex = 1
+                    },
+                    new ViewModelItem()
+                    {
+                        Name = "two",
+                        ImageIndex = 2
+                    }
+                }
+            };
+
+            this.listView.BindColumn(0, m => m.Name);
+            this.listView.BindImageIndex(m => m.ImageIndex);
+            this.listView.BindCollection(viewModel.Items);
+            this.listView.BindProperty(
+                c => c.SelectedModelItems,
+                viewModel,
+                m => m.SelectedItems,
+                null);
+
+            this.listView.Items[0].Selected = true;
+            this.listView.Items[1].Selected = true;
+
+            Assert.IsNotNull(viewModel.SelectedItems);
+            Assert.AreEqual(2, viewModel.SelectedItems.Count());
+        }
+
+        [Test]
+        public void WhenModelChangesSelectedItems_ThenControlIsUpdated()
+        {
+            var viewModel = new ViewModel()
+            {
+                Items = new ObservableCollection<ViewModelItem>
+                {
+                    new ViewModelItem()
+                    {
+                        Name = "one",
+                        ImageIndex = 1
+                    },
+                    new ViewModelItem()
+                    {
+                        Name = "two",
+                        ImageIndex = 2
+                    }
+                }
+            };
+
+            this.listView.BindColumn(0, m => m.Name);
+            this.listView.BindImageIndex(m => m.ImageIndex);
+            this.listView.BindCollection(viewModel.Items);
+            this.listView.BindProperty(
+                c => c.SelectedModelItems,
+                viewModel,
+                m => m.SelectedItems,
+                null);
+
+            Assert.IsFalse(this.listView.Items[0].Selected);
+
+            viewModel.SelectedItems = viewModel.Items;
+
+            Assert.IsTrue(this.listView.Items[0].Selected);
+            Assert.IsTrue(this.listView.Items[1].Selected);
         }
     }
 }

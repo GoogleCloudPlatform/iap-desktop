@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 
         private readonly IResourceManagerAdapter resourceManager;
 
-        private Project selectedProject;
+        private IEnumerable<Project> selectedProjects;
         private string filter;
         private string statusText;
         private bool isLoading;
@@ -67,14 +68,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             }
         }
 
-        public bool IsProjectSelected => this.selectedProject != null;
+        public bool IsProjectSelected
+            => this.selectedProjects != null && this.selectedProjects.Any();
 
-        public Project SelectedProject
+        public IEnumerable<Project> SelectedProjects
         {
-            get => this.selectedProject;
+            get => this.selectedProjects;
             set
             {
-                this.selectedProject = value;
+                this.selectedProjects = value;
                 RaisePropertyChange();
                 RaisePropertyChange((ProjectPickerViewModel m) => m.IsProjectSelected);
             }
@@ -132,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             RaisePropertyChange((ProjectPickerViewModel m) => m.Filter);
 
             this.IsLoading = true;
-            this.SelectedProject = null;
+            this.SelectedProjects = null;
             this.FilteredProjects.Clear();
 
             //
