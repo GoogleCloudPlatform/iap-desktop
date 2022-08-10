@@ -117,11 +117,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             CancellationToken token);
 
         //---------------------------------------------------------------------
+        // Control instance lifecycle.
+        //---------------------------------------------------------------------
+
+        Task ControlInstanceAsync(
+           InstanceLocator instance,
+           InstanceControlCommand command,
+           CancellationToken cancellationToken);
+
+        //---------------------------------------------------------------------
         // Permission check.
         //---------------------------------------------------------------------
 
         Task<bool> IsGrantedPermission(
             InstanceLocator instanceRef,
             string permission);
+    }
+
+    public enum InstanceControlCommand
+    {
+        Start,
+        Stop,
+        Suspend,
+        Resume,
+        Reset
     }
 }

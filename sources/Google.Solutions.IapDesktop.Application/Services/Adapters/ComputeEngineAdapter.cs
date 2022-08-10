@@ -25,6 +25,7 @@ using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Net;
@@ -521,6 +522,89 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // Control instance lifecycle.
+        //---------------------------------------------------------------------
+
+        public async Task ControlInstanceAsync(
+           InstanceLocator instance,
+           InstanceControlCommand command,
+           CancellationToken cancellationToken)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod()
+                .WithParameters(instance, command))
+            {
+                try
+                {
+                    ClientServiceRequest<Operation> request;
+
+                    switch (command)
+                    {
+                        case InstanceControlCommand.Start:
+                            request = this.service.Instances.Start(
+                                instance.ProjectId,
+                                instance.Zone,
+                                instance.Name);
+                            break;
+
+                        case InstanceControlCommand.Stop:
+                            request = this.service.Instances.Stop(
+                                instance.ProjectId,
+                                instance.Zone,
+                                instance.Name);
+                            break;
+
+                        case InstanceControlCommand.Suspend:
+                            request = this.service.Instances.Suspend(
+                                instance.ProjectId,
+                                instance.Zone,
+                                instance.Name);
+                            break;
+
+                        case InstanceControlCommand.Resume:
+                            request = this.service.Instances.Resume(
+                                instance.ProjectId,
+                                instance.Zone,
+                                instance.Name);
+                            break;
+
+                        case InstanceControlCommand.Reset:
+                            request = this.service.Instances.Reset(
+                                instance.ProjectId,
+                                instance.Zone,
+                                instance.Name);
+                            break;
+
+                        default:
+                            throw new ArgumentException(nameof(command));
+                    }
+
+                    await request
+                        .ExecuteAndAwaitOperationAsync(
+                            instance.ProjectId, 
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        $"VM instance {instance.Name} does not exist",
+                        e);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to VM instance {instance.Name} has been denied",
+                        HelpTopics.ProjectAccessControl,
+                        e);
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
 
         public void Dispose()
         {
