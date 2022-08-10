@@ -83,6 +83,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Pause_16 {
+            get {
+                object obj = ResourceManager.GetObject("Pause_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Report_16 {
             get {
                 object obj = ResourceManager.GetObject("Report_16", resourceCulture);
@@ -96,6 +106,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Properties {
         internal static System.Drawing.Bitmap Report_32 {
             get {
                 object obj = ResourceManager.GetObject("Report_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Reset_16 {
+            get {
+                object obj = ResourceManager.GetObject("Reset_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Start_16 {
+            get {
+                object obj = ResourceManager.GetObject("Start_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Stop_16 {
+            get {
+                object obj = ResourceManager.GetObject("Stop_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

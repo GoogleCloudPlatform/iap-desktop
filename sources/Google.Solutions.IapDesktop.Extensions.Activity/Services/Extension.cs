@@ -160,12 +160,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                         "Starting",
                         InstanceControlCommand.Start))
                 {
-                    // TODO: Add Image 
+                    Image = Resources.Start_16
                 });
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
                     "&Resume",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning // TODO: Check suspended state
                         ? CommandState.Disabled
                         : CommandState.Enabled,
                     node => ControlInstance(
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                         "Resuming",
                         InstanceControlCommand.Resume))
                 {
-                    // TODO: Add Image 
+                    Image = Resources.Start_16
                 });
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                         "Stopping",
                         InstanceControlCommand.Stop))
                 {
-                    // TODO: Add Image 
+                    Image = Resources.Stop_16
                 });
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                         "Suspending",
                         InstanceControlCommand.Suspend))
                 {
-                    // TODO: Add Image 
+                    Image = Resources.Pause_16
                 });
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                         "Resetting",
                         InstanceControlCommand.Reset))
                 {
-                    // TODO: Add Image 
+                    Image = Resources.Reset_16
                 });
 
             //
