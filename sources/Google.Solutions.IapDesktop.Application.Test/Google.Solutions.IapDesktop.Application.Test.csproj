@@ -118,7 +118,7 @@
     <Compile Include="Services\Adapters\TestHttpProxyAdapter.cs" />
     <Compile Include="Services\Adapters\TestInstanceExtensions.cs" />
     <Compile Include="Services\Adapters\TestMetadataExtensions.cs" />
-    <Compile Include="Services\Adapters\TestWindowsCredentialAdapter.cs" />
+    <Compile Include="Services\Windows\TestWindowsCredentialService.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapterWithMtls.cs" />
     <Compile Include="Services\Authorization\TestAuthorization.cs" />

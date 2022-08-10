@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Test.Services;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
@@ -158,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-            serviceRegistry.AddMock<IWindowsCredentialAdapter>()
+            serviceRegistry.AddMock<IWindowsCredentialService>()
                 .Setup(a => a.CreateWindowsCredentialsAsync(
                     It.IsAny<InstanceLocator>(),
                     It.Is<string>(user => user == "bob-admin"),
@@ -211,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-            serviceRegistry.AddMock<IWindowsCredentialAdapter>()
+            serviceRegistry.AddMock<IWindowsCredentialService>()
                 .Setup(a => a.CreateWindowsCredentialsAsync(
                     It.IsAny<InstanceLocator>(),
                     It.Is<string>(user => user == "alice"),
@@ -249,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-            serviceRegistry.AddMock<IWindowsCredentialAdapter>()
+            serviceRegistry.AddMock<IWindowsCredentialService>()
                 .Setup(a => a.CreateWindowsCredentialsAsync(
                     It.IsAny<InstanceLocator>(),
                     It.Is<string>(user => user == "bobsemail"),
