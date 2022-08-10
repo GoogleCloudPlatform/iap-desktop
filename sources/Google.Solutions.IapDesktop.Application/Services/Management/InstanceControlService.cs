@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System;
@@ -55,6 +56,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Management
         {
             this.computeEngineAdapter = computeEngineAdapter;
             this.eventService = eventService;
+        }
+
+        public InstanceControlService(IServiceProvider serviceProvider)
+            : this(
+                  serviceProvider.GetService<IComputeEngineAdapter>(),
+                  serviceProvider.GetService<IEventService>())
+        {
         }
 
         //---------------------------------------------------------------------

@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
@@ -326,6 +327,7 @@ namespace Google.Solutions.IapDesktop
                 windowAndWorkflowLayer.AddSingleton<IProjectModelService, ProjectModelService>();
                 windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
                 windowAndWorkflowLayer.AddTransient<OptionsDialog>();
+                windowAndWorkflowLayer.AddTransient<IInstanceControlService, InstanceControlService>();
 
 #if DEBUG
                 windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();

@@ -32,6 +32,10 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Management;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 {
@@ -43,6 +47,54 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
     {
         private readonly IServiceProvider serviceProvider;
 
+        private async void ControlInstance(
+            InstanceLocator instance,
+            string action,
+            InstanceControlCommand command)
+        {
+            var jobService = this.serviceProvider.GetService<IJobService>();
+
+            // TODO: Ask for confirmation.
+
+            //
+            // Load data using a job so that the task is retried in case
+            // of authentication issues.
+            //
+            try
+            {
+                await jobService.RunInBackground<object>(
+                    new JobDescription(
+                        $"{action} {instance.Name}...",
+                        JobUserFeedbackType.BackgroundFeedback),
+                    async jobToken =>
+                    {
+                        using (var service = this.serviceProvider
+                            .GetService<IInstanceControlService>())
+                        {
+                            await service.ControlInstanceAsync(
+                                    instance,
+                                    command,
+                                    jobToken)
+                            .ConfigureAwait(false);
+                        }
+
+                        return null;
+                    }).ConfigureAwait(true);  // Back to original (UI) thread.
+            }
+            catch (Exception e)
+            {
+                var mainForm = this.serviceProvider
+                    .GetService<IMainForm>();
+
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(
+                        mainForm.Window,
+                        $"{action} {instance.Name} failed",
+                        e);
+            }
+        }
+
         public Extension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
@@ -51,8 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             //
             // Add commands to project explorer.
             //
-
-            var reportCommand = projectExplorer.ContextMenuCommands.AddCommand(
+            var reportContainer = projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Report",
                     context => context is IProjectModelProjectNode
@@ -60,8 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
                     context => { }));
-
-            reportCommand.AddCommand(
+            reportContainer.AddCommand(
                 new Command<IProjectModelNode>(
                     "Analyze VM and sole-tenant node usage...",
                     context => CommandState.Enabled,
@@ -91,6 +141,79 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 },
                 8);
 
+            var controlContainer = projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Contro&l",
+                    node => node is IProjectModelInstanceNode
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    context => { }),
+                9); // TODO: Fix index
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Start",
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
+                        ? CommandState.Disabled
+                        : CommandState.Enabled,
+                    node => ControlInstance(
+                        ((IProjectModelInstanceNode)node).Instance,
+                        "Starting",
+                        InstanceControlCommand.Start))
+                {
+                    // TODO: Add Image 
+                });
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Resume",
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
+                        ? CommandState.Disabled
+                        : CommandState.Enabled,
+                    node => ControlInstance(
+                        ((IProjectModelInstanceNode)node).Instance,
+                        "Resuming",
+                        InstanceControlCommand.Resume))
+                {
+                    // TODO: Add Image 
+                });
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Sto&p",
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    node => ControlInstance(
+                        ((IProjectModelInstanceNode)node).Instance,
+                        "Stopping",
+                        InstanceControlCommand.Stop))
+                {
+                    // TODO: Add Image 
+                });
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Suspe&nd",
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    node => ControlInstance(
+                        ((IProjectModelInstanceNode)node).Instance,
+                        "Suspending",
+                        InstanceControlCommand.Suspend))
+                {
+                    // TODO: Add Image 
+                });
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Rese&t",
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    node => ControlInstance(
+                        ((IProjectModelInstanceNode)node).Instance,
+                        "Resetting",
+                        InstanceControlCommand.Reset))
+                {
+                    // TODO: Add Image 
+                });
 
             //
             // Add commands to main menu.
