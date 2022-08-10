@@ -95,6 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             this.list.TabIndex = 1;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
+            this.list.KeyUp += List_KeyUp;
             // 
             // SearchableList
             // 

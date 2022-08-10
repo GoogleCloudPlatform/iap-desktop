@@ -109,6 +109,17 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             }
         }
 
+        private void List_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.A && e.Control && this.list.MultiSelect)
+            {
+                foreach (ListViewItem item in this.list.Items)
+                {
+                    item.Selected = true;
+                }
+            }
+        }
+
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
