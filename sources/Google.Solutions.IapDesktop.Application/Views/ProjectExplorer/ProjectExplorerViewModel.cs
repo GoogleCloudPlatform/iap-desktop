@@ -24,6 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
@@ -123,6 +124,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = true));
             eventService.BindAsyncHandler<SessionEndedEvent>(
                 e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = false));
+            eventService.BindAsyncHandler<InstanceStateChangedEvent>(
+                async e =>
+                {
+                    //
+                    // Refresh the instance node (or rather, its enclosing project)
+                    // to ensure that both the UI and the underlying project model
+                    // updated.
+                    //
+                    var node = await TryFindInstanceNodeAsync(e.Instance)
+                        .ConfigureAwait(true);
+                    if (node != null)
+                    {
+                        await RefreshAsync(node).ConfigureAwait(true);
+                    }
+                });
         }
 
         private async Task UpdateInstanceAsync(
