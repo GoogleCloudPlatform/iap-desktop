@@ -31,19 +31,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestWindowsCredentialAdapter : ApplicationFixtureBase
+    public class TestWindowsCredentialService : ApplicationFixtureBase
     {
         [Test]
         public async Task WhenUsernameIsSuperLong_ThenPasswordResetExceptionIsThrown(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString();
 
             try
@@ -66,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public async Task WhenInstanceDoesntExist_ThenPasswordResetExceptionIsThrown(
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
 
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
@@ -96,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             var credentials = await adapter.CreateWindowsCredentialsAsync(
@@ -116,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
 
             var username = "existinguser";
 
@@ -143,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
 
             var username = "existinguser";
 
@@ -170,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
 
             var instanceLocator = await testInstance;
             using (var cts = new CancellationTokenSource())
@@ -192,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
 
             var instanceLocator = await testInstance;
             using (var cts = new CancellationTokenSource())
@@ -217,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
 
             var result = await adapter.IsGrantedPermissionToCreateWindowsCredentialsAsync(
                 locator).ConfigureAwait(false);
@@ -231,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
 
             var result = await adapter.IsGrantedPermissionToCreateWindowsCredentialsAsync(
                 locator).ConfigureAwait(false);
@@ -245,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString();
 
             ExceptionAssert.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
@@ -261,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [WindowsInstance(ServiceAccount = InstanceServiceAccount.None)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             var result = await adapter.CreateWindowsCredentialsAsync(
@@ -279,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString();
 
             ExceptionAssert.ThrowsAggregateException<WindowsCredentialCreationFailedException>(
@@ -298,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 PredefinedRole.ServiceAccountUser
             })] ResourceTask<ICredential> credential)
         {
-            var adapter = new WindowsCredentialAdapter(new ComputeEngineAdapter(await credential));
+            var adapter = new WindowsCredentialService(new ComputeEngineAdapter(await credential));
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             var result = await adapter.CreateWindowsCredentialsAsync(

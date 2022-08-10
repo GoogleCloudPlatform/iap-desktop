@@ -27,6 +27,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Newtonsoft.Json;
@@ -38,9 +39,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
-    public interface IWindowsCredentialAdapter : IDisposable
+    public interface IWindowsCredentialService : IDisposable
     {
         Task<bool> IsGrantedPermissionToCreateWindowsCredentialsAsync(
             InstanceLocator instanceRef);
@@ -85,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         None = 0
     }
 
-    public sealed class WindowsCredentialAdapter : IWindowsCredentialAdapter
+    public sealed class WindowsCredentialService : IWindowsCredentialService
     {
         private const int RsaKeySize = 2048;
         private const int SerialPort = 4;
@@ -97,19 +98,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Ctor.
         //---------------------------------------------------------------------
 
-        public WindowsCredentialAdapter(
+        public WindowsCredentialService(
             IComputeEngineAdapter computeEngineAdapter)
         {
             this.computeEngineAdapter = computeEngineAdapter;
         }
 
-        public WindowsCredentialAdapter(IServiceProvider serviceProvider)
+        public WindowsCredentialService(IServiceProvider serviceProvider)
             : this(serviceProvider.GetService<IComputeEngineAdapter>())
         {
         }
 
         //---------------------------------------------------------------------
-        // IWindowsCredentialAdapter.
+        // IWindowsCredentialService.
         //---------------------------------------------------------------------
 
         public async Task<NetworkCredential> CreateWindowsCredentialsAsync(

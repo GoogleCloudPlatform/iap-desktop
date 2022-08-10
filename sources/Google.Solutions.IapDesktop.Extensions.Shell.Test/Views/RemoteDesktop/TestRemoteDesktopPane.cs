@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.Testing.Application.Views;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 {
@@ -177,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
-            using (var credentialAdapter = new WindowsCredentialAdapter(
+            using (var credentialAdapter = new WindowsCredentialService(
                 new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
@@ -237,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
-            using (var credentialAdapter = new WindowsCredentialAdapter(
+            using (var credentialAdapter = new WindowsCredentialService(
                 new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
@@ -296,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
-            using (var credentialAdapter = new WindowsCredentialAdapter(
+            using (var credentialAdapter = new WindowsCredentialService(
                 new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>())))
             {
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(

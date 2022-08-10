@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using System;
 using System.Threading.Tasks;
@@ -87,11 +88,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 }
             }
 
-            using (var windowsCredentialAdapter = this.serviceProvider.GetService<IWindowsCredentialAdapter>())
+            using (var windowsCredentialService = this.serviceProvider.GetService<IWindowsCredentialService>())
             {
                 var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
                     new JobDescription("Generating Windows logon credentials..."),
-                    token => windowsCredentialAdapter
+                    token => windowsCredentialService
                         .CreateWindowsCredentialsAsync(
                             instanceLocator,
                             username,
@@ -118,9 +119,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 
         public async Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
         {
-            using (var windowsCredentialAdapter = this.serviceProvider.GetService<IWindowsCredentialAdapter>())
+            using (var windowsCredentialService = this.serviceProvider.GetService<IWindowsCredentialService>())
             {
-                return await windowsCredentialAdapter
+                return await windowsCredentialService
                     .IsGrantedPermissionToCreateWindowsCredentialsAsync(instance)
                     .ConfigureAwait(false);
             }

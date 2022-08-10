@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
@@ -286,7 +287,7 @@ namespace Google.Solutions.IapDesktop
                 adapterLayer.AddSingleton<IJobHost>(mainForm);
                 adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
                 adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
-                adapterLayer.AddTransient<IWindowsCredentialAdapter, WindowsCredentialAdapter>();
+                adapterLayer.AddTransient<IWindowsCredentialService, WindowsCredentialService>();
                 adapterLayer.AddTransient<GithubAdapter>();
                 adapterLayer.AddTransient<BuganizerAdapter>();
                 adapterLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
