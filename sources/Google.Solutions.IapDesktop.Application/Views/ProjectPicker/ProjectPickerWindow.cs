@@ -20,18 +20,23 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
-    public interface IProjectPickerWindow
+    public interface IProjectPickerWindow : IDisposable
     {
-        string SelectProject(IWin32Window owner);
+        DialogResult ShowDialog(IWin32Window owner);
+        IEnumerable<ProjectLocator> Projects { get; }
     }
 
     [SkipCodeCoverage("All logic in view model")]
@@ -68,9 +73,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 m => m.IsLoading,
                 this.components);
             this.projectList.List.BindProperty(
-                c => c.SelectedModelItem,
+                c => c.SelectedModelItems,
                 this.viewModel,
-                m => m.SelectedProject,
+                m => m.SelectedProjects,
                 this.components);
 
             this.statusLabel.BindProperty(
@@ -106,17 +111,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         // IProjectPickerWindow.
         //---------------------------------------------------------------------
 
-        public string SelectProject(IWin32Window owner)
-        {
-            if (ShowDialog(owner) == DialogResult.OK)
-            {
-                return this.viewModel.SelectedProject?.ProjectId;
-            }
-            else
-            {
-                return null;
-            }
-        }
+        public IEnumerable<ProjectLocator> Projects
+            => this.viewModel
+                .SelectedProjects
+                .EnsureNotNull()
+                .Select(p => new ProjectLocator(p.ProjectId));
 
         private void addProjectButton_Click(object sender, EventArgs e)
         {

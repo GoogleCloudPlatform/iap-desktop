@@ -82,6 +82,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             return resourceManagerMock;
         }
 
+        //---------------------------------------------------------------------
+        // Filter.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenFilterSetToNull_ThenListIsPopulatedWithAllProjects()
         {
@@ -135,17 +139,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             await viewModel
                 .FilterAsync(null)
                 .ConfigureAwait(true);
-            viewModel.SelectedProject = ProjectOne;
+            viewModel.SelectedProjects = new[] { ProjectOne };
 
             Assert.IsTrue(viewModel.IsProjectSelected);
-            Assert.IsNotNull(viewModel.SelectedProject);
+            Assert.IsNotNull(viewModel.SelectedProjects);
 
             await viewModel
                 .FilterAsync("project-1")
                 .ConfigureAwait(true);
 
             Assert.IsFalse(viewModel.IsProjectSelected);
-            Assert.IsNull(viewModel.SelectedProject);
+            Assert.IsNull(viewModel.SelectedProjects);
         }
 
         [Test]
@@ -154,11 +158,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             var resourceManagerMock = CreateResourceManagerAdapterMock();
             var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object)
             {
-                SelectedProject = ProjectOne
+                SelectedProjects = new[] { ProjectOne }
             };
 
             Assert.IsTrue(viewModel.IsProjectSelected);
-            Assert.IsNotNull(viewModel.SelectedProject);
+            Assert.IsNotNull(viewModel.SelectedProjects);
 
             await viewModel
                 .FilterAsync("fail")

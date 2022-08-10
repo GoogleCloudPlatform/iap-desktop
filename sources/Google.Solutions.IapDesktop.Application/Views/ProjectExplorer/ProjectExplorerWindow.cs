@@ -264,21 +264,26 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync())
                     .ConfigureAwait(true);
 
+                //
                 // Show project picker
-                var dialog = this.serviceProvider.GetService<IProjectPickerWindow>();
-                string projectId = dialog.SelectProject(this);
-
-                if (projectId == null)
+                //
+                using (var dialog = this.serviceProvider.GetService<IProjectPickerWindow>())
                 {
-                    // Cancelled.
-                    return false;
+                    if (dialog.ShowDialog(this) != DialogResult.OK)
+                    {
+                        // Cancelled.
+                        return false;
+                    }
+
+                    foreach (var project in dialog.Projects)
+                    {
+                        await this.viewModel
+                            .AddProjectAsync(project)
+                            .ConfigureAwait(true);
+                    }
+
+                    return true;
                 }
-
-                await this.viewModel
-                    .AddProjectAsync(new ProjectLocator(projectId))
-                    .ConfigureAwait(true);
-
-                return true;
             }
             catch (Exception e) when (e.IsCancellation())
             {
