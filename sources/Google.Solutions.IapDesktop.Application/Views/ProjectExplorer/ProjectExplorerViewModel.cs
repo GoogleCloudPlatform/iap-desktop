@@ -337,15 +337,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Actions.
         //---------------------------------------------------------------------
 
-        public async Task AddProjectAsync(ProjectLocator project)
+        public async Task AddProjectsAsync(IEnumerable<ProjectLocator> projects)
         {
-            await this.projectModelService
-                .AddProjectAsync(project)
-                .ConfigureAwait(true);
+            foreach (var project in projects)
+            {
+                await this.projectModelService
+                    .AddProjectAsync(project)
+                    .ConfigureAwait(true);
+            }
 
-            // Make sure the new project is reflected.
+            //
+            // Refresh to ensure the new project is reflected.
+            //
             await RefreshAsync(true).ConfigureAwait(true);
         }
+
+        public Task AddProjectAsync(ProjectLocator project)
+            => AddProjectsAsync(new[] { project });
 
         public async Task RemoveProjectAsync(ProjectLocator project)
         {

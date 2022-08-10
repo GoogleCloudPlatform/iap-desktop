@@ -275,12 +275,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         return false;
                     }
 
-                    foreach (var project in dialog.Projects)
-                    {
-                        await this.viewModel
-                            .AddProjectAsync(project)
-                            .ConfigureAwait(true);
-                    }
+                    await this.viewModel
+                        .AddProjectsAsync(dialog.Projects)
+                        .ConfigureAwait(true);
 
                     return true;
                 }
