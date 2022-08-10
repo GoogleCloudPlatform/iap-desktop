@@ -121,6 +121,7 @@
     <Compile Include="Services\Authorization\TestAuthorization.cs" />
     <Compile Include="Services\Authorization\TestSignInAdapter.cs" />
     <Compile Include="Services\Integration\TestSessionBroker.cs" />
+    <Compile Include="Services\Management\TestInstanceControlService.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\TestProjectModelService.cs" />
     <Compile Include="Services\SecureConnect\TestChromeAutoSelectCertificateForUrlsPolicy.cs" />
