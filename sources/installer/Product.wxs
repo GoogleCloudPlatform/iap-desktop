@@ -217,6 +217,12 @@
           Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Ssh.dll"
           Vital="yes"/>
         <File
+          Id="FileGoogleSolutionsMvvmDll"
+          Name="Google.Solutions.Mvvm.dll"
+          DiskId="1"
+          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Mvvm.dll"
+          Vital="yes"/>
+        <File
           Id="FileLibssh2Dll"
           Name="Libssh2.dll"
           DiskId="1"
