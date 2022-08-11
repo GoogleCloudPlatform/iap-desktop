@@ -26,7 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Mvvm.Binding
 {
     public interface IObservableProperty : INotifyPropertyChanged
     {

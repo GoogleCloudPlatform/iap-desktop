@@ -19,8 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System;
@@ -29,10 +28,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Util
+namespace Google.Solutions.Mvvm.Test.Binding
 {
     [TestFixture]
-    public class TestObservableProperty : ApplicationFixtureBase
+    public class TestObservableProperty
     {
         //---------------------------------------------------------------------
         // Property events.
