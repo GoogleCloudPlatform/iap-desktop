@@ -146,6 +146,7 @@
     <Compile Include="Services\SecureConnect\TestSecureConnectEnrollment.cs" />
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
+    <Compile Include="Util\TestObservableProperty.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
