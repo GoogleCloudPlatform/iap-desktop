@@ -37,6 +37,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Common.Util;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 {
@@ -48,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
     {
         private readonly IServiceProvider serviceProvider;
 
-        private async void ControlInstance(
+        private async Task ControlInstanceAsync(
             InstanceLocator instance,
             string action,
             InstanceControlCommand command)
@@ -61,41 +62,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             // Load data using a job so that the task is retried in case
             // of authentication issues.
             //
-            try
-            {
-                await jobService.RunInBackground<object>(
-                    new JobDescription(
-                        $"{action} {instance.Name}...",
-                        JobUserFeedbackType.BackgroundFeedback),
-                    async jobToken =>
+            await jobService.RunInBackground<object>(
+                new JobDescription(
+                    $"{action} {instance.Name}...",
+                    JobUserFeedbackType.BackgroundFeedback),
+                async jobToken =>
+                {
+                    using (var service = this.serviceProvider
+                        .GetService<IInstanceControlService>())
                     {
-                        using (var service = this.serviceProvider
-                            .GetService<IInstanceControlService>())
-                        {
-                            await service.ControlInstanceAsync(
-                                    instance,
-                                    command,
-                                    jobToken)
-                            .ConfigureAwait(false);
-                        }
+                        await service.ControlInstanceAsync(
+                                instance,
+                                command,
+                                jobToken)
+                        .ConfigureAwait(false);
+                    }
 
-                        return null;
-                    }).ConfigureAwait(true);  // Back to original (UI) thread.
-            }
-            catch (Exception e) when (e.IsCancellation())
-            { }
-            catch (Exception e)
-            {
-                var mainForm = this.serviceProvider
-                    .GetService<IMainForm>();
-
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(
-                        mainForm.Window,
-                        $"{action} {instance.Name} failed",
-                        e);
-            }
+                    return null;
+                }).ConfigureAwait(true);  // Back to original (UI) thread.
         }
 
         public Extension(IServiceProvider serviceProvider)
@@ -158,12 +142,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     node => node is IProjectModelInstanceNode vmNode && vmNode.CanStart
                         ? CommandState.Enabled
                         : CommandState.Disabled,
-                    node => ControlInstance(
+                    node => ControlInstanceAsync(
                         ((IProjectModelInstanceNode)node).Instance,
                         "Starting",
                         InstanceControlCommand.Start))
                 {
-                    Image = Resources.Start_16
+                    Image = Resources.Start_16,
+                    ActivityText = "Starting VM instance"
                 });
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
@@ -171,12 +156,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     node => node is IProjectModelInstanceNode vmNode && vmNode.CanResume
                         ? CommandState.Enabled
                         : CommandState.Disabled,
-                    node => ControlInstance(
+                    node => ControlInstanceAsync(
                         ((IProjectModelInstanceNode)node).Instance,
                         "Resuming",
                         InstanceControlCommand.Resume))
                 {
-                    Image = Resources.Start_16
+                    Image = Resources.Start_16,
+                    ActivityText = "Resuming VM instance"
                 });
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
@@ -184,12 +170,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     node => node is IProjectModelInstanceNode vmNode && vmNode.CanStop
                         ? CommandState.Enabled
                         : CommandState.Disabled,
-                    node => ControlInstance(
+                    node => ControlInstanceAsync(
                         ((IProjectModelInstanceNode)node).Instance,
                         "Stopping",
                         InstanceControlCommand.Stop))
                 {
-                    Image = Resources.Stop_16
+                    Image = Resources.Stop_16,
+                    ActivityText = "Stopping VM instance"
                 });
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
@@ -197,12 +184,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     node => node is IProjectModelInstanceNode vmNode && vmNode.CanSuspend
                         ? CommandState.Enabled
                         : CommandState.Disabled,
-                    node => ControlInstance(
+                    node => ControlInstanceAsync(
                         ((IProjectModelInstanceNode)node).Instance,
                         "Suspending",
                         InstanceControlCommand.Suspend))
                 {
-                    Image = Resources.Pause_16
+                    Image = Resources.Pause_16,
+                    ActivityText = "Suspending VM instance"
                 });
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
@@ -210,12 +198,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     node => node is IProjectModelInstanceNode vmNode && vmNode.CanReset
                         ? CommandState.Enabled
                         : CommandState.Disabled,
-                    node => ControlInstance(
+                    node => ControlInstanceAsync(
                         ((IProjectModelInstanceNode)node).Instance,
                         "Resetting",
                         InstanceControlCommand.Reset))
                 {
-                    Image = Resources.Reset_16
+                    Image = Resources.Reset_16,
+                    ActivityText = "Resetting VM instance"
                 });
 
             //
