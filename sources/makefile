@@ -46,7 +46,7 @@ NUNIT_ASSEMBLIES = \
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
 	Google.Solutions.IapTunneling.Test\bin\$(CONFIGURATION)\Google.Solutions.IapTunneling.Test.dll \
 	Google.Solutions.Ssh.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.Ssh.Test.dll \
-	Google.Solutions.Mvvm.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.Mvvm.Test.dll \
+	Google.Solutions.Mvvm.Test\bin\$(CONFIGURATION)\Google.Solutions.Mvvm.Test.dll \
 	Google.Solutions.IapDesktop.Application.Test\bin\$(CONFIGURATION)\Google.Solutions.IapDesktop.Application.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Os.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Os.Test.dll \
