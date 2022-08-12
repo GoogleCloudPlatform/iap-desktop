@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             //
             // See https://cloud.google.com/compute/docs/instances/instance-life-cycle.
             //
-            this.CanStart = status == "PROVISIONING";
+            this.CanStart = status == "TERMINATED";
             this.CanResume = status == "SUSPENDED";
             this.CanSuspend =
                 this.CanReset =
