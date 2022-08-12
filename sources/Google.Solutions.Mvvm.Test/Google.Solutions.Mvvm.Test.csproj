@@ -69,6 +69,7 @@
     <Compile Include="Binding\TestObservableProperty.cs" />
     <Compile Include="Binding\TestRangeObservableCollection.cs" />
     <Compile Include="Binding\TestToolStripMenuBindingExtensions.cs" />
+    <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="Commands\TestCommandContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

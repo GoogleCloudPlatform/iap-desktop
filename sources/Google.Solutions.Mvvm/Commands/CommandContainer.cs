@@ -106,9 +106,9 @@ namespace Google.Solutions.Mvvm.Commands
             }
         }
 
-        private void OnCommandFailed(Exception e)
+        private void OnCommandFailed(ICommand<TContext> command, Exception e)
         {
-            this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e));
+            this.CommandFailed?.Invoke(command, new ExceptionEventArgs(e));
         }
 
         public void BindTo(
@@ -378,11 +378,11 @@ namespace Google.Solutions.Mvvm.Commands
             // Actions.
             //-----------------------------------------------------------------
 
-            public override void Invoke()
+            public override async void Invoke()
             {
                 try
                 {
-                    this.command.Execute(this.container.ContextSource.Context);
+                    await this.command.ExecuteAsync(this.container.ContextSource.Context);
                 }
                 catch (Exception e) when (e.IsCancellation())
                 {
@@ -390,7 +390,7 @@ namespace Google.Solutions.Mvvm.Commands
                 }
                 catch (Exception e)
                 {
-                    this.container.OnCommandFailed(e);
+                    this.container.OnCommandFailed(this.command, e);
                 }
             }
         }

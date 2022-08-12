@@ -144,103 +144,77 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         // Commands.
         //---------------------------------------------------------------------
 
-        private async void GenerateCredentials(IProjectModelNode node)
+        private async Task GenerateCredentialsAsync(IProjectModelNode node)
         {
-            try
+            if (node is IProjectModelInstanceNode vmNode)
             {
-                if (node is IProjectModelInstanceNode vmNode)
-                {
-                    Debug.Assert(vmNode.IsWindowsInstance());
+                Debug.Assert(vmNode.IsWindowsInstance());
 
-                    var settingsService = this.serviceProvider
-                        .GetService<IConnectionSettingsService>();
-                    var settings = settingsService.GetConnectionSettings(vmNode);
+                var settingsService = this.serviceProvider
+                    .GetService<IConnectionSettingsService>();
+                var settings = settingsService.GetConnectionSettings(vmNode);
 
-                    await this.serviceProvider.GetService<ICredentialsService>()
-                        .GenerateCredentialsAsync(
-                            this.window,
-                            vmNode.Instance,
-                            settings.TypedCollection,
-                            false)
-                        .ConfigureAwait(true);
+                await this.serviceProvider.GetService<ICredentialsService>()
+                    .GenerateCredentialsAsync(
+                        this.window,
+                        vmNode.Instance,
+                        settings.TypedCollection,
+                        false)
+                    .ConfigureAwait(true);
 
-                    settings.Save();
-                }
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this.window, "Generating credentials failed", e);
+                settings.Save();
             }
         }
 
-        private async void Connect(
+        private async Task ConnectAsync(
             IProjectModelNode node,
             bool allowPersistentCredentials,
             bool forceNewConnection)
         {
-            try
+            ISession session = null;
+            if (node is IProjectModelInstanceNode rdpNode && rdpNode.IsRdpSupported())
             {
-                ISession session = null;
-                if (node is IProjectModelInstanceNode rdpNode && rdpNode.IsRdpSupported())
+                session = await this.serviceProvider
+                    .GetService<IRdpConnectionService>()
+                    .ActivateOrConnectInstanceAsync(
+                        rdpNode,
+                        allowPersistentCredentials)
+                    .ConfigureAwait(true);
+
+                Debug.Assert(session != null);
+            }
+            else if (node is IProjectModelInstanceNode sshNode && sshNode.IsSshSupported())
+            {
+                if (forceNewConnection)
                 {
                     session = await this.serviceProvider
-                        .GetService<IRdpConnectionService>()
-                        .ActivateOrConnectInstanceAsync(
-                            rdpNode,
-                            allowPersistentCredentials)
+                        .GetService<ISshConnectionService>()
+                        .ConnectInstanceAsync(sshNode)
                         .ConfigureAwait(true);
-
-                    Debug.Assert(session != null);
                 }
-                else if (node is IProjectModelInstanceNode sshNode && sshNode.IsSshSupported())
+                else
                 {
-                    if (forceNewConnection)
-                    {
-                        session = await this.serviceProvider
-                            .GetService<ISshConnectionService>()
-                            .ConnectInstanceAsync(sshNode)
-                            .ConfigureAwait(true);
-                    }
-                    else
-                    {
-                        session = await this.serviceProvider
-                            .GetService<ISshConnectionService>()
-                            .ActivateOrConnectInstanceAsync(sshNode)
-                            .ConfigureAwait(true);
-                    }
-
-                    Debug.Assert(session != null);
+                    session = await this.serviceProvider
+                        .GetService<ISshConnectionService>()
+                        .ActivateOrConnectInstanceAsync(sshNode)
+                        .ConfigureAwait(true);
                 }
 
-                if (session is SessionPaneBase sessionPane && 
-                    sessionPane.ContextCommands == null)
-                {
-                    //
-                    // Use commands from Session menu as
-                    // context menu.
-                    //
-                    sessionPane.ContextCommands = this.sessionCommands;
-                }
+                Debug.Assert(session != null);
             }
-            catch (Exception e) when (e.IsCancellation())
+
+            if (session is SessionPaneBase sessionPane && 
+                sessionPane.ContextCommands == null)
             {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this.window, "Connecting to VM instance failed", e);
+                //
+                // Use commands from Session menu as
+                // context menu.
+                //
+                sessionPane.ContextCommands = this.sessionCommands;
             }
         }
 
-        private async void DuplicateSession(ISshTerminalSession session)
+        private async Task DuplicateSessionAsync(ISshTerminalSession session)
         {
             //
             // Try to lookup node for this session. In some cases,
@@ -254,7 +228,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 
             if (node is IProjectModelInstanceNode vmNode && vmNode != null)
             {
-                Connect(vmNode, false, true);
+                await ConnectAsync(vmNode, false, true)
+                    .ConfigureAwait(true);
             }
         }
 
@@ -310,37 +285,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 new Command<IProjectModelNode>(
                     "&Connect",
                     GetContextMenuCommandStateWhenRunningInstanceRequired,
-                    node => Connect(node, true, false))
+                    node => ConnectAsync(node, true, false))
                 {
                     Image = Resources.Connect_16,
-                    IsDefault = true
+                    IsDefault = true,
+                    ActivityText = "Connecting to VM instance"
                 },
                 0);
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Connect &as user...",
                     GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,   // Windows/RDP only.
-                    node => Connect(node, false, false))
+                    node => ConnectAsync(node, false, false))
                 {
-                    Image = Resources.Connect_16
+                    Image = Resources.Connect_16,
+                    ActivityText = "Connecting to VM instance"
                 },
                 1);
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Connect in &new terminal",
                     GetContextMenuCommandStateWhenRunningSshInstanceRequired,   // Linux/SSH only.
-                    node => Connect(node, false, true))
+                    node => ConnectAsync(node, false, true))
                 {
-                    Image = Resources.Connect_16
+                    Image = Resources.Connect_16,
+                    ActivityText = "Connecting to VM instance"
                 },
                 2);
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Connect",
                     GetToolbarCommandStateWhenRunningInstanceRequired,
-                    node => Connect(node, true, false))
+                    node => ConnectAsync(node, true, false))
                 {
-                    Image = Resources.Connect_16
+                    Image = Resources.Connect_16,
+                    ActivityText = "Connecting to VM instance"
                 });
 
             //
@@ -379,9 +358,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 new Command<IProjectModelNode>(
                     "&Generate Windows logon credentials...",
                     GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,
-                    GenerateCredentials)
+                    GenerateCredentialsAsync)
                 {
-                    Image = Resources.Password_16
+                    Image = Resources.Password_16,
+                    ActivityText = "Generating Windows logon credentials"
                 },
                 3);
 
@@ -389,9 +369,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 new Command<IProjectModelNode>(
                     "Generate Windows logon credentials",
                     GetToolbarCommandStateWhenRunningWindowsInstanceRequired,
-                    GenerateCredentials)
+                    GenerateCredentialsAsync)
                 {
-                    Image = Resources.Password_16
+                    Image = Resources.Password_16,
+                    ActivityText = "Generating Windows logon credentials"
                 });
 
             //
@@ -450,7 +431,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     session => (session as IRemoteDesktopSession)?.TrySetFullscreen(FullScreenMode.SingleScreen))
                 {
                     Image = Resources.Fullscreen_16,
-                    ShortcutKeys = DocumentWindow.EnterFullScreenHotKey
+                    ShortcutKeys = DocumentWindow.EnterFullScreenHotKey,
+                    ActivityText = "Activating full screen"
                 });
             this.sessionCommands.AddCommand(
                 new Command<ISession>(
@@ -461,7 +443,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     session => (session as IRemoteDesktopSession)?.TrySetFullscreen(FullScreenMode.AllScreens))
                 {
                     Image = Resources.Fullscreen_16,
-                    ShortcutKeys = Keys.F11 | Keys.Shift
+                    ShortcutKeys = Keys.F11 | Keys.Shift,
+                    ActivityText = "Activating full screen"
                 });
             this.sessionCommands.AddCommand(
                 new Command<ISession>(
@@ -469,9 +452,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     session => GetSessionMenuCommandState<ISshTerminalSession>(
                         session,
                         sshSession => sshSession.IsConnected),
-                    session => DuplicateSession((ISshTerminalSession)session))
+                    session => DuplicateSessionAsync((ISshTerminalSession)session))
                 {
-                    Image = Resources.Copy_16x
+                    Image = Resources.Copy_16x,
+                    ActivityText = "Duplicating session"
                 });
             this.sessionCommands.AddCommand(
                 new Command<ISession>(
@@ -482,7 +466,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     session => session.Close())
                 {
                     Image = Resources.Disconnect_16,
-                    ShortcutKeys = Keys.Control | Keys.F4
+                    ShortcutKeys = Keys.Control | Keys.F4,
+                    ActivityText = "Disconnecting"
                 });
             this.sessionCommands.AddSeparator();
             this.sessionCommands.AddCommand(

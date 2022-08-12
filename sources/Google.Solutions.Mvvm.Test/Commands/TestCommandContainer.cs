@@ -350,7 +350,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInvokeThrowsException_ThenEventIsFired()
+        public void WhenInvokeSynchronouslyThrowsException_ThenEventIsFired()
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
@@ -379,7 +379,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         }
 
         [Test]
-        public void WhenInvokeThrowsCancellationException_ThenExceptionIsSwallowed()
+        public void WhenInvokeSynchronouslyThrowsCancellationException_ThenExceptionIsSwallowed()
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
@@ -397,6 +397,99 @@ namespace Google.Solutions.Mvvm.Test.Commands
                     });
 
                 container.ExecuteDefaultCommand();
+            }
+        }
+
+        [Test]
+        public async Task WhenInvokeAsynchronouslyThrowsException_ThenEventIsFired()
+        {
+            using (var container = new CommandContainer<string>(
+                ToolStripItemDisplayStyle.Text,
+                new ObservableCommandContextSource<string>()))
+            {
+                Exception exception = null;
+                container.CommandFailed += (s, a) =>
+                {
+                    exception = a.Exception;
+                };
+
+                container.AddCommand(
+                    new Command<string>(
+                        "test",
+                        ctx => CommandState.Enabled,
+                        async ctx => 
+                        {
+                            await Task.Yield();
+                            throw new ArgumentException();
+                        })
+                    {
+                        IsDefault = true
+                    });
+
+                container.ExecuteDefaultCommand();
+
+                for (int i = 0; i < 10 && exception == null; i++)
+                {
+                    await Task.Delay(5);
+                }
+
+                Assert.IsNotNull(exception);
+                Assert.IsInstanceOf<ArgumentException>(exception);
+            }
+        }
+        
+        [Test]
+        public void WhenInvokeAsynchronouslyThrowsCancellationException_ThenExceptionIsSwallowed()
+        {
+            using (var container = new CommandContainer<string>(
+                ToolStripItemDisplayStyle.Text,
+                new ObservableCommandContextSource<string>()))
+            {
+                container.CommandFailed += (s, a) => Assert.Fail();
+
+                container.AddCommand(
+                    new Command<string>(
+                        "test",
+                        ctx => CommandState.Enabled,
+                        async ctx =>
+                        {
+                            await Task.Yield();
+                            throw new TaskCanceledException();
+                        })
+                    {
+                        IsDefault = true
+                    });
+
+                container.ExecuteDefaultCommand();
+            }
+        }
+
+        [Test]
+        public void WhenInvokeThrowsException_ThenCommandIsPassedAsSender()
+        {
+            using (var container = new CommandContainer<string>(
+                ToolStripItemDisplayStyle.Text,
+                new ObservableCommandContextSource<string>()))
+            {
+                object sender = null;
+                container.CommandFailed += (s, a) =>
+                {
+                    sender = s;
+                };
+
+                var command = container.AddCommand(
+                    new Command<string>(
+                        "test",
+                        ctx => CommandState.Enabled,
+                        ctx => throw new ArgumentException())
+                    {
+                        IsDefault = true
+                    });
+
+                container.ExecuteDefaultCommand();
+
+                Assert.IsNotNull(sender);
+                Assert.IsInstanceOf<ICommand<string>>(sender);
             }
         }
     }
