@@ -318,7 +318,6 @@
     <Compile Include="Services\UpdateService.cs" />
     <Compile Include="ApplicationTraceSources.cs" />
     <Compile Include="Util\LeastRecentlyUsedCache.cs" />
-    <Compile Include="Util\RangeObservableCollection.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
     <Compile Include="Util\IapRdpUrl.cs" />
     <Compile Include="Views\About\AboutWindow.cs">

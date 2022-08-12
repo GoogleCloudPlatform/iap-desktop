@@ -23,6 +23,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Linq;
 using System.Threading;

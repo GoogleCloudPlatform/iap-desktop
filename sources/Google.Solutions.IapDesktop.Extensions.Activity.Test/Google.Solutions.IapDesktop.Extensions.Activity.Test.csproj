@@ -160,6 +160,10 @@
       <Project>{b804d76c-e02e-4320-94a7-579034644aa0}</Project>
       <Name>Google.Solutions.IapDesktop.Extensions.Activity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj">
+      <Project>{83571A48-14E9-4CB2-8D7E-C12DEEB967B7}</Project>
+      <Name>Google.Solutions.Mvvm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Common.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>
       <Name>Google.Solutions.Testing.Common</Name>

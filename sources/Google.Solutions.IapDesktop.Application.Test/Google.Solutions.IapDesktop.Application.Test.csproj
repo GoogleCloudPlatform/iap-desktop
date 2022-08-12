@@ -146,7 +146,6 @@
     <Compile Include="Services\SecureConnect\TestSecureConnectEnrollment.cs" />
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
-    <Compile Include="Util\TestRangeObservableCollection.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
@@ -174,6 +173,10 @@
     <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.IapTunneling</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj">
+      <Project>{83571A48-14E9-4CB2-8D7E-C12DEEB967B7}</Project>
+      <Name>Google.Solutions.Mvvm</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Testing.Common\Google.Solutions.Testing.Common.csproj">
       <Project>{e72548f1-13af-4888-8a5e-3d58b1b456ae}</Project>

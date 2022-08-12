@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Mvvm.Binding;
 
 #pragma warning disable CA1822 // Mark members as static
 

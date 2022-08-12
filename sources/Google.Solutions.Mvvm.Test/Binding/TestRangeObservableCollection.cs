@@ -19,16 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Binding;
 using NUnit.Framework;
 using System.Collections.Specialized;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Util
+namespace Google.Solutions.Mvvm.Test.Binding
 {
-
     [TestFixture]
-    public class TestRangeObservableCollection : ApplicationFixtureBase
+    public class TestRangeObservableCollection
     {
         [Test]
         public void WhenAddUsed_ThenIndividualEventsAreFired()

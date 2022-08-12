@@ -39,6 +39,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.Mvvm.Binding;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 {
