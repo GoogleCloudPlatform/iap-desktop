@@ -27,7 +27,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.Mvvm.Binding
 {
     public class ViewModelBase : INotifyPropertyChanged
     {

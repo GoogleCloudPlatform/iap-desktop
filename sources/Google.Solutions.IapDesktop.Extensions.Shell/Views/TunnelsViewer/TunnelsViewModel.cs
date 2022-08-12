@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;

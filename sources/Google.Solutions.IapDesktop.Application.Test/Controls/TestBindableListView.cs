@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System.Collections.Generic;

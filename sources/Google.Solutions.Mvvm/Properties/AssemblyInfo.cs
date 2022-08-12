@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,17 +19,17 @@
 // under the License.
 //
 
-using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
-namespace Google.Solutions.IapDesktop.Application.Controls
-{
-    public class ExceptionEventArgs : EventArgs
-    {
-        public Exception Exception { get; }
+[assembly: AssemblyTitle("Mvvm")]
+[assembly: AssemblyDescription("Controls and binding")]
+[assembly: AssemblyCompany("Google LLC")]
+[assembly: AssemblyProduct("IAP Desktop")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyTrademark("Google LLC")]
 
-        public ExceptionEventArgs(Exception exception)
-        {
-            this.Exception = exception;
-        }
-    }
-}
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
+
+[assembly: InternalsVisibleTo("Google.Solutions.Mvvm.Test")]

@@ -19,9 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.ObjectModel.Commands;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
@@ -33,7 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel.Commands
+namespace Google.Solutions.Mvvm.Test.Commands
 {
     [TestFixture]
     public class TestCommandContainer

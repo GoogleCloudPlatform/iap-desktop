@@ -19,8 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Binding;
 using NUnit.Framework;
 using System;
 using System.Collections.ObjectModel;
@@ -29,7 +28,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
+namespace Google.Solutions.Mvvm.Test.Binding
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]

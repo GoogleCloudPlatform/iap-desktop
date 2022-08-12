@@ -33,7 +33,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.IapDesktop.Application.ObjectModel.Commands;
+using Google.Solutions.Mvvm.Commands;
 
 namespace Google.Solutions.Testing.Application.Views
 {

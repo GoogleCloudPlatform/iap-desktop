@@ -26,7 +26,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.Mvvm.Binding
 {
     /// <summary>
     /// Extension methods to implement simple two-way data bindings

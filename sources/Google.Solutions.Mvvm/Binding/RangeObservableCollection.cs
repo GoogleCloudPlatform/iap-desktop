@@ -24,9 +24,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Mvvm.Binding
 {
-
     public class RangeObservableCollection<T> : ObservableCollection<T>
     {
         private bool suppressNotification = false;

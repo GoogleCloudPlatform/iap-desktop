@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,7 +33,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
+namespace Google.Solutions.Mvvm.Commands
 {
     /// <summary>
     /// Set of commands.
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel.Commands
             this.CommandFailed?.Invoke(this, new ExceptionEventArgs(e));
         }
 
-        internal void BindTo(
+        public void BindTo(
             ToolStripItemCollection view,
             IContainer container = null)
         {
