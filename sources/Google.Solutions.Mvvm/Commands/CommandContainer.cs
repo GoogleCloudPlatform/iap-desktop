@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Commands
     /// Set of commands.
     /// </summary>
     /// <typeparam name="TContext"></typeparam>
-    public interface ICommandContainer<TContext>
+    public interface ICommandContainer<TContext> : IDisposable
         where TContext : class
     {
         ICommandContainer<TContext> AddCommand(
@@ -70,6 +70,7 @@ namespace Google.Solutions.Mvvm.Commands
         private readonly IDisposable binding;
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly ObservableCollection<MenuItemViewModelBase> menuItems;
+        private readonly CommandContainer<TContext> parent;
 
         internal ICommandContextSource<TContext> ContextSource { get; }
 
@@ -80,8 +81,10 @@ namespace Google.Solutions.Mvvm.Commands
         private CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
             ICommandContextSource<TContext> contextSource,
+            CommandContainer<TContext> parent,
             ObservableCollection<MenuItemViewModelBase> items)
         {
+            this.parent = parent;
             this.displayStyle = displayStyle;
             this.menuItems = items;
             this.ContextSource = contextSource;
@@ -93,6 +96,7 @@ namespace Google.Solutions.Mvvm.Commands
             : this(
                   displayStyle, 
                   contextSource,
+                  null,
                   new ObservableCollection<MenuItemViewModelBase>())
         {
             if (this.ContextSource is INotifyPropertyChanged observable)
@@ -108,7 +112,17 @@ namespace Google.Solutions.Mvvm.Commands
 
         private void OnCommandFailed(ICommand<TContext> command, Exception e)
         {
-            this.CommandFailed?.Invoke(command, new ExceptionEventArgs(e));
+            if (this.parent != null)
+            {
+                //
+                // Bubble up to topmost container.
+                //
+                this.parent.OnCommandFailed(command, e);
+            }
+            else
+            {
+                this.CommandFailed?.Invoke(command, new ExceptionEventArgs(e));
+            }
         }
 
         public void BindTo(
@@ -206,6 +220,7 @@ namespace Google.Solutions.Mvvm.Commands
             return new CommandContainer<TContext>(
                 this.displayStyle,
                 this.ContextSource,
+                this,
                 item.Children);
         }
 

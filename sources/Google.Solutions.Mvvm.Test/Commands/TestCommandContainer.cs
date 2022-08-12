@@ -492,5 +492,40 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 Assert.IsInstanceOf<ICommand<string>>(sender);
             }
         }
+
+        [Test]
+        public void WhenInvokeThrowsException_ThenEventIsRaisedOnParentContainer()
+        {
+            using (var container = new CommandContainer<string>(
+                ToolStripItemDisplayStyle.Text,
+                 new ObservableCommandContextSource<string>()))
+            {
+                object sender = null;
+                container.CommandFailed += (s, a) =>
+                {
+                    sender = s;
+                };
+
+                using (var subContainer = container.AddCommand(
+                    "subcontainer",
+                    _ => CommandState.Enabled,
+                    _ => { }))
+                {
+                    var command = subContainer.AddCommand(
+                        new Command<string>(
+                            "test",
+                            ctx => CommandState.Enabled,
+                            ctx => throw new ArgumentException())
+                        {
+                            IsDefault = true
+                        });
+
+                    subContainer.ExecuteDefaultCommand();
+                }
+
+                Assert.IsNotNull(sender);
+                Assert.IsInstanceOf<ICommand<string>>(sender);
+            }
+        }
     }
 }
