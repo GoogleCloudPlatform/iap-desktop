@@ -428,13 +428,5 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     .Show(this, $"{actionName} failed", e);
             }
         }
-
-        protected void InvokeActionNoawaitAsync(
-            Func<Task> action,
-            string actionName)
-        {
-            InvokeActionAsync(action, actionName)
-                .ContinueWith(_ => { });
-        }
     }
 }

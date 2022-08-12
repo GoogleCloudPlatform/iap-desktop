@@ -204,11 +204,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     _ => this.viewModel.IsRefreshProjectsCommandVisible
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
-                    _ => InvokeActionNoawaitAsync(
-                        () => this.viewModel.RefreshSelectedNodeAsync(),
-                        "Refreshing project"))
+                    _ => this.viewModel.RefreshSelectedNodeAsync())
                 {
-                    Image = Resources.Refresh_161
+                    Image = Resources.Refresh_161,
+                    ActivityText = "Refreshing project"
                 });
             this.contextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
@@ -216,38 +215,45 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     _ => this.viewModel.IsRefreshAllProjectsCommandVisible
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
-                    _ => InvokeActionNoawaitAsync(
-                        () => this.viewModel.RefreshAsync(false),
-                        "Refreshing projects"))
+                    _ => this.viewModel.RefreshAsync(false))
                 {
-                    Image = Resources.Refresh_161
+                    Image = Resources.Refresh_161,
+                    ActivityText = "Refreshing project"
                 });
             this.contextMenuCommands.AddCommand(
-                "&Unload project",
-                _ => this.viewModel.IsUnloadProjectCommandVisible
-                    ? CommandState.Enabled
-                    : CommandState.Unavailable,
-                _ => InvokeActionNoawaitAsync(
-                    () => this.viewModel.UnloadSelectedProjectAsync(),
-                    "Unloading project"));
+                new Command<IProjectModelNode>(
+                    "&Unload project",
+                    _ => this.viewModel.IsUnloadProjectCommandVisible
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => this.viewModel.UnloadSelectedProjectAsync())
+                {
+                    ActivityText = "Unloading project"
+                });
 
             this.contextMenuCommands.AddSeparator();
             this.contextMenuCommands.AddCommand(
-                "Open in Cloud Consol&e",
-                _ => this.viewModel.IsCloudConsoleCommandVisible
-                    ? CommandState.Enabled
-                    : CommandState.Unavailable,
-                _ => InvokeAction(
-                    () => this.viewModel.OpenInCloudConsole(),
-                    "Opening Cloud Console"));
+                new Command<IProjectModelNode>(
+                    "Open in Cloud Consol&e",
+                    _ => this.viewModel.IsCloudConsoleCommandVisible
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => this.viewModel.OpenInCloudConsole())
+                {
+                    ActivityText = "Opening Cloud Console"
+                });
             this.contextMenuCommands.AddCommand(
-                "Configure IAP a&ccess",
-                _ => this.viewModel.IsCloudConsoleCommandVisible
-                    ? CommandState.Enabled
-                    : CommandState.Unavailable,
-                _ => InvokeAction(
-                    () => this.viewModel.ConfigureIapAccess(),
-                    "Opening Cloud Console"));
+                new Command<IProjectModelNode>(
+                    "Configure IAP a&ccess",
+                    _ => this.viewModel.IsCloudConsoleCommandVisible
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => InvokeAction(
+                        () => this.viewModel.ConfigureIapAccess(),
+                        "Opening Cloud Console"))
+                {
+                    ActivityText = "Opening Cloud Console"
+                });
             this.contextMenuCommands.AddSeparator();
 
             //
@@ -321,9 +327,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private void Command_CommandFailed(object sender, ExceptionEventArgs e)
         {
+            var command = (ICommand)sender;
             this.serviceProvider
                 .GetService<IExceptionDialog>()
-                .Show(this, "Executing command failed", e.Exception);
+                .Show(this, $"{command.ActivityText} failed", e.Exception);
         }
 
         private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
