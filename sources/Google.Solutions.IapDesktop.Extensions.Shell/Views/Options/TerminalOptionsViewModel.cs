@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Diagnostics;
 using System.Drawing;

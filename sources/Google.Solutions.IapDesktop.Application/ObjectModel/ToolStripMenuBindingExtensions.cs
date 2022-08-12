@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

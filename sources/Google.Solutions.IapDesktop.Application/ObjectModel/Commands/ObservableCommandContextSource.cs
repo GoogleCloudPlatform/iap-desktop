@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

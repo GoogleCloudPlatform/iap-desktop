@@ -36,6 +36,7 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Interop;
 using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.Mvvm.Binding;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;

@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
