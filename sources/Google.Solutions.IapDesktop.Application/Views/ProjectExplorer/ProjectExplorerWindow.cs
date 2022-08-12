@@ -32,7 +32,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.ObjectModel.Commands;
+using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using System;
@@ -46,6 +46,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 
 #pragma warning disable IDE1006 // Naming Styles
 

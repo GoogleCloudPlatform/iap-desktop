@@ -93,7 +93,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ControlExtensions.cs" />
-    <Compile Include="Controls\ExceptionEventArgs.cs" />
     <Compile Include="Controls\FontExtensions.cs" />
     <Compile Include="Controls\ListViewExtensions.cs" />
     <Compile Include="Controls\PropertyGridExtensions.cs" />
@@ -114,7 +113,6 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Host\CommandLineOptions.cs" />
     <Compile Include="Host\Profile.cs" />
-    <Compile Include="ObjectModel\Commands\Command.cs" />
     <Compile Include="ObjectModel\IServiceCategoryProvider.cs" />
     <Compile Include="ObjectModel\ModelCachingViewModel.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />
@@ -168,9 +166,6 @@
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
-    <Compile Include="ObjectModel\ToolStripMenuBindingExtensions.cs" />
-    <Compile Include="ObjectModel\Commands\ObservableCommandContextSource.cs" />
-    <Compile Include="ObjectModel\Commands\CommandContainer.cs" />
     <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\ClipboardUtil.cs" />

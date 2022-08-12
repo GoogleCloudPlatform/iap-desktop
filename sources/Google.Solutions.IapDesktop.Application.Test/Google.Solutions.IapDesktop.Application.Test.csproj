@@ -105,8 +105,6 @@
     <Compile Include="Controls\TestScreenPicker.cs" />
     <Compile Include="Controls\TestListViewExtensions.cs" />
     <Compile Include="Host\TestProfile.cs" />
-    <Compile Include="ObjectModel\TestToolStripMenuBindingExtensions.cs" />
-    <Compile Include="ObjectModel\Commands\TestCommandContainer.cs" />
     <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
     <Compile Include="Services\Adapters\TestCertificateStoreAdapter.cs" />

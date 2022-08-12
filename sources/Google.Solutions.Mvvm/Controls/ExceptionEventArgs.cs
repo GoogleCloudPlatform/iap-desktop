@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Controls
+namespace Google.Solutions.Mvvm.Controls
 {
     public class ExceptionEventArgs : EventArgs
     {
