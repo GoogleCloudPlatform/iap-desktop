@@ -122,6 +122,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public bool IsRunning { get; }
 
+        public bool CanStart { get; }
+        public bool CanStop { get; }
+        public bool CanSuspend { get; }
+        public bool CanResume { get; }
+        public bool CanReset { get; }
+
         public string DisplayName
             => this.Instance.Name;
 
@@ -133,14 +139,25 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             ulong instanceId,
             InstanceLocator locator,
             OperatingSystems os,
-            bool isRunning)
+            string status)
         {
             Debug.Assert(!os.IsFlagCombination());
+            Debug.Assert(status.All(Char.IsUpper));
 
             this.InstanceId = instanceId;
             this.Instance = locator;
             this.OperatingSystem = os;
-            this.IsRunning = isRunning;
+            
+            this.IsRunning = status == "RUNNING";
+
+            //
+            // See https://cloud.google.com/compute/docs/instances/instance-life-cycle.
+            //
+            this.CanStart = status == "PROVISIONING";
+            this.CanResume = status == "SUSPENDED";
+            this.CanSuspend =
+                this.CanReset =
+                this.CanStop = status == "RUNNING" || status == "REPAIRING";
         }
     }
 }

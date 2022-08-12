@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                             i.IsWindowsInstance()
                                 ? OperatingSystems.Windows
                                 : OperatingSystems.Linux,
-                            i.Status == "RUNNING"))
+                            i.Status))
                         .ToList();
 
                     zones.Add(new ZoneNode(

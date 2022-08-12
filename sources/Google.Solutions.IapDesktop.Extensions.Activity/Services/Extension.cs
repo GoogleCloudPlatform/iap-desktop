@@ -36,6 +36,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.Common.Util;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 {
@@ -81,6 +82,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                         return null;
                     }).ConfigureAwait(true);  // Back to original (UI) thread.
             }
+            catch (Exception e) when (e.IsCancellation())
+            { }
             catch (Exception e)
             {
                 var mainForm = this.serviceProvider
@@ -152,9 +155,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
                     "&Start",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
-                        ? CommandState.Disabled
-                        : CommandState.Enabled,
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanStart
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
                     node => ControlInstance(
                         ((IProjectModelInstanceNode)node).Instance,
                         "Starting",
@@ -165,9 +168,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
                     "&Resume",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning // TODO: Check suspended state
-                        ? CommandState.Disabled
-                        : CommandState.Enabled,
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanResume
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
                     node => ControlInstance(
                         ((IProjectModelInstanceNode)node).Instance,
                         "Resuming",
@@ -178,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
                     "Sto&p",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanStop
                         ? CommandState.Enabled
                         : CommandState.Disabled,
                     node => ControlInstance(
@@ -191,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
                     "Suspe&nd",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanSuspend
                         ? CommandState.Enabled
                         : CommandState.Disabled,
                     node => ControlInstance(
@@ -204,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
                     "Rese&t",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanReset
                         ? CommandState.Enabled
                         : CommandState.Disabled,
                     node => ControlInstance(
