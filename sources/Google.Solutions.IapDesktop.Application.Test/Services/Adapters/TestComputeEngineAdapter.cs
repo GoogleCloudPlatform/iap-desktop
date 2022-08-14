@@ -275,6 +275,57 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
+        // Control instance lifecycle.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenInstanceNotFound_ThenControlInstanceThrowsException(
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
+                () => adapter.ControlInstanceAsync(
+                    new InstanceLocator(TestProject.ProjectId, "us-central1-a", "doesnotexist"),
+                    InstanceControlCommand.Start,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenInstanceRunning_ThenStartingWithControlInstanceSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            await adapter.ControlInstanceAsync(
+                    await testInstance,
+                    InstanceControlCommand.Start,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task WhenUserInRole_ThenControlInstanceFails(
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential,
+            [Values(
+                InstanceControlCommand.Stop,
+                InstanceControlCommand.Resume,
+                InstanceControlCommand.Reset,
+                InstanceControlCommand.Suspend)] InstanceControlCommand command)
+        {
+            var instance = await testInstance;
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ControlInstanceAsync(
+                    instance,
+                    command,
+                    CancellationToken.None).Wait());
+        }
+
+        //---------------------------------------------------------------------
         // Permission check.
         //---------------------------------------------------------------------
 

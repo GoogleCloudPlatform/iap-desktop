@@ -50,12 +50,54 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
     public interface IProjectModelInstanceNode : IProjectModelNode
     {
+        /// <summary>
+        /// Unique instance ID.
+        /// </summary>
         ulong InstanceId { get; }
 
+        /// <summary>
+        /// Locator.
+        /// </summary>
         InstanceLocator Instance { get; }
 
+        /// <summary>
+        /// Operating system (best guess).
+        /// </summary>
+        OperatingSystems OperatingSystem { get; }
+
+        /// <summary>
+        /// Check if instance is running.
+        /// </summary>
         bool IsRunning { get; }
 
-        OperatingSystems OperatingSystem { get; }
+        /// <summary>
+        /// Check if VM is in a status that permits starting. Does
+        /// not perform any permission checks.
+        /// </summary>
+        bool CanStart { get; }
+
+        /// <summary>
+        /// Check if VM is in a status that permits stopping. Does
+        /// not perform any permission checks.
+        /// </summary>
+        bool CanStop { get; }
+
+        /// <summary>
+        /// Check if VM is in a status that permits suspending. Does
+        /// not perform any permission checks.
+        /// </summary>
+        bool CanSuspend { get; }
+
+        /// <summary>
+        /// Check if VM is in a status that permits resuming. Does
+        /// not perform any permission checks.
+        /// </summary>
+        bool CanResume { get; }
+
+        /// <summary>
+        /// Check if VM is in a status that permits resetting. Does
+        /// not perform any permission checks.
+        /// </summary>
+        bool CanReset { get; }
     }
 }

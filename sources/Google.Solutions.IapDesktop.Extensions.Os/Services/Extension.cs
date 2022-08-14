@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     "Soft&ware packages",
                     PackageInventoryViewModel.GetCommandState,
                     context => { }),
-                9);
+                10);
             osCommand.AddCommand(
                 new Command<IProjectModelNode>(
                     "Show &installed packages",
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     Image = Resources.ComputerDetails_16,
                     ShortcutKeys = Keys.Alt | Keys.Enter
                 },
-                10);
+                11);
 
             //
             // Add commands to main menu.

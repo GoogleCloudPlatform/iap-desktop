@@ -136,6 +136,7 @@
     <Compile Include="Services\Adapters\SerialPortStream.cs" />
     <Compile Include="Services\Authorization\AppAuthorization.cs" />
     <Compile Include="Services\Authorization\IAuthorization.cs" />
+    <Compile Include="Services\Management\InstanceControlService.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelEvents.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelService.cs" />

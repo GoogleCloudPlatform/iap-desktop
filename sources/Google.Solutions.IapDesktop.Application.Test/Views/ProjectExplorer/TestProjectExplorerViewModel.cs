@@ -24,6 +24,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
@@ -809,6 +810,39 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Assert.AreEqual(
                 ProjectExplorerViewModel.InstanceViewModelNode.WindowsDisconnectedIconIndex,
                 instances[1].ImageIndex);
+        }
+
+        //---------------------------------------------------------------------
+        // Instance state tracking.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenInstanceStateChanges_ThenProjectIsReloaded()
+        {
+            Func<InstanceStateChangedEvent, Task> eventHandler = null;
+            this.eventServiceMock.Setup(e => e.BindAsyncHandler(
+                    It.IsAny<Func<InstanceStateChangedEvent, Task>>()))
+                .Callback<Func<InstanceStateChangedEvent, Task>>(e => eventHandler = e);
+
+            var viewModel = CreateViewModel();
+            await viewModel
+                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(true);
+
+            Assert.IsNotNull(eventHandler);
+
+            await eventHandler(new InstanceStateChangedEvent(
+                new InstanceLocator(
+                    SampleProjectId,
+                    SampleLinuxInstanceInZone1.Zone,
+                    SampleLinuxInstanceInZone1.Name),
+                true));
+
+            // Event must not cause reload.
+            this.computeEngineAdapterMock.Verify(
+                a => a.ListInstancesAsync(
+                    It.Is<string>(p => p == SampleProjectId),
+                    It.IsAny<CancellationToken>()), Times.Once);
         }
 
         //---------------------------------------------------------------------

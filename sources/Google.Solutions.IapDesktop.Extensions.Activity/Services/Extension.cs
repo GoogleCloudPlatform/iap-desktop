@@ -32,6 +32,12 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Management;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.Common.Util;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 {
@@ -43,6 +49,51 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
     {
         private readonly IServiceProvider serviceProvider;
 
+        private async Task ControlInstanceAsync(
+            InstanceLocator instance,
+            string action,
+            InstanceControlCommand command)
+        {
+            var mainForm = this.serviceProvider.GetService<IMainForm>();
+
+            if (this.serviceProvider.GetService<IConfirmationDialog>()
+                .Confirm(
+                    mainForm.Window,
+                    "Are you you sure you want to " +
+                        $"{command.ToString().ToLower()} {instance.Name}?",
+                    $"{command} {instance.Name}?",
+                    $"{command} VM instance") != DialogResult.Yes)
+            {
+                return;
+            }
+
+            //
+            // Load data using a job so that the task is retried in case
+            // of authentication issues.
+            //
+            await this.serviceProvider
+                .GetService<IJobService>()
+                .RunInBackground<object>(
+                    new JobDescription(
+                        $"{action} {instance.Name}...",
+                        JobUserFeedbackType.BackgroundFeedback),
+                    async jobToken =>
+                    {
+                        using (var service = this.serviceProvider
+                            .GetService<IInstanceControlService>())
+                        {
+                            await service.ControlInstanceAsync(
+                                    instance,
+                                    command,
+                                    jobToken)
+                            .ConfigureAwait(false);
+                        }
+
+                        return null;
+                    })
+                .ConfigureAwait(true);  // Back to original (UI) thread.
+        }
+
         public Extension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
@@ -51,8 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             //
             // Add commands to project explorer.
             //
-
-            var reportCommand = projectExplorer.ContextMenuCommands.AddCommand(
+            var reportContainer = projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Report",
                     context => context is IProjectModelProjectNode
@@ -60,8 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
                     context => { }));
-
-            reportCommand.AddCommand(
+            reportContainer.AddCommand(
                 new Command<IProjectModelNode>(
                     "Analyze VM and sole-tenant node usage...",
                     context => CommandState.Enabled,
@@ -72,6 +121,86 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     Image = Resources.Report_16
                 });
 
+            var controlContainer = projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Contro&l",
+                    node => node is IProjectModelInstanceNode
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    context => { }),
+                7);
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Start",
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanStart
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    node => ControlInstanceAsync(
+                        ((IProjectModelInstanceNode)node).Instance,
+                        "Starting",
+                        InstanceControlCommand.Start))
+                {
+                    Image = Resources.Start_16,
+                    ActivityText = "Starting VM instance"
+                });
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Resume",
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanResume
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    node => ControlInstanceAsync(
+                        ((IProjectModelInstanceNode)node).Instance,
+                        "Resuming",
+                        InstanceControlCommand.Resume))
+                {
+                    Image = Resources.Start_16,
+                    ActivityText = "Resuming VM instance"
+                });
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Sto&p",
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanStop
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    node => ControlInstanceAsync(
+                        ((IProjectModelInstanceNode)node).Instance,
+                        "Stopping",
+                        InstanceControlCommand.Stop))
+                {
+                    Image = Resources.Stop_16,
+                    ActivityText = "Stopping VM instance"
+                });
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Suspe&nd",
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanSuspend
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    node => ControlInstanceAsync(
+                        ((IProjectModelInstanceNode)node).Instance,
+                        "Suspending",
+                        InstanceControlCommand.Suspend))
+                {
+                    Image = Resources.Pause_16,
+                    ActivityText = "Suspending VM instance"
+                });
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Rese&t",
+                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanReset
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    node => ControlInstanceAsync(
+                        ((IProjectModelInstanceNode)node).Instance,
+                        "Resetting",
+                        InstanceControlCommand.Reset))
+                {
+                    Image = Resources.Reset_16,
+                    ActivityText = "Resetting VM instance"
+                });
+
+
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Show serial port &output (COM1)",
@@ -80,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 {
                     Image = Resources.Log_16
                 },
-                7);
+                8);
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Show &event log",
@@ -89,8 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 {
                     Image = Resources.EventLog_16
                 },
-                8);
-
+                9);
 
             //
             // Add commands to main menu.
