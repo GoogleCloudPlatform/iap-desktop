@@ -87,15 +87,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Action<Metadata> updateMetadata,
             CancellationToken token);
 
-
-        //---------------------------------------------------------------------
-        // Start/stop/...
-        //---------------------------------------------------------------------
-
-        Task ResetInstanceAsync(
-           InstanceLocator instanceLocator,
-           CancellationToken token);
-
         //---------------------------------------------------------------------
         // Control instance lifecycle.
         //---------------------------------------------------------------------

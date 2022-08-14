@@ -30,14 +30,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.IapDesktop.Extensions.Os.Services.DomainJoin;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.Windows;
 using Moq;
 using System;
 using System.Collections.Generic;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Text;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.DomainJoin
+namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
 {
     [TestFixture]
     public class TestDomainJoinService : ApplicationFixtureBase

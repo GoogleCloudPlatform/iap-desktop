@@ -39,7 +39,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Services.DomainJoin
+namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
 {
     public interface IDomainJoinService
     {
@@ -247,8 +247,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.DomainJoin
                 //
                 // Reset the VM to trigger the domain-join script.
                 //
-                await this.computeEngineAdapter.ResetInstanceAsync(
+                await this.computeEngineAdapter.ControlInstanceAsync(
                         instance,
+                        InstanceControlCommand.Reset,
                         cancellationToken)
                     .ConfigureAwait(false);
 
