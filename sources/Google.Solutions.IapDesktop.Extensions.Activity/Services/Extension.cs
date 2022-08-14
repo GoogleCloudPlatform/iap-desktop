@@ -54,32 +54,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             string action,
             InstanceControlCommand command)
         {
-            var jobService = this.serviceProvider.GetService<IJobService>();
+            var mainForm = this.serviceProvider.GetService<IMainForm>();
 
-            // TODO: Ask for confirmation.
+            if (this.serviceProvider.GetService<IConfirmationDialog>()
+                .Confirm(
+                    mainForm.Window,
+                    "Are you you sure you want to " +
+                        $"{command.ToString().ToLower()} {instance.Name}?",
+                    $"{command} {instance.Name}?",
+                    $"{command} VM instance") != DialogResult.Yes)
+            {
+                return;
+            }
 
             //
             // Load data using a job so that the task is retried in case
             // of authentication issues.
             //
-            await jobService.RunInBackground<object>(
-                new JobDescription(
-                    $"{action} {instance.Name}...",
-                    JobUserFeedbackType.BackgroundFeedback),
-                async jobToken =>
-                {
-                    using (var service = this.serviceProvider
-                        .GetService<IInstanceControlService>())
+            await this.serviceProvider
+                .GetService<IJobService>()
+                .RunInBackground<object>(
+                    new JobDescription(
+                        $"{action} {instance.Name}...",
+                        JobUserFeedbackType.BackgroundFeedback),
+                    async jobToken =>
                     {
-                        await service.ControlInstanceAsync(
-                                instance,
-                                command,
-                                jobToken)
-                        .ConfigureAwait(false);
-                    }
+                        using (var service = this.serviceProvider
+                            .GetService<IInstanceControlService>())
+                        {
+                            await service.ControlInstanceAsync(
+                                    instance,
+                                    command,
+                                    jobToken)
+                            .ConfigureAwait(false);
+                        }
 
-                    return null;
-                }).ConfigureAwait(true);  // Back to original (UI) thread.
+                        return null;
+                    })
+                .ConfigureAwait(true);  // Back to original (UI) thread.
         }
 
         public Extension(IServiceProvider serviceProvider)
@@ -109,25 +121,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     Image = Resources.Report_16
                 });
 
-            projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
-                    "Show serial port &output (COM1)",
-                    SerialOutputViewModel.GetCommandState,
-                    context => this.serviceProvider.GetService<SerialOutputWindowCom1>().ShowWindow())
-                {
-                    Image = Resources.Log_16
-                },
-                7);
-            projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
-                    "Show &event log",
-                    EventLogViewModel.GetCommandState,
-                    context => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
-                {
-                    Image = Resources.EventLog_16
-                },
-                8);
-
             var controlContainer = projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Contro&l",
@@ -135,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
                     context => { }),
-                9); // TODO: Fix index
+                7);
             controlContainer.AddCommand(
                 new Command<IProjectModelNode>(
                     "&Start",
@@ -206,6 +199,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     Image = Resources.Reset_16,
                     ActivityText = "Resetting VM instance"
                 });
+
+
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Show serial port &output (COM1)",
+                    SerialOutputViewModel.GetCommandState,
+                    context => this.serviceProvider.GetService<SerialOutputWindowCom1>().ShowWindow())
+                {
+                    Image = Resources.Log_16
+                },
+                8);
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Show &event log",
+                    EventLogViewModel.GetCommandState,
+                    context => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
+                {
+                    Image = Resources.EventLog_16
+                },
+                9);
 
             //
             // Add commands to main menu.
