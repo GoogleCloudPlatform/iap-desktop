@@ -36,6 +36,8 @@ using System;
 using System.Collections.Generic;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Text;
+using Newtonsoft.Json;
+using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
 {
@@ -72,12 +74,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
                     action(new Metadata());
                 });
 
-
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
             var joinAdapter = new DomainJoinService(computeEngineAdapter.Object);
 
             var oldItems = await joinAdapter.ReplaceMetadataItemsAsync(
                     instance,
+                    null,
                     new[] { "old-1", "old-2" },
                     new List<Metadata.ItemsData>()
                     {
@@ -120,6 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
 
             var oldItems = await joinAdapter.ReplaceMetadataItemsAsync(
                     instance,
+                    null,
                     new[] { "old-1", "old-2" },
                     new List<Metadata.ItemsData>()
                     {
@@ -136,6 +139,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
             CollectionAssert.AreEquivalent(
                 new[] { "old-1", "old-2" },
                 oldItems.Select(i => i.Key).ToList());
+        }
+
+        [Test]
+        public void WhenMetadataContainsGuardKey_ThenReplaceMetadataItemsThrowsException()
+        {
+            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()))
+                .Callback((InstanceLocator i, Action<Metadata> action, CancellationToken t) =>
+                {
+                    action(new Metadata()
+                    {
+                        Items = new List<Metadata.ItemsData>()
+                        {
+                            new Metadata.ItemsData()
+                            {
+                                Key = "guard"
+                            }
+                        }
+                    });
+                });
+
+            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
+            var joinAdapter = new DomainJoinService(computeEngineAdapter.Object);
+
+            ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
+                () => joinAdapter.ReplaceMetadataItemsAsync(
+                    instance,
+                    "guard",
+                    new[] { "old-1", "old-2" },
+                    new List<Metadata.ItemsData>()
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "new-1"
+                        }
+                    },
+                    CancellationToken.None).Wait());
         }
 
         //---------------------------------------------------------------------
@@ -178,6 +221,73 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
                 .ConfigureAwait(false);
 
             Assert.AreEqual($"{operationId} test-message", match);
+        }
+
+        //---------------------------------------------------------------------
+        // JoinDomain.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenJoinResponseContainsError_ThenJoinDomainThrowsException()
+        {
+            var operationId = Guid.NewGuid();
+
+            using (var key = RSA.Create())
+            {
+                var stream = new Mock<IAsyncReader<string>>();
+                stream
+                    .Setup(s => s.ReadAsync(It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(
+                        JsonConvert.SerializeObject(new DomainJoinService.HelloMessage()
+                        {
+                            OperationId = operationId.ToString(),
+                            MessageType = "hello",
+                            Exponent = Convert.ToBase64String(key.ExportParameters(false).Exponent),
+                            Modulus = Convert.ToBase64String(key.ExportParameters(false).Modulus)
+                        }) + "\n" + 
+                        JsonConvert.SerializeObject(new DomainJoinService.JoinResponse()
+                        {
+                            OperationId = operationId.ToString(),
+                            MessageType = "join-response",
+                            Succeeded = false,
+                            ErrorDetails = "test"
+                        }));
+
+                var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+                computeEngineAdapter
+                    .Setup(a => a.GetSerialPortOutput(
+                        It.IsAny<InstanceLocator>(),
+                        It.IsAny<ushort>()))
+                    .Returns(stream.Object);
+                computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
+                        It.IsAny<InstanceLocator>(),
+                        It.IsAny<Action<Metadata>>(),
+                        It.IsAny<CancellationToken>()))
+                    .Callback((InstanceLocator i, Action<Metadata> action, CancellationToken t) =>
+                    {
+                        action(new Metadata());
+                    });
+
+
+                var joinAdapter = new DomainJoinService(computeEngineAdapter.Object);
+
+                var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
+
+                ExceptionAssert.ThrowsAggregateException<DomainJoinFailedException>(
+                    () => joinAdapter.JoinDomainAsync(
+                        instance,
+                        "example.org",
+                        new System.Net.NetworkCredential("user", "pwd", "domain"),
+                        operationId,
+                        CancellationToken.None).Wait());
+
+                computeEngineAdapter.Verify(
+                    a => a.UpdateMetadataAsync(
+                        It.IsAny<InstanceLocator>(),
+                        It.IsAny<Action<Metadata>>(),
+                        It.IsAny<CancellationToken>()),
+                    Times.Exactly(3));
+            }
         }
     }
 }

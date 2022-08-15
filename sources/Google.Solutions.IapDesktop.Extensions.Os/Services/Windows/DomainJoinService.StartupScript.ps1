@@ -48,10 +48,19 @@ Write-SerialPort -portname COM4 -Data (@{
 #
 # Wait for "join-request" message in metadata.
 #
+$TotalWaitMillis = 5000
 do {
+    $WaitMillis = 500
+    $TotalWaitMillis = $TotalWaitMillis - $WaitMillis
+
+    Start-Sleep -Milliseconds $WaitMillis
     $MetadataValue = Get-MetaData -Property "attributes/$MetadataKey"
-    Start-Sleep -Milliseconds 300
-} while (-not $MetadataValue)
+} while (-not $MetadataValue -and $TotalWaitMillis -gt 0)
+
+if (-not $MetadataValue) {
+    throw [System.TimeoutException]::new(
+        "Timeout elapsed waiting for 'join-request' message from client")
+}
 
 try {
     $JoinRequest = $MetadataValue | ConvertFrom-Json

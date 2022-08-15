@@ -90,6 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
 
         internal async Task<List<Metadata.ItemsData>> ReplaceMetadataItemsAsync(
             InstanceLocator instance,
+            string guardKey,
             ICollection<string> keysToReplace,
             List<Metadata.ItemsData> newItems,
             CancellationToken cancellationToken)
@@ -101,6 +102,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
                     metadata =>
                     {
                         Debug.Assert(metadata != null);
+
+                        if (guardKey != null)
+                        {
+                            //
+                            // Fail if the guard key exists.
+                            //
+                            if (metadata.Items
+                                .EnsureNotNull()
+                                .Any(i => i.Key == guardKey))
+                            {
+                                throw new InvalidOperationException(
+                                    $"Found metadata key '{guardKey}', indicating that a " +
+                                    $"domain-join operation is already in progress");
+                            }
+                        }
 
                         //
                         // Read and remove existing items.
@@ -203,25 +219,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
             return message;
         }
 
-        //---------------------------------------------------------------------
-        // IAdJoinService.
-        //---------------------------------------------------------------------
-
-        public async Task JoinDomainAsync(// TODO: test
+        internal async Task JoinDomainAsync(
             InstanceLocator instance,
             string domain,
             NetworkCredential domainCredential,
+            Guid operationId,
             CancellationToken cancellationToken)
         {
             domain.ThrowIfNullOrEmpty(nameof(domain));
             domainCredential?.UserName.ThrowIfNull("username");
             domainCredential?.Password.ThrowIfNull("password");
-
-            //
-            // Create a unique operation ID. This ID helps us
-            // find responses in the serial port output.
-            //
-            var operationId = Guid.NewGuid();
 
             using (ApplicationTraceSources.Default.TraceMethod()
                 .WithParameters(instance, domain, operationId))
@@ -230,8 +237,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
                 // Swap existing startup scripts against the
                 // domain-join script.
                 //
+                // NB. If the user has permissions to change
+                // metadata, then they're very likely to also have
+                // sufficient permissions to restart the instance.
+                //
                 var existingStartupScripts = await ReplaceMetadataItemsAsync(
                         instance,
+                        MetadataKeys.JoinDomainGuard,
                         MetadataKeys.WindowsStartupScripts,
                         new List<Metadata.ItemsData>
                         {
@@ -239,7 +251,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
                             {
                                 Key = MetadataKeys.WindowsStartupScriptPs1,
                                 Value = CreateStartupScript(operationId)
-                            }
+                            },
+                            new Metadata.ItemsData()
+                            {
+                                Key = MetadataKeys.JoinDomainGuard,
+                                Value = operationId.ToString()
+                            },
                         },
                         cancellationToken)
                     .ConfigureAwait(false);
@@ -293,7 +310,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
 
                     await ReplaceMetadataItemsAsync(
                             instance,
-                            new [] { MetadataKeys.JoinDomain },
+                            null,
+                            new[] { MetadataKeys.JoinDomain },
                             new List<Metadata.ItemsData>
                             {
                                 new Metadata.ItemsData()
@@ -322,8 +340,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
                 //
                 await ReplaceMetadataItemsAsync(
                         instance,
+                        null,
                         MetadataKeys.WindowsStartupScripts
-                            .Union(new[] { MetadataKeys.JoinDomain })
+                            .Union(new[]
+                            {
+                                MetadataKeys.JoinDomain,
+                                MetadataKeys.JoinDomainGuard
+                            })
                             .ToList(),
                         existingStartupScripts,
                         cancellationToken)
@@ -336,6 +359,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // IAdJoinService.
+        //---------------------------------------------------------------------
+
+        public Task JoinDomainAsync(
+            InstanceLocator instance,
+            string domain,
+            NetworkCredential domainCredential,
+            CancellationToken cancellationToken)
+            => JoinDomainAsync(
+                instance,
+                domain,
+                domainCredential,
+                Guid.NewGuid(),
+                cancellationToken);
 
         //---------------------------------------------------------------------
         // Messages.
@@ -392,7 +431,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
 
         internal static class MetadataKeys
         {
+            /// <summary>
+            /// Key used for join-domain message,
+            /// </summary>
             public const string JoinDomain = "iapdesktop-join";
+
+            /// <summary>
+            /// Guard value used to inidicate that a domin is in progress.
+            /// </summary>
+            public const string JoinDomainGuard = "iapdesktop-join-in-progress";
+
+            /// <summary>
+            /// PowerShell startup script.
+            /// </summary>
             public const string WindowsStartupScriptPs1 = "windows-startup-script-ps1";
             public static readonly string[] WindowsStartupScripts = new[]
             {
