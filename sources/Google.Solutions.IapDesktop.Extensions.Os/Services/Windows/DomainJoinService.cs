@@ -41,7 +41,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
 {
-    public interface IDomainJoinService
+    public interface IDomainJoinService : IDisposable
     {
         /// <summary>
         /// Join VM to an Active Directory domain.
@@ -49,11 +49,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
         Task JoinDomainAsync(
             InstanceLocator instance,
             string domain,
+            string computerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken);
     }
 
-    public class DomainJoinService : IDomainJoinService
+    [Service(typeof(IDomainJoinService))]
+    public sealed class DomainJoinService : IDomainJoinService
     {
         private const int SerialPort = 4;
 
@@ -96,7 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
             CancellationToken cancellationToken)
         {
             List<Metadata.ItemsData> oldItems = null;
-
+            // TODO: add logging
+            // TODO: Fail if domain-joined already
             await this.computeEngineAdapter.UpdateMetadataAsync(
                     instance,
                     metadata =>
@@ -222,6 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
         internal async Task JoinDomainAsync(
             InstanceLocator instance,
             string domain,
+            string computerName,
             NetworkCredential domainCredential,
             Guid operationId,
             CancellationToken cancellationToken)
@@ -304,7 +308,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
                         OperationId = operationId.ToString(),
                         MessageType = JoinRequest.MessageTypeString,
                         DomainName = domain,
-                        Username = domainCredential.UserName,
+                        NewComputerName = null, // TODO: Set computerName if != hostname
+                        Username = domainCredential.UserName, // TODO: Normalize UPN/NetBios format
                         EncryptedPassword = encryptedPassword
                     };
 
@@ -366,15 +371,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
 
         public Task JoinDomainAsync(
             InstanceLocator instance,
-            string domain,
+            string domain, 
+            string computerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken)
             => JoinDomainAsync(
                 instance,
                 domain,
+                computerName,
                 domainCredential,
                 Guid.NewGuid(),
                 cancellationToken);
+
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.computeEngineAdapter.Dispose();
+        }
 
         //---------------------------------------------------------------------
         // Messages.

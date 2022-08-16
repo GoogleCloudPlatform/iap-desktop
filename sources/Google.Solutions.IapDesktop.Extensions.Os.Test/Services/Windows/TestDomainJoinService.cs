@@ -75,24 +75,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
                 });
 
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
-            var joinAdapter = new DomainJoinService(computeEngineAdapter.Object);
-
-            var oldItems = await joinAdapter.ReplaceMetadataItemsAsync(
-                    instance,
-                    null,
-                    new[] { "old-1", "old-2" },
-                    new List<Metadata.ItemsData>()
-                    {
+            using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
+            {
+                var oldItems = await joinAdapter.ReplaceMetadataItemsAsync(
+                        instance,
+                        null,
+                        new[] { "old-1", "old-2" },
+                        new List<Metadata.ItemsData>()
+                        {
                         new Metadata.ItemsData()
                         {
                             Key = "new-1"
                         }
-                    },
-                    CancellationToken.None)
-                .ConfigureAwait(false);
+                        },
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
-            Assert.IsNotNull(oldItems);
-            CollectionAssert.IsEmpty(oldItems);
+                Assert.IsNotNull(oldItems);
+                CollectionAssert.IsEmpty(oldItems);
+            }
         }
 
         [Test]
@@ -118,27 +119,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
 
 
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
-            var joinAdapter = new DomainJoinService(computeEngineAdapter.Object);
-
-            var oldItems = await joinAdapter.ReplaceMetadataItemsAsync(
-                    instance,
-                    null,
-                    new[] { "old-1", "old-2" },
-                    new List<Metadata.ItemsData>()
-                    {
+            using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
+            {
+                var oldItems = await joinAdapter.ReplaceMetadataItemsAsync(
+                        instance,
+                        null,
+                        new[] { "old-1", "old-2" },
+                        new List<Metadata.ItemsData>()
+                        {
                         new Metadata.ItemsData()
                         {
                             Key = "new-1"
                         }
-                    },
-                    CancellationToken.None)
-                .ConfigureAwait(false);
+                        },
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
-            Assert.IsNotNull(oldItems);
+                Assert.IsNotNull(oldItems);
 
-            CollectionAssert.AreEquivalent(
-                new[] { "old-1", "old-2" },
-                oldItems.Select(i => i.Key).ToList());
+                CollectionAssert.AreEquivalent(
+                    new[] { "old-1", "old-2" },
+                    oldItems.Select(i => i.Key).ToList());
+            }
         }
 
         [Test]
@@ -164,21 +166,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
                 });
 
             var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
-            var joinAdapter = new DomainJoinService(computeEngineAdapter.Object);
-
-            ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                () => joinAdapter.ReplaceMetadataItemsAsync(
-                    instance,
-                    "guard",
-                    new[] { "old-1", "old-2" },
-                    new List<Metadata.ItemsData>()
-                    {
+            using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
+            {
+                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
+                    () => joinAdapter.ReplaceMetadataItemsAsync(
+                        instance,
+                        "guard",
+                        new[] { "old-1", "old-2" },
+                        new List<Metadata.ItemsData>()
+                        {
                         new Metadata.ItemsData()
                         {
                             Key = "new-1"
                         }
-                    },
-                    CancellationToken.None).Wait());
+                        },
+                        CancellationToken.None).Wait());
+            }
         }
 
         //---------------------------------------------------------------------
@@ -210,17 +213,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
                     It.IsAny<ushort>()))
                 .Returns(stream.Object);
 
-            var joinAdapter = new DomainJoinService(computeEngineAdapter.Object);
+            using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
+            {
+                var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
+                var match = await joinAdapter.AwaitMessageAsync(
+                        instance,
+                        operationId,
+                        "test-message",
+                        CancellationToken.None)
+                    .ConfigureAwait(false);
 
-            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
-            var match = await joinAdapter.AwaitMessageAsync(
-                    instance,
-                    operationId,
-                    "test-message",
-                    CancellationToken.None)
-                .ConfigureAwait(false);
-
-            Assert.AreEqual($"{operationId} test-message", match);
+                Assert.AreEqual($"{operationId} test-message", match);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -269,24 +273,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
                     });
 
 
-                var joinAdapter = new DomainJoinService(computeEngineAdapter.Object);
+                using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
+                {
+                    var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-                var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
+                    ExceptionAssert.ThrowsAggregateException<DomainJoinFailedException>(
+                        () => joinAdapter.JoinDomainAsync(
+                            instance,
+                            "example.org",
+                            "instance-1",
+                            new System.Net.NetworkCredential("user", "pwd", "domain"),
+                            operationId,
+                            CancellationToken.None).Wait());
 
-                ExceptionAssert.ThrowsAggregateException<DomainJoinFailedException>(
-                    () => joinAdapter.JoinDomainAsync(
-                        instance,
-                        "example.org",
-                        new System.Net.NetworkCredential("user", "pwd", "domain"),
-                        operationId,
-                        CancellationToken.None).Wait());
-
-                computeEngineAdapter.Verify(
-                    a => a.UpdateMetadataAsync(
-                        It.IsAny<InstanceLocator>(),
-                        It.IsAny<Action<Metadata>>(),
-                        It.IsAny<CancellationToken>()),
-                    Times.Exactly(3));
+                    computeEngineAdapter.Verify(
+                        a => a.UpdateMetadataAsync(
+                            It.IsAny<InstanceLocator>(),
+                            It.IsAny<Action<Metadata>>(),
+                            It.IsAny<CancellationToken>()),
+                        Times.Exactly(3));
+                }
             }
         }
     }

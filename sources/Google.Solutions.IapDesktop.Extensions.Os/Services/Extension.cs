@@ -29,6 +29,11 @@ using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory;
 using System;
 using System.Windows.Forms;
+using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Services
 {
@@ -38,8 +43,58 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
     [Service(ServiceLifetime.Singleton)]
     public class Extension
     {
+        private readonly IServiceProvider serviceProvider;
+
+        private async Task JoinDomainAsync(
+            IProjectModelInstanceNode instance)
+        {
+            var mainForm = this.serviceProvider.GetService<IMainForm>();
+
+            // TODO: Use custom form
+            var domain = "lab.local";
+            if (this.serviceProvider.GetService<ICredentialDialog>()
+                .PromptForWindowsCredentials(
+                    mainForm.Window,
+                    $"Join {instance.DisplayName} to domain",
+                    "Enter domain credentials for performing domain-join",
+                    AuthenticationPackage.Kerberos,
+                    out var credential) != DialogResult.OK)
+            {
+                return;
+            }
+
+            //
+            // Perform join in background job.
+            //
+            await this.serviceProvider
+                .GetService<IJobService>()
+                .RunInBackground<object>(
+                    new JobDescription(
+                        $"Joining {instance.DisplayName} to {domain}...",
+                        JobUserFeedbackType.BackgroundFeedback),
+                    async jobToken =>
+                    {
+                        using (var service = this.serviceProvider
+                            .GetService<IDomainJoinService>())
+                        {
+                            await service.JoinDomainAsync(
+                                    instance.Instance,
+                                    domain,
+                                    instance.Instance.Name, // TODO: Propmt for computer name
+                                    credential,
+                                    jobToken)
+                            .ConfigureAwait(false);
+                        }
+
+                        return null;
+                    })
+                .ConfigureAwait(true);  // Back to original (UI) thread.
+        }
+
         public Extension(IServiceProvider serviceProvider)
         {
+            this.serviceProvider = serviceProvider;
+
             //
             // Add commands to project explorer.
             //
@@ -88,6 +143,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     ShortcutKeys = Keys.Alt | Keys.Enter
                 },
                 11);
+
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Join to domain",
+                    node => node is IProjectModelInstanceNode vmNode && 
+                            vmNode.IsRunning && 
+                            vmNode.OperatingSystem == OperatingSystems.Windows
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    node => JoinDomainAsync((IProjectModelInstanceNode)node))
+                {
+                    ActivityText = "Joining to domain"
+                }); // TODO: Fix index
 
             //
             // Add commands to main menu.

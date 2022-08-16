@@ -48,7 +48,9 @@ Write-SerialPort -portname COM4 -Data (@{
 #
 # Wait for "join-request" message in metadata.
 #
-$TotalWaitMillis = 5000
+Write-Host "Waiting for request to initiate domain join..."
+
+$TotalWaitMillis = 20000
 do {
     $WaitMillis = 500
     $TotalWaitMillis = $TotalWaitMillis - $WaitMillis
@@ -75,20 +77,35 @@ try {
     #
     # Decrypt password using our ephemeral key.
     #
-    $Password = [System.Text.Encoding]::UTF8.GetString(
+    $PlainTextPassword = [System.Text.Encoding]::UTF8.GetString(
         $Key.Decrypt(
             [Convert]::FromBase64String($JoinRequest.EncryptedPassword), 
             [System.Security.Cryptography.RSAEncryptionPadding]::Pkcs1))
 
+    $Password = ConvertTo-SecureString `
+        -AsPlainText `
+        -Force `
+        -String $PlainTextPassword
+
     #
     # Join and restart.
     #
-    Add-Computer `
-        -ComputerName localhost `
-        -DomainName $JoinRequest.Domain `
-        -NewName  $JoinRequest.NewComputerName `
-        -Credential (New-Object PSCredential ($JoinRequest.Username, $Password)) `
-        -Force
+    Write-Host "Joining computer as $($JoinRequest.NewComputerName) to domain $($JoinRequest.DomainName)..."
+    if ($JoinRequest.NewComputerName -ne $null) {
+        Add-Computer `
+            -ComputerName localhost `
+            -DomainName $JoinRequest.DomainName `
+            -NewName  $JoinRequest.NewComputerName `
+            -Credential (New-Object PSCredential ($JoinRequest.Username, $Password)) `
+            -Force
+    }
+    else {
+        Add-Computer `
+            -ComputerName localhost `
+            -DomainName $JoinRequest.DomainName `
+            -Credential (New-Object PSCredential ($JoinRequest.Username, $Password)) `
+            -Force
+    }
 
     #
     # Join succeeded, write response message.
@@ -99,12 +116,14 @@ try {
             "Succeeded" = $True
         } | ConvertTo-Json -Compress)
 
+    Write-Host "Domain join completed, restarting..."
     Restart-Computer
 }
 catch {
     #
     # Join failed, write response message.
     #
+    Write-Host "Domain join failed: $($_.Exception.Message)"
     Write-SerialPort -portname COM4 -Data (@{
             "OperationId" = $OperationId
             "MessageType" = "join-response"
