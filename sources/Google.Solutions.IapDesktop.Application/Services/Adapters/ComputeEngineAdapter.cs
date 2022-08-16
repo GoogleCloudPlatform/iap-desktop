@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     /// <summary>
     /// Adapter class for the Compute Engine API.
     /// </summary>
-    public class ComputeEngineAdapter : IComputeEngineAdapter
+    public sealed class ComputeEngineAdapter : IComputeEngineAdapter
     {
         private const string MtlsBaseUri = "https://compute.mtls.googleapis.com/compute/v1/projects/";
 
@@ -208,23 +208,24 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public async Task<Instance> GetInstanceAsync(
-            InstanceLocator instanceLocator,
+            InstanceLocator instance,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceLocator))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
             {
                 try
                 {
                     return await this.service.Instances.Get(
-                        instanceLocator.ProjectId,
-                        instanceLocator.Zone,
-                        instanceLocator.Name).ExecuteAsync(cancellationToken)
+                        instance.ProjectId,
+                        instance.Zone,
+                        instance.Name).ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to VM instance {instanceLocator.Name} has been denied",
+                        "You do not have sufficient permissions to access " +
+                            $"VM instance {instance.Name} in project {instance.ProjectId}",
                         HelpTopics.ProjectAccessControl,
                         e);
                 }
@@ -236,18 +237,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         //---------------------------------------------------------------------
 
         public async Task<GuestAttributes> GetGuestAttributesAsync(
-            InstanceLocator instanceLocator,
+            InstanceLocator instance,
             string queryPath,
             CancellationToken cancellationToken)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceLocator))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
             {
                 try
                 {
                     var request = this.service.Instances.GetGuestAttributes(
-                        instanceLocator.ProjectId,
-                        instanceLocator.Zone,
-                        instanceLocator.Name);
+                        instance.ProjectId,
+                        instance.Zone,
+                        instance.Name);
                     request.QueryPath = queryPath;
                     return await request
                         .ExecuteAsync(cancellationToken)
@@ -261,183 +262,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to VM instance {instanceLocator.Name} has been denied",
+                        "You do not have sufficient permissions to access the guest attributes " +
+                            $"of VM instance {instance.Name} in project {instance.ProjectId}",
                         HelpTopics.ProjectAccessControl,
                         e);
                 }
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Nodes.
-        //---------------------------------------------------------------------
-
-        public async Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
-            string projectId,
-            CancellationToken cancellationToken)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
-            {
-                try
-                {
-                    var groupsByZone = await new PageStreamer<
-                        NodeGroupsScopedList,
-                        NodeGroupsResource.AggregatedListRequest,
-                        NodeGroupAggregatedList,
-                        string>(
-                            (req, token) => req.PageToken = token,
-                            response => response.NextPageToken,
-                            response => response.Items.Values.Where(v => v != null))
-                        .FetchAllAsync(
-                            this.service.NodeGroups.AggregatedList(projectId),
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-                    var result = groupsByZone
-                        .Where(z => z.NodeGroups != null)    // API returns null for empty zones.
-                        .SelectMany(zone => zone.NodeGroups);
-
-                    ApplicationTraceSources.Default.TraceVerbose("Found {0} node groups", result.Count());
-
-                    return result;
-                }
-                catch (GoogleApiException e) when (e.IsAccessDenied())
-                {
-                    throw new ResourceAccessDeniedException(
-                        $"Access to node groups in project {projectId} has been denied",
-                        HelpTopics.ProjectAccessControl,
-                        e);
-                }
-            }
-        }
-
-        public async Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
-            ZoneLocator zone,
-            string nodeGroup,
-            CancellationToken cancellationToken)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(zone, nodeGroup))
-            {
-                try
-                {
-                    return await new PageStreamer<
-                        NodeGroupNode,
-                        NodeGroupsResource.ListNodesRequest,
-                        NodeGroupsListNodes,
-                        string>(
-                            (req, token) => req.PageToken = token,
-                            response => response.NextPageToken,
-                            response => response.Items)
-                        .FetchAllAsync(
-                            this.service.NodeGroups.ListNodes(zone.ProjectId, zone.Name, nodeGroup),
-                            cancellationToken)
-                        .ConfigureAwait(false);
-                }
-                catch (GoogleApiException e) when (e.IsAccessDenied())
-                {
-                    throw new ResourceAccessDeniedException(
-                        $"Access to nodes in project {zone.ProjectId} has been denied",
-                        HelpTopics.ProjectAccessControl,
-                        e);
-                }
-            }
-        }
-
-        public async Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
-            string projectId,
-            CancellationToken cancellationToken)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
-            {
-                var nodeGroups = await ListNodeGroupsAsync(
-                        projectId,
-                        cancellationToken)
-                    .ConfigureAwait(false);
-
-                var nodesAcrossGroups = Enumerable.Empty<NodeGroupNode>();
-
-                foreach (var nodeGroup in nodeGroups)
-                {
-                    nodesAcrossGroups = nodesAcrossGroups.Concat(await ListNodesAsync(
-                            ZoneLocator.FromString(nodeGroup.Zone),
-                            nodeGroup.Name,
-                            cancellationToken)
-                        .ConfigureAwait(false));
-                }
-
-                return nodesAcrossGroups;
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Disks/images.
-        //---------------------------------------------------------------------
-
-        public async Task<IEnumerable<Disk>> ListDisksAsync(
-            string projectId,
-            CancellationToken cancellationToken)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
-            {
-                try
-                {
-                    var disksByZone = await new PageStreamer<
-                        DisksScopedList,
-                        DisksResource.AggregatedListRequest,
-                        DiskAggregatedList,
-                        string>(
-                            (req, token) => req.PageToken = token,
-                            response => response.NextPageToken,
-                            response => response.Items.Values.Where(v => v != null))
-                        .FetchAllAsync(
-                            this.service.Disks.AggregatedList(projectId),
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-                    var result = disksByZone
-                        .Where(z => z.Disks != null)    // API returns null for empty zones.
-                        .SelectMany(zone => zone.Disks);
-
-                    ApplicationTraceSources.Default.TraceVerbose("Found {0} disks", result.Count());
-
-                    return result;
-                }
-                catch (GoogleApiException e) when (e.IsAccessDenied())
-                {
-                    throw new ResourceAccessDeniedException(
-                        $"Access to disks in project {projectId} has been denied",
-                        HelpTopics.ProjectAccessControl,
-                        e);
-                }
-            }
-        }
-
-        public async Task<Image> GetImageAsync(ImageLocator image, CancellationToken cancellationToken)
-        {
-            try
-            {
-                if (image.Name.StartsWith("family/"))
-                {
-                    return await this.service.Images
-                        .GetFromFamily(image.ProjectId, image.Name.Substring(7))
-                        .ExecuteAsync(cancellationToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    return await this.service.Images
-                        .Get(image.ProjectId, image.Name)
-                        .ExecuteAsync(cancellationToken).ConfigureAwait(false);
-                }
-            }
-            catch (Exception e) when (
-                e.Unwrap() is GoogleApiException apiEx && apiEx.IsNotFound())
-            {
-                throw new ResourceNotFoundException($"Image {image} not found", e);
-            }
-            catch (Exception e) when (
-                e.Unwrap() is GoogleApiException apiEx && apiEx.IsAccessDenied())
-            {
-                throw new ResourceAccessDeniedException($"Access to {image} denied", e);
             }
         }
 
@@ -460,26 +289,57 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Metadata.
         //---------------------------------------------------------------------
 
-        public Task UpdateMetadataAsync(
-            InstanceLocator instanceRef,
+        public async Task UpdateMetadataAsync(
+            InstanceLocator instance,
             Action<Metadata> updateMetadata,
             CancellationToken token)
         {
-            return this.service.Instances.UpdateMetadataAsync(
-                instanceRef,
-                updateMetadata,
-                token);
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
+            {
+                try
+                {
+                    await this.service.Instances.UpdateMetadataAsync(
+                            instance,
+                            updateMetadata,
+                            token)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"You don't have sufficient permissions to modify " +
+                            $"the metadata of VM instance {instance.Name} in project " +
+                            $"{instance.ProjectId}",
+                        HelpTopics.ProjectAccessControl,
+                        e);
+                }
+            }
         }
 
-        public Task UpdateCommonInstanceMetadataAsync(
+        public async Task UpdateCommonInstanceMetadataAsync(
             string projectId,
             Action<Metadata> updateMetadata,
             CancellationToken token)
         {
-            return this.service.Projects.UpdateMetadataAsync(
-                projectId,
-                updateMetadata,
-                token);
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    await this.service.Projects.UpdateMetadataAsync(
+                            projectId,
+                            updateMetadata,
+                            token)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        "You don't have sufficient permissions to modify " +
+                            $"the metadata of project {projectId}",
+                        HelpTopics.ProjectAccessControl,
+                        e);
+                }
+            }
         }
 
         //---------------------------------------------------------------------
@@ -589,13 +449,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 catch (GoogleApiException e) when (e.IsNotFound())
                 {
                     throw new ResourceNotFoundException(
-                        $"VM instance {instance.Name} does not exist",
+                        $"The VM instance {instance.Name} does not exist " +
+                            $"in project {instance.ProjectId}",
                         e);
                 }
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to VM instance {instance.Name} has been denied",
+                        "You do not have sufficient permissions to control the " +
+                            $"VM instance {instance.Name} in project {instance.ProjectId}",
                         HelpTopics.ProjectAccessControl,
                         e);
                 }
@@ -608,16 +470,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.service.Dispose();
-            }
+            this.service.Dispose();
         }
     }
 }

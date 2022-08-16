@@ -66,35 +66,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             CancellationToken cancellationToken);
 
         //---------------------------------------------------------------------
-        // Nodes.
-        //---------------------------------------------------------------------
-
-        Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
-            ZoneLocator zone,
-            string nodeGroup,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        //---------------------------------------------------------------------
-        // Disks/images.
-        //---------------------------------------------------------------------
-
-        Task<IEnumerable<Disk>> ListDisksAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<Image> GetImageAsync(
-            ImageLocator image,
-            CancellationToken cancellationToken);
-
-        //---------------------------------------------------------------------
         // Serial port.
         //---------------------------------------------------------------------
 
