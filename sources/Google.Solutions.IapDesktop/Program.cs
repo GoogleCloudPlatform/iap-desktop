@@ -253,6 +253,7 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
                 baseLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
                 baseLayer.AddTransient<ITaskDialog, TaskDialog>();
+                baseLayer.AddTransient<ICredentialDialog, CredentialDialog>();
                 baseLayer.AddSingleton<IThemeService, ThemeService>();
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
