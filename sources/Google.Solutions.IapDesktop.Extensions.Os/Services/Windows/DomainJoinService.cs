@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
         Task JoinDomainAsync(
             InstanceLocator instance,
             string domain,
-            string computerName,
+            string newComputerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken);
     }
@@ -97,61 +97,63 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
             List<Metadata.ItemsData> newItems,
             CancellationToken cancellationToken)
         {
-            List<Metadata.ItemsData> oldItems = null;
-            // TODO: add logging
-            // TODO: Fail if domain-joined already
-            await this.computeEngineAdapter.UpdateMetadataAsync(
-                    instance,
-                    metadata =>
-                    {
-                        Debug.Assert(metadata != null);
-
-                        if (guardKey != null)
+            using (ApplicationTraceSources.Default.TraceMethod()
+                .WithParameters(string.Join(", ", keysToReplace)))
+            {
+                List<Metadata.ItemsData> oldItems = null;
+                await this.computeEngineAdapter.UpdateMetadataAsync(
+                        instance,
+                        metadata =>
                         {
-                            //
-                            // Fail if the guard key exists.
-                            //
-                            if (metadata.Items
-                                .EnsureNotNull()
-                                .Any(i => i.Key == guardKey))
+                            Debug.Assert(metadata != null);
+
+                            if (guardKey != null)
                             {
-                                throw new InvalidOperationException(
-                                    $"Found metadata key '{guardKey}', indicating that a " +
-                                    $"domain-join operation is already in progress");
+                                //
+                                // Fail if the guard key exists.
+                                //
+                                if (metadata.Items
+                                    .EnsureNotNull()
+                                    .Any(i => i.Key == guardKey))
+                                {
+                                    throw new InvalidOperationException(
+                                        $"Found metadata key '{guardKey}', indicating that a " +
+                                        $"domain-join operation is already in progress");
+                                }
                             }
-                        }
 
-                        //
-                        // Read and remove existing items.
-                        //
-                        oldItems = metadata.Items
-                            .EnsureNotNull()
-                            .Where(i => keysToReplace.Contains(i.Key))
-                            .ToList();
+                            //
+                            // Read and remove existing items.
+                            //
+                            oldItems = metadata.Items
+                                .EnsureNotNull()
+                                .Where(i => keysToReplace.Contains(i.Key))
+                                .ToList();
 
-                        foreach (var item in oldItems)
-                        {
-                            metadata.Items.Remove(item);
-                        }
+                            foreach (var item in oldItems)
+                            {
+                                metadata.Items.Remove(item);
+                            }
 
-                        if (metadata.Items == null)
-                        {
-                            metadata.Items = new List<Metadata.ItemsData>();
-                        }
+                            if (metadata.Items == null)
+                            {
+                                metadata.Items = new List<Metadata.ItemsData>();
+                            }
 
-                        //
-                        // Add new items.
-                        //
-                        foreach (var item in newItems)
-                        {
-                            metadata.Items.Add(item);
-                        }
-                    },
-                    cancellationToken)
-                .ConfigureAwait(false);
+                            //
+                            // Add new items.
+                            //
+                            foreach (var item in newItems)
+                            {
+                                metadata.Items.Add(item);
+                            }
+                        },
+                        cancellationToken)
+                    .ConfigureAwait(false);
 
-            Debug.Assert(oldItems != null);
-            return oldItems;
+                Debug.Assert(oldItems != null);
+                return oldItems;
+            }
         }
 
         internal async Task<string> AwaitMessageAsync(
@@ -160,6 +162,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
             string messageType,
             CancellationToken cancellationToken)
         {
+            using (ApplicationTraceSources.Default.TraceMethod()
+                .WithParameters(messageType))
             using (var serialPortStream = this.computeEngineAdapter
                 .GetSerialPortOutput(instance, SerialPort))
             {
@@ -225,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
         internal async Task JoinDomainAsync(
             InstanceLocator instance,
             string domain,
-            string computerName,
+            string newComputerName,
             NetworkCredential domainCredential,
             Guid operationId,
             CancellationToken cancellationToken)
@@ -308,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
                         OperationId = operationId.ToString(),
                         MessageType = JoinRequest.MessageTypeString,
                         DomainName = domain,
-                        NewComputerName = null, // TODO: Set computerName if != hostname
+                        NewComputerName = newComputerName,
                         Username = domainCredential.UserName, // TODO: Normalize UPN/NetBios format
                         EncryptedPassword = encryptedPassword
                     };
@@ -372,13 +376,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
         public Task JoinDomainAsync(
             InstanceLocator instance,
             string domain, 
-            string computerName,
+            string newComputerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken)
             => JoinDomainAsync(
                 instance,
                 domain,
-                computerName,
+                newComputerName,
                 domainCredential,
                 Guid.NewGuid(),
                 cancellationToken);

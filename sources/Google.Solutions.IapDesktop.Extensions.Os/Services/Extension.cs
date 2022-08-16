@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
         {
             var mainForm = this.serviceProvider.GetService<IMainForm>();
 
-            // TODO: Use custom form
+            // TODO: Use custom form, warn about restart
             var domain = "lab.local";
             if (this.serviceProvider.GetService<ICredentialDialog>()
                 .PromptForWindowsCredentials(
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                             await service.JoinDomainAsync(
                                     instance.Instance,
                                     domain,
-                                    instance.Instance.Name, // TODO: Propmt for computer name
+                                    null, // TODO: Propmt for computer name
                                     credential,
                                     jobToken)
                             .ConfigureAwait(false);
