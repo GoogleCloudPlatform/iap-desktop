@@ -121,6 +121,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         HelpTopics.ProjectAccessControl,
                         e);
                 }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        $"The project {projectId} does not exist",
+                        e);
+                }
             }
         }
 
@@ -166,6 +172,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         HelpTopics.ProjectAccessControl,
                         e);
                 }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        $"The project {projectId} does not exist",
+                        e);
+                }
             }
         }
 
@@ -204,6 +216,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         HelpTopics.ProjectAccessControl,
                         e);
                 }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        $"The zone {zoneLocator} does not exist",
+                        e);
+                }
             }
         }
 
@@ -227,6 +245,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         "You do not have sufficient permissions to access " +
                             $"VM instance {instance.Name} in project {instance.ProjectId}",
                         HelpTopics.ProjectAccessControl,
+                        e);
+                }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        $"The VM instance {instance.Name} does not exist " +
+                            $"in project {instance.ProjectId}",
                         e);
                 }
             }
@@ -304,13 +329,23 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                             token)
                         .ConfigureAwait(false);
                 }
-                catch (GoogleApiException e) when (e.IsAccessDenied())
+                catch (GoogleApiException e) when (e.IsAccessDenied() || e.Error == null)
                 {
+                    //
+                    // NB. Sometimes the error info is missing in 403 errors.
+                    //
                     throw new ResourceAccessDeniedException(
                         $"You don't have sufficient permissions to modify " +
                             $"the metadata of VM instance {instance.Name} in project " +
                             $"{instance.ProjectId}",
                         HelpTopics.ProjectAccessControl,
+                        e);
+                }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        $"The VM instance {instance.Name} does not exist " +
+                            $"in project {instance.ProjectId}",
                         e);
                 }
             }
@@ -331,12 +366,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                             token)
                         .ConfigureAwait(false);
                 }
-                catch (GoogleApiException e) when (e.IsAccessDenied())
+                catch (GoogleApiException e) when (e.IsAccessDenied() || e.Error == null)
                 {
+                    //
+                    // NB. Sometimes the error info is missing in 403 errors.
+                    //
                     throw new ResourceAccessDeniedException(
                         "You don't have sufficient permissions to modify " +
                             $"the metadata of project {projectId}",
                         HelpTopics.ProjectAccessControl,
+                        e);
+                }
+                catch (GoogleApiException e) when (e.IsNotFound())
+                {
+                    throw new ResourceNotFoundException(
+                        $"The project {projectId} does not exist",
                         e);
                 }
             }

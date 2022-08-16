@@ -159,22 +159,23 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                             token)
                         .ConfigureAwait(false);
                 }
-                catch (GoogleApiException e) when (e.IsNotFound())
+                catch (ResourceNotFoundException e)
                 {
                     ApplicationTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
 
                     throw new WindowsCredentialCreationFailedException(
                         $"Instance {instanceRef.Name} was not found.");
                 }
-                catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
+                catch (ResourceAccessDeniedException e)
                 {
                     ApplicationTraceSources.Default.TraceVerbose(
-                        "Setting request payload metadata failed with 403: {0} ({1})",
-                        e.Message,
-                        e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
+                        "Setting request payload metadata failed with 403: {0}",
+                        e.FullMessage());
 
+                    //
                     // Setting metadata failed due to lack of permissions. Note that
                     // the Error object is not always populated, hence the OR filter.
+                    //
 
                     throw new WindowsCredentialCreationFailedException(
                         "You do not have sufficient permissions to reset a Windows password. " +
@@ -190,9 +191,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                         e.Message,
                         e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
 
+                    //
                     // This slightly weirdly encoded error happens if the user has the necessary
                     // permissions on the VM, but lacks ActAs permission on the associated 
                     // service account.
+                    //
 
                     throw new WindowsCredentialCreationFailedException(
                         "You do not have sufficient permissions to reset a Windows password. " +
@@ -201,13 +204,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                         HelpTopics.PermissionsToResetWindowsUser);
                 }
 
+                //
                 // Read response from serial port.
+                //
                 using (var serialPortStream = this.computeEngineAdapter.GetSerialPortOutput(
                     instanceRef,
                     SerialPort))
                 {
+                    //
                     // It is rare, but sometimes a single JSON can be split over multiple
                     // API reads. Therefore, maintain a buffer.
+                    //
+
                     var logBuffer = new StringBuilder(64 * 1024);
                     while (true)
                     {
@@ -225,9 +233,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
                         logBuffer.Append(logDelta);
 
+                        //
                         // NB. Old versions of the Windows guest agent wrongly added a '\'
                         // before every '/' in base64-encoded data. This affects the search
                         // for the modulus.
+                        //
+
                         var response = logBuffer.ToString()
                             .Split('\n')
                             .Where(line => line.Contains(requestPayload.Modulus) ||
