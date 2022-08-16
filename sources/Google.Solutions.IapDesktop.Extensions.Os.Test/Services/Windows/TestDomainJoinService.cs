@@ -272,7 +272,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
                         action(new Metadata());
                     });
 
-
                 using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
                 {
                     var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -292,6 +291,63 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
                             It.IsAny<Action<Metadata>>(),
                             It.IsAny<CancellationToken>()),
                         Times.Exactly(3));
+                }
+            }
+        }
+
+        [Test]
+        public void WhenJoinCancelled_ThenJoinDomainRestoresMetadata()
+        {
+            var operationId = Guid.NewGuid();
+
+            using (var key = RSA.Create())
+            {
+                var stream = new Mock<IAsyncReader<string>>();
+                stream
+                    .Setup(s => s.ReadAsync(It.IsAny<CancellationToken>()))
+                    .ThrowsAsync(new TaskCanceledException());
+
+                var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+                computeEngineAdapter
+                    .Setup(a => a.GetSerialPortOutput(
+                        It.IsAny<InstanceLocator>(),
+                        It.IsAny<ushort>()))
+                    .Returns(stream.Object);
+                computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
+                        It.IsAny<InstanceLocator>(),
+                        It.IsAny<Action<Metadata>>(),
+                        It.IsAny<CancellationToken>()))
+                    .Callback((InstanceLocator i, Action<Metadata> action, CancellationToken t) =>
+                    {
+                        action(new Metadata());
+                    });
+
+                using (var cts = new CancellationTokenSource())
+                using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
+                {
+                    var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
+
+                    ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
+                        () => joinAdapter.JoinDomainAsync(
+                            instance,
+                            "example.org",
+                            "instance-1",
+                            new System.Net.NetworkCredential("user", "pwd", "domain"),
+                            operationId,
+                            cts.Token).Wait());
+
+                    computeEngineAdapter.Verify(
+                        a => a.UpdateMetadataAsync(
+                            It.IsAny<InstanceLocator>(),
+                            It.IsAny<Action<Metadata>>(),
+                            It.Is<CancellationToken>(t => t == CancellationToken.None)),
+                        Times.Once);
+                    computeEngineAdapter.Verify(
+                        a => a.UpdateMetadataAsync(
+                            It.IsAny<InstanceLocator>(),
+                            It.IsAny<Action<Metadata>>(),
+                            It.Is<CancellationToken>(t => t != CancellationToken.None)),
+                        Times.Once);
                 }
             }
         }
