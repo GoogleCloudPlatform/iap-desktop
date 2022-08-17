@@ -69,12 +69,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         [Test]
-        public async Task WhenProjectIdInvalid_ThenGetProjectThrowsGoogleApiException(
+        public async Task WhenProjectIdInvalid_ThenGetProjectThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var adapter = new ComputeEngineAdapter(await credential);
 
-            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
                 () => adapter.GetProjectAsync(
                     TestProject.InvalidProjectId,
                     CancellationToken.None).Wait());
@@ -178,68 +178,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 () => adapter.GetGuestAttributesAsync(
                     locator,
                     "somepath/",
-                    CancellationToken.None).Wait());
-        }
-
-        //---------------------------------------------------------------------
-        // Nodes.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenUserNotInRole_ThenListNodeGroupsAsyncThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
-        {
-            var adapter = new ComputeEngineAdapter(await credential);
-
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ListNodeGroupsAsync(
-                    TestProject.ProjectId,
-                    CancellationToken.None).Wait());
-        }
-
-        [Test]
-        public async Task WhenUserNotInRole_ThenListNodesAsyncThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
-        {
-            var adapter = new ComputeEngineAdapter(await credential);
-
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ListNodesAsync(
-                    TestProject.ProjectId,
-                    CancellationToken.None).Wait());
-
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ListNodesAsync(
-                    new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
-                    "group-1",
-                    CancellationToken.None).Wait());
-        }
-
-        //---------------------------------------------------------------------
-        // Disks/Images.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenUserNotInRole_ThenListDisksAsyncThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
-        {
-            var adapter = new ComputeEngineAdapter(await credential);
-
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ListDisksAsync(
-                    TestProject.ProjectId,
-                    CancellationToken.None).Wait());
-        }
-
-        [Test]
-        public async Task WhenUserNotInRole_ThenGetImageThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
-        {
-            var adapter = new ComputeEngineAdapter(await credential);
-
-            ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.GetImageAsync(
-                    new ImageLocator(TestProject.ProjectId, "someimage"),
                     CancellationToken.None).Wait());
         }
 
