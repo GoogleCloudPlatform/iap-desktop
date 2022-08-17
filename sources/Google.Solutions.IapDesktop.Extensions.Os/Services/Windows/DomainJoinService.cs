@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
                         MessageType = JoinRequest.MessageTypeString,
                         DomainName = domain,
                         NewComputerName = newComputerName.NullIfEmpty(),
-                        Username = domainCredential.UserName, // TODO: Normalize UPN/NetBios format
+                        Username = domainCredential.Normalize().UserName,
                         EncryptedPassword = encryptedPassword
                     };
 

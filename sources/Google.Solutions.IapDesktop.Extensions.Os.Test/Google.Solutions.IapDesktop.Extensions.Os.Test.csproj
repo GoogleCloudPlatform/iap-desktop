@@ -116,6 +116,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Windows\TestDomainJoinService.cs" />
     <Compile Include="Services\Windows\TestDomainJoinServiceStartupScript.cs" />
+    <Compile Include="Services\Windows\TestNetworkCredentialExtensions.cs" />
     <Compile Include="Services\Windows\TestStartupScriptOperation.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorViewModel.cs" />
