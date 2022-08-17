@@ -112,6 +112,7 @@
     </Compile>
     <Compile Include="Services\Windows\DomainJoinService.cs" />
     <Compile Include="Services\Extension.cs" />
+    <Compile Include="Services\Windows\StartupScriptOperation.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorViewModel.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorWindow.cs">

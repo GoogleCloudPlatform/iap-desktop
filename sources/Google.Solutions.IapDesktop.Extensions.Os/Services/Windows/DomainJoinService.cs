@@ -27,6 +27,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Util;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
 {
-    public interface IDomainJoinService : IDisposable
+    public interface IDomainJoinService
     {
         /// <summary>
         /// Join VM to an Active Directory domain.
@@ -57,18 +58,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
     [Service(typeof(IDomainJoinService))]
     public sealed class DomainJoinService : IDomainJoinService
     {
+        private readonly IServiceProvider serviceProvider;
         private const int SerialPort = 4;
 
-        private readonly IComputeEngineAdapter computeEngineAdapter;
-
-        public DomainJoinService(IComputeEngineAdapter computeEngineAdapter)
-        {
-            this.computeEngineAdapter = computeEngineAdapter;
-        }
-
         public DomainJoinService(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IComputeEngineAdapter>())
         {
+            this.serviceProvider = serviceProvider;
         }
 
         //---------------------------------------------------------------------
@@ -90,82 +85,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
             }
         }
 
-        internal async Task<List<Metadata.ItemsData>> ReplaceMetadataItemsAsync(
-            InstanceLocator instance,
-            string guardKey,
-            ICollection<string> keysToReplace,
-            List<Metadata.ItemsData> newItems,
-            CancellationToken cancellationToken)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod()
-                .WithParameters(string.Join(", ", keysToReplace)))
-            {
-                List<Metadata.ItemsData> oldItems = null;
-                await this.computeEngineAdapter.UpdateMetadataAsync(
-                        instance,
-                        metadata =>
-                        {
-                            Debug.Assert(metadata != null);
-
-                            if (guardKey != null)
-                            {
-                                //
-                                // Fail if the guard key exists.
-                                //
-                                if (metadata.Items
-                                    .EnsureNotNull()
-                                    .Any(i => i.Key == guardKey))
-                                {
-                                    throw new InvalidOperationException(
-                                        $"Found metadata key '{guardKey}', indicating that a " +
-                                        $"domain-join operation is already in progress");
-                                }
-                            }
-
-                            //
-                            // Read and remove existing items.
-                            //
-                            oldItems = metadata.Items
-                                .EnsureNotNull()
-                                .Where(i => keysToReplace.Contains(i.Key))
-                                .ToList();
-
-                            foreach (var item in oldItems)
-                            {
-                                metadata.Items.Remove(item);
-                            }
-
-                            if (metadata.Items == null)
-                            {
-                                metadata.Items = new List<Metadata.ItemsData>();
-                            }
-
-                            //
-                            // Add new items.
-                            //
-                            foreach (var item in newItems)
-                            {
-                                metadata.Items.Add(item);
-                            }
-                        },
-                        cancellationToken)
-                    .ConfigureAwait(false);
-
-                Debug.Assert(oldItems != null);
-                return oldItems;
-            }
-        }
-
-        internal async Task<string> AwaitMessageAsync(
-            InstanceLocator instance,
-            Guid operationId,
+        internal async Task<TMessage> AwaitMessageAsync<TMessage>(
+            IStartupScriptOperation operation,
             string messageType,
             CancellationToken cancellationToken)
+            where TMessage : MessageBase
         {
             using (ApplicationTraceSources.Default.TraceMethod()
                 .WithParameters(messageType))
-            using (var serialPortStream = this.computeEngineAdapter
-                .GetSerialPortOutput(instance, SerialPort))
+            using (var serialPortStream = operation
+                .ComputeEngineAdapter
+                .GetSerialPortOutput(operation.Instance, SerialPort))
             {
                 //
                 // It is rare, but sometimes a single JSON can be split over multiple
@@ -195,182 +125,124 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
                     var match = logBuffer.ToString()
                         .Split('\n')
                         .Where(line =>
-                                line.Contains(operationId.ToString()) &&
+                                line.Contains(operation.OperationId.ToString()) &&
                                 line.Contains(messageType))
                         .FirstOrDefault();
                     if (match != null)
                     {
-                        return match;
+                        var message = JsonConvert.DeserializeObject<TMessage>(match);
+                        Debug.Assert(message.MessageType == messageType);
+
+                        return message;
                     }
                 }
             }
         }
 
-        internal async Task<TMessage> AwaitMessageAsync<TMessage>(
-            InstanceLocator instance,
-            Guid operationId,
-            string messageType,
-            CancellationToken cancellationToken)
-            where TMessage : MessageBase
-        {
-            var json = await AwaitMessageAsync(
-                    instance,
-                    operationId,
-                    messageType,
-                    cancellationToken)
-                .ConfigureAwait(false);
-
-            var message = JsonConvert.DeserializeObject<TMessage>(json);
-            Debug.Assert(message.MessageType == messageType);
-
-            return message;
-        }
-
         internal async Task JoinDomainAsync(
-            InstanceLocator instance,
+            IStartupScriptOperation operation,
             string domain,
             string newComputerName,
             NetworkCredential domainCredential,
-            Guid operationId,
             CancellationToken cancellationToken)
         {
             domain.ThrowIfNullOrEmpty(nameof(domain));
             domainCredential?.UserName.ThrowIfNull("username");
             domainCredential?.Password.ThrowIfNull("password");
 
-            using (ApplicationTraceSources.Default.TraceMethod()
-                .WithParameters(instance, domain, operationId))
+            //
+            // Swap existing startup scripts against the
+            // domain-join script.
+            //
+            // NB. If the user has permissions to change
+            // metadata, then they're very likely to also have
+            // sufficient permissions to restart the instance.
+            //
+            await operation.ReplaceStartupScriptAsync(
+                    CreateStartupScript(operation.OperationId),
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            try
             {
                 //
-                // Swap existing startup scripts against the
-                // domain-join script.
+                // Reset the VM to trigger the domain-join script.
                 //
-                // NB. If the user has permissions to change
-                // metadata, then they're very likely to also have
-                // sufficient permissions to restart the instance.
-                //
-                var existingStartupScripts = await ReplaceMetadataItemsAsync(
-                        instance,
-                        MetadataKeys.JoinDomainGuard,
-                        MetadataKeys.WindowsStartupScripts,
-                        new List<Metadata.ItemsData>
-                        {
-                            new Metadata.ItemsData()
-                            {
-                                Key = MetadataKeys.WindowsStartupScriptPs1,
-                                Value = CreateStartupScript(operationId)
-                            },
-                            new Metadata.ItemsData()
-                            {
-                                Key = MetadataKeys.JoinDomainGuard,
-                                Value = operationId.ToString()
-                            },
-                        },
+                await operation.ComputeEngineAdapter.ControlInstanceAsync(
+                        operation.Instance,
+                        InstanceControlCommand.Reset,
                         cancellationToken)
                     .ConfigureAwait(false);
 
-                try
+                //
+                // Wait for VM to publish its public key.
+                //
+                var hello = await AwaitMessageAsync<HelloMessage>(
+                        operation,
+                        HelloMessage.MessageTypeString,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+
+                //
+                // Write a join request to metadata. To protect the
+                // domain user's credentials, encrypt the password
+                // using the (ephemeral) key we received in the "Hello"
+                // message.
+                //
+                using (var key = new RSACng())
                 {
-                    //
-                    // Reset the VM to trigger the domain-join script.
-                    //
-                    await this.computeEngineAdapter.ControlInstanceAsync(
-                            instance,
-                            InstanceControlCommand.Reset,
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-                    //
-                    // Wait for VM to publish its public key.
-                    //
-                    var hello = await AwaitMessageAsync<HelloMessage>(
-                            instance,
-                            operationId,
-                            HelloMessage.MessageTypeString,
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-                    //
-                    // Write a join request to metadata. To protect the
-                    // domain user's credentials, encrypt the password
-                    // using the (ephemeral) key we received in the "Hello"
-                    // message.
-                    //
-                    using (var key = new RSACng())
+                    key.ImportParameters(new RSAParameters()
                     {
-                        key.ImportParameters(new RSAParameters()
-                        {
-                            Exponent = Convert.FromBase64String(hello.Exponent),
-                            Modulus = Convert.FromBase64String(hello.Modulus)
-                        });
+                        Exponent = Convert.FromBase64String(hello.Exponent),
+                        Modulus = Convert.FromBase64String(hello.Modulus)
+                    });
 
-                        var encryptedPassword = Convert.ToBase64String(
-                            key.Encrypt(
-                                Encoding.UTF8.GetBytes(domainCredential.Password),
-                                RSAEncryptionPadding.Pkcs1));
+                    var encryptedPassword = Convert.ToBase64String(
+                        key.Encrypt(
+                            Encoding.UTF8.GetBytes(domainCredential.Password),
+                            RSAEncryptionPadding.Pkcs1));
 
-                        var joinRequest = new JoinRequest()
-                        {
-                            OperationId = operationId.ToString(),
-                            MessageType = JoinRequest.MessageTypeString,
-                            DomainName = domain,
-                            NewComputerName = newComputerName,
-                            Username = domainCredential.UserName, // TODO: Normalize UPN/NetBios format
-                            EncryptedPassword = encryptedPassword
-                        };
-
-                        await ReplaceMetadataItemsAsync(
-                                instance,
-                                null,
-                                new[] { MetadataKeys.JoinDomain },
-                                new List<Metadata.ItemsData>
-                                {
-                                    new Metadata.ItemsData()
-                                    {
-                                        Key = MetadataKeys.JoinDomain,
-                                        Value = JsonConvert.SerializeObject(joinRequest)
-                                    }
-                                },
-                                cancellationToken)
-                            .ConfigureAwait(false);
-                    }
-
-                    //
-                    // Wait for VM to complete the join.
-                    //
-                    var joinResponse = await AwaitMessageAsync<JoinResponse>(
-                            instance,
-                            operationId,
-                            JoinResponse.MessageTypeString,
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-                    if (!joinResponse.Succeeded)
+                    var joinRequest = new JoinRequest()
                     {
-                        throw new DomainJoinFailedException(
-                            $"The domain join failed: {joinResponse.ErrorDetails}");
-                    }
-                }
-                finally
-                {
-                    //
-                    // Restore the previous startup scripts and remove the
-                    // keys we added.
-                    //
-                    await ReplaceMetadataItemsAsync(
-                            instance,
-                            null,
-                            MetadataKeys.WindowsStartupScripts
-                                .Union(new[]
-                                {
-                                    MetadataKeys.JoinDomain,
-                                    MetadataKeys.JoinDomainGuard
-                                })
-                                .ToList(),
-                            existingStartupScripts,
-                            CancellationToken.None) // Run even if cancelled
+                        OperationId = operation.OperationId.ToString(),
+                        MessageType = JoinRequest.MessageTypeString,
+                        DomainName = domain,
+                        NewComputerName = newComputerName.NullIfEmpty(),
+                        Username = domainCredential.UserName, // TODO: Normalize UPN/NetBios format
+                        EncryptedPassword = encryptedPassword
+                    };
+
+                    await operation.SetMetadataAsync(
+                            MetadataKeys.JoinDomain,
+                            JsonConvert.SerializeObject(joinRequest),
+                            cancellationToken)
                         .ConfigureAwait(false);
                 }
+
+                //
+                // Wait for VM to complete the join.
+                //
+                var joinResponse = await AwaitMessageAsync<JoinResponse>(
+                        operation,
+                        JoinResponse.MessageTypeString,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (!joinResponse.Succeeded)
+                {
+                    throw new DomainJoinFailedException(
+                        $"The domain join failed: {joinResponse.ErrorDetails}");
+                }
+            }
+            finally
+            {
+                //
+                // Restore the previous startup scripts and remove the
+                // keys we added.
+                //
+                await operation
+                    .RestoreStartupScriptsAsync(CancellationToken.None) // Run even if cancelled
+                    .ConfigureAwait(false);
             }
         }
 
@@ -378,28 +250,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
         // IAdJoinService.
         //---------------------------------------------------------------------
 
-        public Task JoinDomainAsync(
+        public async Task JoinDomainAsync(
             InstanceLocator instance,
             string domain, 
             string newComputerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken)
-            => JoinDomainAsync(
-                instance,
-                domain,
-                newComputerName,
-                domainCredential,
-                Guid.NewGuid(),
-                cancellationToken);
-
-
-        //---------------------------------------------------------------------
-        // IDisposable.
-        //---------------------------------------------------------------------
-
-        public void Dispose()
         {
-            this.computeEngineAdapter.Dispose();
+
+            using (ApplicationTraceSources.Default.TraceMethod()
+                .WithParameters(instance, domain, newComputerName))
+            {
+                using (var operation = new StartupScriptOperation(
+                    instance,
+                    MetadataKeys.JoinDomainGuard,
+                    this.serviceProvider.GetService<IComputeEngineAdapter>()))
+                {
+                    await JoinDomainAsync(
+                            operation,
+                            domain,
+                            newComputerName,
+                            domainCredential,
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                }
+            }
         }
 
         //---------------------------------------------------------------------
@@ -466,18 +341,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
             /// Guard value used to inidicate that a domin is in progress.
             /// </summary>
             public const string JoinDomainGuard = "iapdesktop-join-in-progress";
-
-            /// <summary>
-            /// PowerShell startup script.
-            /// </summary>
-            public const string WindowsStartupScriptPs1 = "windows-startup-script-ps1";
-            public static readonly string[] WindowsStartupScripts = new[]
-            {
-                WindowsStartupScriptPs1,
-                "windows-startup-script-cmd",
-                "windows-startup-script-bat",
-                "windows-startup-script-url"
-            };
         }
     }
 

@@ -37,6 +37,7 @@ using System.Collections.Generic;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Text;
 using Newtonsoft.Json;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
 {
@@ -58,19 +59,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
             {
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-                var joinService = new DomainJoinService(computeEngineAdapter);
-                var hello = await joinService.AwaitMessageAsync<DomainJoinService.HelloMessage>(
-                        await instance,
-                        Guid.Empty,
-                        DomainJoinService.HelloMessage.MessageTypeString,
-                        cts.Token)
-                    .ConfigureAwait(false);
+                using (var operation = new StartupScriptOperation(
+                    Guid.Empty,
+                    await instance,
+                    DomainJoinService.MetadataKeys.JoinDomainGuard,
+                    computeEngineAdapter))
+                {
+                    var hello = await new DomainJoinService(null)
+                        .AwaitMessageAsync<DomainJoinService.HelloMessage>(
+                            operation,
+                            DomainJoinService.HelloMessage.MessageTypeString,
+                            cts.Token)
+                        .ConfigureAwait(false);
 
-                Assert.IsNotNull(hello);
-                Assert.AreEqual(Guid.Empty.ToString(), hello.OperationId);
-                Assert.AreEqual(DomainJoinService.HelloMessage.MessageTypeString, hello.MessageType);
-                Assert.IsNotEmpty(hello.Exponent);
-                Assert.IsNotEmpty(hello.Modulus);
+                    Assert.IsNotNull(hello);
+                    Assert.AreEqual(Guid.Empty.ToString(), hello.OperationId);
+                    Assert.AreEqual(DomainJoinService.HelloMessage.MessageTypeString, hello.MessageType);
+                    Assert.IsNotEmpty(hello.Exponent);
+                    Assert.IsNotEmpty(hello.Modulus);
+                }
             }
         }
 
@@ -88,19 +95,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
             {
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
-                var joinService = new DomainJoinService(computeEngineAdapter);
-                var response = await joinService.AwaitMessageAsync<DomainJoinService.JoinResponse>(
-                        await instance,
-                        Guid.Empty,
-                        DomainJoinService.JoinResponse.MessageTypeString,
-                        cts.Token)
-                    .ConfigureAwait(false);
+                using (var operation = new StartupScriptOperation(
+                    Guid.Empty,
+                    await instance,
+                    DomainJoinService.MetadataKeys.JoinDomainGuard,
+                    computeEngineAdapter))
+                {
+                    var response = await new DomainJoinService(null)
+                        .AwaitMessageAsync<DomainJoinService.JoinResponse>(
+                            operation,
+                            DomainJoinService.JoinResponse.MessageTypeString,
+                            cts.Token)
+                        .ConfigureAwait(false);
 
-                Assert.IsNotNull(response);
-                Assert.AreEqual(Guid.Empty.ToString(), response.OperationId);
-                Assert.AreEqual(DomainJoinService.JoinResponse.MessageTypeString, response.MessageType);
-                Assert.IsFalse(response.Succeeded);
-                Assert.IsNotEmpty(response.ErrorDetails);
+                    Assert.IsNotNull(response);
+                    Assert.AreEqual(Guid.Empty.ToString(), response.OperationId);
+                    Assert.AreEqual(DomainJoinService.JoinResponse.MessageTypeString, response.MessageType);
+                    Assert.IsFalse(response.Succeeded);
+                    Assert.IsNotEmpty(response.ErrorDetails);
+                }
             }
         }
     }

@@ -38,6 +38,7 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Text;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
+using static Google.Solutions.IapDesktop.Extensions.Os.Services.Windows.DomainJoinService;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
 {
@@ -51,142 +52,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
         [Test]
         public void CreateStartupScriptContainsOperationId()
         {
-            var operationId = Guid.NewGuid();
-            var script = DomainJoinService.CreateStartupScript(operationId);
+            var script = DomainJoinService.CreateStartupScript(Guid.Empty);
 
-            StringAssert.Contains(operationId.ToString(), script);
-        }
-
-        //---------------------------------------------------------------------
-        // ReplaceMetadataItems.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenMetadataKeyDoNotExist_ThenReplaceMetadataItemsReturnsEmptyList()
-        {
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-            computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
-                    It.IsAny<InstanceLocator>(),
-                    It.IsAny<Action<Metadata>>(),
-                    It.IsAny<CancellationToken>()))
-                .Callback((InstanceLocator i, Action<Metadata> action, CancellationToken t) =>
-                {
-                    action(new Metadata());
-                });
-
-            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
-            using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
-            {
-                var oldItems = await joinAdapter.ReplaceMetadataItemsAsync(
-                        instance,
-                        null,
-                        new[] { "old-1", "old-2" },
-                        new List<Metadata.ItemsData>()
-                        {
-                        new Metadata.ItemsData()
-                        {
-                            Key = "new-1"
-                        }
-                        },
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-
-                Assert.IsNotNull(oldItems);
-                CollectionAssert.IsEmpty(oldItems);
-            }
-        }
-
-        [Test]
-        public async Task WhenMetadataKeysExist_ThenReplaceMetadataItemsReturnsList()
-        {
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-            computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
-                    It.IsAny<InstanceLocator>(),
-                    It.IsAny<Action<Metadata>>(),
-                    It.IsAny<CancellationToken>()))
-                .Callback((InstanceLocator i, Action<Metadata> action, CancellationToken t) =>
-                {
-                    action(new Metadata()
-                    {
-                        Items = new List<Metadata.ItemsData>()
-                        {
-                            new Metadata.ItemsData() { Key = "old-1" },
-                            new Metadata.ItemsData() { Key = "old-2" },
-                            new Metadata.ItemsData() { Key = "old-3" }
-                        }
-                    });
-                });
-
-
-            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
-            using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
-            {
-                var oldItems = await joinAdapter.ReplaceMetadataItemsAsync(
-                        instance,
-                        null,
-                        new[] { "old-1", "old-2" },
-                        new List<Metadata.ItemsData>()
-                        {
-                        new Metadata.ItemsData()
-                        {
-                            Key = "new-1"
-                        }
-                        },
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
-
-                Assert.IsNotNull(oldItems);
-
-                CollectionAssert.AreEquivalent(
-                    new[] { "old-1", "old-2" },
-                    oldItems.Select(i => i.Key).ToList());
-            }
-        }
-
-        [Test]
-        public void WhenMetadataContainsGuardKey_ThenReplaceMetadataItemsThrowsException()
-        {
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-            computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
-                    It.IsAny<InstanceLocator>(),
-                    It.IsAny<Action<Metadata>>(),
-                    It.IsAny<CancellationToken>()))
-                .Callback((InstanceLocator i, Action<Metadata> action, CancellationToken t) =>
-                {
-                    action(new Metadata()
-                    {
-                        Items = new List<Metadata.ItemsData>()
-                        {
-                            new Metadata.ItemsData()
-                            {
-                                Key = "guard"
-                            }
-                        }
-                    });
-                });
-
-            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
-            using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
-            {
-                ExceptionAssert.ThrowsAggregateException<InvalidOperationException>(
-                    () => joinAdapter.ReplaceMetadataItemsAsync(
-                        instance,
-                        "guard",
-                        new[] { "old-1", "old-2" },
-                        new List<Metadata.ItemsData>()
-                        {
-                        new Metadata.ItemsData()
-                        {
-                            Key = "new-1"
-                        }
-                        },
-                        CancellationToken.None).Wait());
-            }
+            StringAssert.Contains(Guid.Empty.ToString(), script);
         }
 
         //---------------------------------------------------------------------
         // AwaitMessage.
         //---------------------------------------------------------------------
+        internal class TestMessage : MessageBase
+        { }
 
         [Test]
         public async Task WhenStreamReadReturnsNoMatch_ThenAwaitMessageKeepsPolling()
@@ -204,27 +79,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
 
             stream
                 .Setup(s => s.ReadAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync($"{operationId} test-message");
+                .ReturnsAsync("{}\njunk\n" + JsonConvert.SerializeObject(new TestMessage()
+                {
+                    OperationId = Guid.Empty.ToString(),
+                    MessageType = "test-message"
+                }) + "\nmorejunk\n");
 
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-            computeEngineAdapter
+            var adapter = new Mock<IComputeEngineAdapter>();
+            adapter
                 .Setup(a => a.GetSerialPortOutput(
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ushort>()))
                 .Returns(stream.Object);
 
-            using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
-            {
-                var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
-                var match = await joinAdapter.AwaitMessageAsync(
-                        instance,
-                        operationId,
-                        "test-message",
-                        CancellationToken.None)
-                    .ConfigureAwait(false);
+            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-                Assert.AreEqual($"{operationId} test-message", match);
-            }
+            var operation = new Mock<IStartupScriptOperation>();
+            operation.SetupGet(o => o.OperationId).Returns(Guid.Empty);
+            operation.SetupGet(o => o.ComputeEngineAdapter).Returns(adapter.Object);
+            operation.SetupGet(o => o.Instance).Returns(instance);
+
+            var joinAdapter = new DomainJoinService(new Mock<IServiceProvider>().Object);
+
+            var message = await joinAdapter.AwaitMessageAsync<TestMessage>(
+                    operation.Object,
+                    "test-message",
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(Guid.Empty.ToString(), message.OperationId);
+            Assert.AreEqual("test-message", message.MessageType);
         }
 
         //---------------------------------------------------------------------
@@ -232,9 +116,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
         //---------------------------------------------------------------------
 
         [Test]
+        public void WhenResetCancelled_ThenJoinDomainRestoresStartupScripts()
+        {
+            var adapter = new Mock<IComputeEngineAdapter>();
+            adapter
+                .Setup(a => a.ControlInstanceAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<InstanceControlCommand>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new TaskCanceledException());
+
+            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
+
+            var operation = new Mock<IStartupScriptOperation>();
+            operation.SetupGet(o => o.OperationId).Returns(Guid.Empty);
+            operation.SetupGet(o => o.ComputeEngineAdapter).Returns(adapter.Object);
+            operation.SetupGet(o => o.Instance).Returns(instance);
+
+            var joinAdapter = new DomainJoinService(new Mock<IServiceProvider>().Object);
+
+            using (var cts = new CancellationTokenSource())
+            {
+                ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
+                    () => joinAdapter.JoinDomainAsync(
+                        operation.Object,
+                        "domain",
+                        null,
+                        new System.Net.NetworkCredential(),
+                        cts.Token).Wait());
+            }
+
+            operation.Verify(o => o.RestoreStartupScriptsAsync(
+                It.Is<CancellationToken>(t => t == CancellationToken.None)),
+                Times.Once());
+        }
+
+        [Test]
         public void WhenJoinResponseContainsError_ThenJoinDomainThrowsException()
         {
             var operationId = Guid.NewGuid();
+            var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
             using (var key = RSA.Create())
             {
@@ -248,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
                             MessageType = "hello",
                             Exponent = Convert.ToBase64String(key.ExportParameters(false).Exponent),
                             Modulus = Convert.ToBase64String(key.ExportParameters(false).Modulus)
-                        }) + "\n" + 
+                        }) + "\n" +
                         JsonConvert.SerializeObject(new DomainJoinService.JoinResponse()
                         {
                             OperationId = operationId.ToString(),
@@ -257,98 +178,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
                             ErrorDetails = "test"
                         }));
 
-                var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-                computeEngineAdapter
+                var adapter = new Mock<IComputeEngineAdapter>();
+                adapter
                     .Setup(a => a.GetSerialPortOutput(
                         It.IsAny<InstanceLocator>(),
                         It.IsAny<ushort>()))
                     .Returns(stream.Object);
-                computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
-                        It.IsAny<InstanceLocator>(),
-                        It.IsAny<Action<Metadata>>(),
-                        It.IsAny<CancellationToken>()))
-                    .Callback((InstanceLocator i, Action<Metadata> action, CancellationToken t) =>
-                    {
-                        action(new Metadata());
-                    });
 
-                using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
-                {
-                    var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-                    ExceptionAssert.ThrowsAggregateException<DomainJoinFailedException>(
-                        () => joinAdapter.JoinDomainAsync(
-                            instance,
-                            "example.org",
-                            "instance-1",
-                            new System.Net.NetworkCredential("user", "pwd", "domain"),
-                            operationId,
-                            CancellationToken.None).Wait());
+                var operation = new Mock<IStartupScriptOperation>();
+                operation.SetupGet(o => o.OperationId).Returns(operationId);
+                operation.SetupGet(o => o.ComputeEngineAdapter).Returns(adapter.Object);
+                operation.SetupGet(o => o.Instance).Returns(instance);
 
-                    computeEngineAdapter.Verify(
-                        a => a.UpdateMetadataAsync(
-                            It.IsAny<InstanceLocator>(),
-                            It.IsAny<Action<Metadata>>(),
-                            It.IsAny<CancellationToken>()),
-                        Times.Exactly(3));
-                }
-            }
-        }
-
-        [Test]
-        public void WhenJoinCancelled_ThenJoinDomainRestoresMetadata()
-        {
-            var operationId = Guid.NewGuid();
-
-            using (var key = RSA.Create())
-            {
-                var stream = new Mock<IAsyncReader<string>>();
-                stream
-                    .Setup(s => s.ReadAsync(It.IsAny<CancellationToken>()))
-                    .ThrowsAsync(new TaskCanceledException());
-
-                var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-                computeEngineAdapter
-                    .Setup(a => a.GetSerialPortOutput(
-                        It.IsAny<InstanceLocator>(),
-                        It.IsAny<ushort>()))
-                    .Returns(stream.Object);
-                computeEngineAdapter.Setup(a => a.UpdateMetadataAsync(
-                        It.IsAny<InstanceLocator>(),
-                        It.IsAny<Action<Metadata>>(),
-                        It.IsAny<CancellationToken>()))
-                    .Callback((InstanceLocator i, Action<Metadata> action, CancellationToken t) =>
-                    {
-                        action(new Metadata());
-                    });
-
-                using (var cts = new CancellationTokenSource())
-                using (var joinAdapter = new DomainJoinService(computeEngineAdapter.Object))
-                {
-                    var instance = new InstanceLocator("project-1", "zone-1", "instance-1");
-
-                    ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                        () => joinAdapter.JoinDomainAsync(
-                            instance,
-                            "example.org",
-                            "instance-1",
-                            new System.Net.NetworkCredential("user", "pwd", "domain"),
-                            operationId,
-                            cts.Token).Wait());
-
-                    computeEngineAdapter.Verify(
-                        a => a.UpdateMetadataAsync(
-                            It.IsAny<InstanceLocator>(),
-                            It.IsAny<Action<Metadata>>(),
-                            It.Is<CancellationToken>(t => t == CancellationToken.None)),
-                        Times.Once);
-                    computeEngineAdapter.Verify(
-                        a => a.UpdateMetadataAsync(
-                            It.IsAny<InstanceLocator>(),
-                            It.IsAny<Action<Metadata>>(),
-                            It.Is<CancellationToken>(t => t != CancellationToken.None)),
-                        Times.Once);
-                }
+                var joinAdapter = new DomainJoinService(new Mock<IServiceProvider>().Object);
+                ExceptionAssert.ThrowsAggregateException<DomainJoinFailedException>(
+                    () => joinAdapter.JoinDomainAsync(
+                        operation.Object,
+                        "example.org",
+                        "instance-1",
+                        new System.Net.NetworkCredential("user", "pwd", "domain"),
+                        CancellationToken.None).Wait());
             }
         }
     }

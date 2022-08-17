@@ -74,17 +74,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                         JobUserFeedbackType.BackgroundFeedback),
                     async jobToken =>
                     {
-                        using (var service = this.serviceProvider
-                            .GetService<IDomainJoinService>())
-                        {
-                            await service.JoinDomainAsync(
-                                    instance.Instance,
-                                    domain,
-                                    null, // TODO: Propmt for computer name
-                                    credential,
-                                    jobToken)
-                            .ConfigureAwait(false);
-                        }
+                        await this.serviceProvider
+                            .GetService<IDomainJoinService>()
+                            .JoinDomainAsync(
+                                instance.Instance,
+                                domain,
+                                null, // TODO: Propmt for computer name
+                                credential,
+                                jobToken)
+                        .ConfigureAwait(false);
 
                         return null;
                     })
