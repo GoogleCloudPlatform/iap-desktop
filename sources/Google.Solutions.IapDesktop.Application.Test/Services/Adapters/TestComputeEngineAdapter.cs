@@ -69,12 +69,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         [Test]
-        public async Task WhenProjectIdInvalid_ThenGetProjectThrowsGoogleApiException(
+        public async Task WhenProjectIdInvalid_ThenGetProjectThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var adapter = new ComputeEngineAdapter(await credential);
 
-            ExceptionAssert.ThrowsAggregateException<GoogleApiException>(
+            ExceptionAssert.ThrowsAggregateException<ResourceNotFoundException>(
                 () => adapter.GetProjectAsync(
                     TestProject.InvalidProjectId,
                     CancellationToken.None).Wait());
