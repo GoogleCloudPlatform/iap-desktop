@@ -64,11 +64,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     return;
                 }
 
-                domainName = dialog.DomainName.Value;
-                newComputerName = dialog.ComputerName.Value
+                domainName = dialog.DomainName.Value.Trim();
+                var computerName = dialog.ComputerName.Value.Trim();
+
+                //
+                // Only specify a "new" computer name if it's different.
+                //
+                newComputerName = computerName
                     .Equals(instance.DisplayName, StringComparison.OrdinalIgnoreCase)
                         ? null
-                        : dialog.ComputerName.Value;
+                        : computerName;
             }
 
             //
@@ -78,9 +83,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                 .PromptForWindowsCredentials(
                     mainForm.Window,
                     $"Join {instance.DisplayName} to domain",
-                    "Enter Active Directory credentials.\n\nThe credentials are " +
-                        "used to join the computer to the domain and will not " +
-                        "be saved.",
+                    $"Enter Active Directory credentials for {domainName}.\n\n" +
+                        "The credentials will be used to join the computer to the " +
+                        "domain and will not be saved.",
                     AuthenticationPackage.Kerberos,
                     out var credential) != DialogResult.OK)
             {

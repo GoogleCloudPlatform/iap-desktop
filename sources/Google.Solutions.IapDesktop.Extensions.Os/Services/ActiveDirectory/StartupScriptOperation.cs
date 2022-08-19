@@ -176,6 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.ActiveDirectory
             string guardKeyName,
             IComputeEngineAdapter computeEngineAdapter)
         {
+            this.OperationId = operationId;
             this.Instance = instance;
             this.guardKeyName = guardKeyName;
             this.ComputeEngineAdapter = computeEngineAdapter;

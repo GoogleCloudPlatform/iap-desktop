@@ -1,4 +1,24 @@
-﻿
+﻿//
+// Copyright 2022 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory
 {
     partial class JoinDialog
@@ -53,20 +73,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(86, 232);
+            this.okButton.Location = new System.Drawing.Point(54, 217);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(113, 23);
-            this.okButton.TabIndex = 10;
+            this.okButton.TabIndex = 2;
             this.okButton.Text = "Restart and join";
             this.okButton.UseVisualStyleBackColor = true;
             // 
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(205, 232);
+            this.cancelButton.Location = new System.Drawing.Point(173, 217);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 11;
+            this.cancelButton.TabIndex = 3;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
@@ -85,27 +105,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory
             this.domainText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.domainText.Location = new System.Drawing.Point(16, 89);
             this.domainText.Margin = new System.Windows.Forms.Padding(2);
-            this.domainText.MaxLength = 20;
+            this.domainText.MaxLength = 50;
             this.domainText.Multiline = true;
             this.domainText.Name = "domainText";
-            this.domainText.Size = new System.Drawing.Size(254, 24);
-            this.domainText.TabIndex = 12;
+            this.domainText.Size = new System.Drawing.Size(232, 24);
+            this.domainText.TabIndex = 0;
             // 
             // computerNameText
             // 
             this.computerNameText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.computerNameText.Location = new System.Drawing.Point(16, 168);
+            this.computerNameText.Location = new System.Drawing.Point(16, 159);
             this.computerNameText.Margin = new System.Windows.Forms.Padding(2);
             this.computerNameText.MaxLength = 20;
             this.computerNameText.Multiline = true;
             this.computerNameText.Name = "computerNameText";
-            this.computerNameText.Size = new System.Drawing.Size(156, 24);
-            this.computerNameText.TabIndex = 12;
+            this.computerNameText.Size = new System.Drawing.Size(232, 24);
+            this.computerNameText.TabIndex = 1;
             // 
             // computerNameLabel
             // 
             this.computerNameLabel.AutoSize = true;
-            this.computerNameLabel.Location = new System.Drawing.Point(13, 151);
+            this.computerNameLabel.Location = new System.Drawing.Point(13, 142);
             this.computerNameLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.computerNameLabel.Name = "computerNameLabel";
             this.computerNameLabel.Size = new System.Drawing.Size(84, 13);
@@ -116,12 +136,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory
             // 
             this.computerNameWarning.AutoSize = true;
             this.computerNameWarning.ForeColor = System.Drawing.Color.Red;
-            this.computerNameWarning.Location = new System.Drawing.Point(13, 198);
+            this.computerNameWarning.Location = new System.Drawing.Point(13, 189);
             this.computerNameWarning.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.computerNameWarning.Name = "computerNameWarning";
-            this.computerNameWarning.Size = new System.Drawing.Size(251, 13);
+            this.computerNameWarning.Size = new System.Drawing.Size(204, 13);
             this.computerNameWarning.TabIndex = 19;
-            this.computerNameWarning.Text = "The computer name must not exceed 15 characters";
+            this.computerNameWarning.Text = "The name must not exceed 15 characters";
             // 
             // domainWarning
             // 
@@ -130,16 +150,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory
             this.domainWarning.Location = new System.Drawing.Point(13, 121);
             this.domainWarning.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.domainWarning.Name = "domainWarning";
-            this.domainWarning.Size = new System.Drawing.Size(249, 13);
+            this.domainWarning.Size = new System.Drawing.Size(232, 13);
             this.domainWarning.TabIndex = 20;
-            this.domainWarning.Text = "Use the DNS domain name, not the NetBIOS name";
+            this.domainWarning.Text = "Enter the DNS domain name of your AD domain";
             // 
             // JoinDialog
             // 
+            this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(300, 275);
+            this.CancelButton = this.cancelButton;
+            this.ClientSize = new System.Drawing.Size(270, 257);
             this.ControlBox = false;
             this.Controls.Add(this.domainWarning);
             this.Controls.Add(this.computerNameWarning);

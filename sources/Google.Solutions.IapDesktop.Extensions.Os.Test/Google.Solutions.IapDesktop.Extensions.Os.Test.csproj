@@ -118,6 +118,7 @@
     <Compile Include="Services\ActiveDirectory\TestDomainJoinServiceStartupScript.cs" />
     <Compile Include="Services\ActiveDirectory\TestNetworkCredentialExtensions.cs" />
     <Compile Include="Services\ActiveDirectory\TestStartupScriptOperation.cs" />
+    <Compile Include="Views\ActiveDirectory\TestJoinViewModel.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorViewModel.cs" />
     <Compile Include="Services\Inventory\TestInventoryService.cs" />
