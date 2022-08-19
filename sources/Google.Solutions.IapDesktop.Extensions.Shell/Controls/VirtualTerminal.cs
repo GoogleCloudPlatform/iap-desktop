@@ -63,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         private bool scrolling;
         private TextPosition mouseDownPosition;
         private TerminalFont terminalFont = new TerminalFont();
+        private Color caretColor = Color.White;
 
         //---------------------------------------------------------------------
         // Properties.
@@ -117,8 +118,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         internal Color TerminalForegroundColor
         {
             get => ColorFromTerminalColor(this.controller.ForegroundColor);
-            set => this.controller.ForegroundColor = TerminalColorFromColor(value);
+            set
+            {
+                this.controller.ForegroundColor = TerminalColorFromColor(value);
+                this.caretColor = value;
+            }
         }
+
+        internal Color TerminalCaretColor => this.caretColor;
 
         public VirtualTerminal()
         {
@@ -397,18 +404,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     graphics,
                     1).ToSize());
 
-            var brush = new SolidBrush(Color.White);
-            if (this.Focused)
+            using (var brush = new SolidBrush(this.TerminalCaretColor))
             {
-                // Draw solid box.
-                graphics.FillRectangle(brush, caretRect);
-            }
-            else
-            {
-                // Draw outline.
-                using (var pen = new Pen(brush))
+                if (this.Focused)
                 {
-                    graphics.DrawRectangle(pen, caretRect);
+                    // Draw solid box.
+                    graphics.FillRectangle(brush, caretRect);
+                }
+                else
+                {
+                    // Draw outline.
+                    using (var pen = new Pen(brush))
+                    {
+                        graphics.DrawRectangle(pen, caretRect);
+                    }
                 }
             }
         }

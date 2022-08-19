@@ -1017,5 +1017,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 
             Assert.AreEqual("abc\u0091xyz", buffer.Trim());
         }
+
+        //---------------------------------------------------------------------
+        // Colors
+        //---------------------------------------------------------------------
+
+        public void WhenTerminalBackgroundColorSet_ThenColorsAreUpdated()
+        {
+            this.terminal.TerminalBackgroundColor = Color.Aquamarine;
+            Assert.AreEqual(Color.Aquamarine, this.terminal.TerminalBackgroundColor);
+            Assert.AreEqual(Color.White, this.terminal.TerminalForegroundColor);
+            Assert.AreEqual(Color.White, this.terminal.TerminalCaretColor);
+        }
+        public void WhenTerminalForegroundColorSet_ThenColorsAreUpdated()
+        {
+            this.terminal.TerminalBackgroundColor = Color.Aquamarine;
+            Assert.AreEqual(Color.Black, this.terminal.TerminalBackgroundColor);
+            Assert.AreEqual(Color.Aquamarine, this.terminal.TerminalForegroundColor);
+            Assert.AreEqual(Color.Aquamarine, this.terminal.TerminalForegroundColor);
+        }
     }
 }
