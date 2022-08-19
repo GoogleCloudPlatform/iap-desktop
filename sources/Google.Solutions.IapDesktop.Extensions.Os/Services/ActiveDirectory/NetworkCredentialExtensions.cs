@@ -27,7 +27,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
+namespace Google.Solutions.IapDesktop.Extensions.Os.Services.ActiveDirectory
 {
     internal static class NetworkCredentialExtensions
     {

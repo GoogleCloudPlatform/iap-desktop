@@ -32,7 +32,7 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Extensions.Os.Services.Windows;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.ActiveDirectory;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Services

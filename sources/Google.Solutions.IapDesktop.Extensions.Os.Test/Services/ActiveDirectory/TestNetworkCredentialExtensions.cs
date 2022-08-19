@@ -25,7 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.IapDesktop.Extensions.Os.Services.Windows;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.ActiveDirectory;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
+namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.ActiveDirectory
 {
     [TestFixture]
     public class TestNetworkCredentialExtensions

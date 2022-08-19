@@ -110,10 +110,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\DomainJoinService.cs" />
+    <Compile Include="Services\ActiveDirectory\DomainJoinService.cs" />
     <Compile Include="Services\Extension.cs" />
-    <Compile Include="Services\Windows\NetworkCredentialExtensions.cs" />
-    <Compile Include="Services\Windows\StartupScriptOperation.cs" />
+    <Compile Include="Services\ActiveDirectory\NetworkCredentialExtensions.cs" />
+    <Compile Include="Services\ActiveDirectory\StartupScriptOperation.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorViewModel.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorWindow.cs">
@@ -141,7 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="Services\Windows\DomainJoinService.StartupScript.ps1" />
+    <EmbeddedResource Include="Services\ActiveDirectory\DomainJoinService.StartupScript.ps1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">

@@ -40,7 +40,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Windows
+namespace Google.Solutions.IapDesktop.Extensions.Os.Services.ActiveDirectory
 {
     public interface IDomainJoinService
     {

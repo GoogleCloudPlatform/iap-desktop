@@ -30,7 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.IapDesktop.Extensions.Os.Services.Windows;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.ActiveDirectory;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -39,7 +39,7 @@ using Google.Solutions.Common.Text;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Windows
+namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.ActiveDirectory
 {
     [TestFixture]
     public class TestStartupScriptOperation
