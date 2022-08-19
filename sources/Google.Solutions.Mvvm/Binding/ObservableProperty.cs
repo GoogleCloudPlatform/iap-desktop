@@ -38,6 +38,11 @@ namespace Google.Solutions.Mvvm.Binding
         T Value { get; }
     }
 
+    public interface IObservableWritableProperty<T> : IObservableProperty
+    {
+        T Value { get; set; }
+    }
+
     public interface ISourceProperty : IObservableProperty
     {
         void AddDependentProperty(IObservableProperty property);
@@ -46,7 +51,8 @@ namespace Google.Solutions.Mvvm.Binding
     /// <summary>
     /// Simple observable property.
     /// </summary>
-    public class ObservableProperty<T> : IObservableProperty<T>, ISourceProperty
+    public class ObservableProperty<T> 
+        : IObservableProperty<T>, IObservableWritableProperty<T>, ISourceProperty
     {
         private T value;
         private LinkedList<IObservableProperty> dependents;

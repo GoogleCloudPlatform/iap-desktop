@@ -78,8 +78,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                 .PromptForWindowsCredentials(
                     mainForm.Window,
                     $"Join {instance.DisplayName} to domain",
-                    "Enter Active Directory credentials for joining the computer " +
-                        $"to {domainName}. The credentials will not be stored.",
+                    "Enter Active Directory credentials.\n\nThe credentials are " +
+                        "used to join the computer to the domain and will not " +
+                        "be saved.",
                     AuthenticationPackage.Kerberos,
                     out var credential) != DialogResult.OK)
             {

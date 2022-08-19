@@ -154,6 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory
             this.Name = "JoinDialog";
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Join to Active Directory";
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory
                 this.viewModel,
                 m => m.DomainName,
                 this.Container);
-            this.domainWarning.BindProperty(
+            this.domainWarning.BindReadonlyProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsDomainNameInvalid,
@@ -39,10 +39,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory
                 this.viewModel,
                 m => m.ComputerName,
                 this.Container);
-            this.computerNameWarning.BindProperty(
+            this.computerNameWarning.BindReadonlyProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsComputerNameInvalid,
+                this.Container);
+
+            this.okButton.BindReadonlyProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsOkButtonEnabled,
                 this.Container);
         }
 

@@ -29,11 +29,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
     [TestFixture]
     public class TestBindingExtensions 
     {
-        //---------------------------------------------------------------------
-        // OnPropertyChange tests.
-        //---------------------------------------------------------------------
-
-        private class Observable : ViewModelBase
+        private class ViewModelWithBareProperties : ViewModelBase
         {
             private string one;
             private int two;
@@ -59,6 +55,15 @@ namespace Google.Solutions.Mvvm.Test.Binding
             }
         }
 
+        private class ViewModelWithObservableProperties : ViewModelBase
+        {
+            public ObservableProperty<string> One = ObservableProperty.Build("");
+        }
+
+        //---------------------------------------------------------------------
+        // OnPropertyChange tests.
+        //---------------------------------------------------------------------
+
         private class DummyBinding : BindingExtensions.Binding
         {
         }
@@ -67,7 +72,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenObservedPropertyChanges_ThenOnPropertyChangeTriggersCallback()
         {
             var callbacks = 0;
-            var observed = new Observable();
+            var observed = new ViewModelWithBareProperties();
 
             using (observed.OnPropertyChange(
                 o => o.One,
@@ -85,7 +90,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenNonObservedPropertyChanges_ThenOnPropertyChangeIgnoresUpdate()
         {
             var callbacks = 0;
-            var observed = new Observable();
+            var observed = new ViewModelWithBareProperties();
 
             using (observed.OnPropertyChange(
                 o => o.One,
@@ -100,7 +105,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenObservedPropertyChangesButPeerIsBusy_ThenOnPropertyChangeIgnoresUpdate()
         {
             var callbacks = 0;
-            var observed = new Observable();
+            var observed = new ViewModelWithBareProperties();
 
             using (var binding = observed.OnPropertyChange(
                 o => o.One,
@@ -184,14 +189,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         //---------------------------------------------------------------------
-        // Bind tests.
+        // Binding for bare properties.
         //---------------------------------------------------------------------
 
         [Test]
         public void WhenControlBound_ThenValueFromModelIsApplied()
         {
             var control = new TextBox();
-            var model = new Observable
+            var model = new ViewModelWithBareProperties
             {
                 One = "text from model"
             };
@@ -208,7 +213,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenControlChanges_ThenModelIsUpdated()
         {
             var control = new TextBox();
-            var model = new Observable();
+            var model = new ViewModelWithBareProperties();
 
             control.BindProperty(
                 t => t.Text,
@@ -224,7 +229,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenModelChanges_ThenControlIsUpdated()
         {
             var control = new TextBox();
-            var model = new Observable();
+            var model = new ViewModelWithBareProperties();
 
             control.BindProperty(
                 t => t.Text,
@@ -238,14 +243,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
 
         //---------------------------------------------------------------------
-        // Readonly bind tests.
+        // Readonly binding for bare properties.
         //---------------------------------------------------------------------
 
         [Test]
         public void WhenControlBoundReadonly_ThenValueFromModelIsApplied()
         {
             var control = new TextBox();
-            var model = new Observable
+            var model = new ViewModelWithBareProperties
             {
                 One = "text from model"
             };
@@ -262,7 +267,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenControlBoundReadonlyAndControlChanges_ThenModelIsNotUpdated()
         {
             var control = new TextBox();
-            var model = new Observable();
+            var model = new ViewModelWithBareProperties();
 
             control.BindReadonlyProperty(
                 t => t.Text,
@@ -278,7 +283,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenControlBoundReadonlyAndModelChanges_ThenControlIsUpdated()
         {
             var control = new TextBox();
-            var model = new Observable();
+            var model = new ViewModelWithBareProperties();
 
             control.BindReadonlyProperty(
                 t => t.Text,
@@ -287,6 +292,108 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             Assert.AreEqual("", control.Text);
             model.One = "test";
+            Assert.AreEqual("test", control.Text);
+        }
+
+        //---------------------------------------------------------------------
+        // Binding for observable properties.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenControlBound_ThenValueFromObservablePropertyIsApplied()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithObservableProperties();
+            model.One.Value = "text from model";
+
+            control.BindProperty(
+                t => t.Text,
+                model,
+                m => m.One);
+
+            Assert.AreEqual("text from model", control.Text);
+        }
+
+        [Test]
+        public void WhenControlChanges_ThenObservablePropertyIsUpdated()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithObservableProperties();
+
+            control.BindProperty(
+                t => t.Text,
+                model,
+                m => m.One);
+
+            Assert.AreEqual("", model.One.Value);
+            control.Text = "test";
+            Assert.AreEqual("test", model.One.Value);
+        }
+
+        [Test]
+        public void WhenObservablePropertyChanges_ThenControlIsUpdated()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithObservableProperties();
+
+            control.BindProperty(
+                t => t.Text,
+                model,
+                m => m.One);
+
+            Assert.AreEqual("", control.Text);
+            model.One.Value = "test";
+            Assert.AreEqual("test", control.Text);
+        }
+
+        //---------------------------------------------------------------------
+        // Readonly binding for bare properties.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenControlBoundReadonly_ThenValueFromObservablePropertyIsApplied()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithObservableProperties();
+            model.One.Value = "text from model";
+
+            control.BindReadonlyProperty(
+                t => t.Text,
+                model,
+                m => m.One);
+
+            Assert.AreEqual("text from model", control.Text);
+        }
+
+        [Test]
+        public void WhenControlBoundReadonlyAndControlChanges_ThenObservablePropertyIsNotUpdated()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithObservableProperties();
+
+            control.BindReadonlyProperty(
+                t => t.Text,
+                model,
+                m => m.One);
+
+            Assert.AreEqual("", model.One.Value);
+            control.Text = "test";
+            Assert.AreEqual("", model.One.Value);
+        }
+
+        [Test]
+        public void WhenControlBoundReadonlyAndObservablePropertyChanges_ThenControlIsUpdated()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithObservableProperties();
+
+            control.BindReadonlyProperty(
+                t => t.Text,
+                model,
+                m => m.One);
+
+            Assert.AreEqual("", control.Text);
+            model.One.Value = "test";
             Assert.AreEqual("test", control.Text);
         }
     }

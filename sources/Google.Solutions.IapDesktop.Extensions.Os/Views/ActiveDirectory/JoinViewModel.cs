@@ -19,7 +19,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory
 
             this.ComputerName = ObservableProperty.Build(string.Empty);
             this.IsComputerNameInvalid = ObservableProperty.Build(
-                this.DomainName,
+                this.ComputerName,
                 name => !string.IsNullOrWhiteSpace(name) && name.Length > 15);
 
             this.IsOkButtonEnabled = ObservableProperty.Build(
