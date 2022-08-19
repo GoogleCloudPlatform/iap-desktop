@@ -90,8 +90,8 @@ try {
     #
     # Join and restart.
     #
-    Write-Host "Joining computer as $($JoinRequest.NewComputerName) to domain $($JoinRequest.DomainName)..."
     if ($JoinRequest.NewComputerName -ne $null) {
+        Write-Host "Joining computer as $($JoinRequest.NewComputerName) to domain $($JoinRequest.DomainName)..."
         Add-Computer `
             -ComputerName localhost `
             -DomainName $JoinRequest.DomainName `
@@ -100,6 +100,7 @@ try {
             -Force
     }
     else {
+        Write-Host "Joining computer to domain $($JoinRequest.DomainName)..."
         Add-Computer `
             -ComputerName localhost `
             -DomainName $JoinRequest.DomainName `
