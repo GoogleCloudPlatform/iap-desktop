@@ -152,5 +152,33 @@ namespace Google.Solutions.Mvvm.Binding
                 source1,
                 source2);
         }
+
+        public static ObservableFunc<TResult> Build<T1, T2, T3, TResult>(
+            ObservableProperty<T1> source1,
+            ObservableProperty<T2> source2,
+            ObservableProperty<T3> source3,
+            Func<T1, T2, T3, TResult> func)
+        {
+            return new ObservableFunc<TResult>(
+                () => func(source1.Value, source2.Value, source3.Value),
+                source1,
+                source2,
+                source3);
+        }
+
+        public static ObservableFunc<TResult> Build<T1, T2, T3, T4, TResult>(
+            ObservableProperty<T1> source1,
+            ObservableProperty<T2> source2,
+            ObservableProperty<T3> source3,
+            ObservableProperty<T4> source4,
+            Func<T1, T2, T3, T4, TResult> func)
+        {
+            return new ObservableFunc<TResult>(
+                () => func(source1.Value, source2.Value, source3.Value, source4.Value),
+                source1,
+                source2,
+                source3,
+                source4);
+        }
     }
 }

@@ -34,6 +34,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.ActiveDirectory;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Services
 {
@@ -50,13 +51,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
         {
             var mainForm = this.serviceProvider.GetService<IMainForm>();
 
-            // TODO: Use custom form, warn about restart
-            var domain = "lab.local";
+            string domainName;
+            string newComputerName;
+            using (var dialog = new JoinDialog())
+            {
+                //
+                // Prompt for domain name, computer name.
+                //
+                dialog.ComputerName.Value = instance.DisplayName;
+                if (dialog.ShowDialog(mainForm.Window) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                domainName = dialog.DomainName.Value;
+                newComputerName = dialog.ComputerName.Value
+                    .Equals(instance.DisplayName, StringComparison.OrdinalIgnoreCase)
+                        ? null
+                        : dialog.ComputerName.Value;
+            }
+
+            //
+            // Prompt for credentials.
+            //
             if (this.serviceProvider.GetService<ICredentialDialog>()
                 .PromptForWindowsCredentials(
                     mainForm.Window,
                     $"Join {instance.DisplayName} to domain",
-                    "Enter domain credentials for performing domain-join",
+                    "Enter Active Directory credentials for joining the computer " +
+                        $"to {domainName}. The credentials will not be stored.",
                     AuthenticationPackage.Kerberos,
                     out var credential) != DialogResult.OK)
             {
@@ -70,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                 .GetService<IJobService>()
                 .RunInBackground<object>(
                     new JobDescription(
-                        $"Joining {instance.DisplayName} to {domain}...",
+                        $"Joining {instance.DisplayName} to {domainName}...",
                         JobUserFeedbackType.BackgroundFeedback),
                     async jobToken =>
                     {
@@ -78,8 +101,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                             .GetService<IDomainJoinService>()
                             .JoinDomainAsync(
                                 instance.Instance,
-                                domain,
-                                null, // TODO: Propmt for computer name
+                                domainName,
+                                newComputerName,
                                 credential,
                                 jobToken)
                         .ConfigureAwait(false);

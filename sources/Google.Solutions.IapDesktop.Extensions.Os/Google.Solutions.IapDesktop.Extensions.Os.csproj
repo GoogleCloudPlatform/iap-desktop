@@ -114,6 +114,13 @@
     <Compile Include="Services\Extension.cs" />
     <Compile Include="Services\ActiveDirectory\NetworkCredentialExtensions.cs" />
     <Compile Include="Services\ActiveDirectory\StartupScriptOperation.cs" />
+    <Compile Include="Views\ActiveDirectory\JoinDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ActiveDirectory\JoinDialog.Designer.cs">
+      <DependentUpon>JoinDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ActiveDirectory\JoinViewModel.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorViewModel.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorWindow.cs">
@@ -161,6 +168,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ActiveDirectory\JoinDialog.resx">
+      <DependentUpon>JoinDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\PackageInventory\PackageInventoryWindow.resx">
       <DependentUpon>PackageInventoryWindow.cs</DependentUpon>
