@@ -144,15 +144,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
 
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
-                    "&Join to domain",
+                    "&Join to Active Directory",
                     node => node is IProjectModelInstanceNode vmNode && 
-                            vmNode.IsRunning && 
                             vmNode.OperatingSystem == OperatingSystems.Windows
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
+                        ? (vmNode.IsRunning ? CommandState.Enabled : CommandState.Disabled)
+                        : CommandState.Unavailable,
                     node => JoinDomainAsync((IProjectModelInstanceNode)node))
                 {
-                    ActivityText = "Joining to domain"
+                    ActivityText = "Joining to Active Directory"
                 }); // TODO: Fix index
 
             //
