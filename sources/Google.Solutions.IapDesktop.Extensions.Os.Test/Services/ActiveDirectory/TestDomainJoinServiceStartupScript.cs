@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.ActiveDirector
             using (var computeEngineAdapter = new ComputeEngineAdapter(await credential))
             using (var cts = new CancellationTokenSource())
             {
-                cts.CancelAfter(TimeSpan.FromSeconds(30));
+                cts.CancelAfter(TimeSpan.FromSeconds(180));
 
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.ActiveDirector
             using (var computeEngineAdapter = new ComputeEngineAdapter(await credential))
             using (var cts = new CancellationTokenSource())
             {
-                cts.CancelAfter(TimeSpan.FromSeconds(30));
+                cts.CancelAfter(TimeSpan.FromSeconds(180));
 
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
