@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;

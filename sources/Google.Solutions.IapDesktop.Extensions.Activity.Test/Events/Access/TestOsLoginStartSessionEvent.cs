@@ -20,9 +20,9 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Extensions.Activity.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.Events.Access;
-using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.Access;
+using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System.Linq;

@@ -19,9 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Activity.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;
-using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.Lifecycle;
+using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
 using Google.Solutions.Testing.Application.Test;
 using Newtonsoft.Json;
 using NUnit.Framework;

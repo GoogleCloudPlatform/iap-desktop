@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Activity.Events;
+using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using System.Collections.Generic;
 using System.Linq;
