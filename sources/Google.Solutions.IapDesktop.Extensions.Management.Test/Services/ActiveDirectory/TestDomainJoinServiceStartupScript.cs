@@ -51,17 +51,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
 
         [Test]
         public async Task WhenInstanceUsesStartupScript_ThenAwaitHelloMessageSucceeds(
-            [DomainJoinWindowsInstance] ResourceTask<InstanceLocator> instance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [DomainJoinWindowsInstance] ResourceTask<InstanceLocator> instanceTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credentialTask)
         {
-            using (var computeEngineAdapter = new ComputeEngineAdapter(await credential))
+            using (var computeEngineAdapter = new ComputeEngineAdapter(await credentialTask))
             using (var cts = new CancellationTokenSource())
             {
-                cts.CancelAfter(TimeSpan.FromSeconds(180));
+                var instance = await instanceTask;
+
+                cts.CancelAfter(TimeSpan.FromSeconds(30));
 
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
-                    await instance,
+                    instance,
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
                     computeEngineAdapter))
                 {
@@ -87,17 +89,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
 
         [Test]
         public async Task WhenInstanceUsesStartupScript_ThenJoinFailsBecausePasswordCannotBeDecrypted(
-            [DomainJoinWindowsInstance] ResourceTask<InstanceLocator> instance,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+            [DomainJoinWindowsInstance] ResourceTask<InstanceLocator> instanceTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credentialTask)
         {
-            using (var computeEngineAdapter = new ComputeEngineAdapter(await credential))
+            using (var computeEngineAdapter = new ComputeEngineAdapter(await credentialTask))
             using (var cts = new CancellationTokenSource())
             {
-                cts.CancelAfter(TimeSpan.FromSeconds(180));
+                var instance = await instanceTask;
+
+                cts.CancelAfter(TimeSpan.FromSeconds(30));
 
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
-                    await instance,
+                    instance,
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
                     computeEngineAdapter))
                 {
@@ -120,22 +124,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
 
     public class DomainJoinWindowsInstanceAttribute : WindowsInstanceAttribute
     {
-        public DomainJoinWindowsInstanceAttribute()
-        {
-            //
-            // Use as sysprep script as the startup script is used for
-            // determining readiness.
-            //
-            this.InitializeScript = DomainJoinService.CreateStartupScript(Guid.Empty);
-        }
-
         protected override IEnumerable<Metadata.ItemsData> Metadata
         {
             get
             {
-                var metadata = new List<Metadata.ItemsData>()
-                {
-                    new Metadata.ItemsData()
+                var metadata = base.Metadata.ToList();
+
+                metadata.Add(new Metadata.ItemsData()
                     {
                         Key = DomainJoinService.MetadataKeys.JoinDomain,
                         Value = JsonConvert.SerializeObject(new DomainJoinService.JoinRequest()
@@ -146,9 +141,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
                             Username = "admin",
                             EncryptedPassword = "" // Invalid cyphertext
                         })
-                    }
-                };
-                metadata.AddRange(base.Metadata);
+                    });
+
+                metadata
+                    .Find(i => i.Key == "windows-startup-script-ps1")
+                    .Value += "\n\n" + DomainJoinService.CreateStartupScript(Guid.Empty);
+                
                 return metadata;
             }
         }
