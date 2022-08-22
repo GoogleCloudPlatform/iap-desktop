@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Properties {
+namespace Google.Solutions.IapDesktop.Extensions.Management.Properties {
     using System;
     
     

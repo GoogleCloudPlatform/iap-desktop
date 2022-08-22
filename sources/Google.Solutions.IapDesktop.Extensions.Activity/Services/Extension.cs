@@ -38,6 +38,10 @@ using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Common.Util;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 {
@@ -94,13 +98,99 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 .ConfigureAwait(true);  // Back to original (UI) thread.
         }
 
+        private async Task JoinDomainAsync(
+            IProjectModelInstanceNode instance)
+        {
+            var mainForm = this.serviceProvider.GetService<IMainForm>();
+
+            string domainName;
+            string newComputerName;
+            using (var dialog = new JoinDialog())
+            {
+                //
+                // Prompt for domain name, computer name.
+                //
+                dialog.ComputerName.Value = instance.DisplayName;
+                if (dialog.ShowDialog(mainForm.Window) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                domainName = dialog.DomainName.Value.Trim();
+                var computerName = dialog.ComputerName.Value.Trim();
+
+                //
+                // Only specify a "new" computer name if it's different.
+                //
+                newComputerName = computerName
+                    .Equals(instance.DisplayName, StringComparison.OrdinalIgnoreCase)
+                        ? null
+                        : computerName;
+            }
+
+            //
+            // Prompt for credentials.
+            //
+            if (this.serviceProvider.GetService<ICredentialDialog>()
+                .PromptForWindowsCredentials(
+                    mainForm.Window,
+                    $"Join {instance.DisplayName} to domain",
+                    $"Enter Active Directory credentials for {domainName}.\n\n" +
+                        "The credentials will be used to join the computer to the " +
+                        "domain and will not be saved.",
+                    AuthenticationPackage.Kerberos,
+                    out var credential) != DialogResult.OK)
+            {
+                return;
+            }
+
+            //
+            // Perform join in background job.
+            //
+            await this.serviceProvider
+                .GetService<IJobService>()
+                .RunInBackground<object>(
+                    new JobDescription(
+                        $"Joining {instance.DisplayName} to {domainName}...",
+                        JobUserFeedbackType.BackgroundFeedback),
+                    async jobToken =>
+                    {
+                        await this.serviceProvider
+                            .GetService<IDomainJoinService>()
+                            .JoinDomainAsync(
+                                instance.Instance,
+                                domainName,
+                                newComputerName,
+                                credential,
+                                jobToken)
+                        .ConfigureAwait(false);
+
+                        return null;
+                    })
+                .ConfigureAwait(true);  // Back to original (UI) thread.
+        }
+
         public Extension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             //
-            // Add commands to project explorer.
+            // Add commands to project explorer tool bar.
+            //
+
+            projectExplorer.ToolbarCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Properties",
+                    InstancePropertiesInspectorViewModel.GetToolbarCommandState,
+                    context => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
+                {
+                    Image = Resources.ComputerDetails_16
+                },
+                4);
+
+            //
+            // Add commands to project explorer context menu.
             //
             var reportContainer = projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
@@ -200,7 +290,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ActivityText = "Resetting VM instance"
                 });
 
-
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Show serial port &output (COM1)",
@@ -219,6 +308,52 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     Image = Resources.EventLog_16
                 },
                 9);
+
+            var osCommand = projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Soft&ware packages",
+                    PackageInventoryViewModel.GetCommandState,
+                    context => { }),
+                10);
+            osCommand.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Show &installed packages",
+                    PackageInventoryViewModel.GetCommandState,
+                    context => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.Package_16
+                });
+            osCommand.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Show &available updates",
+                    PackageInventoryViewModel.GetCommandState,
+                    context => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.PackageUpdate_16
+                });
+
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "P&roperties",
+                    InstancePropertiesInspectorViewModel.GetContextMenuCommandState,
+                    context => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
+                {
+                    Image = Resources.ComputerDetails_16,
+                    ShortcutKeys = Keys.Alt | Keys.Enter
+                },
+                11);
+
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Join to Active Directory",
+                    node => node is IProjectModelInstanceNode vmNode &&
+                            vmNode.OperatingSystem == OperatingSystems.Windows
+                        ? (vmNode.IsRunning ? CommandState.Enabled : CommandState.Disabled)
+                        : CommandState.Unavailable,
+                    node => JoinDomainAsync((IProjectModelInstanceNode)node))
+                {
+                    ActivityText = "Joining to Active Directory"
+                }); // TODO: Fix index
 
             //
             // Add commands to main menu.
@@ -267,6 +402,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 {
                     Image = Resources.Log_16,
                 });
+
+
+            mainForm.ViewMenu.AddCommand(
+                new Command<IMainForm>(
+                    "&Instance properties",
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
+                {
+                    Image = Resources.ComputerDetails_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.I
+                });
+            mainForm.ViewMenu.AddCommand(
+                new Command<IMainForm>(
+                    "I&nstalled packages",
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.Package_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
+                });
+            mainForm.ViewMenu.AddCommand(
+                new Command<IMainForm>(
+                    "&Available updates",
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.PackageUpdate_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.U
+                });
+            // TODO: Restore main menu order 
         }
     }
 }

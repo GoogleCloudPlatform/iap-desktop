@@ -63,6 +63,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ComputerDetails_16 {
+            get {
+                object obj = ResourceManager.GetObject("ComputerDetails_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap EventLog_16 {
             get {
                 object obj = ResourceManager.GetObject("EventLog_16", resourceCulture);
@@ -76,6 +86,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Properties {
         internal static System.Drawing.Bitmap Log_16 {
             get {
                 object obj = ResourceManager.GetObject("Log_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Package_16 {
+            get {
+                object obj = ResourceManager.GetObject("Package_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PackageLight_16 {
+            get {
+                object obj = ResourceManager.GetObject("PackageLight_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PackageUpdate_16 {
+            get {
+                object obj = ResourceManager.GetObject("PackageUpdate_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PackageWarn_16 {
+            get {
+                object obj = ResourceManager.GetObject("PackageWarn_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

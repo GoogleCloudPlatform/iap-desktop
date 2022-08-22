@@ -24,19 +24,19 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Os.Properties;
-using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties;
-using Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory;
+using Google.Solutions.IapDesktop.Extensions.Management.Properties;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
 using System;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Extensions.Os.Services.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Services
+namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 {
     /// <summary>
     /// Main class of the extension, instantiated on load.
