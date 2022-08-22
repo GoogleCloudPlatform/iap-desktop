@@ -151,6 +151,7 @@
     <Compile Include="Util\TestTypographicQuotes.cs" />
     <Compile Include="Views\Authorization\TestDeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authorization\TestNewProfileViewModel.cs" />
+    <Compile Include="Views\Dialog\TestCredentialDialog.cs" />
     <Compile Include="Views\Options\TestScreenOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestNetworkOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestGeneralOptionsViewModel.cs" />

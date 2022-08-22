@@ -102,6 +102,7 @@
     <Compile Include="CommonFixtureBase.cs" />
     <Compile Include="Diagnostics\TestTraceSourceExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Interop\TestCoTaskMemAllocSafeHandle.cs" />
     <Compile Include="Interop\TestGlobalAllocSafeHandle.cs" />
     <Compile Include="Interop\TestLocalAllocSafeHandle.cs" />
     <Compile Include="Locator\TestAccessLevelLocator.cs" />

@@ -28,30 +28,28 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Google.Solutions.Common.Interop
 {
-    /// <summary>
-    /// Safe handle for GlobalAlloc memory allocations.
-    /// </summary>
-    public sealed class GlobalAllocSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
+    public sealed class CoTaskMemAllocSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
-        internal static GlobalAllocSafeHandle Zero = new GlobalAllocSafeHandle(ownsHandle: false);
+        internal static CoTaskMemAllocSafeHandle Zero = new CoTaskMemAllocSafeHandle(ownsHandle: false);
 
-        private GlobalAllocSafeHandle()
+        private CoTaskMemAllocSafeHandle()
             : base(ownsHandle: true)
         {
         }
 
-        private GlobalAllocSafeHandle(bool ownsHandle)
+        private CoTaskMemAllocSafeHandle(bool ownsHandle)
             : base(ownsHandle)
         {
         }
 
         [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types")]
-        public static GlobalAllocSafeHandle GlobalAlloc(uint cb)
+        public static CoTaskMemAllocSafeHandle Alloc(int cb)
         {
-            var handle = new GlobalAllocSafeHandle();
-            handle.SetHandle(Marshal.AllocHGlobal(new IntPtr(cb)));
+            var handle = new CoTaskMemAllocSafeHandle();
+            handle.SetHandle(Marshal.AllocCoTaskMem(cb));
             if (handle.IsInvalid)
             {
                 handle.SetHandleAsInvalid();
@@ -61,10 +59,16 @@ namespace Google.Solutions.Common.Interop
             return handle;
         }
 
+        public static CoTaskMemAllocSafeHandle Alloc(string s)
+        {
+            var handle = new CoTaskMemAllocSafeHandle();
+            handle.SetHandle(Marshal.StringToCoTaskMemAnsi(s));
+            return handle;
+        }
+
         protected override bool ReleaseHandle()
         {
-            Marshal.FreeHGlobal(this.handle);
-            SetHandleAsInvalid();
+            Marshal.FreeCoTaskMem(this.handle);
             return true;
         }
     }

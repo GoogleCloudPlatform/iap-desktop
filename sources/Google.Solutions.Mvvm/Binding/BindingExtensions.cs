@@ -103,6 +103,10 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
+        //---------------------------------------------------------------------
+        // Binding for bare properties.
+        //---------------------------------------------------------------------
+
         public static void BindProperty<TControl, TProperty, TModel>(
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
@@ -161,6 +165,71 @@ namespace Google.Solutions.Mvvm.Binding
                 container.Add(binding);
             }
         }
+
+        //---------------------------------------------------------------------
+        // Binding for ObservableProperties.
+        //---------------------------------------------------------------------
+
+        public static void BindProperty<TControl, TProperty, TModel>(
+            this TControl control,
+            Expression<Func<TControl, TProperty>> controlProperty,
+            TModel model,
+            Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
+            IContainer container = null)
+            where TControl : IComponent
+        {
+            // Apply initial value.
+            var observable = modelProperty.Compile()(model);
+            CreateSetter(control, controlProperty)(observable.Value);
+
+            Debug.Assert(observable is IObservableWritableProperty<TProperty>);
+
+            var forwardBinding = control.OnControlPropertyChange(
+                controlProperty,
+                val => ObservablePropertyHelper.SetValue(observable, val));
+
+            var reverseBinding = new NotifyObservablePropertyChangedBinding<TProperty>(
+                observable,
+                CreateSetter(control, controlProperty));
+
+            // Wire up these two bindings so that we do not deliver
+            // updates in cycles.
+            forwardBinding.Peer = reverseBinding;
+            reverseBinding.Peer = forwardBinding;
+
+            if (container != null)
+            {
+                // To ensure that the bindings are disposed, add them to the
+                // container of the control.
+                container.Add(forwardBinding);
+                container.Add(reverseBinding);
+            }
+        }
+
+        public static void BindReadonlyProperty<TControl, TProperty, TModel>(
+            this TControl control,
+            Expression<Func<TControl, TProperty>> controlProperty,
+            TModel model,
+            Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
+            IContainer container = null)
+        {
+            // Apply initial value.
+            var observable = modelProperty.Compile()(model);
+            CreateSetter(control, controlProperty)(observable.Value);
+
+            var binding = new NotifyObservablePropertyChangedBinding<TProperty>(
+                observable,
+                CreateSetter(control, controlProperty));
+
+            if (container != null)
+            {
+                // To ensure that the bindings are disposed, add them to the
+                // container of the control.
+                container.Add(binding);
+            }
+        }
+
+        //---------------------------------------------------------------------
 
         public abstract class Binding : Component
         {
@@ -223,7 +292,7 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        private sealed class NotifyPropertyChangedBinding<TObject, TProperty> : Binding, IDisposable
+        private class NotifyPropertyChangedBinding<TObject, TProperty> : Binding, IDisposable
             where TObject : INotifyPropertyChanged
         {
             private readonly TObject observed;
@@ -278,6 +347,21 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
+        private class NotifyObservablePropertyChangedBinding<TProperty>
+            : NotifyPropertyChangedBinding<IObservableProperty<TProperty>, TProperty>
+        {
+            public NotifyObservablePropertyChangedBinding(
+                IObservableProperty<TProperty> observed,
+                Action<TProperty> newValueAction) 
+                : base(
+                      observed, 
+                      "Value",
+                      prop => prop.Value,
+                      newValueAction)
+            {
+            }
+        }
+
         private sealed class MultiDisposable : IDisposable
         {
             private readonly IEnumerable<IDisposable> disposables;
@@ -292,6 +376,23 @@ namespace Google.Solutions.Mvvm.Binding
                 foreach (var d in this.disposables)
                 {
                     d.Dispose();
+                }
+            }
+        }
+
+        private static class ObservablePropertyHelper
+        {
+            public static void SetValue<TProperty>(
+                IObservableProperty<TProperty> property,
+                TProperty newValue)
+            {
+                if (property is IObservableWritableProperty<TProperty> writable)
+                {
+                    writable.Value = newValue;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Observable property is read-only");
                 }
             }
         }

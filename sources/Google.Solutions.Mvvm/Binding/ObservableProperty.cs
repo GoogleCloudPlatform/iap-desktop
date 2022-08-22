@@ -38,6 +38,11 @@ namespace Google.Solutions.Mvvm.Binding
         T Value { get; }
     }
 
+    public interface IObservableWritableProperty<T> : IObservableProperty
+    {
+        T Value { get; set; }
+    }
+
     public interface ISourceProperty : IObservableProperty
     {
         void AddDependentProperty(IObservableProperty property);
@@ -46,7 +51,8 @@ namespace Google.Solutions.Mvvm.Binding
     /// <summary>
     /// Simple observable property.
     /// </summary>
-    public class ObservableProperty<T> : IObservableProperty<T>, ISourceProperty
+    public class ObservableProperty<T> 
+        : IObservableProperty<T>, IObservableWritableProperty<T>, ISourceProperty
     {
         private T value;
         private LinkedList<IObservableProperty> dependents;
@@ -151,6 +157,34 @@ namespace Google.Solutions.Mvvm.Binding
                 () => func(source1.Value, source2.Value),
                 source1,
                 source2);
+        }
+
+        public static ObservableFunc<TResult> Build<T1, T2, T3, TResult>(
+            ObservableProperty<T1> source1,
+            ObservableProperty<T2> source2,
+            ObservableProperty<T3> source3,
+            Func<T1, T2, T3, TResult> func)
+        {
+            return new ObservableFunc<TResult>(
+                () => func(source1.Value, source2.Value, source3.Value),
+                source1,
+                source2,
+                source3);
+        }
+
+        public static ObservableFunc<TResult> Build<T1, T2, T3, T4, TResult>(
+            ObservableProperty<T1> source1,
+            ObservableProperty<T2> source2,
+            ObservableProperty<T3> source3,
+            ObservableProperty<T4> source4,
+            Func<T1, T2, T3, T4, TResult> func)
+        {
+            return new ObservableFunc<TResult>(
+                () => func(source1.Value, source2.Value, source3.Value, source4.Value),
+                source1,
+                source2,
+                source3,
+                source4);
         }
     }
 }

@@ -29,6 +29,12 @@ using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory;
 using System;
 using System.Windows.Forms;
+using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.ActiveDirectory;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Os.Views.ActiveDirectory;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Services
 {
@@ -38,8 +44,84 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
     [Service(ServiceLifetime.Singleton)]
     public class Extension
     {
+        private readonly IServiceProvider serviceProvider;
+
+        private async Task JoinDomainAsync(
+            IProjectModelInstanceNode instance)
+        {
+            var mainForm = this.serviceProvider.GetService<IMainForm>();
+
+            string domainName;
+            string newComputerName;
+            using (var dialog = new JoinDialog())
+            {
+                //
+                // Prompt for domain name, computer name.
+                //
+                dialog.ComputerName.Value = instance.DisplayName;
+                if (dialog.ShowDialog(mainForm.Window) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                domainName = dialog.DomainName.Value.Trim();
+                var computerName = dialog.ComputerName.Value.Trim();
+
+                //
+                // Only specify a "new" computer name if it's different.
+                //
+                newComputerName = computerName
+                    .Equals(instance.DisplayName, StringComparison.OrdinalIgnoreCase)
+                        ? null
+                        : computerName;
+            }
+
+            //
+            // Prompt for credentials.
+            //
+            if (this.serviceProvider.GetService<ICredentialDialog>()
+                .PromptForWindowsCredentials(
+                    mainForm.Window,
+                    $"Join {instance.DisplayName} to domain",
+                    $"Enter Active Directory credentials for {domainName}.\n\n" +
+                        "The credentials will be used to join the computer to the " +
+                        "domain and will not be saved.",
+                    AuthenticationPackage.Kerberos,
+                    out var credential) != DialogResult.OK)
+            {
+                return;
+            }
+
+            //
+            // Perform join in background job.
+            //
+            await this.serviceProvider
+                .GetService<IJobService>()
+                .RunInBackground<object>(
+                    new JobDescription(
+                        $"Joining {instance.DisplayName} to {domainName}...",
+                        JobUserFeedbackType.BackgroundFeedback),
+                    async jobToken =>
+                    {
+                        await this.serviceProvider
+                            .GetService<IDomainJoinService>()
+                            .JoinDomainAsync(
+                                instance.Instance,
+                                domainName,
+                                newComputerName,
+                                credential,
+                                jobToken)
+                        .ConfigureAwait(false);
+
+                        return null;
+                    })
+                .ConfigureAwait(true);  // Back to original (UI) thread.
+        }
+
         public Extension(IServiceProvider serviceProvider)
         {
+            this.serviceProvider = serviceProvider;
+
             //
             // Add commands to project explorer.
             //
@@ -88,6 +170,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     ShortcutKeys = Keys.Alt | Keys.Enter
                 },
                 11);
+
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Join to Active Directory",
+                    node => node is IProjectModelInstanceNode vmNode && 
+                            vmNode.OperatingSystem == OperatingSystems.Windows
+                        ? (vmNode.IsRunning ? CommandState.Enabled : CommandState.Disabled)
+                        : CommandState.Unavailable,
+                    node => JoinDomainAsync((IProjectModelInstanceNode)node))
+                {
+                    ActivityText = "Joining to Active Directory"
+                }); // TODO: Fix index
 
             //
             // Add commands to main menu.
