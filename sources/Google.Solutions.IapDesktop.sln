@@ -23,9 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop", "IapDesktop", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop.Extensions.Management", "IapDesktop.Extensions.Management", "{06417FC0-CC28-4E03-8F61-02A55304F28B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Management", "Google.Solutions.IapDesktop.Extensions.Activity\Google.Solutions.IapDesktop.Extensions.Management.csproj", "{B804D76C-E02E-4320-94A7-579034644AA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Management", "Google.Solutions.IapDesktop.Extensions.Management\Google.Solutions.IapDesktop.Extensions.Management.csproj", "{B804D76C-E02E-4320-94A7-579034644AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Management.Test", "Google.Solutions.IapDesktop.Extensions.Activity.Test\Google.Solutions.IapDesktop.Extensions.Management.Test.csproj", "{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Management.Test", "Google.Solutions.IapDesktop.Extensions.Management.Test\Google.Solutions.IapDesktop.Extensions.Management.Test.csproj", "{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{78166023-068C-4F6B-B0AF-D9FB2D8FAB56}"
 	ProjectSection(SolutionItems) = preProject

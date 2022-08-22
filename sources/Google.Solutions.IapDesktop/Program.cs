@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop
                     Assembly.GetExecutingAssembly().Location),
                     "*.Extensions.*.dll")
                 .Where(name => !name.EndsWith( // Ignore leftover, outdated extension.
-                    "google.solutions.iapdesktop.extensions.rdp.dll",
+                    "google.solutions.iapdesktop.extensions.rdp.dll", // TODO: Add activity, os.
                     StringComparison.OrdinalIgnoreCase))
                 .Select(dllPath => Assembly.LoadFrom(dllPath));
         }

@@ -235,16 +235,10 @@
           Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Vtnetcore.dll"
           Vital="yes"/>
         <File
-          Id="FileGoogleSolutionsActivityDll"
-          Name="Google.Solutions.IapDesktop.Extensions.Activity.dll"
+          Id="FileGoogleSolutionsManagementDll"
+          Name="Google.Solutions.IapDesktop.Extensions.Management.dll"
           DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Activity.dll"
-          Vital="yes"/>
-        <File
-          Id="FileGoogleSolutionsOsDll"
-          Name="Google.Solutions.IapDesktop.Extensions.Os.dll"
-          DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Os.dll"
+          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Management.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleSolutionsRdpDll"
