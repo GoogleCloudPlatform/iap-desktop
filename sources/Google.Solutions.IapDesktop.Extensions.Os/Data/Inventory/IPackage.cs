@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Os.Data.Inventory
 {
     public interface IPackage
     {

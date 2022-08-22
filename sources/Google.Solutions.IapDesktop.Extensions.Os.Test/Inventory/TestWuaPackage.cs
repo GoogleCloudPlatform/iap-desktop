@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Os.Data.Inventory;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

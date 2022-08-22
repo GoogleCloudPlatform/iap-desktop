@@ -26,7 +26,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Os.Data.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using System;
 using System.ComponentModel;

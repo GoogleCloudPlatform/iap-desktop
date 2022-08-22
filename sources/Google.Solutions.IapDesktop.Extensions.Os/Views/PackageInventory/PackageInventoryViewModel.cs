@@ -28,7 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Os.Data.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using System;
 using System.Collections.Generic;

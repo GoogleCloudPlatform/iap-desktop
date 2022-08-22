@@ -97,13 +97,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Inventory\IPackage.cs" />
-    <Compile Include="Inventory\ZypperPatch.cs" />
-    <Compile Include="Inventory\Package.cs" />
-    <Compile Include="Inventory\GuestPackages.cs" />
-    <Compile Include="Inventory\GuestOsInfo.cs" />
-    <Compile Include="Inventory\QfePackage.cs" />
-    <Compile Include="Inventory\WuaPackage.cs" />
+    <Compile Include="Data\Inventory\IPackage.cs" />
+    <Compile Include="Data\Inventory\ZypperPatch.cs" />
+    <Compile Include="Data\Inventory\Package.cs" />
+    <Compile Include="Data\Inventory\GuestPackages.cs" />
+    <Compile Include="Data\Inventory\GuestOsInfo.cs" />
+    <Compile Include="Data\Inventory\QfePackage.cs" />
+    <Compile Include="Data\Inventory\WuaPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

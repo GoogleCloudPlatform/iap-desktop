@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.Mvvm.Commands;
-using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Os.Data.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory;
 using Google.Solutions.Testing.Application.Test;
