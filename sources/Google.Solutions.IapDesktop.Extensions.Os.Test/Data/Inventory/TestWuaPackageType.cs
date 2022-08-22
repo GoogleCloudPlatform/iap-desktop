@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Extensions.Os.Data.Inventory;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Data.Inventory
 {
     [TestFixture]
     public class TestWuaPackageType

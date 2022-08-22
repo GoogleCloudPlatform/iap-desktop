@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Data.Inventory
 {
     [TestFixture]
     public class TestWindowsGuestOsInfo : ApplicationFixtureBase
