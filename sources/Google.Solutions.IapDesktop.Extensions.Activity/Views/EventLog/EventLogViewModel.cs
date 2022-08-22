@@ -30,8 +30,8 @@ using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -41,7 +41,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
+namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 {
     internal class EventLogViewModel
         : ModelCachingViewModelBase<IProjectModelNode, EventLogModel>

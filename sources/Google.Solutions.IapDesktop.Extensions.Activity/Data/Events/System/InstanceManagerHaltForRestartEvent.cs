@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.System
+namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events.System
 {
     public class InstanceManagerHaltForRestartEvent : SystemEventBase
     {

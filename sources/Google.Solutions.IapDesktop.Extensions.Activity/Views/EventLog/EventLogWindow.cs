@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Diagnostics;
@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
+namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]

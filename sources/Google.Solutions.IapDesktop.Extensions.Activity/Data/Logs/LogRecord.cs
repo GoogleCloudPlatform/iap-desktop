@@ -26,7 +26,7 @@ using System.IO;
 
 #pragma warning disable CA2227 // Collection properties should be read only
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs
+namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Logs
 {
     /// <summary>
     /// Class representation of a 'Log record', which is the top-level type all 

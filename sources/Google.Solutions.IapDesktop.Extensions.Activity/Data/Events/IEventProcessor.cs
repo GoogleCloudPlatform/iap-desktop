@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.History
+namespace Google.Solutions.IapDesktop.Extensions.Management.History
 {
     public interface IEventProcessor
     {

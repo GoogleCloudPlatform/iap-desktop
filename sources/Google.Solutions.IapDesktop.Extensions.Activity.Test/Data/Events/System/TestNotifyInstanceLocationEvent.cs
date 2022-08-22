@@ -19,14 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.System;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.System;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Data.Events.System
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Events.System
 {
     [TestFixture]
     public class TestNotifyInstanceLocationEvent : ApplicationFixtureBase

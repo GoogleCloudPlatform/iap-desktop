@@ -31,7 +31,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
+namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 {
     internal class SerialOutputModel
     {

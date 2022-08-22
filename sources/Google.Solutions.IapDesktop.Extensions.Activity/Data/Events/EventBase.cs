@@ -21,12 +21,12 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Data.Events
+namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events
 {
     public abstract class EventBase
     {

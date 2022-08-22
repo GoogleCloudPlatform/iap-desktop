@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.History;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
+namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 {
     internal class EventLogModel : IEventProcessor
     {

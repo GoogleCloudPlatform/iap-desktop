@@ -26,12 +26,12 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.Lifecycle;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.System;
-using Google.Solutions.IapDesktop.Extensions.Activity.History;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.System;
+using Google.Solutions.IapDesktop.Extensions.Management.History;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
@@ -41,7 +41,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
 {
     [TestFixture]
     public class TestEventLogViewModel : ApplicationFixtureBase

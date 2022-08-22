@@ -20,14 +20,14 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.Access;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Access;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Data.Events.Access
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Events.Access
 {
     [TestFixture]
     public class TestOsLoginStartSessionEvent : ApplicationFixtureBase

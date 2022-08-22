@@ -19,15 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.Access;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.Lifecycle;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.System;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Access;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.System;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Data.Events
+namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events
 {
     public static class EventFactory
     {

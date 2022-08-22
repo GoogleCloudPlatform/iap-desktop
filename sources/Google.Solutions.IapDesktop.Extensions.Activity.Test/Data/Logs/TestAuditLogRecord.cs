@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using Google.Solutions.Testing.Application.Test;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Data.Logs
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Logs
 {
     [TestFixture]
     public class TestAuditLogRecord : ApplicationFixtureBase

@@ -20,11 +20,11 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.Access
+namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Access
 {
     public class SetMetadataEvent : InstanceOperationEventBase
     {

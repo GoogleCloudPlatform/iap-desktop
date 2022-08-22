@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -37,7 +37,7 @@ using Google.Solutions.Mvvm.Commands;
 
 #pragma warning disable CA1812 // Avoid uninstantiated internal classes
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOutput
 {
     [TestFixture]
     [UsesCloudResources]

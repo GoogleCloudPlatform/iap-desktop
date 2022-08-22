@@ -30,7 +30,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
+namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 {
     [SkipCodeCoverage("All logic in view model")]
     internal partial class SerialOutputWindow

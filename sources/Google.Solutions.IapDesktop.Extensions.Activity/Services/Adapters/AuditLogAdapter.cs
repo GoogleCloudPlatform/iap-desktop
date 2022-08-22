@@ -31,9 +31,9 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.History;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.History;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -43,7 +43,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
+namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
 {
     public interface IAuditLogAdapter
     {

@@ -25,10 +25,10 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Activity.Properties;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog;
-using Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput;
+using Google.Solutions.IapDesktop.Extensions.Management.Properties;
+using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
 using System;
 using System.Linq;
 using System.Windows.Forms;
@@ -39,7 +39,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Common.Util;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
+namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 {
     /// <summary>
     /// Main class of the extension, instantiated on load.

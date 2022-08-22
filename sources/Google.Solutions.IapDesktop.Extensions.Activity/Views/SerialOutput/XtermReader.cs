@@ -31,7 +31,7 @@ using VtNetCore.VirtualTerminal;
 using VtNetCore.XTermParser;
 using VtNetCore.XTermParser.SequenceType;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
+namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 {
     /// <summary>
     /// Reader that extracts pure text out of a string containing

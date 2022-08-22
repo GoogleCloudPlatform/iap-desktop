@@ -9,8 +9,8 @@
     <ProjectGuid>{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Activity.Test</RootNamespace>
-    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Activity.Test</AssemblyName>
+    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Management.Test</RootNamespace>
+    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Management.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -156,9 +156,9 @@
       <Project>{842B003E-6EEB-429D-A3A1-53B4E642E83B}</Project>
       <Name>Google.Solutions.IapDesktop.Application</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Activity\Google.Solutions.IapDesktop.Extensions.Activity.csproj">
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Activity\Google.Solutions.IapDesktop.Extensions.Management.csproj">
       <Project>{b804d76c-e02e-4320-94a7-579034644aa0}</Project>
-      <Name>Google.Solutions.IapDesktop.Extensions.Activity</Name>
+      <Name>Google.Solutions.IapDesktop.Extensions.Management</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj">
       <Project>{83571A48-14E9-4CB2-8D7E-C12DEEB967B7}</Project>

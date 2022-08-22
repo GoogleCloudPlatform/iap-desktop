@@ -7,8 +7,8 @@
     <ProjectGuid>{B804D76C-E02E-4320-94A7-579034644AA0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Activity</RootNamespace>
-    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Activity</AssemblyName>
+    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Management</RootNamespace>
+    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Management</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
+namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 {
     [Service(ServiceLifetime.Singleton)]
     internal class SerialOutputWindowCom1 : SerialOutputWindow

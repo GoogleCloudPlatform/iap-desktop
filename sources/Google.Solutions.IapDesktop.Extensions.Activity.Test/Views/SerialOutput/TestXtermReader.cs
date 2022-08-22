@@ -20,14 +20,14 @@
 //
 
 using Google.Solutions.Common.Text;
-using Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOutput
 {
     [TestFixture]
     public class TestXtermReader : ApplicationFixtureBase

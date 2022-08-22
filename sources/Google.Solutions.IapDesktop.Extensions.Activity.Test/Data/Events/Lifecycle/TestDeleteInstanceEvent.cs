@@ -20,13 +20,13 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Events.Lifecycle;
-using Google.Solutions.IapDesktop.Extensions.Activity.Data.Logs;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
+using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Data.Events.Lifecycle
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Data.Events.Lifecycle
 {
     [TestFixture]
     public class TestDeleteInstanceEvent : ApplicationFixtureBase
