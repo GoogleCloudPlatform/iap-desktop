@@ -73,6 +73,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap EventLog_16 {
+            get {
+                object obj = ResourceManager.GetObject("EventLog_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Log_16 {
+            get {
+                object obj = ResourceManager.GetObject("Log_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Package_16 {
             get {
                 object obj = ResourceManager.GetObject("Package_16", resourceCulture);
@@ -106,6 +126,66 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Properties {
         internal static System.Drawing.Bitmap PackageWarn_16 {
             get {
                 object obj = ResourceManager.GetObject("PackageWarn_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Pause_16 {
+            get {
+                object obj = ResourceManager.GetObject("Pause_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Report_16 {
+            get {
+                object obj = ResourceManager.GetObject("Report_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Report_32 {
+            get {
+                object obj = ResourceManager.GetObject("Report_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Reset_16 {
+            get {
+                object obj = ResourceManager.GetObject("Reset_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Start_16 {
+            get {
+                object obj = ResourceManager.GetObject("Start_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Stop_16 {
+            get {
+                object obj = ResourceManager.GetObject("Stop_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

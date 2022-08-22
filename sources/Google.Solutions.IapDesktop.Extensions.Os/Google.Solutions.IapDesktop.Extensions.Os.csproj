@@ -192,6 +192,30 @@
   <ItemGroup>
     <None Include="Resources\PackageUpdate_16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EventLog_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Log_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Pause_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Report_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Report_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Reset_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Start_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stop_16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
