@@ -323,6 +323,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 });
 
             //
+            // Generate credentials (Windows/RDP only).
+            //
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Generate Windows logon credentials...",
+                    GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,
+                    GenerateCredentialsAsync)
+                {
+                    Image = Resources.Password_16,
+                    ActivityText = "Generating Windows logon credentials"
+                },
+                3);
+
+            projectExplorer.ToolbarCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "Generate Windows logon credentials",
+                    GetToolbarCommandStateWhenRunningWindowsInstanceRequired,
+                    GenerateCredentialsAsync)
+                {
+                    Image = Resources.Password_16,
+                    ActivityText = "Generating Windows logon credentials"
+                });
+
+            //
             // Connection settings.
             //
             var settingsService = serviceProvider.GetService<IConnectionSettingsService>();
@@ -350,30 +374,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     Image = Resources.Settings_16
                 },
                 3);
-
-            //
-            // Generate credentials (Windows/RDP only).
-            //
-            projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
-                    "&Generate Windows logon credentials...",
-                    GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,
-                    GenerateCredentialsAsync)
-                {
-                    Image = Resources.Password_16,
-                    ActivityText = "Generating Windows logon credentials"
-                },
-                3);
-
-            projectExplorer.ToolbarCommands.AddCommand(
-                new Command<IProjectModelNode>(
-                    "Generate Windows logon credentials",
-                    GetToolbarCommandStateWhenRunningWindowsInstanceRequired,
-                    GenerateCredentialsAsync)
-                {
-                    Image = Resources.Password_16,
-                    ActivityText = "Generating Windows logon credentials"
-                });
 
             //
             // Authorized keys.
