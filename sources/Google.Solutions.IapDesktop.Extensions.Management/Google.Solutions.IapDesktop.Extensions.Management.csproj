@@ -179,7 +179,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\Extension.cs" />
+    <Compile Include="Services\ManagementExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\Logs\AuditLogRecord.cs" />
     <Compile Include="Data\Logs\LogRecord.cs" />

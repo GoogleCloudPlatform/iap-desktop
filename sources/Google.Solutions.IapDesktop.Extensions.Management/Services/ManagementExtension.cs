@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
     /// Main class of the extension, instantiated on load.
     /// </summary>
     [Service(ServiceLifetime.Singleton)]
-    public class Extension
+    public class ManagementExtension
     {
         private readonly IServiceProvider serviceProvider;
 
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 .ConfigureAwait(true);  // Back to original (UI) thread.
         }
 
-        public Extension(IServiceProvider serviceProvider)
+        public ManagementExtension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
@@ -290,6 +290,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ActivityText = "Resetting VM instance"
                 });
 
+            controlContainer.AddSeparator();
+            controlContainer.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Join to Active Directory",
+                    node => node is IProjectModelInstanceNode vmNode &&
+                            vmNode.OperatingSystem == OperatingSystems.Windows
+                        ? (vmNode.IsRunning ? CommandState.Enabled : CommandState.Disabled)
+                        : CommandState.Unavailable,
+                    node => JoinDomainAsync((IProjectModelInstanceNode)node))
+                {
+                    ActivityText = "Joining to Active Directory"
+                });
+
+            projectExplorer.ContextMenuCommands.AddSeparator(8);
+
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Show serial port &output (COM1)",
@@ -298,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 {
                     Image = Resources.Log_16
                 },
-                8);
+                9);
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Show &event log",
@@ -307,14 +322,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 {
                     Image = Resources.EventLog_16
                 },
-                9);
+                10);
 
             var osCommand = projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Soft&ware packages",
                     PackageInventoryViewModel.GetCommandState,
                     context => { }),
-                10);
+                11);
             osCommand.AddCommand(
                 new Command<IProjectModelNode>(
                     "Show &installed packages",
@@ -341,19 +356,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     Image = Resources.ComputerDetails_16,
                     ShortcutKeys = Keys.Alt | Keys.Enter
                 },
-                11);
-
-            projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
-                    "&Join to Active Directory",
-                    node => node is IProjectModelInstanceNode vmNode &&
-                            vmNode.OperatingSystem == OperatingSystems.Windows
-                        ? (vmNode.IsRunning ? CommandState.Enabled : CommandState.Disabled)
-                        : CommandState.Unavailable,
-                    node => JoinDomainAsync((IProjectModelInstanceNode)node))
-                {
-                    ActivityText = "Joining to Active Directory"
-                }); // TODO: Fix index
+                12);
 
             //
             // Add commands to main menu.
@@ -431,7 +434,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     Image = Resources.PackageUpdate_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.U
                 });
-            // TODO: Restore main menu order 
         }
     }
 }

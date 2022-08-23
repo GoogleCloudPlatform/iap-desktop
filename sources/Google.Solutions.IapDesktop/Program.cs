@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop
                 Path.GetDirectoryName(
                     Assembly.GetExecutingAssembly().Location),
                     "*.Extensions.*.dll")
-                .Where(name => deprecatedExtensions.Contains(name.ToLower()))
+                .Where(name => !deprecatedExtensions.Contains(name.ToLower()))
                 .Select(dllPath => Assembly.LoadFrom(dllPath));
         }
 
