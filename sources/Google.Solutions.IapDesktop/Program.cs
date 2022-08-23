@@ -124,13 +124,17 @@ namespace Google.Solutions.IapDesktop
 
         private IEnumerable<Assembly> LoadExtensionAssemblies()
         {
+            var deprecatedExtensions = new[]
+            {
+                "google.solutions.iapdesktop.extensions.rdp.dll",
+                "google.solutions.iapdesktop.extensions.activity.dll",
+                "google.solutions.iapdesktop.extensions.os.dll"
+            };
             return Directory.GetFiles(
                 Path.GetDirectoryName(
                     Assembly.GetExecutingAssembly().Location),
                     "*.Extensions.*.dll")
-                .Where(name => !name.EndsWith( // Ignore leftover, outdated extension.
-                    "google.solutions.iapdesktop.extensions.rdp.dll",
-                    StringComparison.OrdinalIgnoreCase))
+                .Where(name => !deprecatedExtensions.Contains(name.ToLower()))
                 .Select(dllPath => Assembly.LoadFrom(dllPath));
         }
 

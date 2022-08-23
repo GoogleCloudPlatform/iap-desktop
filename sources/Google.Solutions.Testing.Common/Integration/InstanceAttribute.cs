@@ -60,6 +60,7 @@ namespace Google.Solutions.Testing.Common.Integration
             imageSpecification.Append(this.InitializeScript);
             imageSpecification.Append(this.EnableOsInventory);
             imageSpecification.Append(this.ServiceAccount.ToString());
+            imageSpecification.Append(GetType().Name);
 
             var kokoroJobType = Environment.GetEnvironmentVariable("KOKORO_JOB_TYPE");
             if (!string.IsNullOrEmpty(kokoroJobType))
