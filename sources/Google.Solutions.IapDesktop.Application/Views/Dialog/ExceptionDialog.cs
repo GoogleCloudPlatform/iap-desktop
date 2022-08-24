@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
 
                     details.Append($"Status code: {apiException.Error.Code}\n\n");
 
-                    foreach (var error in apiException.Error.Errors)
+                    foreach (var error in apiException.Error.Errors.EnsureNotNull())
                     {
                         details.Append($"    Domain: {error.Domain}\n");
                         details.Append($"    Location: {error.Location}\n");

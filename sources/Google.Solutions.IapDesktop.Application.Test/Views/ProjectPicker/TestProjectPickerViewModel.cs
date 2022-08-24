@@ -112,8 +112,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 .FilterAsync(null)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsStatusTextVisible);
-            StringAssert.Contains("Over 3", viewModel.StatusText);
+            Assert.IsTrue(viewModel.IsStatusTextVisible.Value);
+            StringAssert.Contains("Over 3", viewModel.StatusText.Value);
         }
 
         [Test]
@@ -126,8 +126,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 .FilterAsync("project-1")
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsStatusTextVisible);
-            StringAssert.Contains("1 project", viewModel.StatusText);
+            Assert.IsTrue(viewModel.IsStatusTextVisible.Value);
+            StringAssert.Contains("1 project", viewModel.StatusText.Value);
         }
 
         [Test]
@@ -139,38 +139,36 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             await viewModel
                 .FilterAsync(null)
                 .ConfigureAwait(true);
-            viewModel.SelectedProjects = new[] { ProjectOne };
+            viewModel.SelectedProjects.Value = new[] { ProjectOne };
 
-            Assert.IsTrue(viewModel.IsProjectSelected);
-            Assert.IsNotNull(viewModel.SelectedProjects);
+            Assert.IsTrue(viewModel.IsProjectSelected.Value);
+            Assert.IsNotNull(viewModel.SelectedProjects.Value);
 
             await viewModel
                 .FilterAsync("project-1")
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsProjectSelected);
-            Assert.IsNull(viewModel.SelectedProjects);
+            Assert.IsFalse(viewModel.IsProjectSelected.Value);
+            Assert.IsNull(viewModel.SelectedProjects.Value);
         }
 
         [Test]
         public async Task WhenFilteringFails_ThenLoadingErrorContainsException()
         {
             var resourceManagerMock = CreateResourceManagerAdapterMock();
-            var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object)
-            {
-                SelectedProjects = new[] { ProjectOne }
-            };
+            var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
+            viewModel.SelectedProjects.Value = new[] { ProjectOne };
 
-            Assert.IsTrue(viewModel.IsProjectSelected);
-            Assert.IsNotNull(viewModel.SelectedProjects);
+            Assert.IsTrue(viewModel.IsProjectSelected.Value);
+            Assert.IsNotNull(viewModel.SelectedProjects.Value);
 
             await viewModel
                 .FilterAsync("fail")
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsLoading);
+            Assert.IsFalse(viewModel.IsLoading.Value);
             Assert.IsNotNull(viewModel.LoadingError);
-            Assert.AreEqual("mock", viewModel.LoadingError.Message);
+            Assert.AreEqual("mock", viewModel.LoadingError.Value.Message);
         }
     }
 }

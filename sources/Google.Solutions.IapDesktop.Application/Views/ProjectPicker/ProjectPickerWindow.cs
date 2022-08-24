@@ -52,8 +52,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.viewModel = new ProjectPickerViewModel(
                 serviceProvider.GetService<IResourceManagerAdapter>());
 
-            this.viewModel.OnPropertyChange(
-                m => m.LoadingError,
+            this.viewModel.LoadingError.OnPropertyChange(
+                m => m.Value,
                 e =>
                 {
                     serviceProvider.GetService<IExceptionDialog>()
@@ -79,12 +79,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 m => m.SelectedProjects,
                 this.components);
 
-            this.statusLabel.BindProperty(
+            this.statusLabel.BindReadonlyProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsStatusTextVisible,
                 this.components);
-            this.statusLabel.BindProperty(
+            this.statusLabel.BindReadonlyProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.StatusText,
@@ -115,6 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         public IEnumerable<ProjectLocator> Projects
             => this.viewModel
                 .SelectedProjects
+                .Value
                 .EnsureNotNull()
                 .Select(p => new ProjectLocator(p.ProjectId));
 
