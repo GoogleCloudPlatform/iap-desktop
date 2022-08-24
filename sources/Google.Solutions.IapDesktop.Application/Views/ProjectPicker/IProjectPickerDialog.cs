@@ -155,8 +155,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                         this.projects
                             .EnsureNotNull()
                             .Where(p => prefix == null ||
-                                        p.Name.StartsWith(prefix) ||
-                                        p.ProjectId.StartsWith(prefix))
+                                        p.Name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) ||
+                                        p.ProjectId.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
                             .Take(maxResults),
                         false));
             }

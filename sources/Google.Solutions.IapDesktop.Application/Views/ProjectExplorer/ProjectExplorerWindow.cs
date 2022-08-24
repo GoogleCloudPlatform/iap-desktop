@@ -330,7 +330,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .SelectLocalProjects(
                     this,
                     "Unload projects",
-                    ((IProjectModelCloudNode)this.viewModel.RootNode.ModelNode).Projects.ToList(), //TODO: refactor
+                    this.viewModel.Projects,
                     this.serviceProvider.GetService<IExceptionDialog>(),
                     out var projects) == DialogResult.OK)
             {

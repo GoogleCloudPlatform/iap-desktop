@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             var model = new ProjectPickerDialog.StaticModel(projects);
 
             var result = await model
-                .ListProjectsAsync("foo", 100, CancellationToken.None)
+                .ListProjectsAsync("FO", 100, CancellationToken.None)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(2, result.Projects.Count());

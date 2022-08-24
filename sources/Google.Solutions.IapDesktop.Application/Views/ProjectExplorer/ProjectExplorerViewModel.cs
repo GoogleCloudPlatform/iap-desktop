@@ -180,6 +180,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .FirstOrDefault(i => i.Locator.Name == locator.Name);
         }
 
+        internal IReadOnlyCollection<IProjectModelProjectNode> Projects // TODO: Test
+            => ((IProjectModelCloudNode)this.RootNode.ModelNode)
+                .Projects
+                .EnsureNotNull()
+                .ToList();
+
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
