@@ -37,15 +37,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
     public sealed class ProjectPickerViewModel : ViewModelBase, IDisposable
     {
         private const int MaxResults = 100;
-
-        private readonly IResourceManagerAdapter resourceManager;
+        private readonly IProjectPickerModel model;
 
         private string filter;
 
-        public ProjectPickerViewModel(
-            IResourceManagerAdapter resourceManager)
+        public ProjectPickerViewModel(IProjectPickerModel model)
         {
-            this.resourceManager = resourceManager;
+            this.model = model;
 
             this.FilteredProjects = new RangeObservableCollection<Project>();
             this.IsLoading = ObservableProperty.Build(false);
@@ -113,16 +111,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             //
             try
             {
-                var result = await this.resourceManager.ListProjectsAsync(
-                        string.IsNullOrEmpty(this.filter)
-                            ? null // All projects.
-                            : ProjectFilter.ByPrefix(this.filter),
+                var result = await this.model.ListProjectsAsync(
+                        this.filter,
                         MaxResults,
                         CancellationToken.None)
                     .ConfigureAwait(true);
 
+                //
                 // Clear again because multiple filter operations might be running
                 // in parallel.
+                //
                 this.FilteredProjects.Clear();
                 this.FilteredProjects.AddRange(result.Projects);
                 if (result.IsTruncated)
@@ -153,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 
         public void Dispose()
         {
-            this.resourceManager.Dispose();
+            this.model.Dispose();
         }
     }
 }

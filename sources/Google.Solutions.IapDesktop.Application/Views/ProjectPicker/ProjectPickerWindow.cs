@@ -50,7 +50,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             InitializeComponent();
 
             this.viewModel = new ProjectPickerViewModel(
-                serviceProvider.GetService<IResourceManagerAdapter>());
+                new CloudProjectPickerModel(
+                    serviceProvider.GetService<IResourceManagerAdapter>()));
 
             this.viewModel.LoadingError.OnPropertyChange(
                 m => m.Value,

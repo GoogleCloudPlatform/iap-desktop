@@ -278,6 +278,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ProjectExplorer\ProjectExplorerViewModel.cs" />
+    <Compile Include="Views\ProjectPicker\ProjectPickerModel.cs" />
     <Compile Include="Views\ProjectPicker\ProjectList.cs">
       <SubType>UserControl</SubType>
     </Compile>

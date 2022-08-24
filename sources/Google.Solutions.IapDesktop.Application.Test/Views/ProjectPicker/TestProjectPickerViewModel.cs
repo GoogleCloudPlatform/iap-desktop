@@ -52,34 +52,34 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             ProjectId = "project-3"
         };
 
-        private Mock<IResourceManagerAdapter> CreateResourceManagerAdapterMock()
+        private Mock<IProjectPickerModel> CreateModelMock()
         {
-            var resourceManagerMock = new Mock<IResourceManagerAdapter>();
+            var model = new Mock<IProjectPickerModel>();
 
-            resourceManagerMock
+            model
                 .Setup(a => a.ListProjectsAsync(
-                    It.Is<ProjectFilter>(f => f == null),
-                    It.IsAny<Nullable<int>>(),
+                    It.Is<string>(f => f == null),
+                    It.IsAny<int>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new FilteredProjectList(
                     new[] { ProjectOne, ProjectTwo, ProjectThree },
                     true));
-            resourceManagerMock
+            model
                 .Setup(a => a.ListProjectsAsync(
-                    It.Is<ProjectFilter>(f => f != null && f.ToString().Contains("project-1")),
-                    It.IsAny<Nullable<int>>(),
+                    It.Is<string>(f => f != null && f.Contains("project-1")),
+                    It.IsAny<int>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new FilteredProjectList(
                     new[] { ProjectOne },
                     true));
-            resourceManagerMock
+            model
                 .Setup(a => a.ListProjectsAsync(
-                    It.Is<ProjectFilter>(f => f != null && f.ToString().Contains("fail")),
-                    It.IsAny<Nullable<int>>(),
+                    It.Is<string>(f => f != null && f.Contains("fail")),
+                    It.IsAny<int>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ArgumentException("mock"));
 
-            return resourceManagerMock;
+            return model;
         }
 
         //---------------------------------------------------------------------
@@ -89,8 +89,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         [Test]
         public async Task WhenFilterSetToNull_ThenListIsPopulatedWithAllProjects()
         {
-            var resourceManagerMock = CreateResourceManagerAdapterMock();
-            var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
+            var modelMock = CreateModelMock();
+            var viewModel = new ProjectPickerViewModel(modelMock.Object);
 
             CollectionAssert.IsEmpty(viewModel.FilteredProjects);
 
@@ -105,8 +105,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         [Test]
         public async Task WhenFilterTooBroad_ThenStatusTextIndicatedTruncation()
         {
-            var resourceManagerMock = CreateResourceManagerAdapterMock();
-            var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
+            var modelMock = CreateModelMock();
+            var viewModel = new ProjectPickerViewModel(modelMock.Object);
 
             await viewModel
                 .FilterAsync(null)
@@ -119,8 +119,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         [Test]
         public async Task WhenFilterSpecificEnough_ThenStatusTextIndicatsNumberOfResults()
         {
-            var resourceManagerMock = CreateResourceManagerAdapterMock();
-            var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
+            var modelMock = CreateModelMock();
+            var viewModel = new ProjectPickerViewModel(modelMock.Object);
 
             await viewModel
                 .FilterAsync("project-1")
@@ -133,8 +133,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         [Test]
         public async Task WhenFilterUpdated_ThenSelectionIsCleared()
         {
-            var resourceManagerMock = CreateResourceManagerAdapterMock();
-            var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
+            var modelMock = CreateModelMock();
+            var viewModel = new ProjectPickerViewModel(modelMock.Object);
 
             await viewModel
                 .FilterAsync(null)
@@ -155,8 +155,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         [Test]
         public async Task WhenFilteringFails_ThenLoadingErrorContainsException()
         {
-            var resourceManagerMock = CreateResourceManagerAdapterMock();
-            var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
+            var modelMock = CreateModelMock();
+            var viewModel = new ProjectPickerViewModel(modelMock.Object);
             viewModel.SelectedProjects.Value = new[] { ProjectOne };
 
             Assert.IsTrue(viewModel.IsProjectSelected.Value);
