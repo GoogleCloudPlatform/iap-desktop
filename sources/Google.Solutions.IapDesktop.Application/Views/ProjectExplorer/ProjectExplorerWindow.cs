@@ -275,7 +275,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 //
                 // Show project picker
                 //
-                using (var dialog = this.serviceProvider.GetService<IProjectPickerWindow>())
+                using (var dialog = this.serviceProvider.GetService<IAddProjectsWindow>())
                 {
                     if (dialog.ShowDialog(this) != DialogResult.OK)
                     {
@@ -284,7 +284,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     }
 
                     await this.viewModel
-                        .AddProjectsAsync(dialog.Projects)
+                        .AddProjectsAsync(dialog.SelectedProjects)
                         .ConfigureAwait(true);
 
                     return true;

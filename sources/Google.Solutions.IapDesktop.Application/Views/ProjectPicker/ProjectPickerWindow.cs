@@ -34,31 +34,26 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
-    public interface IProjectPickerWindow : IDisposable
-    {
-        DialogResult ShowDialog(IWin32Window owner);
-        IEnumerable<ProjectLocator> Projects { get; }
-    }
-
+    /// <summary>
+    /// Generic project picker.
+    /// </summary>
     [SkipCodeCoverage("All logic in view model")]
-    public partial class ProjectPickerWindow : Form, IProjectPickerWindow
+    public partial class ProjectPickerWindow : Form
     {
         private readonly ProjectPickerViewModel viewModel;
 
-        public ProjectPickerWindow(IServiceProvider serviceProvider)
+        public ProjectPickerWindow(
+            IProjectPickerModel model,
+            IExceptionDialog exceptionDialog)
         {
             InitializeComponent();
 
-            this.viewModel = new ProjectPickerViewModel(
-                new AccessibleProjectPickerModel(
-                    serviceProvider.GetService<IResourceManagerAdapter>()));
-
+            this.viewModel = new ProjectPickerViewModel(model);
             this.viewModel.LoadingError.OnPropertyChange(
                 m => m.Value,
                 e =>
                 {
-                    serviceProvider.GetService<IExceptionDialog>()
-                        .Show(this, "Loading projects failed", e);
+                    exceptionDialog.Show(this, "Loading projects failed", e);
                 });
 
             // Bind list.
@@ -95,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.viewModel.Filter = null;
 
             // Bind buttons.
-            this.addProjectButton.BindReadonlyProperty(
+            this.pickProjectButton.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsProjectSelected,
@@ -109,20 +104,32 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             };
         }
 
-        //---------------------------------------------------------------------
-        // IProjectPickerWindow.
-        //---------------------------------------------------------------------
+        private void addProjectButton_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+        }
 
-        public IEnumerable<ProjectLocator> Projects
+        public IEnumerable<ProjectLocator> SelectedProjects
             => this.viewModel
                 .SelectedProjects
                 .Value
                 .EnsureNotNull()
                 .Select(p => new ProjectLocator(p.ProjectId));
 
-        private void addProjectButton_Click(object sender, EventArgs e)
+        protected string DialogText
         {
-            this.DialogResult = DialogResult.OK;
+            get => this.Text;
+            set
+            {
+                this.Text = value;
+                this.headlineLabel.Text = value;
+            }
+        }
+
+        protected string ButtonText
+        {
+            get => this.pickProjectButton.Text;
+            set => this.pickProjectButton.Text = value;
         }
     }
 }

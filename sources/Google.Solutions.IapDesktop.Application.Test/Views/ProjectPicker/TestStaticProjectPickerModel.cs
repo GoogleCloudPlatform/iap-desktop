@@ -41,6 +41,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         //---------------------------------------------------------------------
 
         [Test]
+        public async Task WhenProjectsIsNull_ThenListProjectsReturnsEmptyList()
+        {
+            using (var model = new StaticProjectPickerModel())
+            {
+                var result = await model
+                    .ListProjectsAsync(null, 100, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Assert.IsFalse(result.Projects.Any());
+            }
+        }
+
+        [Test]
         public async Task WhenFilterIsNull_ThenListProjectsReturnsAllProjects()
         {
             var projects = new List<Project>()
@@ -50,7 +63,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 new Project() { ProjectId = "foobar", Name = "Foobar" }
             };
 
-            using (var model = new StaticProjectPickerModel(projects))
+            using (var model = new StaticProjectPickerModel()
+            {
+                Projects = projects
+            })
             {
                 var result = await model
                     .ListProjectsAsync(null, 100, CancellationToken.None)
@@ -72,7 +88,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 new Project() { ProjectId = "foobar", Name = "Foobar" }
             };
 
-            using (var model = new StaticProjectPickerModel(projects))
+            using (var model = new StaticProjectPickerModel()
+            {
+                Projects = projects
+            })
             {
                 var result = await model
                     .ListProjectsAsync(null, 2, CancellationToken.None)
@@ -92,7 +111,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 new Project() { ProjectId = "foobar", Name = "Foobar" }
             };
 
-            using (var model = new StaticProjectPickerModel(projects))
+            using (var model = new StaticProjectPickerModel()
+            {
+                Projects = projects
+            })
             {
                 var result = await model
                     .ListProjectsAsync("foo", 100, CancellationToken.None)

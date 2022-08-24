@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         {
             this.headlineLabel = new System.Windows.Forms.Label();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.addProjectButton = new System.Windows.Forms.Button();
+            this.pickProjectButton = new System.Windows.Forms.Button();
             this.projectList = new Google.Solutions.IapDesktop.Application.Views.ProjectPicker.ProjectList();
             this.statusLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -62,9 +62,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.headlineLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.headlineLabel.Location = new System.Drawing.Point(11, 15);
             this.headlineLabel.Name = "headlineLabel";
-            this.headlineLabel.Size = new System.Drawing.Size(127, 30);
+            this.headlineLabel.Size = new System.Drawing.Size(125, 30);
             this.headlineLabel.TabIndex = 0;
-            this.headlineLabel.Text = "Add project";
+            this.headlineLabel.Text = "Pick project";
             // 
             // cancelButton
             // 
@@ -79,14 +79,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             // 
             // addProjectButton
             // 
-            this.addProjectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addProjectButton.Location = new System.Drawing.Point(310, 425);
-            this.addProjectButton.Name = "addProjectButton";
-            this.addProjectButton.Size = new System.Drawing.Size(75, 23);
-            this.addProjectButton.TabIndex = 2;
-            this.addProjectButton.Text = "&Add project";
-            this.addProjectButton.UseVisualStyleBackColor = true;
-            this.addProjectButton.Click += new System.EventHandler(this.addProjectButton_Click);
+            this.pickProjectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.pickProjectButton.Location = new System.Drawing.Point(310, 425);
+            this.pickProjectButton.Name = "addProjectButton";
+            this.pickProjectButton.Size = new System.Drawing.Size(75, 23);
+            this.pickProjectButton.TabIndex = 2;
+            this.pickProjectButton.Text = "&Pick project";
+            this.pickProjectButton.UseVisualStyleBackColor = true;
+            this.pickProjectButton.Click += new System.EventHandler(this.addProjectButton_Click);
             // 
             // projectList
             // 
@@ -114,14 +114,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             // 
             // ProjectPickerWindow
             // 
-            this.AcceptButton = this.addProjectButton;
+            this.AcceptButton = this.pickProjectButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(484, 461);
             this.Controls.Add(this.statusLabel);
-            this.Controls.Add(this.addProjectButton);
+            this.Controls.Add(this.pickProjectButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.projectList);
             this.Controls.Add(this.headlineLabel);
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Add project";
+            this.Text = "Pick roject";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         private System.Windows.Forms.Label headlineLabel;
         private ProjectList projectList;
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Button addProjectButton;
+        private System.Windows.Forms.Button pickProjectButton;
         private System.Windows.Forms.Label statusLabel;
     }
 }

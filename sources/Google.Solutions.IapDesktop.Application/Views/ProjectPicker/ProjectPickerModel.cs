@@ -1,4 +1,5 @@
 ﻿using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Collections.Generic;
@@ -59,12 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
     /// </summary>
     public class StaticProjectPickerModel : IProjectPickerModel
     {
-        private readonly IReadOnlyCollection<Project> projects;
-
-        public StaticProjectPickerModel(IReadOnlyCollection<Project> projects)
-        {
-            this.projects = projects;
-        }
+        public IReadOnlyCollection<Project> Projects { get; set; }
 
         //---------------------------------------------------------------------
         // IProjectPickerModel.
@@ -73,17 +69,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         public Task<FilteredProjectList> ListProjectsAsync(
             string prefix,
             int maxResults,
-            CancellationToken cancellationToken)
-        {
-            return Task.FromResult(
+            CancellationToken cancellationToken) => Task.FromResult(
                 new FilteredProjectList(
-                    this.projects
+                    this.Projects
+                        .EnsureNotNull()
                         .Where(p => prefix == null ||
                                     p.Name.StartsWith(prefix) ||
                                     p.ProjectId.StartsWith(prefix))
                         .Take(maxResults),
                     false));
-        }
 
         public void Dispose()
         {
