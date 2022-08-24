@@ -156,7 +156,9 @@
     <Compile Include="Views\Options\TestNetworkOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestGeneralOptionsViewModel.cs" />
     <Compile Include="Views\ProjectExplorer\TestProjectExplorerViewModel.cs" />
+    <Compile Include="Views\ProjectPicker\TestAccessibleProjectPickerModel.cs" />
     <Compile Include="Views\ProjectPicker\TestProjectPickerViewModel.cs" />
+    <Compile Include="Views\ProjectPicker\TestStaticProjectPickerModel.cs" />
     <Compile Include="Views\Properties\TestPropertiesInspectorWindow.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
   </ItemGroup>
