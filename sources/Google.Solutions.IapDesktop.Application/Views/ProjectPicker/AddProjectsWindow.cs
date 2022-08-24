@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -46,12 +47,45 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
     {
         public AddProjectsWindow(IServiceProvider serviceProvider) 
             : base(
-                new AccessibleProjectPickerModel(
-                    serviceProvider.GetService<IResourceManagerAdapter>()),
+                new Model(serviceProvider.GetService<IResourceManagerAdapter>()),
                 serviceProvider.GetService<IExceptionDialog>())
         {
             this.DialogText = "Add projects";
             this.ButtonText = "&Add projects";
+        }
+
+        //---------------------------------------------------------------------
+        // IProjectPickerModel.
+        //---------------------------------------------------------------------
+
+        internal sealed class Model : IProjectPickerModel
+        {
+            private readonly IResourceManagerAdapter resourceManager;
+
+            public Model(
+                IResourceManagerAdapter resourceManager)
+            {
+                this.resourceManager = resourceManager;
+            }
+
+            public async Task<FilteredProjectList> ListProjectsAsync(
+                string prefix,
+                int maxResults,
+                CancellationToken cancellationToken)
+            {
+                return await this.resourceManager.ListProjectsAsync(
+                        string.IsNullOrEmpty(prefix)
+                            ? null // All projects.
+                            : ProjectFilter.ByPrefix(prefix),
+                        maxResults,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
+            public void Dispose()
+            {
+                this.resourceManager.Dispose();
+            }
         }
     }
 }

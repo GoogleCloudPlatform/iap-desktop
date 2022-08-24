@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
 {
     [TestFixture]
-    public class TestAccessibleProjectPickerModel
+    public class TestAddProjectsWindowModel
     {
         //---------------------------------------------------------------------
         // ListProjects.
@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         public async Task WhenFilterIsNull_ThenProjectFilterIsNull()
         {
             var resourceManager = new Mock<IResourceManagerAdapter>();
-            using (var model = new AccessibleProjectPickerModel(resourceManager.Object))
+            using (var model = new AddProjectsWindow.Model(resourceManager.Object))
             {
                 await model
                     .ListProjectsAsync(null, 1, CancellationToken.None)
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         public async Task WhenFilterIsNotNull_ThenProjectFilterIsSet()
         {
             var resourceManager = new Mock<IResourceManagerAdapter>();
-            using (var model = new AccessibleProjectPickerModel(resourceManager.Object))
+            using (var model = new AddProjectsWindow.Model(resourceManager.Object))
             {
                 await model
                     .ListProjectsAsync("test", 1, CancellationToken.None)
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         public void WhenDisposed_ThenResourceManagerIsDisposed()
         {
             var resourceManager = new Mock<IResourceManagerAdapter>();
-            using (new AccessibleProjectPickerModel(resourceManager.Object))
+            using (new AddProjectsWindow.Model(resourceManager.Object))
             { }
 
             resourceManager.Verify(a => a.Dispose(), Times.Once);

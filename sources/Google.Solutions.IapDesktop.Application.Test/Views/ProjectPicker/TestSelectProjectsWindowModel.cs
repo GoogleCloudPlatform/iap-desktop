@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
 {
     [TestFixture]
-    public class TestStaticProjectPickerModel
+    public class TestSelectProjectsWindowModel
     {
         //---------------------------------------------------------------------
         // ListProjects.
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         [Test]
         public async Task WhenProjectsIsNull_ThenListProjectsReturnsEmptyList()
         {
-            using (var model = new StaticProjectPickerModel())
+            using (var model = new SelectProjectsWindow.Model())
             {
                 var result = await model
                     .ListProjectsAsync(null, 100, CancellationToken.None)
@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 new Project() { ProjectId = "foobar", Name = "Foobar" }
             };
 
-            using (var model = new StaticProjectPickerModel()
+            using (var model = new SelectProjectsWindow.Model()
             {
                 Projects = projects
             })
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 new Project() { ProjectId = "foobar", Name = "Foobar" }
             };
 
-            using (var model = new StaticProjectPickerModel()
+            using (var model = new SelectProjectsWindow.Model()
             {
                 Projects = projects
             })
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 new Project() { ProjectId = "foobar", Name = "Foobar" }
             };
 
-            using (var model = new StaticProjectPickerModel()
+            using (var model = new SelectProjectsWindow.Model()
             {
                 Projects = projects
             })

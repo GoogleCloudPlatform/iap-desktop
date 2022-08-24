@@ -21,6 +21,7 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -28,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -47,10 +49,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 
     public class SelectProjectsWindow : ProjectPickerWindow, IAddProjectsWindow
     {
-        private readonly StaticProjectPickerModel model;
+        private readonly Model model;
 
-        protected SelectProjectsWindow(
-            StaticProjectPickerModel model,
+        internal SelectProjectsWindow(
+            Model model,
             IExceptionDialog exceptionDialog)
             : base(model, exceptionDialog)
         {
@@ -62,8 +64,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 
         public SelectProjectsWindow(IServiceProvider serviceProvider)
             : this(
-                  new StaticProjectPickerModel(),
-                    serviceProvider.GetService<IExceptionDialog>())
+                  new Model(),
+                  serviceProvider.GetService<IExceptionDialog>())
         {
         }
 
@@ -71,6 +73,36 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         {
             get => this.model.Projects;
             set => this.model.Projects = value;
+        }
+
+        //---------------------------------------------------------------------
+        // IProjectPickerModel.
+        //---------------------------------------------------------------------
+
+        internal sealed class Model : IProjectPickerModel
+        {
+            public IReadOnlyCollection<Project> Projects { get; set; }
+
+            //---------------------------------------------------------------------
+            // IProjectPickerModel.
+            //---------------------------------------------------------------------
+
+            public Task<FilteredProjectList> ListProjectsAsync(
+                string prefix,
+                int maxResults,
+                CancellationToken cancellationToken) => Task.FromResult(
+                    new FilteredProjectList(
+                        this.Projects
+                            .EnsureNotNull()
+                            .Where(p => prefix == null ||
+                                        p.Name.StartsWith(prefix) ||
+                                        p.ProjectId.StartsWith(prefix))
+                            .Take(maxResults),
+                        false));
+
+            public void Dispose()
+            {
+            }
         }
     }
 }
