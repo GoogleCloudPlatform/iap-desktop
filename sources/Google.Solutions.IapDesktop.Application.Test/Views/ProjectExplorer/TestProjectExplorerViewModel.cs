@@ -345,6 +345,30 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         }
 
         //---------------------------------------------------------------------
+        // Projects.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNoProjectsAdded_ThenProjectsIsEmpty()
+        {
+            var viewModel = CreateViewModel();
+
+            CollectionAssert.IsEmpty(viewModel.Projects);
+        }
+
+        [Test]
+        public async Task WhenProjectAdded_ThenProjectsIsNotEmpty()
+        {
+            var viewModel = CreateViewModel();
+
+            await viewModel
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(false);
+
+            CollectionAssert.IsNotEmpty(viewModel.Projects);
+        }
+
+        //---------------------------------------------------------------------
         // Add/RemoveProjectAsync.
         //---------------------------------------------------------------------
 
