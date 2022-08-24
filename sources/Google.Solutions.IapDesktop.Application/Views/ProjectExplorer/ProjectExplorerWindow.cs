@@ -286,19 +286,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 //
                 // Show project picker
                 //
-                using (var dialog = this.serviceProvider.GetService<IAddProjectsWindow>())
-                {
-                    if (dialog.ShowDialog(this) != DialogResult.OK)
+                using (var resourceManager = this.serviceProvider.GetService<IResourceManagerAdapter>())
+                { 
+                    if (this.serviceProvider
+                        .GetService<IProjectPickerDialog>()
+                        .SelectCloudProjects(
+                            this,
+                            "Add projects",
+                            resourceManager,
+                            this.serviceProvider.GetService<IExceptionDialog>(),
+                            out var projects) == DialogResult.OK)
                     {
-                        // Cancelled.
+                        await this.viewModel
+                            .AddProjectsAsync(projects)
+                            .ConfigureAwait(true);
+
+                        return true;
+                    }
+                    else
+                    {
                         return false;
                     }
-
-                    await this.viewModel
-                        .AddProjectsAsync(dialog.SelectedProjects)
-                        .ConfigureAwait(true);
-
-                    return true;
                 }
             }
             catch (Exception e) when (e.IsCancellation())
@@ -317,10 +325,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private async Task UnloadProjectsAsync()
         {
-            using (var dialog = this.serviceProvider.GetService<ISelectProjectsWindow>())
+            if (this.serviceProvider
+                .GetService<IProjectPickerDialog>()
+                .SelectLocalProjects(
+                    this,
+                    "Unload projects",
+                    ((IProjectModelCloudNode)this.viewModel.RootNode.ModelNode).Projects.ToList(), //TODO: refactor
+                    this.serviceProvider.GetService<IExceptionDialog>(),
+                    out var projects) == DialogResult.OK)
             {
                 await this.viewModel
-                    .RemoveProjectsAsync(dialog)
+                    .RemoveProjectsAsync(projects)
                     .ConfigureAwait(true);
             }
         }

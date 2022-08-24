@@ -97,11 +97,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 this.components);
 
             this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
-
-            this.Disposed += (sender, args) =>
-            {
-                this.viewModel.Dispose();
-            };
         }
 
         private void addProjectButton_Click(object sender, EventArgs e)
@@ -109,14 +104,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.DialogResult = DialogResult.OK;
         }
 
-        public IEnumerable<ProjectLocator> SelectedProjects
+        public IReadOnlyCollection<ProjectLocator> SelectedProjects
             => this.viewModel
                 .SelectedProjects
                 .Value
                 .EnsureNotNull()
-                .Select(p => new ProjectLocator(p.ProjectId));
+                .Select(p => new ProjectLocator(p.ProjectId))
+                .ToList();
 
-        protected string DialogText
+        public string DialogText
         {
             get => this.Text;
             set
@@ -126,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             }
         }
 
-        protected string ButtonText
+        public string ButtonText
         {
             get => this.pickProjectButton.Text;
             set => this.pickProjectButton.Text = value;

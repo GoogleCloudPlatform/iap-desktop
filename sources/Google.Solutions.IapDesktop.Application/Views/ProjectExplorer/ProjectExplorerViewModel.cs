@@ -355,7 +355,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Actions.
         //---------------------------------------------------------------------
 
-        public async Task AddProjectsAsync(IEnumerable<ProjectLocator> projects)
+        public async Task AddProjectsAsync(IEnumerable<ProjectLocator> projects)// TODO: use params
         {
             foreach (var project in projects)
             {
@@ -373,40 +373,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         public Task AddProjectAsync(ProjectLocator project)
             => AddProjectsAsync(new[] { project });
 
-        public async Task RemoveProjectAsync(ProjectLocator project)
+        public async Task RemoveProjectsAsync(IEnumerable<ProjectLocator> projects)
         {
             // Reset selection to a safe place.
             this.SelectedNode = this.RootNode;
 
-            await this.projectModelService
-                .RemoveProjectAsync(project)
-                .ConfigureAwait(true);
+            foreach (var project in projects)
+            {
+                await this.projectModelService
+                    .RemoveProjectAsync(project)
+                    .ConfigureAwait(true);
+            }
 
-            // Make sure the new project is reflected.
+            //
+            // Refresh to ensure the removal is reflected.
+            //
             await RefreshAsync(true).ConfigureAwait(true);
         }
 
-        public async Task RemoveProjectsAsync(ISelectProjectsWindow dialog) // TODO: Test
-        {
-            // TODO: Adjust title (mode?)
-            dialog.Projects = ((IProjectModelCloudNode)this.RootNode.ModelNode)
-                .Projects
-                .EnsureNotNull()
-                .Select(p => new Apis.CloudResourceManager.v1.Data.Project()
-                {
-                    Name = p.DisplayName,
-                    ProjectId = p.Project.ProjectId
-                })
-                .ToList();
 
-            if (dialog.ShowDialog(this.View) == DialogResult.OK)
-            {
-                foreach (var selected in dialog.SelectedProjects) // TODO: Remove in bulk
-                {
-                    await RemoveProjectAsync(selected).ConfigureAwait(true);
-                }
-            }
-        }
+        public Task RemoveProjectAsync(ProjectLocator project) // TODO: use params
+            => RemoveProjectsAsync(new[] { project });
 
         public async Task<IEnumerable<ViewModelNode>> ExpandRootAsync()
         {

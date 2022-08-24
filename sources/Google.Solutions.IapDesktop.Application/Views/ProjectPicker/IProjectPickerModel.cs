@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
-    public interface IProjectPickerModel : IDisposable
+    public interface IProjectPickerModel
     {
         Task<FilteredProjectList> ListProjectsAsync(
             string prefix,

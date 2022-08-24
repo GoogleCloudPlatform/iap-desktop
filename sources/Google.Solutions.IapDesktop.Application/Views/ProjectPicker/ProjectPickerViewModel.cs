@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
-    public sealed class ProjectPickerViewModel : ViewModelBase, IDisposable
+    public sealed class ProjectPickerViewModel : ViewModelBase
     {
         private const int MaxResults = 100;
         private readonly IProjectPickerModel model;
@@ -143,15 +143,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.IsLoading.Value = false;
 
             RaisePropertyChange((ProjectPickerViewModel m) => m.FilteredProjects);
-        }
-
-        //---------------------------------------------------------------------
-        // IDisposable.
-        //---------------------------------------------------------------------
-
-        public void Dispose()
-        {
-            this.model.Dispose();
         }
     }
 }

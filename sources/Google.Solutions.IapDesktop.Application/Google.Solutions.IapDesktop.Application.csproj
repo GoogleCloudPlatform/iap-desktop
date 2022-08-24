@@ -278,9 +278,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ProjectExplorer\ProjectExplorerViewModel.cs" />
-    <Compile Include="Views\ProjectPicker\AddProjectsWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Views\ProjectPicker\IProjectPickerDialog.cs" />
     <Compile Include="Views\ProjectPicker\IProjectPickerModel.cs" />
     <Compile Include="Views\ProjectPicker\ProjectList.cs">
       <SubType>UserControl</SubType>
@@ -291,9 +289,6 @@
     </Compile>
     <Compile Include="Views\ProjectPicker\ProjectPickerWindow.Designer.cs">
       <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ProjectPicker\SelectProjectsWindow.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\Properties\IPropertiesSheet.cs" />
     <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
