@@ -198,6 +198,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             // Context menu.
             //
+
+            this.contextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Unload projects...",
+                    node => node is IProjectModelCloudNode
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => UnloadProjectsAsync())
+                {
+                    ActivityText = "Unloading projects"
+                });
             this.contextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "&Refresh project",
@@ -301,6 +312,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     .GetService<IExceptionDialog>()
                     .Show(this, "Adding project failed", e);
                 return false;
+            }
+        }
+
+        private async Task UnloadProjectsAsync()
+        {
+            using (var dialog = this.serviceProvider.GetService<ISelectProjectsWindow>())
+            {
+                await this.viewModel
+                    .RemoveProjectsAsync(dialog)
+                    .ConfigureAwait(true);
             }
         }
 

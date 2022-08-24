@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         IEnumerable<ProjectLocator> SelectedProjects { get; }
     }
 
-    public class SelectProjectsWindow : ProjectPickerWindow, IAddProjectsWindow
+    public class SelectProjectsWindow : ProjectPickerWindow, ISelectProjectsWindow
     {
         private readonly Model model;
 

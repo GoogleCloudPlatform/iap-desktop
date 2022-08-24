@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
@@ -383,6 +384,28 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             // Make sure the new project is reflected.
             await RefreshAsync(true).ConfigureAwait(true);
+        }
+
+        public async Task RemoveProjectsAsync(ISelectProjectsWindow dialog) // TODO: Test
+        {
+            // TODO: Adjust title (mode?)
+            dialog.Projects = ((IProjectModelCloudNode)this.RootNode.ModelNode)
+                .Projects
+                .EnsureNotNull()
+                .Select(p => new Apis.CloudResourceManager.v1.Data.Project()
+                {
+                    Name = p.DisplayName,
+                    ProjectId = p.Project.ProjectId
+                })
+                .ToList();
+
+            if (dialog.ShowDialog(this.View) == DialogResult.OK)
+            {
+                foreach (var selected in dialog.SelectedProjects) // TODO: Remove in bulk
+                {
+                    await RemoveProjectAsync(selected).ConfigureAwait(true);
+                }
+            }
         }
 
         public async Task<IEnumerable<ViewModelNode>> ExpandRootAsync()
