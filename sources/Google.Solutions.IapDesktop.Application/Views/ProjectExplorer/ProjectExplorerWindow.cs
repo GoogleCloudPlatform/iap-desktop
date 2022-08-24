@@ -298,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                             out var projects) == DialogResult.OK)
                     {
                         await this.viewModel
-                            .AddProjectsAsync(projects)
+                            .AddProjectsAsync(projects.ToArray())
                             .ConfigureAwait(true);
 
                         return true;
@@ -335,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     out var projects) == DialogResult.OK)
             {
                 await this.viewModel
-                    .RemoveProjectsAsync(projects)
+                    .RemoveProjectsAsync(projects.ToArray())
                     .ConfigureAwait(true);
             }
         }

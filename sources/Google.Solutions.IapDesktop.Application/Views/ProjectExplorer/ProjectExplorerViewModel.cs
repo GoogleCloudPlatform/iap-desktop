@@ -361,7 +361,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Actions.
         //---------------------------------------------------------------------
 
-        public async Task AddProjectsAsync(IEnumerable<ProjectLocator> projects)// TODO: use params
+        public async Task AddProjectsAsync(params ProjectLocator[] projects)
         {
             foreach (var project in projects)
             {
@@ -376,10 +376,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             await RefreshAsync(true).ConfigureAwait(true);
         }
 
-        public Task AddProjectAsync(ProjectLocator project)
-            => AddProjectsAsync(new[] { project });
-
-        public async Task RemoveProjectsAsync(IEnumerable<ProjectLocator> projects)
+        public async Task RemoveProjectsAsync(params ProjectLocator[] projects)
         {
             // Reset selection to a safe place.
             this.SelectedNode = this.RootNode;
@@ -396,10 +393,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             await RefreshAsync(true).ConfigureAwait(true);
         }
-
-
-        public Task RemoveProjectAsync(ProjectLocator project) // TODO: use params
-            => RemoveProjectsAsync(new[] { project });
 
         public async Task<IEnumerable<ViewModelNode>> ExpandRootAsync()
         {
@@ -450,7 +443,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             if (this.SelectedNode is ProjectViewModelNode projectNode)
             {
-                await RemoveProjectAsync(projectNode.ProjectNode.Project)
+                await RemoveProjectsAsync(projectNode.ProjectNode.Project)
                     .ConfigureAwait(true);
             }
         }

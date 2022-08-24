@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 
         internal sealed class StaticModel : IProjectPickerModel
         {
-            private IReadOnlyCollection<Project> projects;
+            private readonly IReadOnlyCollection<Project> projects;
 
             public StaticModel(IReadOnlyCollection<Project> projects)
             {
