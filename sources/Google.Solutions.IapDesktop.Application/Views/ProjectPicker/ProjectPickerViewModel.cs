@@ -34,22 +34,28 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
-    public sealed class ProjectPickerViewModel : ViewModelBase, IDisposable
+    public sealed class ProjectPickerViewModel : ViewModelBase
     {
         private const int MaxResults = 100;
+        private readonly IProjectPickerModel model;
 
-        private readonly IResourceManagerAdapter resourceManager;
-
-        private IEnumerable<Project> selectedProjects;
         private string filter;
-        private string statusText;
-        private bool isLoading;
-        private Exception filteringException;
 
-        public ProjectPickerViewModel(
-            IResourceManagerAdapter resourceManager)
+        public ProjectPickerViewModel(IProjectPickerModel model)
         {
-            this.resourceManager = resourceManager;
+            this.model = model;
+
+            this.FilteredProjects = new RangeObservableCollection<Project>();
+            this.IsLoading = ObservableProperty.Build(false);
+            this.LoadingError = ObservableProperty.Build<Exception>(null);
+            this.StatusText = ObservableProperty.Build<string>(null);
+            this.IsStatusTextVisible = ObservableProperty.Build(
+                this.StatusText, 
+                t => t != null);
+            this.SelectedProjects = ObservableProperty.Build<IEnumerable<Project>>(null);
+            this.IsProjectSelected = ObservableProperty.Build(
+                this.SelectedProjects,
+                p => p != null && p.Any());
         }
 
         //---------------------------------------------------------------------
@@ -57,57 +63,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         //---------------------------------------------------------------------
 
         public RangeObservableCollection<Project> FilteredProjects { get; }
-            = new RangeObservableCollection<Project>();
 
-        public bool IsLoading
-        {
-            get => this.isLoading;
-            private set
-            {
-                this.isLoading = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsLoading { get; }
 
-        public bool IsProjectSelected
-            => this.selectedProjects != null && this.selectedProjects.Any();
+        public ObservableFunc<bool> IsProjectSelected { get; }
 
-        public IEnumerable<Project> SelectedProjects
-        {
-            get => this.selectedProjects;
-            set
-            {
-                this.selectedProjects = value;
-                RaisePropertyChange();
-                RaisePropertyChange((ProjectPickerViewModel m) => m.IsProjectSelected);
-            }
-        }
+        public ObservableProperty<IEnumerable<Project>> SelectedProjects { get; }
 
-        public Exception LoadingError
-        {
-            get => this.filteringException;
-            private set
-            {
-                this.filteringException = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<Exception> LoadingError { get; }
 
-        public string StatusText
-        {
-            get => this.statusText;
-            private set
-            {
-                this.statusText = value;
-                RaisePropertyChange();
-                RaisePropertyChange((ProjectPickerViewModel m) => m.IsStatusTextVisible);
-            }
-        }
+        public ObservableProperty<string> StatusText { get; }
 
-        public bool IsStatusTextVisible
-        {
-            get => this.statusText != null;
-        }
+        public ObservableFunc<bool> IsStatusTextVisible { get; }
 
         //---------------------------------------------------------------------
         // "Input" properties.
@@ -134,8 +101,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.filter = filter;
             RaisePropertyChange((ProjectPickerViewModel m) => m.Filter);
 
-            this.IsLoading = true;
-            this.SelectedProjects = null;
+            this.IsLoading.Value = true;
+            this.SelectedProjects.Value = null;
             this.FilteredProjects.Clear();
 
             //
@@ -144,47 +111,38 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             //
             try
             {
-                var result = await this.resourceManager.ListProjectsAsync(
-                        string.IsNullOrEmpty(this.filter)
-                            ? null // All projects.
-                            : ProjectFilter.ByPrefix(this.filter),
+                var result = await this.model.ListProjectsAsync(
+                        this.filter,
                         MaxResults,
                         CancellationToken.None)
                     .ConfigureAwait(true);
 
+                //
                 // Clear again because multiple filter operations might be running
                 // in parallel.
+                //
                 this.FilteredProjects.Clear();
                 this.FilteredProjects.AddRange(result.Projects);
                 if (result.IsTruncated)
                 {
-                    this.StatusText =
+                    this.StatusText.Value =
                         $"Over {result.Projects.Count()} projects found, " +
                             "use search to refine selection";
                 }
                 else
                 {
-                    this.StatusText =
+                    this.StatusText.Value =
                         $"{result.Projects.Count()} projects found";
                 }
             }
             catch (Exception e)
             {
-                this.LoadingError = e;
+                this.LoadingError.Value = e;
             }
 
-            this.IsLoading = false;
+            this.IsLoading.Value = false;
 
             RaisePropertyChange((ProjectPickerViewModel m) => m.FilteredProjects);
-        }
-
-        //---------------------------------------------------------------------
-        // IDisposable.
-        //---------------------------------------------------------------------
-
-        public void Dispose()
-        {
-            this.resourceManager.Dispose();
         }
     }
 }

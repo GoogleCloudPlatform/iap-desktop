@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
@@ -177,6 +178,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .GetFilteredNodesAsync(false)
                 .ConfigureAwait(true))
                 .FirstOrDefault(i => i.Locator.Name == locator.Name);
+        }
+
+        internal IReadOnlyCollection<IProjectModelProjectNode> Projects
+        {
+            get
+            {
+                var modelNode = (IProjectModelCloudNode)this.RootNode.ModelNode;
+                var projects = modelNode?.Projects ?? Enumerable.Empty<IProjectModelProjectNode>();
+
+                return projects
+                    .EnsureNotNull()
+                    .ToList();
+            }
         }
 
         //---------------------------------------------------------------------
@@ -354,7 +368,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Actions.
         //---------------------------------------------------------------------
 
-        public async Task AddProjectsAsync(IEnumerable<ProjectLocator> projects)
+        public async Task AddProjectsAsync(params ProjectLocator[] projects)
         {
             foreach (var project in projects)
             {
@@ -369,19 +383,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             await RefreshAsync(true).ConfigureAwait(true);
         }
 
-        public Task AddProjectAsync(ProjectLocator project)
-            => AddProjectsAsync(new[] { project });
-
-        public async Task RemoveProjectAsync(ProjectLocator project)
+        public async Task RemoveProjectsAsync(params ProjectLocator[] projects)
         {
             // Reset selection to a safe place.
             this.SelectedNode = this.RootNode;
 
-            await this.projectModelService
-                .RemoveProjectAsync(project)
-                .ConfigureAwait(true);
+            foreach (var project in projects)
+            {
+                await this.projectModelService
+                    .RemoveProjectAsync(project)
+                    .ConfigureAwait(true);
+            }
 
-            // Make sure the new project is reflected.
+            //
+            // Refresh to ensure the removal is reflected.
+            //
             await RefreshAsync(true).ConfigureAwait(true);
         }
 
@@ -434,7 +450,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             if (this.SelectedNode is ProjectViewModelNode projectNode)
             {
-                await RemoveProjectAsync(projectNode.ProjectNode.Project)
+                await RemoveProjectsAsync(projectNode.ProjectNode.Project)
                     .ConfigureAwait(true);
             }
         }

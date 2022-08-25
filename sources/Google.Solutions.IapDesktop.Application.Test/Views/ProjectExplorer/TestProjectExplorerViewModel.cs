@@ -222,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(false);
 
             var instances = await GetInstancesAsync(viewModel)
@@ -306,7 +306,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
             var instances = await GetInstancesAsync(viewModel).ConfigureAwait(true);
@@ -345,6 +345,30 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         }
 
         //---------------------------------------------------------------------
+        // Projects.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNoProjectsAdded_ThenProjectsIsEmpty()
+        {
+            var viewModel = CreateViewModel();
+
+            CollectionAssert.IsEmpty(viewModel.Projects);
+        }
+
+        [Test]
+        public async Task WhenProjectAdded_ThenProjectsIsNotEmpty()
+        {
+            var viewModel = CreateViewModel();
+
+            await viewModel
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(false);
+
+            CollectionAssert.IsNotEmpty(viewModel.Projects);
+        }
+
+        //---------------------------------------------------------------------
         // Add/RemoveProjectAsync.
         //---------------------------------------------------------------------
 
@@ -359,7 +383,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Assert.IsFalse(initialProjectsList.Any());
 
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(false);
 
             var updatedProjectsList = await viewModel.RootNode
@@ -382,7 +406,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Assert.AreEqual(1, initialProjectsList.Count());
 
             await viewModel
-                .RemoveProjectAsync(new ProjectLocator(SampleProjectId))
+                .RemoveProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(false);
 
             var updatedProjectsList = await viewModel.RootNode
@@ -436,7 +460,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
             int nofifications = 0;
@@ -466,7 +490,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
             int nofifications = 0;
@@ -506,7 +530,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
             int nofifications = 0;
@@ -537,7 +561,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
             int nofifications = 0;
@@ -568,7 +592,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
             int nofifications = 0;
@@ -609,7 +633,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
             int nofifications = 0;
@@ -650,7 +674,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
             int nofifications = 0;
@@ -702,7 +726,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var instances = (await GetInstancesAsync(viewModel).ConfigureAwait(true))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
@@ -728,7 +752,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var instances = (await GetInstancesAsync(viewModel).ConfigureAwait(true))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
@@ -775,7 +799,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var instances = (await GetInstancesAsync(viewModel).ConfigureAwait(true))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
@@ -798,7 +822,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var instances = (await GetInstancesAsync(viewModel).ConfigureAwait(true))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
@@ -826,7 +850,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
 
             Assert.IsNotNull(eventHandler);
@@ -854,7 +878,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
@@ -875,7 +899,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var instances = await GetInstancesAsync(viewModel)
                 .ConfigureAwait(true);
@@ -898,7 +922,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
@@ -918,7 +942,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
@@ -941,7 +965,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var instances = await GetInstancesAsync(viewModel)
                 .ConfigureAwait(true);
@@ -963,7 +987,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
@@ -983,7 +1007,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
@@ -1006,7 +1030,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var instances = await GetInstancesAsync(viewModel)
                 .ConfigureAwait(true);
@@ -1040,7 +1064,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
@@ -1060,7 +1084,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var projects = await viewModel
                 .RootNode
@@ -1083,7 +1107,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var viewModel = CreateViewModel();
             await viewModel
-                .AddProjectAsync(new ProjectLocator(SampleProjectId))
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
                 .ConfigureAwait(true);
             var instances = await GetInstancesAsync(viewModel)
                 .ConfigureAwait(true);

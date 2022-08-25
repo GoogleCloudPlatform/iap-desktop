@@ -198,6 +198,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             // Context menu.
             //
+
+            this.contextMenuCommands.AddCommand(
+                new Command<IProjectModelNode>(
+                    "&Unload projects...",
+                    node => node is IProjectModelCloudNode
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => UnloadProjectsAsync())
+                {
+                    ActivityText = "Unloading projects"
+                });
             this.contextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "&Refresh project",
@@ -275,19 +286,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 //
                 // Show project picker
                 //
-                using (var dialog = this.serviceProvider.GetService<IProjectPickerWindow>())
-                {
-                    if (dialog.ShowDialog(this) != DialogResult.OK)
+                using (var resourceManager = this.serviceProvider.GetService<IResourceManagerAdapter>())
+                { 
+                    if (this.serviceProvider
+                        .GetService<IProjectPickerDialog>()
+                        .SelectCloudProjects(
+                            this,
+                            "Add projects",
+                            resourceManager,
+                            this.serviceProvider.GetService<IExceptionDialog>(),
+                            out var projects) == DialogResult.OK)
                     {
-                        // Cancelled.
+                        await this.viewModel
+                            .AddProjectsAsync(projects.ToArray())
+                            .ConfigureAwait(true);
+
+                        return true;
+                    }
+                    else
+                    {
                         return false;
                     }
-
-                    await this.viewModel
-                        .AddProjectsAsync(dialog.Projects)
-                        .ConfigureAwait(true);
-
-                    return true;
                 }
             }
             catch (Exception e) when (e.IsCancellation())
@@ -301,6 +320,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     .GetService<IExceptionDialog>()
                     .Show(this, "Adding project failed", e);
                 return false;
+            }
+        }
+
+        private async Task UnloadProjectsAsync()
+        {
+            if (this.serviceProvider
+                .GetService<IProjectPickerDialog>()
+                .SelectLocalProjects(
+                    this,
+                    "Unload projects",
+                    this.viewModel.Projects,
+                    this.serviceProvider.GetService<IExceptionDialog>(),
+                    out var projects) == DialogResult.OK)
+            {
+                await this.viewModel
+                    .RemoveProjectsAsync(projects.ToArray())
+                    .ConfigureAwait(true);
             }
         }
 

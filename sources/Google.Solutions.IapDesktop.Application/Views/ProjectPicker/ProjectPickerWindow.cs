@@ -34,30 +34,26 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
-    public interface IProjectPickerWindow : IDisposable
-    {
-        DialogResult ShowDialog(IWin32Window owner);
-        IEnumerable<ProjectLocator> Projects { get; }
-    }
-
+    /// <summary>
+    /// Generic project picker.
+    /// </summary>
     [SkipCodeCoverage("All logic in view model")]
-    public partial class ProjectPickerWindow : Form, IProjectPickerWindow
+    public partial class ProjectPickerWindow : Form
     {
         private readonly ProjectPickerViewModel viewModel;
 
-        public ProjectPickerWindow(IServiceProvider serviceProvider)
+        public ProjectPickerWindow(
+            IProjectPickerModel model,
+            IExceptionDialog exceptionDialog)
         {
             InitializeComponent();
 
-            this.viewModel = new ProjectPickerViewModel(
-                serviceProvider.GetService<IResourceManagerAdapter>());
-
-            this.viewModel.OnPropertyChange(
-                m => m.LoadingError,
+            this.viewModel = new ProjectPickerViewModel(model);
+            this.viewModel.LoadingError.OnPropertyChange(
+                m => m.Value,
                 e =>
                 {
-                    serviceProvider.GetService<IExceptionDialog>()
-                        .Show(this, "Loading projects failed", e);
+                    exceptionDialog.Show(this, "Loading projects failed", e);
                 });
 
             // Bind list.
@@ -79,12 +75,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 m => m.SelectedProjects,
                 this.components);
 
-            this.statusLabel.BindProperty(
+            this.statusLabel.BindReadonlyProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsStatusTextVisible,
                 this.components);
-            this.statusLabel.BindProperty(
+            this.statusLabel.BindReadonlyProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.StatusText,
@@ -94,33 +90,42 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.viewModel.Filter = null;
 
             // Bind buttons.
-            this.addProjectButton.BindReadonlyProperty(
+            this.pickProjectButton.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsProjectSelected,
                 this.components);
 
             this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
-
-            this.Disposed += (sender, args) =>
-            {
-                this.viewModel.Dispose();
-            };
         }
-
-        //---------------------------------------------------------------------
-        // IProjectPickerWindow.
-        //---------------------------------------------------------------------
-
-        public IEnumerable<ProjectLocator> Projects
-            => this.viewModel
-                .SelectedProjects
-                .EnsureNotNull()
-                .Select(p => new ProjectLocator(p.ProjectId));
 
         private void addProjectButton_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+        }
+
+        public IReadOnlyCollection<ProjectLocator> SelectedProjects
+            => this.viewModel
+                .SelectedProjects
+                .Value
+                .EnsureNotNull()
+                .Select(p => new ProjectLocator(p.ProjectId))
+                .ToList();
+
+        public string DialogText
+        {
+            get => this.Text;
+            set
+            {
+                this.Text = value;
+                this.headlineLabel.Text = value;
+            }
+        }
+
+        public string ButtonText
+        {
+            get => this.pickProjectButton.Text;
+            set => this.pickProjectButton.Text = value;
         }
     }
 }
