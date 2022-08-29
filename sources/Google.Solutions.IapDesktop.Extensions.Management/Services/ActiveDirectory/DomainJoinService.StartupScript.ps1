@@ -118,7 +118,7 @@ try {
         } | ConvertTo-Json -Compress)
 
     Write-Host "Domain join completed, restarting..."
-    Restart-Computer
+    & shutdown /r /f /d P:2:4 /c "Completing domain join" /t 0
 }
 catch {
     #
