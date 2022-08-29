@@ -254,7 +254,6 @@ namespace Google.Solutions.IapDesktop
             {
                 baseLayer.AddSingleton(profile);
 
-                baseLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
                 baseLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
                 baseLayer.AddTransient<ITaskDialog, TaskDialog>();
                 baseLayer.AddTransient<ICredentialDialog, CredentialDialog>();
@@ -328,6 +327,7 @@ namespace Google.Solutions.IapDesktop
                 windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
 
                 windowAndWorkflowLayer.AddTransient<AboutWindow>();
+                windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
                 windowAndWorkflowLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
                 windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
                 windowAndWorkflowLayer.AddSingleton<IProjectModelService, ProjectModelService>();
