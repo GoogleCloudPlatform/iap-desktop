@@ -529,6 +529,42 @@ namespace Google.Solutions.IapDesktop.Windows
                 "Theme",
                 _ => CommandState.Enabled,
                 _ => this.serviceProvider.GetService<DebugThemeWindow>().ShowWindow()));
+
+            var crashCommand = debugCommand.AddCommand(new Command<IMainForm>(
+                "Crash",
+                _ => CommandState.Enabled,
+                _ => { }));
+            crashCommand.AddCommand(new Command<IMainForm>(
+                "Command: Throw ApplicationException (sync)",
+                _ => CommandState.Enabled,
+                _ => throw new ApplicationException("DEBUG")));
+            crashCommand.AddCommand(new Command<IMainForm>(
+                "Command: Throw ApplicationException (async)",
+                _ => CommandState.Enabled,
+                async _ =>
+                {
+                    await Task.Yield();
+                    throw new ApplicationException("DEBUG");
+                }));
+            crashCommand.AddCommand(new Command<IMainForm>(
+                "Command: Throw TaskCanceledException (sync)",
+                _ => CommandState.Enabled,
+                _ => throw new TaskCanceledException("DEBUG")));
+            crashCommand.AddCommand(new Command<IMainForm>(
+                "Command: Throw TaskCanceledException (async)",
+                _ => CommandState.Enabled,
+                async _ =>
+                {
+                    await Task.Yield();
+                    throw new TaskCanceledException("DEBUG");
+                }));
+            crashCommand.AddCommand(new Command<IMainForm>(
+                "Window: Throw ApplicationException",
+                _ => CommandState.Enabled,
+                _ =>
+                {
+                    this.BeginInvoke((Action)(() => throw new ApplicationException("DEBUG")));
+                }));
 #endif
         }
 
