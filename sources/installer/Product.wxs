@@ -152,7 +152,7 @@
         <RegistryValue
           Id="RegStartMenuShortcuts"
           Root="HKCU"
-          Key="HKEY_CURRENT_USER\Software\Google\IapDesktop\Installer"
+          Key="Software\Google\IapDesktop\Installer"
           Name="StartMenuShortcuts"
           Type="integer"
           KeyPath="yes"
@@ -171,7 +171,7 @@
         <RegistryValue
           Id="RegProgramFiles"
           Root="HKCU"
-          Key="HKEY_CURRENT_USER\Software\Google\IapDesktop\Installer"
+          Key="Software\Google\IapDesktop\Installer"
           Name="ProgramFiles"
           Type="integer"
           KeyPath="yes"
