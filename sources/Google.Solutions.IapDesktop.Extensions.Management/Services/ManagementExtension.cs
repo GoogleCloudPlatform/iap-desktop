@@ -303,8 +303,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ActivityText = "Joining to Active Directory"
                 });
 
-            projectExplorer.ContextMenuCommands.AddSeparator(8);
-
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Show serial port &output (COM1)",
