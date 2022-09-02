@@ -19,13 +19,17 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using static WeifenLuo.WinFormsUI.Docking.DockPanelExtender;
 
 namespace Google.Solutions.IapDesktop.Application.Services
 {
@@ -38,7 +42,14 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
     public class ThemeService : IThemeService
     {
-        private readonly ThemeBase theme = new VS2015LightTheme();
+        private readonly ThemeBase theme;
+
+        public ThemeService()
+        {
+            this.theme = new VS2015LightTheme();
+            this.theme.Extender.FloatWindowFactory = new CustomFloatWindowFactory();
+            this.theme.Extender.DockPaneFactory = new DockPaneFactory(this.theme.Extender.DockPaneFactory);
+        }
 
         //---------------------------------------------------------------------
         // IThemeService.
@@ -54,6 +65,89 @@ namespace Google.Solutions.IapDesktop.Application.Services
         public void ApplyTheme(ToolStrip toolStrip)
         {
             this.theme.ApplyTo(toolStrip);
+        }
+
+        //---------------------------------------------------------------------
+        // FloatWindowFactory.
+        //---------------------------------------------------------------------
+
+        public class CustomFloatWindow : FloatWindow // TODO: Rename
+        {
+            public CustomFloatWindow(DockPanel dockPanel, DockPane pane)
+                : base(dockPanel, pane)
+            {
+            }
+
+            public CustomFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
+                : base(dockPanel, pane, bounds)
+            {
+            }
+        }
+
+        public class CustomFloatWindowFactory : DockPanelExtender.IFloatWindowFactory
+        {
+            public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
+            {
+                return new CustomFloatWindow(dockPanel, pane, bounds);
+            }
+
+            public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane)
+            {
+                return new CustomFloatWindow(dockPanel, pane);
+            }
+        }
+
+        private class DockPaneFactory : IDockPaneFactory
+        {
+            private readonly IDockPaneFactory factory;
+
+            public DockPaneFactory(IDockPaneFactory factory)
+            {
+                Debug.Assert(factory != null);
+                this.factory = factory;
+            }
+
+            public DockPane CreateDockPane(IDockContent content, DockState visibleState, bool show)
+            {
+                return this.factory.CreateDockPane(content, visibleState, show);
+            }
+
+            public DockPane CreateDockPane(IDockContent content, FloatWindow floatWindow, bool show)
+            {
+                return this.factory.CreateDockPane(content, floatWindow, show);
+            }
+
+            public DockPane CreateDockPane(IDockContent content, DockPane prevPane, DockAlignment alignment,
+                                           double proportion, bool show)
+            {
+                return this.factory.CreateDockPane(content, prevPane, alignment, proportion, show);
+            }
+
+            public DockPane CreateDockPane(IDockContent content, Rectangle floatWindowBounds, bool show)
+            {
+                
+                if (content is DocumentWindow docWindow)
+                {
+                    var form = docWindow.DockHandler.DockPanel.FindForm();
+                    var nonClientOverhead = new Size
+                    {
+                        Width = form.Width - form.ClientRectangle.Width,
+                        Height = form.Height - form.ClientRectangle.Height
+                    };
+
+
+                    return this.factory.CreateDockPane(
+                        content,
+                        new Rectangle(
+                            docWindow.Bounds.Location,
+                            docWindow.Bounds.Size + nonClientOverhead),
+                        show);
+                }
+                else
+                {
+                    return this.factory.CreateDockPane(content, floatWindowBounds, show);
+                }
+            }
         }
     }
 }

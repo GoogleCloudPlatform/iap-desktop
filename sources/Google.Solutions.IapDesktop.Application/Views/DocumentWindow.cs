@@ -296,24 +296,57 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     case WindowMessage.WM_SHOWWINDOW:
                         if (this.Pane?.FloatWindow != null)
                         {
-                            //
-                            // Window has been torn off and is now entering a floating state.
-                            // 
-                            // Set the size of the floating window so that it fits the 
-                            // required client size.
-                            //
-                            var nonClientOverhead = new Size
-                            {
-                                Width = this.Pane.FloatWindow.Width - this.Pane.FloatWindow.ClientRectangle.Width,
-                                Height = this.Pane.FloatWindow.Height - this.Pane.FloatWindow.ClientRectangle.Height
-                            };
+                            var floatWindow = this.Pane.FloatWindow;
 
-                            var targetSize = this.DefaultFloatWindowClientSize + nonClientOverhead;
-                            if (this.Pane.FloatWindow.Size != targetSize)
+                            //
+                            // If there is more than one content, then it's not a new
+                            // window. We're merely moved another document to an existing
+                            // window.
+                            //
+                            if (this.Pane.Contents.Count == 1)
                             {
-                                this.Pane.FloatWindow.Size = targetSize;
+                                //
+                                // A new window has been torn off and is now entering a floating state.
+                                //
+
+
+
+                                //
+                                // Make sure the window looks and feels like a normal window.
+                                //
+                                // NB. The IFloatWindowFactory interface lets us customize
+                                // the float window, but it doesn't let us distinguish between
+                                // floating document window and floating tool windows. Therefore,
+                                // apply the changes here instead.
+                                //
+
+                                //if (floatWindow.FormBorderStyle != FormBorderStyle.Sizable)
+                                //{
+                                //    // TODO: Apply other changes.
+                                //    //floatWindow.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+                                //    floatWindow.FormBorderStyle = FormBorderStyle.Sizable;
+                                //    floatWindow.ShowInTaskbar = true;
+                                //    floatWindow.Owner = null;
+                                //    //floatWindow.Icon = (this.MainForm as Form)?.Icon; // TODO: fix
+                                //}
+
+                                ////
+                                //// Set the size of the floating window so that it fits the 
+                                //// required client size.
+                                ////
+                                //var nonClientOverhead = new Size
+                                //{
+                                //    Width = floatWindow.Width - floatWindow.ClientRectangle.Width,
+                                //    Height = floatWindow.Height - floatWindow.ClientRectangle.Height
+                                //};
+
+                                //var targetSize = this.DefaultFloatWindowClientSize + nonClientOverhead;
+                                //if (floatWindow.Size != targetSize)
+                                //{
+                                //    floatWindow.Size = targetSize;
+                                //    Invalidate();
+                                //}
                             }
-
                         }
 
                         OnDockEnd();
