@@ -47,8 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.Services
         public ThemeService()
         {
             this.theme = new VS2015LightTheme();
-            this.theme.Extender.FloatWindowFactory = new CustomFloatWindowFactory();
-            this.theme.Extender.DockPaneFactory = new DockPaneFactory(this.theme.Extender.DockPaneFactory);
+            this.theme.Extender.DockPaneFactory = 
+                new DockPaneFactory(this.theme.Extender.DockPaneFactory);
         }
 
         //---------------------------------------------------------------------
@@ -68,34 +68,8 @@ namespace Google.Solutions.IapDesktop.Application.Services
         }
 
         //---------------------------------------------------------------------
-        // FloatWindowFactory.
+        // DockPaneFactory.
         //---------------------------------------------------------------------
-
-        public class CustomFloatWindow : FloatWindow // TODO: Rename
-        {
-            public CustomFloatWindow(DockPanel dockPanel, DockPane pane)
-                : base(dockPanel, pane)
-            {
-            }
-
-            public CustomFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
-                : base(dockPanel, pane, bounds)
-            {
-            }
-        }
-
-        public class CustomFloatWindowFactory : DockPanelExtender.IFloatWindowFactory
-        {
-            public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
-            {
-                return new CustomFloatWindow(dockPanel, pane, bounds);
-            }
-
-            public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane)
-            {
-                return new CustomFloatWindow(dockPanel, pane);
-            }
-        }
 
         private class DockPaneFactory : IDockPaneFactory
         {
@@ -107,34 +81,49 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 this.factory = factory;
             }
 
-            public DockPane CreateDockPane(IDockContent content, DockState visibleState, bool show)
+            public DockPane CreateDockPane(
+                IDockContent content,
+                DockState visibleState,
+                bool show)
             {
                 return this.factory.CreateDockPane(content, visibleState, show);
             }
 
-            public DockPane CreateDockPane(IDockContent content, FloatWindow floatWindow, bool show)
+            public DockPane CreateDockPane(
+                IDockContent content,
+                FloatWindow floatWindow,
+                bool show)
             {
                 return this.factory.CreateDockPane(content, floatWindow, show);
             }
 
-            public DockPane CreateDockPane(IDockContent content, DockPane prevPane, DockAlignment alignment,
-                                           double proportion, bool show)
+            public DockPane CreateDockPane(
+                IDockContent content,
+                DockPane prevPane,
+                DockAlignment alignment,
+                double proportion,
+                bool show)
             {
                 return this.factory.CreateDockPane(content, prevPane, alignment, proportion, show);
             }
 
-            public DockPane CreateDockPane(IDockContent content, Rectangle floatWindowBounds, bool show)
+            public DockPane CreateDockPane(
+                IDockContent content,
+                Rectangle floatWindowBounds,
+                bool show)
             {
-                
                 if (content is DocumentWindow docWindow)
                 {
+                    //
+                    // Maintain the original client size. That's particularly
+                    // important for RDP window as resizing is slow and expensive.
+                    //
                     var form = docWindow.DockHandler.DockPanel.FindForm();
                     var nonClientOverhead = new Size
                     {
                         Width = form.Width - form.ClientRectangle.Width,
                         Height = form.Height - form.ClientRectangle.Height
                     };
-
 
                     return this.factory.CreateDockPane(
                         content,
