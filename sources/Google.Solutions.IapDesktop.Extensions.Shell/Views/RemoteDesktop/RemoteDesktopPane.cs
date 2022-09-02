@@ -122,7 +122,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         public static RemoteDesktopPane TryGetActivePane(
             IMainForm mainForm)
         {
-            return mainForm.MainPanel.ActiveDocument as RemoteDesktopPane;
+            //
+            // NB. The active content might be in a float window.
+            //
+            return mainForm.MainPanel.ActivePane?.ActiveContent as RemoteDesktopPane;
         }
 
         //---------------------------------------------------------------------

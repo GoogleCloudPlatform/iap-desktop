@@ -19,17 +19,19 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using static WeifenLuo.WinFormsUI.Docking.DockPanelExtender;
 
 namespace Google.Solutions.IapDesktop.Application.Services
 {
@@ -47,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         public ThemeService()
         {
             this.theme = new VS2015LightTheme();
+            this.theme.Extender.FloatWindowFactory = new FloatWindowFactory();
             this.theme.Extender.DockPaneFactory = 
                 new DockPaneFactory(this.theme.Extender.DockPaneFactory);
         }
@@ -71,11 +74,88 @@ namespace Google.Solutions.IapDesktop.Application.Services
         // DockPaneFactory.
         //---------------------------------------------------------------------
 
-        private class DockPaneFactory : IDockPaneFactory
+        private static class NativeMethods
         {
-            private readonly IDockPaneFactory factory;
+            internal const int HTREDUCE = 8;
+            internal const int SC_MINIMIZE = 0xF020;
 
-            public DockPaneFactory(IDockPaneFactory factory)
+            [DllImport("user32.dll")]
+            internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+        }
+
+        private class MinimizableFloatWindow : FloatWindow
+        {
+            public MinimizableFloatWindow(DockPanel dockPanel, DockPane pane)
+                : base(dockPanel, pane)
+            {
+            }
+
+            public MinimizableFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
+                : base(dockPanel, pane, bounds)
+            {
+            }
+
+            protected override void WndProc(ref Message m)
+            {
+                if (base.IsDisposed)
+                {
+                    return;
+                }
+
+                //
+                // The base classes implementation doesn't handle clicks on the
+                // minimize button properly, see 
+                // https://github.com/dockpanelsuite/dockpanelsuite/issues/526..
+                //
+                if (m.Msg == (int)WindowMessage.WM_NCLBUTTONDOWN && 
+                    m.WParam.ToInt32() == NativeMethods.HTREDUCE)
+                {
+                    //
+                    // Eat this message so that the base class can't misinterpret it
+                    // as a click on the title bar.
+                    //
+                }
+                else if (m.Msg == (int)WindowMessage.WM_NCLBUTTONUP && 
+                    m.WParam.ToInt32() == NativeMethods.HTREDUCE)
+                {
+                    //
+                    // Minimize window.
+                    //
+                    NativeMethods.SendMessage(
+                        this.Handle, 
+                        (int)WindowMessage.WM_SYSCOMMAND, 
+                        new IntPtr(NativeMethods.SC_MINIMIZE), 
+                        IntPtr.Zero);
+                }
+                else
+                {
+                    base.WndProc(ref m);
+                }
+            }
+        }
+
+        private class FloatWindowFactory : DockPanelExtender.IFloatWindowFactory
+        {
+            public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
+            {
+                return new MinimizableFloatWindow(dockPanel, pane, bounds);
+            }
+
+            public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane)
+            {
+                return new MinimizableFloatWindow(dockPanel, pane);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // DockPaneFactory.
+        //---------------------------------------------------------------------
+
+        private class DockPaneFactory : DockPanelExtender.IDockPaneFactory
+        {
+            private readonly DockPanelExtender.IDockPaneFactory factory;
+
+            public DockPaneFactory(DockPanelExtender.IDockPaneFactory factory)
             {
                 Debug.Assert(factory != null);
                 this.factory = factory;
@@ -125,12 +205,23 @@ namespace Google.Solutions.IapDesktop.Application.Services
                         Height = form.Height - form.ClientRectangle.Height
                     };
 
-                    return this.factory.CreateDockPane(
+                    var pane = this.factory.CreateDockPane(
                         content,
                         new Rectangle(
                             docWindow.Bounds.Location,
                             docWindow.Bounds.Size + nonClientOverhead),
                         show);
+
+                    Debug.Assert(pane.FloatWindow != null);
+
+                    //
+                    // Make this a first-class window.
+                    //
+                    pane.FloatWindow.FormBorderStyle = FormBorderStyle.Sizable;
+                    pane.FloatWindow.ShowInTaskbar = true;
+                    pane.FloatWindow.Owner = null;
+
+                    return pane;
                 }
                 else
                 {
