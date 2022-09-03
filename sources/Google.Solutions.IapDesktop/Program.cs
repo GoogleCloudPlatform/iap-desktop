@@ -258,6 +258,10 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddTransient<ITaskDialog, TaskDialog>();
                 baseLayer.AddTransient<ICredentialDialog, CredentialDialog>();
                 baseLayer.AddSingleton<IThemeService, ThemeService>();
+                baseLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
+                baseLayer.AddTransient<HelpService>();
+                baseLayer.AddTransient<GithubAdapter>();
+                baseLayer.AddTransient<BuganizerAdapter>();
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
@@ -293,8 +297,6 @@ namespace Google.Solutions.IapDesktop
                 adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
                 adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
                 adapterLayer.AddTransient<IWindowsCredentialService, WindowsCredentialService>();
-                adapterLayer.AddTransient<GithubAdapter>();
-                adapterLayer.AddTransient<BuganizerAdapter>();
                 adapterLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
                 try
@@ -323,11 +325,9 @@ namespace Google.Solutions.IapDesktop
                 //
                 windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
                 windowAndWorkflowLayer.AddTransient<ICloudConsoleService, CloudConsoleService>();
-                windowAndWorkflowLayer.AddTransient<HelpService>();
                 windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
 
                 windowAndWorkflowLayer.AddTransient<AboutWindow>();
-                windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
                 windowAndWorkflowLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
                 windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
                 windowAndWorkflowLayer.AddSingleton<IProjectModelService, ProjectModelService>();
