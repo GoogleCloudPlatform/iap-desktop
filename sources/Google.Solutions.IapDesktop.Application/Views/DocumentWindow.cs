@@ -294,28 +294,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         break;
 
                     case WindowMessage.WM_SHOWWINDOW:
-                        if (this.Pane?.FloatWindow != null)
-                        {
-                            //
-                            // Window has been torn off and is now entering a floating state.
-                            // 
-                            // Set the size of the floating window so that it fits the 
-                            // required client size.
-                            //
-                            var nonClientOverhead = new Size
-                            {
-                                Width = this.Pane.FloatWindow.Width - this.Pane.FloatWindow.ClientRectangle.Width,
-                                Height = this.Pane.FloatWindow.Height - this.Pane.FloatWindow.ClientRectangle.Height
-                            };
-
-                            var targetSize = this.DefaultFloatWindowClientSize + nonClientOverhead;
-                            if (this.Pane.FloatWindow.Size != targetSize)
-                            {
-                                this.Pane.FloatWindow.Size = targetSize;
-                            }
-
-                        }
-
                         OnDockEnd();
                         break;
                 }
