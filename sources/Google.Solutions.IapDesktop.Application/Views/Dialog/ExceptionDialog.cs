@@ -131,11 +131,32 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     };
                 }
 
-                UnsafeNativeMethods.TaskDialogIndirect(
-                    ref config,
-                    out int buttonPressed,
-                    out int radioButtonPressed,
-                    out bool verificationFlagPressed);
+                try
+                {
+                    UnsafeNativeMethods.TaskDialogIndirect(
+                        ref config,
+                        out int buttonPressed,
+                        out int radioButtonPressed,
+                        out bool verificationFlagPressed);
+                }
+                catch (COMException e)
+                {
+                    ApplicationTraceSources.Default.TraceError(e);
+
+                    //
+                    // TaskDialogIndirect can fail spuriously, typically with a 
+                    // 0x80070715 error (The specified resource type cannot be
+                    // found in the image file). Cf. b/244620235, b/239776121.
+                    //
+                    // Fall back to a classic MessageBox.
+                    //
+                    MessageBox.Show(
+                        parent,
+                        message,
+                        caption,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
             }
         }
 
