@@ -155,6 +155,7 @@
     <Compile Include="Views\Options\TestScreenOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestNetworkOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestGeneralOptionsViewModel.cs" />
+    <Compile Include="Views\ProjectExplorer\TestProjectExplorerSettings.cs" />
     <Compile Include="Views\ProjectExplorer\TestProjectExplorerViewModel.cs" />
     <Compile Include="Views\ProjectPicker\TestProjectPickerDialog.cs" />
     <Compile Include="Views\ProjectPicker\TestProjectPickerViewModel.cs" />

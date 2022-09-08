@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
             return new ProjectExplorerViewModel(
                 new Control(),
-                this.settingsRepository,
+                new ProjectExplorerSettings(this.settingsRepository, false),
                 new SynchrounousJobService(),
                 this.eventServiceMock.Object,
                 this.sessionBrokerMock.Object,
@@ -207,14 +207,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public void WhenAllOsDisabledInSettings_ThenNoOsAreIncluded()
         {
             // Write settings.
-            var initialViewModel = CreateViewModel();
-            initialViewModel.IsWindowsIncluded = false;
-            initialViewModel.IsLinuxIncluded = false;
+            using (var initialViewModel = CreateViewModel())
+            {
+                initialViewModel.IsWindowsIncluded = false;
+                initialViewModel.IsLinuxIncluded = false;
+            }
 
             // Read again.
-            var viewModel = CreateViewModel();
-            Assert.IsFalse(viewModel.IsWindowsIncluded);
-            Assert.IsFalse(viewModel.IsLinuxIncluded);
+            using (var viewModel = CreateViewModel())
+            {
+                Assert.IsFalse(viewModel.IsWindowsIncluded);
+                Assert.IsFalse(viewModel.IsLinuxIncluded);
+            }
         }
 
         [Test]

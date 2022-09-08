@@ -96,7 +96,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             this.viewModel = new ProjectExplorerViewModel(
                 this,
-                serviceProvider.GetService<ApplicationSettingsRepository>(),
+                new ProjectExplorerSettings(
+                    serviceProvider.GetService<ApplicationSettingsRepository>(),
+                    true),
                 this.jobService,
                 serviceProvider.GetService<IEventService>(),
                 serviceProvider.GetService<IGlobalSessionBroker>(),
