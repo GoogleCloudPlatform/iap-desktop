@@ -85,6 +85,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public RegistryStringSetting DeviceCertificateSelector { get; private set; }
 
+        public RegistryStringSetting CollapsedProjects { get; private set; }
+
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             this.IsMainWindowMaximized,
@@ -100,7 +102,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.IsDeviceCertificateAuthenticationEnabled,
             this.FullScreenDevices,
             this.IncludeOperatingSystems,
-            this.DeviceCertificateSelector
+            this.DeviceCertificateSelector,
+            this.CollapsedProjects
         };
 
         private ApplicationSettings()
@@ -245,7 +248,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     OperatingSystems.Windows | OperatingSystems.Linux,
-                    settingsKey)
+                    settingsKey),
+                CollapsedProjects = RegistryStringSetting.FromKey(
+                    "CollapsedProjects",
+                    "CollapsedProjects",
+                    null,
+                    null,
+                    null,
+                    settingsKey,
+                    _ => true),
             };
         }
     }

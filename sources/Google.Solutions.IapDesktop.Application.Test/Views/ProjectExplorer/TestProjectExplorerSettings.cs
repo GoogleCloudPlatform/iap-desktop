@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -55,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenLoaded_ThenOperatingSystemsFilterReturnsSavedValue()
+        public void WhenValueSaved_ThenOperatingSystemsFilterReturnsSavedValue()
         {
             var settings = this.settingsRepository.GetSettings();
             settings.IncludeOperatingSystems.Value = OperatingSystems.Windows;
@@ -78,6 +79,53 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
             var settings = this.settingsRepository.GetSettings();
             Assert.AreEqual(OperatingSystems.Windows, settings.IncludeOperatingSystems.Value);
+        }
+
+        //---------------------------------------------------------------------
+        // CollapsedProjects.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNoValueSaved_ThenCollapsedProjectsReturnsEmptySet()
+        {
+            using (var explorerSettings = new ProjectExplorerSettings(this.settingsRepository, true))
+            {
+                Assert.IsNotNull(explorerSettings.CollapsedProjects);
+                CollectionAssert.IsEmpty(explorerSettings.CollapsedProjects);
+            }
+        }
+
+        [Test]
+        public void WhenValueSaved_ThenCollapsedProjectsReturnsSavedValue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.CollapsedProjects.StringValue = "  project-1,, project-2,";
+            this.settingsRepository.SetSettings(settings);
+
+            using (var explorerSettings = new ProjectExplorerSettings(this.settingsRepository, true))
+            {
+                Assert.IsNotNull(explorerSettings.CollapsedProjects);
+                CollectionAssert.AreEquivalent(
+                    new[]
+                    {
+                        new ProjectLocator("project-1"),
+                        new ProjectLocator("project-2")
+                    },
+                    explorerSettings.CollapsedProjects);
+            }
+        }
+
+        [Test]
+        public void WhenDisposed_ThenCollapsedProjectsAreSaved()
+        {
+            using (var explorerSettings = new ProjectExplorerSettings(this.settingsRepository, false))
+            {
+                explorerSettings.CollapsedProjects.Add(new ProjectLocator("project-1"));
+                explorerSettings.CollapsedProjects.Add(new ProjectLocator("project-2"));
+            }
+
+            var settings = this.settingsRepository.GetSettings();
+            Assert.AreEqual("project-1,project-2", settings.CollapsedProjects.StringValue);
         }
     }
 }

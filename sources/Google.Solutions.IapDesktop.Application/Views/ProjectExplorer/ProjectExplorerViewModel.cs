@@ -364,7 +364,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public async Task RemoveProjectsAsync(params ProjectLocator[] projects)
         {
+            //
             // Reset selection to a safe place.
+            //
             this.SelectedNode = this.RootNode;
 
             foreach (var project in projects)
@@ -372,6 +374,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 await this.projectModelService
                     .RemoveProjectAsync(project)
                     .ConfigureAwait(true);
+
+                //
+                // Remove from collapsed list so that we don't
+                // accumulate junk.
+                //
+                this.settings.CollapsedProjects.Remove(project);
             }
 
             //
@@ -478,6 +486,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public void Dispose()
         {
+            // TODO: Update collapsedprojects
+
+
             this.settings.Dispose();
             this.projectModelService.Dispose();
         }
@@ -499,6 +510,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             internal bool IsLoaded => this.nodes != null;
 
+            protected virtual void OnExpandedChanged() { }
+
             //-----------------------------------------------------------------
             // Observable properties.
             //-----------------------------------------------------------------
@@ -518,6 +531,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 {
                     this.isExpanded = value;
                     RaisePropertyChange();
+                    OnExpandedChanged();
                 }
             }
 
@@ -735,7 +749,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       DefaultIconIndex)
             {
                 this.ProjectNode = modelNode;
-                this.IsExpanded = true; // TODO: Set conditionally based on this.viewModel.ViewSettings.ExpandedProjects
+                this.IsExpanded = !viewModel.settings.CollapsedProjects.Contains(modelNode.Project);
+            }
+
+            protected override void OnExpandedChanged()
+            {
+                if (this.IsExpanded)
+                {
+                    this.viewModel.settings.CollapsedProjects.Remove(this.ProjectNode.Project);
+                }
+                else
+                {
+                    this.viewModel.settings.CollapsedProjects.Add(this.ProjectNode.Project);
+                }
+
+                base.OnExpandedChanged();
             }
 
             public override IProjectModelNode ModelNode => this.ProjectNode;

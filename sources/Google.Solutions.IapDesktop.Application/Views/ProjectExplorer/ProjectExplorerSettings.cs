@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
@@ -31,7 +33,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     internal interface IProjectExplorerSettings : IDisposable
     {
+        /// <summary>
+        /// Last used filter.
+        /// </summary>
         OperatingSystems OperatingSystemsFilter { get; set; }
+
+        /// <summary>
+        /// Collapsed projects. 
+        /// NB. We store the collapsed projects instead of the expanded
+        /// projects so that we're (a) backwards-compatible and (b)
+        /// expand by default.
+        /// </summary>
+        ISet<ProjectLocator> CollapsedProjects { get; }
     }
 
     internal sealed class ProjectExplorerSettings : IProjectExplorerSettings
@@ -52,10 +65,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // NB. Do not hold on to the settings object because it might change.
             //
             var settings = this.settingsRepository.GetSettings();
+
             this.OperatingSystemsFilter =  settings.IncludeOperatingSystems.EnumValue;
+            this.CollapsedProjects = (settings.CollapsedProjects.StringValue ?? string.Empty)
+                .Split(',')
+                .Where(projectId => !string.IsNullOrWhiteSpace(projectId))
+                .Select(projectId => new ProjectLocator(projectId.Trim()))
+                .ToHashSet();
         }
 
         public OperatingSystems OperatingSystemsFilter { get; set; }
+
+        public ISet<ProjectLocator> CollapsedProjects { get; }
 
         public void Dispose()
         {
@@ -64,7 +85,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
 
             var settings = this.settingsRepository.GetSettings();
+            
             settings.IncludeOperatingSystems.EnumValue = this.OperatingSystemsFilter;
+            settings.CollapsedProjects.StringValue = string.Join(
+                ",", 
+                this.CollapsedProjects.Select(locator => locator.ProjectId));
+
             this.settingsRepository.SetSettings(settings);
 
             if (this.disposeRepositoryAfterUse)
