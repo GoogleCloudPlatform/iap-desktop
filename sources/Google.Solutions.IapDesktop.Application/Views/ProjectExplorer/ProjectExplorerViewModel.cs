@@ -486,9 +486,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public void Dispose()
         {
-            // TODO: Update collapsedprojects
-
-
             this.settings.Dispose();
             this.projectModelService.Dispose();
         }
