@@ -113,7 +113,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public static SshTerminalPane TryGetActivePane(
             IMainForm mainForm)
         {
-            return mainForm.MainPanel.ActiveDocument as SshTerminalPane;
+            //
+            // NB. The active content might be in a float window.
+            //
+            return mainForm.MainPanel.ActivePane?.ActiveContent as SshTerminalPane;
         }
 
         //---------------------------------------------------------------------
