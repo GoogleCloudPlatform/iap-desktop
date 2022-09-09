@@ -41,8 +41,49 @@ namespace Google.Solutions.IapDesktop.Application.Views
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly DockPanel panel;
-        private readonly DockState initialDockState;
-        private DockState lastDockState;
+
+        /// <summary>
+        /// State to use when opening/restoring the window next time.
+        /// </summary>
+        private DockState restoreState;
+
+        private void UpdateRestoreState(DockState newState)
+        {
+            Debug.Assert(this.restoreState != DockState.Unknown);
+            Debug.Assert(this.restoreState != DockState.Float);
+            Debug.Assert(this.restoreState != DockState.Hidden);
+
+            switch (newState)
+            {
+                case DockState.Unknown:
+                case DockState.Float:
+                    //
+                    // We don't restore these states, ignore.
+                    //
+                    break;
+
+                case DockState.Document:
+                case DockState.DockTop:
+                case DockState.DockLeft:
+                case DockState.DockBottom:
+                case DockState.DockRight:
+                case DockState.DockTopAutoHide:
+                case DockState.DockLeftAutoHide:
+                case DockState.DockBottomAutoHide:
+                case DockState.DockRightAutoHide:
+                    //
+                    // These are good states to restore to.
+                    //
+                    this.restoreState = newState;
+                    break;
+
+                case DockState.Hidden:
+                    //
+                    // Ignore and keep the last good restore state instead.
+                    //
+                    break;
+            }
+        }
 
         public bool IsClosed { get; private set; } = false;
 
@@ -66,49 +107,22 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.panel = serviceProvider.GetService<IMainForm>().MainPanel;
             var stateRepository = serviceProvider.GetService<ToolWindowStateRepository>();
 
-            this.lastDockState = defaultDockState;
-
             // Read persisted window state.
             var state = stateRepository.GetSetting(
                 GetType().Name, // Unique name of tool window
                 defaultDockState);
-            this.initialDockState = state.DockState.EnumValue;
+            this.restoreState = state.DockState.EnumValue;
 
             // Save persisted window state.
             this.Disposed += (sender, args) =>
             {
-                //
-                // NB. At this point, it's too late to read this.DockState,
-                // so we have to rely on the value captured during previous
-                // state transitions.
-                //
-
                 try
                 {
-                    if (
-                        // If the window was closed, reset its saved state.
-                        // Note that we're only interested in storing the
-                        // location, not whether the window is visible or not.
-                        this.IsClosed ||
-                        lastDockState == DockState.Hidden ||
-                        lastDockState == DockState.Unknown ||
-
-                        // Ignore Document and Float as these are more complicated
-                        // and not worth the trouble.
-                        lastDockState == DockState.Document ||
-                        lastDockState == DockState.Float)
-                    {
-                        // Ignore Hidden state as we only want to restore
-                        // the dock location, not whether the window is
-                        // shown or not. 
-                        state.DockState.Reset();
-                    }
-                    else
-                    {
-                        // Restore dock state on next run.
-                        state.DockState.EnumValue = lastDockState;
-                    }
-
+                    //
+                    // Persist the restore state. This may or may not
+                    // be the same we read during startup.
+                    //
+                    state.DockState.EnumValue = restoreState;
                     stateRepository.SetSetting(state);
                 }
                 catch (Exception e)
@@ -166,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             if (this.IsHidden)
             {
                 // Show in default position.
-                Show(this.panel, this.initialDockState);
+                Show(this.panel, this.restoreState);
             }
 
             if (activate)
@@ -333,7 +347,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             base.OnEnter(e);
 
-            this.lastDockState = this.DockState;
+            UpdateRestoreState(this.DockState);
             RaiseUserVisibilityChanged();
         }
 
@@ -341,7 +355,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             base.OnLeave(e);
 
-            this.lastDockState = this.DockState;
+            UpdateRestoreState(this.DockState);
             RaiseUserVisibilityChanged();
         }
 
@@ -349,7 +363,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             base.OnVisibleChanged(e);
 
-            this.lastDockState = this.DockState;
+            UpdateRestoreState(this.DockState);
             RaiseUserVisibilityChanged();
         }
 
@@ -359,7 +373,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
             this.IsClosed = false;
 
-            this.lastDockState = this.DockState;
+            UpdateRestoreState(this.DockState);
             RaiseUserVisibilityChanged();
         }
 
