@@ -47,7 +47,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     internal class ProjectExplorerViewModel : ViewModelBase, IDisposable
     {
-        private readonly ApplicationSettingsRepository settingsRepository;
         private readonly IJobService jobService;
         private readonly IProjectModelService projectModelService;
         private readonly IGlobalSessionBroker sessionBroker;
@@ -55,20 +54,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private ViewModelNode selectedNode;
         private string instanceFilter;
-        private OperatingSystems operatingSystemsFilter = OperatingSystems.All;
+        private IProjectExplorerSettings settings;
 
         private bool isUnloadProjectCommandVisible;
         private bool isRefreshProjectsCommandVisible;
         private bool isRefreshAllProjectsCommandVisible;
         private bool isCloudConsoleCommandVisible;
         private bool isLoading = false;
-
-        private void SaveSettings()
-        {
-            var settings = this.settingsRepository.GetSettings();
-            settings.IncludeOperatingSystems.EnumValue = this.operatingSystemsFilter;
-            this.settingsRepository.SetSettings(settings);
-        }
 
         private IDisposable EnableLoadingStatus()
         {
@@ -94,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public ProjectExplorerViewModel(
             IWin32Window view,
-            ApplicationSettingsRepository settingsRepository,
+            IProjectExplorerSettings settings,
             IJobService jobService,
             IEventService eventService,
             IGlobalSessionBroker sessionBroker,
@@ -102,24 +94,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             ICloudConsoleService cloudConsoleService)
         {
             this.View = view;
-            this.settingsRepository = settingsRepository;
+            this.settings = settings;
             this.jobService = jobService;
             this.sessionBroker = sessionBroker;
             this.projectModelService = projectModelService;
             this.cloudConsoleService = cloudConsoleService;
 
             this.RootNode = new CloudViewModelNode(this);
-
-            //
-            // Read current settings.
-            //
-            // NB. Do not hold on to the settings object because it might change.
-            //
-
-            this.operatingSystemsFilter = settingsRepository
-                .GetSettings()
-                .IncludeOperatingSystems
-                .EnumValue;
 
             eventService.BindAsyncHandler<SessionStartedEvent>(
                 e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = true));
@@ -222,7 +203,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 }
 
                 RaisePropertyChange();
-                SaveSettings();
             }
         }
 
@@ -241,7 +221,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 }
 
                 RaisePropertyChange();
-                SaveSettings();
             }
         }
 
@@ -308,10 +287,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public OperatingSystems OperatingSystemsFilter
         {
-            get => this.operatingSystemsFilter;
+            get => this.settings.OperatingSystemsFilter;
             set
             {
-                this.operatingSystemsFilter = value;
+                this.settings.OperatingSystemsFilter = value;
 
                 RaisePropertyChange();
 
@@ -385,7 +364,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public async Task RemoveProjectsAsync(params ProjectLocator[] projects)
         {
+            //
             // Reset selection to a safe place.
+            //
             this.SelectedNode = this.RootNode;
 
             foreach (var project in projects)
@@ -393,6 +374,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 await this.projectModelService
                     .RemoveProjectAsync(project)
                     .ConfigureAwait(true);
+
+                //
+                // Remove from collapsed list so that we don't
+                // accumulate junk.
+                //
+                this.settings.CollapsedProjects.Remove(project);
             }
 
             //
@@ -499,7 +486,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public void Dispose()
         {
-            this.settingsRepository.Dispose();
+            this.settings.Dispose();
             this.projectModelService.Dispose();
         }
 
@@ -520,6 +507,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             internal bool IsLoaded => this.nodes != null;
 
+            protected virtual void OnExpandedChanged() { }
+
             //-----------------------------------------------------------------
             // Observable properties.
             //-----------------------------------------------------------------
@@ -539,6 +528,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 {
                     this.isExpanded = value;
                     RaisePropertyChange();
+                    OnExpandedChanged();
                 }
             }
 
@@ -756,7 +746,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       DefaultIconIndex)
             {
                 this.ProjectNode = modelNode;
-                this.IsExpanded = true;
+                this.IsExpanded = !viewModel.settings.CollapsedProjects.Contains(modelNode.Project);
+            }
+
+            protected override void OnExpandedChanged()
+            {
+                if (this.IsExpanded)
+                {
+                    this.viewModel.settings.CollapsedProjects.Remove(this.ProjectNode.Project);
+                }
+                else
+                {
+                    this.viewModel.settings.CollapsedProjects.Add(this.ProjectNode.Project);
+                }
+
+                base.OnExpandedChanged();
             }
 
             public override IProjectModelNode ModelNode => this.ProjectNode;

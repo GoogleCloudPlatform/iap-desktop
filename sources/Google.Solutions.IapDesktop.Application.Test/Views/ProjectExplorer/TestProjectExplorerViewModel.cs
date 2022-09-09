@@ -97,6 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         private Mock<ICloudConsoleService> cloudConsoleServiceMock;
         private Mock<IEventService> eventServiceMock;
         private Mock<IGlobalSessionBroker> sessionBrokerMock;
+        private IProjectExplorerSettings projectExplorerSettings;
 
         [SetUp]
         public void SetUp()
@@ -108,6 +109,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 null);
             this.projectRepository = new ProjectRepository(
                 hkcu.CreateSubKey(TestKeyPath));
+            this.projectExplorerSettings = new ProjectExplorerSettings(
+                this.settingsRepository, false);
 
             this.resourceManagerAdapterMock = new Mock<IResourceManagerAdapter>();
             this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
@@ -144,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
             return new ProjectExplorerViewModel(
                 new Control(),
-                this.settingsRepository,
+                this.projectExplorerSettings,
                 new SynchrounousJobService(),
                 this.eventServiceMock.Object,
                 this.sessionBrokerMock.Object,
@@ -207,14 +210,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public void WhenAllOsDisabledInSettings_ThenNoOsAreIncluded()
         {
             // Write settings.
-            var initialViewModel = CreateViewModel();
-            initialViewModel.IsWindowsIncluded = false;
-            initialViewModel.IsLinuxIncluded = false;
+            using (var initialViewModel = CreateViewModel())
+            {
+                initialViewModel.IsWindowsIncluded = false;
+                initialViewModel.IsLinuxIncluded = false;
+            }
 
             // Read again.
-            var viewModel = CreateViewModel();
-            Assert.IsFalse(viewModel.IsWindowsIncluded);
-            Assert.IsFalse(viewModel.IsLinuxIncluded);
+            using (var viewModel = CreateViewModel())
+            {
+                Assert.IsFalse(viewModel.IsWindowsIncluded);
+                Assert.IsFalse(viewModel.IsLinuxIncluded);
+            }
         }
 
         [Test]
@@ -1118,6 +1125,103 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Assert.IsTrue(viewModel.IsRefreshProjectsCommandVisible);
             Assert.IsFalse(viewModel.IsRefreshAllProjectsCommandVisible);
             Assert.IsTrue(viewModel.IsCloudConsoleCommandVisible);
+        }
+
+        //---------------------------------------------------------------------
+        // Expand tracking
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenProjectAddedAndNotSavedAsCollapsed_ThenProjectIsExpanded()
+        {
+            var viewModel = CreateViewModel();
+
+            await viewModel
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(false);
+
+            var projectViewModelNodes = (await viewModel.RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(false))
+                .Cast<ProjectExplorerViewModel.ProjectViewModelNode>()
+                .ToList();
+
+            Assert.AreEqual(1, projectViewModelNodes.Count);
+            Assert.IsTrue(projectViewModelNodes.First().IsExpanded);
+        }
+
+        [Test]
+        public async Task WhenProjectAddedAndSavedAsCollapsed_ThenProjectIsCollapsed()
+        {
+            this.projectExplorerSettings.CollapsedProjects.Add(new ProjectLocator(SampleProjectId));
+            var viewModel = CreateViewModel();
+
+            await viewModel
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(false);
+
+            var projectViewModelNodes = (await viewModel.RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(false))
+                .Cast<ProjectExplorerViewModel.ProjectViewModelNode>()
+                .ToList();
+
+            Assert.AreEqual(1, projectViewModelNodes.Count);
+            Assert.IsFalse(projectViewModelNodes.First().IsExpanded);
+        }
+
+        [Test]
+        public async Task WhenProjectRemoved_ThenProjectIsRemovedFromSettings()
+        {
+            this.projectExplorerSettings.CollapsedProjects.Add(new ProjectLocator(SampleProjectId));
+            var viewModel = CreateViewModel();
+
+            await viewModel
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(false);
+
+            await viewModel
+                .RemoveProjectsAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(false);
+
+            CollectionAssert.DoesNotContain(
+                this.projectExplorerSettings.CollapsedProjects,
+                new ProjectLocator(SampleProjectId));
+        }
+
+        [Test]
+        public async Task WhenProjectExpandedOrCollapsed_ThenSettingsAreUpdated()
+        {
+            var viewModel = CreateViewModel();
+
+            await viewModel
+                .AddProjectsAsync(new ProjectLocator(SampleProjectId))
+                .ConfigureAwait(false);
+
+            var projectViewModelNodes = (await viewModel.RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(false))
+                .Cast<ProjectExplorerViewModel.ProjectViewModelNode>()
+                .ToList();
+
+            Assert.AreEqual(1, projectViewModelNodes.Count);
+            var project = projectViewModelNodes.First();
+
+            project.IsExpanded = false;
+            project.IsExpanded = false;
+            project.IsExpanded = false;
+
+            CollectionAssert.Contains(
+                this.projectExplorerSettings.CollapsedProjects,
+                project.ProjectNode.Project);
+
+            project.IsExpanded = true;
+            project.IsExpanded = true;
+            project.IsExpanded = true;
+
+            CollectionAssert.DoesNotContain(
+                this.projectExplorerSettings.CollapsedProjects,
+                project.ProjectNode.Project);
         }
     }
 }

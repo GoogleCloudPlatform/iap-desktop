@@ -274,6 +274,7 @@
       <DependentUpon>NetworkOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Options\NetworkOptionsViewModel.cs" />
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerSettings.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
