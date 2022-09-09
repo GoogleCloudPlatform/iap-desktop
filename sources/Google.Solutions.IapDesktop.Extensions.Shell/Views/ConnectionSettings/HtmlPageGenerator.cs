@@ -36,6 +36,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
+#if DEBUG
+
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 {
     [SkipCodeCoverage("For testing only")]
@@ -47,7 +49,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 
         public HtmlPageGenerator(IServiceProvider serviceProvider)
         {
-#if DEBUG
             this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             this.projectModelService = serviceProvider.GetService<IProjectModelService>();
 
@@ -60,7 +61,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
                         : CommandState.Unavailable,
                     context => GenerateHtmlPageAsync((IProjectModelProjectNode)context)
                         .ContinueWith(_ => { })));
-#endif
         }
 
         private async Task GenerateHtmlPageAsync(IProjectModelProjectNode context)
@@ -111,3 +111,4 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         }
     }
 }
+#endif
