@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
     public class TestKeyAuthorizationService : ShellFixtureBase
     {
         private const string SampleEmailAddress = "bob@example.com";
-        private readonly static InstanceLocator SampleLocator
+        private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
         private static Mock<IAuthorizationSource> CreateAuthorizationSourceMock()

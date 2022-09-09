@@ -318,7 +318,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                         .Projects
                         .Select(p => new
                         {
-                            Project = p.Project,
+                            p.Project,
                             Zones = LoadZones(p.Project, token)
                         })
 

@@ -52,7 +52,7 @@ namespace Google.Solutions.Common.Interop
         {
             LocalAllocSafeHandle safeLocalFree = UnsafeNativeMethods.LocalAlloc(
                 0, 
-                (UIntPtr)(ulong)cb);
+                (UIntPtr)cb);
             if (safeLocalFree.IsInvalid)
             {
                 safeLocalFree.SetHandleAsInvalid();

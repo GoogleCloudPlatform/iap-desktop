@@ -601,25 +601,25 @@ namespace Google.Solutions.Ssh.Native
         internal const uint FD_CLOSE = 32;
 
         [DllImport("Ws2_32.dll")]
-        internal extern static WsaEventHandle WSACreateEvent();
+        internal static extern WsaEventHandle WSACreateEvent();
 
         [DllImport("Ws2_32.dll")]
-        internal extern static int WSAEventSelect(
+        internal static extern int WSAEventSelect(
             IntPtr socket,
             WsaEventHandle hande,
             uint eventMask);
 
         [DllImport("Ws2_32.dll")]
-        internal extern static bool WSASetEvent(WsaEventHandle hande);
+        internal static extern bool WSASetEvent(WsaEventHandle hande);
 
         [DllImport("Ws2_32.dll")]
-        internal extern static bool WSAResetEvent(WsaEventHandle hande);
+        internal static extern bool WSAResetEvent(WsaEventHandle hande);
 
         [DllImport("Ws2_32.dll")]
-        internal extern static bool WSACloseEvent(IntPtr hande);
+        internal static extern bool WSACloseEvent(IntPtr hande);
 
         [DllImport("Ws2_32.dll")]
-        internal extern static uint WSAWaitForMultipleEvents(
+        internal static extern uint WSAWaitForMultipleEvents(
             uint cEvents,
             IntPtr[] pEvents,
             bool fWaitAll,
@@ -627,13 +627,13 @@ namespace Google.Solutions.Ssh.Native
             bool fAlterable);
 
         [DllImport("Ws2_32.dll")]
-        internal extern static int WSAEnumNetworkEvents(
+        internal static extern int WSAEnumNetworkEvents(
             IntPtr socket,
             WsaEventHandle eventHandle,
             ref WSANETWORKEVENTS eventInfo);
 
         [DllImport("Ws2_32.dll")]
-        internal extern static int WSAGetLastError();
+        internal static extern int WSAGetLastError();
 
 
         [StructLayout(LayoutKind.Sequential)]
@@ -712,7 +712,7 @@ namespace Google.Solutions.Ssh.Native
         }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        override protected bool ReleaseHandle()
+        protected override bool ReleaseHandle()
         {
             var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_free(
                 this.handle);
@@ -859,7 +859,7 @@ namespace Google.Solutions.Ssh.Native
         }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        override protected bool ReleaseHandle()
+        protected override bool ReleaseHandle()
         {
             bool result = UnsafeNativeMethods.WSACloseEvent(this.handle);
             Debug.Assert(result);

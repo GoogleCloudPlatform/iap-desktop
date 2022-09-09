@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     internal static class RdpClientExtensions
     {
-        internal unsafe static void SendKeys(
+        internal static unsafe void SendKeys(
             this IMsRdpClientNonScriptable5 nonScriptable,
             params Keys[] keyCodes)
         {

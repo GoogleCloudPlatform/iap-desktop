@@ -122,7 +122,7 @@ namespace Google.Solutions.Ssh.Test
                 22);
         }
 
-        private readonly static IDictionary<string, ISshAuthenticator> cachedAuthenticators =
+        private static readonly IDictionary<string, ISshAuthenticator> cachedAuthenticators =
             new Dictionary<string, ISshAuthenticator>();
 
         /// <summary>

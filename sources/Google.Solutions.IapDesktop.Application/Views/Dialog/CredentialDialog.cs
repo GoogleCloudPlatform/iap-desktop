@@ -74,8 +74,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
 
             var packageId = LookupAuthenticationPackageId(package);
 
-            CoTaskMemAllocSafeHandle authBuffer;
-            uint authBufferSize;
             bool save = false;
 
             var error = NativeMethods.CredUIPromptForWindowsCredentials(
@@ -84,8 +82,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                 ref packageId,
                 IntPtr.Zero,
                 0,
-                out authBuffer,
-                out authBufferSize,
+                out var authBuffer,
+                out var authBufferSize,
                 ref save,
                 NativeMethods.CREDUIWIN_FLAGS.AUTHPACKAGE_ONLY);
 

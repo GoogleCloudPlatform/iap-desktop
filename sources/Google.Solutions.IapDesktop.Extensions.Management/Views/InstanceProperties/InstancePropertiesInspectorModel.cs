@@ -270,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
 
         public override string ToString() => this.InstanceName;
 
-        public async static Task<InstancePropertiesInspectorModel> LoadAsync(
+        public static async Task<InstancePropertiesInspectorModel> LoadAsync(
             InstanceLocator instanceLocator,
             IComputeEngineAdapter computeEngineAdapter,
             IInventoryService inventoryService,

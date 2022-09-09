@@ -34,7 +34,7 @@ namespace Google.Solutions.Common.ApiExtensions.Request
         /// Like ExecuteAsStream, but catch non-success HTTP codes and convert them
         /// into an exception.
         /// </summary>
-        public async static Task<Stream> ExecuteAsStreamOrThrowAsync<TResponse>(
+        public static async Task<Stream> ExecuteAsStreamOrThrowAsync<TResponse>(
             this IClientServiceRequest<TResponse> request,
             CancellationToken cancellationToken)
         {
@@ -60,7 +60,7 @@ namespace Google.Solutions.Common.ApiExtensions.Request
             }
         }
 
-        public async static Task<Stream> ExecuteAsStreamWithRetryAsync<TResponse>(
+        public static async Task<Stream> ExecuteAsStreamWithRetryAsync<TResponse>(
             this IClientServiceRequest<TResponse> request,
             ExponentialBackOff backOff,
             CancellationToken cancellationToken)

@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         private static class NativeMethods
         {
             [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = CharSet.Auto)]
-            public extern static bool DestroyIcon(IntPtr handle);
+            public static extern bool DestroyIcon(IntPtr handle);
 
             [System.Runtime.InteropServices.DllImport("shlwapi.dll")]
             public static extern int ColorHLSToRGB(ushort h, ushort l, ushort s);
