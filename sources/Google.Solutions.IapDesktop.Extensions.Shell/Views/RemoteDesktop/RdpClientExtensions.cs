@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             }
         }
 
-        private unsafe static void SendKeysUnsafe(
+        private static unsafe void SendKeysUnsafe(
             this IMsRdpClientNonScriptable5 nonScriptable,
             int keyDataLength,
             bool* keyUpPtr,

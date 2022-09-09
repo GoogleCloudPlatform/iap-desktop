@@ -179,11 +179,13 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenCollectionWithSeparatorBound_ThenMenuItemsAreUpdated()
         {
-            var model = new ObservableCollection<Observable>();
-            model.Add(new Observable()
+            var model = new ObservableCollection<Observable>
             {
-                IsSeparator = true
-            });
+                new Observable()
+                {
+                    IsSeparator = true
+                }
+            };
 
             this.contextMenu.Items.BindCollection(
                 model,

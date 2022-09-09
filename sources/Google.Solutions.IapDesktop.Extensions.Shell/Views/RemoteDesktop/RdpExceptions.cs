@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
     [Serializable]
     public class RdpFatalException : RdpException
     {
-        private readonly static IDictionary<int, string> knownErrors = new Dictionary<int, string>
+        private static readonly IDictionary<int, string> knownErrors = new Dictionary<int, string>
         {
             // Documented error descrriptions from 
             // https://docs.microsoft.com/en-us/windows/win32/termserv/imstscaxevents-onfatalerror

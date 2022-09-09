@@ -760,7 +760,7 @@ namespace Google.Solutions.Ssh.Native
         }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        override protected bool ReleaseHandle()
+        protected override bool ReleaseHandle()
         {
             //
             // NB. Libssh2 manages channels and SFTPs as a sub-resource of a
