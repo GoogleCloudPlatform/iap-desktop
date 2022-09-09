@@ -19,13 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.CloudResourceManager.v1.Data;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

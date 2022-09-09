@@ -21,7 +21,6 @@
 
 using Google.Solutions.Mvvm.Binding;
 using NUnit.Framework;
-using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
@@ -87,7 +86,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.Children,
                 _ => { },
                 null);
-            
+
             Assert.AreEqual(model.Text, menuItem.Text);
             Assert.AreEqual(model.ToolTip, menuItem.ToolTipText);
             Assert.AreEqual(model.Image, menuItem.Image);

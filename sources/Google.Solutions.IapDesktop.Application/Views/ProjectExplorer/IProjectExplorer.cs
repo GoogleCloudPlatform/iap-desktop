@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.Mvvm.Commands;
 using System.Threading.Tasks;

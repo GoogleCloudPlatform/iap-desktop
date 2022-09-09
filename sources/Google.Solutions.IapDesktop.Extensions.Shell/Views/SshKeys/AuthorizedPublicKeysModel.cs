@@ -29,7 +29,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -130,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         internal static bool IsNodeSupported(IProjectModelNode node)
         {
             return node is IProjectModelProjectNode ||
-                (node is IProjectModelInstanceNode instanceNode && 
+                (node is IProjectModelInstanceNode instanceNode &&
                     instanceNode.OperatingSystem == OperatingSystems.Linux);
         }
 

@@ -19,21 +19,15 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Compute.v1;
-using Google.Apis.Services;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Management;
+using Google.Solutions.Testing.Application.Test;
+using Moq;
 using NUnit.Framework;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Testing.Common;
-using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.IapDesktop.Application.Services.Management;
-using Moq;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Management
 {

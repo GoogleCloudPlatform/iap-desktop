@@ -22,15 +22,15 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
+using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceProperties
 {

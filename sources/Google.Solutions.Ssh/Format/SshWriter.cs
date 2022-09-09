@@ -21,12 +21,9 @@
 
 using Google.Apis.Util;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Format
 {
@@ -143,7 +140,7 @@ namespace Google.Solutions.Ssh.Format
             // included.  The value zero MUST be stored as a string with zero
             // bytes of data.
             // 
-            
+
             var startIndex = Array.FindIndex(bigEndian, b => b != 0);
             if (startIndex < 0)
             {

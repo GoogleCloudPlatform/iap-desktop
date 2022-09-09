@@ -21,12 +21,8 @@
 
 using Google.Solutions.Common.Diagnostics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Dialog
@@ -80,11 +76,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     : UnsafeNativeMethods.PROGDLG.NORMAL);
 
             return new Operation(
-                owner, 
-                totalItems, 
-                totalSize, 
-                UnsafeNativeMethods.SPACTION.COPYING, 
-                UnsafeNativeMethods.PDMODE.RUN, 
+                owner,
+                totalItems,
+                totalSize,
+                UnsafeNativeMethods.SPACTION.COPYING,
+                UnsafeNativeMethods.PDMODE.RUN,
                 flags);
         }
 

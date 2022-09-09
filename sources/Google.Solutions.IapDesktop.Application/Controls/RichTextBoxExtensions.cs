@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;

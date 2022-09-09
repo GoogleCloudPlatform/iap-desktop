@@ -22,10 +22,8 @@
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Common;
 using Moq;
@@ -193,8 +191,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 {
                     SshPublicKeys = new Dictionary<string, SshPublicKey>
                     {
-                        { 
-                            "invalid-1", 
+                        {
+                            "invalid-1",
                             new SshPublicKey()
                             {
                                 Fingerprint = "invalid-1",
@@ -308,7 +306,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .ConfigureAwait(false);
 
             await service.DeleteAuthorizedKeyAsync(
-                    keys.First(), 
+                    keys.First(),
                     CancellationToken.None)
                 .ConfigureAwait(false);
 

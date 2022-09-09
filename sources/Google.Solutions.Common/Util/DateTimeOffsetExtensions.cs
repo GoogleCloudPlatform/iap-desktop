@@ -20,10 +20,6 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Util
 {
@@ -40,7 +36,7 @@ namespace Google.Solutions.Common.Util
 
         public static DateTimeOffset FromUnixTimeMicroseconds(long millis)
         {
-            return UnixEpoch.AddMilliseconds(millis/1000);
+            return UnixEpoch.AddMilliseconds(millis / 1000);
         }
     }
 }

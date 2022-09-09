@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;

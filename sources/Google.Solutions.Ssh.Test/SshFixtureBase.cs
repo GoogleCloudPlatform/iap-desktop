@@ -19,25 +19,23 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common;
+using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
+using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using Google.Solutions.Testing.Common.Integration;
-using Google.Apis.Compute.v1.Data;
+using System.Net;
 using System.Threading;
-using Google.Solutions.Common.ApiExtensions.Instance;
-using Google.Solutions.Common.Util;
-using Google.Solutions.Testing.Common;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test
 {
@@ -176,7 +174,7 @@ namespace Google.Solutions.Ssh.Test
 
                 foreach (var kvp in keysByType)
                 {
-                    cachedAuthenticators[$"{instanceLocator}|{username}|{kvp.Key}"] = 
+                    cachedAuthenticators[$"{instanceLocator}|{username}|{kvp.Key}"] =
                         new SshSingleFactorAuthenticator(username, kvp.Value);
                 }
             }

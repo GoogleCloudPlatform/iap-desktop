@@ -19,18 +19,15 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Util;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -252,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirec
 
         public async Task JoinDomainAsync(
             InstanceLocator instance,
-            string domain, 
+            string domain,
             string newComputerName,
             NetworkCredential domainCredential,
             CancellationToken cancellationToken)

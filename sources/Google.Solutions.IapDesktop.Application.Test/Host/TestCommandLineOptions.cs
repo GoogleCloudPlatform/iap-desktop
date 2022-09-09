@@ -123,8 +123,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void WhenProfileAndDebugAndUrlSpecified_ThenParseReturnsValidOptions()
         {
             var options = CommandLineOptions.Parse(
-                new[] { 
-                    "/url", "iap-rdp:///project-1/us-central1-a/vm-1", 
+                new[] {
+                    "/url", "iap-rdp:///project-1/us-central1-a/vm-1",
                     "/debug",
                     "/profile", "profile-1"});
 

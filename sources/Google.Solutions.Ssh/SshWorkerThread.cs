@@ -431,7 +431,7 @@ namespace Google.Solutions.Ssh
             if (this.JoinWorkerThreadOnDispose)
             {
                 Debug.Assert(
-                    !this.IsRunningOnWorkerThread, 
+                    !this.IsRunningOnWorkerThread,
                     "Join on worker thread would cause deadlock");
                 this.workerThread.Join();
             }

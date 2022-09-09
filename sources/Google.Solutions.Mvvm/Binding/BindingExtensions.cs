@@ -352,9 +352,9 @@ namespace Google.Solutions.Mvvm.Binding
         {
             public NotifyObservablePropertyChangedBinding(
                 IObservableProperty<TProperty> observed,
-                Action<TProperty> newValueAction) 
+                Action<TProperty> newValueAction)
                 : base(
-                      observed, 
+                      observed,
                       "Value",
                       prop => prop.Value,
                       newValueAction)

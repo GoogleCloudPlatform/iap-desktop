@@ -20,15 +20,9 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Ssh.Auth;
-using Google.Solutions.Ssh.Native;
+using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
-using System;
-using System.Globalization;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,7 +42,7 @@ namespace Google.Solutions.Ssh.Test
                     instance,
                     SshKeyType.Rsa3072)
                 .ConfigureAwait(false);
-            
+
             using (var connection = new RemoteConnection(
                 endpoint,
                 authenticator,

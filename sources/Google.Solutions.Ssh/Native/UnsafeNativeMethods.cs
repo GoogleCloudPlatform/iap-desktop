@@ -119,18 +119,18 @@ namespace Google.Solutions.Ssh.Native
     [Flags]
     public enum LIBSSH2_FXF_FLAGS : Int32
     {
-        READ   = 0x00000001,
-        WRITE  = 0x00000002,
+        READ = 0x00000001,
+        WRITE = 0x00000002,
         APPEND = 0x00000004,
-        CREAT  = 0x00000008,
-        TRUNC  = 0x00000010,
-        EXCL   = 0x00000020
+        CREAT = 0x00000008,
+        TRUNC = 0x00000010,
+        EXCL = 0x00000020
     }
 
     internal enum LIBSSH2_OPENTYPE : Int32
     {
         OPENFILE = 0,
-        OPENDIR  = 1
+        OPENDIR = 1
     }
 
     [StructLayout(LayoutKind.Sequential)]

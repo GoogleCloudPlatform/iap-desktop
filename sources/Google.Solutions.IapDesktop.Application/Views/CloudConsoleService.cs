@@ -24,7 +24,6 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using System;
-using System.Diagnostics;
 using System.Net;
 
 #pragma warning disable CA1822 // Mark members as static

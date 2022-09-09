@@ -20,13 +20,11 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -414,7 +412,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 null);
 
             Assert.IsFalse(this.listView.Items[0].Selected);
-            
+
             viewModel.SelectedItem = viewModel.Items[0];
 
             Assert.IsTrue(this.listView.Items[0].Selected);

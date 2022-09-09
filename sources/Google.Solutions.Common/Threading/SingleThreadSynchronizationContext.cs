@@ -25,9 +25,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Threading
 {
@@ -85,7 +83,7 @@ namespace Google.Solutions.Common.Threading
             {
                 this.designatedThread = Thread.CurrentThread;
             }
-            else if (Thread.CurrentThread.ManagedThreadId != 
+            else if (Thread.CurrentThread.ManagedThreadId !=
                 this.designatedThread.ManagedThreadId)
             {
                 throw new InvalidOperationException(

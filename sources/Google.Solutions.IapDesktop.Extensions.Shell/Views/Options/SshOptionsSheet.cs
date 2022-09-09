@@ -78,8 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.Container);
 
             this.publicKeyType.FormattingEnabled = true;
-            this.publicKeyType.Format += delegate (object sender, ListControlConvertEventArgs e)
-            {
+            this.publicKeyType.Format += delegate (object sender, ListControlConvertEventArgs e) {
                 var v = ((SshKeyType)e.Value);
                 e.Value = v.GetAttribute<DisplayAttribute>()?.Name ?? v.ToString();
             };

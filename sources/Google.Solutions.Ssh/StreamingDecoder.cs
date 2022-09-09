@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using System;
 using System.Text;
 
 namespace Google.Solutions.Ssh

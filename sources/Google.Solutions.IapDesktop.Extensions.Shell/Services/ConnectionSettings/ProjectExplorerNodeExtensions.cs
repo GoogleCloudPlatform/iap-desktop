@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings
 {

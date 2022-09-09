@@ -20,8 +20,6 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using System;
-using System.Diagnostics;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
@@ -32,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private void ReportBug(int component, int template, BugReport report)
         {
-            var body = "NOTE: This issue report will be visible to the public. Make sure you don't include any confidential information.\n\n" + 
+            var body = "NOTE: This issue report will be visible to the public. Make sure you don't include any confidential information.\n\n" +
                        "> What are the steps to reproduce this issue?\n\n" +
                        "> What's the expected behavior?\n\n" +
                        "> What's the observed behavior?\n\n" +

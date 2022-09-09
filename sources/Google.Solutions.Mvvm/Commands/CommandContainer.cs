@@ -28,9 +28,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Commands
@@ -94,7 +91,7 @@ namespace Google.Solutions.Mvvm.Commands
             ToolStripItemDisplayStyle displayStyle,
             ICommandContextSource<TContext> contextSource)
             : this(
-                  displayStyle, 
+                  displayStyle,
                   contextSource,
                   null,
                   new ObservableCollection<MenuItemViewModelBase>())

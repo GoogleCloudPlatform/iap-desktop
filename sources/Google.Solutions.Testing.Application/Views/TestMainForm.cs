@@ -20,20 +20,19 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Testing.Common.Integration;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Testing.Common.Integration;
 using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.Mvvm.Commands;
 
 namespace Google.Solutions.Testing.Application.Views
 {

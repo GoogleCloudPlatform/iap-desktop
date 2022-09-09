@@ -19,13 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory
 {

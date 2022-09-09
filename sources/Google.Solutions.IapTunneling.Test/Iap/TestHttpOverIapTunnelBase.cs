@@ -22,8 +22,8 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System.Text;
 using System.Text.RegularExpressions;

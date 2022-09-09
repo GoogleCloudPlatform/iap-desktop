@@ -19,25 +19,18 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.Testing.Common;
+using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Testing.Common;
-using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
-using Moq;
-using System;
-using System.Collections.Generic;
-using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Text;
-using Newtonsoft.Json;
-using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.ActiveDirectory
 {
@@ -153,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 guardKeyName,
                 computeEngineAdapter.Object);
-            
+
             await operation.ReplaceStartupScriptAsync(
                     "script",
                     CancellationToken.None)

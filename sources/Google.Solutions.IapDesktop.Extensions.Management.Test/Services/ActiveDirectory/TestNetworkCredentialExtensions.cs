@@ -19,20 +19,8 @@
 // under the License.
 //
 
-using NUnit.Framework;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Google.Solutions.Testing.Common;
-using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
-using Moq;
-using System;
-using System.Collections.Generic;
-using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Text;
-using Newtonsoft.Json;
-using System.Security.Cryptography;
+using NUnit.Framework;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.ActiveDirectory

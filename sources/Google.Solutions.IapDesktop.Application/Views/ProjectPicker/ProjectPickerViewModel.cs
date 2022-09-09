@@ -20,9 +20,6 @@
 //
 
 using Google.Apis.CloudResourceManager.v1.Data;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
@@ -50,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.LoadingError = ObservableProperty.Build<Exception>(null);
             this.StatusText = ObservableProperty.Build<string>(null);
             this.IsStatusTextVisible = ObservableProperty.Build(
-                this.StatusText, 
+                this.StatusText,
                 t => t != null);
             this.SelectedProjects = ObservableProperty.Build<IEnumerable<Project>>(null);
             this.IsProjectSelected = ObservableProperty.Build(

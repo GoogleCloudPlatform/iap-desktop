@@ -21,7 +21,6 @@
 
 using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Google.Solutions.Common.Locator

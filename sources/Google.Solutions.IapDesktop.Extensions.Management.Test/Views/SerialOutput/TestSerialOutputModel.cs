@@ -22,16 +22,16 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
+using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Testing.Application.Test;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOutput
 {

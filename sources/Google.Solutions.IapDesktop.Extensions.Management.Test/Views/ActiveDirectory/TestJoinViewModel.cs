@@ -22,11 +22,6 @@
 using Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.ActiveDirectory
 {
@@ -43,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.ActiveDir
             Assert.IsTrue(JoinViewModel.IsValidNetbiosComputerName("a"));
             Assert.IsTrue(JoinViewModel.IsValidNetbiosComputerName("A000"));
             Assert.IsTrue(JoinViewModel.IsValidNetbiosComputerName("a-1"));
-            
+
             Assert.IsFalse(JoinViewModel.IsValidNetbiosComputerName(""));
             Assert.IsFalse(JoinViewModel.IsValidNetbiosComputerName("a!"));
             Assert.IsFalse(JoinViewModel.IsValidNetbiosComputerName("a_1"));

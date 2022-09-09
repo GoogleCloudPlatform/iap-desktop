@@ -23,11 +23,7 @@ using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
-using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Controls
 {
@@ -40,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             Assert.Throws<ArgumentException>(() => BadgeIcon.ForTextInitial(null));
             Assert.Throws<ArgumentException>(() => BadgeIcon.ForTextInitial(string.Empty));
         }
-        
+
         [Test]
         public void WhenTextValid_ThenIconHasBackColor()
         {

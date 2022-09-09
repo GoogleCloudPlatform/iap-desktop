@@ -24,7 +24,6 @@ using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.Remoting;
 
 namespace Google.Solutions.Common.Diagnostics
 {

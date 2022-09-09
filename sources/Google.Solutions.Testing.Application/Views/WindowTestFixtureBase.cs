@@ -20,19 +20,15 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -159,7 +155,7 @@ namespace Google.Solutions.Testing.Application.Views
                 // Let the SynchronizationContext pump.
                 //
                 await Task.Yield();
-                
+
                 //
                 // Let Windows pump.
                 //

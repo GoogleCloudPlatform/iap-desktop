@@ -20,24 +20,19 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common.Integration;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Testing.Common;
-using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
-using Moq;
-using System;
-using System.Collections.Generic;
-using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Text;
-using Newtonsoft.Json;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.ActiveDirectory
 {
@@ -131,22 +126,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
                 var metadata = base.Metadata.ToList();
 
                 metadata.Add(new Metadata.ItemsData()
+                {
+                    Key = DomainJoinService.MetadataKeys.JoinDomain,
+                    Value = JsonConvert.SerializeObject(new DomainJoinService.JoinRequest()
                     {
-                        Key = DomainJoinService.MetadataKeys.JoinDomain,
-                        Value = JsonConvert.SerializeObject(new DomainJoinService.JoinRequest()
-                        {
-                            OperationId = Guid.Empty.ToString(),
-                            MessageType = DomainJoinService.JoinRequest.MessageTypeString,
-                            DomainName = "example.com",
-                            Username = "admin",
-                            EncryptedPassword = "" // Invalid cyphertext
-                        })
-                    });
+                        OperationId = Guid.Empty.ToString(),
+                        MessageType = DomainJoinService.JoinRequest.MessageTypeString,
+                        DomainName = "example.com",
+                        Username = "admin",
+                        EncryptedPassword = "" // Invalid cyphertext
+                    })
+                });
 
                 metadata
                     .Find(i => i.Key == "windows-startup-script-ps1")
                     .Value += "\n\n" + DomainJoinService.CreateStartupScript(Guid.Empty);
-                
+
                 return metadata;
             }
         }

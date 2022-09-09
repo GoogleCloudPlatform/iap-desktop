@@ -29,8 +29,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
     public interface IConfirmationDialog
     {
         DialogResult Confirm(
-            IWin32Window parent, 
-            string text, 
+            IWin32Window parent,
+            string text,
             string caption,
             string title);
     }
@@ -38,8 +38,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
     public class ConfirmationDialog : IConfirmationDialog
     {
         public DialogResult Confirm(
-            IWin32Window parent, 
-            string message, 
+            IWin32Window parent,
+            string message,
             string caption,
             string title)
         {
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     cbSize = (uint)Marshal.SizeOf(typeof(UnsafeNativeMethods.TASKDIALOGCONFIG)),
                     hwndParent = parent?.Handle ?? IntPtr.Zero,
                     dwFlags = 0,
-                    dwCommonButtons = 
+                    dwCommonButtons =
                         UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_YES_BUTTON |
                         UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_NO_BUTTON,
                     pszWindowTitle = title,

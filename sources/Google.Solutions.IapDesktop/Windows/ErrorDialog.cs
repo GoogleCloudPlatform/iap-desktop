@@ -22,8 +22,6 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
-using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Windows

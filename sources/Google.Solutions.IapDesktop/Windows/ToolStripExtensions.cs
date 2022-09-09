@@ -20,10 +20,7 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Windows
@@ -31,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Windows
     internal static class ToolStripExtensions
     {
         internal static ToolStripItemCollection RemoveAll(
-            this ToolStripItemCollection items, 
+            this ToolStripItemCollection items,
             Predicate<ToolStripMenuItem> selector)
         {
             foreach (var menuItem in items

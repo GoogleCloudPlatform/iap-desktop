@@ -37,7 +37,7 @@ namespace Google.Solutions.Testing.Common.Integration
 
     public class MissingTestAnnotationException : Exception
     {
-        public MissingTestAnnotationException(string message) 
+        public MissingTestAnnotationException(string message)
             : base(message)
         {
         }

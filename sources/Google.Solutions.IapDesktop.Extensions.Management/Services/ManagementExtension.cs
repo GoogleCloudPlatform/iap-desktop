@@ -19,29 +19,26 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.Mvvm.Commands;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Management.Properties;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
-using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
-using System;
-using System.Linq;
-using System.Windows.Forms;
-using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.Common.Util;
-using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Management.Properties;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
-using Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
+using Google.Solutions.Mvvm.Commands;
+using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 {

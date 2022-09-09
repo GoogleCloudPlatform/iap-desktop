@@ -21,11 +21,9 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;

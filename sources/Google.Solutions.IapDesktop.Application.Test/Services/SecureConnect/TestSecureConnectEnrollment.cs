@@ -28,7 +28,6 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;

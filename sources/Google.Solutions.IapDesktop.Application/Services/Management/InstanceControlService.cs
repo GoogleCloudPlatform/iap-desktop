@@ -25,9 +25,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Management
         private readonly IEventService eventService;
 
         public InstanceControlService(
-            IComputeEngineAdapter computeEngineAdapter, 
+            IComputeEngineAdapter computeEngineAdapter,
             IEventService eventService)
         {
             this.computeEngineAdapter = computeEngineAdapter;

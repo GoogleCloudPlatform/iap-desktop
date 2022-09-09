@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using NUnit.Framework;
 using System;
@@ -199,9 +198,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .Add(MetadataAuthorizedPublicKey.Parse("bob:ssh-rsa KEY2 bob@gmail.com"));
 
             var keyToRemove = new UnmanagedMetadataAuthorizedPublicKey(
-                "carol", 
-                "ssh-rsa", 
-                "KEY1", 
+                "carol",
+                "ssh-rsa",
+                "KEY1",
                 "carol@example.com");
 
             var newKeySet = keySet.Remove(keyToRemove);

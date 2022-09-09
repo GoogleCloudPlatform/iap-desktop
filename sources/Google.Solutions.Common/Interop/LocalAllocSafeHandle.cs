@@ -21,12 +21,7 @@
 
 using Microsoft.Win32.SafeHandles;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Interop
 {
@@ -50,7 +45,7 @@ namespace Google.Solutions.Common.Interop
         public static LocalAllocSafeHandle LocalAlloc(uint cb)
         {
             var safeLocalFree = UnsafeNativeMethods.LocalAlloc(
-                0, 
+                0,
                 (UIntPtr)cb);
             if (safeLocalFree.IsInvalid)
             {

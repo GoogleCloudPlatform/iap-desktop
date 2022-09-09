@@ -20,12 +20,12 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
-using NUnit.Framework;
-using System.Threading.Tasks;
 using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common.Integration;
+using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapters
 {

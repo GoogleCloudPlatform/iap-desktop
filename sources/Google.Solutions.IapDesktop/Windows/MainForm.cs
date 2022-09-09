@@ -22,7 +22,6 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
@@ -30,7 +29,6 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
@@ -39,6 +37,9 @@ using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -48,8 +49,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Controls;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -466,7 +465,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.WindowMenu.AddSeparator();
 
-            CommandState showTabCommand(ToolWindow window) 
+            CommandState showTabCommand(ToolWindow window)
                 => window != null && window.DockState == DockState.Document && window.Pane.Contents.Count > 1
                     ? CommandState.Enabled
                     : CommandState.Disabled;
@@ -980,7 +979,7 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
         // Helper classes.
         //---------------------------------------------------------------------
-        
+
         private class CallbackSource<TContext> : ICommandContextSource<TContext>
         {
             private readonly Func<TContext> queryCurrentContextFunc;

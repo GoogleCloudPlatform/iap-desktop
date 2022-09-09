@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
-using System.Diagnostics;
 
 #pragma warning disable CA1822 // Mark members as static
 

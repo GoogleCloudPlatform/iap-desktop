@@ -20,12 +20,8 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 #pragma warning disable CA1051 // Do not declare visible instance fields
 #pragma warning disable CA1712 // Do not prefix enum values with type name

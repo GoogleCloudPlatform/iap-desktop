@@ -27,12 +27,10 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -316,8 +314,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                     //
                     var loadProjectTasks = this.cachedRoot
                         .Projects
-                        .Select(p => new
-                        {
+                        .Select(p => new {
                             p.Project,
                             Zones = LoadZones(p.Project, token)
                         })

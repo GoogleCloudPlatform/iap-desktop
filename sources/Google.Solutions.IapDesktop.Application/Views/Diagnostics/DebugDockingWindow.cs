@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;

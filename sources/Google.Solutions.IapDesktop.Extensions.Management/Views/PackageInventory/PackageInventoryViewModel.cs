@@ -25,17 +25,15 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.Mvvm.Commands;
-using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
+using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Mvvm.Binding;
 
 #pragma warning disable CA1822 // Mark members as static
 

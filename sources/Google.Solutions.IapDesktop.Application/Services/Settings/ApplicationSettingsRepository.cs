@@ -19,14 +19,12 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Settings

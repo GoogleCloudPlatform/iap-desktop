@@ -19,18 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Commands
 {
@@ -47,7 +36,7 @@ namespace Google.Solutions.Mvvm.Commands
     /// <summary>
     /// Basic context source implementation.
     /// </summary>
-    public class ObservableCommandContextSource<TContext> 
+    public class ObservableCommandContextSource<TContext>
         : ViewModelBase, ICommandContextSource<TContext>
     {
         private TContext context;

@@ -23,8 +23,6 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -35,13 +33,11 @@ using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -98,9 +94,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         ISshKeyPair ISshAuthenticator.KeyPair => this.authorizedKey.KeyPair;
 
         string ISshAuthenticator.Prompt(
-            string name, 
-            string instruction, 
-            string prompt, 
+            string name,
+            string instruction,
+            string prompt,
             bool echo)
         {
             Debug.Assert(this.View != null, "Not disposed yet");
@@ -351,7 +347,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     }
 
                     if (this.confirmationDialog.Confirm(
-                        this.View, 
+                        this.View,
                         message,
                         $"Upload file(s) to {this.Instance.Name}",
                         "Upload file") != DialogResult.Yes)
