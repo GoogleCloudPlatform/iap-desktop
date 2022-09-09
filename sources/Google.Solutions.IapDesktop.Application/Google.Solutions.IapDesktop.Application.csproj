@@ -304,12 +304,6 @@
       <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Properties\SettingsCollectionTypeDescriptor.cs" />
-    <Compile Include="Views\SlowLoadingPane.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\SlowLoadingPane.Designer.cs">
-      <DependentUpon>SlowLoadingPane.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\Dialog\TaskDialog.cs" />
     <Compile Include="Services\UpdateService.cs" />
     <Compile Include="ApplicationTraceSources.cs" />
@@ -437,9 +431,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Properties\PropertiesInspectorWindow.resx">
       <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\SlowLoadingPane.resx">
-      <DependentUpon>SlowLoadingPane.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerWindow.resx">
       <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
