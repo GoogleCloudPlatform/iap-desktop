@@ -30,8 +30,6 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 
-#pragma warning disable CA1810 // Initialize reference type static fields inline
-
 namespace Google.Solutions.Ssh.Native
 {
     /// <summary>
@@ -168,7 +166,7 @@ namespace Google.Solutions.Ssh.Native
                 int count = UnsafeNativeMethods.libssh2_session_supported_algs(
                     this.sessionHandle,
                     methodType,
-                    out IntPtr algorithmsPtrPtr);
+                    out var algorithmsPtrPtr);
                 if (count > 0 && algorithmsPtrPtr != IntPtr.Zero)
                 {
                     var algorithmsPtrs = new IntPtr[count];
@@ -387,7 +385,7 @@ namespace Google.Solutions.Ssh.Native
         {
             var lastError = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_error(
                 this.sessionHandle,
-                out IntPtr errorMessage,
+                out var errorMessage,
                 out int errorMessageLength,
                 0);
 

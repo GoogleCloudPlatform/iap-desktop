@@ -31,10 +31,6 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-#pragma warning disable CA1031 // Do not catch general exception types
-#pragma warning disable CA1032 // Implement standard exception constructors
-#pragma warning disable CA2201 // Do not raise reserved exception types
-
 namespace Google.Solutions.IapTunneling.Iap
 {
     /// <summary>
@@ -333,7 +329,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 {
                                     TraceLine("Last ACK sent by server was not received");
 
-                                    bytesSentAndAcknoledged = reconnectMessage.Ack;
+                                    this.bytesSentAndAcknoledged = reconnectMessage.Ack;
                                 }
                                 else if (lastAckReceived > reconnectMessage.Ack)
                                 {
@@ -382,7 +378,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
                                 TraceLine($"Received data ({dataMessage.DataLength} bytes)");
 
-                                bytesReceived += dataMessage.DataLength;
+                                this.bytesReceived += dataMessage.DataLength;
 
                                 // Copy data to caller's buffer.
                                 Debug.Assert(dataMessage.DataLength < count);

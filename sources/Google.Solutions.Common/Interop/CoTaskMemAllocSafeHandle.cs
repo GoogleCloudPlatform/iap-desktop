@@ -45,7 +45,6 @@ namespace Google.Solutions.Common.Interop
         {
         }
 
-        [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types")]
         public static CoTaskMemAllocSafeHandle Alloc(int cb)
         {
             var handle = new CoTaskMemAllocSafeHandle();

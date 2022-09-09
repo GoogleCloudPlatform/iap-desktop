@@ -116,7 +116,7 @@ dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggest
 #Style - Modifier preferences
 
 #when this rule is set to a list of modifiers, prefer the specified ordering.
-csharp_preferred_modifier_order = public,private,protected,internal,static,async,readonly,override,virtual,sealed:suggestion
+csharp_preferred_modifier_order = public,private,protected,internal,static,readonly,override,virtual,async,sealed:suggestion
 
 #Style - Pattern matching
 
@@ -135,7 +135,14 @@ dotnet_style_qualification_for_method = true:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 csharp_prefer_static_local_function=false:suggestion
 
+# IDE1006: Naming Styles
+dotnet_diagnostic.IDE1006.severity = silent
+
+# IDE0079: Remove unnecessary suppression
+dotnet_diagnostic.IDE0079.severity = silent
+
 [*.{cs,vb}]
 dotnet_style_qualification_for_field=true:suggestion
 dotnet_style_qualification_for_property=true:suggestion
-dotnet_style_qualification_for_method=false:suggestion
+dotnet_style_qualification_for_method=false:silent
+dotnet_diagnostic.CA1806.severity=warning

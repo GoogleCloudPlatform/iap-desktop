@@ -96,8 +96,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             DialogResult result,
             string username)
         {
-            Result = result;
-            Username = username;
+            this.Result = result;
+            this.Username = username;
         }
     }
 }

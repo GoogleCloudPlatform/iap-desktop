@@ -59,7 +59,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop
 {
-    class Program : SingletonApplicationBase
+    public class Program : SingletonApplicationBase
     {
         private static readonly Version Windows11 = new Version(10, 0, 22000, 0);
         private static readonly Version WindowsServer2022 = new Version(10, 0, 20348, 0);
@@ -411,7 +411,7 @@ namespace Google.Solutions.IapDesktop
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             //
             // Parse command line to catch errors before even passing an invalid

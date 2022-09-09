@@ -30,6 +30,7 @@ using System.Threading;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA2101 // Specify marshaling for P/Invoke string arguments
+#pragma warning disable IDE0049 // Simplify Names
 
 namespace Google.Solutions.Ssh.Native
 {
