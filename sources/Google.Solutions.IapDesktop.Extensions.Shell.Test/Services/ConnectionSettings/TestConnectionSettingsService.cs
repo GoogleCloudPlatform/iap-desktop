@@ -47,9 +47,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var projectRepository = new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
+            var projectRepository = new ProjectRepository(this.hkcu.CreateSubKey(TestKeyPath));
             var settingsRepository = new ConnectionSettingsRepository(projectRepository);
             this.service = new ConnectionSettingsService(settingsRepository);
 
@@ -228,9 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         }
 
         [Test]
-        public void WhenPortSetInProject_ProjectValueIsInheritedDownToVm(
-            [Values("user", null)]
-                string username)
+        public void WhenPortSetInProject_ProjectValueIsInheritedDownToVm()
         {
             var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
             projectSettings.TypedCollection.RdpPort.IntValue = 13389;

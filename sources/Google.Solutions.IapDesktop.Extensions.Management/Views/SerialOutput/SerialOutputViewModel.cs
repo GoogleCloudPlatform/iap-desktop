@@ -204,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             }
         }
 
-        protected async override Task<SerialOutputModel> LoadModelAsync(
+        protected override async Task<SerialOutputModel> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)
         {

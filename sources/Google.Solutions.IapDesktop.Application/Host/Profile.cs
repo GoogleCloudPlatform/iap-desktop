@@ -37,7 +37,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
     /// </summary>
     public sealed class Profile : IDisposable
     {
-        [SuppressMessage("Design", "CA1027:Mark enums with FlagsAttribute")]
         public enum SchemaVersion : uint
         {
             Initial = 1,

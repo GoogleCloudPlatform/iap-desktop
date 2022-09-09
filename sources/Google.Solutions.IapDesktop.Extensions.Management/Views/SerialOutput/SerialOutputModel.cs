@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             return newOutput;
         }
 
-        public async static Task<SerialOutputModel> LoadAsync(
+        public static async Task<SerialOutputModel> LoadAsync(
             string displayName,
             IComputeEngineAdapter adapter,
             InstanceLocator instanceLocator,

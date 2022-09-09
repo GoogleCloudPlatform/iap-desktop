@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
         public TunnelDestination Destination => new TunnelDestination(
             this.Endpoint.VmInstance, this.Endpoint.Port);
 
-        public virtual int LocalPort => listener.LocalPort;
+        public virtual int LocalPort => this.listener.LocalPort;
 
         public bool IsMutualTlsEnabled => this.Endpoint.IsMutualTlsEnabled;
 

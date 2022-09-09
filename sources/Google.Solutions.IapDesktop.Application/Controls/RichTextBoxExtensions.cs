@@ -71,10 +71,10 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
                 internal RECT(int left, int top, int right, int bottom)
                 {
-                    Left = left;
-                    Top = top;
-                    Right = right;
-                    Bottom = bottom;
+                    this.Left = left;
+                    this.Top = top;
+                    this.Right = right;
+                    this.Bottom = bottom;
                 }
             }
 

@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             get
             {
-                var count = this.backgroundJobs.Count();
+                var count = this.backgroundJobs.Count;
                 if (count == 0)
                 {
                     return null;

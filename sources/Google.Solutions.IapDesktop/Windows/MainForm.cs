@@ -466,7 +466,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.WindowMenu.AddSeparator();
 
-            Func<ToolWindow, CommandState> showTabCommand = window
+            CommandState showTabCommand(ToolWindow window) 
                 => window != null && window.DockState == DockState.Document && window.Pane.Contents.Count > 1
                     ? CommandState.Enabled
                     : CommandState.Disabled;

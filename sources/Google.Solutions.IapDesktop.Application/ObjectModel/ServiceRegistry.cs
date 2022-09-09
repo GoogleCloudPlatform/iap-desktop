@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         public object GetService(Type serviceType)
         {
-            if (this.singletons.TryGetValue(serviceType, out SingletonStub singletonStub))
+            if (this.singletons.TryGetValue(serviceType, out var singletonStub))
             {
                 return singletonStub.Object;
             }
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 throw new UnknownServiceException(serviceType.Name);
             }
 
-            if (this.categories.TryGetValue(categoryType, out IList<Type> serviceTypes))
+            if (this.categories.TryGetValue(categoryType, out var serviceTypes))
             {
                 serviceTypes.Add(serviceType);
             }
@@ -235,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             //
             // Consider own services.
             //
-            if (this.categories.TryGetValue(typeof(TCategory), out IList<Type> serviceTypes))
+            if (this.categories.TryGetValue(typeof(TCategory), out var serviceTypes))
             {
                 services = services.Concat(serviceTypes.Select(t => (TCategory)GetService(t)));
             }

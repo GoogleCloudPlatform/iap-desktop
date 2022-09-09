@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
     [TestFixture]
     public class TestSingletonApplicationBase
     {
-        class Singleton : SingletonApplicationBase
+        private class Singleton : SingletonApplicationBase
         {
             private readonly AutoResetEvent runningEvent = new AutoResetEvent(false);
             private readonly AutoResetEvent quitEvent = new AutoResetEvent(false);

@@ -22,7 +22,6 @@
 using System;
 
 #pragma warning disable IDE0060 // Remove unused parameter
-#pragma warning disable CA1801 // Review unused parameters
 
 namespace Google.Solutions.Common.Diagnostics
 {

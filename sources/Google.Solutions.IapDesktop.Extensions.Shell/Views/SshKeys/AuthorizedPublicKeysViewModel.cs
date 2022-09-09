@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        protected async override Task<AuthorizedPublicKeysModel> LoadModelAsync(
+        protected override async Task<AuthorizedPublicKeysModel> LoadModelAsync(
             IProjectModelNode node, 
             CancellationToken token)
         {

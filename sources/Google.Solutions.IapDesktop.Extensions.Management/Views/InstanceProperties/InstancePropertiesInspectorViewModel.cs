@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
                 : CommandState.Disabled;
         }
 
-        protected async override Task<InstancePropertiesInspectorModel> LoadModelAsync(
+        protected override async Task<InstancePropertiesInspectorModel> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)
         {

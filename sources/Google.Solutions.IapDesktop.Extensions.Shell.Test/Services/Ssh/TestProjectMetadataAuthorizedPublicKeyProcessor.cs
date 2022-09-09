@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
     [TestFixture]
     public class TestProjectMetadataAuthorizedPublicKeyProcessor : ShellFixtureBase
     {
-        private readonly static ProjectLocator SampleLocator
+        private static readonly ProjectLocator SampleLocator
             = new ProjectLocator("project-1");
 
         private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(

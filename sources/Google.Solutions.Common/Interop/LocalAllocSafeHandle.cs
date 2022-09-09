@@ -47,12 +47,11 @@ namespace Google.Solutions.Common.Interop
         {
         }
 
-        [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types")]
         public static LocalAllocSafeHandle LocalAlloc(uint cb)
         {
-            LocalAllocSafeHandle safeLocalFree = UnsafeNativeMethods.LocalAlloc(
+            var safeLocalFree = UnsafeNativeMethods.LocalAlloc(
                 0, 
-                (UIntPtr)(ulong)cb);
+                (UIntPtr)cb);
             if (safeLocalFree.IsInvalid)
             {
                 safeLocalFree.SetHandleAsInvalid();
