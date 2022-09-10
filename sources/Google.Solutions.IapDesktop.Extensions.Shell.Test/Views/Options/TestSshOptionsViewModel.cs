@@ -55,8 +55,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             }
 
             return new SshSettingsRepository(
-                baseKey, 
-                policyKey, 
+                baseKey,
+                policyKey,
                 null,
                 Profile.SchemaVersion.Current);
         }

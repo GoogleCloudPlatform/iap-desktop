@@ -19,22 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views;
-using Google.Solutions.Testing.Application.ObjectModel;
+using Google.Solutions.Mvvm.Commands;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views

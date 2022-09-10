@@ -22,7 +22,6 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
-using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -62,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         {
             var resourceManager = new Mock<IResourceManagerAdapter>();
             var model = new ProjectPickerDialog.CloudModel(resourceManager.Object);
-            
+
             await model
                 .ListProjectsAsync("test", 1, CancellationToken.None)
                 .ConfigureAwait(false);
@@ -82,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         public async Task WhenStaticModelProjectsIsNull_ThenListProjectsReturnsEmptyList()
         {
             var model = new ProjectPickerDialog.StaticModel(null);
-            
+
             var result = await model
                 .ListProjectsAsync(null, 100, CancellationToken.None)
                 .ConfigureAwait(false);

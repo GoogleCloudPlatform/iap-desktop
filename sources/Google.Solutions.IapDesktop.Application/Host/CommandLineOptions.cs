@@ -22,7 +22,6 @@
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Host

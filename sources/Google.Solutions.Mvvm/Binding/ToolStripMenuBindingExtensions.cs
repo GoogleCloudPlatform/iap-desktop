@@ -20,17 +20,13 @@
 //
 
 using Google.Solutions.Common;
-using Google.Solutions.Mvvm.Binding;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
@@ -181,7 +177,7 @@ namespace Google.Solutions.Mvvm.Binding
             // Propagate changes.
             //
             var binding = new Binding<TModel>(
-                view, 
+                view,
                 modelCollection,
                 CreateMenuItem);
             if (container != null)
@@ -209,7 +205,7 @@ namespace Google.Solutions.Mvvm.Binding
             }
 
             private void Model_CollectionChanged(
-                object sender, 
+                object sender,
                 NotifyCollectionChangedEventArgs e)
             {
                 var newModelItems = e.NewItems?.OfType<TModel>();

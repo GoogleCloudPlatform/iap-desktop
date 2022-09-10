@@ -22,21 +22,21 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
+using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Common.Integration;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Testing.Common;
-using Google.Solutions.Testing.Application.Test;
-using Moq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapters
 {

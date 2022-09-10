@@ -19,20 +19,17 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Google.Solutions.Common.Diagnostics;
-using WeifenLuo.WinFormsUI.Docking;
 using System.Reflection;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
@@ -105,8 +102,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
             public SimplePropertyDescriptor(
                 string category,
-                PropertyInfo property, 
-                object value) : 
+                PropertyInfo property,
+                object value) :
                 base(property.Name, null)
             {
                 this.category = category;
@@ -121,13 +118,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
             public override bool IsReadOnly => true;
 
-            public override Type PropertyType 
+            public override Type PropertyType
                 => this.property.PropertyType;
 
-            public override bool CanResetValue(object component) 
+            public override bool CanResetValue(object component)
                 => false;
 
-            public override object GetValue(object component) 
+            public override object GetValue(object component)
                 => this.value;
 
             public override void ResetValue(object component)

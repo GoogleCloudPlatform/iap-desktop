@@ -26,11 +26,9 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
-using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Collections.Generic;
@@ -75,9 +73,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     [Service(typeof(IOsLoginService))]
     public sealed class OsLoginService : IOsLoginService
     {
-        private static readonly ProjectLocator WellKnownProject 
+        private static readonly ProjectLocator WellKnownProject
             = new ProjectLocator("windows-cloud");
-        
+
         private readonly IOsLoginAdapter adapter;
 
         //---------------------------------------------------------------------

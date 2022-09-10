@@ -124,7 +124,7 @@ namespace Google.Solutions.Testing.Common.Integration
                 .ConfigureAwait(false);
 
             return new TemporaryServiceCredential(
-                serviceAccountEmail, 
+                serviceAccountEmail,
                 response.AccessToken);
         }
 

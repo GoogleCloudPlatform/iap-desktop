@@ -19,16 +19,12 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Host
 {
@@ -124,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     // or not.
                     //
                     profileKey.SetValue(
-                        SchemaVersionValueName, 
+                        SchemaVersionValueName,
                         SchemaVersion.Current,
                         RegistryValueKind.DWord);
                 }

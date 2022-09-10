@@ -19,11 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.Mvvm.Binding;
-using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 

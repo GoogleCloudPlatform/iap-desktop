@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapTunneling.Iap;
 using System;

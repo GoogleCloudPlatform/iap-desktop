@@ -24,11 +24,9 @@ using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Solutions.Common.Net;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters

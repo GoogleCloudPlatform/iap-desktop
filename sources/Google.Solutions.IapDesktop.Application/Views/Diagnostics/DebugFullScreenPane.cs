@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Runtime.InteropServices;
-using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {

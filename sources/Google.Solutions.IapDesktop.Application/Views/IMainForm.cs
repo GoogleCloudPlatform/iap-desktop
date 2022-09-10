@@ -19,9 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Mvvm.Commands;
 using System;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;

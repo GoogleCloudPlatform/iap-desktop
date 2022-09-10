@@ -26,8 +26,6 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
@@ -66,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             var settings = this.settingsRepository.GetSettings();
 
-            this.OperatingSystemsFilter =  settings.IncludeOperatingSystems.EnumValue;
+            this.OperatingSystemsFilter = settings.IncludeOperatingSystems.EnumValue;
             this.CollapsedProjects = (settings.CollapsedProjects.StringValue ?? string.Empty)
                 .Split(',')
                 .Where(projectId => !string.IsNullOrWhiteSpace(projectId))
@@ -85,10 +83,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
 
             var settings = this.settingsRepository.GetSettings();
-            
+
             settings.IncludeOperatingSystems.EnumValue = this.OperatingSystemsFilter;
             settings.CollapsedProjects.StringValue = string.Join(
-                ",", 
+                ",",
                 this.CollapsedProjects.Select(locator => locator.ProjectId));
 
             this.settingsRepository.SetSettings(settings);

@@ -20,13 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {

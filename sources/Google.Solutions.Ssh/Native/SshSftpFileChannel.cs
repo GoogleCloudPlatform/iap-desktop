@@ -22,12 +22,8 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -127,7 +123,7 @@ namespace Google.Solutions.Ssh.Native
                                 bytesWritten,
                                 length - totalBytesWritten);
                         }
-                        
+
                         if (bytesWritten == (int)LIBSSH2_ERROR.TIMEOUT)
                         {
                             SshTraceSources.Default.TraceVerbose(

@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
         public override int GetHashCode()
         {
-            return 
+            return
                 this.PublicKey.GetHashCode() ^
                 this.KeyType.GetHashCode() ^
                 this.PosixUsername.GetHashCode();

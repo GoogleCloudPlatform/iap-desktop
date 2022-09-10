@@ -19,18 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Native;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Net;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 namespace Google.Solutions.Ssh
 {

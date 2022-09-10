@@ -19,21 +19,18 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util;
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Interop;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Mvvm.Binding;
@@ -44,7 +41,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
@@ -75,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.View = view;
             this.themeService = themeService;
-            
+
             this.profile = profile
                 .ThrowIfNull(nameof(profile));
             this.applicationSettings = applicationSettings

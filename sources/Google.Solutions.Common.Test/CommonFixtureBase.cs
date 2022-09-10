@@ -20,8 +20,6 @@
 //
 
 using Google.Solutions.Testing.Common;
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -31,7 +29,7 @@ namespace Google.Solutions.Common.Test
     public abstract class CommonFixtureBase : FixtureBase
     {
         protected override IEnumerable<TraceSource> Sources
-            => base.Sources.Concat(new []
+            => base.Sources.Concat(new[]
             {
                 CommonTraceSources.Default,
             });

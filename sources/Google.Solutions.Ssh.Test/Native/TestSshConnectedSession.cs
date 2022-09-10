@@ -20,14 +20,12 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
+using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System;
 using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test.Native
@@ -375,9 +373,9 @@ namespace Google.Solutions.Ssh.Test.Native
             }
 
             public override string Prompt(
-                string name, 
-                string instruction, 
-                string prompt, 
+                string name,
+                string instruction,
+                string prompt,
                 bool echo)
             {
                 this.PromptCount++;
@@ -428,7 +426,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     () => connection.Authenticate(twoFactorAuthenticator));
 
                 Assert.AreEqual(
-                    SshConnectedSession.KeyboardInteractiveRetries, 
+                    SshConnectedSession.KeyboardInteractiveRetries,
                     twoFactorAuthenticator.PromptCount);
             }
         }

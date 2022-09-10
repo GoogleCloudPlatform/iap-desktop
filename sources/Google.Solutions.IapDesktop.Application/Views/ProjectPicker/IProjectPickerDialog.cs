@@ -28,7 +28,6 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -73,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         }
 
         public DialogResult SelectCloudProjects(
-            IWin32Window owner, 
+            IWin32Window owner,
             string caption,
             IResourceManagerAdapter resourceManager,
             IExceptionDialog exceptionDialog,
@@ -88,8 +87,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         }
 
         public DialogResult SelectLocalProjects(
-            IWin32Window owner, 
-            string caption, 
+            IWin32Window owner,
+            string caption,
             IReadOnlyCollection<IProjectModelProjectNode> projects,
             IExceptionDialog exceptionDialog,
             out IReadOnlyCollection<ProjectLocator> selectedProjects)

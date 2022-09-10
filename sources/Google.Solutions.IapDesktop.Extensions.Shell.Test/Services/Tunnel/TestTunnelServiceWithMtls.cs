@@ -22,10 +22,11 @@
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.Testing.Application.Mocks;
+using Google.Solutions.Testing.Common.Integration;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -33,7 +34,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Solutions.Testing.Application.Mocks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
 {

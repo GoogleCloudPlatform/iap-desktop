@@ -21,22 +21,17 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Testing.Common.Integration;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Test.Services;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
-using Microsoft.Win32;
+using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -44,9 +39,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -219,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 var terminal = (ITextTerminal)viewModel;
 
                 terminal.OnError(
-                    TerminalErrorType.ConnectionLost, 
+                    TerminalErrorType.ConnectionLost,
                     new ArgumentException());
 
                 Assert.IsInstanceOf<ArgumentException>(argsReceived.Error);
@@ -299,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     It.IsAny<SessionStartedEvent>()), Times.Once());
 
                 Assert.AreEqual(
-                    TerminalPaneViewModelBase.Status.Connected, 
+                    TerminalPaneViewModelBase.Status.Connected,
                     viewModel.ConnectionStatus);
             }
 

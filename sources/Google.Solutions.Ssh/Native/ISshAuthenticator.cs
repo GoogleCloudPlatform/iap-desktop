@@ -22,10 +22,6 @@
 using Google.Apis.Util;
 using Google.Solutions.Ssh.Auth;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -43,7 +39,7 @@ namespace Google.Solutions.Ssh.Native
         /// Key pair for public/private key authentication.
         /// </summary>
         ISshKeyPair KeyPair { get; }
-        
+
         /// <summary>
         /// Prompt for additional (second factor)
         /// information.
@@ -74,9 +70,9 @@ namespace Google.Solutions.Ssh.Native
         }
 
         public virtual string Prompt(
-            string name, 
-            string instruction, 
-            string prompt, 
+            string name,
+            string instruction,
+            string prompt,
             bool echo)
         {
             throw new NotImplementedException();

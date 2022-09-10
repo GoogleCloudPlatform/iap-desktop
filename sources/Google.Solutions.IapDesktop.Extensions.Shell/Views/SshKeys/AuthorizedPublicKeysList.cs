@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.List.BindColumn(0, m => m.Key.Email);
             this.List.BindColumn(1, m => m.Key.KeyType);
             this.List.BindColumn(2, m => m.AuthorizationMethod.ToString());
-            this.List.BindColumn(3, m => 
+            this.List.BindColumn(3, m =>
             {
                 if (m.Key.ExpireOn == null)
                 {

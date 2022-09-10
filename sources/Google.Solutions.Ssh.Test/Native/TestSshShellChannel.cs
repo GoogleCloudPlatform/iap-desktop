@@ -20,12 +20,10 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
+using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
-using System.Net;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 

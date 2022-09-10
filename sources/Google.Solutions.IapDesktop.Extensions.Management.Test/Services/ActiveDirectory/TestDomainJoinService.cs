@@ -19,25 +19,19 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common;
+using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
-using System.Linq;
+using System;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Testing.Common;
-using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
-using Moq;
-using System;
-using System.Collections.Generic;
-using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Text;
-using Newtonsoft.Json;
-using System.Security.Cryptography;
 using static Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory.DomainJoinService;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.ActiveDirectory

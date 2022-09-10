@@ -21,8 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
-using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System.Threading;
 using System.Threading.Tasks;

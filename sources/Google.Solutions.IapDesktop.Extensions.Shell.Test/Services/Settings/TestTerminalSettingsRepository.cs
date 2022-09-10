@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
                 TerminalSettings.DefaultBackgroundColor.ToArgb(),
                 settings.BackgroundColorArgb.IntValue);
             Assert.AreEqual(
-                Color.White.ToArgb(), 
+                Color.White.ToArgb(),
                 settings.ForegroundColorArgb.IntValue);
         }
 

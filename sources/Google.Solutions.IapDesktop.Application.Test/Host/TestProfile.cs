@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.Testing.Application.Test;
-using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 
@@ -166,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             using (Profile.CreateProfile(TestProfileName))
             { }
-            
+
             Profile.DeleteProfile(TestProfileName);
 
             Assert.Throws<ProfileNotFoundException>(
@@ -182,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         {
             using (Profile.CreateProfile(TestProfileName))
             { }
-                
+
             var list = Profile.ListProfiles();
 
             Assert.IsNotNull(list);

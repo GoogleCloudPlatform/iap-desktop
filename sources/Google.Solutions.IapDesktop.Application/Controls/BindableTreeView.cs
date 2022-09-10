@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using System;

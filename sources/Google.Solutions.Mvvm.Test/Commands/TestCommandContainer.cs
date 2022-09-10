@@ -21,13 +21,10 @@
 
 using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.Testing.Common;
-using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -417,7 +414,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                     new Command<string>(
                         "test",
                         ctx => CommandState.Enabled,
-                        async ctx => 
+                        async ctx =>
                         {
                             await Task.Yield();
                             throw new ArgumentException();
@@ -437,7 +434,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 Assert.IsInstanceOf<ArgumentException>(exception);
             }
         }
-        
+
         [Test]
         public void WhenInvokeAsynchronouslyThrowsCancellationException_ThenExceptionIsSwallowed()
         {

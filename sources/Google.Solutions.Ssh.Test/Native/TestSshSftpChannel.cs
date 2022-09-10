@@ -20,15 +20,12 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
+using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System;
 using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test.Native
@@ -191,8 +188,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_FX_ERROR.NO_SUCH_FILE,
                     () => channel.CreateDirectory(
                         "/this/does/not/exist",
-                        FilePermissions.OwnerExecute | 
-                            FilePermissions.OwnerRead | 
+                        FilePermissions.OwnerExecute |
+                            FilePermissions.OwnerRead |
                             FilePermissions.OtherWrite));
             }
         }

@@ -19,32 +19,30 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer;
+using Google.Solutions.Mvvm.Commands;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Threading;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 {
@@ -203,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 Debug.Assert(session != null);
             }
 
-            if (session is SessionPaneBase sessionPane && 
+            if (session is SessionPaneBase sessionPane &&
                 sessionPane.ContextCommands == null)
             {
                 //

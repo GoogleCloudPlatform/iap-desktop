@@ -20,19 +20,15 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
+using Google.Solutions.Testing.Common;
+using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System;
-using System.Globalization;
 using System.IO;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Testing.Common;
 
 namespace Google.Solutions.Ssh.Test
 {

@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
-using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Access
 {

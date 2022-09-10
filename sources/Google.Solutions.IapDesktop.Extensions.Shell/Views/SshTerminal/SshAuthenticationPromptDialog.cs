@@ -20,17 +20,10 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Binding;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal

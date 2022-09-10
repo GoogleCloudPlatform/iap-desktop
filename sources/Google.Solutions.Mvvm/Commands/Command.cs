@@ -122,7 +122,7 @@ namespace Google.Solutions.Mvvm.Commands
         public Keys ShortcutKeys { get; set; }
         public bool IsDefault { get; set; }
         public string ActivityText
-        { 
+        {
             get => this.activityText ?? this.Text.Replace("&", string.Empty);
             set
             {

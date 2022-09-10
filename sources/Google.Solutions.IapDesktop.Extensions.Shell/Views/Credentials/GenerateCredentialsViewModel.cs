@@ -19,14 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {

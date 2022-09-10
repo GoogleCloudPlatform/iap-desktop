@@ -23,10 +23,10 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.Mvvm.Commands;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -35,6 +35,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+
+#if DEBUG
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 {
@@ -47,7 +49,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 
         public HtmlPageGenerator(IServiceProvider serviceProvider)
         {
-#if DEBUG
             this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             this.projectModelService = serviceProvider.GetService<IProjectModelService>();
 
@@ -60,7 +61,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
                         : CommandState.Unavailable,
                     context => GenerateHtmlPageAsync((IProjectModelProjectNode)context)
                         .ContinueWith(_ => { })));
-#endif
         }
 
         private async Task GenerateHtmlPageAsync(IProjectModelProjectNode context)
@@ -111,3 +111,4 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         }
     }
 }
+#endif

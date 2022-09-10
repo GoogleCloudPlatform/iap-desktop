@@ -21,7 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Testing.Common.Integration;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -35,6 +34,9 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
+using Google.Solutions.Testing.Application.ObjectModel;
+using Google.Solutions.Testing.Application.Views;
+using Google.Solutions.Testing.Common.Integration;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
@@ -42,12 +44,9 @@ using System;
 using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.Testing.Application.ObjectModel;
-using Google.Solutions.Testing.Application.Views;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {

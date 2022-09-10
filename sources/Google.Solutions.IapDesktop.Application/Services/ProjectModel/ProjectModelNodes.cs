@@ -19,18 +19,13 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {
@@ -147,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             this.InstanceId = instanceId;
             this.Instance = locator;
             this.OperatingSystem = os;
-            
+
             this.IsRunning = status == "RUNNING";
 
             //

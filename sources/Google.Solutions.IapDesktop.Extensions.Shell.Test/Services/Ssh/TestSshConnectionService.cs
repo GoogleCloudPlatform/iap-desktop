@@ -28,7 +28,6 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
@@ -37,7 +36,6 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Common;
@@ -47,7 +45,6 @@ using NUnit.Framework;
 using System;
 using System.Globalization;
 using System.Net;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -167,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
-            
+
             await service
                 .ActivateOrConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);
@@ -251,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
-            
+
             await service
                 .ActivateOrConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);

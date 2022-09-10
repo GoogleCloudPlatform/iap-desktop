@@ -22,24 +22,17 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 

@@ -27,7 +27,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Test.Binding
 {
     [TestFixture]
-    public class TestBindingExtensions 
+    public class TestBindingExtensions
     {
         private class ViewModelWithBareProperties : ViewModelBase
         {

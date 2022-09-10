@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         {
             this.Text = "Options";
 
-            var appSettingsRepository = 
+            var appSettingsRepository =
                 serviceProvider.GetService<ApplicationSettingsRepository>();
 
             AddSheet(new GeneralOptionsSheet(

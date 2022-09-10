@@ -32,8 +32,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             return metadata?.Items
                 .EnsureNotNull()
-                .FirstOrDefault(item => 
-                    item.Key != null && 
+                .FirstOrDefault(item =>
+                    item.Key != null &&
                     item.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
         }
 

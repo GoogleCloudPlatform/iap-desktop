@@ -22,9 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Mvvm.Binding
 {
@@ -51,7 +48,7 @@ namespace Google.Solutions.Mvvm.Binding
     /// <summary>
     /// Simple observable property.
     /// </summary>
-    public class ObservableProperty<T> 
+    public class ObservableProperty<T>
         : IObservableProperty<T>, IObservableWritableProperty<T>, ISourceProperty
     {
         private T value;
@@ -77,7 +74,7 @@ namespace Google.Solutions.Mvvm.Binding
         public void RaisePropertyChange()
         {
             PropertyChanged?.Invoke(
-                this, 
+                this,
                 new PropertyChangedEventArgs("Value"));
 
             if (this.dependents != null)
@@ -117,7 +114,7 @@ namespace Google.Solutions.Mvvm.Binding
             params ISourceProperty[] sources)
         {
             this.func = func;
-            
+
             foreach (var source in sources)
             {
                 source.AddDependentProperty(this);

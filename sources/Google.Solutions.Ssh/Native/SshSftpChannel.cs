@@ -24,11 +24,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -188,7 +184,7 @@ namespace Google.Solutions.Ssh.Native
 
             using (SshTraceSources.Default.TraceMethod()
                 .WithParameters(path, flags, mode))
-            { 
+            {
                 try
                 {
                     var fileHandle = UnsafeNativeMethods.libssh2_sftp_open_ex(
@@ -281,20 +277,20 @@ namespace Google.Solutions.Ssh.Native
         /// <summary>
         /// File attributes.
         /// </summary>
-        
-        public FilePermissions Permissions 
+
+        public FilePermissions Permissions
             => (FilePermissions)this.attributes.permissions;
 
-        public bool IsDirectory 
+        public bool IsDirectory
             => this.Permissions.HasFlag(FilePermissions.Directory);
 
-        public uint UserId 
+        public uint UserId
             => this.attributes.uid;
 
-        public uint GroupId 
+        public uint GroupId
             => this.attributes.gid;
 
-        public DateTime LastAccessDate 
+        public DateTime LastAccessDate
             => DateTimeOffset.FromUnixTimeSeconds(this.attributes.atime).DateTime;
 
         public DateTime LastModifiedDate

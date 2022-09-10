@@ -20,26 +20,21 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.Mvvm.Commands;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Commands;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.Mvvm.Binding;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 {
@@ -80,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
         public RangeObservableCollection<AuthorizedPublicKeysModel.Item> FilteredKeys { get; }
             = new RangeObservableCollection<AuthorizedPublicKeysModel.Item>();
-        
+
         public bool IsListEnabled
         {
             get => this.isListEnabled;
@@ -149,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
                 var matches = this.AllKeys
                     .Where(k => string.IsNullOrEmpty(this.filter) ||
-                                k.Key.Email.Contains(this.filter) || 
+                                k.Key.Email.Contains(this.filter) ||
                                 k.Key.KeyType.Contains(this.filter));
 
                 this.FilteredKeys.Clear();
@@ -237,11 +232,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                         return null;
                     }).ConfigureAwait(true);  // Back to original (UI) thread.
 
-                //
-                // Refresh list.
-                //
-                await InvalidateAsync()
-                    .ConfigureAwait(true);
+            //
+            // Refresh list.
+            //
+            await InvalidateAsync()
+                .ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------
@@ -249,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         //---------------------------------------------------------------------
 
         protected override async Task<AuthorizedPublicKeysModel> LoadModelAsync(
-            IProjectModelNode node, 
+            IProjectModelNode node,
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))

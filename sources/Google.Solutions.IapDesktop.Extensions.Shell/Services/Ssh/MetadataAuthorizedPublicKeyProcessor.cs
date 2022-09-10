@@ -31,13 +31,11 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -266,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         public override bool AreProjectSshKeysBlocked
             => this.instanceDetails.GetFlag(this.projectDetails, BlockProjectSshKeysFlag) == true;
 
-        private bool IsLegacySshKeyPresent 
+        private bool IsLegacySshKeyPresent
             => !string.IsNullOrEmpty(this.instanceDetails
                 .Metadata
                 .GetValue(MetadataAuthorizedPublicKeySet.LegacyMetadataKey));

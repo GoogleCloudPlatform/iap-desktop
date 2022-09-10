@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
-using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -55,9 +54,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey, 
-                    null, 
-                    null, 
+                    settingsKey,
+                    null,
+                    null,
                     Profile.SchemaVersion.Current);
 
                 var settings = repository.GetSettings();
@@ -244,8 +243,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             using (var settingsKey = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 var repository = new SshSettingsRepository(
-                    settingsKey, 
-                    null, 
+                    settingsKey,
+                    null,
                     null,
                     Profile.SchemaVersion.Current);
 

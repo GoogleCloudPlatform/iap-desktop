@@ -22,10 +22,7 @@
 using Google.Solutions.Common.Threading;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -55,7 +52,7 @@ namespace Google.Solutions.Common.Test.Threading
                 {
                     Assert.AreEqual("test", state);
                     Assert.AreEqual(Thread.CurrentThread.ManagedThreadId, thread.ManagedThreadId);
-                    
+
                     tokenSource.Cancel();
                 }
 
@@ -105,7 +102,7 @@ namespace Google.Solutions.Common.Test.Threading
                 thread.Start();
 
                 ctx.Post(_ => throw new ArgumentException(), null);
-                
+
                 thread.Join();
             }
         }

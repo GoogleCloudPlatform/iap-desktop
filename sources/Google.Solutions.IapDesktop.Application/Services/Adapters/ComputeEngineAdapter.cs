@@ -38,7 +38,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -486,7 +485,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
                     await request
                         .ExecuteAndAwaitOperationAsync(
-                            instance.ProjectId, 
+                            instance.ProjectId,
                             cancellationToken)
                         .ConfigureAwait(false);
                 }

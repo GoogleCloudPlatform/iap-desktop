@@ -20,9 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Util.Store;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -206,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             var dialog = new AuthorizeDialog(
                 clientSecrets,
-                scopes, 
+                scopes,
                 deviceEnrollment,
                 authSettingsRepository);
             if (dialog.ShowDialog(parent) == DialogResult.OK)

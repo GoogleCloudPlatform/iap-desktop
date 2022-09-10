@@ -20,16 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authorization
@@ -37,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
     [SkipCodeCoverage("View code")]
     public partial class NewProfileDialog : Form
     {
-        private readonly NewProfileViewModel viewModel 
+        private readonly NewProfileViewModel viewModel
             = new NewProfileViewModel();
 
         public NewProfileDialog()

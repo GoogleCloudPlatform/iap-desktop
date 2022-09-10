@@ -20,16 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Commands;
-using Google.Solutions.Testing.Common;
-using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Test.Commands
 {

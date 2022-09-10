@@ -22,14 +22,9 @@
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -50,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         {
             this.theme = new VS2015LightTheme();
             this.theme.Extender.FloatWindowFactory = new FloatWindowFactory();
-            this.theme.Extender.DockPaneFactory = 
+            this.theme.Extender.DockPaneFactory =
                 new DockPaneFactory(this.theme.Extender.DockPaneFactory);
         }
 
@@ -107,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 // minimize button properly, see 
                 // https://github.com/dockpanelsuite/dockpanelsuite/issues/526..
                 //
-                if (m.Msg == (int)WindowMessage.WM_NCLBUTTONDOWN && 
+                if (m.Msg == (int)WindowMessage.WM_NCLBUTTONDOWN &&
                     m.WParam.ToInt32() == NativeMethods.HTREDUCE)
                 {
                     //
@@ -115,16 +110,16 @@ namespace Google.Solutions.IapDesktop.Application.Services
                     // as a click on the title bar.
                     //
                 }
-                else if (m.Msg == (int)WindowMessage.WM_NCLBUTTONUP && 
+                else if (m.Msg == (int)WindowMessage.WM_NCLBUTTONUP &&
                     m.WParam.ToInt32() == NativeMethods.HTREDUCE)
                 {
                     //
                     // Minimize window.
                     //
                     NativeMethods.SendMessage(
-                        this.Handle, 
-                        (int)WindowMessage.WM_SYSCOMMAND, 
-                        new IntPtr(NativeMethods.SC_MINIMIZE), 
+                        this.Handle,
+                        (int)WindowMessage.WM_SYSCOMMAND,
+                        new IntPtr(NativeMethods.SC_MINIMIZE),
                         IntPtr.Zero);
                 }
                 else

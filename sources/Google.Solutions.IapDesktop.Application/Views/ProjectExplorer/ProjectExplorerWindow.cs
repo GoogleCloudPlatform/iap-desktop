@@ -19,9 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -32,21 +30,17 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
+using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Controls;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Controls;
 
 #pragma warning disable IDE1006 // Naming Styles
 
@@ -65,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly CommandContainer<IProjectModelNode> contextMenuCommands;
         private readonly CommandContainer<IProjectModelNode> toolbarCommands;
 
-        public ICommandContainer<IProjectModelNode> ContextMenuCommands 
+        public ICommandContainer<IProjectModelNode> ContextMenuCommands
             => this.contextMenuCommands;
 
         public ICommandContainer<IProjectModelNode> ToolbarCommands
@@ -289,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 // Show project picker
                 //
                 using (var resourceManager = this.serviceProvider.GetService<IResourceManagerAdapter>())
-                { 
+                {
                     if (this.serviceProvider
                         .GetService<IProjectPickerDialog>()
                         .SelectCloudProjects(

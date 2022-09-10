@@ -21,15 +21,11 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
-using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -202,7 +198,7 @@ namespace Google.Solutions.Ssh
             TResult result = null;
 
             await RunSendOperationAsync(
-                session => 
+                session =>
                 {
                     result = sendOperation(session);
                 })
@@ -224,7 +220,7 @@ namespace Google.Solutions.Ssh
             Exception exception = null;
 
             await RunSendOperationAsync(
-                session => 
+                session =>
                 {
                     try
                     {
@@ -283,7 +279,8 @@ namespace Google.Solutions.Ssh
             }
 
             return await RunSendOperationAsync(
-                session => {
+                session =>
+                {
                     Debug.Assert(this.IsRunningOnWorkerThread);
 
                     using (session.Session.AsBlocking())
@@ -311,7 +308,8 @@ namespace Google.Solutions.Ssh
         public async Task<RemoteFileSystemChannel> OpenFileSystemAsync()
         {
             return await RunSendOperationAsync(
-                session => {
+                session =>
+                {
                     Debug.Assert(this.IsRunningOnWorkerThread);
 
                     using (session.Session.AsBlocking())
@@ -375,7 +373,7 @@ namespace Google.Solutions.Ssh
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing) 
+        protected virtual void Dispose(bool disposing)
         {
             if (this.Connection.IsRunningOnWorkerThread)
             {

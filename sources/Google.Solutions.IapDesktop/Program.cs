@@ -44,7 +44,6 @@ using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.IapTunneling;
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Ssh;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -148,8 +147,8 @@ namespace Google.Solutions.IapDesktop
             {
                 MessageBox.Show(
                     e.Message,
-                    "Profile", 
-                    MessageBoxButtons.OK, 
+                    "Profile",
+                    MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
 
                 Environment.Exit(1);
@@ -168,7 +167,7 @@ namespace Google.Solutions.IapDesktop
 
         internal Program(
             string name,
-            CommandLineOptions commandLineOptions) 
+            CommandLineOptions commandLineOptions)
             : base(name)
         {
             this.commandLineOptions = commandLineOptions;
