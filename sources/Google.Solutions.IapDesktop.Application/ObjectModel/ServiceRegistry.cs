@@ -157,6 +157,13 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         // Lookup.
         //---------------------------------------------------------------------
 
+        private bool IsServiceRegistered(Type serviceType)
+        {
+            return this.singletons.ContainsKey(serviceType) ||
+                   this.transients.ContainsKey(serviceType) ||
+                   (this.parent != null && this.parent.IsServiceRegistered(serviceType));
+        }
+
         public object GetService(Type serviceType)
         {
             if (serviceType.IsGenericType && 
@@ -169,8 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 // Verify that the service exists so that we don't get any
                 // surprises later.
                 //
-                if (!this.singletons.ContainsKey(actualServiceType) &&
-                    !this.transients.ContainsKey(actualServiceType))
+                if (!IsServiceRegistered(actualServiceType))
                 {
                     throw new UnknownServiceException(
                         $"Unknown service: {actualServiceType.Name}");
