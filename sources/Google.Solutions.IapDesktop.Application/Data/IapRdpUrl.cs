@@ -34,7 +34,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.IapDesktop.Application.Data
 {
     /// <summary>
     /// Represents an iap-rdp:/// URI.

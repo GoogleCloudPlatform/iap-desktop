@@ -21,7 +21,7 @@
 
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.IapDesktop.Application.Data
 {
     public interface IIapUrlHandler
     {

@@ -235,7 +235,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Util\HtmlClipboardFormat.cs" />
-    <Compile Include="Util\IIapUrlHandler.cs" />
+    <Compile Include="Data\IIapUrlHandler.cs" />
     <Compile Include="Views\Dialog\CredentialDialog.cs" />
     <Compile Include="Views\Dialog\OperationProgressDialog.cs" />
     <Compile Include="Views\Dialog\UnsafeNativeMethods.cs" />
@@ -310,7 +310,7 @@
     <Compile Include="ApplicationTraceSources.cs" />
     <Compile Include="Util\LeastRecentlyUsedCache.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
-    <Compile Include="Util\IapRdpUrl.cs" />
+    <Compile Include="Data\IapRdpUrl.cs" />
     <Compile Include="Views\About\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
