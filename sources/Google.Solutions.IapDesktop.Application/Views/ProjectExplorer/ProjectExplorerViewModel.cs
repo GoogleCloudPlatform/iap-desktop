@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IJobService jobService;
         private readonly IProjectModelService projectModelService;
         private readonly IGlobalSessionBroker sessionBroker;
-        private readonly ICloudConsoleService cloudConsoleService;
+        private readonly ICloudConsoleAdapter cloudConsoleService;
 
         private ViewModelNode selectedNode;
         private string instanceFilter;
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             IEventService eventService,
             IGlobalSessionBroker sessionBroker,
             IProjectModelService projectModelService,
-            ICloudConsoleService cloudConsoleService)
+            ICloudConsoleAdapter cloudConsoleService)
         {
             this.View = view;
             this.settings = settings;

@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;

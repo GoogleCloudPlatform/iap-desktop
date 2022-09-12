@@ -21,6 +21,8 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
@@ -32,7 +34,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.IapDesktop.Application.Data
 {
     /// <summary>
     /// Represents an iap-rdp:/// URI.

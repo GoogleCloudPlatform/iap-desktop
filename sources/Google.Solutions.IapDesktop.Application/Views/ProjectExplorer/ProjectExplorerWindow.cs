@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 serviceProvider.GetService<IEventService>(),
                 serviceProvider.GetService<IGlobalSessionBroker>(),
                 serviceProvider.GetService<IProjectModelService>(),
-                serviceProvider.GetService<ICloudConsoleService>());
+                serviceProvider.GetService<ICloudConsoleAdapter>());
 
             this.Disposed += (sender, args) =>
             {

@@ -1,5 +1,5 @@
-//
-// Copyright 2019 Google LLC
+﻿//
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,17 +19,12 @@
 // under the License.
 //
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
-[assembly: AssemblyTitle("Remote shell extension library")]
-[assembly: AssemblyDescription("Remote shell extension library")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("Google LLC")]
-
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
-
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Shell.Test")]
+namespace Google.Solutions.IapDesktop.Application.Data
+{
+    public interface IIapUrlHandler
+    {
+        Task ActivateOrConnectInstanceAsync(IapRdpUrl url);
+    }
+}

@@ -21,8 +21,10 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -37,11 +39,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
             IWin32Window parent,
             string caption,
             Exception e);
-    }
-
-    public interface IExceptionWithHelpTopic : _Exception
-    {
-        IHelpTopic Help { get; }
     }
 
     /// <summary>
@@ -105,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     {
                         if (notification == UnsafeNativeMethods.TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
                         {
-                            this.serviceProvider.GetService<HelpService>().OpenTopic(helpTopic);
+                            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(helpTopic);
                         }
 
                         return 0; // S_OK;

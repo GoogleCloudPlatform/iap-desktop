@@ -242,25 +242,32 @@ namespace Google.Solutions.IapDesktop
             // but not in a higher layer.
             //
             var baseLayer = new ServiceRegistry();
-            var adapterLayer = new ServiceRegistry(baseLayer);
-            var integrationLayer = new ServiceRegistry(adapterLayer);
-            var windowAndWorkflowLayer = new ServiceRegistry(integrationLayer);
+            var serviceLayer = new ServiceRegistry(baseLayer);
+            var windowLayer = new ServiceRegistry(serviceLayer);
 
-            // 
-            // Persistence layer.
-            //
             using (var profile = LoadProfileOrExit(this.commandLineOptions))
             {
+                // 
+                // Load base layer: Platform abstractions, API adapters.
+                //
                 baseLayer.AddSingleton(profile);
 
                 baseLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
                 baseLayer.AddTransient<ITaskDialog, TaskDialog>();
                 baseLayer.AddTransient<ICredentialDialog, CredentialDialog>();
-                baseLayer.AddSingleton<IThemeService, ThemeService>();
                 baseLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
-                baseLayer.AddTransient<HelpService>();
+                baseLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
+
+                baseLayer.AddTransient<HelpAdapter>();
                 baseLayer.AddTransient<GithubAdapter>();
                 baseLayer.AddTransient<BuganizerAdapter>();
+                baseLayer.AddTransient<ICloudConsoleAdapter, CloudConsoleAdapter>();
+
+                baseLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
+                baseLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
+                baseLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
+
+                baseLayer.AddSingleton<IThemeService, ThemeService>();
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
@@ -283,69 +290,64 @@ namespace Google.Solutions.IapDesktop
                     profile.SettingsKey.CreateSubKey("Auth"),
                     SignInAdapter.StoreUserId));
 
-                var mainForm = new MainForm(baseLayer, windowAndWorkflowLayer)
-                {
-                    StartupUrl = this.commandLineOptions.StartupUrl
-                };
-
                 //
-                // Adapter layer.
+                // Load proxy settings and main form.
                 //
-                adapterLayer.AddSingleton<IAuthorizationSource>(mainForm);
-                adapterLayer.AddSingleton<IJobHost>(mainForm);
-                adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
-                adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
-                adapterLayer.AddTransient<IWindowsCredentialService, WindowsCredentialService>();
-                adapterLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
                 try
                 {
                     // Activate proxy settings based on app settings.
-                    adapterLayer.GetService<IHttpProxyAdapter>().ActivateSettings(
-                        adapterLayer.GetService<ApplicationSettingsRepository>().GetSettings());
+                    baseLayer.GetService<IHttpProxyAdapter>().ActivateSettings(
+                        baseLayer.GetService<ApplicationSettingsRepository>().GetSettings());
                 }
                 catch (Exception)
                 {
                     // Settings invalid -> ignore.
                 }
 
+                var mainForm = new MainForm(baseLayer, windowLayer)
+                {
+                    StartupUrl = this.commandLineOptions.StartupUrl
+                };
+
+                baseLayer.AddSingleton<IJobHost>(mainForm);
+                baseLayer.AddSingleton<IAuthorizationSource>(mainForm);
+
                 //
-                // Integration layer.
+                // Load service layer: "Business" logic
                 //
                 var eventService = new EventService(mainForm);
-                integrationLayer.AddSingleton<IJobService, JobService>();
-                integrationLayer.AddSingleton<IEventService>(eventService);
-                integrationLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
-                integrationLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
+                serviceLayer.AddTransient<IWindowsCredentialService, WindowsCredentialService>();
+                serviceLayer.AddSingleton<IJobService, JobService>();
+                serviceLayer.AddSingleton<IEventService>(eventService);
+                serviceLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
+                serviceLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
                     profile.SettingsKey.CreateSubKey("Inventory")));
+                serviceLayer.AddSingleton<IProjectModelService, ProjectModelService>();
+                serviceLayer.AddTransient<IInstanceControlService, InstanceControlService>();
+                serviceLayer.AddTransient<IUpdateService, UpdateService>();
 
                 //
-                // Window & workflow layer.
+                // Load window layer.
                 //
-                windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
-                windowAndWorkflowLayer.AddTransient<ICloudConsoleService, CloudConsoleService>();
-                windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
-
-                windowAndWorkflowLayer.AddTransient<AboutWindow>();
-                windowAndWorkflowLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
-                windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
-                windowAndWorkflowLayer.AddSingleton<IProjectModelService, ProjectModelService>();
-                windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
-                windowAndWorkflowLayer.AddTransient<OptionsDialog>();
-                windowAndWorkflowLayer.AddTransient<IInstanceControlService, InstanceControlService>();
+                windowLayer.AddSingleton<IMainForm>(mainForm);
+                windowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
+                windowLayer.AddTransient<AboutWindow>();
+                windowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
+                windowLayer.AddTransient<OptionsDialog>();
 
 #if DEBUG
-                windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();
-                windowAndWorkflowLayer.AddSingleton<DebugDockingWindow>();
-                windowAndWorkflowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
-                windowAndWorkflowLayer.AddSingleton<DebugFullScreenPane>();
-                windowAndWorkflowLayer.AddSingleton<DebugFocusWindow>();
-                windowAndWorkflowLayer.AddTransient<DebugThemeWindow>();
+                windowLayer.AddSingleton<DebugJobServiceWindow>();
+                windowLayer.AddSingleton<DebugDockingWindow>();
+                windowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
+                windowLayer.AddSingleton<DebugFullScreenPane>();
+                windowLayer.AddSingleton<DebugFocusWindow>();
+                windowLayer.AddTransient<DebugThemeWindow>();
 #endif
                 //
-                // Extension layer.
+                // Load extensions.
                 //
-                var extensionLayer = new ServiceRegistry(windowAndWorkflowLayer);
+                var extensionLayer = new ServiceRegistry(windowLayer);
                 foreach (var extension in LoadExtensionAssemblies())
                 {
                     extensionLayer.AddExtensionAssembly(extension);

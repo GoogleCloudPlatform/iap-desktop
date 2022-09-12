@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -207,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
         {
             if (this.SelectedEvent != null)
             {
-                this.serviceProvider.GetService<ICloudConsoleService>().OpenVmInstanceLogDetails(
+                this.serviceProvider.GetService<ICloudConsoleAdapter>().OpenVmInstanceLogDetails(
                     this.SelectedEvent.LogRecord.ProjectId,
                     this.SelectedEvent.LogRecord.InsertId,
                     this.SelectedEvent.Timestamp);
@@ -217,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
         public void OpenInCloudConsole()
         {
             Debug.Assert(!(this.ModelKey is IProjectModelCloudNode));
-            this.serviceProvider.GetService<ICloudConsoleService>().OpenLogs(this.ModelKey);
+            this.serviceProvider.GetService<ICloudConsoleAdapter>().OpenLogs(this.ModelKey);
         }
 
         //---------------------------------------------------------------------

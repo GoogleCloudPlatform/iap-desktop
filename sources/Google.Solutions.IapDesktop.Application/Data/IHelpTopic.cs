@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,12 +19,19 @@
 // under the License.
 //
 
-using System.Threading.Tasks;
+using System;
+using System.Runtime.InteropServices;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.IapDesktop.Application.Data
 {
-    public interface IIapUrlHandler
+    public interface IHelpTopic
     {
-        Task ActivateOrConnectInstanceAsync(IapRdpUrl url);
+        string Title { get; }
+        Uri Address { get; }
+    }
+
+    public interface IExceptionWithHelpTopic : _Exception
+    {
+        IHelpTopic Help { get; }
     }
 }

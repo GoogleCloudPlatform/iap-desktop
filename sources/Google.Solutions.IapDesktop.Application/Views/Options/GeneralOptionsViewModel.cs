@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
@@ -34,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
     {
         private readonly ApplicationSettingsRepository settingsRepository;
         private readonly IAppProtocolRegistry protocolRegistry;
-        private readonly HelpService helpService;
+        private readonly HelpAdapter helpService;
 
         private bool isUpdateCheckEnabled;
         private readonly string lastUpdateCheck;
@@ -46,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         public GeneralOptionsViewModel(
             ApplicationSettingsRepository settingsRepository,
             IAppProtocolRegistry protocolRegistry,
-            HelpService helpService)
+            HelpAdapter helpService)
         {
             this.settingsRepository = settingsRepository;
             this.protocolRegistry = protocolRegistry;

@@ -20,6 +20,8 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -78,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.IsTrue(viewModel.IsUpdateCheckEnabled);
             Assert.IsTrue(viewModel.IsUpdateCheckEditable);
@@ -95,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.IsFalse(viewModel.IsUpdateCheckEnabled);
             Assert.IsTrue(viewModel.IsUpdateCheckEditable);
@@ -117,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.IsFalse(viewModel.IsUpdateCheckEnabled);
             Assert.IsFalse(viewModel.IsUpdateCheckEditable);
@@ -134,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService())
+                new HelpAdapter())
             {
                 IsUpdateCheckEnabled = false
             };
@@ -151,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.IsFalse(viewModel.IsDirty);
 
@@ -167,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.AreEqual("never", viewModel.LastUpdateCheck);
         }
@@ -183,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.AreNotEqual("never", viewModel.LastUpdateCheck);
         }
@@ -203,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled);
             Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable);
@@ -220,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEnabled);
             Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable);
@@ -242,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled);
             Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEditable);
@@ -259,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService())
+                new HelpAdapter())
             {
                 IsDeviceCertificateAuthenticationEnabled = false
             };
@@ -276,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.IsFalse(viewModel.IsDirty);
 
@@ -296,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
+                new HelpAdapter());
 
             Assert.IsFalse(viewModel.IsDirty);
 
@@ -312,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService())
+                new HelpAdapter())
             {
                 IsBrowserIntegrationEnabled = true
             };
@@ -332,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService())
+                new HelpAdapter())
             {
                 IsBrowserIntegrationEnabled = false
             };
