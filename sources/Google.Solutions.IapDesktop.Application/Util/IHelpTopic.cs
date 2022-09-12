@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -19,17 +19,19 @@
 // under the License.
 //
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System;
+using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Remote shell extension library")]
-[assembly: AssemblyDescription("Remote shell extension library")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("Google LLC")]
+namespace Google.Solutions.IapDesktop.Application.Util
+{
+    public interface IHelpTopic
+    {
+        string Title { get; }
+        Uri Address { get; }
+    }
 
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
-
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Shell.Test")]
+    public interface IExceptionWithHelpTopic : _Exception
+    {
+        IHelpTopic Help { get; }
+    }
+}

@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             AddSheet(new GeneralOptionsSheet(
                 appSettingsRepository,
                 serviceProvider.GetService<IAppProtocolRegistry>(),
-                serviceProvider.GetService<HelpService>()));
+                serviceProvider.GetService<HelpAdapter>()));
             AddSheet(new NetworkOptionsSheet(
                 appSettingsRepository,
                 serviceProvider.GetService<IHttpProxyAdapter>()));

@@ -20,18 +20,13 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 
 #pragma warning disable CA1822 // Mark members as static
 
-namespace Google.Solutions.IapDesktop.Application.Views
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public interface IHelpTopic
-    {
-        string Title { get; }
-        Uri Address { get; }
-    }
-
     public static class HelpTopics
     {
         public static readonly IHelpTopic General = new HelpTopic(
@@ -111,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         }
     }
 
-    public class HelpService
+    public class HelpAdapter
     {
         public void OpenTopic(IHelpTopic topic)
         {

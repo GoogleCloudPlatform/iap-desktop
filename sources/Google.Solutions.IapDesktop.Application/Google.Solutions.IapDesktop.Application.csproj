@@ -170,6 +170,7 @@
     <Compile Include="Util\ClipboardUtil.cs" />
     <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\EventArgs.cs" />
+    <Compile Include="Util\IHelpTopic.cs" />
     <Compile Include="Util\StringExtensions.cs" />
     <Compile Include="Util\TypographicQuotes.cs" />
     <Compile Include="Util\WindowMessage.cs" />
@@ -193,7 +194,7 @@
     <Compile Include="Views\Authorization\OAuthScopeNotGrantedErrorDialog.Designer.cs">
       <DependentUpon>OAuthScopeNotGrantedErrorDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\CloudConsoleService.cs" />
+    <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
@@ -247,7 +248,7 @@
     <Compile Include="Views\FlyoutWindow.Designer.cs">
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\HelpService.cs" />
+    <Compile Include="Services\Adapters\HelpAdapter.cs" />
     <Compile Include="Views\Options\ScreenOptionsViewModel.cs" />
     <Compile Include="Views\Options\ScreenOptionsSheet.cs">
       <SubType>UserControl</SubType>

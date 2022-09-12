@@ -258,9 +258,10 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddTransient<ICredentialDialog, CredentialDialog>();
                 baseLayer.AddSingleton<IThemeService, ThemeService>();
                 baseLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
-                baseLayer.AddTransient<HelpService>();
+                baseLayer.AddTransient<HelpAdapter>();
                 baseLayer.AddTransient<GithubAdapter>();
                 baseLayer.AddTransient<BuganizerAdapter>();
+                baseLayer.AddTransient<ICloudConsoleAdapter, CloudConsoleAdapter>();
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
@@ -323,7 +324,6 @@ namespace Google.Solutions.IapDesktop
                 // Window & workflow layer.
                 //
                 windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
-                windowAndWorkflowLayer.AddTransient<ICloudConsoleService, CloudConsoleService>();
                 windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
 
                 windowAndWorkflowLayer.AddTransient<AboutWindow>();

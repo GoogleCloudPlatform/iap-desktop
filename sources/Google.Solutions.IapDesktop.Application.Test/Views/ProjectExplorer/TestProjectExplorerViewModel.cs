@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
         private Mock<IComputeEngineAdapter> computeEngineAdapterMock;
         private Mock<IResourceManagerAdapter> resourceManagerAdapterMock;
-        private Mock<ICloudConsoleService> cloudConsoleServiceMock;
+        private Mock<ICloudConsoleAdapter> cloudConsoleServiceMock;
         private Mock<IEventService> eventServiceMock;
         private Mock<IGlobalSessionBroker> sessionBrokerMock;
         private IProjectExplorerSettings projectExplorerSettings;
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                     SampleLinuxInstanceInZone1
                 });
 
-            this.cloudConsoleServiceMock = new Mock<ICloudConsoleService>();
+            this.cloudConsoleServiceMock = new Mock<ICloudConsoleAdapter>();
             this.eventServiceMock = new Mock<IEventService>();
             this.sessionBrokerMock = new Mock<IGlobalSessionBroker>();
         }

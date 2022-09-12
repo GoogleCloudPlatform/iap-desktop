@@ -28,9 +28,9 @@ using System.Net;
 
 #pragma warning disable CA1822 // Mark members as static
 
-namespace Google.Solutions.IapDesktop.Application.Views
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public interface ICloudConsoleService
+    public interface ICloudConsoleAdapter
     {
         void ConfigureIapAccess(string projectId);
         void OpenInstanceDetails(InstanceLocator instance);
@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
     }
 
     [SkipCodeCoverage("UI code")]
-    public class CloudConsoleService : ICloudConsoleService
+    public class CloudConsoleAdapter : ICloudConsoleAdapter
     {
         public void OpenInstanceDetails(InstanceLocator instance)
         {

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
@@ -35,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         public GeneralOptionsSheet(
             ApplicationSettingsRepository settingsRepository,
             IAppProtocolRegistry protocolRegistry,
-            HelpService helpService)
+            HelpAdapter helpService)
         {
             this.viewModel = new GeneralOptionsViewModel(
                 settingsRepository,

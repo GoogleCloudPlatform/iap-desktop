@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     "Analyze VM and sole-tenant node usage...",
                     context => CommandState.Enabled,
                     context => this.serviceProvider
-                        .GetService<HelpService>()
+                        .GetService<HelpAdapter>()
                         .OpenTopic(HelpTopics.NodeUsageReporting))
                 {
                     Image = Resources.Report_16

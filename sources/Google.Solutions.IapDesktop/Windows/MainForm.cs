@@ -530,9 +530,16 @@ namespace Google.Solutions.IapDesktop.Windows
                 _ => this.serviceProvider.GetService<DebugThemeWindow>().ShowWindow()));
 
             var crashCommand = debugCommand.AddCommand(new Command<IMainForm>(
-                "Crash",
+                "Exceptions",
                 _ => CommandState.Enabled,
                 _ => { }));
+            crashCommand.AddCommand(new Command<IMainForm>(
+                "Command: Throw ExceptionWithHelp (sync)",
+                _ => CommandState.Enabled,
+                _ => throw new ResourceAccessDeniedException(
+                        "DEBUG", 
+                        HelpTopics.General,
+                        new ApplicationException("DEBUG"))));
             crashCommand.AddCommand(new Command<IMainForm>(
                 "Command: Throw ApplicationException (sync)",
                 _ => CommandState.Enabled,
@@ -794,22 +801,22 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.IapOverview);
+            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.IapOverview);
         }
 
         private void openSecureConnectDocsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.SecureConnectDcaOverview);
+            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.SecureConnectDcaOverview);
         }
 
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.IapAccess);
+            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.IapAccess);
         }
 
         private void openIapFirewallDocsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.CreateIapFirewallRule);
+            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.CreateIapFirewallRule);
         }
 
         private void reportGithubIssueToolStripMenuItem_Click(object sender, EventArgs e)
@@ -824,16 +831,16 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.General);
+            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.General);
         }
 
         private void viewShortcutsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.Shortcuts);
+            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.Shortcuts);
         }
         private void releaseNotesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.ReleaseNotes);
+            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(HelpTopics.ReleaseNotes);
         }
 
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
