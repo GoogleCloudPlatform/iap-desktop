@@ -153,6 +153,45 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         }
 
         //---------------------------------------------------------------------
+        // Service factory lookup.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenServiceUnknown_ThenThenGetServiceFactoryThrowsUnknownServiceException()
+        {
+            var registry = new ServiceRegistry();
+
+            Assert.Throws<UnknownServiceException>(() =>
+            {
+                registry.GetService<Service<string>>();
+            });
+        }
+
+        [Test]
+        public void WhenTransientExists_ThenGetServiceFactoryReturnsFactory()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddTransient<ServiceWithDefaultConstructor>();
+
+            var service = registry.GetService<Service<ServiceWithDefaultConstructor>>();
+            Assert.IsNotNull(service);
+            Assert.IsNotNull(service.CreateInstance());
+            Assert.AreNotSame(service.CreateInstance(), service.CreateInstance());
+        }
+
+        [Test]
+        public void WhenSingletonExists_ThenGetServiceFactoryReturnsFactory()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddSingleton<ServiceWithDefaultConstructor>();
+
+            var service = registry.GetService<Service<ServiceWithDefaultConstructor>>();
+            Assert.IsNotNull(service);
+            Assert.IsNotNull(service.CreateInstance());
+            Assert.AreSame(service.CreateInstance(), service.CreateInstance());
+        }
+
+        //---------------------------------------------------------------------
         // Nesting.
         //---------------------------------------------------------------------
 

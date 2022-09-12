@@ -114,6 +114,7 @@
     <Compile Include="ObjectModel\IServiceCategoryProvider.cs" />
     <Compile Include="ObjectModel\ModelCachingViewModel.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />
+    <Compile Include="ObjectModel\Service.cs" />
     <Compile Include="Services\Adapters\AdapterException.cs" />
     <Compile Include="Services\Adapters\Browser.cs" />
     <Compile Include="Services\Adapters\CertificateStoreAdapter.cs" />
