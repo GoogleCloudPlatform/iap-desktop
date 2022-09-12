@@ -170,7 +170,7 @@
     <Compile Include="Util\ClipboardUtil.cs" />
     <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\EventArgs.cs" />
-    <Compile Include="Util\IHelpTopic.cs" />
+    <Compile Include="Data\IHelpTopic.cs" />
     <Compile Include="Util\StringExtensions.cs" />
     <Compile Include="Util\TypographicQuotes.cs" />
     <Compile Include="Util\WindowMessage.cs" />
