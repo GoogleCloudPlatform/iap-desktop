@@ -22,8 +22,10 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common.Integration;
 using Newtonsoft.Json;
@@ -62,7 +64,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
                     computeEngineAdapter))
                 {
-                    var hello = await new DomainJoinService(null)
+                    var serviceRegistry = new ServiceRegistry();
+                    serviceRegistry.AddMock<IComputeEngineAdapter>();
+
+                    var hello = await new DomainJoinService(serviceRegistry)
                         .AwaitMessageAsync<DomainJoinService.HelloMessage>(
                             operation,
                             DomainJoinService.HelloMessage.MessageTypeString,
@@ -100,7 +105,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
                     computeEngineAdapter))
                 {
-                    var response = await new DomainJoinService(null)
+                    var serviceRegistry = new ServiceRegistry();
+                    serviceRegistry.AddMock<IComputeEngineAdapter>();
+
+                    var response = await new DomainJoinService(serviceRegistry)
                         .AwaitMessageAsync<DomainJoinService.JoinResponse>(
                             operation,
                             DomainJoinService.JoinResponse.MessageTypeString,

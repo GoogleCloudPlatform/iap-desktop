@@ -165,6 +165,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         public async Task WhenProjectAdded_ThenProjectIsAddedToRepositoryAndEventIsRaised()
         {
             var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IComputeEngineAdapter>();
+            serviceRegistry.AddMock<IResourceManagerAdapter>();
+
             var projectRepository = serviceRegistry.AddMock<IProjectRepository>();
             var eventService = serviceRegistry.AddMock<IEventService>();
 
@@ -189,6 +192,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         public async Task WhenProjectRemoved_ThenProjectIsRemovedFromRepositoryAndEventIsRaised()
         {
             var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IComputeEngineAdapter>();
+            serviceRegistry.AddMock<IResourceManagerAdapter>();
+
             var projectRepository = serviceRegistry.AddMock<IProjectRepository>();
             var eventService = serviceRegistry.AddMock<IEventService>();
 
