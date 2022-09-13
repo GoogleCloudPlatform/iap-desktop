@@ -156,6 +156,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
                 processor.Process(new ResetInstanceEvent(LogRecord.Deserialize(lifecycleEventJson)));
                 return Task.CompletedTask;
             }
+
+            public void Dispose()
+            {
+            }
         }
 
         [SetUp]

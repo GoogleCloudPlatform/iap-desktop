@@ -56,7 +56,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             new Timeframe(TimeSpan.FromDays(30), "Last 30 days")
         });
 
-        private readonly IServiceProvider serviceProvider;
+        private readonly ICloudConsoleAdapter cloudConsoleAdapter;
+        private readonly IJobService jobService;
+        private readonly Service<IAuditLogAdapter> auditLogAdapter;
 
         private EventBase selectedEvent;
         private int selectedTimeframeIndex = 0;
@@ -78,7 +80,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             : base(ModelCacheCapacity)
         {
             this.View = view;
-            this.serviceProvider = serviceProvider;
+
+            this.cloudConsoleAdapter = serviceProvider.GetService<ICloudConsoleAdapter>();
+            this.jobService = serviceProvider.GetService<IJobService>();
+            this.auditLogAdapter = serviceProvider.GetService<Service<IAuditLogAdapter>>();
 
             this.Events = new RangeObservableCollection<EventBase>();
         }
@@ -208,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
         {
             if (this.SelectedEvent != null)
             {
-                this.serviceProvider.GetService<ICloudConsoleAdapter>().OpenVmInstanceLogDetails(
+                this.cloudConsoleAdapter.OpenVmInstanceLogDetails(
                     this.SelectedEvent.LogRecord.ProjectId,
                     this.SelectedEvent.LogRecord.InsertId,
                     this.SelectedEvent.Timestamp);
@@ -218,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
         public void OpenInCloudConsole()
         {
             Debug.Assert(!(this.ModelKey is IProjectModelCloudNode));
-            this.serviceProvider.GetService<ICloudConsoleAdapter>().OpenLogs(this.ModelKey);
+            this.cloudConsoleAdapter.OpenLogs(this.ModelKey);
         }
 
         //---------------------------------------------------------------------
@@ -281,17 +286,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                     this.IsTimeframeComboBoxEnabled = false;
                 try
                 {
-                    var jobService = this.serviceProvider.GetService<IJobService>();
-                    var auditLogAdapter = this.serviceProvider.GetService<IAuditLogAdapter>();
-
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
-                    return await jobService.RunInBackground(
+                    return await this.jobService.RunInBackground(
                         new JobDescription(
                             $"Loading logs for {displayName}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
+                            using (var auditLogAdapter = this.auditLogAdapter.CreateInstance())
                             using (var combinedTokenSource = jobToken.Combine(token))
                             {
                                 var model = new EventLogModel(displayName);

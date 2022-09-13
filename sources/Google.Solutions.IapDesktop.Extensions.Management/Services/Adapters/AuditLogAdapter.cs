@@ -44,7 +44,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
 {
-    public interface IAuditLogAdapter
+    public interface IAuditLogAdapter : IDisposable
     {
         Task ProcessInstanceEventsAsync(
             IEnumerable<string> projectIds,
@@ -230,6 +230,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
                     new ExponentialBackOff(initialBackOff, MaxRetries),
                     cancellationToken).ConfigureAwait(false);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.service.Dispose();
         }
     }
 }
