@@ -24,7 +24,7 @@ using Google.Solutions.Common.Util;
 using System;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Data
 {
     public static class MetadataExtensions
     {

@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;

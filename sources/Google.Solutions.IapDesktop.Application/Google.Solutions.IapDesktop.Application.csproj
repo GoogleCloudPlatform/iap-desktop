@@ -124,10 +124,10 @@
     <Compile Include="Services\Adapters\SignInAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
     <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
-    <Compile Include="Services\Adapters\InstanceExtensions.cs" />
-    <Compile Include="Services\Adapters\MetadataExtensions.cs" />
-    <Compile Include="Services\Adapters\OperatingSystems.cs" />
-    <Compile Include="Services\Adapters\Permissions.cs" />
+    <Compile Include="Data\InstanceExtensions.cs" />
+    <Compile Include="Data\MetadataExtensions.cs" />
+    <Compile Include="Data\OperatingSystems.cs" />
+    <Compile Include="Data\Permissions.cs" />
     <Compile Include="Services\Windows\WindowsCredentialService.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
@@ -230,9 +230,6 @@
     </Compile>
     <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.Designer.cs">
       <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FlatVerticalTabControl.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Util\HtmlClipboardFormat.cs" />
     <Compile Include="Data\IIapUrlHandler.cs" />

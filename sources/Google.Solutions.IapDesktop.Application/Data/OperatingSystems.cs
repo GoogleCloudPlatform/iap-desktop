@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Application.Data
 {
     [Flags]
     public enum OperatingSystems
