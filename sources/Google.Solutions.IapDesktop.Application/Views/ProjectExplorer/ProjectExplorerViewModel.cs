@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
@@ -47,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private ViewModelNode selectedNode;
         private string instanceFilter;
-        private IProjectExplorerSettings settings;
+        private readonly IProjectExplorerSettings settings;
 
         private bool isUnloadProjectCommandVisible;
         private bool isRefreshProjectsCommandVisible;

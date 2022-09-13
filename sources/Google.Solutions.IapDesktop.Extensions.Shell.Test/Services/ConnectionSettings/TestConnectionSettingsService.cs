@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -94,16 +95,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenNodeUnsupported_ThenIsConnectionSettingsAvailableReturnsFalse()
         {
-            Assert.IsFalse(service.IsConnectionSettingsAvailable(
+            Assert.IsFalse(this.service.IsConnectionSettingsAvailable(
                 new Mock<IProjectModelNode>().Object));
-            Assert.IsFalse(service.IsConnectionSettingsAvailable(
+            Assert.IsFalse(this.service.IsConnectionSettingsAvailable(
                 new Mock<IProjectModelCloudNode>().Object));
         }
 
         [Test]
         public void WhenNodeUnsupported_ThenGetConnectionSettingsRaisesArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => service.GetConnectionSettings(
+            Assert.Throws<ArgumentException>(() => this.service.GetConnectionSettings(
                 new Mock<IProjectModelNode>().Object));
         }
 

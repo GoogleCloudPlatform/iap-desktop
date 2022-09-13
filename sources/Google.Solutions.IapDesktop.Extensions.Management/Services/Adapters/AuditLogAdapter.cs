@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             Debug.Assert(
                 (deviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == IsDeviceCertiticateAuthenticationEnabled);
+                    == this.IsDeviceCertiticateAuthenticationEnabled);
         }
 
         public AuditLogAdapter(ICredential credential)

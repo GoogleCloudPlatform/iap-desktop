@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Collections.Generic;
@@ -137,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             string status)
         {
             Debug.Assert(!os.IsFlagCombination());
-            Debug.Assert(status.All(Char.IsUpper));
+            Debug.Assert(status.All(char.IsUpper));
 
             this.InstanceId = instanceId;
             this.Instance = locator;
