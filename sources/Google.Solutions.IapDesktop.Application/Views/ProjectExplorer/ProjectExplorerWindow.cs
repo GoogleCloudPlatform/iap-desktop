@@ -53,7 +53,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IMainForm mainForm;
         private readonly IJobService jobService;
         private readonly IAuthorizationSource authService;
-        private readonly IServiceProvider serviceProvider;
+        private readonly IExceptionDialog exceptionDialog;
+        private readonly IProjectPickerDialog projectPickerDialog;
+
+        private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
 
         private readonly ProjectExplorerViewModel viewModel;
         private readonly CommandContainer<IProjectModelNode> contextMenuCommands;
@@ -70,8 +73,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             InitializeComponent();
 
-            this.serviceProvider = serviceProvider;
-
             this.TabText = this.Text;
 
             //
@@ -87,6 +88,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.mainForm = serviceProvider.GetService<IMainForm>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.authService = serviceProvider.GetService<IAuthorizationSource>();
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
+            this.projectPickerDialog = serviceProvider.GetService<IProjectPickerDialog>();
+            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
 
             this.viewModel = new ProjectExplorerViewModel(
                 this,
@@ -122,9 +126,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 if (!args.Exception.IsCancellation())
                 {
-                    this.serviceProvider
-                        .GetService<IExceptionDialog>()
-                        .Show(this, "Loading project failed", args.Exception);
+                    this.exceptionDialog.Show(
+                        this, 
+                        "Loading project failed", args.Exception);
                 }
             };
 
@@ -282,15 +286,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 //
                 // Show project picker
                 //
-                using (var resourceManager = this.serviceProvider.GetService<IResourceManagerAdapter>())
+                using (var resourceManager = this.resourceManagerAdapter.CreateInstance())
                 {
-                    if (this.serviceProvider
-                        .GetService<IProjectPickerDialog>()
+                    if (this.projectPickerDialog
                         .SelectCloudProjects(
                             this,
                             "Add projects",
                             resourceManager,
-                            this.serviceProvider.GetService<IExceptionDialog>(),
+                            this.exceptionDialog,
                             out var projects) == DialogResult.OK)
                     {
                         await this.viewModel
@@ -312,23 +315,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
             catch (Exception e)
             {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Adding project failed", e);
+                this.exceptionDialog.Show(
+                    this, 
+                    "Adding project failed", e);
                 return false;
             }
         }
 
         private async Task UnloadProjectsAsync()
         {
-            if (this.serviceProvider
-                .GetService<IProjectPickerDialog>()
-                .SelectLocalProjects(
-                    this,
-                    "Unload projects",
-                    this.viewModel.Projects,
-                    this.serviceProvider.GetService<IExceptionDialog>(),
-                    out var projects) == DialogResult.OK)
+            if (this.projectPickerDialog.SelectLocalProjects(
+                this,
+                "Unload projects",
+                this.viewModel.Projects,
+                this.exceptionDialog,
+                out var projects) == DialogResult.OK)
             {
                 await this.viewModel
                     .RemoveProjectsAsync(projects.ToArray())
@@ -360,9 +361,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private void Command_CommandFailed(object sender, ExceptionEventArgs e)
         {
             var command = (ICommand)sender;
-            this.serviceProvider
-                .GetService<IExceptionDialog>()
-                .Show(this, $"{command.ActivityText} failed", e.Exception);
+            this.exceptionDialog.Show(
+                this, 
+                $"{command.ActivityText} failed", e.Exception);
         }
 
         private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
@@ -398,9 +399,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
             catch (Exception e)
             {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Loading projects failed", e);
+                this.exceptionDialog.Show(
+                    this, 
+                    "Loading projects failed", e);
 
                 // Do not close the application, otherwise the user has no 
                 // chance to remediate the situation by unloading the offending
