@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common.Integration;
+using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
@@ -64,10 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
                     computeEngineAdapter))
                 {
-                    var serviceRegistry = new ServiceRegistry();
-                    serviceRegistry.AddMock<IComputeEngineAdapter>();
-
-                    var hello = await new DomainJoinService(serviceRegistry)
+                    var hello = await new DomainJoinService(new Mock<IComputeEngineAdapter>().AsService())
                         .AwaitMessageAsync<DomainJoinService.HelloMessage>(
                             operation,
                             DomainJoinService.HelloMessage.MessageTypeString,
@@ -105,10 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
                     DomainJoinService.MetadataKeys.JoinDomainGuard,
                     computeEngineAdapter))
                 {
-                    var serviceRegistry = new ServiceRegistry();
-                    serviceRegistry.AddMock<IComputeEngineAdapter>();
-
-                    var response = await new DomainJoinService(serviceRegistry)
+                    var response = await new DomainJoinService(new Mock<IComputeEngineAdapter>().AsService())
                         .AwaitMessageAsync<DomainJoinService.JoinResponse>(
                             operation,
                             DomainJoinService.JoinResponse.MessageTypeString,

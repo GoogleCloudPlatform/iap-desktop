@@ -23,6 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common;
 using Moq;
@@ -93,7 +94,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
             operation.SetupGet(o => o.ComputeEngineAdapter).Returns(adapter.Object);
             operation.SetupGet(o => o.Instance).Returns(instance);
 
-            var joinAdapter = new DomainJoinService(new Mock<IServiceProvider>().Object);
+            var joinAdapter = new DomainJoinService(
+                new Mock<IComputeEngineAdapter>().AsService());
 
             var message = await joinAdapter.AwaitMessageAsync<TestMessage>(
                     operation.Object,
@@ -127,7 +129,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
             operation.SetupGet(o => o.ComputeEngineAdapter).Returns(adapter.Object);
             operation.SetupGet(o => o.Instance).Returns(instance);
 
-            var joinAdapter = new DomainJoinService(new Mock<IServiceProvider>().Object);
+            var joinAdapter = new DomainJoinService(
+                new Mock<IComputeEngineAdapter>().AsService());
 
             using (var cts = new CancellationTokenSource())
             {
@@ -185,7 +188,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
                 operation.SetupGet(o => o.ComputeEngineAdapter).Returns(adapter.Object);
                 operation.SetupGet(o => o.Instance).Returns(instance);
 
-                var joinAdapter = new DomainJoinService(new Mock<IServiceProvider>().Object);
+                var joinAdapter = new DomainJoinService(
+                    new Mock<IComputeEngineAdapter>().AsService());
                 ExceptionAssert.ThrowsAggregateException<DomainJoinFailedException>(
                     () => joinAdapter.JoinDomainAsync(
                         operation.Object,
