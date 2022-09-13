@@ -47,11 +47,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
     /// </summary>
     public class ExceptionDialog : IExceptionDialog
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly HelpAdapter helpAdapter;
+        private readonly BuganizerAdapter buganizerAdapter;
 
         public ExceptionDialog(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
+            this.helpAdapter = serviceProvider.GetService<HelpAdapter>();
+            this.buganizerAdapter = serviceProvider.GetService<BuganizerAdapter>();
         }
 
         private static bool ShouldShowBugReportLink(Exception e)
@@ -102,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     {
                         if (notification == UnsafeNativeMethods.TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
                         {
-                            this.serviceProvider.GetService<HelpAdapter>().OpenTopic(helpTopic);
+                            this.helpAdapter.OpenTopic(helpTopic);
                         }
 
                         return 0; // S_OK;
@@ -121,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     {
                         if (notification == UnsafeNativeMethods.TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
                         {
-                            this.serviceProvider.GetService<BuganizerAdapter>().ReportBug(bugReport);
+                            this.buganizerAdapter.ReportBug(bugReport);
                         }
 
                         return 0; // S_OK;

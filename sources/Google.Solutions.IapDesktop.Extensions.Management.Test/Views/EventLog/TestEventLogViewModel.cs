@@ -22,6 +22,7 @@
 using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
@@ -31,6 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.History;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
 using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
@@ -156,12 +158,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
                 processor.Process(new ResetInstanceEvent(LogRecord.Deserialize(lifecycleEventJson)));
                 return Task.CompletedTask;
             }
+
+            public void Dispose()
+            {
+            }
         }
 
         [SetUp]
         public void SetUp()
         {
             var registry = new ServiceRegistry();
+            registry.AddMock<ICloudConsoleAdapter>();
+
             this.jobServiceMock = new JobServiceMock();
             registry.AddSingleton<IJobService>(this.jobServiceMock);
 

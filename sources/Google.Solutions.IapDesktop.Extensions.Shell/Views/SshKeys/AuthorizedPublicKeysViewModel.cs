@@ -44,7 +44,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         private const int ModelCacheCapacity = 5;
         private const string WindowTitlePrefix = "Authorized SSH keys";
 
-        private readonly IServiceProvider serviceProvider;
+        private readonly IConfirmationDialog confirmationDialog;
+        private readonly IJobService jobService;
+        private readonly Service<IOsLoginService> osLoginService;
+        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
+        private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
 
         private string filter;
         private bool isLoading;
@@ -57,7 +61,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
-            this.serviceProvider = serviceProvider;
+            this.confirmationDialog = serviceProvider.GetService<IConfirmationDialog>();
+            this.jobService = serviceProvider.GetService<IJobService>();
+            this.osLoginService = serviceProvider.GetService<Service<IOsLoginService>>();
+            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
+            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
         }
 
         public void ResetWindowTitleAndInformationBar()
@@ -184,53 +192,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 question += " This change affects all VM instances in the project.";
             }
 
-            if (this.serviceProvider
-                .GetService<IConfirmationDialog>()
-                .Confirm(
-                    this.View,
-                    question,
-                    "Delete key for user " + this.selectedItem.Key.Email,
-                    "Delete key") != DialogResult.Yes)
+            if (this.confirmationDialog.Confirm(
+                this.View,
+                question,
+                "Delete key for user " + this.selectedItem.Key.Email,
+                "Delete key") != DialogResult.Yes)
             {
                 return;
             }
 
-            await this.serviceProvider
-                .GetService<IJobService>()
-                .RunInBackground<object>(
-                    new JobDescription(
-                        $"Deleting SSH keys for {this.selectedItem.Key.Email}",
-                        JobUserFeedbackType.BackgroundFeedback),
-                    async jobToken =>
+            await this.jobService.RunInBackground<object>(
+                new JobDescription(
+                    $"Deleting SSH keys for {this.selectedItem.Key.Email}",
+                    JobUserFeedbackType.BackgroundFeedback),
+                async jobToken =>
+                {
+                    if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                     {
-                        if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                        using (var osLoginService = this.osLoginService.CreateInstance())
                         {
-                            using (var osLoginService = this.serviceProvider.GetService<IOsLoginService>())
-                            {
-                                await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
-                                        osLoginService,
-                                        this.selectedItem,
-                                        cancellationToken)
-                                    .ConfigureAwait(true);
-                            }
+                            await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
+                                    osLoginService,
+                                    this.selectedItem,
+                                    cancellationToken)
+                                .ConfigureAwait(true);
                         }
-                        else
+                    }
+                    else
+                    {
+                        using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
+                        using (var resourceManagerAdapter = this.resourceManagerAdapter.CreateInstance())
                         {
-                            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
-                            using (var resourceManagerAdapter = this.serviceProvider.GetService<IResourceManagerAdapter>())
-                            {
-                                await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
-                                        computeEngineAdapter,
-                                        resourceManagerAdapter,
-                                        this.ModelKey,
-                                        this.selectedItem,
-                                        cancellationToken)
-                                    .ConfigureAwait(true);
-                            }
+                            await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
+                                    computeEngineAdapter,
+                                    resourceManagerAdapter,
+                                    this.ModelKey,
+                                    this.selectedItem,
+                                    cancellationToken)
+                                .ConfigureAwait(true);
                         }
+                    }
 
-                        return null;
-                    }).ConfigureAwait(true);  // Back to original (UI) thread.
+                    return null;
+                }).ConfigureAwait(true);  // Back to original (UI) thread.
 
             //
             // Refresh list.
@@ -259,21 +263,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     //
                     this.WindowTitle = WindowTitlePrefix;
 
-                    var jobService = this.serviceProvider.GetService<IJobService>();
-
                     //
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
                     //
-                    return await jobService.RunInBackground(
+                    return await this.jobService.RunInBackground(
                         new JobDescription(
                             $"Loading SSH keys for {node.DisplayName}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
-                            using (var resourceManagerAdapter = this.serviceProvider.GetService<IResourceManagerAdapter>())
-                            using (var osLoginService = this.serviceProvider.GetService<IOsLoginService>())
+                            using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
+                            using (var resourceManagerAdapter = this.resourceManagerAdapter.CreateInstance())
+                            using (var osLoginService = this.osLoginService.CreateInstance())
                             {
                                 return await AuthorizedPublicKeysModel.LoadAsync(
                                         computeEngineAdapter,

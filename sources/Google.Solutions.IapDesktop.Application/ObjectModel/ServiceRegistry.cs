@@ -157,9 +157,43 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         // Lookup.
         //---------------------------------------------------------------------
 
+        private bool IsServiceRegistered(Type serviceType)
+        {
+            return this.singletons.ContainsKey(serviceType) ||
+                   this.transients.ContainsKey(serviceType) ||
+                   (this.parent != null && this.parent.IsServiceRegistered(serviceType));
+        }
+
         public object GetService(Type serviceType)
         {
-            if (this.singletons.TryGetValue(serviceType, out var singletonStub))
+            if (serviceType.IsGenericType && 
+                serviceType.GetGenericTypeDefinition() == typeof(Service<>))
+            {
+                Debug.Assert(serviceType.GetGenericArguments().Length == 1);
+                var actualServiceType = serviceType.GetGenericArguments()[0];
+
+                //
+                // Verify that the service exists so that we don't get any
+                // surprises later.
+                //
+                if (!IsServiceRegistered(actualServiceType))
+                {
+                    throw new UnknownServiceException(
+                        $"Unknown service: {actualServiceType.Name}");
+                }
+
+                //
+                // Return a factory instead of the actual service object.
+                // This doesn't make a real difference for singletons, but
+                // for transients it lets clients delay object creation
+                // (and hence, lookup of dependencies).
+                //
+                // NB. Service<> is a valid service, so we can create it using
+                // just like a normal transient.
+                //
+                return CreateInstance(serviceType);
+            }
+            else if (this.singletons.TryGetValue(serviceType, out var singletonStub))
             {
                 return singletonStub.Object;
             }
@@ -173,7 +207,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             }
             else
             {
-                throw new UnknownServiceException(serviceType.Name);
+                throw new UnknownServiceException(
+                    $"Unknown service: {serviceType.Name}");
             }
         }
 

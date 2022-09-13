@@ -36,11 +36,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
     [SkipCodeCoverage("UI code")]
     public partial class PropertiesDialog : Form
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IExceptionDialog exceptionDialog;
 
         public PropertiesDialog(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
             InitializeComponent();
         }
@@ -68,8 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             }
             catch (Exception e)
             {
-                this.serviceProvider.GetService<IExceptionDialog>()
-                    .Show(this, "Applying changes failed", e);
+                this.exceptionDialog.Show(this, "Applying changes failed", e);
                 return DialogResult.Cancel;
             }
         }

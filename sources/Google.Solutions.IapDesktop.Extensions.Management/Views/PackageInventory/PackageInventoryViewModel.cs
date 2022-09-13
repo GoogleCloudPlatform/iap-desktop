@@ -45,7 +45,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         private const int ModelCacheCapacity = 5;
 
         private readonly PackageInventoryType inventoryType;
-        private readonly IServiceProvider serviceProvider;
+        private readonly IJobService jobService;
+        private readonly Service<IInventoryService> inventoryService;
 
         private string filter;
         private bool isLoading;
@@ -65,8 +66,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             PackageInventoryType inventoryType)
             : base(ModelCacheCapacity)
         {
-            this.serviceProvider = serviceProvider;
             this.inventoryType = inventoryType;
+            this.jobService = serviceProvider.GetService<IJobService>();
+            this.inventoryService = serviceProvider.GetService<Service<IInventoryService>>();
         }
 
         public void ResetWindowTitle()
@@ -215,17 +217,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                     //
                     this.WindowTitle = this.WindowTitlePrefix;
 
-                    var jobService = this.serviceProvider.GetService<IJobService>();
-
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
-                    return await jobService.RunInBackground(
+                    return await this.jobService.RunInBackground(
                         new JobDescription(
                             $"Loading inventory for {node.DisplayName}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            using (var inventoryService = this.serviceProvider.GetService<IInventoryService>())
+                            using (var inventoryService = this.inventoryService.CreateInstance())
                             {
                                 return await PackageInventoryModel.LoadAsync(
                                         inventoryService,

@@ -42,8 +42,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 
         internal CancellationTokenSource TailCancellationTokenSource = null;
 
-        private readonly IServiceProvider serviceProvider;
         private readonly ushort serialPortNumber;
+        private readonly IJobService jobService;
+        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
 
         private bool isOutputBoxEnabled = false;
         private bool isEnableTailingButtonEnabled = false;
@@ -58,8 +59,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             ushort serialPortNumber)
             : base(ModelCacheCapacity)
         {
-            this.serviceProvider = serviceProvider;
             this.serialPortNumber = serialPortNumber;
+            this.jobService = serviceProvider.GetService<IJobService>();
+            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
         }
 
         //---------------------------------------------------------------------
@@ -212,8 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
                 {
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
-                    var jobService = this.serviceProvider.GetService<IJobService>();
-                    return await jobService.RunInBackground(
+                    return await this.jobService.RunInBackground(
                         new JobDescription(
                             $"Reading serial port output for {vmNode.Instance.Name}",
                             JobUserFeedbackType.BackgroundFeedback),
@@ -223,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
                             {
                                 return await SerialOutputModel.LoadAsync(
                                     vmNode.Instance.Name,
-                                    this.serviceProvider.GetService<IComputeEngineAdapter>(),
+                                    this.computeEngineAdapter.CreateInstance(),
                                     vmNode.Instance,
                                     this.serialPortNumber,
                                     combinedTokenSource.Token)

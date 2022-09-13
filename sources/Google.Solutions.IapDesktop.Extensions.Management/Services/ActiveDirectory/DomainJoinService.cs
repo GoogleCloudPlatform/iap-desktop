@@ -55,12 +55,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirec
     [Service(typeof(IDomainJoinService))]
     public sealed class DomainJoinService : IDomainJoinService
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
         private const int SerialPort = 4;
 
         public DomainJoinService(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
+            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
         }
 
         //---------------------------------------------------------------------
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirec
                 using (var operation = new StartupScriptOperation(
                     instance,
                     MetadataKeys.JoinDomainGuard,
-                    this.serviceProvider.GetService<IComputeEngineAdapter>()))
+                    this.computeEngineAdapter.CreateInstance()))
                 {
                     await JoinDomainAsync(
                             operation,

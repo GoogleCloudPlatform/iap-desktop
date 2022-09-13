@@ -102,7 +102,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
     public class ProjectModelService : IProjectModelService
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
+        private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
+        private readonly IProjectRepository projectRepository;
+        private readonly IEventService eventService;
 
         private ResourceLocator activeNode;
 
@@ -122,10 +125,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            using (var computeEngineAdapter = this.serviceProvider
-                .GetService<IComputeEngineAdapter>())
-            using (var resourceManagerAdapter = this.serviceProvider
-                .GetService<IResourceManagerAdapter>())
+            using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
+            using (var resourceManagerAdapter = this.resourceManagerAdapter.CreateInstance())
             {
                 var accessibleProjects = new List<ProjectNode>();
 
@@ -136,8 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 // project name, so we have to use the Resource Manager API instead.
                 //
                 var tasks = new Dictionary<ProjectLocator, Task<Google.Apis.CloudResourceManager.v1.Data.Project>>();
-                foreach (var project in await this.serviceProvider
-                    .GetService<IProjectRepository>()
+                foreach (var project in await this.projectRepository
                     .ListProjectsAsync()
                     .ConfigureAwait(false))
                 {
@@ -199,8 +199,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            using (var computeEngineAdapter = this.serviceProvider
-                .GetService<IComputeEngineAdapter>())
+            using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
             {
                 var instances = await computeEngineAdapter
                     .ListInstancesAsync(project.ProjectId, token)
@@ -245,7 +244,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public ProjectModelService(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
+            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
+            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
+            this.projectRepository = serviceProvider.GetService<IProjectRepository>();
+            this.eventService = serviceProvider.GetService<IEventService>();
         }
 
         //---------------------------------------------------------------------
@@ -256,12 +258,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
             {
-                this.serviceProvider
-                    .GetService<IProjectRepository>()
-                    .AddProject(project);
+                this.projectRepository.AddProject(project);
 
-                await this.serviceProvider
-                    .GetService<IEventService>()
+                await this.eventService
                     .FireAsync(new ProjectAddedEvent(project.ProjectId))
                     .ConfigureAwait(false);
             }
@@ -271,9 +270,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
             {
-                this.serviceProvider
-                    .GetService<IProjectRepository>()
-                    .RemoveProject(project);
+                this.projectRepository.RemoveProject(project);
 
                 //
                 // Purge from cache.
@@ -284,8 +281,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                     this.cachedZones.Remove(project);
                 }
 
-                await this.serviceProvider
-                    .GetService<IEventService>()
+                await this.eventService
                     .FireAsync(new ProjectDeletedEvent(project.ProjectId))
                     .ConfigureAwait(false);
             }
@@ -499,8 +495,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                         //
                         this.activeNode = locator;
 
-                        await this.serviceProvider
-                            .GetService<IEventService>()
+                        await this.eventService
                             .FireAsync(new ActiveProjectChangedEvent(node))
                             .ConfigureAwait(true);
 
@@ -515,8 +510,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 this.activeNode = null;
                 if (this.cachedRoot != null)
                 {
-                    await this.serviceProvider
-                        .GetService<IEventService>()
+                    await this.eventService
                         .FireAsync(new ActiveProjectChangedEvent(this.cachedRoot))
                         .ConfigureAwait(true);
                 }

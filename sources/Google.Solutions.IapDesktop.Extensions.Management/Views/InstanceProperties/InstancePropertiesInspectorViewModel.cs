@@ -42,7 +42,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
         private const int ModelCacheCapacity = 5;
         internal const string DefaultWindowTitle = "VM instance";
 
-        private readonly IServiceProvider serviceProvider;
+        private readonly IJobService jobService;
+        private readonly Service<IInventoryService> inventoryService;
+        private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
 
         private bool isInformationBarVisible = false;
         private object inspectedObject = null;
@@ -53,7 +55,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
         public InstancePropertiesInspectorViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
-            this.serviceProvider = serviceProvider;
+            this.jobService = serviceProvider.GetService<IJobService>();
+            this.inventoryService = serviceProvider.GetService<Service<IInventoryService>>();
+            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
         }
 
         //---------------------------------------------------------------------
@@ -129,16 +133,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
                 {
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
-                    var jobService = this.serviceProvider.GetService<IJobService>();
-                    return await jobService.RunInBackground(
+                    return await this.jobService.RunInBackground(
                         new JobDescription(
                             $"Loading information about {vmNode.Instance.Name}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
                             using (var combinedTokenSource = jobToken.Combine(token))
-                            using (var gceAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
-                            using (var inventoryService = this.serviceProvider.GetService<IInventoryService>())
+                            using (var gceAdapter = this.computeEngineAdapter.CreateInstance())
+                            using (var inventoryService = this.inventoryService.CreateInstance())
                             {
                                 return await InstancePropertiesInspectorModel.LoadAsync(
                                     vmNode.Instance,
