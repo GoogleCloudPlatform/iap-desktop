@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
 
         private const string SampleEmail = "bob@example.com";
-        private readonly InstanceLocator SampleLocator = new InstanceLocator("project-1", "zone-1", "instance-1");
+        private static readonly InstanceLocator SampleLocator = new InstanceLocator("project-1", "zone-1", "instance-1");
 
         private Mock<IKeyStoreAdapter> keyStore;
         private Mock<ITunnelBrokerService> tunnelBrokerService;
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             Assert.IsNotNull(session);
 
-            sessionBroker.Verify(b => b.TryActivate(
+            this.sessionBroker.Verify(b => b.TryActivate(
                 It.Is<InstanceLocator>(l => l == SampleLocator)), Times.Once);
         }
 

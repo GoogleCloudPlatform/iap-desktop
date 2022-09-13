@@ -48,9 +48,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var projectRepository = new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
+            var projectRepository = new ProjectRepository(this.hkcu.CreateSubKey(TestKeyPath));
             var settingsRepository = new ConnectionSettingsRepository(projectRepository);
             this.service = new ConnectionSettingsService(settingsRepository);
 

@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                         null,
                         null,
                         settingsKey,
-                        url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _))
+                        url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
                     .ApplyPolicy(userPolicyKey)
                     .ApplyPolicy(machinePolicyKey),
                 ProxyPacUrl = RegistryStringSetting.FromKey(
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                         null,
                         null,
                         settingsKey,
-                        url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _))
+                        url => url == null || Uri.TryCreate(url, UriKind.Absolute, out var _))
                     .ApplyPolicy(userPolicyKey)
                     .ApplyPolicy(machinePolicyKey),
                 DeviceCertificateSelector = RegistryStringSetting.FromKey(

@@ -102,13 +102,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         [SetUp]
         public void SetUp()
         {
-            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
             this.settingsRepository = new ApplicationSettingsRepository(
-                hkcu.CreateSubKey(TestKeyPath),
+                this.hkcu.CreateSubKey(TestKeyPath),
                 null,
                 null);
             this.projectRepository = new ProjectRepository(
-                hkcu.CreateSubKey(TestKeyPath));
+                this.hkcu.CreateSubKey(TestKeyPath));
             this.projectExplorerSettings = new ProjectExplorerSettings(
                 this.settingsRepository, false);
 

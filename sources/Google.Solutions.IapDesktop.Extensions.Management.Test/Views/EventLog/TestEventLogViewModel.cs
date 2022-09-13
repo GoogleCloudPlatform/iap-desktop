@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
                 JobDescription jobDescription,
                 Func<CancellationToken, Task<T>> jobFunc)
             {
-                Calls++;
+                this.Calls++;
                 return jobFunc(CancellationToken.None);
             }
         }
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
             this.auditLogAdapter = new AuditLogAdapterMock();
             registry.AddSingleton<IAuditLogAdapter>(this.auditLogAdapter);
 
-            viewModel = new EventLogViewModel(
+            this.viewModel = new EventLogViewModel(
                 null,
                 registry);
         }

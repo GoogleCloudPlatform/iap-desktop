@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private ViewModelNode selectedNode;
         private string instanceFilter;
-        private IProjectExplorerSettings settings;
+        private readonly IProjectExplorerSettings settings;
 
         private bool isUnloadProjectCommandVisible;
         private bool isRefreshProjectsCommandVisible;

@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
-                windowMenuContextSource.Context = this.dockPanel.ActiveContent as ToolWindow;
+                this.windowMenuContextSource.Context = this.dockPanel.ActiveContent as ToolWindow;
             };
 
             this.dockPanel.ActiveContentChanged += (sender, args) =>
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 // focus is released from an RDP window by using a keyboard
                 // shortcut.
                 //
-                windowMenuContextSource.Context =
+                this.windowMenuContextSource.Context =
                     (this.dockPanel.ActiveContent ?? this.dockPanel.ActiveDocumentPane?.ActiveContent)
                         as ToolWindow;
             };
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 bootstrappingServiceProvider.GetService<Profile>(),
                 bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
                 bootstrappingServiceProvider.GetService<AuthSettingsRepository>(),
-                themeService);
+                this.themeService);
 
             this.BindProperty(
                 c => c.Text,

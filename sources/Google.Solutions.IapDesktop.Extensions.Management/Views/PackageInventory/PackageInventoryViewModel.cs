@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
 
         public void ResetWindowTitle()
         {
-            this.WindowTitle = WindowTitlePrefix;
+            this.WindowTitle = this.WindowTitlePrefix;
         }
 
         //---------------------------------------------------------------------

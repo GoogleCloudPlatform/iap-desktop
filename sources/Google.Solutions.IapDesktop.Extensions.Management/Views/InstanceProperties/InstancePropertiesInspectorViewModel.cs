@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
 
         public bool IsInformationBarVisible
         {
-            get => isInformationBarVisible;
+            get => this.isInformationBarVisible;
             private set
             {
                 this.isInformationBarVisible = value;
