@@ -90,11 +90,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public ComputeEngineAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationSource>())
-        {
-        }
-
         //---------------------------------------------------------------------
         // Projects.
         //---------------------------------------------------------------------

@@ -95,11 +95,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public ResourceManagerAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationSource>())
-        {
-        }
-
         public async Task<Project> GetProjectAsync(
             string projectId,
             CancellationToken cancellationToken)
