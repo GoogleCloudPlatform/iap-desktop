@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
             this.schemaVersion = schemaVersion;
         }
 
-        private SshSettingsRepository(Profile profile)
+        public SshSettingsRepository(Profile profile)
             : this(
                   profile.SettingsKey.CreateSubKey("Ssh"),
                   profile.MachinePolicyKey?.OpenSubKey("Ssh"),

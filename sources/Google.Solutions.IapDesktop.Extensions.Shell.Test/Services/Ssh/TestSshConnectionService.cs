@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(
-                new Mock<IWin32Window>().Object,
+                new Mock<IMainForm>().Object,
                 CreateAuthorizationSourceMock().Object,
                 CreateProjectModelServiceMock().Object,
                 sessionBroker.Object,
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var keyStore = CreateKeyStoreAdapterMock();
 
             var service = new SshConnectionService(
-                new Mock<IWin32Window>().Object,
+                new Mock<IMainForm>().Object,
                 CreateAuthorizationSourceMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var tunnelBrokerService = CreateTunnelBrokerServiceMock();
 
             var service = new SshConnectionService(
-                new Mock<IWin32Window>().Object,
+                new Mock<IMainForm>().Object,
                 CreateAuthorizationSourceMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var authorizedKeyService = new Mock<IKeyAuthorizationService>();
             var service = new SshConnectionService(
-                new Mock<IWin32Window>().Object,
+                new Mock<IMainForm>().Object,
                 CreateAuthorizationSourceMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var authorizedKeyService = new Mock<IKeyAuthorizationService>();
 
             var service = new SshConnectionService(
-                new Mock<IWin32Window>().Object,
+                new Mock<IMainForm>().Object,
                 CreateAuthorizationSourceMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
@@ -340,7 +340,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var tunnelBrokerService = CreateTunnelBrokerServiceMock();
 
             var service = new SshConnectionService(
-                new Mock<IWin32Window>().Object,
+                new Mock<IMainForm>().Object,
                 CreateAuthorizationSourceMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
@@ -381,7 +381,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
 
             var service = new SshConnectionService(
-                new Mock<IWin32Window>().Object,
+                new Mock<IMainForm>().Object,
                 CreateAuthorizationSourceMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
@@ -419,7 +419,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(
-                new Mock<IWin32Window>().Object,
+                new Mock<IMainForm>().Object,
                 CreateAuthorizationSourceMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
@@ -465,7 +465,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var tunnelBrokerService = CreateTunnelBrokerServiceMock();
 
             var service = new SshConnectionService(
-                new Mock<IWin32Window>().Object,
+                new Mock<IMainForm>().Object,
                 CreateAuthorizationSourceMock().Object,
                 CreateProjectModelServiceMock().Object,
                 sessionBroker.Object,

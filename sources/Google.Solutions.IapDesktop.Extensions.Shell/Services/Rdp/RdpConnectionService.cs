@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         private readonly IConnectionSettingsService settingsService;
 
         public RdpConnectionService(
-            IWin32Window window,
+            IMainForm window,
             IProjectModelService projectModelService,
             IRemoteDesktopSessionBroker sessionBroker,
             ITunnelBrokerService tunnelBroker,
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             IConnectionSettingsService settingsService,
             ICredentialPrompt credentialPrompt)
         {
-            this.window = window.ThrowIfNull(nameof(window));
+            this.window = window.ThrowIfNull(nameof(window)).Window;
             this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
             this.sessionBroker = sessionBroker.ThrowIfNull(nameof(sessionBroker));
             this.tunnelBroker = tunnelBroker.ThrowIfNull(nameof(tunnelBroker));

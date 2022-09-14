@@ -102,25 +102,39 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             // parameters can be bound to a service. Analyze the one with the most
             // parameters first.
             //
+            bool IsSupportedConstructorArgumentType(Type t)
+            {
+                if (t == serviceType)
+                {
+                    // Don't allow recursion
+                    return false;
+                }
+                
+                if (IsServiceRegistered(t))
+                {
+                    return true;
+                }
+                else if (t.IsGenericType &&
+                    t.GetGenericTypeDefinition() == typeof(Service<>) &&
+                    t.GenericTypeArguments.Length == 1 &&
+                    IsServiceRegistered(t.GenericTypeArguments[0]))
+
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
             foreach (var constructor in serviceType.GetConstructors()
                 .OrderByDescending(c => c.GetParameters().Length))
             {
                 if (constructor
                     .GetParameters()
                     .Select(p => p.ParameterType)
-                    .All(t => 
-                        // Don't allow recursion
-                        t != serviceType &&
-
-                        // Service must be registered
-                        (IsServiceRegistered(t) ||
-
-                        // If it's a Service<T>, then T must be registered.
-                        (t.IsGenericType &&
-                         t.GetGenericTypeDefinition() == typeof(Service<>) &&
-                         t.GenericTypeArguments.Length == 1 &&
-                         IsServiceRegistered(t.GenericTypeArguments[0])
-                        ))))
+                    .All(t => IsSupportedConstructorArgumentType(t)))
                 {
                     // We have services for all parameters.
                     var parameterValues = constructor
@@ -134,6 +148,19 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 }
                 else
                 {
+#if DEBUG
+                    Debug.WriteLine($"ServiceRegistry: {serviceType} has an unsuitable ctor: {constructor}");
+
+                    foreach (var t in constructor
+                        .GetParameters()
+                        .Select(p => p.ParameterType)
+                        .Where(t => !IsSupportedConstructorArgumentType(t))
+                        .ToList())
+                    {
+                        Debug.WriteLine($"  > Unsupported argument type: {t}");
+                    }
+#endif
+
                     //
                     // There is at least one parameter that we do not
                     // have a suitable service for.
