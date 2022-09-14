@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirec
 
         public DomainJoinService(Service<IComputeEngineAdapter> computeEngineAdapter)
         {
-            this.computeEngineAdapter = computeEngineAdapter;
+            this.computeEngineAdapter = computeEngineAdapter.ThrowIfNull(nameof(computeEngineAdapter));
         }
 
         //---------------------------------------------------------------------

@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
+using Google.Apis.Util;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -69,12 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory
 
         public InventoryService(IComputeEngineAdapter computeEngineAdapter)
         {
-            this.computeEngineAdapter = computeEngineAdapter;
-        }
-
-        public InventoryService(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IComputeEngineAdapter>())
-        {
+            this.computeEngineAdapter = computeEngineAdapter.ThrowIfNull(nameof(computeEngineAdapter));
         }
 
         private async Task<IEnumerable<GuestOsInfo>> ListInventoryAsync(

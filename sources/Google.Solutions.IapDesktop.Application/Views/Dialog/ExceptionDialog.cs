@@ -19,12 +19,11 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -50,10 +49,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
         private readonly HelpAdapter helpAdapter;
         private readonly BuganizerAdapter buganizerAdapter;
 
-        public ExceptionDialog(IServiceProvider serviceProvider)
+        public ExceptionDialog(
+            HelpAdapter helpAdapter, 
+            BuganizerAdapter buganizerAdapter)
         {
-            this.helpAdapter = serviceProvider.GetService<HelpAdapter>();
-            this.buganizerAdapter = serviceProvider.GetService<BuganizerAdapter>();
+            this.helpAdapter = helpAdapter.ThrowIfNull(nameof(helpAdapter));
+            this.buganizerAdapter = buganizerAdapter.ThrowIfNull(nameof(buganizerAdapter));
         }
 
         private static bool ShouldShowBugReportLink(Exception e)

@@ -73,6 +73,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             ICredential credential,
             IDeviceEnrollment deviceEnrollment)
         {
+            credential.ThrowIfNull(nameof(credential));
+            deviceEnrollment.ThrowIfNull(nameof(deviceEnrollment));
+
             this.service = new LoggingService(
                 ClientServiceFactory.ForMtlsEndpoint(
                     credential,
@@ -82,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             Debug.Assert(
                 (deviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == IsDeviceCertiticateAuthenticationEnabled);
+                    == this.IsDeviceCertiticateAuthenticationEnabled);
         }
 
         public AuditLogAdapter(ICredential credential)
@@ -96,11 +99,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             : this(
                   authService.Authorization.Credential,
                   authService.Authorization.DeviceEnrollment)
-        {
-        }
-
-        public AuditLogAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 

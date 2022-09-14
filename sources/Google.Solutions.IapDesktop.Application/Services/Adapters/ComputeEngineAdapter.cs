@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
+using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.ApiExtensions.Request;
@@ -64,6 +65,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ICredential credential,
             IDeviceEnrollment deviceEnrollment)
         {
+            credential.ThrowIfNull(nameof(credential));
+            deviceEnrollment.ThrowIfNull(nameof(deviceEnrollment));
+
             this.service = new ComputeService(
                 ClientServiceFactory.ForMtlsEndpoint(
                     credential,
@@ -73,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Debug.Assert(
                 (deviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == IsDeviceCertiticateAuthenticationEnabled);
+                    == this.IsDeviceCertiticateAuthenticationEnabled);
         }
 
         public ComputeEngineAdapter(ICredential credential)

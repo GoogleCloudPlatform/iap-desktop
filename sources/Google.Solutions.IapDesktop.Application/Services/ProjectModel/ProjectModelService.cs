@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
@@ -242,12 +243,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         // Ctor.
         //---------------------------------------------------------------------
 
-        public ProjectModelService(IServiceProvider serviceProvider)
+        public ProjectModelService(
+            Service<IComputeEngineAdapter> computeEngineAdapter,
+            Service<IResourceManagerAdapter> resourceManagerAdapter,
+            IProjectRepository projectRepository,
+            IEventService eventService)
         {
-            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
-            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
-            this.projectRepository = serviceProvider.GetService<IProjectRepository>();
-            this.eventService = serviceProvider.GetService<IEventService>();
+            this.computeEngineAdapter = computeEngineAdapter.ThrowIfNull(nameof(computeEngineAdapter));
+            this.resourceManagerAdapter = resourceManagerAdapter.ThrowIfNull(nameof(resourceManagerAdapter));
+            this.projectRepository = projectRepository.ThrowIfNull(nameof(projectRepository));
+            this.eventService = eventService.ThrowIfNull(nameof(eventService));
         }
 
         //---------------------------------------------------------------------
