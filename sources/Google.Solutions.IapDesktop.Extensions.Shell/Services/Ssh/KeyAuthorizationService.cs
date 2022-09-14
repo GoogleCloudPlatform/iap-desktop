@@ -52,19 +52,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             IResourceManagerAdapter resourceManagerAdapter,
             IOsLoginService osLoginService)
         {
-            this.authorizationSource = authorizationSource;
-            this.computeEngineAdapter = computeEngineAdapter;
-            this.resourceManagerAdapter = resourceManagerAdapter;
-            this.osLoginService = osLoginService;
+            this.authorizationSource = authorizationSource.ThrowIfNull(nameof(authorizationSource));
+            this.computeEngineAdapter = computeEngineAdapter.ThrowIfNull(nameof(computeEngineAdapter));
+            this.resourceManagerAdapter = resourceManagerAdapter.ThrowIfNull(nameof(resourceManagerAdapter));
+            this.osLoginService = osLoginService.ThrowIfNull(nameof(osLoginService));
         }
-
-        public KeyAuthorizationService(IServiceProvider serviceProvider)
-            : this(
-                  serviceProvider.GetService<IAuthorizationSource>(),
-                  serviceProvider.GetService<IComputeEngineAdapter>(),
-                  serviceProvider.GetService<IResourceManagerAdapter>(),
-                  serviceProvider.GetService<IOsLoginService>())
-        { }
 
         //---------------------------------------------------------------------
         // IPublicKeyService.

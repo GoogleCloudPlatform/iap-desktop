@@ -58,11 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                   profile.UserPolicyKey?.OpenSubKey("Ssh"),
                   profile.Version)
         {
-        }
-
-        public SshSettingsRepository(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<Profile>())
-        {
+            profile.ThrowIfNull(nameof(profile));
         }
 
         protected override SshSettings LoadSettings(

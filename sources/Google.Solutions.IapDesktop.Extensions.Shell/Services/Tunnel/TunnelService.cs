@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -44,12 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
 
         public TunnelService(IAuthorizationSource authorizationSource)
         {
-            this.authorizationSource = authorizationSource;
-        }
-
-        public TunnelService(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationSource>())
-        {
+            this.authorizationSource = authorizationSource.ThrowIfNull(nameof(authorizationSource));
         }
 
         public Task<ITunnel> CreateTunnelAsync(
