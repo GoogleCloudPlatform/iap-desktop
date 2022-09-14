@@ -40,6 +40,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -57,8 +58,34 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandContainer.cs" />
     <Compile Include="Commands\ObservableCommandContextSource.cs" />
+    <Compile Include="Controls\BindableListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\BindableTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ClipboardUtil.cs" />
+    <Compile Include="Controls\ControlExtensions.cs" />
     <Compile Include="Controls\ExceptionEventArgs.cs" />
+    <Compile Include="Controls\FlatListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\HtmlClipboardFormat.cs" />
+    <Compile Include="Controls\ListViewExtensions.cs" />
+    <Compile Include="Controls\RichTextBoxExtensions.cs" />
+    <Compile Include="Controls\SearchableList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SearchableList.Designer.cs">
+      <DependentUpon>SearchableList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TextBoxExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -68,6 +95,21 @@
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\SearchableList.resx">
+      <DependentUpon>SearchableList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Copy_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Search_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" />

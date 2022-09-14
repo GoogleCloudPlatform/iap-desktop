@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Windows.Forms;
 

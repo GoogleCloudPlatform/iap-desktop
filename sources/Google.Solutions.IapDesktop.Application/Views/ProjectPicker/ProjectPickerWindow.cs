@@ -25,6 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;

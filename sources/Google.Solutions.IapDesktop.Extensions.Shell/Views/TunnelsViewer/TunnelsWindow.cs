@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Runtime.InteropServices;
 using WeifenLuo.WinFormsUI.Docking;

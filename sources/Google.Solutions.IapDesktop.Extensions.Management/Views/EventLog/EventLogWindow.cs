@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Diagnostics;
 using System.Linq;

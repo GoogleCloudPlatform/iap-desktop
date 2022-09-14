@@ -20,14 +20,14 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Properties;
+using Google.Solutions.Mvvm.Properties;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Application.Controls
+namespace Google.Solutions.Mvvm.Controls
 {
     [SkipCodeCoverage("Pure UI code")]
     public partial class SearchableList<TModelItem> : UserControl

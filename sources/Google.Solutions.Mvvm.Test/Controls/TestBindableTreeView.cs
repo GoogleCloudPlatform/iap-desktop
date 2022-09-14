@@ -20,9 +20,8 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Controls;
 using NUnit.Framework;
 using System;
 using System.Collections.ObjectModel;
@@ -31,11 +30,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Controls
+namespace Google.Solutions.Mvvm.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestBindableTreeView : ApplicationFixtureBase
+    public class TestBindableTreeView
     {
         private class ModelNode : ViewModelBase
         {

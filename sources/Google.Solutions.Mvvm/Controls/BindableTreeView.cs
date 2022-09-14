@@ -36,7 +36,7 @@ using System.Windows.Forms;
 
 #pragma warning disable CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
 
-namespace Google.Solutions.IapDesktop.Application.Controls
+namespace Google.Solutions.Mvvm.Controls
 {
     public class BindableTreeView<TModelNode> : TreeView
         where TModelNode : class, INotifyPropertyChanged

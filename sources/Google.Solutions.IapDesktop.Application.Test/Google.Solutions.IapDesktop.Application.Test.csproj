@@ -97,11 +97,8 @@
   <ItemGroup>
     <Compile Include="CertificateUtil.cs" />
     <Compile Include="Controls\TestBadgeIcon.cs" />
-    <Compile Include="Controls\TestBindableListView.cs" />
-    <Compile Include="Controls\TestBindableTreeView.cs" />
     <Compile Include="Controls\TestFontExtensions.cs" />
     <Compile Include="Controls\TestScreenPicker.cs" />
-    <Compile Include="Controls\TestListViewExtensions.cs" />
     <Compile Include="Host\TestProfile.cs" />
     <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
@@ -140,7 +137,6 @@
     <Compile Include="Host\TestCommandLineOptions.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
     <Compile Include="Services\SecureConnect\TestSecureConnectEnrollment.cs" />
-    <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />

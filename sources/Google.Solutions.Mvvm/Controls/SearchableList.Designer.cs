@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Controls
+namespace Google.Solutions.Mvvm.Controls
 {
     partial class SearchableList<TModelItem>
     {

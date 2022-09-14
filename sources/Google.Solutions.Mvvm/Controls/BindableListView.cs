@@ -28,7 +28,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Controls
+namespace Google.Solutions.Mvvm.Controls
 {
     /// <summary>
     /// Listview that support simple data binding.

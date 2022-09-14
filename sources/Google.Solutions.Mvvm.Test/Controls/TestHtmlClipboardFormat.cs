@@ -19,14 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Controls;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Util
+namespace Google.Solutions.Mvvm.Test.Controls
 {
     [TestFixture]
-    public class TestHtmlClipboardFormat : ApplicationFixtureBase
+    public class TestHtmlClipboardFormat 
     {
         [Test]
         public void FormatAddsHeader()

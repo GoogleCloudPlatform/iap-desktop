@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;

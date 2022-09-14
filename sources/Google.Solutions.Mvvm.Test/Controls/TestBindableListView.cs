@@ -19,9 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Controls;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,11 +28,11 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Controls
+namespace Google.Solutions.Mvvm.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestBindableListView : ApplicationFixtureBase
+    public class TestBindableListView
     {
         private class ViewModelItem : ViewModelBase
         {

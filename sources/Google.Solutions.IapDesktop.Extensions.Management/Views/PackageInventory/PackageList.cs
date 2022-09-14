@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Extensions.Management.Properties;
+using Google.Solutions.Mvvm.Controls;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory
