@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -43,10 +44,10 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
         public Version InstalledVersion => typeof(UpdateService).Assembly.GetName().Version;
 
-        public UpdateService(IServiceProvider serviceProvider)
+        public UpdateService(GithubAdapter githubAdapter, ITaskDialog taskDialog)
         {
-            this.githubAdapter = serviceProvider.GetService<GithubAdapter>();
-            this.taskDialog = serviceProvider.GetService<ITaskDialog>();
+            this.githubAdapter = githubAdapter.ThrowIfNull(nameof(githubAdapter));
+            this.taskDialog = taskDialog.ThrowIfNull(nameof(taskDialog));
         }
 
         /// <summary>
