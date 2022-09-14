@@ -85,14 +85,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal OsLoginService(IOsLoginAdapter adapter)
+        public OsLoginService(IOsLoginAdapter adapter)
         {
-            this.adapter = adapter;
-        }
-
-        public OsLoginService(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IOsLoginAdapter>())
-        {
+            this.adapter = adapter.ThrowIfNull(nameof(adapter));
         }
 
         //---------------------------------------------------------------------

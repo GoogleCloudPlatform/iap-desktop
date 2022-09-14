@@ -48,13 +48,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
     [TestFixture]
     public class TestRdpConnectionService : ShellFixtureBase
     {
-        private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
-
-        [SetUp]
-        public void SetUp()
+        private Mock<ITunnelBrokerService> CreateTunnelBrokerServiceMock()
         {
-            this.serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
-
             var tunnel = new Mock<ITunnel>();
             tunnel.SetupGet(t => t.LocalPort).Returns(1);
 
@@ -63,11 +58,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 It.IsAny<TunnelDestination>(),
                 It.IsAny<ISshRelayPolicy>(),
                 It.IsAny<TimeSpan>())).Returns(Task.FromResult(tunnel.Object));
-            this.serviceRegistry.AddSingleton<ITunnelBrokerService>(tunnelBrokerService.Object);
 
-            this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
-            this.serviceRegistry.AddMock<ICredentialPrompt>();
-            this.serviceRegistry.AddMock<IMainForm>();
+            return tunnelBrokerService;
         }
 
         private Mock<IProjectModelInstanceNode> CreateInstanceNodeMock()
@@ -91,37 +83,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
             settings.RdpUsername.Value = "existinguser";
             settings.RdpPassword.Value = SecureStringExtensions.FromClearText("password");
 
-            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(
-                    It.IsAny<IProjectModelNode>()))
-                .Returns(
-                    settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
+                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
             var vmNode = CreateInstanceNodeMock();
 
-            this.serviceRegistry.AddMock<IProjectModelService>()
+            var modelService = new Mock<IProjectModelService>();
+            modelService
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(vmNode.Object);
 
-            var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
-            remoteDesktopService.Setup(s => s.Connect(
+            var sessionBroker = new Mock<IRemoteDesktopSessionBroker>();
+            sessionBroker.Setup(s => s.Connect(
                     It.IsAny<InstanceLocator>(),
                     "localhost",
                     It.IsAny<ushort>(),
                     It.IsAny<InstanceConnectionSettings>()))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
-            this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
+            var service = new RdpConnectionService(
+                new Mock<IMainForm>().Object,
+                modelService.Object,
+                sessionBroker.Object,
+                CreateTunnelBrokerServiceMock().Object,
+                new SynchronousJobService(),
+                settingsService.Object,
+                new Mock<ICredentialPrompt>().Object);
 
-            var service = new RdpConnectionService(this.serviceRegistry);
             var session = await service
                 .ActivateOrConnectInstanceAsync(vmNode.Object, false)
                 .ConfigureAwait(false);
             Assert.IsNotNull(session);
 
-            remoteDesktopService.Verify(s => s.Connect(
+            sessionBroker.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
@@ -139,37 +137,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
 
             bool settingsSaved = false;
 
-            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(
-                    It.IsAny<IProjectModelNode>()))
-                .Returns(
-                    settings.ToPersistentSettingsCollection(s => settingsSaved = true));
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
+                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(settings.ToPersistentSettingsCollection(s => settingsSaved = true));
 
             var vmNode = CreateInstanceNodeMock();
 
-            this.serviceRegistry.AddMock<IProjectModelService>()
+            var modelService = new Mock<IProjectModelService>();
+            modelService
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(vmNode.Object);
 
-            var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
-            remoteDesktopService.Setup(s => s.Connect(
+            var sessionBroker = new Mock<IRemoteDesktopSessionBroker>();
+            sessionBroker
+                .Setup(s => s.Connect(
                     It.IsAny<InstanceLocator>(),
                     "localhost",
                     It.IsAny<ushort>(),
                     It.IsAny<InstanceConnectionSettings>()))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
-            this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
+            var service = new RdpConnectionService(
+                new Mock<IMainForm>().Object,
+                modelService.Object,
+                sessionBroker.Object,
+                CreateTunnelBrokerServiceMock().Object,
+                new SynchronousJobService(),
+                settingsService.Object,
+                new Mock<ICredentialPrompt>().Object);
 
-            var service = new RdpConnectionService(this.serviceRegistry);
             var session = await service
                 .ActivateOrConnectInstanceAsync(vmNode.Object, true)
                 .ConfigureAwait(false);
             Assert.IsNotNull(session);
 
-            remoteDesktopService.Verify(s => s.Connect(
+            sessionBroker.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
@@ -187,37 +192,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
         [Test]
         public async Task WhenConnectingByUrlWithoutUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithoutUsername()
         {
-            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            this.serviceRegistry.AddMock<ICredentialPrompt>()
-                .Setup(p => p.ShowCredentialsPromptAsync(
+            var settingsService =new Mock<IConnectionSettingsService>();
+
+            var credentialPrompt = new Mock<ICredentialPrompt>();
+            credentialPrompt.Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
-            this.serviceRegistry.AddMock<IProjectModelService>()
+
+            var modelService = new Mock<IProjectModelService>();
+            modelService
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IProjectModelNode)null); // Not found
 
-            var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
-            remoteDesktopService.Setup(s => s.Connect(
+            var sessionBroker = new Mock<IRemoteDesktopSessionBroker>();
+            sessionBroker
+                .Setup(s => s.Connect(
                     It.IsAny<InstanceLocator>(),
                     "localhost",
                     It.IsAny<ushort>(),
                     It.IsAny<InstanceConnectionSettings>()))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
-            this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
+            var service = new RdpConnectionService(
+                new Mock<IMainForm>().Object,
+                modelService.Object,
+                sessionBroker.Object,
+                CreateTunnelBrokerServiceMock().Object,
+                new SynchronousJobService(),
+                settingsService.Object,
+                credentialPrompt.Object);
 
-            var service = new RdpConnectionService(this.serviceRegistry);
             var session = await service
                 .ActivateOrConnectInstanceAsync(
                     IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"))
                 .ConfigureAwait(false);
             Assert.IsNotNull(session);
 
-            remoteDesktopService.Verify(s => s.Connect(
+            sessionBroker.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
@@ -229,37 +244,48 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
         [Test]
         public async Task WhenConnectingByUrlWithUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithThisUsername()
         {
-            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            this.serviceRegistry.AddMock<ICredentialPrompt>()
+            var settingsService = new Mock<IConnectionSettingsService>();
+
+            var credentialPrompt = new Mock<ICredentialPrompt>();
+            credentialPrompt
                 .Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
-            this.serviceRegistry.AddMock<IProjectModelService>()
+
+            var modelService = new Mock<IProjectModelService>();
+            modelService
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IProjectModelNode)null); // Not found
 
-            var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
-            remoteDesktopService.Setup(s => s.Connect(
+            var sessionBroker = new Mock<IRemoteDesktopSessionBroker>();
+            sessionBroker
+                .Setup(s => s.Connect(
                     It.IsAny<InstanceLocator>(),
                     "localhost",
                     It.IsAny<ushort>(),
                     It.IsAny<InstanceConnectionSettings>()))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
-            this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
+            var service = new RdpConnectionService(
+                new Mock<IMainForm>().Object,
+                modelService.Object,
+                sessionBroker.Object,
+                CreateTunnelBrokerServiceMock().Object,
+                new SynchronousJobService(),
+                settingsService.Object,
+                credentialPrompt.Object);
 
-            var service = new RdpConnectionService(this.serviceRegistry);
             var session = await service
                 .ActivateOrConnectInstanceAsync(
                     IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"))
                 .ConfigureAwait(false);
             Assert.IsNotNull(session);
 
-            remoteDesktopService.Verify(s => s.Connect(
+            sessionBroker.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
@@ -275,46 +301,54 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
             settings.RdpUsername.Value = "existinguser";
             settings.RdpPassword.Value = SecureStringExtensions.FromClearText("password");
 
-            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(
-                    It.IsAny<IProjectModelNode>()))
-                .Returns(
-                    settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
+                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
+                .Returns(settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
             var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.Instance)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            this.serviceRegistry.AddMock<ICredentialPrompt>()
+            var credentialPrompt = new Mock<ICredentialPrompt>();
+            credentialPrompt
                 .Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
                     It.IsAny<bool>()));
-            this.serviceRegistry.AddMock<IProjectModelService>()
+
+            var modelService = new Mock<IProjectModelService>();
+            modelService
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(vmNode.Object);
 
-            var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
-            remoteDesktopService.Setup(s => s.Connect(
+            var sessionBroker = new Mock<IRemoteDesktopSessionBroker>();
+            sessionBroker.Setup(s => s.Connect(
                     It.IsAny<InstanceLocator>(),
                     "localhost",
                     It.IsAny<ushort>(),
                     It.IsAny<InstanceConnectionSettings>()))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
-            this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
+            var service = new RdpConnectionService(
+                new Mock<IMainForm>().Object,
+                modelService.Object,
+                sessionBroker.Object,
+                CreateTunnelBrokerServiceMock().Object,
+                new SynchronousJobService(),
+                settingsService.Object,
+                credentialPrompt.Object);
 
-            var service = new RdpConnectionService(this.serviceRegistry);
             var session = await service
                 .ActivateOrConnectInstanceAsync(
                     IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe"))
                 .ConfigureAwait(false);
             Assert.IsNotNull(session);
 
-            remoteDesktopService.Verify(s => s.Connect(
+            sessionBroker.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),

@@ -73,6 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             ICredential credential,
             IDeviceEnrollment deviceEnrollment)
         {
+            credential.ThrowIfNull(nameof(credential));
+
             this.service = new LoggingService(
                 ClientServiceFactory.ForMtlsEndpoint(
                     credential,
@@ -96,11 +98,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             : this(
                   authService.Authorization.Credential,
                   authService.Authorization.DeviceEnrollment)
-        {
-        }
-
-        public AuditLogAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationSource>())
         {
         }
 

@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.View = view.ThrowIfNull(nameof(view));
             this.signInAdapter = signInAdapter.ThrowIfNull(nameof(signInAdapter));
-            this.deviceEnrollment = deviceEnrollment.ThrowIfNull(nameof(deviceEnrollment));
+            this.deviceEnrollment = deviceEnrollment;
         }
 
         private void FireAndForgetOnGuiThread(Action action)

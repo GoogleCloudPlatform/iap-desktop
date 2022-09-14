@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -61,15 +62,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         private readonly IProjectModelService projectModelService;
         private readonly IConnectionSettingsService settingsService;
 
-        public RdpConnectionService(IServiceProvider serviceProvider)
+        public RdpConnectionService(
+            IMainForm window,
+            IProjectModelService projectModelService,
+            IRemoteDesktopSessionBroker sessionBroker,
+            ITunnelBrokerService tunnelBroker,
+            IJobService jobService,
+            IConnectionSettingsService settingsService,
+            ICredentialPrompt credentialPrompt)
         {
-            this.jobService = serviceProvider.GetService<IJobService>();
-            this.sessionBroker = serviceProvider.GetService<IRemoteDesktopSessionBroker>();
-            this.tunnelBroker = serviceProvider.GetService<ITunnelBrokerService>();
-            this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
-            this.projectModelService = serviceProvider.GetService<IProjectModelService>();
-            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
-            this.window = serviceProvider.GetService<IMainForm>().Window;
+            this.window = window.ThrowIfNull(nameof(window)).Window;
+            this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
+            this.sessionBroker = sessionBroker.ThrowIfNull(nameof(sessionBroker));
+            this.tunnelBroker = tunnelBroker.ThrowIfNull(nameof(tunnelBroker));
+            this.jobService = jobService.ThrowIfNull(nameof(jobService));
+            this.settingsService = settingsService.ThrowIfNull(nameof(sessionBroker));
+            this.credentialPrompt = credentialPrompt.ThrowIfNull(nameof(credentialPrompt));
         }
 
         private async Task<IRemoteDesktopSession> ConnectInstanceAsync(

@@ -21,6 +21,7 @@
 
 using Google.Apis.CloudOSLogin.v1;
 using Google.Apis.CloudOSLogin.v1.Data;
+using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -84,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 
         public OsLoginAdapter(IAuthorizationSource authorizationSource)
         {
-            this.authorizationSource = authorizationSource;
+            this.authorizationSource = authorizationSource.ThrowIfNull(nameof(authorizationSource));
             this.service = new CloudOSLoginService(
                 ClientServiceFactory.ForMtlsEndpoint(
                     authorizationSource.Authorization.Credential,
@@ -94,12 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             Debug.Assert(
                 (authorizationSource.Authorization.DeviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == IsDeviceCertiticateAuthenticationEnabled);
-        }
-
-        public OsLoginAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationSource>())
-        {
+                    == this.IsDeviceCertiticateAuthenticationEnabled);
         }
 
         //---------------------------------------------------------------------

@@ -58,9 +58,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirec
         private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
         private const int SerialPort = 4;
 
-        public DomainJoinService(IServiceProvider serviceProvider)
+        public DomainJoinService(Service<IComputeEngineAdapter> computeEngineAdapter)
         {
-            this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
+            this.computeEngineAdapter = computeEngineAdapter.ThrowIfNull(nameof(computeEngineAdapter));
         }
 
         //---------------------------------------------------------------------

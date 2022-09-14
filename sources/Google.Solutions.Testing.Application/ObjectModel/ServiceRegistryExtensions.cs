@@ -20,6 +20,7 @@
 //
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Moq;
+using System;
 
 namespace Google.Solutions.Testing.Application.ObjectModel
 {
@@ -31,6 +32,16 @@ namespace Google.Solutions.Testing.Application.ObjectModel
             var mock = new Mock<T>();
             registry.AddSingleton<T>(mock.Object);
             return mock;
+        }
+
+        public static Service<T> AsService<T>(this Mock<T> mock)
+            where T : class
+        {
+            var provider = new Mock<IServiceProvider>();
+            provider
+                .Setup(p => p.GetService(It.Is<Type>(t => t == typeof(T))))
+                .Returns(mock.Object);
+            return new Service<T>(provider.Object);
         }
     }
 }

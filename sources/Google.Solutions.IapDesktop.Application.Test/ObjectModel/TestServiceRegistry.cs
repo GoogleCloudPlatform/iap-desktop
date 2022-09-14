@@ -61,25 +61,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             }
         }
 
-        public class ServiceWithServiceCategoryProviderConstructor
-        {
-            public IServiceCategoryProvider Provider { get; }
-
-            public ServiceWithServiceCategoryProviderConstructor(IServiceCategoryProvider provider)
-            {
-                this.Provider = provider;
-            }
-        }
-
-        public interface ICategory
-        { }
-
-        public class FirstServiceImplementingCategory : ICategory
-        { }
-
-        public class SecondServiceImplementingCategory : ICategory
-        { }
-
         //---------------------------------------------------------------------
         // Singleton services.
         //---------------------------------------------------------------------
@@ -192,6 +173,86 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         }
 
         //---------------------------------------------------------------------
+        // Custom constructor.
+        //---------------------------------------------------------------------
+
+        private class ServiceWithRecursiveConstructor
+        {
+            public ServiceWithRecursiveConstructor(ServiceWithRecursiveConstructor obj)
+            {
+            }
+        }
+
+        private class ServiceWithPartiallySatisfiedConstructor
+        {
+            public ServiceWithPartiallySatisfiedConstructor(ServiceWithDefaultConstructor obj, int i)
+            {
+            }
+        }
+
+        private class ServiceWithSatisfiedConstructor
+        {
+            public ServiceWithSatisfiedConstructor(
+                Service<ServiceWithDefaultConstructor> obj,
+                ServiceWithServiceProviderConstructor obj2)
+            {
+                Assert.IsNotNull(obj);
+                Assert.IsNotNull(obj2);
+            }
+
+            public ServiceWithSatisfiedConstructor(
+                ServiceWithDefaultConstructor obj)
+            {
+                Assert.Fail("Wrong constructor");
+            }
+
+            public ServiceWithSatisfiedConstructor()
+            {
+                Assert.Fail("Wrong constructor");
+            }
+        }
+
+        [Test]
+        public void WhenSingletonServiceOnlyHasRecursiveConstructor_ThenAddSingletonThrowsException()
+        {
+            var registry = new ServiceRegistry();
+
+            Assert.Throws<UnknownServiceException>(
+                () => registry.AddSingleton<ServiceWithRecursiveConstructor>());
+        }
+
+        [Test]
+        public void WhenTransientServiceOnlyHasRecursiveConstructor_ThenGetServiceThrowsException()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddTransient<ServiceWithRecursiveConstructor>();
+
+            Assert.Throws<UnknownServiceException>(
+                () => registry.GetService<ServiceWithRecursiveConstructor>());
+        }
+
+        [Test]
+        public void WhenTransientServiceOnlyHasPartiallySatisfiedConstructor_ThenGetServiceThrowsException()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddTransient<ServiceWithPartiallySatisfiedConstructor>();
+
+            Assert.Throws<UnknownServiceException>(
+                () => registry.GetService<ServiceWithRecursiveConstructor>());
+        }
+
+        [Test]
+        public void WhenTransientServiceOnlyHasMultipleSatisfiedConstructors_ThenGetServiceUsesMostParameters()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddTransient<ServiceWithDefaultConstructor>();
+            registry.AddTransient<ServiceWithServiceProviderConstructor>();
+            registry.AddTransient<ServiceWithSatisfiedConstructor>();
+
+            Assert.IsNotNull(registry.GetService<ServiceWithSatisfiedConstructor>());
+        }
+
+        //---------------------------------------------------------------------
         // Nesting.
         //---------------------------------------------------------------------
 
@@ -224,6 +285,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         //---------------------------------------------------------------------
         // Categories.
         //---------------------------------------------------------------------
+
+        public interface ICategory
+        { }
+
+        public class FirstServiceImplementingCategory : ICategory
+        { }
+
+        public class SecondServiceImplementingCategory : ICategory
+        { }
+
+        public class ServiceWithServiceCategoryProviderConstructor
+        {
+            public IServiceCategoryProvider Provider { get; }
+
+            public ServiceWithServiceCategoryProviderConstructor(IServiceCategoryProvider provider)
+            {
+                this.Provider = provider;
+            }
+        }
 
         [Test]
         public void WhenCategoryUnknown_ThenGetServicesByCategoryReturnsEmptyEnum()

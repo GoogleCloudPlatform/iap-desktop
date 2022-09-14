@@ -76,13 +76,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             this.host = host;
         }
 
-        public JobService(IServiceProvider serviceProvider)
-            : this(
-                  serviceProvider.GetService<IAuthorizationSource>(),
-                  serviceProvider.GetService<IJobHost>())
-        {
-        }
-
         private Task<T> RunInBackgroundWithUserFeedback<T>(
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc)

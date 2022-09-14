@@ -71,6 +71,9 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         private object CreateInstance(Type serviceType)
         {
+            //
+            // Check for ctor(IServiceProvider).
+            //
             var constructorWithServiceProvider = serviceType.GetConstructor(
                 BindingFlags.Public | BindingFlags.Instance,
                 null,
@@ -81,6 +84,9 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 return Activator.CreateInstance(serviceType, (IServiceProvider)this);
             }
 
+            //
+            // Check for ctor(IServiceCategoryProvider).
+            //
             var constructorWithServiceCategoryProvider = serviceType.GetConstructor(
                 BindingFlags.Public | BindingFlags.Instance,
                 null,
@@ -91,14 +97,75 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 return Activator.CreateInstance(serviceType, (IServiceCategoryProvider)this);
             }
 
-            var defaultConstructor = serviceType.GetConstructor(
-                BindingFlags.Public | BindingFlags.Instance,
-                null,
-                Array.Empty<Type>(),
-                null);
-            if (defaultConstructor != null)
+            //
+            // Check other constructors and see if there is one for which all
+            // parameters can be bound to a service. Analyze the one with the most
+            // parameters first.
+            //
+            bool IsSupportedConstructorArgumentType(Type t)
             {
-                return Activator.CreateInstance(serviceType);
+                if (t == serviceType)
+                {
+                    // Don't allow recursion
+                    return false;
+                }
+                
+                if (IsServiceRegistered(t))
+                {
+                    return true;
+                }
+                else if (t.IsGenericType &&
+                    t.GetGenericTypeDefinition() == typeof(Service<>) &&
+                    t.GenericTypeArguments.Length == 1 &&
+                    IsServiceRegistered(t.GenericTypeArguments[0]))
+
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            foreach (var constructor in serviceType.GetConstructors()
+                .OrderByDescending(c => c.GetParameters().Length))
+            {
+                if (constructor
+                    .GetParameters()
+                    .Select(p => p.ParameterType)
+                    .All(t => IsSupportedConstructorArgumentType(t)))
+                {
+                    // We have services for all parameters.
+                    var parameterValues = constructor
+                        .GetParameters()
+                        .Select(p => GetService(p.ParameterType))
+                        .ToArray();
+
+                    return Activator.CreateInstance(
+                        serviceType,
+                        parameterValues);
+                }
+                else
+                {
+#if DEBUG
+                    Debug.WriteLine($"ServiceRegistry: {serviceType} has an unsuitable ctor: {constructor}");
+
+                    foreach (var t in constructor
+                        .GetParameters()
+                        .Select(p => p.ParameterType)
+                        .Where(t => !IsSupportedConstructorArgumentType(t))
+                        .ToList())
+                    {
+                        Debug.WriteLine($"  > Unsupported argument type: {t}");
+                    }
+#endif
+
+                    //
+                    // There is at least one parameter that we do not
+                    // have a suitable service for.
+                    //
+                }
             }
 
             throw new UnknownServiceException(

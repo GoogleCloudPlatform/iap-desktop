@@ -48,12 +48,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         private readonly IConnectionSettingsService settingsService;
         private readonly IProjectModelService projectModelService;
 
-        public HtmlPageGenerator(IServiceProvider serviceProvider)
+        public HtmlPageGenerator(
+            IConnectionSettingsService settingsService, 
+            IProjectModelService projectModelService,
+            IProjectExplorer projectExplorer)
         {
-            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
-            this.projectModelService = serviceProvider.GetService<IProjectModelService>();
+            this.settingsService = settingsService;
+            this.projectModelService = projectModelService;
 
-            var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectModelNode>(
                     "Generate HTML page",

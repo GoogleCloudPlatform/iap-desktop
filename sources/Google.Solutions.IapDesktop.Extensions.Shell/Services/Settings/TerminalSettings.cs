@@ -51,11 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public TerminalSettingsRepository(Profile profile)
             : this(profile.SettingsKey.CreateSubKey("Terminal"))
         {
-        }
-
-        public TerminalSettingsRepository(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<Profile>())
-        {
+            profile.ThrowIfNull(nameof(profile));
         }
 
         protected override TerminalSettings LoadSettings(RegistryKey key)

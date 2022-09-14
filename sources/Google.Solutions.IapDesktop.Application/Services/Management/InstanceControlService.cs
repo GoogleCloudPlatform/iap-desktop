@@ -55,13 +55,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Management
             this.eventService = eventService;
         }
 
-        public InstanceControlService(IServiceProvider serviceProvider)
-            : this(
-                  serviceProvider.GetService<IComputeEngineAdapter>(),
-                  serviceProvider.GetService<IEventService>())
-        {
-        }
-
         //---------------------------------------------------------------------
         // InstanceControlService.
         //---------------------------------------------------------------------

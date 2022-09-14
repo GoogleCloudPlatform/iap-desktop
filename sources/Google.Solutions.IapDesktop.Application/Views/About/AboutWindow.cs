@@ -38,11 +38,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
 
         public static Version ProgramVersion => typeof(AboutWindow).Assembly.GetName().Version;
 
-        public AboutWindow(IServiceProvider serviceProvider)
+        public AboutWindow(IUpdateService updateService)
         {
             InitializeComponent();
 
-            var updateService = serviceProvider.GetService<IUpdateService>();
             this.infoLabel.Text = $"IAP Desktop\nVersion {updateService.InstalledVersion}\n.NET {ClrVersion.Version}";
             this.copyrightLabel.Text = $"\u00a9 2019-{DateTime.Now.Year} Google LLC";
             this.authorLink.Text = AuthorText;

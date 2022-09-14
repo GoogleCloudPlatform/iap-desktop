@@ -105,11 +105,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             this.computeEngineAdapter = computeEngineAdapter;
         }
 
-        public WindowsCredentialService(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IComputeEngineAdapter>())
-        {
-        }
-
         //---------------------------------------------------------------------
         // IWindowsCredentialService.
         //---------------------------------------------------------------------

@@ -139,11 +139,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
         private ProjectExplorerViewModel CreateViewModel()
         {
-            var serviceRegistry = new ServiceRegistry();
-            serviceRegistry.AddSingleton<IProjectRepository>(this.projectRepository);
-            serviceRegistry.AddSingleton(this.computeEngineAdapterMock.Object);
-            serviceRegistry.AddSingleton(this.resourceManagerAdapterMock.Object);
-            serviceRegistry.AddMock<IEventService>();
+            var modelService = new ProjectModelService(
+                this.computeEngineAdapterMock.AsService(),
+                this.resourceManagerAdapterMock.AsService(),
+                this.projectRepository,
+                new Mock<IEventService>().Object);
 
             return new ProjectExplorerViewModel(
                 new Control(),
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 new SynchrounousJobService(),
                 this.eventServiceMock.Object,
                 this.sessionBrokerMock.Object,
-                new ProjectModelService(serviceRegistry),
+                modelService,
                 this.cloudConsoleServiceMock.Object);
         }
 
