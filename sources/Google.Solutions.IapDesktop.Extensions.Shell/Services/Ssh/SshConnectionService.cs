@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
@@ -66,18 +67,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly SshSettingsRepository sshSettingsRepository;
         private readonly IProjectModelService projectModelService;
 
-        public SshConnectionService(IServiceProvider serviceProvider)
+        public SshConnectionService(
+            IWin32Window window,
+            IAuthorizationSource authorizationSource,
+            IProjectModelService projectModelService,
+            ISshTerminalSessionBroker sessionBroker,
+            ITunnelBrokerService tunnelBroker,
+            IConnectionSettingsService settingsService,
+            IKeyAuthorizationService authorizedKeyService,
+            IKeyStoreAdapter keyStoreAdapter,
+            SshSettingsRepository sshSettingsRepository,
+            IJobService jobService)
         {
-            this.jobService = serviceProvider.GetService<IJobService>();
-            this.sessionBroker = serviceProvider.GetService<ISshTerminalSessionBroker>();
-            this.tunnelBroker = serviceProvider.GetService<ITunnelBrokerService>();
-            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
-            this.authorizedKeyService = serviceProvider.GetService<IKeyAuthorizationService>();
-            this.keyStoreAdapter = serviceProvider.GetService<IKeyStoreAdapter>();
-            this.authorizationSource = serviceProvider.GetService<IAuthorizationSource>();
-            this.sshSettingsRepository = serviceProvider.GetService<SshSettingsRepository>();
-            this.projectModelService = serviceProvider.GetService<IProjectModelService>();
-            this.window = serviceProvider.GetService<IMainForm>().Window;
+            this.window = window.ThrowIfNull(nameof(window));
+            this.authorizationSource = authorizationSource.ThrowIfNull(nameof(authorizationSource));
+            this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
+            this.sessionBroker = sessionBroker.ThrowIfNull(nameof(sessionBroker));
+            this.tunnelBroker = tunnelBroker.ThrowIfNull(nameof(tunnelBroker));
+            this.settingsService = settingsService.ThrowIfNull(nameof(settingsService));
+            this.authorizedKeyService = authorizedKeyService.ThrowIfNull(nameof(authorizedKeyService));
+            this.keyStoreAdapter = keyStoreAdapter.ThrowIfNull(nameof(keyStoreAdapter));
+            this.sshSettingsRepository = sshSettingsRepository.ThrowIfNull(nameof(sshSettingsRepository));
+            this.jobService = jobService.ThrowIfNull(nameof(jobService));
         }
 
         //---------------------------------------------------------------------
