@@ -71,7 +71,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             IDeviceEnrollment deviceEnrollment)
         {
             credential.ThrowIfNull(nameof(credential));
-            deviceEnrollment.ThrowIfNull(nameof(deviceEnrollment));
 
             this.service = new CloudResourceManagerService(
                 ClientServiceFactory.ForMtlsEndpoint(
