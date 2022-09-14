@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         private class ServiceWithSatisfiedConstructor
         {
             public ServiceWithSatisfiedConstructor(
-                ServiceWithDefaultConstructor obj,
+                Service<ServiceWithDefaultConstructor> obj,
                 ServiceWithServiceProviderConstructor obj2)
             {
                 Assert.IsNotNull(obj);

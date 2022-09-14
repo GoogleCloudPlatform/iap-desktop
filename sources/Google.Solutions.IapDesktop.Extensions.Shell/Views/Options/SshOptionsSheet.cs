@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -43,7 +44,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         public SshOptionsSheet(
             SshSettingsRepository settingsRepository)
         {
-            this.viewModel = new SshOptionsViewModel(settingsRepository);
+            this.viewModel = new SshOptionsViewModel(
+                settingsRepository.ThrowIfNull(nameof(settingsRepository)));
 
             InitializeComponent();
 
@@ -91,11 +93,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 viewModel,
                 m => m.IsPropagateLocaleEnabled,
                 this.Container);
-        }
-
-        public SshOptionsSheet(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<SshSettingsRepository>())
-        {
         }
 
         //---------------------------------------------------------------------

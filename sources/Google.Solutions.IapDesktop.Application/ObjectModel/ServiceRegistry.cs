@@ -108,8 +108,19 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 if (constructor
                     .GetParameters()
                     .Select(p => p.ParameterType)
-                    .All(t => t != serviceType &&      // Prevent recursion
-                              IsServiceRegistered(t)))
+                    .All(t => 
+                        // Don't allow recursion
+                        t != serviceType &&
+
+                        // Service must be registered
+                        (IsServiceRegistered(t) ||
+
+                        // If it's a Service<T>, then T must be registered.
+                        (t.IsGenericType &&
+                         t.GetGenericTypeDefinition() == typeof(Service<>) &&
+                         t.GenericTypeArguments.Length == 1 &&
+                         IsServiceRegistered(t.GenericTypeArguments[0])
+                        ))))
                 {
                     // We have services for all parameters.
                     var parameterValues = constructor
