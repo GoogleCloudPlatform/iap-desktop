@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
+using Google.Solutions.Mvvm.Cache;
 using Google.Solutions.Mvvm.Commands;
 using System;
 using System.Diagnostics;

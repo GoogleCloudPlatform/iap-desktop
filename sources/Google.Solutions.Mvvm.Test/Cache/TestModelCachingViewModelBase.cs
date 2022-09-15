@@ -19,16 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Cache;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
+namespace Google.Solutions.Mvvm.Test.Cache
 {
     [TestFixture]
-    public class TestModelCachingViewModelBase : ApplicationFixtureBase
+    public class TestModelCachingViewModelBase
     {
         private class SampleViewModel : ModelCachingViewModelBase<string, string>
         {

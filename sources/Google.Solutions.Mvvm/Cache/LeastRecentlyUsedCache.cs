@@ -23,12 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Mvvm.Cache
 {
     /// <summary>
     /// Non-threadsafe, simple implementation of a LRU cache.
     /// </summary>
-    public class LeastRecentlyUsedCache<K, V>
+    internal class LeastRecentlyUsedCache<K, V>
     {
         private readonly int capacity;
         private readonly LinkedList<KeyValuePair<K, V>> lruList = new LinkedList<KeyValuePair<K, V>>();
