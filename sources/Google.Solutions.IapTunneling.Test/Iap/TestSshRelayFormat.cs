@@ -88,6 +88,36 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         public class ConnectSuccessSid : IapFixtureBase
         {
             [Test]
+            public void WhenBufferSufficient_ThenEncodeSucceeds()
+            {
+                var message = new byte[9];
+
+                var bytesWritten = SshRelayFormat.ConnectSuccessSid.Encode(message, "Sid");
+
+                Assert.AreEqual(9, bytesWritten);
+                CollectionAssert.AreEquivalent(
+                    new byte[]
+                    {
+                    0, 1,
+                    0, 0, 0, 3,
+                    (byte)'S', (byte)'i', (byte)'d'
+                    },
+                    message);
+
+                SshRelayFormat.ConnectSuccessSid.Decode(message, out var decodedSid);
+                Assert.AreEqual("Sid", decodedSid);
+            }
+
+            [Test]
+            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            {
+                var message = new byte[8];
+
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.ConnectSuccessSid.Encode(message, "Sid"));
+            }
+
+            [Test]
             public void WhenMessageComplete_ThenDecodeReturnsSid()
             {
                 var message = new byte[] {
@@ -123,6 +153,35 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [TestFixture]
         public class ReconnectAck : IapFixtureBase
         {
+            [Test]
+            public void WhenBufferSufficient_ThenEncodeSucceeds()
+            {
+                var message = new byte[10];
+
+                var bytesWritten = SshRelayFormat.ReconnectAck.Encode(message, 42);
+
+                Assert.AreEqual(10, bytesWritten);
+                CollectionAssert.AreEquivalent(
+                    new byte[]
+                    {
+                    0, 2,
+                    0, 0, 0, 0, 0, 0, 0, 42,
+                    },
+                    message);
+
+                SshRelayFormat.ReconnectAck.Decode(message, out var ack);
+                Assert.AreEqual(42, ack);
+            }
+
+            [Test]
+            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            {
+                var message = new byte[9];
+
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.ReconnectAck.Encode(message, 42));
+            }
+
             [Test]
             public void WhenMessageComplete_ThenDecodeReturnsAck()
             {

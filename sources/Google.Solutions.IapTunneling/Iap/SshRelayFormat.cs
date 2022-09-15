@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -92,6 +93,23 @@ namespace Google.Solutions.IapTunneling.Iap
             // 06-*         : SID
             //
 
+            public static uint Encode(
+                byte[] messageBuffer,
+                string sid)
+            {
+                sid.ThrowIfNullOrEmpty(nameof(sid));
+
+                var sidBytes = Encoding.ASCII.GetBytes(sid);
+                var requiredSize = sizeof(ushort) + sizeof(uint) + (uint)sidBytes.Length;
+                ThrowIfBufferSmallerThan(messageBuffer, requiredSize);
+
+                BigEndian.EncodeUInt16((ushort)MessageTag.CONNECT_SUCCESS_SID, messageBuffer, 0);
+                BigEndian.EncodeUInt32((uint)sidBytes.Length, messageBuffer, 2);
+                Array.Copy(sidBytes, 0, messageBuffer, 6, sidBytes.Length);
+
+                return requiredSize;
+            }
+
             public static uint Decode(
                 byte[] messageBuffer,
                 out string sid)
@@ -104,7 +122,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
                 ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint) + arrayLength);
 
-                sid = new ASCIIEncoding().GetString(
+                sid = Encoding.ASCII.GetString(
                     messageBuffer,
                     6,
                     (int)arrayLength);
@@ -119,6 +137,18 @@ namespace Google.Solutions.IapTunneling.Iap
             // 00-01 (len=2): Tag
             // 02-0A (len=8): ACK
             //
+            public static uint Encode(
+                byte[] messageBuffer,
+                ulong ack)
+            {
+                var requiredSize = (uint)sizeof(ushort) + sizeof(ulong);
+                ThrowIfBufferSmallerThan(messageBuffer, requiredSize);
+
+                BigEndian.EncodeUInt16((ushort)MessageTag.RECONNECT_SUCCESS_ACK, messageBuffer, 0);
+                BigEndian.EncodeUInt64((uint)ack, messageBuffer, 2);
+
+                return requiredSize;
+            }
 
             public static uint Decode(
                 byte[] messageBuffer,
