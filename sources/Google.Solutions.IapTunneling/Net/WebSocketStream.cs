@@ -32,8 +32,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapTunneling.Net
 {
     /// <summary>
-    /// Stream that allows sending and receiving WebSocket messages at once
-    /// so that the client does not have to deal with fragmentation.
+    /// Stream that allows sending and receiving WebSocket frames.
     /// </summary>
     public class WebSocketStream : SingleReaderSingleWriterStream
     {
@@ -125,6 +124,10 @@ namespace Google.Solutions.IapTunneling.Net
             }
         }
 
+        /// <summary>
+        /// Read until (a) the buffer is full or (b) the end of
+        /// the frame has been reached.
+        /// </summary>
         protected override async Task<int> ProtectedReadAsync(
             byte[] buffer,
             int offset,
@@ -133,8 +136,10 @@ namespace Google.Solutions.IapTunneling.Net
         {
             VerifyConnectionNotClosedAlready();
 
+            //
             // Check buffer size. Zero-sized buffers are allowed for 
             // connection probing.
+            //
             if (count > 0 && count < this.MinReadSize)
             {
                 throw new IndexOutOfRangeException($"Read buffer too small, must be at least {this.MinReadSize}");
@@ -156,11 +161,12 @@ namespace Google.Solutions.IapTunneling.Net
                         this.socket.State);
 
                     result = await this.socket.ReceiveAsync(
-                        new ArraySegment<byte>(
-                            buffer,
-                            offset + bytesReceived,
-                            count - bytesReceived),
-                        cancellationToken).ConfigureAwait(false);
+                            new ArraySegment<byte>(
+                                buffer,
+                                offset + bytesReceived,
+                                count - bytesReceived),
+                            cancellationToken)
+                        .ConfigureAwait(false);
                     bytesReceived += result.Count;
 
                     IapTraceSources.Default.TraceVerbose(
@@ -182,9 +188,11 @@ namespace Google.Solutions.IapTunneling.Net
                         result.CloseStatus.Value,
                         result.CloseStatusDescription);
 
+                    //
                     // In case of a normal close, it is preferable to simply return 0. But
                     // if the connection was closed abnormally, the client needs to know
                     // the details.
+                    //
                     if (result.CloseStatus.Value != WebSocketCloseStatus.NormalClosure)
                     {
                         throw this.closeByServerReceived;
@@ -248,6 +256,7 @@ namespace Google.Solutions.IapTunneling.Net
                 throw this.closeByServerReceived;
             }
         }
+
         public override async Task ProtectedCloseAsync(CancellationToken cancellationToken)
         {
             VerifyConnectionNotClosedAlready();
@@ -265,7 +274,9 @@ namespace Google.Solutions.IapTunneling.Net
                 IsWebSocketError(e, WebSocketError.InvalidState) ||
                 IsSocketError(e, SocketError.ConnectionAborted))
             {
+                //
                 // Server already closed the connection - nevermind then.
+                //
             }
         }
 
