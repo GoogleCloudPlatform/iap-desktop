@@ -22,7 +22,7 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Mvvm.Controls
 {
     public static class HtmlClipboardFormat
     {

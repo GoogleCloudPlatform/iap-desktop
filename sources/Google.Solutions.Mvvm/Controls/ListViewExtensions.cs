@@ -19,15 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Properties;
-using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Mvvm.Properties;
 using System.Linq;
 using System.Text;
 using System.Web;
 using System.Windows.Forms;
 using static System.Windows.Forms.ListViewItem;
 
-namespace Google.Solutions.IapDesktop.Application.Controls
+namespace Google.Solutions.Mvvm.Controls
 {
     public static class ListViewExtensions
     {

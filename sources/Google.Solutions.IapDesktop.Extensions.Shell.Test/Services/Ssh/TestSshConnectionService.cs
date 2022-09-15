@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             Assert.IsNotNull(session);
 
-            this.sessionBroker.Verify(b => b.TryActivate(
+            sessionBroker.Verify(b => b.TryActivate(
                 It.Is<InstanceLocator>(l => l == SampleLocator)), Times.Once);
         }
 

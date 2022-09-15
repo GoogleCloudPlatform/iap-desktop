@@ -19,17 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Controls;
 using NUnit.Framework;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Controls
+namespace Google.Solutions.Mvvm.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestListViewExtensions : ApplicationFixtureBase
+    public class TestListViewExtensions 
     {
         private ListView listView;
         private Form form;

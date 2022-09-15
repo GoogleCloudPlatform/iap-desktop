@@ -25,7 +25,7 @@ using System.Windows.Forms;
 
 #pragma warning disable CA1806 // Do not ignore method results
 
-namespace Google.Solutions.IapDesktop.Application.Controls
+namespace Google.Solutions.Mvvm.Controls
 {
     public static class RichTextBoxExtensions
     {

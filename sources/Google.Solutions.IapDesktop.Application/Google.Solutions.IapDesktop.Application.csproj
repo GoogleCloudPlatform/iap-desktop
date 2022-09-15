@@ -84,30 +84,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\BadgeIcon.cs" />
-    <Compile Include="Controls\BindableListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\BindableTreeView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\ControlExtensions.cs" />
     <Compile Include="Controls\FontExtensions.cs" />
-    <Compile Include="Controls\ListViewExtensions.cs" />
     <Compile Include="Controls\PropertyGridExtensions.cs" />
-    <Compile Include="Controls\RichTextBoxExtensions.cs" />
     <Compile Include="Controls\ScreenPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ScreenPicker.Designer.cs">
       <DependentUpon>ScreenPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\SearchableList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SearchableList.Designer.cs">
-      <DependentUpon>SearchableList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\TextBoxExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Host\CommandLineOptions.cs" />
     <Compile Include="Host\Profile.cs" />
@@ -168,7 +152,6 @@
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
-    <Compile Include="Util\ClipboardUtil.cs" />
     <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Data\IHelpTopic.cs" />
@@ -197,9 +180,6 @@
     </Compile>
     <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
-    <Compile Include="Controls\FlatListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Views\Diagnostics\DebugFullScreenPane.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -232,7 +212,6 @@
     <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.Designer.cs">
       <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Util\HtmlClipboardFormat.cs" />
     <Compile Include="Data\IIapUrlHandler.cs" />
     <Compile Include="Views\Dialog\CredentialDialog.cs" />
     <Compile Include="Views\Dialog\OperationProgressDialog.cs" />
@@ -373,9 +352,6 @@
     <None Include="Views\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\SearchableList.resx">
-      <DependentUpon>SearchableList.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
