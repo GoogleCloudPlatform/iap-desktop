@@ -30,10 +30,11 @@ namespace Google.Solutions.IapTunneling.Iap
     /// </summary>
     internal static class SshRelayFormat
     {
-        //
-        // The protocol defines 16K as the max.
-        //
-        public const uint MaxArrayLength = 16 * 1024;
+        /// <summary>
+        /// Maximum size of arrays. Defined as 16K by the protocol
+        /// specification.
+        /// </summary>
+        private const uint MaxArrayLength = 16 * 1024;
 
         public const uint MaxDataPayloadLength = MaxArrayLength;
 
@@ -56,23 +57,34 @@ namespace Google.Solutions.IapTunneling.Iap
         // Reading.
         //---------------------------------------------------------------------
 
-        public static uint DecodeTag(
-            byte[] messageBuffer,
-            out MessageTag tag)
+        public static class Tag
         {
             //
             // 00-01 (len=2): Tag
             //
 
-            ThrowIfBufferSmallerThan(messageBuffer, sizeof(UInt16));
+            public static uint Encode(
+                byte[] messageBuffer,
+                MessageTag tag)
+            {
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort));
 
-            tag = (MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0);
-            return sizeof(MessageTag);
+                BigEndian.EncodeUInt16((ushort)tag, messageBuffer, 0);
+                return sizeof(MessageTag);
+            }
+
+            public static uint Decode(
+                byte[] messageBuffer,
+                out MessageTag tag)
+            {
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort));
+
+                tag = (MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0);
+                return sizeof(MessageTag);
+            }
         }
 
-        public static uint DecodeConnectSuccessSid(
-            byte[] messageBuffer,
-            out string sid)
+        public static class ConnectSuccessSid
         {
             //
             // 00-01 (len=2): Tag
@@ -80,146 +92,144 @@ namespace Google.Solutions.IapTunneling.Iap
             // 06-*         : SID
             //
 
-            ThrowIfBufferSmallerThan(messageBuffer, sizeof(UInt16) + sizeof(UInt32));
-            Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.CONNECT_SUCCESS_SID);
+            public static uint Decode(
+                byte[] messageBuffer,
+                out string sid)
+            {
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint));
+                Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.CONNECT_SUCCESS_SID);
 
-            var arrayLength = BigEndian.DecodeUInt32(messageBuffer, 2);
-            Debug.Assert(arrayLength <= MaxArrayLength);
+                var arrayLength = BigEndian.DecodeUInt32(messageBuffer, 2);
+                Debug.Assert(arrayLength <= MaxArrayLength);
 
-            ThrowIfBufferSmallerThan(messageBuffer, sizeof(UInt16) + sizeof(UInt32) + arrayLength);
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint) + arrayLength);
 
-            sid = new ASCIIEncoding().GetString(
-                messageBuffer,
-                6,
-                (int)arrayLength);
+                sid = new ASCIIEncoding().GetString(
+                    messageBuffer,
+                    6,
+                    (int)arrayLength);
 
-            return sizeof(UInt16) + sizeof(UInt32) + arrayLength;
+                return sizeof(ushort) + sizeof(uint) + arrayLength;
+            }
         }
 
-        public static uint DecodeReconnectAck(
-            byte[] messageBuffer,
-            out ulong ack)
+        public class ReconnectAck
         {
             //
             // 00-01 (len=2): Tag
             // 02-0A (len=8): ACK
             //
 
-            ThrowIfBufferSmallerThan(messageBuffer, sizeof(UInt16) + sizeof(UInt64));
-            Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.RECONNECT_SUCCESS_ACK);
+            public static uint Decode(
+                byte[] messageBuffer,
+                out ulong ack)
+            {
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(ulong));
+                Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.RECONNECT_SUCCESS_ACK);
 
-            ack = BigEndian.DecodeUInt64(messageBuffer, 2);
+                ack = BigEndian.DecodeUInt64(messageBuffer, 2);
 
-            return sizeof(UInt16) + sizeof(UInt64);
+                return sizeof(ushort) + sizeof(ulong);
+            }
         }
 
-        public static uint DecodeAck(
-            byte[] messageBuffer,
-            out ulong ack)
+        public class Ack
         {
             //
             // 00-01 (len=2): Tag
             // 02-0A (len=8): ACK
             //
 
-            ThrowIfBufferSmallerThan(messageBuffer, sizeof(UInt16) + sizeof(UInt64));
-            Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.ACK);
+            public static uint Encode(
+                byte[] messageBuffer,
+                ulong ack)
+            {
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(ulong));
 
-            ack = BigEndian.DecodeUInt64(messageBuffer, 2);
+                BigEndian.EncodeUInt16((ushort)MessageTag.ACK, messageBuffer, 0);
+                BigEndian.EncodeUInt64(ack, messageBuffer, 2);
 
-            return sizeof(UInt16) + sizeof(UInt64);
+                return sizeof(ushort) + sizeof(ulong);
+            }
+
+            public static uint Decode(
+                byte[] messageBuffer,
+                out ulong ack)
+            {
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(ulong));
+                Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.ACK);
+
+                ack = BigEndian.DecodeUInt64(messageBuffer, 2);
+
+                return sizeof(ushort) + sizeof(ulong);
+            }
         }
 
-        public static uint DecodeData(
-            byte[] messageBuffer,
-            byte[] data,
-            uint dataOffset,
-            uint dataLength)
+        public class Data
         {
             //
             // 00-01 (len=2): Tag
             // 02-05 (len=4): Array length
             // 06-*         : Data
             //
-
-            ThrowIfBufferSmallerThan(messageBuffer, sizeof(UInt16) + sizeof(UInt32) + 1);
-            Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.DATA);
-
-            var arrayLength = BigEndian.DecodeUInt32(messageBuffer, 2);
-            Debug.Assert(arrayLength <= MaxArrayLength);
-            Debug.Assert(arrayLength > 0);
-
-            ThrowIfBufferSmallerThan(messageBuffer, sizeof(UInt16) + sizeof(UInt32) + arrayLength);
-
-            if (arrayLength > dataLength || dataLength + dataOffset > data.Length)
+            public static uint Encode(
+                byte[] messageBuffer,
+                byte[] data,
+                uint dataOffset,
+                uint dataLength)
             {
-                throw new IndexOutOfRangeException("Read buffer is too small");
+                if (dataLength > MaxArrayLength)
+                {
+                    throw new ArgumentException($"At most {MaxArrayLength} bytes can be sent at once");
+                }
+                else if (dataLength == 0)
+                {
+                    throw new ArgumentException($"At least 1 byte must be sent at once");
+                }
+
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint) + dataLength);
+
+                BigEndian.EncodeUInt16((ushort)MessageTag.DATA, messageBuffer, 0);
+                BigEndian.EncodeUInt32(dataLength, messageBuffer, 2);
+                Array.Copy(
+                    data,
+                    (int)dataOffset,
+                    messageBuffer,
+                    6,
+                    dataLength);
+
+                return sizeof(ushort) + sizeof(uint) + dataLength;
             }
 
-            Array.Copy(
-                messageBuffer,
-                6,
-                data,
-                dataOffset,
-                (int)arrayLength);
-
-            return sizeof(UInt16) + sizeof(UInt32) + arrayLength;
-        }
-
-        //---------------------------------------------------------------------
-        // Writing.
-        //---------------------------------------------------------------------
-
-        public static uint EncodeAck(
-            byte[] messageBuffer,
-            ulong ack)
-        {
-            //
-            // 00-01 (len=2): Tag
-            // 02-0A (len=8): ACK
-            //
-
-            ThrowIfBufferSmallerThan(messageBuffer, sizeof(UInt16) + sizeof(UInt64));
-
-            BigEndian.EncodeUInt16((ushort)MessageTag.ACK, messageBuffer, 0);
-            BigEndian.EncodeUInt64(ack, messageBuffer, 2);
-
-            return sizeof(UInt16) + sizeof(UInt64);
-        }
-
-        public static uint EncodeData(
-            byte[] messageBuffer,
-            byte[] data,
-            uint dataOffset,
-            uint dataLength)
-        {
-            //
-            // 00-01 (len=2): Tag
-            // 02-05 (len=4): Array length
-            // 06-*         : Data
-            //
-
-            if (dataLength > MaxArrayLength)
+            public static uint Decode(
+                byte[] messageBuffer,
+                byte[] data,
+                uint dataOffset,
+                uint dataLength)
             {
-                throw new ArgumentException($"At most {MaxArrayLength} bytes can be sent at once");
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint) + 1);
+                Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.DATA);
+
+                var arrayLength = BigEndian.DecodeUInt32(messageBuffer, 2);
+                Debug.Assert(arrayLength <= MaxArrayLength);
+                Debug.Assert(arrayLength > 0);
+
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint) + arrayLength);
+
+                if (arrayLength > dataLength || dataLength + dataOffset > data.Length)
+                {
+                    throw new IndexOutOfRangeException("Read buffer is too small");
+                }
+
+                Array.Copy(
+                    messageBuffer,
+                    6,
+                    data,
+                    dataOffset,
+                    (int)arrayLength);
+
+                return sizeof(ushort) + sizeof(uint) + arrayLength;
             }
-            else if (dataLength == 0)
-            {
-                throw new ArgumentException($"At least 1 byte must be sent at once");
-            }
-
-            ThrowIfBufferSmallerThan(messageBuffer, sizeof(UInt16) + sizeof(UInt32) + dataLength);
-
-            BigEndian.EncodeUInt16((ushort)MessageTag.DATA, messageBuffer, 0);
-            BigEndian.EncodeUInt32(dataLength, messageBuffer, 2);
-            Array.Copy(
-                data,
-                (int)dataOffset,
-                messageBuffer,
-                6,
-                dataLength);
-
-            return sizeof(UInt16) + sizeof(UInt32) + dataLength;
         }
     }
 }

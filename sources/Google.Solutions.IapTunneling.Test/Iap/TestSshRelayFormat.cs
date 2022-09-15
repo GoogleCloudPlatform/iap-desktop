@@ -25,296 +25,333 @@ using System;
 
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
-    [TestFixture]
-    public class TestSshRelayFormat : IapFixtureBase
+    public class TestSshRelayFormat
     {
         //---------------------------------------------------------------------
-        // DecodeTag.
+        // Tag.
         //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenMessageComplete_ThenDecodeTagReturnsTag()
+        [TestFixture]
+        public class Tag : IapFixtureBase
         {
-            var message = new byte[] { 0, 4, 99, 99, 99, 99, 99 };
+            [Test]
+            public void WhenBufferSufficient_ThenEncodeSucceeds()
+            {
+                var message = new byte[2];
 
-            var bytesRead = SshRelayFormat.DecodeTag(message, out var tag);
+                var bytesWritten = SshRelayFormat.Tag.Encode(message, MessageTag.ACK);
 
-            Assert.AreEqual(2, bytesRead);
-            Assert.AreEqual(MessageTag.DATA, tag);
-        }
+                Assert.AreEqual(2, bytesWritten);
+                CollectionAssert.AreEquivalent(
+                    new byte[]
+                    {
+                    0, 7
+                    },
+                    message);
+            }
 
-        [Test]
-        public void WhenMessageTruncated_ThenDecodeTagThrowsException()
-        {
-            var message = new byte[] { 0 };
+            [Test]
+            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            {
+                var message = new byte[1];
 
-            Assert.Throws<ArgumentException>(
-                () => SshRelayFormat.DecodeTag(message, out var tag));
-        }
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.Tag.Encode(message, MessageTag.ACK));
+            }
 
-        //---------------------------------------------------------------------
-        // DecodeConnectSuccessSid.
-        //---------------------------------------------------------------------
+            [Test]
+            public void WhenMessageComplete_ThenDecodeSucceeds()
+            {
+                var message = new byte[] { 0, 4, 99, 99, 99, 99, 99 };
 
-        [Test]
-        public void WhenMessageComplete_ThenDecodeConnectSuccessSidReturnsSid()
-        {
-            var message = new byte[] {
-                0, 1, 
-                0, 0, 0, 3,
-                (byte)'S', (byte)'i', (byte)'d'
-            };
+                var bytesRead = SshRelayFormat.Tag.Decode(message, out var tag);
 
-            var bytesRead = SshRelayFormat.DecodeConnectSuccessSid(message, out var sid);
+                Assert.AreEqual(2, bytesRead);
+                Assert.AreEqual(MessageTag.DATA, tag);
+            }
 
-            Assert.AreEqual(9, bytesRead);
-            Assert.AreEqual("Sid", sid);
-        }
+            [Test]
+            public void WhenMessageTruncated_ThenDecodeThrowsException()
+            {
+                var message = new byte[] { 0 };
 
-        [Test]
-        public void WhenMessageTruncated_ThenDecodeConnectSuccessSidThrowsException()
-        {
-            var message = new byte[] {
-                0, 1,
-                0, 0, 0, 4,
-                (byte)'S', (byte)'i', (byte)'d'
-            };
-
-            Assert.Throws<ArgumentException>(
-                () => SshRelayFormat.DecodeConnectSuccessSid(message, out var sid));
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.Tag.Decode(message, out var tag));
+            }
         }
 
         //---------------------------------------------------------------------
-        // DecodeReconnectAck.
+        // ConnectSuccessSid.
         //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenMessageComplete_ThenDecodeReconnectAckReturnsAck()
+        [TestFixture]
+        public class ConnectSuccessSid : IapFixtureBase
         {
-            var message = new byte[] {
-                0, 2,
-                0, 0, 0, 0, 0, 0, 0, 3
-            };
+            [Test]
+            public void WhenMessageComplete_ThenDecodeReturnsSid()
+            {
+                var message = new byte[] {
+                    0, 1,
+                    0, 0, 0, 3,
+                    (byte)'S', (byte)'i', (byte)'d'
+                };
 
-            var bytesRead = SshRelayFormat.DecodeReconnectAck(message, out var ack);
+                var bytesRead = SshRelayFormat.ConnectSuccessSid.Decode(message, out var sid);
 
-            Assert.AreEqual(10, bytesRead);
-            Assert.AreEqual(3, ack);
-        }
+                Assert.AreEqual(9, bytesRead);
+                Assert.AreEqual("Sid", sid);
+            }
 
-        [Test]
-        public void WhenMessageTruncated_ThenDecodeReconnectAckThrowsException()
-        {
-            var message = new byte[] {
-                0, 1,
-                1, 2, 3, 4, 5, 6, 7
-            };
+            [Test]
+            public void WhenMessageTruncated_ThenDecodeThrowsException()
+            {
+                var message = new byte[] {
+                    0, 1,
+                    0, 0, 0, 4,
+                    (byte)'S', (byte)'i', (byte)'d'
+                };
 
-            Assert.Throws<ArgumentException>(
-                () => SshRelayFormat.DecodeReconnectAck(message, out var ack));
-        }
-
-        //---------------------------------------------------------------------
-        // DecodeReconnectAck.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenMessageComplete_ThenDecodeAckReturnsAck()
-        {
-            var message = new byte[] {
-                0, 7,
-                0, 0, 0, 0, 0, 0, 0, 3
-            };
-
-            var bytesRead = SshRelayFormat.DecodeAck(message, out var ack);
-
-            Assert.AreEqual(10, bytesRead);
-            Assert.AreEqual(3, ack);
-        }
-
-        [Test]
-        public void WhenMessageTruncated_ThenDecodeAckThrowsException()
-        {
-            var message = new byte[] {
-                0, 7,
-                1, 2, 3, 4, 5, 6, 7
-            };
-
-            Assert.Throws<ArgumentException>(
-                () => SshRelayFormat.DecodeAck(message, out var ack));
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.ConnectSuccessSid.Decode(message, out var sid));
+            }
         }
 
         //---------------------------------------------------------------------
-        // DecodeData.
+        // ReconnectAck.
         //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenMessageComplete_ThenDecodeDataReturnsData()
+        [TestFixture]
+        public class ReconnectAck : IapFixtureBase
         {
-            var message = new byte[] {
-                0, 4,
-                0, 0, 0, 1, 
-                (byte)'D'
-            };
+            [Test]
+            public void WhenMessageComplete_ThenDecodeReturnsAck()
+            {
+                var message = new byte[] {
+                    0, 2,
+                    0, 0, 0, 0, 0, 0, 0, 3
+                };
 
-            var data = new byte[1];
-            var bytesRead = SshRelayFormat.DecodeData(message, data, 0, (uint)data.Length);
+                var bytesRead = SshRelayFormat.ReconnectAck.Decode(message, out var ack);
 
-            Assert.AreEqual(7, bytesRead);
-            Assert.AreEqual('D', data[0]);
-        }
+                Assert.AreEqual(10, bytesRead);
+                Assert.AreEqual(3, ack);
+            }
 
-        [Test]
-        public void WhenTargetIndexNotNull_ThenDecodeDataReturnsData()
-        {
-            var message = new byte[] {
-                0, 4,
-                0, 0, 0, 1,
-                (byte)'D'
-            };
+            [Test]
+            public void WhenMessageTruncated_ThenDecodeThrowsException()
+            {
+                var message = new byte[] {
+                    0, 1,
+                    1, 2, 3, 4, 5, 6, 7
+                };
 
-            var data = new byte[2];
-            var bytesRead = SshRelayFormat.DecodeData(message, data, 1, 1);
-
-            Assert.AreEqual(7, bytesRead);
-            Assert.AreEqual('D', data[1]);
-        }
-
-        [Test]
-        public void WhenBufferTooSmall_ThenDecodeDataThrowsException()
-        {
-            var message = new byte[] {
-                0, 4,
-                0, 0, 0, 2,
-                (byte)'D'
-            };
-
-            var data = new byte[1];
-
-            Assert.Throws<ArgumentException>(
-                () => SshRelayFormat.DecodeData(message, data, 1, (uint)data.Length));
-        }
-
-        [Test]
-        public void WhenBufferTooSmallForData_ThenDecodeDataThrowsException()
-        {
-            var message = new byte[] {
-                0, 4,
-                0, 0, 0, 2,
-                (byte)'D', (byte) 'a'
-            };
-
-            var data = new byte[1];
-
-            Assert.Throws<IndexOutOfRangeException>(
-                () => SshRelayFormat.DecodeData(message, data, 0, (uint)data.Length));
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.ReconnectAck.Decode(message, out var ack));
+            }
         }
 
         //---------------------------------------------------------------------
-        // EncodeAck.
+        // Ack.
         //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenBufferSufficient_ThenEncodeAckSucceeds()
+        [TestFixture]
+        public class Ack : IapFixtureBase
         {
-            var message = new byte[10];
+            [Test]
+            public void WhenBufferSufficient_ThenEncodeSucceeds()
+            {
+                var message = new byte[10];
 
-            var bytesWritten = SshRelayFormat.EncodeAck(message, 77);
+                var bytesWritten = SshRelayFormat.Ack.Encode(message, 77);
 
-            Assert.AreEqual(10, bytesWritten);
-            CollectionAssert.AreEquivalent(
-                new byte[]
-                {
+                Assert.AreEqual(10, bytesWritten);
+                CollectionAssert.AreEquivalent(
+                    new byte[]
+                    {
                     0, 7,
                     0, 0, 0, 0, 0, 0, 0, 77
-                },
-                message);
-        }
+                    },
+                    message);
+            }
 
-        [Test]
-        public void WhenBufferTooSmall_ThenEncodeAckThrowsException()
-        {
-            var message = new byte[9];
+            [Test]
+            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            {
+                var message = new byte[9];
 
-            Assert.Throws<ArgumentException>(
-                () => SshRelayFormat.EncodeAck(message, 77));
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.Ack.Encode(message, 77));
+            }
+
+            [Test]
+            public void WhenMessageComplete_ThenDecodeReturnsAck()
+            {
+                var message = new byte[] {
+                    0, 7,
+                    0, 0, 0, 0, 0, 0, 0, 3
+                };
+
+                var bytesRead = SshRelayFormat.Ack.Decode(message, out var ack);
+
+                Assert.AreEqual(10, bytesRead);
+                Assert.AreEqual(3, ack);
+            }
+
+            [Test]
+            public void WhenMessageTruncated_ThenDecodeThrowsException()
+            {
+                var message = new byte[] {
+                    0, 7,
+                    1, 2, 3, 4, 5, 6, 7
+                };
+
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.Ack.Decode(message, out var ack));
+            }
         }
 
         //---------------------------------------------------------------------
-        // EncodeData.
+        // Data.
         //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenDataIsEmpty_ThenEncodeDataThrowsException()
+        [TestFixture]
+        public class Data : IapFixtureBase
         {
-            var message = new byte[SshRelayFormat.MaxDataPayloadLength];
-            var data = new byte[0];
 
-            Assert.Throws<ArgumentException>(
-                () => SshRelayFormat.EncodeData(message, data, 0, (uint)data.Length));
-        }
+            [Test]
+            public void WhenDataIsEmpty_ThenEncodeThrowsException()
+            {
+                var message = new byte[SshRelayFormat.MaxDataPayloadLength];
+                var data = new byte[0];
 
-        [Test]
-        public void WhenDataTooLarge_ThenEncodeDataThrowsException()
-        {
-            var message = new byte[SshRelayFormat.MaxDataPayloadLength + 1];
-            var data = new byte[SshRelayFormat.MaxDataPayloadLength + 1];
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.Data.Encode(message, data, 0, (uint)data.Length));
+            }
 
-            Assert.Throws<ArgumentException>(
-                () => SshRelayFormat.EncodeData(message, data, 0, (uint)data.Length));
-        }
+            [Test]
+            public void WhenDataTooLarge_ThenEncodeThrowsException()
+            {
+                var message = new byte[SshRelayFormat.MaxDataPayloadLength + 1];
+                var data = new byte[SshRelayFormat.MaxDataPayloadLength + 1];
 
-        [Test]
-        public void WhenBufferTooSmall_ThenEncodeDataThrowsException()
-        {
-            var message = new byte[SshRelayFormat.MaxMessageSize - 1];
-            var data = new byte[SshRelayFormat.MaxDataPayloadLength];
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.Data.Encode(message, data, 0, (uint)data.Length));
+            }
 
-            Assert.Throws<ArgumentException>(
-                () => SshRelayFormat.EncodeData(message, data, 0, (uint)data.Length));
-        }
+            [Test]
+            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            {
+                var message = new byte[SshRelayFormat.MaxMessageSize - 1];
+                var data = new byte[SshRelayFormat.MaxDataPayloadLength];
 
-        [Test]
-        public void WhenDataIsMaxSize_ThenEncodeDataSucceeds()
-        {
-            var message = new byte[SshRelayFormat.MaxMessageSize];
-            var data = new byte[SshRelayFormat.MaxDataPayloadLength];
-            data[0] = (byte)'A';
-            data[SshRelayFormat.MaxDataPayloadLength - 1] = (byte)'Z';
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.Data.Encode(message, data, 0, (uint)data.Length));
+            }
 
-            var bytesWritten = SshRelayFormat.EncodeData(
-                message, 
-                data,
-                0,
-                SshRelayFormat.MaxDataPayloadLength);
+            [Test]
+            public void WhenDataIsMaxSize_ThenEncodeSucceeds()
+            {
+                var message = new byte[SshRelayFormat.MaxMessageSize];
+                var data = new byte[SshRelayFormat.MaxDataPayloadLength];
+                data[0] = (byte)'A';
+                data[SshRelayFormat.MaxDataPayloadLength - 1] = (byte)'Z';
 
-            Assert.AreEqual(SshRelayFormat.MaxMessageSize, bytesWritten);
-            Assert.AreEqual(SshRelayFormat.MaxMessageSize, bytesWritten);
-            Assert.AreEqual((byte)'Z', message[SshRelayFormat.MaxMessageSize - 1]);
-        }
+                var bytesWritten = SshRelayFormat.Data.Encode(
+                    message,
+                    data,
+                    0,
+                    SshRelayFormat.MaxDataPayloadLength);
 
-        [Test]
-        public void WhenIndexNotZero_ThenEncodeDataSucceeds()
-        {
-            var message = new byte[7];
-            var data = new byte[SshRelayFormat.MaxDataPayloadLength + 1];
-            data[SshRelayFormat.MaxDataPayloadLength] = (byte)'D';
+                Assert.AreEqual(SshRelayFormat.MaxMessageSize, bytesWritten);
+                Assert.AreEqual(SshRelayFormat.MaxMessageSize, bytesWritten);
+                Assert.AreEqual((byte)'Z', message[SshRelayFormat.MaxMessageSize - 1]);
+            }
 
-            var bytesWritten = SshRelayFormat.EncodeData(
-                message,
-                data,
-                SshRelayFormat.MaxDataPayloadLength,
-                1);
+            [Test]
+            public void WhenIndexNotZero_ThenEncodeSucceeds()
+            {
+                var message = new byte[7];
+                var data = new byte[SshRelayFormat.MaxDataPayloadLength + 1];
+                data[SshRelayFormat.MaxDataPayloadLength] = (byte)'D';
 
-            Assert.AreEqual(7, bytesWritten);
-            CollectionAssert.AreEquivalent(
-                new byte[]
-                {
+                var bytesWritten = SshRelayFormat.Data.Encode(
+                    message,
+                    data,
+                    SshRelayFormat.MaxDataPayloadLength,
+                    1);
+
+                Assert.AreEqual(7, bytesWritten);
+                CollectionAssert.AreEquivalent(
+                    new byte[]
+                    {
                     0, 4,
                     0, 0, 0, 1,
                     (byte)'D'
-                },
-                message);
+                    },
+                    message);
+            }
+
+            [Test]
+            public void WhenMessageComplete_ThenDecodeReturnsData()
+            {
+                var message = new byte[] {
+                    0, 4,
+                    0, 0, 0, 1,
+                    (byte)'D'
+                };
+
+                var data = new byte[1];
+                var bytesRead = SshRelayFormat.Data.Decode(message, data, 0, (uint)data.Length);
+
+                Assert.AreEqual(7, bytesRead);
+                Assert.AreEqual('D', data[0]);
+            }
+
+            [Test]
+            public void WhenTargetIndexNotNull_ThenDecodeReturnsData()
+            {
+                var message = new byte[] {
+                    0, 4,
+                    0, 0, 0, 1,
+                    (byte)'D'
+                };
+
+                var data = new byte[2];
+                var bytesRead = SshRelayFormat.Data.Decode(message, data, 1, 1);
+
+                Assert.AreEqual(7, bytesRead);
+                Assert.AreEqual('D', data[1]);
+            }
+
+            [Test]
+            public void WhenBufferTooSmall_ThenDecodeThrowsException()
+            {
+                var message = new byte[] {
+                    0, 4,
+                    0, 0, 0, 2,
+                    (byte)'D'
+                };
+
+                var data = new byte[1];
+
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.Data.Decode(message, data, 1, (uint)data.Length));
+            }
+
+            [Test]
+            public void WhenBufferTooSmallForData_ThenDecodeThrowsException()
+            {
+                var message = new byte[] {
+                    0, 4,
+                    0, 0, 0, 2,
+                    (byte)'D', (byte) 'a'
+                };
+
+                var data = new byte[1];
+
+                Assert.Throws<IndexOutOfRangeException>(
+                    () => SshRelayFormat.Data.Decode(message, data, 0, (uint)data.Length));
+            }
         }
     }
 }
