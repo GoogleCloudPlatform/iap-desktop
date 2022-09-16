@@ -27,8 +27,19 @@ namespace Google.Solutions.IapTunneling.Test.Net
             listener.Start();
         }
 
-        public async Task<WebSocketConnection> AcceptConnectionAsync()
+        public async Task<WebSocketConnection> ConnectAsync()
         {
+            //
+            // Begin connecting client (the server is listening already).
+            //
+            var clientSocket = new ClientWebSocket();
+            var connectTask = clientSocket.ConnectAsync(
+                this.Endpoint,
+                CancellationToken.None);
+
+            //
+            // Let server accept connection.
+            //
             var context = await listener
                 .GetContextAsync()
                 .ConfigureAwait(false);
@@ -41,9 +52,15 @@ namespace Google.Solutions.IapTunneling.Test.Net
             }
             else
             {
-                return new WebSocketConnection(await context
+                var serverSocket = await context
                     .AcceptWebSocketAsync(null)
-                    .ConfigureAwait(false));
+                    .ConfigureAwait(false);
+
+                await connectTask.ConfigureAwait(false);
+
+                return new WebSocketConnection(
+                    new ServerWebSocketConnection(serverSocket), 
+                    clientSocket);
             }
         }
 
@@ -53,30 +70,46 @@ namespace Google.Solutions.IapTunneling.Test.Net
         }
     }
 
-    
-
     internal sealed class WebSocketConnection : IDisposable
+    {
+        public ServerWebSocketConnection Server { get; }
+        public ClientWebSocket Client { get; }
+
+        public WebSocketConnection(ServerWebSocketConnection server, ClientWebSocket client)
+        {
+            this.Server = server;
+            this.Client = client;
+        }
+
+        public void Dispose()
+        {
+            this.Client.Dispose();
+            this.Server.Dispose();
+        }
+    }
+    
+    internal sealed class ServerWebSocketConnection : IDisposable
     { 
-        public HttpListenerWebSocketContext Contect { get; }
+        public HttpListenerWebSocketContext Context { get; }
 
         private void ThrowIfNotConnected()
         {
-            if (this.Contect == null)
+            if (this.Context == null)
             {
                 throw new InvalidOperationException("WebSocket not connected");
             }
         }
 
-        public WebSocketConnection(HttpListenerWebSocketContext webSocket)
+        public ServerWebSocketConnection(HttpListenerWebSocketContext webSocket)
         {
-            this.Contect = webSocket;
+            this.Context = webSocket;
         }
 
         public async Task SendBinaryFrameAsync(byte[] data)
         {
             ThrowIfNotConnected();
 
-            await this.Contect.WebSocket.SendAsync(
+            await this.Context.WebSocket.SendAsync(
                     new ArraySegment<byte>(data),
                     WebSocketMessageType.Binary,
                     true,
@@ -88,7 +121,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
         {
             ThrowIfNotConnected();
 
-            await this.Contect.WebSocket.ReceiveAsync(
+            await this.Context.WebSocket.ReceiveAsync(
                     new ArraySegment<byte>(buffer),
                     CancellationToken.None)
                 .ConfigureAwait(false);
@@ -98,7 +131,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
         {
             ThrowIfNotConnected();
 
-            await this.Contect.WebSocket.CloseOutputAsync(
+            await this.Context.WebSocket.CloseOutputAsync(
                     status,
                     status.ToString(),
                     CancellationToken.None)
@@ -109,7 +142,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
         {
             ThrowIfNotConnected();
 
-            await this.Contect.WebSocket.CloseAsync(
+            await this.Context.WebSocket.CloseAsync(
                     status,
                     status.ToString(),
                     CancellationToken.None)
@@ -118,7 +151,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
 
         public void Dispose()
         {
-            this.Contect.WebSocket.Dispose();
+            this.Context.WebSocket.Dispose();
         }
     }
 }

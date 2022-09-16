@@ -40,7 +40,6 @@ namespace Google.Solutions.IapTunneling.Net
         private readonly int maxReadMessageSize;
 
         private volatile bool closeByClientInitiated = false;
-        private volatile WebSocketStreamClosedByServerException closeByServerReceived = null;
 
         public bool IsCloseInitiated => this.closeByClientInitiated;
 
@@ -117,11 +116,6 @@ namespace Google.Solutions.IapTunneling.Net
                 // Do not even try to send, it will not succeed anyway.
                 throw new WebSocketStreamClosedByClientException();
             }
-            else if (this.closeByServerReceived != null)
-            {
-                // Do not try to read, it cannot succeed anyway.
-                throw this.closeByServerReceived;
-            }
         }
 
         /// <summary>
@@ -148,14 +142,10 @@ namespace Google.Solutions.IapTunneling.Net
             try
             {
                 int bytesReceived = 0;
+                int bytesLeftInBuffer = count;
                 WebSocketReceiveResult result;
                 do
                 {
-                    if (bytesReceived > 0 && bytesReceived == count)
-                    {
-                        throw new OverflowException("Buffer too small to receive an entire message");
-                    }
-
                     IapTraceSources.Default.TraceVerbose(
                         "WebSocketStream: begin ReadAsync()... [socket: {0}]",
                         this.socket.State);
@@ -164,17 +154,21 @@ namespace Google.Solutions.IapTunneling.Net
                             new ArraySegment<byte>(
                                 buffer,
                                 offset + bytesReceived,
-                                count - bytesReceived),
+                                bytesLeftInBuffer),
                             cancellationToken)
                         .ConfigureAwait(false);
+
                     bytesReceived += result.Count;
+                    bytesLeftInBuffer -= result.Count;
+
+                    Debug.Assert(bytesReceived + bytesLeftInBuffer == count);
 
                     IapTraceSources.Default.TraceVerbose(
                         "WebSocketStream: end ReadAsync() - {0} bytes read [socket: {1}]",
                         result.Count,
                         this.socket.State);
                 }
-                while (count > 0 && !result.EndOfMessage);
+                while (bytesLeftInBuffer > 0 && !result.EndOfMessage);
 
                 if (result.CloseStatus != null)
                 {
@@ -184,10 +178,6 @@ namespace Google.Solutions.IapTunneling.Net
                         "WebSocketStream: Connection closed by server: {0}",
                         result.CloseStatus);
 
-                    this.closeByServerReceived = new WebSocketStreamClosedByServerException(
-                        result.CloseStatus.Value,
-                        result.CloseStatusDescription);
-
                     //
                     // In case of a normal close, it is preferable to simply return 0. But
                     // if the connection was closed abnormally, the client needs to know
@@ -195,7 +185,9 @@ namespace Google.Solutions.IapTunneling.Net
                     //
                     if (result.CloseStatus.Value != WebSocketCloseStatus.NormalClosure)
                     {
-                        throw this.closeByServerReceived;
+                        throw new WebSocketStreamClosedByServerException(
+                            result.CloseStatus.Value,
+                            result.CloseStatusDescription);
                     }
                     else
                     {
@@ -209,14 +201,14 @@ namespace Google.Solutions.IapTunneling.Net
             {
                 IapTraceSources.Default.TraceVerbose("WebSocketStream.Receive: connection aborted - {0}", e);
 
+                //
                 // ClientWebSocket/WinHttp can also throw an exception if
                 // the connection has been closed.
+                //
 
-                this.closeByServerReceived = new WebSocketStreamClosedByServerException(
+                throw new WebSocketStreamClosedByServerException(
                     WebSocketCloseStatus.NormalClosure,
                     e.Message);
-
-                throw this.closeByServerReceived;
             }
         }
 
@@ -249,11 +241,9 @@ namespace Google.Solutions.IapTunneling.Net
             {
                 IapTraceSources.Default.TraceVerbose("WebSocketStream.Send: connection aborted - {0}", e);
 
-                this.closeByServerReceived = new WebSocketStreamClosedByServerException(
+                throw new WebSocketStreamClosedByServerException(
                     WebSocketCloseStatus.NormalClosure,
                     e.Message);
-
-                throw this.closeByServerReceived;
             }
         }
 

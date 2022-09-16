@@ -37,46 +37,265 @@ namespace Google.Solutions.IapTunneling.Test.Net
     {
         private WebSocketServer server;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void StartServer()
         {
             this.server = new WebSocketServer();
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void StopServer()
         {
             this.server.Dispose();
         }
 
-        [Test]
-        public async Task WhenConnectionClosedImmediately_ThenReadThrowsWebSocketStreamClosedByServerException()
+        private static byte[] FillBuffer(uint size)
         {
-            using (var client = new ClientWebSocket())
+            var buffer = new byte[size];
+
+            for (uint i = 0; i < size; i++)
             {
-                var connectTask = client.ConnectAsync(
-                        this.server.Endpoint,
-                        CancellationToken.None);
+                buffer[i] = (byte)i;
+            }
 
-                using (var server = await this.server.AcceptConnectionAsync())
+            return buffer;
+        }
+
+        //---------------------------------------------------------------------
+        // Read: closing.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenServerClosesConnectionWithError_ThenReadThrowsException()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                await connection.Server
+                    .CloseOutputAsync(WebSocketCloseStatus.InternalServerError)
+                    .ConfigureAwait(false);
+
+                var bufferSize = 32;
+                using (var clientStream = new WebSocketStream(connection.Client, bufferSize))
                 {
-                    await connectTask.ConfigureAwait(false);
+                    var buffer = new byte[bufferSize];
 
-                    using (var clientStream = new WebSocketStream(
-                        client,
-                        64))
+                    try
                     {
-                        await server
-                            .CloseOutputAsync(WebSocketCloseStatus.InternalServerError)
+                        await clientStream
+                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                             .ConfigureAwait(false);
 
-                        var buffer = new byte[64];
-
-                        ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(
-                            () => clientStream
-                                .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                                .Wait());
+                        Assert.Fail();
                     }
+                    catch (WebSocketStreamClosedByServerException e)
+                    {
+                        Assert.AreEqual(
+                            WebSocketCloseStatus.InternalServerError,
+                            e.CloseStatus);
+                        Assert.AreEqual(
+                            WebSocketCloseStatus.InternalServerError.ToString(),
+                            e.CloseStatusDescription);
+                    }
+
+                    ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(
+                        () => clientStream
+                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                            .Wait());
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenConnectionClosedByClient_ThenReadThrowsException()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                await connection.Server
+                    .CloseOutputAsync(WebSocketCloseStatus.InternalServerError)
+                    .ConfigureAwait(false);
+
+                var bufferSize = 32;
+                using (var clientStream = new WebSocketStream(connection.Client, bufferSize))
+                {
+                    await clientStream
+                        .CloseAsync(CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    var buffer = new byte[bufferSize];
+                    ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(
+                        () => clientStream
+                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                            .Wait());
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenServerClosesConnectionNormally_ThenReadReturnsZero()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                await connection.Server
+                    .CloseOutputAsync(WebSocketCloseStatus.NormalClosure)
+                    .ConfigureAwait(false);
+
+                var bufferSize = 32;
+                using (var clientStream = new WebSocketStream(connection.Client, bufferSize))
+                {
+                    var buffer = new byte[bufferSize];
+
+                    var bytesRead = await clientStream
+                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(0, bytesRead);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenServerClosesConnectionAndReadSizeZero_ThenReadSucceeds()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                await connection.Server
+                    .CloseOutputAsync(WebSocketCloseStatus.NormalClosure)
+                    .ConfigureAwait(false);
+
+                var bufferSize = 32;
+                using (var clientStream = new WebSocketStream(connection.Client, bufferSize))
+                {
+                    var bytesRead = await clientStream
+                        .ReadAsync(new byte[0], 0, 0, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(0, bytesRead);
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Read: frame >= buffer.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenFrameSizeEqualsReadSize_ThenReadSucceeds()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                var frame = FillBuffer(8);
+                await connection.Server
+                    .SendBinaryFrameAsync(frame)
+                    .ConfigureAwait(false);
+
+                var bufferSize = 8;
+                using (var clientStream = new WebSocketStream(connection.Client, bufferSize))
+                {
+                    var buffer = new byte[bufferSize];
+                    var bytesRead = await clientStream
+                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(8, bytesRead);
+                    CollectionAssert.AreEquivalent(frame, buffer);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenFrameSizeEqualToTwiceReadSize_ThenReadSucceeds()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                var frame = FillBuffer(8);
+                await connection.Server
+                    .SendBinaryFrameAsync(frame)
+                    .ConfigureAwait(false);
+
+                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                {
+                    var buffer = new byte[8];
+
+                    // Read first half
+                    var bytesRead = await clientStream
+                        .ReadAsync(buffer, 0, 4, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    // Read next half.
+                    bytesRead += await clientStream
+                        .ReadAsync(buffer, 4, 4, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(8, bytesRead);
+                    CollectionAssert.AreEquivalent(frame, buffer);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenFrameLessThanSizeTwiceReadSize_ThenReadSucceeds()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                var frame = FillBuffer(8);
+                await connection.Server
+                    .SendBinaryFrameAsync(frame)
+                    .ConfigureAwait(false);
+
+                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                {
+                    var buffer = new byte[9];
+
+                    // Read first half
+                    var bytesRead = await clientStream
+                        .ReadAsync(buffer, 0, 4, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    // Read next half.
+                    bytesRead += await clientStream
+                        .ReadAsync(buffer, 4, 5, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(8, bytesRead);
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Read: frame < buffer.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenFrameLessThanReadSize_ThenReadSucceeds()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                // Send 2 frames
+                var frame = FillBuffer(4);
+                await connection.Server
+                    .SendBinaryFrameAsync(frame)
+                    .ConfigureAwait(false);
+                await connection.Server
+                    .SendBinaryFrameAsync(frame)
+                    .ConfigureAwait(false);
+
+                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                {
+                    // Use a buffer that could fit both frames.
+                    var buffer = new byte[8];
+
+                    // Read first frame
+                    var bytesRead1 = await clientStream
+                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(4, bytesRead1);
+
+                    var bytesRead2 = await clientStream
+                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(4, bytesRead2);
                 }
             }
         }
