@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.IapTunneling.Test.Util;
 using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System.Net.WebSockets;

@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 
-namespace Google.Solutions.IapTunneling.Test.Net
+namespace Google.Solutions.IapTunneling.Net
 {
     /// <summary>
     /// Helper class to find unsed local TCP ports.

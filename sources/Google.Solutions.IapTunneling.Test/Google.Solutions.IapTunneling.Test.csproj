@@ -85,7 +85,7 @@
     <Compile Include="IapFixtureBase.cs" />
     <Compile Include="Iap\InitializeScripts.cs" />
     <Compile Include="Iap\Mocks.cs" />
-    <Compile Include="Iap\SshRelayServerExtensions.cs" />
+    <Compile Include="Util\WebSocketServerExtensions.cs" />
     <Compile Include="Iap\TestEchoOverIapBase.cs" />
     <Compile Include="Iap\TestEchoOverIapDirectTunnel.cs" />
     <Compile Include="Iap\TestEchoOverIapIndirectTunnel.cs" />
@@ -93,20 +93,18 @@
     <Compile Include="Iap\TestHttpOverIapIndirectTunnel.cs" />
     <Compile Include="Iap\TestSshRelayFormat.cs" />
     <Compile Include="Iap\TestSshRelayListener.cs" />
-    <Compile Include="Iap\TestSshRelayProber.cs" />
-    <Compile Include="Iap\TestSshRelayStreamReading.cs" />
+    <Compile Include="Iap\TestSshRelayStream.Probing.cs" />
+    <Compile Include="Iap\TestSshRelayStream.Reading.cs" />
     <Compile Include="Iap\TestHttpOverIapDirectTunnel.cs" />
-    <Compile Include="Iap\TestSshRelayStreamWriting.cs" />
-    <Compile Include="Iap\TestSshRelayStream.cs" />
+    <Compile Include="Iap\TestSshRelayStream.Writing.cs" />
+    <Compile Include="Iap\TestSshRelayStream.SocketHandling.cs" />
     <Compile Include="Net\TestRestrictedHeaderConfigPatch.cs" />
     <Compile Include="Net\TestWebSocketStream.cs" />
-    <Compile Include="Net\WebSocketServer.cs" />
+    <Compile Include="Util\WebSocketServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBigEndian.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />

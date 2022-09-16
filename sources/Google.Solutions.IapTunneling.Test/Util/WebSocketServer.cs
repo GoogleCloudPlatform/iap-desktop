@@ -19,13 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Net;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Test.Net
+namespace Google.Solutions.IapTunneling.Test.Util
 {
     internal sealed class WebSocketServer : IDisposable
     {

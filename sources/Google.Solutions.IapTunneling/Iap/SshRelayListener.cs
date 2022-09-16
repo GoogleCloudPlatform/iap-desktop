@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapTunneling.Net;
-using Google.Solutions.IapTunneling.Test.Net;
 using System;
 using System.Net;
 using System.Net.Sockets;
