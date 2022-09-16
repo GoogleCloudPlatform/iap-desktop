@@ -33,7 +33,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshRelayProber : IapFixtureBase
+    public class TestSshRelayStreamProbing : IapFixtureBase
     {
         [Test]
         public async Task WhenProjectDoesntExist_ThenProbeFailsWithUnauthorizedException(

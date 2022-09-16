@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
     [TestFixture]
-    public class TestSshRelayStream : IapFixtureBase
+    public class TestSshRelayStreamSocketHandling : IapFixtureBase
     {
         private WebSocketServer server;
 
