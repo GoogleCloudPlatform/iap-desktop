@@ -20,11 +20,12 @@
 //
 
 using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Net
+namespace Google.Solutions.IapTunneling.Test.Util
 {
     /// <summary>
     /// Adapter that connects two different NetworkStreams with incompatible

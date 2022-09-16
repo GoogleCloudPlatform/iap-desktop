@@ -85,6 +85,7 @@
     <Compile Include="IapFixtureBase.cs" />
     <Compile Include="Iap\InitializeScripts.cs" />
     <Compile Include="Iap\Mocks.cs" />
+    <Compile Include="Util\FragmentingStream.cs" />
     <Compile Include="Util\WebSocketServerExtensions.cs" />
     <Compile Include="Iap\TestEchoOverIapBase.cs" />
     <Compile Include="Iap\TestEchoOverIapDirectTunnel.cs" />

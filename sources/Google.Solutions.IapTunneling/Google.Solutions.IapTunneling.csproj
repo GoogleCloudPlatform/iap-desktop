@@ -73,7 +73,6 @@
     <Compile Include="Net\ConnectionStatistics.cs" />
     <Compile Include="IapTraceSources.cs" />
     <Compile Include="Iap\IapTunnelingEndpoint.cs" />
-    <Compile Include="Net\FragmentingStream.cs" />
     <Compile Include="Net\INetworkStream.cs" />
     <Compile Include="Iap\Messages.cs" />
     <Compile Include="Net\NetworkStream.cs" />
