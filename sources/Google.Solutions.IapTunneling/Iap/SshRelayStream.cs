@@ -128,29 +128,38 @@ namespace Google.Solutions.IapTunneling.Iap
         {
             try
             {
+                //
                 // Acquire semaphore to ensure that only a single
                 // connect operation is in flight at a time.
+                //
                 await this.connectSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 if (this.__currentConnection == null)
                 {
+                    //
                     // Connect first.
+                    //
                     if (Thread.VolatileRead(ref this.bytesReceived) == 0)
                     {
+                        //
                         // First attempt to open a connection. 
+                        //
                         TraceLine("Connecting...");
                         this.__currentConnection =
                             await this.endpoint.ConnectAsync(cancellationToken).ConfigureAwait(false);
                     }
                     else
                     {
+                        //
                         // We had a communication breakdown, try establishing a new connection.
-
+                        //
                         Debug.Assert(this.Sid != null);
 
+                        //
                         // Restart the transmission where the client left off consuming. 
                         // Depending on when the connection broke down, the ACK for the consumed
                         // data may or may not have been successfully transmitted back to the server.
+                        //
 
                         TraceLine("Reconnecting...");
                         this.__currentConnection = await this.endpoint.ReconnectAsync(
@@ -159,7 +168,9 @@ namespace Google.Solutions.IapTunneling.Iap
                             cancellationToken).ConfigureAwait(false);
                     }
 
+                    //
                     // Resend any un-ack'ed data.
+                    //
                     while (true)
                     {
                         Task resendMessage = null;
@@ -203,11 +214,15 @@ namespace Google.Solutions.IapTunneling.Iap
         {
             try
             {
+                //
                 // Acquire semaphore to ensure that only a single
                 // connect operation is in flight at a time.
+                //
                 await this.connectSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
+                //
                 // Drop this connection.
+                //
                 try
                 {
                     if (this.__currentConnection != null)
@@ -337,7 +352,9 @@ namespace Google.Solutions.IapTunneling.Iap
 
                                 TraceLine($"Connected session <{this.Sid}>");
 
+                                //
                                 // No data to return to client yet.
+                                //
                                 break;
                             }
 
@@ -361,7 +378,9 @@ namespace Google.Solutions.IapTunneling.Iap
                                     TraceLine($"Reconnected session <{this.Sid}>");
                                 }
 
+                                //
                                 // No data to return to client yet.
+                                //
                                 break;
                             }
 
@@ -377,7 +396,9 @@ namespace Google.Solutions.IapTunneling.Iap
 
                                 lock (this.sentButUnacknoledgedQueueLock)
                                 {
+                                    //
                                     // The server might be acknolodging multiple messages at once.
+                                    //
                                     while (this.sentButUnacknoledgedQueue.Count > 0 &&
                                            this.sentButUnacknoledgedQueue.Peek().ExpectedAck
                                                 <= Thread.VolatileRead(ref this.bytesSentAndAcknoledged))
@@ -388,7 +409,9 @@ namespace Google.Solutions.IapTunneling.Iap
 
                                 TraceLine($"Received ACK #{ackMessage.Ack}");
 
+                                //
                                 // No data to return to client yet.
+                                //
                                 break;
                             }
 
@@ -400,7 +423,9 @@ namespace Google.Solutions.IapTunneling.Iap
 
                                 this.bytesReceived += dataMessage.DataLength;
 
+                                //
                                 // Copy data to caller's buffer.
+                                //
                                 Debug.Assert(dataMessage.DataLength < count);
                                 Array.Copy(
                                     receiveBuffer.Buffer,
@@ -414,15 +439,19 @@ namespace Google.Solutions.IapTunneling.Iap
                         default:
                             if (this.Sid == null)
                             {
+                                //
                                 // An unrecognized tag at the start of a connection means that we are
                                 // essentially reading junk, so bail out.
+                                //
                                 throw new InvalidServerResponseException($"Unknown tag: {tag}");
                             }
                             else
                             {
+                                //
                                 // The connection was properly opened - an unrecognized tag merely
                                 // means that the server uses a feature that we do not support (yet).
                                 // In accordance with the protocol specification, ignore this tag.
+                                //
                                 break;
                             }
                     }
@@ -440,7 +469,9 @@ namespace Google.Solutions.IapTunneling.Iap
                     {
                         TraceLine("Server closed connection");
 
+                        //
                         // Server closed the connection normally, we are done here
+                        //
 
                         return 0;
                     }
@@ -453,7 +484,9 @@ namespace Google.Solutions.IapTunneling.Iap
                     else if ((CloseCode)e.CloseStatus == CloseCode.SID_UNKNOWN ||
                              (CloseCode)e.CloseStatus == CloseCode.SID_IN_USE)
                     {
+                        //
                         // Failed reconect attempt - do not try again.
+                        //
                         TraceLine("Sid unknown or in use");
 
                         throw new WebSocketStreamClosedByServerException(
@@ -462,7 +495,9 @@ namespace Google.Solutions.IapTunneling.Iap
                     }
                     else if ((CloseCode)e.CloseStatus == CloseCode.FAILED_TO_CONNECT_TO_BACKEND)
                     {
+                        //
                         // Server probably not listening.
+                        //
                         TraceLine("Failed to connect to backend");
 
                         throw new WebSocketStreamClosedByServerException(
@@ -498,7 +533,9 @@ namespace Google.Solutions.IapTunneling.Iap
                 {
                     var connection = await ConnectAsync(cancellationToken).ConfigureAwait(false);
 
+                    //
                     // Take care of outstanding ACKs.
+                    //
                     var bytesToAck = Thread.VolatileRead(ref this.bytesReceived);
                     if (this.lastAck < bytesToAck)
                     {
@@ -518,8 +555,9 @@ namespace Google.Solutions.IapTunneling.Iap
                         this.lastAck = ackMessage.Ack;
                     }
 
+                    //
                     // Send data.
-
+                    //
                     var newMessage = new DataMessage((uint)count)
                     {
                         Tag = MessageTag.DATA,
@@ -530,9 +568,11 @@ namespace Google.Solutions.IapTunneling.Iap
 
                     TraceLine($"Sending DATA #{newMessage.SequenceNumber}...");
 
+                    //
                     // Update bytesSent before we write the data to the wire,
                     // otherwise we might see an ACK before bytesSent even reflects
                     // that the data has been sent.
+                    //
                     this.bytesSent = Thread.VolatileRead(ref this.bytesSent) + (ulong)count;
 
                     await connection.WriteAsync(
@@ -541,7 +581,9 @@ namespace Google.Solutions.IapTunneling.Iap
                         newMessage.BufferLength,
                         cancellationToken).ConfigureAwait(false);
 
+                    //
                     // We should get an ACK for this message.
+                    //
                     lock (this.sentButUnacknoledgedQueueLock)
                     {
                         this.sentButUnacknoledgedQueue.Enqueue(newMessage);
@@ -555,8 +597,10 @@ namespace Google.Solutions.IapTunneling.Iap
                             (CloseCode)e.CloseStatus == CloseCode.DESTINATION_READ_FAILED ||
                             (CloseCode)e.CloseStatus == CloseCode.DESTINATION_WRITE_FAILED)
                     {
+                        //
                         // The server closed the connection and us sending more data
                         // really seems unexpected.
+                        //
                         throw;
                     }
                     else if ((CloseCode)e.CloseStatus == CloseCode.NOT_AUTHORIZED)

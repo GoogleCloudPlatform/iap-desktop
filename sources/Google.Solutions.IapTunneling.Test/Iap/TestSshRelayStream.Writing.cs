@@ -56,7 +56,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             byte[] request = new byte[] { 1, 2, 3 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(1, endpoint.ConnectCount);
@@ -88,12 +88,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             // Write and read something.
             byte[] request = new byte[] { 1 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             byte[] buffer = new byte[SshRelayStream.MinReadSize];
             int bytesRead = await relay
-                .ReadAsync(buffer, 0, buffer.Length, tokenSource.Token)
+                .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
             Assert.AreEqual(1, bytesRead);
 
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             // Write a second request - this should cause an ACK to be sent first.
             request = new byte[] { 2 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(3, stream.WriteCount);
@@ -130,12 +130,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             // Write two requests with no read in between.
             byte[] request = new byte[] { 1 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             request = new byte[] { 2 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(2, stream.WriteCount);
@@ -163,14 +163,14 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             // Write first request.
             byte[] request = new byte[] { 1 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
             ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
             {
                 request = new byte[] { 2 };
-                relay.WriteAsync(request, 0, request.Length, tokenSource.Token).Wait();
+                relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();
             });
         }
 
@@ -193,17 +193,17 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             // Write first request, then close.
             byte[] request = new byte[] { 1 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
             await relay
-                .CloseAsync(tokenSource.Token)
+                .CloseAsync(this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
             ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
             {
                 request = new byte[] { 2 };
-                relay.WriteAsync(request, 0, request.Length, tokenSource.Token).Wait();
+                relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();
             });
         }
 
@@ -227,14 +227,14 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             // Write first request.
             byte[] request = new byte[] { 1 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
             ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
             {
                 request = new byte[] { 2 };
-                relay.WriteAsync(request, 0, request.Length, tokenSource.Token).Wait();
+                relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();
             });
         }
 
@@ -282,12 +282,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             // Write two requests, but do not await ACK.
             byte[] request = new byte[] { 1 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             request = new byte[] { 2 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(1, endpoint.ConnectCount);
@@ -296,7 +296,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             // Write another request - this should cause a reconnect and resend.
             request = new byte[] { 3 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(2, endpoint.ConnectCount);
@@ -353,26 +353,26 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             // Write a request.
             var request = new byte[] { 1 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             // Read something..
             var buffer = new byte[SshRelayStream.MinReadSize];
             int bytesRead = await relay
-                .ReadAsync(buffer, 0, buffer.Length, tokenSource.Token)
+                .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
             Assert.AreEqual(2, bytesRead);
 
             // Write another request, causing an ACK to be sent.
             request = new byte[] { 2 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             // Write another request - this should cause a reconnect and resend.
             request = new byte[] { 3 };
             await relay
-                .WriteAsync(request, 0, request.Length, tokenSource.Token)
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
             Assert.AreEqual(1, endpoint.ConnectCount);
@@ -396,7 +396,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
             {
                 var request = new byte[] { 2 };
-                relay.WriteAsync(request, 0, request.Length, tokenSource.Token).Wait();
+                relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();
             });
         }
     }

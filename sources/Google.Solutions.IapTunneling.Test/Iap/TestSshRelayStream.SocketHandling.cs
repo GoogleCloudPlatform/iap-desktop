@@ -56,7 +56,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             private readonly WebSocketServer server;
             private readonly WebSocketConnection connection;
 
-            private Stack<WebSocketConnection> reconnectConnections
+            private readonly Stack<WebSocketConnection> reconnectConnections
                 = new Stack<WebSocketConnection>();
 
             public int ConnectCalls { get; private set; } = 0;

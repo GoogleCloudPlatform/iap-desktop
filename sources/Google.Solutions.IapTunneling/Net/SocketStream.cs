@@ -1,4 +1,5 @@
-﻿//
+﻿                    //
+//
 // Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -51,10 +52,14 @@ namespace Google.Solutions.IapTunneling.Net
             switch (args.SocketError)
             {
                 case SocketError.Success:
+                    //
                     // Update statistics before releasing waiters.
+                    //
                     trackBytesTransferred(args.BytesTransferred);
 
+                    //
                     // Release waiters.
+                    //
                     tcs.SetResult(args.BytesTransferred);
                     break;
 
@@ -86,7 +91,9 @@ namespace Google.Solutions.IapTunneling.Net
 
             if (!ioFunc(eventArgs))
             {
+                //
                 // I/O completed synchronously.
+                //
                 OnIoCompleted(tcs, trackBytesTransferred, eventArgs);
             }
 

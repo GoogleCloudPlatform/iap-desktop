@@ -31,8 +31,6 @@ namespace Google.Solutions.IapTunneling.Net
     /// </summary>
     public static class NetworkStream
     {
-        private const int MaxBufferSize = 64 * 1024;
-
         /// <summary>
         /// Relay all received by one stream to another stream.
         /// </summary>

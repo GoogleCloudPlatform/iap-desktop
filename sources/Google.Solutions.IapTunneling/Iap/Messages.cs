@@ -147,7 +147,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public ulong SequenceNumber { get; set; }
 
-        public ulong ExpectedAck => SequenceNumber + (ulong)DataLength;
+        public ulong ExpectedAck => this.SequenceNumber + (ulong)DataLength;
 
         public uint DataLength
         {

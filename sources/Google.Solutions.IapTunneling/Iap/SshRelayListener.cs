@@ -144,10 +144,14 @@ namespace Google.Solutions.IapTunneling.Iap
         /// </summary>
         public Task ListenAsync(CancellationToken token)
         {
+            //
             // Start listening before returning from the menthod.
+            //
             this.listener.Start(BacklogLength);
 
+            //
             // All communication is then handled asynchronously.
+            //
             return Task.Run(() =>
             {
                 using (token.Register(this.listener.Stop))

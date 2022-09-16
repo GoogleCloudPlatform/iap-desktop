@@ -41,8 +41,8 @@ namespace Google.Solutions.IapTunneling.Test.Util
             var port = PortFinder.FindFreeLocalPort();
             this.Endpoint = new Uri($"ws://localhost:{port}/");
 
-            listener.Prefixes.Add($"http://localhost:{port}/");
-            listener.Start();
+            this.listener.Prefixes.Add($"http://localhost:{port}/");
+            this.listener.Start();
         }
 
         public async Task<WebSocketConnection> ConnectAsync()
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapTunneling.Test.Util
             //
             // Let server accept connection.
             //
-            var context = await listener
+            var context = await this.listener
                 .GetContextAsync()
                 .ConfigureAwait(false);
 

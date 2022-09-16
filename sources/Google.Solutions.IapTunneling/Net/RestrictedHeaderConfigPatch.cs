@@ -34,6 +34,7 @@ namespace Google.Solutions.IapTunneling.Net
         /// </summary>
         public static void SetHeaderRestriction(string header, bool restricted)
         {
+            //
             // Headers like "User-Agent" are considered a "restricted header" by .NET.
             // While most HTTP clases allow you to specify the header by using a 
             // special property, the ClientWebSocket class does not.
@@ -44,23 +45,28 @@ namespace Google.Solutions.IapTunneling.Net
             // 
             // It is therefore important that any code using restricted headers
             // is written so that it gracefully handles failures.
-
+            //
             // The list of restricted headers is stored in a global 
             // HeaderInfoTable object.
+            //
             if (typeof(WebHeaderCollection).GetField(
                 "HInfo",
                 BindingFlags.NonPublic | BindingFlags.Static) is FieldInfo hInfoField)
             {
                 var headerInfoTable = hInfoField.GetValue(null);
 
+                //
                 // Get the HeaderHashTable field (instance of Hashtable).
+                //
                 if (headerInfoTable.GetType().GetField(
                     "HeaderHashTable",
                     BindingFlags.NonPublic | BindingFlags.Static) is FieldInfo headersField)
                 {
                     if (headersField.GetValue(null) is Hashtable headers)
                     {
+                        //
                         // Modify the HeaderInfo object stored in the hashtable.
+                        //
                         var headerInfo = headers[header];
                         if (headerInfo != null &&
                             headerInfo.GetType().GetField(
