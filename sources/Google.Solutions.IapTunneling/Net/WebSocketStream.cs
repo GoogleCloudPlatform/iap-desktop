@@ -277,20 +277,13 @@ namespace Google.Solutions.IapTunneling.Net
         }
     }
 
-    [Serializable]
     public class WebSocketStreamClosedByClientException : NetworkStreamClosedException
     {
-        protected WebSocketStreamClosedByClientException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
         public WebSocketStreamClosedByClientException()
         {
         }
     }
 
-    [Serializable]
     public class WebSocketConnectionDeniedException : Exception
     {
         protected WebSocketConnectionDeniedException(SerializationInfo info, StreamingContext context)
@@ -303,7 +296,6 @@ namespace Google.Solutions.IapTunneling.Net
         }
     }
 
-    [Serializable]
     public class WebSocketStreamClosedByServerException : NetworkStreamClosedException
     {
         public WebSocketCloseStatus CloseStatus { get; private set; }
@@ -315,26 +307,6 @@ namespace Google.Solutions.IapTunneling.Net
         {
             this.CloseStatus = closeStatus;
             this.CloseStatusDescription = closeStatusDescription;
-        }
-
-        protected WebSocketStreamClosedByServerException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            this.CloseStatus = (WebSocketCloseStatus)info.GetInt32("CloseStatus");
-            this.CloseStatusDescription = info.GetString("CloseStatusDescription");
-        }
-
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-            {
-                throw new ArgumentNullException(nameof(info));
-            }
-
-            info.AddValue("CloseStatus", this.CloseStatus);
-            info.AddValue("CloseStatusDescription", this.CloseStatusDescription);
-            base.GetObjectData(info, context);
         }
     }
 }

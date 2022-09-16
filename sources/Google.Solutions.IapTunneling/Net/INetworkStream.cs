@@ -74,15 +74,9 @@ namespace Google.Solutions.IapTunneling.Net
     /// that has alrady been closed, either by the client itself or by
     /// the server.
     /// </summary>
-    [Serializable]
     public class NetworkStreamClosedException : Exception
     {
-        protected NetworkStreamClosedException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
-        public NetworkStreamClosedException()
+        protected NetworkStreamClosedException()
         {
         }
 

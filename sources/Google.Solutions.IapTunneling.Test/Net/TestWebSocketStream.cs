@@ -299,5 +299,78 @@ namespace Google.Solutions.IapTunneling.Test.Net
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // Write: closing.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenServerClosedConnection_ThenWriteSucceeds()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                await connection.Server
+                    .CloseOutputAsync(WebSocketCloseStatus.InternalServerError)
+                    .ConfigureAwait(false);
+
+                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                {
+                    var buffer = FillBuffer(8);
+                    await clientStream
+                        .WriteAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    var frame = new byte[8];
+                    await connection.Server
+                        .ReceiveBinaryFrameAsync(frame)
+                        .ConfigureAwait(false);
+
+                    CollectionAssert.AreEquivalent(buffer, frame);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenConnectionClosedByClient_ThenWriteThrowsException()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                {
+                    await clientStream
+                        .CloseAsync(CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    var buffer = FillBuffer(8);
+                    ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(
+                        () => clientStream
+                            .WriteAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                            .Wait());
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Write: closing.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenConnectionClosedByClient_TheCloseThrowsException()
+        {
+            using (var connection = await this.server.ConnectAsync())
+            {
+                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                {
+                    await clientStream
+                        .CloseAsync(CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByClientException>(
+                        () => clientStream
+                            .CloseAsync(CancellationToken.None)
+                            .Wait());
+                }
+            }
+        }
     }
 }
