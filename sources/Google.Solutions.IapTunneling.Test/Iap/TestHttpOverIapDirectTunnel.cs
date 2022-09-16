@@ -121,7 +121,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             Assert.IsNull(stream.Sid);
 
             // Read a bit.
-            byte[] buffer = new byte[stream.MinReadSize];
+            byte[] buffer = new byte[SshRelayStream.MinReadSize];
             await stream
                 .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                 .ConfigureAwait(false);
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
             {
-                byte[] buffer = new byte[stream.MinReadSize];
+                byte[] buffer = new byte[SshRelayStream.MinReadSize];
                 stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Wait();
             });
         }

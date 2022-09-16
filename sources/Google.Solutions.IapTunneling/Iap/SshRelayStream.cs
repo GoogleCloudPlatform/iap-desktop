@@ -262,12 +262,19 @@ namespace Google.Solutions.IapTunneling.Iap
             }
         }
 
+        /// <summary>
+        /// Maximum amount of data (in byte) that can be written at once.
+        /// </summary>
+        public const int MaxWriteSize = 16 * 1024; // TODO: Rename, verify
+
+        /// <summary>
+        /// Minimum amount of data (in byte) that can be read at once.
+        /// </summary>
+        public const int MinReadSize = (int)DataMessage.MaxDataLength;// TODO: Rename, verify
+
         //---------------------------------------------------------------------
         // SingleReaderSingleWriterStream implementation
         //---------------------------------------------------------------------
-
-        public override int MaxWriteSize => 16 * 1024;
-        public override int MinReadSize => (int)DataMessage.MaxDataLength;
 
         protected override async Task<int> ProtectedReadAsync(
             byte[] buffer,
@@ -275,10 +282,10 @@ namespace Google.Solutions.IapTunneling.Iap
             int count,
             CancellationToken cancellationToken)
         {
-            if (count < this.MinReadSize)
+            if (count < MinReadSize)
             {
                 throw new IndexOutOfRangeException(
-                    $"Read buffer too small ({count}), must be at least {this.MinReadSize}");
+                    $"Read buffer too small ({count}), must be at least {MinReadSize}");
             }
 
             MessageBuffer receiveBuffer = new MessageBuffer(new byte[count + DataMessage.DataOffset]);
@@ -465,10 +472,10 @@ namespace Google.Solutions.IapTunneling.Iap
             int count,
             CancellationToken cancellationToken)
         {
-            if (count > this.MaxWriteSize)
+            if (count > MaxWriteSize)
             {
                 throw new IndexOutOfRangeException(
-                    $"Write buffer too large ({count}), must be at most {this.MaxWriteSize}");
+                    $"Write buffer too large ({count}), must be at most {MaxWriteSize}");
             }
 
             while (true)

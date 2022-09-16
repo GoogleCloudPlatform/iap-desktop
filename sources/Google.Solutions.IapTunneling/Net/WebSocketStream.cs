@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
@@ -37,7 +38,6 @@ namespace Google.Solutions.IapTunneling.Net
     public class WebSocketStream : SingleReaderSingleWriterStream
     {
         private readonly ClientWebSocket socket;
-        private readonly int maxReadMessageSize;
 
         private volatile bool closeByClientInitiated = false;
 
@@ -47,15 +47,14 @@ namespace Google.Solutions.IapTunneling.Net
         // Ctor
         //---------------------------------------------------------------------
 
-        public WebSocketStream(ClientWebSocket socket, int maxReadMessageSize)
+        public WebSocketStream(ClientWebSocket socket)
         {
             if (socket.State != WebSocketState.Open)
             {
                 throw new ArgumentException("Web socket must be open");
             }
 
-            this.socket = socket;
-            this.maxReadMessageSize = maxReadMessageSize;
+            this.socket = socket.ThrowIfNull(nameof(socket));
         }
 
         //---------------------------------------------------------------------
@@ -106,9 +105,6 @@ namespace Google.Solutions.IapTunneling.Net
         // SingleReaderSingleWriterStream implementation
         //---------------------------------------------------------------------
 
-        public override int MaxWriteSize => int.MaxValue;
-        public override int MinReadSize => this.maxReadMessageSize;
-
         private void VerifyConnectionNotClosedAlready()
         {
             if (this.closeByClientInitiated)
@@ -129,15 +125,6 @@ namespace Google.Solutions.IapTunneling.Net
             CancellationToken cancellationToken)
         {
             VerifyConnectionNotClosedAlready();
-
-            //
-            // Check buffer size. Zero-sized buffers are allowed for 
-            // connection probing.
-            //
-            if (count > 0 && count < this.MinReadSize)
-            {
-                throw new IndexOutOfRangeException($"Read buffer too small, must be at least {this.MinReadSize}");
-            }
 
             try
             {

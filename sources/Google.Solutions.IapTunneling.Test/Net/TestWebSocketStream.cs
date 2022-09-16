@@ -74,10 +74,9 @@ namespace Google.Solutions.IapTunneling.Test.Net
                     .CloseOutputAsync(WebSocketCloseStatus.InternalServerError)
                     .ConfigureAwait(false);
 
-                var bufferSize = 32;
-                using (var clientStream = new WebSocketStream(connection.Client, bufferSize))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
-                    var buffer = new byte[bufferSize];
+                    var buffer = new byte[32];
 
                     try
                     {
@@ -114,14 +113,13 @@ namespace Google.Solutions.IapTunneling.Test.Net
                     .CloseOutputAsync(WebSocketCloseStatus.InternalServerError)
                     .ConfigureAwait(false);
 
-                var bufferSize = 32;
-                using (var clientStream = new WebSocketStream(connection.Client, bufferSize))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
                     await clientStream
                         .CloseAsync(CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    var buffer = new byte[bufferSize];
+                    var buffer = new byte[32];
                     ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(
                         () => clientStream
                             .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
@@ -139,10 +137,9 @@ namespace Google.Solutions.IapTunneling.Test.Net
                     .CloseOutputAsync(WebSocketCloseStatus.NormalClosure)
                     .ConfigureAwait(false);
 
-                var bufferSize = 32;
-                using (var clientStream = new WebSocketStream(connection.Client, bufferSize))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
-                    var buffer = new byte[bufferSize];
+                    var buffer = new byte[32];
 
                     var bytesRead = await clientStream
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
@@ -162,8 +159,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
                     .CloseOutputAsync(WebSocketCloseStatus.NormalClosure)
                     .ConfigureAwait(false);
 
-                var bufferSize = 32;
-                using (var clientStream = new WebSocketStream(connection.Client, bufferSize))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
                     var bytesRead = await clientStream
                         .ReadAsync(new byte[0], 0, 0, CancellationToken.None)
@@ -188,10 +184,9 @@ namespace Google.Solutions.IapTunneling.Test.Net
                     .SendBinaryFrameAsync(frame)
                     .ConfigureAwait(false);
 
-                var bufferSize = 8;
-                using (var clientStream = new WebSocketStream(connection.Client, bufferSize))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
-                    var buffer = new byte[bufferSize];
+                    var buffer = new byte[8];
                     var bytesRead = await clientStream
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
@@ -212,7 +207,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
                     .SendBinaryFrameAsync(frame)
                     .ConfigureAwait(false);
 
-                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
                     var buffer = new byte[8];
 
@@ -242,7 +237,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
                     .SendBinaryFrameAsync(frame)
                     .ConfigureAwait(false);
 
-                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
                     var buffer = new byte[9];
 
@@ -279,7 +274,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
                     .SendBinaryFrameAsync(frame)
                     .ConfigureAwait(false);
 
-                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
                     // Use a buffer that could fit both frames.
                     var buffer = new byte[8];
@@ -313,7 +308,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
                     .CloseOutputAsync(WebSocketCloseStatus.InternalServerError)
                     .ConfigureAwait(false);
 
-                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
                     var buffer = FillBuffer(8);
                     await clientStream
@@ -335,7 +330,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
         {
             using (var connection = await this.server.ConnectAsync())
             {
-                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
                     await clientStream
                         .CloseAsync(CancellationToken.None)
@@ -359,7 +354,7 @@ namespace Google.Solutions.IapTunneling.Test.Net
         {
             using (var connection = await this.server.ConnectAsync())
             {
-                using (var clientStream = new WebSocketStream(connection.Client, 0))
+                using (var clientStream = new WebSocketStream(connection.Client))
                 {
                     await clientStream
                         .CloseAsync(CancellationToken.None)

@@ -91,7 +91,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .WriteAsync(request, 0, request.Length, tokenSource.Token)
                 .ConfigureAwait(false);
 
-            byte[] buffer = new byte[relay.MinReadSize];
+            byte[] buffer = new byte[SshRelayStream.MinReadSize];
             int bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, tokenSource.Token)
                 .ConfigureAwait(false);
@@ -357,7 +357,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ConfigureAwait(false);
 
             // Read something..
-            var buffer = new byte[relay.MinReadSize];
+            var buffer = new byte[SshRelayStream.MinReadSize];
             int bytesRead = await relay
                 .ReadAsync(buffer, 0, buffer.Length, tokenSource.Token)
                 .ConfigureAwait(false);

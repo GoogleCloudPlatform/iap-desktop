@@ -179,8 +179,8 @@ namespace Google.Solutions.IapTunneling.Iap
                             this.ClientsAccepted++;
 
                             Task.WhenAll(
-                                    clientStream.RelayToAsync(serverStream, token),
-                                    serverStream.RelayToAsync(clientStream, token))
+                                    clientStream.RelayToAsync(serverStream, SshRelayStream.MaxWriteSize, token),
+                                    serverStream.RelayToAsync(clientStream, SshRelayStream.MinReadSize, token))
                                 .ContinueWith(t =>
                                 {
                                     IapTraceSources.Default.TraceVerbose("SshRelayListener: Closed connection");

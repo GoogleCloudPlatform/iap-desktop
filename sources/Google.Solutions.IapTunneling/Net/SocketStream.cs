@@ -124,9 +124,6 @@ namespace Google.Solutions.IapTunneling.Net
         // OneTimeUseStream implementation
         //---------------------------------------------------------------------
 
-        public override int MaxWriteSize => int.MaxValue;
-        public override int MinReadSize => 1;
-
         protected override async Task<int> ReadAsyncWithCloseProtection(
             byte[] buffer,
             int offset,

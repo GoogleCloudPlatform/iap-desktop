@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
@@ -89,7 +90,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            byte[] buffer = new byte[stream.MinReadSize];
+            byte[] buffer = new byte[SshRelayStream.MinReadSize];
 
             var response = new HttpResponseAccumulator();
             int bytesRead;
@@ -125,7 +126,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                     .ConfigureAwait(false);
 
-                byte[] buffer = new byte[stream.MinReadSize];
+                byte[] buffer = new byte[SshRelayStream.MinReadSize];
 
                 var response = new HttpResponseAccumulator();
                 int bytesRead;
@@ -166,7 +167,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
 
-            byte[] buffer = new byte[stream.MinReadSize];
+            byte[] buffer = new byte[SshRelayStream.MinReadSize];
 
             // Read a bit.
             var response = new HttpResponseAccumulator();

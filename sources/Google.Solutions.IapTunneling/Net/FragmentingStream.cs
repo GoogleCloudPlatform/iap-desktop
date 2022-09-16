@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace Google.Solutions.IapTunneling.Net
     /// </summary>
     public class FragmentingStream : SingleReaderSingleWriterStream
     {
-        private readonly INetworkStream stream;
+        private readonly SshRelayStream stream;
 
         private byte[] readBuffer = null;
         private int readBufferOffset = 0;
@@ -41,7 +42,7 @@ namespace Google.Solutions.IapTunneling.Net
         // Ctor
         //---------------------------------------------------------------------
 
-        public FragmentingStream(INetworkStream stream)
+        public FragmentingStream(SshRelayStream stream)
         {
             this.stream = stream;
         }
@@ -49,9 +50,6 @@ namespace Google.Solutions.IapTunneling.Net
         //---------------------------------------------------------------------
         // SingleReaderSingleWriterStream overrides
         //---------------------------------------------------------------------
-
-        public override int MaxWriteSize => int.MaxValue;
-        public override int MinReadSize => this.stream.MinReadSize;
 
         protected override void Dispose(bool disposing)
         {
@@ -91,7 +89,7 @@ namespace Google.Solutions.IapTunneling.Net
                     this.readBufferOffset += bytesToRead;
                     return bytesToRead;
                 }
-                else if (count >= this.stream.MinReadSize)
+                else if (count >= SshRelayStream.MinReadSize)
                 {
                     // No data in buffer and supplied buffer is large enough.
                     return await this.stream.ReadAsync(
@@ -107,7 +105,7 @@ namespace Google.Solutions.IapTunneling.Net
                     {
                         // Use a buffer that is large enough, but use a safety
                         // upper bound of 1 MB.
-                        this.readBuffer = new byte[Math.Min(this.stream.MinReadSize, 1024 * 1024)];
+                        this.readBuffer = new byte[Math.Min(SshRelayStream.MinReadSize, 1024 * 1024)];
                     }
 
                     this.readBufferOffset = 0;
@@ -132,7 +130,7 @@ namespace Google.Solutions.IapTunneling.Net
             int count,
             CancellationToken cancellationToken)
         {
-            var windowSize = this.stream.MaxWriteSize;
+            var windowSize = SshRelayStream.MaxWriteSize;
             for (int windowOffset = 0;
                  windowOffset < buffer.Length;
                  windowOffset += windowSize)

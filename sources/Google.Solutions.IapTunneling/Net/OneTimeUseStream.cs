@@ -45,9 +45,6 @@ namespace Google.Solutions.IapTunneling.Net
         // Methods to be overriden
         //---------------------------------------------------------------------
 
-        public abstract int MaxWriteSize { get; }
-        public abstract int MinReadSize { get; }
-
         protected abstract Task CloseAsyncWithCloseProtection(CancellationToken cancellationToken);
 
         protected abstract Task<int> ReadAsyncWithCloseProtection(

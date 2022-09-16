@@ -39,18 +39,11 @@ namespace Google.Solutions.IapTunneling.Net
         public static Task RelayToAsync(
             this INetworkStream readStream,
             INetworkStream writeStream,
+            int bufferSize,
             CancellationToken token)
         {
             return Task.Run(async () =>
             {
-                // Use a buffer that is as large as possible, but does not exceed
-                // any of the two stream's capabilities.
-                int bufferSize = Math.Min(
-                    writeStream.MaxWriteSize,
-                    Math.Max(
-                        MaxBufferSize,
-                        readStream.MinReadSize));
-
                 var buffer = new byte[bufferSize];
 
                 while (true)
