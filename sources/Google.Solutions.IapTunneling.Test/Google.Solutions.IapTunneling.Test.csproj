@@ -97,7 +97,7 @@
     <Compile Include="Iap\TestSshRelayStreamReading.cs" />
     <Compile Include="Iap\TestHttpOverIapDirectTunnel.cs" />
     <Compile Include="Iap\TestSshRelayStreamWriting.cs" />
-    <Compile Include="Iap\TestTestSshRelayStream.cs" />
+    <Compile Include="Iap\TestSshRelayStream.cs" />
     <Compile Include="Net\TestRestrictedHeaderConfigPatch.cs" />
     <Compile Include="Net\TestWebSocketStream.cs" />
     <Compile Include="Net\WebSocketServer.cs" />
