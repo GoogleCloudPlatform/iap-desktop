@@ -105,12 +105,15 @@ namespace Google.Solutions.IapTunneling.Test.Net
             this.Context = webSocket;
         }
 
-        public async Task SendBinaryFrameAsync(byte[] data)
+        public Task SendBinaryFrameAsync(byte[] data)
+            => SendBinaryFrameAsync(data, 0, data.Length);
+
+        public async Task SendBinaryFrameAsync(byte[] data, int offset, int length)
         {
             ThrowIfNotConnected();
 
             await this.Context.WebSocket.SendAsync(
-                    new ArraySegment<byte>(data),
+                    new ArraySegment<byte>(data, offset, length),
                     WebSocketMessageType.Binary,
                     true,
                     CancellationToken.None)

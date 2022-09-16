@@ -22,11 +22,7 @@
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Testing.Common;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -109,10 +105,6 @@ namespace Google.Solutions.IapTunneling.Test.Net
         {
             using (var connection = await this.server.ConnectAsync())
             {
-                await connection.Server
-                    .CloseOutputAsync(WebSocketCloseStatus.InternalServerError)
-                    .ConfigureAwait(false);
-
                 using (var clientStream = new WebSocketStream(connection.Client))
                 {
                     await clientStream

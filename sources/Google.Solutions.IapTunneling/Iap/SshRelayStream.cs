@@ -230,20 +230,32 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public async Task TestConnectionAsync(TimeSpan timeout)
         {
+            //
             // Open a WebSocketStream, without wrapping it as a SshRelayStream
             // and do a zero-byte read. This will fail if access is denied.
+            //
             try
             {
                 using (var cts = new CancellationTokenSource())
                 {
+                    //
                     // If access to the instance is allowed, but the instance
                     // simply does not listen on this port, the connect or read 
                     // will hang. Therefore, apply a timeout.
+                    //
                     cts.CancelAfter(timeout);
 
-                    var connection = await this.endpoint.ConnectAsync(cts.Token).ConfigureAwait(false);
-                    await connection.ReadAsync(Array.Empty<byte>(), 0, 0, cts.Token).ConfigureAwait(false);
-                    await connection.CloseAsync(cts.Token).ConfigureAwait(false);
+                    using (var connection = await this.endpoint
+                        .ConnectAsync(cts.Token)
+                        .ConfigureAwait(false))
+                    {
+                        await connection
+                            .ReadAsync(Array.Empty<byte>(), 0, 0, cts.Token)
+                            .ConfigureAwait(false);
+                        await connection
+                            .CloseAsync(cts.Token)
+                            .ConfigureAwait(false);
+                    }
                 }
             }
             catch (WebSocketStreamClosedByServerException e)
@@ -265,12 +277,12 @@ namespace Google.Solutions.IapTunneling.Iap
         /// <summary>
         /// Maximum amount of data (in byte) that can be written at once.
         /// </summary>
-        public const int MaxWriteSize = 16 * 1024; // TODO: Rename, verify
+        public const int MaxWriteSize = (int)SshRelayFormat.MaxDataPayloadLength;
 
         /// <summary>
         /// Minimum amount of data (in byte) that can be read at once.
         /// </summary>
-        public const int MinReadSize = (int)DataMessage.MaxDataLength;// TODO: Rename, verify
+        public const int MinReadSize = (int)SshRelayFormat.MaxDataPayloadLength;
 
         //---------------------------------------------------------------------
         // SingleReaderSingleWriterStream implementation
@@ -444,7 +456,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
                         throw new WebSocketStreamClosedByServerException(
                             e.CloseStatus,
-                            "Connection losed abnormally and an attempt to reconnect was rejected");
+                            "Connection closed abnormally and an attempt to reconnect was rejected");
                     }
                     else if ((CloseCode)e.CloseStatus == CloseCode.FAILED_TO_CONNECT_TO_BACKEND)
                     {

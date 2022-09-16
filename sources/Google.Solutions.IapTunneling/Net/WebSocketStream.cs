@@ -215,10 +215,11 @@ namespace Google.Solutions.IapTunneling.Net
                     this.socket.State);
 
                 await this.socket.SendAsync(
-                    new ArraySegment<byte>(buffer, offset, count),
-                    WebSocketMessageType.Binary,
-                    true,
-                    cancellationToken).ConfigureAwait(false);
+                        new ArraySegment<byte>(buffer, offset, count),
+                        WebSocketMessageType.Binary,
+                        true,
+                        cancellationToken)
+                    .ConfigureAwait(false);
 
                 IapTraceSources.Default.TraceVerbose(
                     "WebSocketStream: end WriteAsync()... [socket: {0}]",
