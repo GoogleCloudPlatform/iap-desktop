@@ -120,14 +120,15 @@ namespace Google.Solutions.IapTunneling.Test.Net
                 .ConfigureAwait(false);
         }
 
-        public async Task ReceiveBinaryFrameAsync(byte[] buffer)
+        public async Task<int> ReceiveBinaryFrameAsync(byte[] buffer)
         {
             ThrowIfNotConnected();
 
-            await this.Context.WebSocket.ReceiveAsync(
+            var result = await this.Context.WebSocket.ReceiveAsync(
                     new ArraySegment<byte>(buffer),
                     CancellationToken.None)
                 .ConfigureAwait(false);
+            return result.Count;
         }
 
         public async Task CloseOutputAsync(WebSocketCloseStatus status)

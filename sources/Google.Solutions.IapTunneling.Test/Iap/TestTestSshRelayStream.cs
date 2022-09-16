@@ -25,6 +25,7 @@ using Google.Solutions.IapTunneling.Test.Net;
 using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Threading;
@@ -51,15 +52,22 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         private class Endpoint : ISshRelayEndpoint, IDisposable
         {
+            private readonly WebSocketServer server;
             private readonly WebSocketConnection connection;
-            private bool connectCalled = false;
 
+            private Stack<WebSocketConnection> reconnectConnections
+                = new Stack<WebSocketConnection>();
+
+            public int ConnectCalls { get; private set; } = 0;
             public int ReconnectCalls { get; private set; } = 0;
 
             public ServerWebSocketConnection Server => this.connection.Server;
 
-            public Endpoint(WebSocketConnection connection)
+            public Endpoint(
+                WebSocketServer server,
+                WebSocketConnection connection)
             {
+                this.server = server;
                 this.connection = connection;
             }
 
@@ -70,11 +78,17 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             public Task<INetworkStream> ConnectAsync(CancellationToken token)
             {
-                Assert.IsFalse(this.connectCalled);
-                this.connectCalled = true;
-
-                return Task.FromResult<INetworkStream>(
-                    new WebSocketStream(this.connection.Client));
+                if (this.ConnectCalls++ == 0)
+                {
+                    return Task.FromResult<INetworkStream>(
+                        new WebSocketStream(this.connection.Client));
+                }
+                else
+                {
+                    return Task.FromResult<INetworkStream>(
+                        new WebSocketStream(
+                            this.reconnectConnections.Pop().Client));
+                }
             }
 
             public Task<INetworkStream> ReconnectAsync(
@@ -83,15 +97,28 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 CancellationToken token)
             {
                 this.ReconnectCalls++;
-                throw new NotImplementedException();
+                return Task.FromResult<INetworkStream>(
+                    new WebSocketStream(
+                        this.reconnectConnections.Pop().Client));
+            }
+
+            public async Task<ServerWebSocketConnection> AfterReconnect()
+            {
+                var connection = await this.server
+                    .ConnectAsync()
+                    .ConfigureAwait(false);
+                this.reconnectConnections.Push(connection);
+                return connection.Server;
             }
         }
 
         private async Task<Endpoint> CreateEndpointAsync()
         {
-            return new Endpoint(await this.server
-                .ConnectAsync()
-                .ConfigureAwait(false));
+            return new Endpoint(
+                this.server,
+                await this.server
+                    .ConnectAsync()
+                    .ConfigureAwait(false));
         }
 
         //---------------------------------------------------------------------
@@ -368,24 +395,263 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenServerClosesConnectionWithUnknownError_ThenReadReconnectAndRetries(
+        public async Task WhenServerClosesConnectionWithUnknownErrorBeforeData_ThenReadConnectsAgain(
              [Values(
                 CloseCode.INVALID_WEBSOCKET_OPCODE)] CloseCode code)
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
                 await endpoint.Server
-                    .CloseOutputAsync((WebSocketCloseStatus)code)
+                    .SendConnectSuccessSidAsync("sid")
+                    .ConfigureAwait(false); 
+                await endpoint.Server
+                     .CloseOutputAsync((WebSocketCloseStatus)code)
+                     .ConfigureAwait(false);
+
+                var afterReconnect = await endpoint
+                    .AfterReconnect()
+                    .ConfigureAwait(false);
+                await afterReconnect
+                    .SendConnectSuccessSidAsync("sid")
+                    .ConfigureAwait(false);
+                await afterReconnect
+                    .SendDataAsync(new byte[] { (byte)'d', (byte)'a', (byte)'t', (byte)'a' })
                     .ConfigureAwait(false);
 
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(
-                        () => clientStream
-                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
+                    var bytesRead = await clientStream
+                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(4, bytesRead);
+                    Assert.AreEqual(2, endpoint.ConnectCalls);
+                    Assert.AreEqual(0, endpoint.ReconnectCalls);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenServerClosesConnectionWithUnknownErrorAfterData_ThenReadTriggersReconnect(
+             [Values(
+                CloseCode.INVALID_WEBSOCKET_OPCODE)] CloseCode code)
+        {
+            using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
+            {
+                await endpoint.Server
+                    .SendConnectSuccessSidAsync("sid")
+                    .ConfigureAwait(false);
+                await endpoint.Server
+                    .SendDataAsync(new byte[] { 0xAA })
+                    .ConfigureAwait(false);
+                await endpoint.Server
+                     .CloseOutputAsync((WebSocketCloseStatus)code)
+                     .ConfigureAwait(false);
+
+                var afterReconnect = await endpoint
+                    .AfterReconnect()
+                    .ConfigureAwait(false);
+                await afterReconnect
+                    .SendConnectSuccessSidAsync("sid")
+                    .ConfigureAwait(false);
+                await afterReconnect
+                    .SendDataAsync(new byte[] { (byte)'d', (byte)'a', (byte)'t', (byte)'a' })
+                    .ConfigureAwait(false);
+
+                using (var clientStream = new SshRelayStream(endpoint))
+                {
+                    // Read data before reconnect.
+                    var buffer = new byte[SshRelayStream.MinReadSize];
+                    var bytesRead = await clientStream
+                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(1, bytesRead);
+                    Assert.AreEqual(1, endpoint.ConnectCalls);
+                    Assert.AreEqual(0, endpoint.ReconnectCalls);
+
+                    // Read data after reconnect.
+                    bytesRead = await clientStream
+                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(4, bytesRead);
+                    Assert.AreEqual(1, endpoint.ConnectCalls);
                     Assert.AreEqual(1, endpoint.ReconnectCalls);
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Write: closing.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenBufferSizeTooBig_ThenWriteThrowsException()
+        {
+            using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
+            {
+                using (var clientStream = new SshRelayStream(endpoint))
+                {
+                    var buffer = new byte[SshRelayStream.MaxWriteSize + 1];
+                    ExceptionAssert.ThrowsAggregateException<IndexOutOfRangeException>(
+                        () => clientStream
+                            .WriteAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                            .Wait());
+                }
+
+                Assert.AreEqual(0, endpoint.ReconnectCalls);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Write: ack.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenDataRead_ThenWriteSendsAck()
+        {
+            using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
+            {
+                await endpoint.Server
+                    .SendConnectSuccessSidAsync("sid")
+                    .ConfigureAwait(false);
+                await endpoint.Server
+                    .SendDataAsync(new byte[] { 0xAA })
+                    .ConfigureAwait(false);
+
+                using (var clientStream = new SshRelayStream(endpoint))
+                {
+                    // Read data (so that we owe an ACK).
+                    var buffer = new byte[SshRelayStream.MaxWriteSize + 1];
+                    await clientStream
+                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    // Write 2 chunks data (to send the ACK).
+                    var data = new byte[] { (byte)'d', (byte)'a', (byte)'t', (byte)'a' };
+                    await clientStream
+                        .WriteAsync(data, 0, data.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+                    await clientStream
+                        .WriteAsync(data, 0, data.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    // Expect ACK.
+                    var serverBuffer = new byte[64];
+                    var bytesReceived = await endpoint.Server
+                        .ReceiveBinaryFrameAsync(serverBuffer)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(10, bytesReceived);
+                    SshRelayFormat.Ack.Decode(serverBuffer, out var ack);
+                    Assert.AreEqual(1, ack);
+
+                    // Expect DATA.
+                    bytesReceived = await endpoint.Server
+                        .ReceiveBinaryFrameAsync(serverBuffer)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(10, bytesReceived);
+                    SshRelayFormat.Tag.Decode(serverBuffer, out var tag);
+                    Assert.AreEqual(MessageTag.DATA, tag);
+
+                    // Expect DATA.
+                    bytesReceived = await endpoint.Server
+                        .ReceiveBinaryFrameAsync(serverBuffer)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(10, bytesReceived);
+                    SshRelayFormat.Tag.Decode(serverBuffer, out tag);
+                    Assert.AreEqual(MessageTag.DATA, tag);
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Write: reconnect.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenReconnecting_ThenWriteResendsUnackedData()
+        {
+            using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
+            {
+                await endpoint.Server
+                    .SendConnectSuccessSidAsync("sid")
+                    .ConfigureAwait(false);
+                await endpoint.Server
+                    .SendDataAsync(new byte[] { 0xAA })
+                    .ConfigureAwait(false);
+
+                var afterReconnect = await endpoint
+                    .AfterReconnect()
+                    .ConfigureAwait(false);
+                await afterReconnect
+                    .SendConnectSuccessSidAsync("sid")
+                    .ConfigureAwait(false);
+                await afterReconnect
+                    .SendDataAsync(new byte[] { 0xBB })
+                    .ConfigureAwait(false);
+
+                using (var clientStream = new SshRelayStream(endpoint))
+                {
+                    // Read data.
+                    var buffer = new byte[SshRelayStream.MinReadSize];
+                    var bytesRead = await clientStream
+                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+                    Assert.AreEqual(1, bytesRead);
+
+                    // Send data.
+                    var data = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD };
+                    await clientStream
+                        .WriteAsync(data, 0, data.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    // Reconnect.
+                    await endpoint.Server
+                        .CloseOutputAsync((WebSocketCloseStatus)CloseCode.INVALID_WEBSOCKET_OPCODE)
+                        .ConfigureAwait(false);
+                    await clientStream
+                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+                    Assert.AreEqual(1, bytesRead);
+
+                    // Send more data.
+                    data = new byte[] { 0xEE, 0xFF };
+                    await clientStream
+                        .WriteAsync(data, 0, data.Length, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    // Expect DATA.
+                    var serverBuffer = new byte[64];
+                    var bytesReceived = await afterReconnect
+                        .ReceiveBinaryFrameAsync(serverBuffer)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(10, bytesReceived);
+                    SshRelayFormat.Tag.Decode(serverBuffer, out var tag);
+                    Assert.AreEqual(MessageTag.DATA, tag);
+
+                    // Expect ACK.
+                    bytesReceived = await afterReconnect
+                        .ReceiveBinaryFrameAsync(serverBuffer)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(10, bytesReceived);
+                    SshRelayFormat.Ack.Decode(serverBuffer, out var ack);
+                    Assert.AreEqual(2, ack);
+
+                    // Expect DATA.
+                    bytesReceived = await afterReconnect
+                        .ReceiveBinaryFrameAsync(serverBuffer)
+                        .ConfigureAwait(false);
+
+                    Assert.AreEqual(8, bytesReceived);
+                    SshRelayFormat.Tag.Decode(serverBuffer, out tag);
+                    Assert.AreEqual(MessageTag.DATA, tag);
                 }
             }
         }

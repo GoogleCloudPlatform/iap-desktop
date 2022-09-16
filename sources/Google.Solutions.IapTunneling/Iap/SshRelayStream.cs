@@ -184,9 +184,11 @@ namespace Google.Solutions.IapTunneling.Iap
                         await resendMessage.ConfigureAwait(false);
                     }
 
+                    //
                     // The first receive should be a CONNECT_SUCCESS_SID or
                     // RECONNECT_SUCCESS_ACK message. There is no strong reason
-                    // for eagerly trying to recive these messages here.
+                    // for eagerly trying to receive these messages here.
+                    //
                 }
 
                 return this.__currentConnection;
