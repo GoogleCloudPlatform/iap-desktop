@@ -26,6 +26,7 @@ using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.IapTunneling.Test.Util;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
@@ -37,13 +38,41 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             InstanceLocator vmRef,
             ICredential credential)
         {
-            return new FragmentingStream(new SshRelayStream(
+            return new SshRelayStream(
                 new IapTunnelingEndpoint(
                     credential,
                     vmRef,
                     7,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    TestProject.UserAgent)));
+                    TestProject.UserAgent));
+        }
+
+        [Test]
+        public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
+            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential,
+            [Values(
+                1,
+                (int)DataMessage.MaxDataLength - 1,
+                (int)DataMessage.MaxDataLength,
+                (int)DataMessage.MaxDataLength + 1,
+                (int)DataMessage.MaxDataLength * 2)] int messageSize,
+            [Values(
+                SshRelayStream.MaxWriteSize / 2,
+                SshRelayStream.MaxWriteSize)] int writeSize,
+            [Values(
+                SshRelayStream.MinReadSize,
+                SshRelayStream.MinReadSize * 2)] int readSize,
+            [Values(1, 3)] int count)
+        {
+            await WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
+                    await vm,
+                    await credential,
+                    messageSize,
+                    writeSize,
+                    readSize,
+                    count)
+                .ConfigureAwait(false);
         }
     }
 }

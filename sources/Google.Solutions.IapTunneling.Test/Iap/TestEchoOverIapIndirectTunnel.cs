@@ -28,6 +28,7 @@ using NUnit.Framework;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
@@ -54,6 +55,28 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
 
             return new SocketStream(socket, new ConnectionStatistics());
+        }
+
+        [Test]
+        public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
+            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential,
+            [Values(
+                1,
+                (int)DataMessage.MaxDataLength - 1,
+                (int)DataMessage.MaxDataLength,
+                (int)DataMessage.MaxDataLength + 1,
+                (int)DataMessage.MaxDataLength * 2)] int messageSize,
+            [Values(1, 3)] int count)
+        {
+            await WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
+                    await vm,
+                    await credential,
+                    messageSize,
+                    messageSize,
+                    messageSize,
+                    count)
+                .ConfigureAwait(false);
         }
     }
 }

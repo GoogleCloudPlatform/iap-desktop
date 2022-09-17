@@ -426,7 +426,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 //
                                 // Copy data to caller's buffer.
                                 //
-                                Debug.Assert(dataMessage.DataLength < count);
+                                Debug.Assert(dataMessage.DataLength <= count);
                                 Array.Copy(
                                     receiveBuffer.Buffer,
                                     DataMessage.DataOffset,
