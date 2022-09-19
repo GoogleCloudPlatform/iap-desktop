@@ -166,37 +166,37 @@ namespace Google.Solutions.IapTunneling.Iap
                             this.Sid,
                             Thread.VolatileRead(ref this.bytesReceived),
                             cancellationToken).ConfigureAwait(false);
-                    }
 
-                    //
-                    // Resend any un-ack'ed data.
-                    //
-                    while (true)
-                    {
-                        Task resendMessage = null;
-                        lock (this.sentButUnacknoledgedQueueLock)
+                        //
+                        // Resend any un-ack'ed data.
+                        //
+                        while (true)
                         {
-                            if (!this.unacknoledgedQueue.Any())
+                            Task resendMessage = null;
+                            lock (this.sentButUnacknoledgedQueueLock)
                             {
-                                break;
+                                if (!this.unacknoledgedQueue.Any())
+                                {
+                                    break;
+                                }
+
+                                var write = this.unacknoledgedQueue.Dequeue();
+
+                                TraceLine($"Resending DATA #{write.SequenceNumber}...");
+                                resendMessage = this.__currentConnection.WriteAsync(
+                                    write.Data,
+                                    0,
+                                    write.Data.Length,
+                                    cancellationToken);
                             }
 
-                            var write = this.unacknoledgedQueue.Dequeue();
-
-                            TraceLine($"Resending DATA #{write.SequenceNumber}...");
-                            resendMessage = this.__currentConnection.WriteAsync(
-                                write.Data,
-                                0,
-                                write.Data.Length,
-                                cancellationToken);
+                            Debug.Assert(resendMessage != null);
+                            await resendMessage.ConfigureAwait(false);
                         }
-
-                        Debug.Assert(resendMessage != null);
-                        await resendMessage.ConfigureAwait(false);
                     }
 
                     //
-                    // The first receive should be a CONNECT_SUCCESS_SID or
+                    // NB. The first receive should be a CONNECT_SUCCESS_SID or
                     // RECONNECT_SUCCESS_ACK message. There is no strong reason
                     // for eagerly trying to receive these messages here.
                     //
@@ -218,7 +218,9 @@ namespace Google.Solutions.IapTunneling.Iap
                 // Acquire semaphore to ensure that only a single
                 // connect operation is in flight at a time.
                 //
-                await this.connectSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                await this.connectSemaphore
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(false);
 
                 //
                 // Drop this connection.
@@ -227,7 +229,9 @@ namespace Google.Solutions.IapTunneling.Iap
                 {
                     if (this.__currentConnection != null)
                     {
-                        await this.__currentConnection.CloseAsync(cancellationToken).ConfigureAwait(false);
+                        await this.__currentConnection
+                            .CloseAsync(cancellationToken)
+                            .ConfigureAwait(false);
                     }
                 }
                 catch (Exception e)
@@ -325,9 +329,11 @@ namespace Google.Solutions.IapTunneling.Iap
             {
                 try
                 {
-                    var connection = await ConnectAsync(cancellationToken).ConfigureAwait(false);
+                    var connection = await ConnectAsync(cancellationToken)
+                        .ConfigureAwait(false);
 
-                    int bytesRead = await connection.ReadAsync(
+                    int bytesRead = await connection
+                        .ReadAsync(
                             message,
                             0,
                             message.Length,
@@ -355,11 +361,8 @@ namespace Google.Solutions.IapTunneling.Iap
                                 this.Sid = sid;
 
                                 TraceLine($"Connected session <{this.Sid}>");
-
-                                //
-                                // No data to return to client yet.
-                                //
                                 Debug.Assert(bytesDecoded == bytesRead);
+
                                 break;
                             }
 
@@ -384,10 +387,8 @@ namespace Google.Solutions.IapTunneling.Iap
                                     TraceLine($"Reconnected session <{this.Sid}>");
                                 }
 
-                                //
-                                // No data to return to client yet.
-                                //
                                 Debug.Assert(bytesDecoded == bytesRead);
+
                                 break;
                             }
 
@@ -416,11 +417,8 @@ namespace Google.Solutions.IapTunneling.Iap
                                 }
 
                                 TraceLine($"Received ACK #{ack}");
-
-                                //
-                                // No data to return to client yet.
-                                //
                                 Debug.Assert(bytesDecoded == bytesRead);
+
                                 break;
                             }
 
@@ -439,6 +437,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 this.bytesReceived += dataLength;
 
                                 Debug.Assert(bytesDecoded == bytesRead);
+
                                 return (int)dataLength;
                             }
 
@@ -537,7 +536,8 @@ namespace Google.Solutions.IapTunneling.Iap
             {
                 try
                 {
-                    var connection = await ConnectAsync(cancellationToken).ConfigureAwait(false);
+                    var connection = await ConnectAsync(cancellationToken)
+                        .ConfigureAwait(false);
 
                     //
                     // Take care of outstanding ACKs.
@@ -550,7 +550,8 @@ namespace Google.Solutions.IapTunneling.Iap
 
                         TraceLine($"Sending ACK #{bytesToAck}...");
 
-                        await connection.WriteAsync(
+                        await connection
+                            .WriteAsync(
                                 ackBuffer,
                                 0,
                                 ackBuffer.Length,
@@ -577,7 +578,8 @@ namespace Google.Solutions.IapTunneling.Iap
                     //
                     this.bytesSent = Thread.VolatileRead(ref this.bytesSent) + (ulong)count;
 
-                    await connection.WriteAsync(
+                    await connection
+                        .WriteAsync(
                             message,
                             0,
                             message.Length,
