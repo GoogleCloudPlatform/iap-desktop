@@ -294,12 +294,12 @@ namespace Google.Solutions.IapTunneling.Iap
         /// <summary>
         /// Maximum amount of data (in byte) that can be written at once.
         /// </summary>
-        public const int MaxWriteSize = (int)SshRelayFormat.Data.MaxPayloadLength; // TODO: use uint
+        public const uint MaxWriteSize = (int)SshRelayFormat.Data.MaxPayloadLength;
 
         /// <summary>
         /// Minimum amount of data (in byte) that can be read at once.
         /// </summary>
-        public const int MinReadSize = (int)SshRelayFormat.Data.MaxPayloadLength;
+        public const uint MinReadSize = (int)SshRelayFormat.Data.MaxPayloadLength;
 
         //---------------------------------------------------------------------
         // SingleReaderSingleWriterStream implementation
@@ -338,7 +338,6 @@ namespace Google.Solutions.IapTunneling.Iap
                     {
                         TraceLine("Server closed connection");
 
-                        // We are done here
                         return 0;
                     }
                     else if (bytesRead < 2)
@@ -378,7 +377,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 else if (lastAckReceived > ack)
                                 {
                                     Debug.Assert(false, "Server acked backwards");
-                                    throw new Exception("Server acked backwards");
+                                    throw new InvalidServerResponseException("Server acked backwards");
                                 }
                                 else
                                 {
