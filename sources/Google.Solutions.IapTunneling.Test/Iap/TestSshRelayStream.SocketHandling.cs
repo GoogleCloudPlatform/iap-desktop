@@ -369,7 +369,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     .SendConnectSuccessSidAsync("Sid")
                     .ConfigureAwait(false);
 
-                var data = new byte[SshRelayFormat.MaxDataPayloadLength];
+                var data = new byte[SshRelayStream.MinReadSize];
                 data[0] = 0xAA;
                 data[data.Length - 1] = 0xBB;
 
@@ -379,12 +379,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
-                    var buffer = new byte[SshRelayFormat.MaxDataPayloadLength + 1];
+                    var buffer = new byte[SshRelayStream.MinReadSize + 1];
                     var bytesRead = await clientStream
-                        .ReadAsync(buffer, 1, buffer.Length, CancellationToken.None)
+                        .ReadAsync(buffer, 1, buffer.Length - 1, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    Assert.AreEqual(SshRelayFormat.MaxDataPayloadLength, bytesRead);
+                    Assert.AreEqual(SshRelayStream.MinReadSize, bytesRead);
                     Assert.AreEqual(0xAA, buffer[1]);
                     Assert.AreEqual(0xBB, buffer[buffer.Length - 1]);
                 }

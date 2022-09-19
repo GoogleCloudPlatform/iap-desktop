@@ -548,7 +548,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     {
                         ExpectedReadData = new byte[][]
                         {
-                            new byte[]{ 0, (byte)MessageTag.RECONNECT_SUCCESS_ACK, 0, 0, 0, 0 },
+                            new byte[]{ 0, (byte)MessageTag.RECONNECT_SUCCESS_ACK, 0, 0, 0, 0, 0, 0, 0, 0 },
                             new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 1, 1 }
                         },
                         ExpectServerCloseCodeOnRead = closeStatus

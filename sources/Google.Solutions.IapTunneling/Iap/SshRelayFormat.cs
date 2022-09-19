@@ -37,12 +37,11 @@ namespace Google.Solutions.IapTunneling.Iap
         /// </summary>
         private const uint MaxArrayLength = 16 * 1024;
 
-        public const uint MaxDataPayloadLength = MaxArrayLength;
-
         //
         // DATA messages are the largest.
         //
         public const uint MaxMessageSize = 6 + MaxArrayLength;
+        public const uint MinMessageSize = 7;
 
         private static void ThrowIfBufferSmallerThan(
             byte[] messageBuffer,
@@ -137,29 +136,31 @@ namespace Google.Solutions.IapTunneling.Iap
             // 00-01 (len=2): Tag
             // 02-0A (len=8): ACK
             //
+
+            public const uint MessageLength = sizeof(ushort) + sizeof(ulong);
+
             public static uint Encode(
                 byte[] messageBuffer,
                 ulong ack)
             {
-                var requiredSize = (uint)sizeof(ushort) + sizeof(ulong);
-                ThrowIfBufferSmallerThan(messageBuffer, requiredSize);
+                ThrowIfBufferSmallerThan(messageBuffer, MessageLength);
 
                 BigEndian.EncodeUInt16((ushort)MessageTag.RECONNECT_SUCCESS_ACK, messageBuffer, 0);
                 BigEndian.EncodeUInt64((uint)ack, messageBuffer, 2);
 
-                return requiredSize;
+                return MessageLength;
             }
 
             public static uint Decode(
                 byte[] messageBuffer,
                 out ulong ack)
             {
-                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(ulong));
+                ThrowIfBufferSmallerThan(messageBuffer, MessageLength);
                 Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.RECONNECT_SUCCESS_ACK);
 
                 ack = BigEndian.DecodeUInt64(messageBuffer, 2);
 
-                return sizeof(ushort) + sizeof(ulong);
+                return MessageLength;
             }
         }
 
@@ -170,28 +171,30 @@ namespace Google.Solutions.IapTunneling.Iap
             // 02-0A (len=8): ACK
             //
 
+            public const uint MessageLength = sizeof(ushort) + sizeof(ulong);
+
             public static uint Encode(
                 byte[] messageBuffer,
                 ulong ack)
             {
-                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(ulong));
+                ThrowIfBufferSmallerThan(messageBuffer, MessageLength);
 
                 BigEndian.EncodeUInt16((ushort)MessageTag.ACK, messageBuffer, 0);
                 BigEndian.EncodeUInt64(ack, messageBuffer, 2);
 
-                return sizeof(ushort) + sizeof(ulong);
+                return MessageLength;
             }
 
             public static uint Decode(
                 byte[] messageBuffer,
                 out ulong ack)
             {
-                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(ulong));
+                ThrowIfBufferSmallerThan(messageBuffer, MessageLength);
                 Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.ACK);
 
                 ack = BigEndian.DecodeUInt64(messageBuffer, 2);
 
-                return sizeof(ushort) + sizeof(ulong);
+                return MessageLength;
             }
         }
 
@@ -202,6 +205,13 @@ namespace Google.Solutions.IapTunneling.Iap
             // 02-05 (len=4): Array length
             // 06-*         : Data
             //
+
+            public const uint HeaderLength = sizeof(ushort) + sizeof(uint);
+
+            public const uint MaxPayloadLength = MaxArrayLength;
+
+            public const uint MaxMessageLength = MaxPayloadLength + HeaderLength;
+
             public static uint Encode(
                 byte[] messageBuffer,
                 byte[] data,
@@ -228,25 +238,27 @@ namespace Google.Solutions.IapTunneling.Iap
                     6,
                     dataLength);
 
-                return sizeof(ushort) + sizeof(uint) + dataLength;
+                return HeaderLength + dataLength;
             }
 
             public static uint Decode(
                 byte[] messageBuffer,
-                byte[] data,
-                uint dataOffset,
-                uint dataLength)
+                byte[] targetBuffer,
+                uint targetBufferOffset,
+                uint targetBufferLength,
+                out uint dataLength)
             {
-                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint) + 1);
+                ThrowIfBufferSmallerThan(messageBuffer, HeaderLength + 1);
                 Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.DATA);
 
-                var arrayLength = BigEndian.DecodeUInt32(messageBuffer, 2);
-                Debug.Assert(arrayLength <= MaxArrayLength);
-                Debug.Assert(arrayLength > 0);
+                dataLength = BigEndian.DecodeUInt32(messageBuffer, 2);
+                Debug.Assert(dataLength <= MaxArrayLength);
+                Debug.Assert(dataLength > 0);
 
-                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint) + arrayLength);
+                ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint) + dataLength);
 
-                if (arrayLength > dataLength || dataLength + dataOffset > data.Length)
+                if (dataLength > targetBufferLength || 
+                    targetBufferLength + targetBufferOffset > targetBuffer.Length)
                 {
                     throw new IndexOutOfRangeException("Read buffer is too small");
                 }
@@ -254,11 +266,11 @@ namespace Google.Solutions.IapTunneling.Iap
                 Array.Copy(
                     messageBuffer,
                     6,
-                    data,
-                    dataOffset,
-                    (int)arrayLength);
+                    targetBuffer,
+                    targetBufferOffset,
+                    (int)dataLength);
 
-                return sizeof(ushort) + sizeof(uint) + arrayLength;
+                return HeaderLength + dataLength;
             }
         }
     }

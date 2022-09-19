@@ -280,7 +280,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             [Test]
             public void WhenDataIsEmpty_ThenEncodeThrowsException()
             {
-                var message = new byte[SshRelayFormat.MaxDataPayloadLength];
+                var message = new byte[SshRelayFormat.Data.MaxPayloadLength];
                 var data = new byte[0];
 
                 Assert.Throws<ArgumentException>(
@@ -290,8 +290,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             [Test]
             public void WhenDataTooLarge_ThenEncodeThrowsException()
             {
-                var message = new byte[SshRelayFormat.MaxDataPayloadLength + 1];
-                var data = new byte[SshRelayFormat.MaxDataPayloadLength + 1];
+                var message = new byte[SshRelayFormat.Data.MaxPayloadLength + 1];
+                var data = new byte[SshRelayFormat.Data.MaxPayloadLength + 1];
 
                 Assert.Throws<ArgumentException>(
                     () => SshRelayFormat.Data.Encode(message, data, 0, (uint)data.Length));
@@ -301,7 +301,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             public void WhenBufferTooSmall_ThenEncodeThrowsException()
             {
                 var message = new byte[SshRelayFormat.MaxMessageSize - 1];
-                var data = new byte[SshRelayFormat.MaxDataPayloadLength];
+                var data = new byte[SshRelayFormat.Data.MaxPayloadLength];
 
                 Assert.Throws<ArgumentException>(
                     () => SshRelayFormat.Data.Encode(message, data, 0, (uint)data.Length));
@@ -311,15 +311,15 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             public void WhenDataIsMaxSize_ThenEncodeSucceeds()
             {
                 var message = new byte[SshRelayFormat.MaxMessageSize];
-                var data = new byte[SshRelayFormat.MaxDataPayloadLength];
+                var data = new byte[SshRelayFormat.Data.MaxPayloadLength];
                 data[0] = (byte)'A';
-                data[SshRelayFormat.MaxDataPayloadLength - 1] = (byte)'Z';
+                data[SshRelayFormat.Data.MaxPayloadLength - 1] = (byte)'Z';
 
                 var bytesWritten = SshRelayFormat.Data.Encode(
                     message,
                     data,
                     0,
-                    SshRelayFormat.MaxDataPayloadLength);
+                    SshRelayFormat.Data.MaxPayloadLength);
 
                 Assert.AreEqual(SshRelayFormat.MaxMessageSize, bytesWritten);
                 Assert.AreEqual(SshRelayFormat.MaxMessageSize, bytesWritten);
@@ -330,13 +330,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             public void WhenIndexNotZero_ThenEncodeSucceeds()
             {
                 var message = new byte[7];
-                var data = new byte[SshRelayFormat.MaxDataPayloadLength + 1];
-                data[SshRelayFormat.MaxDataPayloadLength] = (byte)'D';
+                var data = new byte[SshRelayFormat.Data.MaxPayloadLength + 1];
+                data[SshRelayFormat.Data.MaxPayloadLength] = (byte)'D';
 
                 var bytesWritten = SshRelayFormat.Data.Encode(
                     message,
                     data,
-                    SshRelayFormat.MaxDataPayloadLength,
+                    SshRelayFormat.Data.MaxPayloadLength,
                     1);
 
                 Assert.AreEqual(7, bytesWritten);
@@ -360,10 +360,16 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 };
 
                 var data = new byte[1];
-                var bytesRead = SshRelayFormat.Data.Decode(message, data, 0, (uint)data.Length);
+                var bytesRead = SshRelayFormat.Data.Decode(
+                    message, 
+                    data, 
+                    0, 
+                    (uint)data.Length,
+                    out var dataLength);
 
                 Assert.AreEqual(7, bytesRead);
                 Assert.AreEqual('D', data[0]);
+                Assert.AreEqual(1, dataLength);
             }
 
             [Test]
@@ -376,10 +382,16 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 };
 
                 var data = new byte[2];
-                var bytesRead = SshRelayFormat.Data.Decode(message, data, 1, 1);
+                var bytesRead = SshRelayFormat.Data.Decode(
+                    message, 
+                    data, 
+                    1, 
+                    1,
+                    out var dataLength);
 
                 Assert.AreEqual(7, bytesRead);
                 Assert.AreEqual('D', data[1]);
+                Assert.AreEqual(1, dataLength);
             }
 
             [Test]
@@ -394,7 +406,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 var data = new byte[1];
 
                 Assert.Throws<ArgumentException>(
-                    () => SshRelayFormat.Data.Decode(message, data, 1, (uint)data.Length));
+                    () => SshRelayFormat.Data.Decode(
+                        message, 
+                        data, 
+                        1, 
+                        (uint)data.Length,
+                        out var dataLength));
             }
 
             [Test]
@@ -409,7 +426,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 var data = new byte[1];
 
                 Assert.Throws<IndexOutOfRangeException>(
-                    () => SshRelayFormat.Data.Decode(message, data, 0, (uint)data.Length));
+                    () => SshRelayFormat.Data.Decode(
+                        message, 
+                        data, 
+                        0, 
+                        (uint)data.Length,
+                        out var dataLength));
             }
         }
     }

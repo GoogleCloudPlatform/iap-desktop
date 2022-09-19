@@ -63,10 +63,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential,
             [Values(
                 1,
-                (int)DataMessage.MaxDataLength - 1,
-                (int)DataMessage.MaxDataLength,
-                (int)DataMessage.MaxDataLength + 1,
-                (int)DataMessage.MaxDataLength * 2)] int messageSize,
+                (int)SshRelayFormat.Data.MaxPayloadLength - 1,
+                (int)SshRelayFormat.Data.MaxPayloadLength,
+                (int)SshRelayFormat.Data.MaxPayloadLength + 1,
+                (int)SshRelayFormat.Data.MaxPayloadLength * 2)] int messageSize,
             [Values(1, 3)] int count)
         {
             await WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
