@@ -29,7 +29,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("Google LLC")]
 
-[assembly: AssemblyVersion("2.29.1")]
-[assembly: AssemblyFileVersion("2.29.1")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
 
 [assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Shell.Test")]
