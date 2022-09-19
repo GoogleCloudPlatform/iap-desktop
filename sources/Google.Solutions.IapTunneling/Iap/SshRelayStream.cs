@@ -166,41 +166,41 @@ namespace Google.Solutions.IapTunneling.Iap
                             this.Sid,
                             Thread.VolatileRead(ref this.bytesReceived),
                             cancellationToken).ConfigureAwait(false);
-
-                        //
-                        // Resend any un-ack'ed data.
-                        //
-                        while (true)
-                        {
-                            Task resendMessage = null;
-                            lock (this.sentButUnacknoledgedQueueLock)
-                            {
-                                if (!this.unacknoledgedQueue.Any())
-                                {
-                                    break;
-                                }
-
-                                var write = this.unacknoledgedQueue.Dequeue();
-
-                                TraceLine($"Resending DATA #{write.SequenceNumber}...");
-                                resendMessage = this.__currentConnection.WriteAsync(
-                                    write.Data,
-                                    0,
-                                    write.Data.Length,
-                                    cancellationToken);
-                            }
-
-                            Debug.Assert(resendMessage != null);
-                            await resendMessage.ConfigureAwait(false);
-                        }
                     }
 
                     //
-                    // NB. The first receive should be a CONNECT_SUCCESS_SID or
-                    // RECONNECT_SUCCESS_ACK message. There is no strong reason
-                    // for eagerly trying to receive these messages here.
+                    // Resend any un-ack'ed data.
                     //
+                    while (true)
+                    {
+                        Task resendMessage = null;
+                        lock (this.sentButUnacknoledgedQueueLock)
+                        {
+                            if (!this.unacknoledgedQueue.Any())
+                            {
+                                break;
+                            }
+
+                            var write = this.unacknoledgedQueue.Dequeue();
+
+                            TraceLine($"Resending DATA #{write.SequenceNumber}...");
+                            resendMessage = this.__currentConnection.WriteAsync(
+                                write.Data,
+                                0,
+                                write.Data.Length,
+                                cancellationToken);
+                        }
+
+                        Debug.Assert(resendMessage != null);
+                        await resendMessage.ConfigureAwait(false);
+                    }
                 }
+
+                //
+                // NB. The first receive should be a CONNECT_SUCCESS_SID or
+                // RECONNECT_SUCCESS_ACK message. There is no strong reason
+                // for eagerly trying to receive these messages here.
+                //
 
                 return this.__currentConnection;
             }
