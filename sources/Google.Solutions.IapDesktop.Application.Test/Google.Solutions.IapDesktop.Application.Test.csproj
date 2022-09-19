@@ -100,7 +100,6 @@
     <Compile Include="Controls\TestFontExtensions.cs" />
     <Compile Include="Controls\TestScreenPicker.cs" />
     <Compile Include="Host\TestProfile.cs" />
-    <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
     <Compile Include="Services\Adapters\TestCertificateStoreAdapter.cs" />
     <Compile Include="Services\Adapters\TestComputeEngineAdapter.cs" />
@@ -137,7 +136,6 @@
     <Compile Include="Host\TestCommandLineOptions.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
     <Compile Include="Services\SecureConnect\TestSecureConnectEnrollment.cs" />
-    <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />

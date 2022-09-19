@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Mvvm.Cache;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Util
+namespace Google.Solutions.Mvvm.Test.Cache
 {
     [TestFixture]
     public class TestLeastRecentlyUsedCache

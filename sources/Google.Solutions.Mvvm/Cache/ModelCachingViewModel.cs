@@ -19,15 +19,15 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.Mvvm.Cache
 {
     /// <summary>
     /// View model that maintains an LRU cache of models.
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                     // Another asynchnous load/bind operation is ongoing.
                     // Cancel that one because we won't need its result.
 
-                    ApplicationTraceSources.Default.TraceVerbose("Cancelling previous model load task");
+                    CommonTraceSources.Default.TraceVerbose("Cancelling previous model load task");
                     this.tokenSourceForCurrentTask.Cancel();
                     this.tokenSourceForCurrentTask = null;
                 }
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 }
                 catch (Exception e) when (e.IsCancellation())
                 {
-                    ApplicationTraceSources.Default.TraceVerbose("Model load cancelled");
+                    CommonTraceSources.Default.TraceVerbose("Model load cancelled");
                 }
             }
         }

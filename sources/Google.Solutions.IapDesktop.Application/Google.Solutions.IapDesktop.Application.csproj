@@ -96,7 +96,6 @@
     <Compile Include="Host\CommandLineOptions.cs" />
     <Compile Include="Host\Profile.cs" />
     <Compile Include="ObjectModel\IServiceCategoryProvider.cs" />
-    <Compile Include="ObjectModel\ModelCachingViewModel.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />
     <Compile Include="ObjectModel\Service.cs" />
     <Compile Include="Services\Adapters\AdapterException.cs" />
@@ -285,7 +284,6 @@
     <Compile Include="Views\Dialog\TaskDialog.cs" />
     <Compile Include="Services\UpdateService.cs" />
     <Compile Include="ApplicationTraceSources.cs" />
-    <Compile Include="Util\LeastRecentlyUsedCache.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
     <Compile Include="Data\IapRdpUrl.cs" />
     <Compile Include="Views\About\AboutWindow.cs">

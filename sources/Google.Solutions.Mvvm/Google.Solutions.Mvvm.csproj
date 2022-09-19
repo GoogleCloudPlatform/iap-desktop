@@ -55,6 +55,8 @@
     <Compile Include="Binding\RangeObservableCollection.cs" />
     <Compile Include="Binding\ToolStripMenuBindingExtensions.cs" />
     <Compile Include="Binding\ViewModelBase.cs" />
+    <Compile Include="Cache\LeastRecentlyUsedCache.cs" />
+    <Compile Include="Cache\ModelCachingViewModel.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandContainer.cs" />
     <Compile Include="Commands\ObservableCommandContextSource.cs" />
