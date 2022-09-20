@@ -121,11 +121,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public void WhenFirstReadEncountersUnrecognizedMessageTag_ThenReadFailsWithInvalidServerResponseException(
             [Values(
-                (byte)MessageTag.UNUSED,
+                (byte)MessageTag.UNUSED_0,
                 (byte)MessageTag.DEPRECATED,
-                (byte)MessageTag.ACK_LATENCY,
-                (byte)MessageTag.REPLY_LATENCY,
-                (byte)MessageTag.ACK + 1)] byte tag)
+                (byte)MessageTag.UNUSED_5,
+                (byte)MessageTag.UNUSED_6,
+                (byte)MessageTag.UNUSED_8,
+                (byte)MessageTag.LONG_CLOSE)] byte tag)
         {
             var stream = new MockStream()
             {
@@ -151,13 +152,14 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public async Task WhenSubsequentReadEncountersUnrecognizedMessageTag_ThenReadFailsWithInvalidServerResponseException(
+        public async Task WhenSubsequentReadEncountersUnrecognizedMessageTag_ThenReadSkipsMessage(
             [Values(
-                (byte)MessageTag.UNUSED,
+                (byte)MessageTag.UNUSED_0,
                 (byte)MessageTag.DEPRECATED,
-                (byte)MessageTag.ACK_LATENCY,
-                (byte)MessageTag.REPLY_LATENCY,
-                (byte)MessageTag.ACK + 1)] byte tag)
+                (byte)MessageTag.UNUSED_5,
+                (byte)MessageTag.UNUSED_6,
+                (byte)MessageTag.UNUSED_8,
+                (byte)MessageTag.LONG_CLOSE)] byte tag)
         {
             var stream = new MockStream()
             {
