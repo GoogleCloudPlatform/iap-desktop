@@ -39,7 +39,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             {
                 var message = new byte[2];
 
-                var bytesWritten = SshRelayFormat.Tag.Encode(message, MessageTag.ACK);
+                var bytesWritten = SshRelayFormat.Tag.Encode(message, SshRelayMessageTag.ACK);
 
                 Assert.AreEqual(2, bytesWritten);
                 CollectionAssert.AreEquivalent(
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 var message = new byte[1];
 
                 Assert.Throws<ArgumentException>(
-                    () => SshRelayFormat.Tag.Encode(message, MessageTag.ACK));
+                    () => SshRelayFormat.Tag.Encode(message, SshRelayMessageTag.ACK));
             }
 
             [Test]
@@ -67,7 +67,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 var bytesRead = SshRelayFormat.Tag.Decode(message, out var tag);
 
                 Assert.AreEqual(2, bytesRead);
-                Assert.AreEqual(MessageTag.DATA, tag);
+                Assert.AreEqual(SshRelayMessageTag.DATA, tag);
             }
 
             [Test]
@@ -432,6 +432,78 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                         0, 
                         (uint)data.Length,
                         out var dataLength));
+            }
+        }
+
+
+
+        //---------------------------------------------------------------------
+        // ´LongClose.
+        //---------------------------------------------------------------------
+
+        [TestFixture]
+        public class LongClose : IapFixtureBase
+        {
+            [Test]
+            public void WhenBufferTooSmall_ThenEncodeThrowsException()
+            {
+                var message = new byte[SshRelayFormat.LongClose.MinMessageLength - 1];
+
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.LongClose.Encode(
+                        message, 
+                        SshRelayCloseCode.ERROR_UNKNOWN,
+                        string.Empty));
+            }
+
+            [Test]
+            public void WhenReasonEmpty_ThenEncodeSucceeds()
+            {
+                var message = new byte[SshRelayFormat.LongClose.MinMessageLength];
+
+                var bytesWritten = SshRelayFormat.LongClose.Encode(
+                    message,
+                    SshRelayCloseCode.ERROR_UNKNOWN,
+                    string.Empty);
+
+                Assert.AreEqual(SshRelayFormat.LongClose.MinMessageLength, bytesWritten);
+            }
+
+            [Test]
+            public void WhenMessageComplete_ThenDecodeReturnsData()
+            {
+                var message = new byte[] {
+                    0, 10,
+                    0, 0, 0xF, 0xA1, // 4001
+                    0, 0, 0, 4,
+                    (byte)'F', (byte)'a', (byte)'i', (byte)'l'
+                };
+
+                var bytesRead = SshRelayFormat.LongClose.Decode(
+                    message,
+                    out var closeCode,
+                    out var reason);
+
+                Assert.AreEqual(message.Length, bytesRead);
+                Assert.AreEqual(SshRelayCloseCode.SID_UNKNOWN, closeCode);
+                Assert.AreEqual("Fail", reason);
+            }
+
+            [Test]
+            public void WhenBufferTooSmall_ThenDecodeThrowsException()
+            {
+                var message = new byte[] {
+                    0, 10,
+                    0, 0, 0xFA, 0x01, // 4001
+                    4,
+                    (byte)'F', (byte)'a', (byte)'i'
+                };
+
+                Assert.Throws<ArgumentException>(
+                    () => SshRelayFormat.LongClose.Decode(
+                        message,
+                        out var closeCode,
+                        out var reason));
             }
         }
     }

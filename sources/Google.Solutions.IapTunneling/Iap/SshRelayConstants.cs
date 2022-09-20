@@ -24,22 +24,25 @@ namespace Google.Solutions.IapTunneling.Iap
     /// <summary>
     /// Message tags used by SSH Relay v4.
     /// </summary>
-    internal enum MessageTag : ushort
+    internal enum SshRelayMessageTag : ushort
     {
-        UNUSED = 0,
+        UNUSED_0 = 0,
         CONNECT_SUCCESS_SID = 1,
         RECONNECT_SUCCESS_ACK = 2,
         DEPRECATED = 3,
         DATA = 4,
-        ACK_LATENCY = 5,
-        REPLY_LATENCY = 6,
-        ACK = 7
+        UNUSED_5 = 5,
+        UNUSED_6 = 6,
+        ACK = 7,
+        UNUSED_8 = 8,
+        LONG_CLOSE = 10
     };
 
     /// <summary>
-    /// Connection close codes used by SSH Relay v4.
+    /// Connection close codes used by SSH Relay v4. This is an
+    /// extension of the close codes defined in RFC 6455.
     /// </summary>
-    public enum CloseCode : int
+    public enum SshRelayCloseCode : uint
     {
         NORMAL = 1000,
         ERROR_UNKNOWN = 4000,

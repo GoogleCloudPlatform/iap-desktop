@@ -44,7 +44,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             {
                 ExpectedReadData = new byte[][]
                 {
-                    new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
                     new byte[]{ }
                 }
             };
@@ -119,54 +119,24 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public void WhenFirstReadEncountersUnrecognizedMessageTag_ThenReadFailsWithInvalidServerResponseException(
+        public async Task WhenReadEncountersUnrecognizedMessageTag_ThenReadSkipsMessage(
             [Values(
-                (byte)MessageTag.UNUSED,
-                (byte)MessageTag.DEPRECATED,
-                (byte)MessageTag.ACK_LATENCY,
-                (byte)MessageTag.REPLY_LATENCY,
-                (byte)MessageTag.ACK + 1)] byte tag)
+                (byte)SshRelayMessageTag.UNUSED_0,
+                (byte)SshRelayMessageTag.DEPRECATED,
+                (byte)SshRelayMessageTag.UNUSED_5,
+                (byte)SshRelayMessageTag.UNUSED_6,
+                (byte)SshRelayMessageTag.UNUSED_8,
+                (byte)SshRelayMessageTag.LONG_CLOSE)] byte tag)
         {
             var stream = new MockStream()
             {
                 ExpectedReadData = new byte[][]
                 {
-                    new byte[]{ 0, tag },
-                    new byte[]{ }
-                }
-            };
-            var endpoint = new MockSshRelayEndpoint()
-            {
-                ExpectedStream = stream
-            };
-            var relay = new SshRelayStream(endpoint);
-
-            Assert.AreEqual(0, endpoint.ConnectCount);
-
-            ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(() =>
-            {
-                byte[] buffer = new byte[SshRelayStream.MinReadSize];
-                relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Wait();
-            });
-        }
-
-        [Test]
-        public async Task WhenSubsequentReadEncountersUnrecognizedMessageTag_ThenReadFailsWithInvalidServerResponseException(
-            [Values(
-                (byte)MessageTag.UNUSED,
-                (byte)MessageTag.DEPRECATED,
-                (byte)MessageTag.ACK_LATENCY,
-                (byte)MessageTag.REPLY_LATENCY,
-                (byte)MessageTag.ACK + 1)] byte tag)
-        {
-            var stream = new MockStream()
-            {
-                ExpectedReadData = new byte[][]
-                {
-                    new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                    new byte[]{ 0, tag },
-                    new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 2, 0xA, 0xB },
-                    new byte[]{ 0, tag },
+                    new byte[]{ 0, tag, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                    new byte[]{ 0, tag, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 2, 0xA, 0xB },
+                    new byte[]{ 0, tag, 0, 0, 0, 0, 0, 0, 0, 0 },
                     new byte[]{ }
                 }
             };
@@ -183,6 +153,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             Assert.AreEqual(2, bytesRead);
             Assert.AreEqual(0xA, buffer[0]);
             Assert.AreEqual(0xB, buffer[1]);
+
+            bytesRead = await relay
+                .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
+                .ConfigureAwait(false);
+            Assert.AreEqual(0, bytesRead);
         }
 
         [Test]
@@ -194,8 +169,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             {
                 ExpectedReadData = new byte[][]
                 {
-                    new byte[]{ 0, (byte)MessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, (byte)request.Length },
-                    new byte[]{ 0, (byte)MessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, (byte)(request.Length*3) },
+                    new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, (byte)request.Length },
+                    new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, (byte)(request.Length*3) },
                     new byte[]{ }
                 }
             };
@@ -244,7 +219,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 {
                     ExpectedReadData = new byte[][]
                     {
-                        new byte[]{ 0, (byte)MessageTag.ACK, 0, 0, 0, 0 },
+                        new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0 },
                         new byte[]{ }
                     }
                 }
@@ -274,7 +249,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 {
                     ExpectedReadData = new byte[][]
                     {
-                        new byte[]{ 0, (byte)MessageTag.ACK, 0, 0, 0, 10 },
+                        new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 10 },
                         new byte[]{ }
                     }
                 }
@@ -304,8 +279,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 {
                     ExpectedReadData = new byte[][]
                     {
-                        new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                        new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 2, 0xA, 0xB },
+                        new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                        new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 2, 0xA, 0xB },
                         new byte[]{ }
                     }
                 }
@@ -328,8 +303,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             {
                 ExpectedReadData = new byte[][]
                 {
-                    new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                    new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 1, 1 },
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                    new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 },
                     new byte[]{ }
                 }
             };
@@ -358,10 +333,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             {
                 ExpectedReadData = new byte[][]
                 {
-                    new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                    new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 1, 1 }
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                    new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 }
                 },
-                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)CloseCode.DESTINATION_READ_FAILED
+                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)SshRelayCloseCode.DESTINATION_READ_FAILED
             };
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -387,11 +362,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
                 WebSocketCloseStatus.ProtocolError,
-                (WebSocketCloseStatus)CloseCode.BAD_ACK,
-                (WebSocketCloseStatus)CloseCode.ERROR_UNKNOWN,
-                (WebSocketCloseStatus)CloseCode.INVALID_TAG,
-                (WebSocketCloseStatus)CloseCode.INVALID_WEBSOCKET_OPCODE,
-                (WebSocketCloseStatus)CloseCode.REAUTHENTICATION_REQUIRED
+                (WebSocketCloseStatus)SshRelayCloseCode.BAD_ACK,
+                (WebSocketCloseStatus)SshRelayCloseCode.ERROR_UNKNOWN,
+                (WebSocketCloseStatus)SshRelayCloseCode.INVALID_TAG,
+                (WebSocketCloseStatus)SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE,
+                (WebSocketCloseStatus)SshRelayCloseCode.REAUTHENTICATION_REQUIRED
             )] WebSocketCloseStatus closeStatus)
         {
             var endpoint = new MockSshRelayEndpoint()
@@ -405,8 +380,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     {
                         ExpectedReadData = new byte[][]
                         {
-                            new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                            new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 2, 1, 2 }
+                            new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 2, 1, 2 }
                         }
                     }
                 }
@@ -427,8 +402,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenServerClosesConnectionForcefullyOnSubsequentReadAndReconnectFails_ThenReadFailsWithException(
             [Values(
-                (WebSocketCloseStatus)CloseCode.SID_UNKNOWN,
-                (WebSocketCloseStatus)CloseCode.SID_IN_USE
+                (WebSocketCloseStatus)SshRelayCloseCode.SID_UNKNOWN,
+                (WebSocketCloseStatus)SshRelayCloseCode.SID_IN_USE
             )] WebSocketCloseStatus closeStatus)
         {
             var endpoint = new MockSshRelayEndpoint()
@@ -438,8 +413,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     {
                         ExpectedReadData = new byte[][]
                         {
-                            new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                            new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 1, 1 }
+                            new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 }
                         },
                         ExpectServerCloseCodeOnRead = WebSocketCloseStatus.ProtocolError
                     },
@@ -471,11 +446,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
                 WebSocketCloseStatus.ProtocolError,
-                (WebSocketCloseStatus)CloseCode.BAD_ACK,
-                (WebSocketCloseStatus)CloseCode.ERROR_UNKNOWN,
-                (WebSocketCloseStatus)CloseCode.INVALID_TAG,
-                (WebSocketCloseStatus)CloseCode.INVALID_WEBSOCKET_OPCODE,
-                (WebSocketCloseStatus)CloseCode.REAUTHENTICATION_REQUIRED
+                (WebSocketCloseStatus)SshRelayCloseCode.BAD_ACK,
+                (WebSocketCloseStatus)SshRelayCloseCode.ERROR_UNKNOWN,
+                (WebSocketCloseStatus)SshRelayCloseCode.INVALID_TAG,
+                (WebSocketCloseStatus)SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE,
+                (WebSocketCloseStatus)SshRelayCloseCode.REAUTHENTICATION_REQUIRED
             )] WebSocketCloseStatus closeStatus)
         {
             var endpoint = new MockSshRelayEndpoint()
@@ -485,8 +460,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     {
                         ExpectedReadData = new byte[][]
                         {
-                            new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                            new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 1, 1 }
+                            new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 }
                         },
                         ExpectServerCloseCodeOnRead = closeStatus
                     },
@@ -494,8 +469,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     {
                         ExpectedReadData = new byte[][]
                         {
-                            new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                            new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 2, 1, 2 }
+                            new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 2, 1, 2 }
                         }
                     }
                 }
@@ -525,11 +500,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
                 WebSocketCloseStatus.ProtocolError,
-                (WebSocketCloseStatus)CloseCode.BAD_ACK,
-                (WebSocketCloseStatus)CloseCode.ERROR_UNKNOWN,
-                (WebSocketCloseStatus)CloseCode.INVALID_TAG,
-                (WebSocketCloseStatus)CloseCode.INVALID_WEBSOCKET_OPCODE,
-                (WebSocketCloseStatus)CloseCode.REAUTHENTICATION_REQUIRED
+                (WebSocketCloseStatus)SshRelayCloseCode.BAD_ACK,
+                (WebSocketCloseStatus)SshRelayCloseCode.ERROR_UNKNOWN,
+                (WebSocketCloseStatus)SshRelayCloseCode.INVALID_TAG,
+                (WebSocketCloseStatus)SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE,
+                (WebSocketCloseStatus)SshRelayCloseCode.REAUTHENTICATION_REQUIRED
             )] WebSocketCloseStatus closeStatus)
         {
             var endpoint = new MockSshRelayEndpoint()
@@ -539,8 +514,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     {
                         ExpectedReadData = new byte[][]
                         {
-                            new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                            new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 1, 1 }
+                            new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 }
                         },
                         ExpectServerCloseCodeOnRead = closeStatus
                     },
@@ -548,8 +523,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     {
                         ExpectedReadData = new byte[][]
                         {
-                            new byte[]{ 0, (byte)MessageTag.RECONNECT_SUCCESS_ACK, 0, 0, 0, 0, 0, 0, 0, 0 },
-                            new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 1, 1 }
+                            new byte[]{ 0, (byte)SshRelayMessageTag.RECONNECT_SUCCESS_ACK, 0, 0, 0, 0, 0, 0, 0, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 }
                         },
                         ExpectServerCloseCodeOnRead = closeStatus
                     }
@@ -592,16 +567,16 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     {
                         ExpectedReadData = new byte[][]
                         {
-                            new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                            new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 1, 1 }
+                            new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 }
                         }
                     },
                     new MockStream()
                     {
                         ExpectedReadData = new byte[][]
                         {
-                            new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                            new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 2, 1, 2 }
+                            new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 2, 1, 2 }
                         }
                     }
                 }
@@ -638,7 +613,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         {
             var stream = new MockStream()
             {
-                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)CloseCode.NOT_AUTHORIZED
+                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)SshRelayCloseCode.NOT_AUTHORIZED
             };
             var endpoint = new MockSshRelayEndpoint()
             {

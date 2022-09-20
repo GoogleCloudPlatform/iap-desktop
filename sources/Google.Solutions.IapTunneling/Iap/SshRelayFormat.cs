@@ -65,22 +65,22 @@ namespace Google.Solutions.IapTunneling.Iap
 
             public static uint Encode(
                 byte[] messageBuffer,
-                MessageTag tag)
+                SshRelayMessageTag tag)
             {
                 ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort));
 
                 BigEndian.EncodeUInt16((ushort)tag, messageBuffer, 0);
-                return sizeof(MessageTag);
+                return sizeof(SshRelayMessageTag);
             }
 
             public static uint Decode(
                 byte[] messageBuffer,
-                out MessageTag tag)
+                out SshRelayMessageTag tag)
             {
                 ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort));
 
-                tag = (MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0);
-                return sizeof(MessageTag);
+                tag = (SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0);
+                return sizeof(SshRelayMessageTag);
             }
         }
 
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 var requiredSize = sizeof(ushort) + sizeof(uint) + (uint)sidBytes.Length;
                 ThrowIfBufferSmallerThan(messageBuffer, requiredSize);
 
-                BigEndian.EncodeUInt16((ushort)MessageTag.CONNECT_SUCCESS_SID, messageBuffer, 0);
+                BigEndian.EncodeUInt16((ushort)SshRelayMessageTag.CONNECT_SUCCESS_SID, messageBuffer, 0);
                 BigEndian.EncodeUInt32((uint)sidBytes.Length, messageBuffer, 2);
                 Array.Copy(sidBytes, 0, messageBuffer, 6, sidBytes.Length);
 
@@ -114,7 +114,8 @@ namespace Google.Solutions.IapTunneling.Iap
                 out string sid)
             {
                 ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint));
-                Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.CONNECT_SUCCESS_SID);
+                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == 
+                    SshRelayMessageTag.CONNECT_SUCCESS_SID);
 
                 var arrayLength = BigEndian.DecodeUInt32(messageBuffer, 2);
                 Debug.Assert(arrayLength <= MaxArrayLength);
@@ -130,7 +131,7 @@ namespace Google.Solutions.IapTunneling.Iap
             }
         }
 
-        public class ReconnectAck
+        public static class ReconnectAck
         {
             //
             // 00-01 (len=2): Tag
@@ -145,7 +146,7 @@ namespace Google.Solutions.IapTunneling.Iap
             {
                 ThrowIfBufferSmallerThan(messageBuffer, MessageLength);
 
-                BigEndian.EncodeUInt16((ushort)MessageTag.RECONNECT_SUCCESS_ACK, messageBuffer, 0);
+                BigEndian.EncodeUInt16((ushort)SshRelayMessageTag.RECONNECT_SUCCESS_ACK, messageBuffer, 0);
                 BigEndian.EncodeUInt64((uint)ack, messageBuffer, 2);
 
                 return MessageLength;
@@ -156,7 +157,8 @@ namespace Google.Solutions.IapTunneling.Iap
                 out ulong ack)
             {
                 ThrowIfBufferSmallerThan(messageBuffer, MessageLength);
-                Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.RECONNECT_SUCCESS_ACK);
+                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == 
+                    SshRelayMessageTag.RECONNECT_SUCCESS_ACK);
 
                 ack = BigEndian.DecodeUInt64(messageBuffer, 2);
 
@@ -164,7 +166,7 @@ namespace Google.Solutions.IapTunneling.Iap
             }
         }
 
-        public class Ack
+        public static class Ack
         {
             //
             // 00-01 (len=2): Tag
@@ -179,7 +181,7 @@ namespace Google.Solutions.IapTunneling.Iap
             {
                 ThrowIfBufferSmallerThan(messageBuffer, MessageLength);
 
-                BigEndian.EncodeUInt16((ushort)MessageTag.ACK, messageBuffer, 0);
+                BigEndian.EncodeUInt16((ushort)SshRelayMessageTag.ACK, messageBuffer, 0);
                 BigEndian.EncodeUInt64(ack, messageBuffer, 2);
 
                 return MessageLength;
@@ -190,7 +192,8 @@ namespace Google.Solutions.IapTunneling.Iap
                 out ulong ack)
             {
                 ThrowIfBufferSmallerThan(messageBuffer, MessageLength);
-                Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.ACK);
+                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == 
+                    SshRelayMessageTag.ACK);
 
                 ack = BigEndian.DecodeUInt64(messageBuffer, 2);
 
@@ -198,7 +201,7 @@ namespace Google.Solutions.IapTunneling.Iap
             }
         }
 
-        public class Data
+        public static class Data
         {
             //
             // 00-01 (len=2): Tag
@@ -229,7 +232,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
                 ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint) + dataLength);
 
-                BigEndian.EncodeUInt16((ushort)MessageTag.DATA, messageBuffer, 0);
+                BigEndian.EncodeUInt16((ushort)SshRelayMessageTag.DATA, messageBuffer, 0);
                 BigEndian.EncodeUInt32(dataLength, messageBuffer, 2);
                 Array.Copy(
                     data,
@@ -249,7 +252,8 @@ namespace Google.Solutions.IapTunneling.Iap
                 out uint dataLength)
             {
                 ThrowIfBufferSmallerThan(messageBuffer, HeaderLength + 1);
-                Debug.Assert((MessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == MessageTag.DATA);
+                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == 
+                    SshRelayMessageTag.DATA);
 
                 dataLength = BigEndian.DecodeUInt32(messageBuffer, 2);
                 Debug.Assert(dataLength <= MaxArrayLength);
@@ -257,7 +261,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
                 ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint) + dataLength);
 
-                if (dataLength > targetBufferLength || 
+                if (dataLength > targetBufferLength ||
                     targetBufferLength + targetBufferOffset > targetBuffer.Length)
                 {
                     throw new IndexOutOfRangeException("Read buffer is too small");
@@ -271,6 +275,65 @@ namespace Google.Solutions.IapTunneling.Iap
                     (int)dataLength);
 
                 return HeaderLength + dataLength;
+            }
+        }
+
+        public static class LongClose
+        {
+            //
+            // 00-01 (len=2): Tag
+            // 02-05 (len=4): Long close code
+            // 06-0a (len=4): Long reason length
+            // 0b-*         : Long reason string
+            //
+
+            public const uint MinMessageLength = sizeof(ushort) + sizeof(uint) + sizeof(uint);
+
+            public static uint Encode(
+                byte[] messageBuffer,
+                SshRelayCloseCode closeCode,
+                string closeReason)
+            {
+                byte[] closeReasonBytes = closeReason == null
+                    ? Array.Empty<byte>()
+                    : Encoding.UTF8.GetBytes(closeReason);
+
+                ThrowIfBufferSmallerThan(messageBuffer, MinMessageLength + (uint)closeReasonBytes.Length);
+
+                if (closeReason.Length > MaxArrayLength)
+                {
+                    throw new ArgumentException($"Reason must not exceed {MaxArrayLength} bytes");
+                }
+
+                BigEndian.EncodeUInt16((ushort)SshRelayMessageTag.LONG_CLOSE, messageBuffer, 0);
+                BigEndian.EncodeUInt32((uint)closeCode, messageBuffer, 2);
+                BigEndian.EncodeUInt32((uint)closeReasonBytes.Length, messageBuffer, 6);
+                Array.Copy(
+                    closeReasonBytes,
+                    0,
+                    messageBuffer,
+                    10,
+                    closeReasonBytes.Length);
+
+                return MinMessageLength + (uint)closeReasonBytes.Length;
+            }
+
+            public static uint Decode(
+                byte[] messageBuffer,
+                out SshRelayCloseCode closeCode,
+                out string closeReason)
+            {
+                ThrowIfBufferSmallerThan(messageBuffer, MinMessageLength);
+                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) ==
+                    SshRelayMessageTag.LONG_CLOSE);
+
+                closeCode = (SshRelayCloseCode)BigEndian.DecodeUInt32(messageBuffer, 2);
+                var reasonLength = BigEndian.DecodeUInt32(messageBuffer, 6);
+
+                ThrowIfBufferSmallerThan(messageBuffer, MinMessageLength + reasonLength);
+                closeReason = Encoding.UTF8.GetString(messageBuffer, 10, (int)reasonLength);
+
+                return MinMessageLength + reasonLength;
             }
         }
     }
