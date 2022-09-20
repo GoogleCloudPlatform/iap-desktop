@@ -280,9 +280,9 @@ namespace Google.Solutions.IapTunneling.Iap
                 }
             }
             catch (WebSocketStreamClosedByServerException e)
-                when ((CloseCode)e.CloseStatus == CloseCode.NOT_AUTHORIZED ||
-                      (CloseCode)e.CloseStatus == CloseCode.LOOKUP_FAILED ||
-                      (CloseCode)e.CloseStatus == CloseCode.LOOKUP_FAILED_RECONNECT)
+                when ((SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.NOT_AUTHORIZED ||
+                      (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.LOOKUP_FAILED ||
+                      (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.LOOKUP_FAILED_RECONNECT)
             {
                 //
                 // Request was rejected by access level or IAM policy.
@@ -355,7 +355,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     
                     switch (tag)
                     {
-                        case MessageTag.CONNECT_SUCCESS_SID:
+                        case SshRelayMessageTag.CONNECT_SUCCESS_SID:
                             {
                                 bytesDecoded = SshRelayFormat.ConnectSuccessSid.Decode(message, out var sid);
                                 this.Sid = sid;
@@ -366,7 +366,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 break;
                             }
 
-                        case MessageTag.RECONNECT_SUCCESS_ACK:
+                        case SshRelayMessageTag.RECONNECT_SUCCESS_ACK:
                             {
                                 bytesDecoded = SshRelayFormat.ReconnectAck.Decode(message, out var ack);
                                 
@@ -392,7 +392,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 break;
                             }
 
-                        case MessageTag.ACK:
+                        case SshRelayMessageTag.ACK:
                             {
                                 bytesDecoded = SshRelayFormat.Ack.Decode(message, out var ack);
 
@@ -422,7 +422,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 break;
                             }
 
-                        case MessageTag.DATA:
+                        case SshRelayMessageTag.DATA:
                             {
                                 bytesDecoded = SshRelayFormat.Data.Decode(
                                     message, 
@@ -469,8 +469,8 @@ namespace Google.Solutions.IapTunneling.Iap
                 catch (WebSocketStreamClosedByServerException e)
                 {
                     if (e.CloseStatus == WebSocketCloseStatus.NormalClosure ||
-                            (CloseCode)e.CloseStatus == CloseCode.DESTINATION_READ_FAILED ||
-                            (CloseCode)e.CloseStatus == CloseCode.DESTINATION_WRITE_FAILED)
+                            (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.DESTINATION_READ_FAILED ||
+                            (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.DESTINATION_WRITE_FAILED)
                     {
                         TraceLine("Server closed connection");
 
@@ -480,14 +480,14 @@ namespace Google.Solutions.IapTunneling.Iap
 
                         return 0;
                     }
-                    else if ((CloseCode)e.CloseStatus == CloseCode.NOT_AUTHORIZED)
+                    else if ((SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.NOT_AUTHORIZED)
                     {
                         TraceLine("Not authorized");
 
                         throw new UnauthorizedException(e.CloseStatusDescription);
                     }
-                    else if ((CloseCode)e.CloseStatus == CloseCode.SID_UNKNOWN ||
-                             (CloseCode)e.CloseStatus == CloseCode.SID_IN_USE)
+                    else if ((SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.SID_UNKNOWN ||
+                             (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.SID_IN_USE)
                     {
                         //
                         // Failed reconect attempt - do not try again.
@@ -498,7 +498,7 @@ namespace Google.Solutions.IapTunneling.Iap
                             e.CloseStatus,
                             "Connection closed abnormally and an attempt to reconnect was rejected");
                     }
-                    else if ((CloseCode)e.CloseStatus == CloseCode.FAILED_TO_CONNECT_TO_BACKEND)
+                    else if ((SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND)
                     {
                         //
                         // Server probably not listening.
@@ -511,7 +511,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     }
                     else
                     {
-                        TraceLine($"Connection closed abnormally: {(CloseCode)e.CloseStatus}");
+                        TraceLine($"Connection closed abnormally: {(SshRelayCloseCode)e.CloseStatus}");
 
                         TraceLine("Disconnecting, preparing to reconnect");
                         await DisconnectAsync(cancellationToken).ConfigureAwait(false);
@@ -602,8 +602,8 @@ namespace Google.Solutions.IapTunneling.Iap
                 catch (WebSocketStreamClosedByServerException e)
                 {
                     if (e.CloseStatus == WebSocketCloseStatus.NormalClosure ||
-                            (CloseCode)e.CloseStatus == CloseCode.DESTINATION_READ_FAILED ||
-                            (CloseCode)e.CloseStatus == CloseCode.DESTINATION_WRITE_FAILED)
+                            (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.DESTINATION_READ_FAILED ||
+                            (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.DESTINATION_WRITE_FAILED)
                     {
                         //
                         // The server closed the connection and us sending more data
@@ -611,7 +611,7 @@ namespace Google.Solutions.IapTunneling.Iap
                         //
                         throw;
                     }
-                    else if ((CloseCode)e.CloseStatus == CloseCode.NOT_AUTHORIZED)
+                    else if ((SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.NOT_AUTHORIZED)
                     {
                         TraceLine("NOT_AUTHORIZED");
 
@@ -619,7 +619,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     }
                     else
                     {
-                        TraceLine($"Connection closed abnormally: {(CloseCode)e.CloseStatus}");
+                        TraceLine($"Connection closed abnormally: {(SshRelayCloseCode)e.CloseStatus}");
 
                         TraceLine("Disconnecting, preparing to reconnect");
                         await DisconnectAsync(cancellationToken).ConfigureAwait(false);

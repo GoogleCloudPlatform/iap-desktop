@@ -129,9 +129,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenReadFailsWithCloseCode_ThenTestConnectionThrowsException(
             [Values(
-                CloseCode.NOT_AUTHORIZED,
-                CloseCode.LOOKUP_FAILED,
-                CloseCode.LOOKUP_FAILED_RECONNECT)] CloseCode code)
+                SshRelayCloseCode.NOT_AUTHORIZED,
+                SshRelayCloseCode.LOOKUP_FAILED,
+                SshRelayCloseCode.LOOKUP_FAILED_RECONNECT)] SshRelayCloseCode code)
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -182,9 +182,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenServerClosesConnectionNormally_ThenReadReturnsZeroAndDoesNotReconnect(
              [Values(
-                CloseCode.NORMAL,
-                CloseCode.DESTINATION_READ_FAILED,
-                CloseCode.DESTINATION_WRITE_FAILED)] CloseCode code)
+                SshRelayCloseCode.NORMAL,
+                SshRelayCloseCode.DESTINATION_READ_FAILED,
+                SshRelayCloseCode.DESTINATION_WRITE_FAILED)] SshRelayCloseCode code)
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenServerClosesConnectionWithNotAuthorizedError_ThenReadReturnsZeroAndDoesNotReconnect(
              [Values(
-                CloseCode.NOT_AUTHORIZED)] CloseCode code)
+                SshRelayCloseCode.NOT_AUTHORIZED)] SshRelayCloseCode code)
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -235,9 +235,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenServerClosesConnectionWithProtocolError_ThenReadReturnsZeroAndDoesNotReconnect(
              [Values(
-                CloseCode.SID_UNKNOWN,
-                CloseCode.SID_IN_USE,
-                CloseCode.FAILED_TO_CONNECT_TO_BACKEND)] CloseCode code)
+                SshRelayCloseCode.SID_UNKNOWN,
+                SshRelayCloseCode.SID_IN_USE,
+                SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND)] SshRelayCloseCode code)
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -398,7 +398,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenServerClosesConnectionWithUnknownErrorBeforeData_ThenReadConnectsAgain(
              [Values(
-                CloseCode.INVALID_WEBSOCKET_OPCODE)] CloseCode code)
+                SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)] SshRelayCloseCode code)
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -436,7 +436,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenServerClosesConnectionWithUnknownErrorAfterData_ThenReadTriggersReconnect(
              [Values(
-                CloseCode.INVALID_WEBSOCKET_OPCODE)] CloseCode code)
+                SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)] SshRelayCloseCode code)
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -556,7 +556,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                     Assert.AreEqual(10, bytesReceived);
                     SshRelayFormat.Tag.Decode(serverBuffer, out var tag);
-                    Assert.AreEqual(MessageTag.DATA, tag);
+                    Assert.AreEqual(SshRelayMessageTag.DATA, tag);
 
                     // Expect DATA.
                     bytesReceived = await endpoint.Server
@@ -565,7 +565,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                     Assert.AreEqual(10, bytesReceived);
                     SshRelayFormat.Tag.Decode(serverBuffer, out tag);
-                    Assert.AreEqual(MessageTag.DATA, tag);
+                    Assert.AreEqual(SshRelayMessageTag.DATA, tag);
                 }
             }
         }
@@ -613,7 +613,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                     // Reconnect.
                     await endpoint.Server
-                        .CloseOutputAsync((WebSocketCloseStatus)CloseCode.INVALID_WEBSOCKET_OPCODE)
+                        .CloseOutputAsync((WebSocketCloseStatus)SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)
                         .ConfigureAwait(false);
                     await clientStream
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
@@ -634,7 +634,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                     Assert.AreEqual(10, bytesReceived);
                     SshRelayFormat.Tag.Decode(serverBuffer, out var tag);
-                    Assert.AreEqual(MessageTag.DATA, tag);
+                    Assert.AreEqual(SshRelayMessageTag.DATA, tag);
 
                     // Expect ACK.
                     bytesReceived = await afterReconnect
@@ -652,7 +652,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                     Assert.AreEqual(8, bytesReceived);
                     SshRelayFormat.Tag.Decode(serverBuffer, out tag);
-                    Assert.AreEqual(MessageTag.DATA, tag);
+                    Assert.AreEqual(SshRelayMessageTag.DATA, tag);
                 }
             }
         }
