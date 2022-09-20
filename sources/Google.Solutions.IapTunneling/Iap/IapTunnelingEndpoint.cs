@@ -164,7 +164,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     CreateUri(sid, ack),
                     token).ConfigureAwait(false);
 
-                return new WebSocketStream(websocket, (int)DataMessage.MaxTotalLength);
+                return new WebSocketStream(websocket);
             }
             catch (WebSocketException e)
                 when (e.InnerException is WebException webException &&

@@ -68,13 +68,13 @@
     <Compile Include="BigEndian.cs" />
     <Compile Include="Iap\ISshRelayPolicy.cs" />
     <Compile Include="Iap\AllowAllRelayPolicy.cs" />
+    <Compile Include="Iap\SshRelayFormat.cs" />
     <Compile Include="Net\RestrictedHeaderConfigPatch.cs" />
     <Compile Include="Net\ConnectionStatistics.cs" />
     <Compile Include="IapTraceSources.cs" />
     <Compile Include="Iap\IapTunnelingEndpoint.cs" />
-    <Compile Include="Net\FragmentingStream.cs" />
     <Compile Include="Net\INetworkStream.cs" />
-    <Compile Include="Iap\Messages.cs" />
+    <Compile Include="Iap\SshRelayConstants.cs" />
     <Compile Include="Net\NetworkStream.cs" />
     <Compile Include="Net\OneTimeUseStream.cs" />
     <Compile Include="Net\SingleReaderSingleWriterStream.cs" />

@@ -75,7 +75,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .WriteAsync(request, 0, request.Length, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            byte[] buffer = new byte[stream.MinReadSize];
+            byte[] buffer = new byte[SshRelayStream.MinReadSize];
             Assert.AreEqual(0, stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Result);
         }
     }

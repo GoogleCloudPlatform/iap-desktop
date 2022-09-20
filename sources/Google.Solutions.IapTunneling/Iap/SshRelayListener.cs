@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapTunneling.Net;
-using Google.Solutions.IapTunneling.Test.Net;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -145,10 +144,14 @@ namespace Google.Solutions.IapTunneling.Iap
         /// </summary>
         public Task ListenAsync(CancellationToken token)
         {
+            //
             // Start listening before returning from the menthod.
+            //
             this.listener.Start(BacklogLength);
 
+            //
             // All communication is then handled asynchronously.
+            //
             return Task.Run(() =>
             {
                 using (token.Register(this.listener.Stop))
@@ -179,8 +182,8 @@ namespace Google.Solutions.IapTunneling.Iap
                             this.ClientsAccepted++;
 
                             Task.WhenAll(
-                                    clientStream.RelayToAsync(serverStream, token),
-                                    serverStream.RelayToAsync(clientStream, token))
+                                    clientStream.RelayToAsync(serverStream, SshRelayStream.MaxWriteSize, token),
+                                    serverStream.RelayToAsync(clientStream, SshRelayStream.MinReadSize, token))
                                 .ContinueWith(t =>
                                 {
                                     IapTraceSources.Default.TraceVerbose("SshRelayListener: Closed connection");

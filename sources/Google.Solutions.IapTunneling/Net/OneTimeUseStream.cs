@@ -45,9 +45,6 @@ namespace Google.Solutions.IapTunneling.Net
         // Methods to be overriden
         //---------------------------------------------------------------------
 
-        public abstract int MaxWriteSize { get; }
-        public abstract int MinReadSize { get; }
-
         protected abstract Task CloseAsyncWithCloseProtection(CancellationToken cancellationToken);
 
         protected abstract Task<int> ReadAsyncWithCloseProtection(
@@ -68,8 +65,10 @@ namespace Google.Solutions.IapTunneling.Net
 
         public async Task CloseAsync(CancellationToken cancellationToken)
         {
+            //
             // Calling CloseAsync on a closed connection is acceptable
             // since the server might have closed first.
+            //
 
             await CloseAsyncWithCloseProtection(cancellationToken).ConfigureAwait(false);
             this.closed = true;

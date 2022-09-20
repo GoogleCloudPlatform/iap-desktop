@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
@@ -32,16 +33,13 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapTunneling.Net
 {
     /// <summary>
-    /// Stream that allows sending and receiving WebSocket messages at once
-    /// so that the client does not have to deal with fragmentation.
+    /// Stream that allows sending and receiving WebSocket frames.
     /// </summary>
     public class WebSocketStream : SingleReaderSingleWriterStream
     {
         private readonly ClientWebSocket socket;
-        private readonly int maxReadMessageSize;
 
         private volatile bool closeByClientInitiated = false;
-        private volatile WebSocketStreamClosedByServerException closeByServerReceived = null;
 
         public bool IsCloseInitiated => this.closeByClientInitiated;
 
@@ -49,15 +47,14 @@ namespace Google.Solutions.IapTunneling.Net
         // Ctor
         //---------------------------------------------------------------------
 
-        public WebSocketStream(ClientWebSocket socket, int maxReadMessageSize)
+        public WebSocketStream(ClientWebSocket socket)
         {
             if (socket.State != WebSocketState.Open)
             {
                 throw new ArgumentException("Web socket must be open");
             }
 
-            this.socket = socket;
-            this.maxReadMessageSize = maxReadMessageSize;
+            this.socket = socket.ThrowIfNull(nameof(socket));
         }
 
         //---------------------------------------------------------------------
@@ -108,9 +105,6 @@ namespace Google.Solutions.IapTunneling.Net
         // SingleReaderSingleWriterStream implementation
         //---------------------------------------------------------------------
 
-        public override int MaxWriteSize => int.MaxValue;
-        public override int MinReadSize => this.maxReadMessageSize;
-
         private void VerifyConnectionNotClosedAlready()
         {
             if (this.closeByClientInitiated)
@@ -118,13 +112,12 @@ namespace Google.Solutions.IapTunneling.Net
                 // Do not even try to send, it will not succeed anyway.
                 throw new WebSocketStreamClosedByClientException();
             }
-            else if (this.closeByServerReceived != null)
-            {
-                // Do not try to read, it cannot succeed anyway.
-                throw this.closeByServerReceived;
-            }
         }
 
+        /// <summary>
+        /// Read until (a) the buffer is full or (b) the end of
+        /// the frame has been reached.
+        /// </summary>
         protected override async Task<int> ProtectedReadAsync(
             byte[] buffer,
             int offset,
@@ -133,42 +126,36 @@ namespace Google.Solutions.IapTunneling.Net
         {
             VerifyConnectionNotClosedAlready();
 
-            // Check buffer size. Zero-sized buffers are allowed for 
-            // connection probing.
-            if (count > 0 && count < this.MinReadSize)
-            {
-                throw new IndexOutOfRangeException($"Read buffer too small, must be at least {this.MinReadSize}");
-            }
-
             try
             {
                 int bytesReceived = 0;
+                int bytesLeftInBuffer = count;
                 WebSocketReceiveResult result;
                 do
                 {
-                    if (bytesReceived > 0 && bytesReceived == count)
-                    {
-                        throw new OverflowException("Buffer too small to receive an entire message");
-                    }
-
                     IapTraceSources.Default.TraceVerbose(
                         "WebSocketStream: begin ReadAsync()... [socket: {0}]",
                         this.socket.State);
 
                     result = await this.socket.ReceiveAsync(
-                        new ArraySegment<byte>(
-                            buffer,
-                            offset + bytesReceived,
-                            count - bytesReceived),
-                        cancellationToken).ConfigureAwait(false);
+                            new ArraySegment<byte>(
+                                buffer,
+                                offset + bytesReceived,
+                                bytesLeftInBuffer),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
                     bytesReceived += result.Count;
+                    bytesLeftInBuffer -= result.Count;
+
+                    Debug.Assert(bytesReceived + bytesLeftInBuffer == count);
 
                     IapTraceSources.Default.TraceVerbose(
                         "WebSocketStream: end ReadAsync() - {0} bytes read [socket: {1}]",
                         result.Count,
                         this.socket.State);
                 }
-                while (count > 0 && !result.EndOfMessage);
+                while (bytesLeftInBuffer > 0 && !result.EndOfMessage);
 
                 if (result.CloseStatus != null)
                 {
@@ -178,16 +165,16 @@ namespace Google.Solutions.IapTunneling.Net
                         "WebSocketStream: Connection closed by server: {0}",
                         result.CloseStatus);
 
-                    this.closeByServerReceived = new WebSocketStreamClosedByServerException(
-                        result.CloseStatus.Value,
-                        result.CloseStatusDescription);
-
+                    //
                     // In case of a normal close, it is preferable to simply return 0. But
                     // if the connection was closed abnormally, the client needs to know
                     // the details.
+                    //
                     if (result.CloseStatus.Value != WebSocketCloseStatus.NormalClosure)
                     {
-                        throw this.closeByServerReceived;
+                        throw new WebSocketStreamClosedByServerException(
+                            result.CloseStatus.Value,
+                            result.CloseStatusDescription);
                     }
                     else
                     {
@@ -201,14 +188,14 @@ namespace Google.Solutions.IapTunneling.Net
             {
                 IapTraceSources.Default.TraceVerbose("WebSocketStream.Receive: connection aborted - {0}", e);
 
+                //
                 // ClientWebSocket/WinHttp can also throw an exception if
                 // the connection has been closed.
+                //
 
-                this.closeByServerReceived = new WebSocketStreamClosedByServerException(
+                throw new WebSocketStreamClosedByServerException(
                     WebSocketCloseStatus.NormalClosure,
                     e.Message);
-
-                throw this.closeByServerReceived;
             }
         }
 
@@ -228,10 +215,11 @@ namespace Google.Solutions.IapTunneling.Net
                     this.socket.State);
 
                 await this.socket.SendAsync(
-                    new ArraySegment<byte>(buffer, offset, count),
-                    WebSocketMessageType.Binary,
-                    true,
-                    cancellationToken).ConfigureAwait(false);
+                        new ArraySegment<byte>(buffer, offset, count),
+                        WebSocketMessageType.Binary,
+                        true,
+                        cancellationToken)
+                    .ConfigureAwait(false);
 
                 IapTraceSources.Default.TraceVerbose(
                     "WebSocketStream: end WriteAsync()... [socket: {0}]",
@@ -241,13 +229,12 @@ namespace Google.Solutions.IapTunneling.Net
             {
                 IapTraceSources.Default.TraceVerbose("WebSocketStream.Send: connection aborted - {0}", e);
 
-                this.closeByServerReceived = new WebSocketStreamClosedByServerException(
+                throw new WebSocketStreamClosedByServerException(
                     WebSocketCloseStatus.NormalClosure,
                     e.Message);
-
-                throw this.closeByServerReceived;
             }
         }
+
         public override async Task ProtectedCloseAsync(CancellationToken cancellationToken)
         {
             VerifyConnectionNotClosedAlready();
@@ -265,7 +252,9 @@ namespace Google.Solutions.IapTunneling.Net
                 IsWebSocketError(e, WebSocketError.InvalidState) ||
                 IsSocketError(e, SocketError.ConnectionAborted))
             {
+                //
                 // Server already closed the connection - nevermind then.
+                //
             }
         }
 
@@ -276,20 +265,13 @@ namespace Google.Solutions.IapTunneling.Net
         }
     }
 
-    [Serializable]
     public class WebSocketStreamClosedByClientException : NetworkStreamClosedException
     {
-        protected WebSocketStreamClosedByClientException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
         public WebSocketStreamClosedByClientException()
         {
         }
     }
 
-    [Serializable]
     public class WebSocketConnectionDeniedException : Exception
     {
         protected WebSocketConnectionDeniedException(SerializationInfo info, StreamingContext context)
@@ -302,7 +284,6 @@ namespace Google.Solutions.IapTunneling.Net
         }
     }
 
-    [Serializable]
     public class WebSocketStreamClosedByServerException : NetworkStreamClosedException
     {
         public WebSocketCloseStatus CloseStatus { get; private set; }
@@ -314,26 +295,6 @@ namespace Google.Solutions.IapTunneling.Net
         {
             this.CloseStatus = closeStatus;
             this.CloseStatusDescription = closeStatusDescription;
-        }
-
-        protected WebSocketStreamClosedByServerException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            this.CloseStatus = (WebSocketCloseStatus)info.GetInt32("CloseStatus");
-            this.CloseStatusDescription = info.GetString("CloseStatusDescription");
-        }
-
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-            {
-                throw new ArgumentNullException(nameof(info));
-            }
-
-            info.AddValue("CloseStatus", this.CloseStatus);
-            info.AddValue("CloseStatusDescription", this.CloseStatusDescription);
-            base.GetObjectData(info, context);
         }
     }
 }

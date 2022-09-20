@@ -25,6 +25,7 @@ using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,53 +47,64 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             }
         }
 
-        [Test]
-        public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
-            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential,
-            [Values(
-                1,
-                (int)DataMessage.MaxDataLength - 1,
-                (int)DataMessage.MaxDataLength,
-                (int)DataMessage.MaxDataLength + 1,
-                (int)DataMessage.MaxDataLength * 10)] int length,
-            [Values(1, 3)] int count)
+        protected async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
+            InstanceLocator locator,
+            ICredential credential,
+            int messageSize,
+            int writeSize,
+            int readSize,
+            int repetitions)
         {
 
-            var message = new byte[length];
+            var message = new byte[messageSize];
             FillArray(message);
 
-            var locator = await vm;
             var stream = ConnectToEchoServer(
                 locator,
-                await credential);
+                credential);
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < repetitions; i++)
             {
-                await stream
-                    .WriteAsync(message, 0, message.Length, this.tokenSource.Token)
-                    .ConfigureAwait(false);
+                int totalBytesWritten = 0;
+                while (totalBytesWritten < messageSize)
+                {
+                    var bytesToWrite = Math.Min(
+                        writeSize,
+                        messageSize - totalBytesWritten);
+                    await stream
+                        .WriteAsync(
+                            message, 
+                            totalBytesWritten,
+                            bytesToWrite, 
+                            this.tokenSource.Token)
+                        .ConfigureAwait(false);
+                    totalBytesWritten += bytesToWrite;
+                }
+                
 
-                var response = new byte[length];
+                var response = new byte[messageSize];
                 int totalBytesRead = 0;
                 while (true)
                 {
+                    var readBuffer = new byte[readSize];
                     var bytesRead = await stream
                         .ReadAsync(
-                            response,
-                            totalBytesRead,
-                            response.Length - totalBytesRead,
+                            readBuffer,
+                            0,
+                            readSize,
                             this.tokenSource.Token)
                         .ConfigureAwait(false);
+
+                    Array.Copy(readBuffer, 0, response, totalBytesRead, bytesRead);
                     totalBytesRead += bytesRead;
 
-                    if (bytesRead == 0 || totalBytesRead >= length)
+                    if (bytesRead == 0 || totalBytesRead >= messageSize)
                     {
                         break;
                     }
                 }
 
-                Assert.AreEqual(length, totalBytesRead);
+                Assert.AreEqual(messageSize, totalBytesRead);
                 Assert.AreEqual(message, response);
             }
 

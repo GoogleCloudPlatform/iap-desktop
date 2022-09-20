@@ -59,7 +59,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
         // Queue of un-ack'ed messages that might require re-sending.
         private readonly object sentButUnacknoledgedQueueLock = new object();
-        private readonly Queue<DataMessage> sentButUnacknoledgedQueue = new Queue<DataMessage>();
+        private readonly Queue<UnacknoledgedWrite> unacknoledgedQueue = new Queue<UnacknoledgedWrite>();
 
         public string Sid { get; private set; }
 
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapTunneling.Iap
         private ulong bytesSentAndAcknoledged = 0;
         private ulong bytesReceived = 0;
 
-        private ulong lastAck = 0;
+        private ulong lastAckSent = 0;
 
         internal ulong ExpectedAck
         {
@@ -79,8 +79,8 @@ namespace Google.Solutions.IapTunneling.Iap
             {
                 lock (this.sentButUnacknoledgedQueueLock)
                 {
-                    return this.sentButUnacknoledgedQueue.Any()
-                        ? this.sentButUnacknoledgedQueue.Last().ExpectedAck
+                    return this.unacknoledgedQueue.Any()
+                        ? this.unacknoledgedQueue.Last().ExpectedAck
                         : 0;
                 }
             }
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapTunneling.Iap
             {
                 lock (this.sentButUnacknoledgedQueueLock)
                 {
-                    return this.sentButUnacknoledgedQueue.Count;
+                    return this.unacknoledgedQueue.Count;
                 }
             }
         }
@@ -128,29 +128,38 @@ namespace Google.Solutions.IapTunneling.Iap
         {
             try
             {
+                //
                 // Acquire semaphore to ensure that only a single
                 // connect operation is in flight at a time.
+                //
                 await this.connectSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 if (this.__currentConnection == null)
                 {
+                    //
                     // Connect first.
+                    //
                     if (Thread.VolatileRead(ref this.bytesReceived) == 0)
                     {
+                        //
                         // First attempt to open a connection. 
+                        //
                         TraceLine("Connecting...");
                         this.__currentConnection =
                             await this.endpoint.ConnectAsync(cancellationToken).ConfigureAwait(false);
                     }
                     else
                     {
+                        //
                         // We had a communication breakdown, try establishing a new connection.
-
+                        //
                         Debug.Assert(this.Sid != null);
 
+                        //
                         // Restart the transmission where the client left off consuming. 
                         // Depending on when the connection broke down, the ACK for the consumed
                         // data may or may not have been successfully transmitted back to the server.
+                        //
 
                         TraceLine("Reconnecting...");
                         this.__currentConnection = await this.endpoint.ReconnectAsync(
@@ -159,35 +168,39 @@ namespace Google.Solutions.IapTunneling.Iap
                             cancellationToken).ConfigureAwait(false);
                     }
 
+                    //
                     // Resend any un-ack'ed data.
+                    //
                     while (true)
                     {
                         Task resendMessage = null;
                         lock (this.sentButUnacknoledgedQueueLock)
                         {
-                            if (!this.sentButUnacknoledgedQueue.Any())
+                            if (!this.unacknoledgedQueue.Any())
                             {
                                 break;
                             }
 
-                            var message = this.sentButUnacknoledgedQueue.Dequeue();
+                            var write = this.unacknoledgedQueue.Dequeue();
 
-                            TraceLine($"Resending DATA #{message.SequenceNumber}...");
+                            TraceLine($"Resending DATA #{write.SequenceNumber}...");
                             resendMessage = this.__currentConnection.WriteAsync(
-                                message.Buffer,
+                                write.Data,
                                 0,
-                                message.BufferLength,
+                                write.Data.Length,
                                 cancellationToken);
                         }
 
                         Debug.Assert(resendMessage != null);
                         await resendMessage.ConfigureAwait(false);
                     }
-
-                    // The first receive should be a CONNECT_SUCCESS_SID or
-                    // RECONNECT_SUCCESS_ACK message. There is no strong reason
-                    // for eagerly trying to recive these messages here.
                 }
+
+                //
+                // NB. The first receive should be a CONNECT_SUCCESS_SID or
+                // RECONNECT_SUCCESS_ACK message. There is no strong reason
+                // for eagerly trying to receive these messages here.
+                //
 
                 return this.__currentConnection;
             }
@@ -201,16 +214,24 @@ namespace Google.Solutions.IapTunneling.Iap
         {
             try
             {
+                //
                 // Acquire semaphore to ensure that only a single
                 // connect operation is in flight at a time.
-                await this.connectSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                //
+                await this.connectSemaphore
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(false);
 
+                //
                 // Drop this connection.
+                //
                 try
                 {
                     if (this.__currentConnection != null)
                     {
-                        await this.__currentConnection.CloseAsync(cancellationToken).ConfigureAwait(false);
+                        await this.__currentConnection
+                            .CloseAsync(cancellationToken)
+                            .ConfigureAwait(false);
                     }
                 }
                 catch (Exception e)
@@ -230,20 +251,32 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public async Task TestConnectionAsync(TimeSpan timeout)
         {
+            //
             // Open a WebSocketStream, without wrapping it as a SshRelayStream
             // and do a zero-byte read. This will fail if access is denied.
+            //
             try
             {
                 using (var cts = new CancellationTokenSource())
                 {
+                    //
                     // If access to the instance is allowed, but the instance
                     // simply does not listen on this port, the connect or read 
                     // will hang. Therefore, apply a timeout.
+                    //
                     cts.CancelAfter(timeout);
 
-                    var connection = await this.endpoint.ConnectAsync(cts.Token).ConfigureAwait(false);
-                    await connection.ReadAsync(Array.Empty<byte>(), 0, 0, cts.Token).ConfigureAwait(false);
-                    await connection.CloseAsync(cts.Token).ConfigureAwait(false);
+                    using (var connection = await this.endpoint
+                        .ConnectAsync(cts.Token)
+                        .ConfigureAwait(false))
+                    {
+                        await connection
+                            .ReadAsync(Array.Empty<byte>(), 0, 0, cts.Token)
+                            .ConfigureAwait(false);
+                        await connection
+                            .CloseAsync(cts.Token)
+                            .ConfigureAwait(false);
+                    }
                 }
             }
             catch (WebSocketStreamClosedByServerException e)
@@ -262,12 +295,19 @@ namespace Google.Solutions.IapTunneling.Iap
             }
         }
 
+        /// <summary>
+        /// Maximum amount of data (in byte) that can be written at once.
+        /// </summary>
+        public const int MaxWriteSize = (int)SshRelayFormat.Data.MaxPayloadLength;
+
+        /// <summary>
+        /// Minimum amount of data (in byte) that can be read at once.
+        /// </summary>
+        public const int MinReadSize = (int)SshRelayFormat.Data.MaxPayloadLength;
+
         //---------------------------------------------------------------------
         // SingleReaderSingleWriterStream implementation
         //---------------------------------------------------------------------
-
-        public override int MaxWriteSize => 16 * 1024;
-        public override int MinReadSize => (int)DataMessage.MaxDataLength;
 
         protected override async Task<int> ProtectedReadAsync(
             byte[] buffer,
@@ -275,31 +315,35 @@ namespace Google.Solutions.IapTunneling.Iap
             int count,
             CancellationToken cancellationToken)
         {
-            if (count < this.MinReadSize)
+            if (count < MinReadSize)
             {
                 throw new IndexOutOfRangeException(
-                    $"Read buffer too small ({count}), must be at least {this.MinReadSize}");
+                    $"Read buffer too small ({count}), must be at least {MinReadSize}");
             }
 
-            MessageBuffer receiveBuffer = new MessageBuffer(new byte[count + DataMessage.DataOffset]);
+            var message = new byte[Math.Max(
+                SshRelayFormat.MinMessageSize, 
+                SshRelayFormat.Data.HeaderLength + count)];
 
             while (true)
             {
                 try
                 {
-                    var connection = await ConnectAsync(cancellationToken).ConfigureAwait(false);
+                    var connection = await ConnectAsync(cancellationToken)
+                        .ConfigureAwait(false);
 
-                    int bytesRead = await connection.ReadAsync(
-                        receiveBuffer.Buffer,
-                        0,
-                        receiveBuffer.Buffer.Length,
-                        cancellationToken).ConfigureAwait(false);
+                    int bytesRead = await connection
+                        .ReadAsync(
+                            message,
+                            0,
+                            message.Length,
+                            cancellationToken)
+                        .ConfigureAwait(false);
 
                     if (bytesRead == 0)
                     {
                         TraceLine("Server closed connection");
 
-                        // We are done here
                         return 0;
                     }
                     else if (bytesRead < 2)
@@ -307,101 +351,112 @@ namespace Google.Solutions.IapTunneling.Iap
                         throw new InvalidServerResponseException("Truncated message received");
                     }
 
-                    var tag = receiveBuffer.PeekMessageTag();
+                    var bytesDecoded = SshRelayFormat.Tag.Decode(message, out var tag);
+                    
                     switch (tag)
                     {
                         case MessageTag.CONNECT_SUCCESS_SID:
                             {
-                                this.Sid = receiveBuffer.AsSidMessage().Sid;
+                                bytesDecoded = SshRelayFormat.ConnectSuccessSid.Decode(message, out var sid);
+                                this.Sid = sid;
 
                                 TraceLine($"Connected session <{this.Sid}>");
+                                Debug.Assert(bytesDecoded == bytesRead);
 
-                                // No data to return to client yet.
                                 break;
                             }
 
                         case MessageTag.RECONNECT_SUCCESS_ACK:
                             {
-                                var reconnectMessage = receiveBuffer.AsAckMessage();
+                                bytesDecoded = SshRelayFormat.ReconnectAck.Decode(message, out var ack);
+                                
                                 var lastAckReceived = Thread.VolatileRead(ref this.bytesSentAndAcknoledged);
-                                if (lastAckReceived < reconnectMessage.Ack)
+                                if (lastAckReceived < ack)
                                 {
                                     TraceLine("Last ACK sent by server was not received");
 
-                                    this.bytesSentAndAcknoledged = reconnectMessage.Ack;
+                                    this.bytesSentAndAcknoledged = ack;
                                 }
-                                else if (lastAckReceived > reconnectMessage.Ack)
+                                else if (lastAckReceived > ack)
                                 {
                                     Debug.Assert(false, "Server acked backwards");
-                                    throw new Exception("Server acked backwards");
+                                    throw new InvalidServerResponseException("Server acked backwards");
                                 }
                                 else
                                 {
                                     TraceLine($"Reconnected session <{this.Sid}>");
                                 }
 
-                                // No data to return to client yet.
+                                Debug.Assert(bytesDecoded == bytesRead);
+
                                 break;
                             }
 
                         case MessageTag.ACK:
                             {
-                                var ackMessage = receiveBuffer.AsAckMessage();
-                                if (ackMessage.Ack <= 0 || ackMessage.Ack > Thread.VolatileRead(ref this.bytesSent))
+                                bytesDecoded = SshRelayFormat.Ack.Decode(message, out var ack);
+
+                                if (ack <= 0 || ack > Thread.VolatileRead(ref this.bytesSent))
                                 {
                                     throw new InvalidServerResponseException("Received invalid ACK");
                                 }
 
-                                this.bytesSentAndAcknoledged = ackMessage.Ack;
+                                this.bytesSentAndAcknoledged = ack;
 
                                 lock (this.sentButUnacknoledgedQueueLock)
                                 {
+                                    //
                                     // The server might be acknolodging multiple messages at once.
-                                    while (this.sentButUnacknoledgedQueue.Count > 0 &&
-                                           this.sentButUnacknoledgedQueue.Peek().ExpectedAck
+                                    //
+                                    while (this.unacknoledgedQueue.Count > 0 &&
+                                           this.unacknoledgedQueue.Peek().ExpectedAck
                                                 <= Thread.VolatileRead(ref this.bytesSentAndAcknoledged))
                                     {
-                                        this.sentButUnacknoledgedQueue.Dequeue();
+                                        this.unacknoledgedQueue.Dequeue();
                                     }
                                 }
 
-                                TraceLine($"Received ACK #{ackMessage.Ack}");
+                                TraceLine($"Received ACK #{ack}");
+                                Debug.Assert(bytesDecoded == bytesRead);
 
-                                // No data to return to client yet.
                                 break;
                             }
 
                         case MessageTag.DATA:
                             {
-                                var dataMessage = receiveBuffer.AsDataMessage();
-
-                                TraceLine($"Received data ({dataMessage.DataLength} bytes)");
-
-                                this.bytesReceived += dataMessage.DataLength;
-
-                                // Copy data to caller's buffer.
-                                Debug.Assert(dataMessage.DataLength < count);
-                                Array.Copy(
-                                    receiveBuffer.Buffer,
-                                    DataMessage.DataOffset,
+                                bytesDecoded = SshRelayFormat.Data.Decode(
+                                    message, 
                                     buffer,
-                                    offset,
-                                    dataMessage.DataLength);
-                                return (int)dataMessage.DataLength;
+                                    (uint)offset,
+                                    (uint)count,
+                                    out var dataLength);
+
+                                TraceLine($"Received data ({dataLength} bytes)");
+
+                                Debug.Assert(dataLength < bytesDecoded);
+                                this.bytesReceived += dataLength;
+
+                                Debug.Assert(bytesDecoded == bytesRead);
+
+                                return (int)dataLength;
                             }
 
                         default:
                             if (this.Sid == null)
                             {
+                                //
                                 // An unrecognized tag at the start of a connection means that we are
                                 // essentially reading junk, so bail out.
+                                //
                                 throw new InvalidServerResponseException($"Unknown tag: {tag}");
                             }
                             else
                             {
+                                //
                                 // The connection was properly opened - an unrecognized tag merely
                                 // means that the server uses a feature that we do not support (yet).
                                 // In accordance with the protocol specification, ignore this tag.
+                                //
                                 break;
                             }
                     }
@@ -419,7 +474,9 @@ namespace Google.Solutions.IapTunneling.Iap
                     {
                         TraceLine("Server closed connection");
 
+                        //
                         // Server closed the connection normally, we are done here
+                        //
 
                         return 0;
                     }
@@ -432,16 +489,20 @@ namespace Google.Solutions.IapTunneling.Iap
                     else if ((CloseCode)e.CloseStatus == CloseCode.SID_UNKNOWN ||
                              (CloseCode)e.CloseStatus == CloseCode.SID_IN_USE)
                     {
+                        //
                         // Failed reconect attempt - do not try again.
+                        //
                         TraceLine("Sid unknown or in use");
 
                         throw new WebSocketStreamClosedByServerException(
                             e.CloseStatus,
-                            "Connection losed abnormally and an attempt to reconnect was rejected");
+                            "Connection closed abnormally and an attempt to reconnect was rejected");
                     }
                     else if ((CloseCode)e.CloseStatus == CloseCode.FAILED_TO_CONNECT_TO_BACKEND)
                     {
+                        //
                         // Server probably not listening.
+                        //
                         TraceLine("Failed to connect to backend");
 
                         throw new WebSocketStreamClosedByServerException(
@@ -465,65 +526,75 @@ namespace Google.Solutions.IapTunneling.Iap
             int count,
             CancellationToken cancellationToken)
         {
-            if (count > this.MaxWriteSize)
+            if (count > MaxWriteSize)
             {
                 throw new IndexOutOfRangeException(
-                    $"Write buffer too large ({count}), must be at most {this.MaxWriteSize}");
+                    $"Write buffer too large ({count}), must be at most {MaxWriteSize}");
             }
 
             while (true)
             {
                 try
                 {
-                    var connection = await ConnectAsync(cancellationToken).ConfigureAwait(false);
+                    var connection = await ConnectAsync(cancellationToken)
+                        .ConfigureAwait(false);
 
+                    //
                     // Take care of outstanding ACKs.
+                    //
                     var bytesToAck = Thread.VolatileRead(ref this.bytesReceived);
-                    if (this.lastAck < bytesToAck)
+                    if (this.lastAckSent < bytesToAck)
                     {
-                        var ackMessage = new MessageBuffer(
-                            new byte[AckMessage.ExpectedLength]).AsAckMessage();
-                        ackMessage.Tag = MessageTag.ACK;
-                        ackMessage.Ack = bytesToAck;
+                        var ackBuffer = new byte[SshRelayFormat.Ack.MessageLength];
+                        SshRelayFormat.Ack.Encode(ackBuffer, bytesToAck);
 
-                        TraceLine($"Sending ACK #{ackMessage.Ack}...");
+                        TraceLine($"Sending ACK #{bytesToAck}...");
 
-                        await connection.WriteAsync(
-                            ackMessage.Buffer,
-                            0,
-                            (int)AckMessage.ExpectedLength,
-                            cancellationToken).ConfigureAwait(false);
+                        await connection
+                            .WriteAsync(
+                                ackBuffer,
+                                0,
+                                ackBuffer.Length,
+                                cancellationToken)
+                            .ConfigureAwait(false);
 
-                        this.lastAck = ackMessage.Ack;
+                        this.lastAckSent = bytesToAck;
                     }
 
+                    //
                     // Send data.
+                    //
+                    var sequenceNumber = Thread.VolatileRead(ref this.bytesSent);
 
-                    var newMessage = new DataMessage((uint)count)
-                    {
-                        Tag = MessageTag.DATA,
-                        DataLength = (uint)count,
-                        SequenceNumber = Thread.VolatileRead(ref this.bytesSent)
-                    };
-                    Array.Copy(buffer, offset, newMessage.Buffer, DataMessage.DataOffset, count);
+                    var message = new byte[SshRelayFormat.Data.HeaderLength + count];
+                    SshRelayFormat.Data.Encode(message, buffer, (uint)offset, (uint)count);
 
-                    TraceLine($"Sending DATA #{newMessage.SequenceNumber}...");
+                    TraceLine($"Sending DATA #{sequenceNumber}...");
 
+                    //
                     // Update bytesSent before we write the data to the wire,
                     // otherwise we might see an ACK before bytesSent even reflects
                     // that the data has been sent.
+                    //
                     this.bytesSent = Thread.VolatileRead(ref this.bytesSent) + (ulong)count;
 
-                    await connection.WriteAsync(
-                        newMessage.Buffer,
-                        0,
-                        newMessage.BufferLength,
-                        cancellationToken).ConfigureAwait(false);
+                    await connection
+                        .WriteAsync(
+                            message,
+                            0,
+                            message.Length,
+                            cancellationToken)
+                        .ConfigureAwait(false);
 
+                    //
                     // We should get an ACK for this message.
+                    //
                     lock (this.sentButUnacknoledgedQueueLock)
                     {
-                        this.sentButUnacknoledgedQueue.Enqueue(newMessage);
+                        this.unacknoledgedQueue.Enqueue(new UnacknoledgedWrite(
+                            message,
+                            sequenceNumber,
+                            sequenceNumber + (ulong)count));
                     }
 
                     return;
@@ -534,8 +605,10 @@ namespace Google.Solutions.IapTunneling.Iap
                             (CloseCode)e.CloseStatus == CloseCode.DESTINATION_READ_FAILED ||
                             (CloseCode)e.CloseStatus == CloseCode.DESTINATION_WRITE_FAILED)
                     {
+                        //
                         // The server closed the connection and us sending more data
                         // really seems unexpected.
+                        //
                         throw;
                     }
                     else if ((CloseCode)e.CloseStatus == CloseCode.NOT_AUTHORIZED)
@@ -571,6 +644,23 @@ namespace Google.Solutions.IapTunneling.Iap
             base.Dispose(disposing);
 
             this.connectSemaphore.Dispose();
+        }
+
+        private struct UnacknoledgedWrite
+        {
+            public readonly byte[] Data;
+            public readonly ulong SequenceNumber;
+            public readonly ulong ExpectedAck;
+
+            public UnacknoledgedWrite(
+                byte[] data, 
+                ulong sequenceNumber,
+                ulong expectedAck)
+            {
+                this.Data = data;
+                this.SequenceNumber = sequenceNumber;
+                this.ExpectedAck = expectedAck;
+            }
         }
     }
 

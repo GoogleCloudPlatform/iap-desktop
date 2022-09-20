@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 
-namespace Google.Solutions.IapTunneling.Test.Net
+namespace Google.Solutions.IapTunneling.Net
 {
     /// <summary>
     /// Helper class to find unsed local TCP ports.
@@ -55,15 +55,21 @@ namespace Google.Solutions.IapTunneling.Test.Net
         {
             var occupiedPorts = QueryOccupiedPorts();
 
+            //
             // Ephemeral ports tend to start around 49000 (see 
             // https://support.microsoft.com/en-us/help/929851/the-default-dynamic-port-range-for-tcp-ip-has-changed-in-windows-vista)
             // Try to stay below
+            //
 
+            //
             // Use a random port to make port numbers less predictable.
+            //
             var random = new Random(Environment.TickCount);
 
+            //
             // Make a reasonable number of attempts without risking getting
             // stuck in an infinite loop.
+            //
             for (int attempts = 0; attempts < MaxAttempts; attempts++)
             {
                 var port = random.Next(PortRangeStart, PortRangeEnd);

@@ -32,16 +32,6 @@ namespace Google.Solutions.IapTunneling.Net
     public interface INetworkStream : IDisposable
     {
         /// <summary>
-        /// Maximum amount of data (in byte) that can be written at once.
-        /// </summary>
-        int MaxWriteSize { get; }
-
-        /// <summary>
-        /// Minimum amount of data (in byte) that can be read at once.
-        /// </summary>
-        int MinReadSize { get; }
-
-        /// <summary>
         /// Read from stream.
         /// </summary>
         /// <returns>Bytes read, 0 if connection closed cleanly</returns>
@@ -74,15 +64,9 @@ namespace Google.Solutions.IapTunneling.Net
     /// that has alrady been closed, either by the client itself or by
     /// the server.
     /// </summary>
-    [Serializable]
     public class NetworkStreamClosedException : Exception
     {
-        protected NetworkStreamClosedException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
-        public NetworkStreamClosedException()
+        protected NetworkStreamClosedException()
         {
         }
 

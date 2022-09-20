@@ -64,8 +64,10 @@ namespace Google.Solutions.IapTunneling.Net
         {
             try
             {
+                //
                 // Acquire semaphore to ensure that only a single
                 // read operation is in flight at a time.
+                //
                 await this.readerSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 return await ProtectedReadAsync(
@@ -84,8 +86,10 @@ namespace Google.Solutions.IapTunneling.Net
         {
             try
             {
+                //
                 // Acquire semaphore to ensure that only a single
                 // write/close operation is in flight at a time.
+                //
                 await this.writerSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 await ProtectedWriteAsync(
@@ -104,8 +108,10 @@ namespace Google.Solutions.IapTunneling.Net
         {
             try
             {
+                //
                 // Acquire semaphore to ensure that only a single
                 // write/close operation is in flight at a time.
+                //
                 await this.writerSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 await ProtectedCloseAsync(cancellationToken).ConfigureAwait(false);
