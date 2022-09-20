@@ -239,6 +239,15 @@ namespace Google.Solutions.IapTunneling.Iap
                     TraceLine($"Failed to close connection: {e}");
                 }
 
+                try
+                {
+                    this.__currentConnection.Dispose();
+                }
+                catch (Exception e)
+                {
+                    TraceLine($"Failed to dispose connection: {e}");
+                }
+
                 this.__currentConnection = null;
 
                 TraceLine("Disonnected.");
@@ -441,19 +450,28 @@ namespace Google.Solutions.IapTunneling.Iap
                                 return (int)dataLength;
                             }
 
-                        default:
-                            if (this.Sid == null)
+                        case SshRelayMessageTag.LONG_CLOSE:
                             {
+                                bytesDecoded = SshRelayFormat.LongClose.Decode(
+                                   message,
+                                   out var closeCode,
+                                   out var reason);
+
                                 //
-                                // An unrecognized tag at the start of a connection means that we are
-                                // essentially reading junk, so bail out.
-                                //
-                                throw new InvalidServerResponseException($"Unknown tag: {tag}");
+                                // Ignore the message for now.
+                                // 
+
+                                TraceLine($"Received close: {reason} ({closeCode})");
+
+                                Debug.Assert(bytesDecoded == bytesRead);
+
+                                break;
                             }
-                            else
+
+                        default:
                             {
                                 //
-                                // The connection was properly opened - an unrecognized tag merely
+                                // An unrecognized tag merely
                                 // means that the server uses a feature that we do not support (yet).
                                 // In accordance with the protocol specification, ignore this tag.
                                 //
@@ -469,8 +487,8 @@ namespace Google.Solutions.IapTunneling.Iap
                 catch (WebSocketStreamClosedByServerException e)
                 {
                     if (e.CloseStatus == WebSocketCloseStatus.NormalClosure ||
-                            (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.DESTINATION_READ_FAILED ||
-                            (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.DESTINATION_WRITE_FAILED)
+                        (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.DESTINATION_READ_FAILED ||
+                        (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.DESTINATION_WRITE_FAILED)
                     {
                         TraceLine("Server closed connection");
 

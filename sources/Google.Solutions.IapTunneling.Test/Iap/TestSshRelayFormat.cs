@@ -460,12 +460,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             public void WhenReasonEmpty_ThenEncodeSucceeds()
             {
                 var message = new byte[SshRelayFormat.LongClose.MinMessageLength];
-                var reason = new byte[0];
 
                 var bytesWritten = SshRelayFormat.LongClose.Encode(
                     message,
                     SshRelayCloseCode.ERROR_UNKNOWN,
-                    string.Empty));
+                    string.Empty);
 
                 Assert.AreEqual(SshRelayFormat.LongClose.MinMessageLength, bytesWritten);
             }
@@ -475,8 +474,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             {
                 var message = new byte[] {
                     0, 10,
-                    0, 0, 0xFA, 0x01, // 4001
-                    4,
+                    0, 0, 0xF, 0xA1, // 4001
+                    0, 0, 0, 4,
                     (byte)'F', (byte)'a', (byte)'i', (byte)'l'
                 };
 
@@ -486,7 +485,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     out var reason);
 
                 Assert.AreEqual(message.Length, bytesRead);
-                Assert.AreEqual(4001, closeCode);
+                Assert.AreEqual(SshRelayCloseCode.SID_UNKNOWN, closeCode);
                 Assert.AreEqual("Fail", reason);
             }
 

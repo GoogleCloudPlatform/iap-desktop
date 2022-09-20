@@ -278,10 +278,6 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             }
         }
 
-        //---------------------------------------------------------------------
-        // Read: unknown tags/messages.
-        //---------------------------------------------------------------------
-
         [Test]
         public async Task WhenServerTruncatedMessage_ThenReadThrowsException()
         {
@@ -298,60 +294,6 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                         () => clientStream
                             .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                             .Wait());
-                }
-            }
-        }
-
-        [Test]
-        public async Task WhenServerSendsUnknownTagBeforeSid_ThenReadThrowsException()
-        {
-            using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
-            {
-                await endpoint.Server
-                    .SendBinaryFrameAsync(new byte[] { 0xAA, 0xBB })
-                    .ConfigureAwait(false);
-
-                using (var clientStream = new SshRelayStream(endpoint))
-                {
-                    var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(
-                        () => clientStream
-                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                            .Wait());
-                }
-            }
-        }
-
-        [Test]
-        public async Task WhenServerSendsUnknownTagAfterSid_ThenReadSucceeds()
-        {
-            using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
-            {
-                await endpoint.Server
-                    .SendConnectSuccessSidAsync("Sid")
-                    .ConfigureAwait(false);
-
-                await endpoint.Server
-                    .SendBinaryFrameAsync(new byte[] { 0xAA, 0xBB, 0xCC, 0xDD }) // Junk.
-                    .ConfigureAwait(false);
-
-                var data = new byte[] { (byte)'d', (byte)'a', (byte)'t', (byte)'a' };
-                await endpoint.Server
-                    .SendDataAsync(data)
-                    .ConfigureAwait(false);
-
-                using (var clientStream = new SshRelayStream(endpoint))
-                {
-                    var buffer = new byte[SshRelayStream.MinReadSize];
-                    var bytesRead = await clientStream
-                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                        .ConfigureAwait(false);
-
-                    Assert.AreEqual(4, bytesRead);
-                    Assert.AreEqual((byte)'d', buffer[0]);
-                    Assert.AreEqual((byte)'a', buffer[1]);
-                    Assert.AreEqual((byte)'t', buffer[2]);
-                    Assert.AreEqual((byte)'a', buffer[3]);
                 }
             }
         }

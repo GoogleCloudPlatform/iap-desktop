@@ -119,7 +119,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public void WhenFirstReadEncountersUnrecognizedMessageTag_ThenReadFailsWithInvalidServerResponseException(
+        public async Task WhenReadEncountersUnrecognizedMessageTag_ThenReadSkipsMessage(
             [Values(
                 (byte)SshRelayMessageTag.UNUSED_0,
                 (byte)SshRelayMessageTag.DEPRECATED,
@@ -132,43 +132,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             {
                 ExpectedReadData = new byte[][]
                 {
-                    new byte[]{ 0, tag },
-                    new byte[]{ }
-                }
-            };
-            var endpoint = new MockSshRelayEndpoint()
-            {
-                ExpectedStream = stream
-            };
-            var relay = new SshRelayStream(endpoint);
-
-            Assert.AreEqual(0, endpoint.ConnectCount);
-
-            ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(() =>
-            {
-                byte[] buffer = new byte[SshRelayStream.MinReadSize];
-                relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Wait();
-            });
-        }
-
-        [Test]
-        public async Task WhenSubsequentReadEncountersUnrecognizedMessageTag_ThenReadSkipsMessage(
-            [Values(
-                (byte)SshRelayMessageTag.UNUSED_0,
-                (byte)SshRelayMessageTag.DEPRECATED,
-                (byte)SshRelayMessageTag.UNUSED_5,
-                (byte)SshRelayMessageTag.UNUSED_6,
-                (byte)SshRelayMessageTag.UNUSED_8,
-                (byte)SshRelayMessageTag.LONG_CLOSE)] byte tag)
-        {
-            var stream = new MockStream()
-            {
-                ExpectedReadData = new byte[][]
-                {
+                    new byte[]{ 0, tag, 0, 0, 0, 0, 0, 0, 0, 0 },
                     new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
-                    new byte[]{ 0, tag },
+                    new byte[]{ 0, tag, 0, 0, 0, 0, 0, 0, 0, 0 },
                     new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 2, 0xA, 0xB },
-                    new byte[]{ 0, tag },
+                    new byte[]{ 0, tag, 0, 0, 0, 0, 0, 0, 0, 0 },
                     new byte[]{ }
                 }
             };
@@ -185,6 +153,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             Assert.AreEqual(2, bytesRead);
             Assert.AreEqual(0xA, buffer[0]);
             Assert.AreEqual(0xB, buffer[1]);
+
+            bytesRead = await relay
+                .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
+                .ConfigureAwait(false);
+            Assert.AreEqual(0, bytesRead);
         }
 
         [Test]
