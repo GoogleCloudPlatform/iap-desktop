@@ -272,7 +272,7 @@ namespace Google.Solutions.IapTunneling.Iap
             this.Endpoint = endpoint;
         }
 
-        public async Task DisconnectAsync(CancellationToken cancellationToken)
+        internal async Task DisconnectAsync(CancellationToken cancellationToken)
         {
             using (await this.connectLock
                 .AcquireAsync(cancellationToken)

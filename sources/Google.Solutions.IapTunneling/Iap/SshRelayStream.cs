@@ -125,8 +125,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public async Task TestConnectionAsync(TimeSpan timeout)
         {
-            //TODO: Use a WebSocketStream instead, but disable reconnects
-
+            //TODO: Use a WebSocketStream instead
             // Open a WebSocketStream, without wrapping it as a SshRelayStream
             // and do a zero-byte read. This will fail if access is denied.
             //

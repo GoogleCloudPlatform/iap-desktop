@@ -81,7 +81,6 @@
     <Compile Include="Net\OneTimeUseStream.cs" />
     <Compile Include="Net\SingleReaderSingleWriterStream.cs" />
     <Compile Include="Net\SocketStream.cs" />
-    <Compile Include="Iap\SshRelayStream_old.cs" />
     <Compile Include="Iap\SshRelayListener.cs" />
     <Compile Include="Net\WebSocketStream.cs" />
     <Compile Include="Net\PortFinder.cs" />
