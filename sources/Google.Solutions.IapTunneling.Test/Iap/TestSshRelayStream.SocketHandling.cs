@@ -123,13 +123,33 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         //---------------------------------------------------------------------
-        // TestConnectionAsync.
+        // ProbeConnectionAsync.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenReadFailsWithCloseCode_ThenTestConnectionThrowsException(
+        public async Task WhenReadFailsWithDeniedCloseCode_ThenProbeConnectionThrowsException(
             [Values(
-                SshRelayCloseCode.NOT_AUTHORIZED,
+                SshRelayCloseCode.NOT_AUTHORIZED)] SshRelayCloseCode code)
+        {
+            using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
+            {
+                await endpoint.Server
+                    .CloseOutputAsync((WebSocketCloseStatus)code)
+                    .ConfigureAwait(false);
+
+                using (var clientStream = new SshRelayStream(endpoint))
+                {
+                    ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
+                        () => clientStream
+                            .ProbeConnectionAsync(TimeSpan.FromSeconds(1))
+                            .Wait());
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenReadFailsWithNotFoundCloseCode_ThenProbeConnectionThrowsException(
+            [Values(
                 SshRelayCloseCode.LOOKUP_FAILED,
                 SshRelayCloseCode.LOOKUP_FAILED_RECONNECT)] SshRelayCloseCode code)
         {
@@ -141,18 +161,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
-                    try
-                    {
-                        await clientStream
-                            .TestConnectionAsync(TimeSpan.FromSeconds(1))
-                            .ConfigureAwait(false);
-
-                        Assert.Fail();
-                    }
-                    catch (SshRelayDeniedException e)
-                    {
-                        Assert.AreEqual(((int)code).ToString(), e.Message);
-                    }
+                    ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(
+                        () => clientStream
+                            .ProbeConnectionAsync(TimeSpan.FromSeconds(1))
+                            .Wait());
                 }
             }
         }

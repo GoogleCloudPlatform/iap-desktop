@@ -401,6 +401,11 @@ namespace Google.Solutions.IapTunneling.Iap
                                 "The server could not connect to the backend: " +
                                 e.CloseStatusDescription);
 
+                        case SshRelayCloseCode.LOOKUP_FAILED:
+                        case SshRelayCloseCode.LOOKUP_FAILED_RECONNECT:
+                            throw new SshRelayBackendNotFoundException(
+                                "The backend could not be found");
+
                         default:
                             {
                                 if (attempt++ >= MaxReconnects)

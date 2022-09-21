@@ -25,8 +25,6 @@ using System;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Net.WebSockets;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -267,18 +265,15 @@ namespace Google.Solutions.IapTunneling.Net
     public class WebSocketStreamClosedByClientException : NetworkStreamClosedException
     {
         public WebSocketStreamClosedByClientException()
+            : base("The connection has already been closed by the client")
         {
         }
     }
 
     public class WebSocketConnectionDeniedException : Exception
     {
-        protected WebSocketConnectionDeniedException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
         public WebSocketConnectionDeniedException()
+            : base("The server denied the use of WebSockets")
         {
         }
     }
@@ -291,6 +286,7 @@ namespace Google.Solutions.IapTunneling.Net
         public WebSocketStreamClosedByServerException(
             WebSocketCloseStatus closeStatus,
             string closeStatusDescription)
+            : base($"{closeStatusDescription} (code {closeStatus})")
         {
             this.CloseStatus = closeStatus;
             this.CloseStatusDescription = closeStatusDescription;

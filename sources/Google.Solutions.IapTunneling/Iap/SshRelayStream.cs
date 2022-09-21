@@ -146,12 +146,8 @@ namespace Google.Solutions.IapTunneling.Iap
         /// </summary>
         public const int MinReadSize = (int)SshRelayFormat.Data.MaxPayloadLength;
 
-        public async Task TestConnectionAsync(TimeSpan timeout)
+        public async Task ProbeConnectionAsync(TimeSpan timeout)
         {
-            //TODO: Use a WebSocketStream instead
-            // Open a WebSocketStream, without wrapping it as a SshRelayStream
-            // and do a zero-byte read. This will fail if access is denied.
-            //
             try
             {
                 using (var cts = new CancellationTokenSource())
@@ -163,35 +159,27 @@ namespace Google.Solutions.IapTunneling.Iap
                     //
                     cts.CancelAfter(timeout);
 
-                    using (var stream = await this.session.Endpoint
-                        .ConnectAsync(cts.Token)
-                        .ConfigureAwait(false))
-                    {
-                        await stream
-                            .ReadAsync(Array.Empty<byte>(), 0, 0, cts.Token)
-                            .ConfigureAwait(false);
-                        await stream
-                            .CloseAsync(cts.Token)
-                            .ConfigureAwait(false);
-                    }
+                    await this.session.IoAsync(
+                        stream =>
+                        {
+                            //
+                            // If we get here, then we've successfuly established
+                            // a connection.
+                            //
+                            return Task.FromResult(0u);
+                        },
+                        (s, t) => Task.CompletedTask,
+                        true,
+                        cts.Token);
 
-                    TraceVerbose("Connection test succeeded");
+                    await CloseAsync(cts.Token)
+                        .ConfigureAwait(false);
                 }
-            }
-            catch (WebSocketStreamClosedByServerException e)
-                when ((SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.NOT_AUTHORIZED ||
-                      (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.LOOKUP_FAILED ||
-                      (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.LOOKUP_FAILED_RECONNECT)
-            {
-                //
-                // Request was rejected by access level or IAM policy.
-                //
-                TraceVerbose($"Connection test failed: {e.CloseStatusDescription} ({e.CloseStatus})");
-                throw new SshRelayDeniedException(e.CloseStatusDescription);
             }
             catch (OperationCanceledException)
             {
-                throw new NetworkStreamClosedException("Connection timed out");
+                throw new NetworkStreamClosedException(
+                    "The server did not respond within the alotted time");
             }
         }
 
@@ -468,6 +456,13 @@ namespace Google.Solutions.IapTunneling.Iap
     public class SshRelayDeniedException : SshRelayException
     {
         public SshRelayDeniedException(string message) : base(message)
+        {
+        }
+    }
+
+    public class SshRelayBackendNotFoundException : SshRelayException
+    {
+        public SshRelayBackendNotFoundException(string message) : base(message)
         {
         }
     }

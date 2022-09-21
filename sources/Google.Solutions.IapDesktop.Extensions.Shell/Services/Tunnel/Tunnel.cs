@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
             // issue.
             using (var stream = new SshRelayStream(this.Endpoint))
             {
-                await stream.TestConnectionAsync(timeout).ConfigureAwait(false);
+                await stream.ProbeConnectionAsync(timeout).ConfigureAwait(false);
             }
         }
 

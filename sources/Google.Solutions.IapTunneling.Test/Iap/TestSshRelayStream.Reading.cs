@@ -656,7 +656,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
                 () => relay
-                    .TestConnectionAsync(TimeSpan.FromSeconds(2))
+                    .ProbeConnectionAsync(TimeSpan.FromSeconds(2))
                     .Wait());
         }
     }
