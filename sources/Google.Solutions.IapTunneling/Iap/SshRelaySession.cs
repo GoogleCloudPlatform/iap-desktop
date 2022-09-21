@@ -45,8 +45,9 @@ namespace Google.Solutions.IapTunneling.Iap
     }
 
     /// <summary>
-    /// Connection to an SSH Relay endpoint that automatically
-    /// reconnects on failure.
+    /// SSH Relay session. A session uses one WebSocket connection
+    /// at a time. If that connection breaks, the session attempts
+    /// to reconnect.
     /// </summary>
     internal sealed class SshRelaySession
     {
@@ -60,6 +61,10 @@ namespace Google.Solutions.IapTunneling.Iap
         private INetworkStream connection = null;
         private readonly AsyncLock connectLock = new AsyncLock();
 
+        /// <summary>
+        /// Unique identifier of session. Available after initial
+        /// connection has been established.
+        /// </summary>
         public string Sid { get; private set; }
 
         /// <summary>
@@ -72,7 +77,7 @@ namespace Google.Solutions.IapTunneling.Iap
         /// </summary>
         public ulong LastAckSent { get; set; } = 0;
 
-        private void TraceLine(string message)
+        private void TraceVerbose(string message)
         {
             if (IapTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
             {
@@ -85,7 +90,7 @@ namespace Google.Solutions.IapTunneling.Iap
             }
         }
 
-        private async Task<INetworkStream> ConnectAsync(
+        private async Task<INetworkStream> GetConnectionAsync(
             Func<INetworkStream, CancellationToken, Task> resendUnacknoledgedDataAction,
             CancellationToken cancellationToken)
         {
@@ -109,7 +114,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     //
                     // Initial connect.
                     //
-                    TraceLine($"Establishing new connection");
+                    TraceVerbose($"Establishing new connection");
 
                     var connection = await this.Endpoint
                         .ConnectAsync(cancellationToken)
@@ -170,7 +175,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                     this.Sid = connectionSid;
                                     this.connection = connection;
 
-                                    TraceLine($"Received CONNECT_SUCCESS_SID, connected");
+                                    TraceVerbose($"Received CONNECT_SUCCESS_SID, connected");
 
                                     return connection;
                                 }
@@ -181,7 +186,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 // Unknown tag, ignore.
                                 //
 
-                                TraceLine($"Received unknown message: {tag}");
+                                TraceVerbose($"Received unknown message: {tag}");
 
                                 break;
                         }
@@ -193,7 +198,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     // Reconnect + sync ack's + resend data.
                     //
                     Debug.Assert(this.Sid != null);
-                    TraceLine($"Attempting reconnect with ack={this.LastAckReceived}");
+                    TraceVerbose($"Attempting reconnect with ack={this.LastAckReceived}");
 
                     var connection = await this.Endpoint
                         .ReconnectAsync(
@@ -253,7 +258,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
                                     this.connection = connection;
 
-                                    TraceLine("Received RECONNECT_SUCCESS_ACK, reconnected");
+                                    TraceVerbose("Received RECONNECT_SUCCESS_ACK, reconnected");
 
                                     return connection;
                                 }
@@ -273,7 +278,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 //
                                 // Unknown tag, ignore.
                                 //
-                                TraceLine($"Received unknown message: {tag}");
+                                TraceVerbose($"Received unknown message: {tag}");
 
                                 break;
                         }
@@ -325,7 +330,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     this.connection = null;
                 }
 
-                TraceLine("Disonnected");
+                TraceVerbose("Disonnected");
             }
         }
 
@@ -340,7 +345,7 @@ namespace Google.Solutions.IapTunneling.Iap
             {
                 try
                 {
-                    var connection = await ConnectAsync(
+                    var connection = await GetConnectionAsync(
                             resendUnacknoledgedDataAction,
                             cancellationToken)
                         .ConfigureAwait(false);
@@ -400,7 +405,7 @@ namespace Google.Solutions.IapTunneling.Iap
                             {
                                 if (attempt++ >= MaxReconnects)
                                 {
-                                    TraceLine($"Failed to reconnect after {attempt} attempts");
+                                    TraceVerbose($"Failed to reconnect after {attempt} attempts");
                                     throw;
                                 }
                                 else
@@ -411,7 +416,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                     await DisconnectAsync(cancellationToken)
                                         .ConfigureAwait(true);
 
-                                    TraceLine("Attempting to reconnect");
+                                    TraceVerbose("Attempting to reconnect");
 
                                     break;
                                 }
@@ -432,7 +437,7 @@ namespace Google.Solutions.IapTunneling.Iap
             var sidToken = this.Sid != null 
                 ? this.Sid.Substring(0, Math.Min(this.Sid.Length, 10))
                 : "(unknown)";
-            return $"[SshRelay {sidToken}]";
+            return $"[SshRelaySession {sidToken}]";
         }
     }
 }

@@ -32,13 +32,15 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapTunneling.Iap
 {
     /// <summary>
-    /// NetworkStream for reading/writing from a SshRelayChannel.
+    /// NetworkStream for reading/writing from a SshRelaySession.
     /// </summary>
     public class SshRelayStream : SingleReaderSingleWriterStream
     {
         private readonly SshRelaySession session;
 
+        //
         // Queue of un-ack'ed messages that might require re-sending.
+        //
         private readonly AsyncLock unacknoledgedQueueLock = new AsyncLock();
         private readonly Queue<UnacknoledgedWrite> unacknoledgedQueue = new Queue<UnacknoledgedWrite>();
 
@@ -49,18 +51,18 @@ namespace Google.Solutions.IapTunneling.Iap
         // Privates
         //---------------------------------------------------------------------
 
-        private void TraceLine(string message)
+        private void TraceVerbose(string message)
         {
             if (IapTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
             {
                 IapTraceSources.Default.TraceVerbose(
-                    "{0} - {1}",
-                    this.session,
+                    "[SshRelayStream {0}] {1}",
+                    this.Sid,
                     message);
             }
         }
 
-        private async Task ResendUnacknoledgedData(
+        private async Task ResendUnacknoledgedDataAsync(
             INetworkStream stream,
             CancellationToken cancellationToken)
         {
@@ -77,7 +79,7 @@ namespace Google.Solutions.IapTunneling.Iap
                         // We never got an ACK for this one, resend.
                         //
 
-                        TraceLine($"Resending DATA #{write.SequenceNumber}...");
+                        TraceVerbose($"Resending DATA #{write.SequenceNumber}...");
                         await stream
                             .WriteAsync(
                                 write.Data,
@@ -173,7 +175,7 @@ namespace Google.Solutions.IapTunneling.Iap
                             .ConfigureAwait(false);
                     }
 
-                    TraceLine("Connection test succeeded");
+                    TraceVerbose("Connection test succeeded");
                 }
             }
             catch (WebSocketStreamClosedByServerException e)
@@ -184,7 +186,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 //
                 // Request was rejected by access level or IAM policy.
                 //
-                TraceLine($"Connection test failed: {e.CloseStatusDescription} ({e.CloseStatus})");
+                TraceVerbose($"Connection test failed: {e.CloseStatusDescription} ({e.CloseStatus})");
                 throw new SshRelayDeniedException(e.CloseStatusDescription);
             }
             catch (OperationCanceledException)
@@ -199,7 +201,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public string Sid => this.session.Sid;
 
-        protected async override Task<int> ProtectedReadAsync(
+        protected override async Task<int> ProtectedReadAsync(
             byte[] buffer,
             int offset,
             int count,
@@ -252,7 +254,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                     Debug.Assert(dataLength < bytesDecoded);
                                     Debug.Assert(bytesDecoded == bytesRead);
 
-                                    TraceLine($"Received DATA message ({dataLength} bytes)");
+                                    TraceVerbose($"Received DATA message ({dataLength} bytes)");
 
                                     Interlocked.Add(ref this.bytesReceived, dataLength);
 
@@ -291,7 +293,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                         }
                                     }
 
-                                    TraceLine($"Received ACK #{ack}");
+                                    TraceVerbose($"Received ACK #{ack}");
 
                                     break;
                                 }
@@ -300,18 +302,18 @@ namespace Google.Solutions.IapTunneling.Iap
                                 //
                                 // Unknown tag, ignore.
                                 //
-                                TraceLine($"Received unknown message: {tag}");
+                                TraceVerbose($"Received unknown message: {tag}");
 
                                 break;
                         }
                     }
                 },
-                ResendUnacknoledgedData,
+                ResendUnacknoledgedDataAsync,
                 false, // Normal closes are ok.
                 cancellationToken);
         }
 
-        protected async override Task ProtectedWriteAsync(
+        protected override async Task ProtectedWriteAsync(
             byte[] buffer, 
             int offset, 
             int count, 
@@ -335,7 +337,7 @@ namespace Google.Solutions.IapTunneling.Iap
                         var ackBuffer = new byte[SshRelayFormat.Ack.MessageLength];
                         SshRelayFormat.Ack.Encode(ackBuffer, bytesToAck);
 
-                        TraceLine($"Sending ACK #{bytesToAck}...");
+                        TraceVerbose($"Sending ACK #{bytesToAck}...");
 
                         await stream
                             .WriteAsync(
@@ -348,7 +350,6 @@ namespace Google.Solutions.IapTunneling.Iap
                         this.session.LastAckSent = bytesToAck;
                     }
 
-
                     //
                     // Send data.
                     //
@@ -357,7 +358,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     var message = new byte[SshRelayFormat.Data.HeaderLength + count];
                     SshRelayFormat.Data.Encode(message, buffer, (uint)offset, (uint)count);
 
-                    TraceLine($"Sending DATA #{sequenceNumber}...");
+                    TraceVerbose($"Sending DATA #{sequenceNumber}...");
 
                     //
                     // Update bytesSent before we write the data to the wire,
@@ -389,7 +390,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
                     return 0;
                 },
-                ResendUnacknoledgedData,
+                ResendUnacknoledgedDataAsync,
                 true, // Normal closes are unexpected.
                 cancellationToken);
         }
@@ -411,6 +412,7 @@ namespace Google.Solutions.IapTunneling.Iap
             base.Dispose(disposing);
 
             this.session.Dispose();
+            this.unacknoledgedQueueLock.Dispose();
         }
 
         //---------------------------------------------------------------------
