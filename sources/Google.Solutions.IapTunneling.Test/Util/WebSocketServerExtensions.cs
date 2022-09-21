@@ -39,12 +39,36 @@ namespace Google.Solutions.IapTunneling.Test.Util
                 .ConfigureAwait(false);
         }
 
+        public static async Task SendReconnectAckAsync(
+            this ServerWebSocketConnection server,
+            ulong ack)
+        {
+            var buffer = new byte[SshRelayFormat.ReconnectAck.MessageLength];
+            var bytes = SshRelayFormat.ReconnectAck.Encode(buffer, ack);
+
+            await server
+                .SendBinaryFrameAsync(buffer, 0, (int)bytes)
+                .ConfigureAwait(false);
+        }
+
         public static async Task SendDataAsync(
             this ServerWebSocketConnection server,
             byte[] data)
         {
             var buffer = new byte[data.Length + 6];
             var bytes = SshRelayFormat.Data.Encode(buffer, data, 0, (uint)data.Length);
+
+            await server
+                .SendBinaryFrameAsync(buffer, 0, (int)bytes)
+                .ConfigureAwait(false);
+        }
+
+        public static async Task SendAckAsync(
+            this ServerWebSocketConnection server,
+            ulong ack)
+        {
+            var buffer = new byte[SshRelayFormat.Ack.MessageLength];
+            var bytes = SshRelayFormat.Ack.Encode(buffer, ack);
 
             await server
                 .SendBinaryFrameAsync(buffer, 0, (int)bytes)

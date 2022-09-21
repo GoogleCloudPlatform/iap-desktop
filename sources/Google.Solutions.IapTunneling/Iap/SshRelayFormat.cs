@@ -59,6 +59,8 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public static class Tag
         {
+            public static uint Length = sizeof(ushort);
+
             //
             // 00-01 (len=2): Tag
             //

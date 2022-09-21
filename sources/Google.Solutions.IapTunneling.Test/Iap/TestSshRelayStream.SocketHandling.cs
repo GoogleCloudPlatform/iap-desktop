@@ -338,7 +338,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenServerClosesConnectionWithUnknownErrorBeforeData_ThenReadConnectsAgain(
+        public async Task WhenServerClosesConnectionWithUnknownErrorBeforeAck_ThenReadConnectsAgain(
              [Values(
                 SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)] SshRelayCloseCode code)
         {
@@ -346,7 +346,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             {
                 await endpoint.Server
                     .SendConnectSuccessSidAsync("sid")
-                    .ConfigureAwait(false); 
+                    .ConfigureAwait(false);
                 await endpoint.Server
                      .CloseOutputAsync((WebSocketCloseStatus)code)
                      .ConfigureAwait(false);
@@ -376,7 +376,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionWithUnknownErrorAfterData_ThenReadTriggersReconnect(
+        public async Task WhenServerClosesConnectionWithUnknownErrorAfterAck_ThenReadTriggersReconnect(
              [Values(
                 SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE)] SshRelayCloseCode code)
         {
@@ -386,7 +386,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     .SendConnectSuccessSidAsync("sid")
                     .ConfigureAwait(false);
                 await endpoint.Server
-                    .SendDataAsync(new byte[] { 0xAA })
+                    .SendAckAsync(1)
                     .ConfigureAwait(false);
                 await endpoint.Server
                      .CloseOutputAsync((WebSocketCloseStatus)code)
@@ -396,7 +396,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     .AfterReconnect()
                     .ConfigureAwait(false);
                 await afterReconnect
-                    .SendConnectSuccessSidAsync("sid")
+                    .SendReconnectAckAsync(0)
                     .ConfigureAwait(false);
                 await afterReconnect
                     .SendDataAsync(new byte[] { (byte)'d', (byte)'a', (byte)'t', (byte)'a' })
@@ -404,6 +404,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
+                    await clientStream
+                        .WriteAsync(new byte[1], 0, 1, CancellationToken.None)
+                        .ConfigureAwait(false);
+
                     // Read data before reconnect.
                     var buffer = new byte[SshRelayStream.MinReadSize];
                     var bytesRead = await clientStream

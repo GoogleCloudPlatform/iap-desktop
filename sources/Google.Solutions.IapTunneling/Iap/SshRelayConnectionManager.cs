@@ -1,0 +1,405 @@
+﻿using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Threading;
+using Google.Solutions.IapTunneling.Net;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.WebSockets;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Google.Solutions.IapTunneling.Iap
+{
+    internal sealed class SshRelayConnectionManager
+    {
+        private const uint MaxReconnects = 3;
+
+        public ISshRelayEndpoint Endpoint { get; }
+
+        //
+        // Current connection, guarded by the a lock.
+        //
+        private INetworkStream connection = null;
+        private readonly AsyncLock connectLock = new AsyncLock();
+
+        public string Sid { get; private set; }
+
+        /// <summary>
+        /// Last ACK received, only to be accessed from writer thread.
+        /// </summary>
+        public ulong LastAckReceived { get; set; } = 0;
+
+        /// <summary>
+        /// Last ACK sent, only to be accessed from reader thread.
+        /// </summary>
+        public ulong LastAckSent { get; set; } = 0;
+
+        private void TraceLine(string message)
+        {
+            if (IapTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
+            {
+                IapTraceSources.Default.TraceVerbose(
+                    "SshRelayStream [{0}] AR:{1} AS:{2}: {3}",
+                    this.Sid,
+                    this.LastAckReceived,
+                    this.LastAckSent,
+                    message);
+            }
+        }
+
+        private async Task<INetworkStream> ConnectAsync(
+            Func<INetworkStream, CancellationToken, Task> resendUnacknoledgedDataAction,
+            CancellationToken cancellationToken)
+        {
+            //
+            // This method might be called concurrently by a
+            // writer and a reader, so we have to synchronize.
+            //
+            using (await this.connectLock
+                .AcquireAsync(cancellationToken)
+                .ConfigureAwait(false))
+            {
+                Debug.Assert((this.connection != null) == (this.Sid != null));
+
+                if (this.connection != null)
+                {
+                    //
+                    // We're still connected.
+                    //
+                    return this.connection;
+                }
+                else if (this.LastAckReceived == 0)
+                {
+                    //
+                    // Initial connect.
+                    //
+                    TraceLine($"Establishing new connection");
+
+                    var connection = await this.Endpoint
+                        .ConnectAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    //
+                    // To complete connection establishment, we have to receive
+                    // a CONNECT_SUCCESS_SID message.
+                    //
+                    var message = new byte[SshRelayFormat.MaxMessageSize];
+                    string connectionSid = null;
+
+                    while (true)
+                    {
+                        var bytesRead = await connection
+                            .ReadAsync(
+                                message,
+                                0,
+                                message.Length,
+                                cancellationToken)
+                            .ConfigureAwait(false);
+
+                        SshRelayFormat.Tag.Decode(message, out var tag);
+
+                        if (bytesRead == 0)
+                        {
+                            throw new WebSocketStreamClosedByServerException(
+                                WebSocketCloseStatus.NormalClosure,
+                                "The connection was closed by the server");
+                        }
+                        else if (bytesRead < SshRelayFormat.Tag.Length)
+                        {
+                            throw new InvalidServerResponseException(
+                                "The server sent an incomplete message");
+                        }
+
+                        switch (tag)
+                        {
+                            case SshRelayMessageTag.CONNECT_SUCCESS_SID:
+                                {
+                                    var bytesDecoded = SshRelayFormat.ConnectSuccessSid.Decode(
+                                        message,
+                                        out var sid);
+                                    connectionSid = sid;
+
+                                    Debug.Assert(bytesDecoded == bytesRead);
+
+                                    //
+                                    // If the previous connection broke before we received
+                                    // the first ACK, then there might be data to be resend.
+                                    //
+
+                                    await resendUnacknoledgedDataAction(
+                                            connection,
+                                            cancellationToken)
+                                        .ConfigureAwait(false);
+
+                                    this.Sid = connectionSid;
+                                    this.connection = connection;
+
+                                    TraceLine($"Connected");
+
+                                    return connection;
+                                }
+
+                            case SshRelayMessageTag.LONG_CLOSE:
+                                {
+                                    var bytesDecoded = SshRelayFormat.LongClose.Decode(
+                                       message,
+                                       out var closeCode,
+                                       out var reason);
+
+                                    Debug.Assert(bytesDecoded == bytesRead);
+
+                                    //
+                                    // Ignore the message for now.
+                                    // 
+
+                                    TraceLine($"Received close: {reason} ({closeCode})");
+
+                                    break;
+                                }
+                            default:
+                                //
+                                // Unknown tag, ignore.
+                                //
+
+                                TraceLine($"Encountered unknown during connect: {tag}");
+
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    //
+                    // Reconnect + sync ack's + resend data.
+                    //
+                    TraceLine($"Attempting reconnect with ack={this.LastAckReceived}");
+
+                    var connection = await this.Endpoint
+                        .ReconnectAsync(
+                            this.Sid,
+                            this.LastAckReceived,
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+                    //
+                    // To complete connection establishment, we have to receive
+                    // a RECONNECT_SUCCESS_ACK message.
+                    //
+                    var message = new byte[SshRelayFormat.MaxMessageSize];
+                    while (true)
+                    {
+                        var bytesRead = await connection
+                            .ReadAsync(
+                                message,
+                                0,
+                                message.Length,
+                                cancellationToken)
+                            .ConfigureAwait(false);
+
+                        SshRelayFormat.Tag.Decode(message, out var tag);
+
+                        if (bytesRead == 0)
+                        {
+                            throw new WebSocketStreamClosedByServerException(
+                                WebSocketCloseStatus.NormalClosure,
+                                "The connection was closed by the server");
+                        }
+                        else if (bytesRead < SshRelayFormat.Tag.Length)
+                        {
+                            throw new InvalidServerResponseException(
+                                "The server sent an incomplete message");
+                        }
+
+                        switch (tag)
+                        {
+                            case SshRelayMessageTag.RECONNECT_SUCCESS_ACK:
+                                {
+                                    var bytesDecoded = SshRelayFormat.ReconnectAck.Decode(
+                                        message,
+                                        out var ack);
+                                    this.LastAckReceived = ack;
+
+                                    Debug.Assert(bytesDecoded == bytesRead);
+
+                                    //
+                                    // Resend all data since the ACK that we just received.
+                                    //
+
+                                    await resendUnacknoledgedDataAction(
+                                            connection,
+                                            cancellationToken)
+                                        .ConfigureAwait(false);
+
+                                    this.connection = connection;
+
+                                    TraceLine($"Reconnected");
+
+                                    return connection;
+                                }
+                            case SshRelayMessageTag.CONNECT_SUCCESS_SID:
+                                {
+                                    //
+                                    // We shouldn't be receiving this message after
+                                    // a reconnect.
+                                    //
+                                    throw new SshRelayProtocolViolationException(
+                                        "The server sent an unexpected CONNECT_SUCCESS_SID " +
+                                        "message in response to a reconect");
+                                }
+
+                            case SshRelayMessageTag.LONG_CLOSE:
+                            default:
+                                //
+                                // Unknown tag, ignore.
+                                //
+
+                                TraceLine($"Encountered unknown during reconnect: {tag}");
+
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
+        public SshRelayConnectionManager(ISshRelayEndpoint endpoint)
+        {
+            this.Endpoint = endpoint;
+        }
+
+        public async Task DisconnectAsync(CancellationToken cancellationToken)
+        {
+            using (await this.connectLock
+                .AcquireAsync(cancellationToken)
+                .ConfigureAwait(false))
+            {
+                //
+                // Drop this connection.
+                //
+                if (this.connection != null)
+                {
+                    try
+                    {
+                        await this.connection
+                            .CloseAsync(cancellationToken)
+                            .ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        TraceLine($"Failed to close connection: {e}");
+                    }
+
+                    try
+                    {
+                        this.connection.Dispose();
+                    }
+                    catch (Exception e)
+                    {
+                        TraceLine($"Failed to dispose connection: {e}");
+                    }
+
+                    this.connection = null;
+                    this.Sid = null;
+                }
+
+                TraceLine("Disonnected.");
+            }
+        }
+
+        public async Task<uint> IoAsync(
+            Func<INetworkStream, Task<uint>> ioAction,
+            Func<INetworkStream, CancellationToken, Task> resendUnacknoledgedDataAction,
+            CancellationToken cancellationToken)
+        {
+            var attempt = 0;
+            while (true)
+            {
+                try
+                {
+                    var connection = await ConnectAsync(
+                            resendUnacknoledgedDataAction,
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+                    Debug.Assert(connection != null);
+                    return await ioAction(connection).ConfigureAwait(false);
+                }
+                catch (WebSocketStreamClosedByClientException)
+                {
+                    throw;
+                }
+                catch (WebSocketStreamClosedByServerException e)
+                {
+                    TraceLine($"Connection closed: {e.CloseStatusDescription} ({e.CloseStatus})");
+
+                    switch ((SshRelayCloseCode)e.CloseStatus)
+                    {
+                        case SshRelayCloseCode.NORMAL:
+                        case SshRelayCloseCode.DESTINATION_READ_FAILED:
+                        case SshRelayCloseCode.DESTINATION_WRITE_FAILED:
+                            //
+                            // Server closed the connection normally.
+                            //
+                            return 0;
+
+                        case SshRelayCloseCode.NOT_AUTHORIZED:
+                            throw new UnauthorizedException(// TODO: rename
+                                $"The server denied access: " +
+                                e.CloseStatusDescription);
+
+                        case SshRelayCloseCode.SID_UNKNOWN:
+                        case SshRelayCloseCode.SID_IN_USE:
+                            throw new SshRelayException(
+                                "The server closed the connection unexpectedly and " +
+                                "reestablishing the connection failed: " +
+                                e.CloseStatusDescription);
+
+                        case SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND:
+                            throw new SshRelayException(
+                                "The server could not connect to the backend: " +
+                                e.CloseStatusDescription);
+
+                        default:
+                            {
+                                if (attempt++ >= MaxReconnects)
+                                {
+                                    TraceLine($"Failed to reconnect after {attempt} attempts");
+                                    throw;
+                                }
+                                else
+                                {
+                                    TraceLine("Attemptingr reconnect");
+
+                                    //
+                                    // Try again.
+                                    //
+                                    await DisconnectAsync(cancellationToken)
+                                        .ConfigureAwait(true);
+                                    break;
+                                }
+                            }
+                    }
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            this.connectLock.Dispose();
+            this.connection?.Dispose();
+        }
+
+        public override string ToString()
+        {
+            var sidToken = this.Sid != null 
+                ? this.Sid.Substring(0, Math.Min(this.Sid.Length, 10))
+                : "(unknown)";
+            return $"[SshRelay {sidToken}]";
+        }
+    }
+}
