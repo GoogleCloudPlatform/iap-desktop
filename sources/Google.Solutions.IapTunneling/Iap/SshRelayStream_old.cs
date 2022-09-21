@@ -296,7 +296,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 //
                 // Request was rejected by access level or IAM policy.
                 //
-                throw new UnauthorizedException(e.CloseStatusDescription);
+                throw new SshRelayDeniedException(e.CloseStatusDescription);
             }
             catch (OperationCanceledException)
             {
@@ -502,7 +502,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     {
                         TraceLine("Not authorized");
 
-                        throw new UnauthorizedException(e.CloseStatusDescription);
+                        throw new SshRelayDeniedException(e.CloseStatusDescription);
                     }
                     else if ((SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.SID_UNKNOWN ||
                              (SshRelayCloseCode)e.CloseStatus == SshRelayCloseCode.SID_IN_USE)
@@ -633,7 +633,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     {
                         TraceLine("NOT_AUTHORIZED");
 
-                        throw new UnauthorizedException(e.CloseStatusDescription);
+                        throw new SshRelayDeniedException(e.CloseStatusDescription);
                     }
                     else
                     {

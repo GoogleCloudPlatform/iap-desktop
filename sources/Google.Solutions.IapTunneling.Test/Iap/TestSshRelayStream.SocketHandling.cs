@@ -149,7 +149,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                         Assert.Fail();
                     }
-                    catch (UnauthorizedException e)
+                    catch (SshRelayDeniedException e)
                     {
                         Assert.AreEqual(((int)code).ToString(), e.Message);
                     }
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(
+                    ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
                         () => clientStream
                             .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                             .Wait());

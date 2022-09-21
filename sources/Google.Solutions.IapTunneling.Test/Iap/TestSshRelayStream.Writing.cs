@@ -393,7 +393,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             var relay = new SshRelayStream(endpoint);
 
             // Write first request - this should fail.
-            ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
             {
                 var request = new byte[] { 2 };
                 relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();

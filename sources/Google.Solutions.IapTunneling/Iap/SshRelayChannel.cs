@@ -11,7 +11,25 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapTunneling.Iap
 {
-    internal sealed class SshRelayConnectionManager
+    /// <summary>
+    /// Factory for creating (Web Socket) connections to the tunneling 
+    /// endpoint (for ex, Cloud IAP).
+    /// </summary>
+    public interface ISshRelayEndpoint
+    {
+        Task<INetworkStream> ConnectAsync(CancellationToken token);
+
+        Task<INetworkStream> ReconnectAsync(
+            string sid,
+            ulong lastByteConsumedByClient,
+            CancellationToken token);
+    }
+
+    /// <summary>
+    /// Connection to an SSH Relay endpoint that automatically
+    /// reconnects on failure.
+    /// </summary>
+    internal sealed class SshRelayChannel
     {
         private const uint MaxReconnects = 3;
 
@@ -135,34 +153,18 @@ namespace Google.Solutions.IapTunneling.Iap
                                     this.Sid = connectionSid;
                                     this.connection = connection;
 
-                                    TraceLine($"Connected");
+                                    TraceLine($"Received CONNECT_SUCCESS_SID, connected");
 
                                     return connection;
                                 }
 
                             case SshRelayMessageTag.LONG_CLOSE:
-                                {
-                                    var bytesDecoded = SshRelayFormat.LongClose.Decode(
-                                       message,
-                                       out var closeCode,
-                                       out var reason);
-
-                                    Debug.Assert(bytesDecoded == bytesRead);
-
-                                    //
-                                    // Ignore the message for now.
-                                    // 
-
-                                    TraceLine($"Received close: {reason} ({closeCode})");
-
-                                    break;
-                                }
                             default:
                                 //
                                 // Unknown tag, ignore.
                                 //
 
-                                TraceLine($"Encountered unknown during connect: {tag}");
+                                TraceLine($"Received unknown message: {tag}");
 
                                 break;
                         }
@@ -233,7 +235,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
                                     this.connection = connection;
 
-                                    TraceLine($"Reconnected");
+                                    TraceLine("Received RECONNECT_SUCCESS_ACK, reconnected");
 
                                     return connection;
                                 }
@@ -253,8 +255,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 //
                                 // Unknown tag, ignore.
                                 //
-
-                                TraceLine($"Encountered unknown during reconnect: {tag}");
+                                TraceLine($"Received unknown message: {tag}");
 
                                 break;
                         }
@@ -267,7 +268,7 @@ namespace Google.Solutions.IapTunneling.Iap
         // Publics.
         //---------------------------------------------------------------------
 
-        public SshRelayConnectionManager(ISshRelayEndpoint endpoint)
+        public SshRelayChannel(ISshRelayEndpoint endpoint)
         {
             this.Endpoint = endpoint;
         }
@@ -291,7 +292,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     }
                     catch (Exception e)
                     {
-                        TraceLine($"Failed to close connection: {e}");
+                        IapTraceSources.Default.TraceError(e);
                     }
 
                     try
@@ -300,14 +301,14 @@ namespace Google.Solutions.IapTunneling.Iap
                     }
                     catch (Exception e)
                     {
-                        TraceLine($"Failed to dispose connection: {e}");
+                        IapTraceSources.Default.TraceError(e);
                     }
 
                     this.connection = null;
                     this.Sid = null;
                 }
 
-                TraceLine("Disonnected.");
+                TraceLine("Disonnected");
             }
         }
 
@@ -335,7 +336,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 }
                 catch (WebSocketStreamClosedByServerException e)
                 {
-                    TraceLine($"Connection closed: {e.CloseStatusDescription} ({e.CloseStatus})");
+                    IapTraceSources.Default.TraceError(e);
 
                     switch ((SshRelayCloseCode)e.CloseStatus)
                     {
@@ -348,7 +349,7 @@ namespace Google.Solutions.IapTunneling.Iap
                             return 0;
 
                         case SshRelayCloseCode.NOT_AUTHORIZED:
-                            throw new UnauthorizedException(// TODO: rename
+                            throw new SshRelayDeniedException(
                                 $"The server denied access: " +
                                 e.CloseStatusDescription);
 

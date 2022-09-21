@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                             HelpTopics.CreateIapFirewallRule,
                             e);
                     }
-                    catch (UnauthorizedException)
+                    catch (SshRelayDeniedException)
                     {
                         throw new ConnectionFailedException(
                             "You are not authorized to connect to this VM instance.\n\n" +

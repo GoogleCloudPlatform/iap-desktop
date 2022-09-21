@@ -50,7 +50,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
+                ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
             }
         }
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
+                ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
             }
         }
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
+                ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
             }
         }

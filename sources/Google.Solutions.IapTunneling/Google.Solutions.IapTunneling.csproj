@@ -68,7 +68,7 @@
     <Compile Include="BigEndian.cs" />
     <Compile Include="Iap\ISshRelayPolicy.cs" />
     <Compile Include="Iap\AllowAllRelayPolicy.cs" />
-    <Compile Include="Iap\SshRelayConnectionManager.cs" />
+    <Compile Include="Iap\SshRelayChannel.cs" />
     <Compile Include="Iap\SshRelayFormat.cs" />
     <Compile Include="Iap\SshRelayStream.cs" />
     <Compile Include="Net\RestrictedHeaderConfigPatch.cs" />

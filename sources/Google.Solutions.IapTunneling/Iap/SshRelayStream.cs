@@ -10,30 +10,12 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapTunneling.Iap
 {
-
     /// <summary>
-    /// Factory for creating (Web Socket) connections to the tunneling 
-    /// endpoint (for ex, Cloud IAP).
-    /// </summary>
-    public interface ISshRelayEndpoint
-    {
-        Task<INetworkStream> ConnectAsync(CancellationToken token);
-
-        Task<INetworkStream> ReconnectAsync(
-            string sid,
-            ulong lastByteConsumedByClient,
-            CancellationToken token);
-    }
-
-    /// <summary>
-    /// NetworkStream that implements the SSH Relay v4 protocol. Because
-    /// the protocol supports connection reestablishment, a SshRelayStream
-    /// needs to be created by using a ISshRelayEndpoint, which serves
-    /// as the factory for underlying WebSocket connections.
+    /// NetworkStream for reading/writing from a SshRelayChannel.
     /// </summary>
     public class SshRelayStream : SingleReaderSingleWriterStream
     {
-        private readonly SshRelayConnectionManager connectionManager;
+        private readonly SshRelayChannel channel;
 
         // Queue of un-ack'ed messages that might require re-sending.
         private readonly AsyncLock unacknoledgedQueueLock = new AsyncLock();
@@ -52,13 +34,13 @@ namespace Google.Solutions.IapTunneling.Iap
             {
                 IapTraceSources.Default.TraceVerbose(
                     "{0} - {1}",
-                    this.connectionManager,
+                    this.channel,
                     message);
             }
         }
 
         private async Task ResendUnacknoledgedData(
-            INetworkStream connection,
+            INetworkStream stream,
             CancellationToken cancellationToken)
         {
             using (await this.unacknoledgedQueueLock
@@ -68,14 +50,14 @@ namespace Google.Solutions.IapTunneling.Iap
                 while (this.unacknoledgedQueue.Any())
                 {
                     var write = this.unacknoledgedQueue.Dequeue();
-                    if (write.ExpectedAck > this.connectionManager.LastAckReceived)
+                    if (write.ExpectedAck > this.channel.LastAckReceived)
                     {
                         //
                         // We never got an ACK for this one, resend.
                         //
 
                         TraceLine($"Resending DATA #{write.SequenceNumber}...");
-                        await connection
+                        await stream
                             .WriteAsync(
                                 write.Data,
                                 0,
@@ -128,7 +110,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public SshRelayStream(ISshRelayEndpoint endpoint)
         {
-            this.connectionManager = new SshRelayConnectionManager(endpoint);
+            this.channel = new SshRelayChannel(endpoint);
         }
 
         /// <summary>
@@ -158,17 +140,19 @@ namespace Google.Solutions.IapTunneling.Iap
                     //
                     cts.CancelAfter(timeout);
 
-                    using (var connection = await this.connectionManager.Endpoint
+                    using (var stream = await this.channel.Endpoint
                         .ConnectAsync(cts.Token)
                         .ConfigureAwait(false))
                     {
-                        await connection
+                        await stream
                             .ReadAsync(Array.Empty<byte>(), 0, 0, cts.Token)
                             .ConfigureAwait(false);
-                        await connection
+                        await stream
                             .CloseAsync(cts.Token)
                             .ConfigureAwait(false);
                     }
+
+                    TraceLine("Connection test succeeded");
                 }
             }
             catch (WebSocketStreamClosedByServerException e)
@@ -179,7 +163,8 @@ namespace Google.Solutions.IapTunneling.Iap
                 //
                 // Request was rejected by access level or IAM policy.
                 //
-                throw new UnauthorizedException(e.CloseStatusDescription);
+                TraceLine($"Connection test failed: {e.CloseStatusDescription} ({e.CloseStatus})");
+                throw new SshRelayDeniedException(e.CloseStatusDescription);
             }
             catch (OperationCanceledException)
             {
@@ -191,7 +176,7 @@ namespace Google.Solutions.IapTunneling.Iap
         // Overrides.
         //---------------------------------------------------------------------
 
-        public string Sid { get; private set; }
+        public string Sid => this.channel.Sid;
 
         protected async override Task<int> ProtectedReadAsync(
             byte[] buffer,
@@ -209,11 +194,11 @@ namespace Google.Solutions.IapTunneling.Iap
                 SshRelayFormat.MinMessageSize,
                 SshRelayFormat.Data.HeaderLength + count)];
 
-            return (int)await this.connectionManager.IoAsync(
-                async connection => {
+            return (int)await this.channel.IoAsync(
+                async stream => {
                     while (true)
                     {
-                        var bytesRead = await connection
+                        var bytesRead = await stream
                             .ReadAsync(
                                 message,
                                 0,
@@ -222,8 +207,6 @@ namespace Google.Solutions.IapTunneling.Iap
                             .ConfigureAwait(false);
                         if (bytesRead == 0)
                         {
-                            TraceLine("Server closed connection");
-
                             return 0;
                         }
                         else if (bytesRead < SshRelayFormat.Tag.Length)
@@ -248,7 +231,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                     Debug.Assert(dataLength < bytesDecoded);
                                     Debug.Assert(bytesDecoded == bytesRead);
 
-                                    TraceLine($"Received data ({dataLength} bytes)");
+                                    TraceLine($"Received DATA message ({dataLength} bytes)");
 
                                     Interlocked.Add(ref this.bytesReceived, dataLength);
 
@@ -261,7 +244,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                     Debug.Assert(ack > 0);
                                     Debug.Assert(bytesDecoded == bytesRead);
 
-                                    this.connectionManager.LastAckReceived = ack;
+                                    this.channel.LastAckReceived = ack;
 
                                     using (await this.unacknoledgedQueueLock
                                         .AcquireAsync(cancellationToken)
@@ -286,7 +269,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 //
                                 // Unknown tag, ignore.
                                 //
-                                TraceLine($"Encountered unknown during read: {tag}");
+                                TraceLine($"Received unknown message: {tag}");
 
                                 break;
                         }
@@ -308,21 +291,21 @@ namespace Google.Solutions.IapTunneling.Iap
                     $"Write buffer too large ({count}), must be at most {MaxWriteSize}");
             }
 
-            await this.connectionManager.IoAsync(
-                async connection => {
+            await this.channel.IoAsync(
+                async stream => {
 
                     //
                     // Take care of outstanding ACKs.
                     //
                     var bytesToAck = (ulong)Thread.VolatileRead(ref this.bytesReceived);
-                    if (this.connectionManager.LastAckSent < bytesToAck)
+                    if (this.channel.LastAckSent < bytesToAck)
                     {
                         var ackBuffer = new byte[SshRelayFormat.Ack.MessageLength];
                         SshRelayFormat.Ack.Encode(ackBuffer, bytesToAck);
 
                         TraceLine($"Sending ACK #{bytesToAck}...");
 
-                        await connection
+                        await stream
                             .WriteAsync(
                                 ackBuffer,
                                 0,
@@ -330,7 +313,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 cancellationToken)
                             .ConfigureAwait(false);
 
-                        this.connectionManager.LastAckSent = bytesToAck;
+                        this.channel.LastAckSent = bytesToAck;
                     }
 
 
@@ -351,7 +334,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     //
                     Interlocked.Add(ref this.bytesSent, count);
 
-                    await connection
+                    await stream
                         .WriteAsync(
                             message,
                             0,
@@ -380,27 +363,26 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public override async Task ProtectedCloseAsync(CancellationToken cancellationToken)
         {
-            await this.connectionManager
+            await this.channel
                 .DisconnectAsync(cancellationToken)
                 .ConfigureAwait(false);
         }
 
         public override string ToString()
         {
-            return this.connectionManager.ToString();
+            return this.channel.ToString();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
-            this.connectionManager.Dispose();
+            this.channel.Dispose();
         }
 
         //---------------------------------------------------------------------
         // Helper structs.
         //---------------------------------------------------------------------
-
 
         private struct UnacknoledgedWrite
         {
@@ -434,9 +416,9 @@ namespace Google.Solutions.IapTunneling.Iap
         }
     }
 
-    public class UnauthorizedException : SshRelayException
+    public class SshRelayDeniedException : SshRelayException
     {
-        public UnauthorizedException(string message) : base(message)
+        public SshRelayDeniedException(string message) : base(message)
         {
         }
     }

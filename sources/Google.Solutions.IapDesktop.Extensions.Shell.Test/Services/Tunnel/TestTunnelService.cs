@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             {
                 Assert.AreEqual(destination, tunnel.Destination);
 
-                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(
+                ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
                     () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
             }
         }
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             {
                 Assert.AreEqual(destination, tunnel.Destination);
 
-                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(
+                ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
                     () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
             }
         }

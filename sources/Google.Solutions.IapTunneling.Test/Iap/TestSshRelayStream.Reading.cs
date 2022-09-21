@@ -621,7 +621,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             };
             var relay = new SshRelayStream(endpoint);
 
-            ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(
+            ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
                 () => relay
                     .TestConnectionAsync(TimeSpan.FromSeconds(2))
                     .Wait());
