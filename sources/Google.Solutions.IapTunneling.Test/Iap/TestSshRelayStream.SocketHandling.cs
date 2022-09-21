@@ -248,7 +248,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(
+                    ExceptionAssert.ThrowsAggregateException<SshRelayException>(
                         () => clientStream
                             .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                             .Wait());
@@ -290,7 +290,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(
+                    ExceptionAssert.ThrowsAggregateException<SshRelayProtocolViolationException>(
                         () => clientStream
                             .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                             .Wait());
@@ -408,18 +408,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                         .WriteAsync(new byte[1], 0, 1, CancellationToken.None)
                         .ConfigureAwait(false);
 
-                    // Read data before reconnect.
                     var buffer = new byte[SshRelayStream.MinReadSize];
                     var bytesRead = await clientStream
-                        .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                        .ConfigureAwait(false);
-
-                    Assert.AreEqual(1, bytesRead);
-                    Assert.AreEqual(1, endpoint.ConnectCalls);
-                    Assert.AreEqual(0, endpoint.ReconnectCalls);
-
-                    // Read data after reconnect.
-                    bytesRead = await clientStream
                         .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                         .ConfigureAwait(false);
 

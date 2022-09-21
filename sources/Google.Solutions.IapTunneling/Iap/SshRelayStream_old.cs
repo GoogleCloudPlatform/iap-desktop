@@ -357,7 +357,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     }
                     else if (bytesRead < 2)
                     {
-                        throw new InvalidServerResponseException("Truncated message received");
+                        throw new SshRelayProtocolViolationException("Truncated message received");
                     }
 
                     var bytesDecoded = SshRelayFormat.Tag.Decode(message, out var tag);
@@ -389,7 +389,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 else if (lastAckReceived > ack)
                                 {
                                     Debug.Assert(false, "Server acked backwards");
-                                    throw new InvalidServerResponseException("Server acked backwards");
+                                    throw new SshRelayProtocolViolationException("Server acked backwards");
                                 }
                                 else
                                 {
@@ -407,7 +407,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
                                 if (ack <= 0 || ack > Thread.VolatileRead(ref this.bytesSent))
                                 {
-                                    throw new InvalidServerResponseException("Received invalid ACK");
+                                    throw new SshRelayProtocolViolationException("Received invalid ACK");
                                 }
 
                                 this.bytesSentAndAcknoledged = ack;
@@ -695,18 +695,18 @@ namespace Google.Solutions.IapTunneling.Iap
     //    }
     //}
 
-    [Serializable]
-    public class InvalidServerResponseException : Exception
-    {
-        protected InvalidServerResponseException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+    //[Serializable]
+    //public class SshRelayProtocolViolationException : Exception
+    //{
+    //    protected SshRelayProtocolViolationException(SerializationInfo info, StreamingContext context)
+    //        : base(info, context)
+    //    {
+    //    }
 
-        public InvalidServerResponseException(string message) : base(message)
-        {
-        }
-    }
+    //    public SshRelayProtocolViolationException(string message) : base(message)
+    //    {
+    //    }
+    //}
 
     //[Serializable]
     //public class UnauthorizedException : SshRelayException

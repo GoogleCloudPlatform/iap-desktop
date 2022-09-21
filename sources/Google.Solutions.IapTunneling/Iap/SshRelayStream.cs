@@ -211,7 +211,7 @@ namespace Google.Solutions.IapTunneling.Iap
                         }
                         else if (bytesRead < SshRelayFormat.Tag.Length)
                         {
-                            throw new InvalidServerResponseException(
+                            throw new SshRelayProtocolViolationException(
                                 "The server sent an incomplete message");
                         }
 
@@ -241,8 +241,18 @@ namespace Google.Solutions.IapTunneling.Iap
                                 {
                                     var bytesDecoded = SshRelayFormat.Ack.Decode(message, out var ack);
 
-                                    Debug.Assert(ack > 0);
                                     Debug.Assert(bytesDecoded == bytesRead);
+
+                                    if (ack == 0)
+                                    {
+                                        throw new SshRelayProtocolViolationException(
+                                            "The server sent an invalid zero-ack");
+                                    }
+                                    else if (ack > (ulong)this.bytesSent)
+                                    {
+                                        throw new SshRelayProtocolViolationException(
+                                            "The server sent a mismatched ack");
+                                    }
 
                                     this.channel.LastAckReceived = ack;
 
@@ -276,6 +286,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     }
                 },
                 ResendUnacknoledgedData,
+                false, // Normal closes are ok.
                 cancellationToken);
         }
 
@@ -358,6 +369,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     return 0;
                 },
                 ResendUnacknoledgedData,
+                true, // Normal closes are unexpected.
                 cancellationToken);
         }
 

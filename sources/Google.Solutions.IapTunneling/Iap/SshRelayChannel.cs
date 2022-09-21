@@ -125,7 +125,7 @@ namespace Google.Solutions.IapTunneling.Iap
                         }
                         else if (bytesRead < SshRelayFormat.Tag.Length)
                         {
-                            throw new InvalidServerResponseException(
+                            throw new SshRelayProtocolViolationException(
                                 "The server sent an incomplete message");
                         }
 
@@ -209,7 +209,7 @@ namespace Google.Solutions.IapTunneling.Iap
                         }
                         else if (bytesRead < SshRelayFormat.Tag.Length)
                         {
-                            throw new InvalidServerResponseException(
+                            throw new SshRelayProtocolViolationException(
                                 "The server sent an incomplete message");
                         }
 
@@ -315,6 +315,7 @@ namespace Google.Solutions.IapTunneling.Iap
         public async Task<uint> IoAsync(
             Func<INetworkStream, Task<uint>> ioAction,
             Func<INetworkStream, CancellationToken, Task> resendUnacknoledgedDataAction,
+            bool treatNormalCloseAsError,
             CancellationToken cancellationToken)
         {
             var attempt = 0;
@@ -343,10 +344,17 @@ namespace Google.Solutions.IapTunneling.Iap
                         case SshRelayCloseCode.NORMAL:
                         case SshRelayCloseCode.DESTINATION_READ_FAILED:
                         case SshRelayCloseCode.DESTINATION_WRITE_FAILED:
-                            //
-                            // Server closed the connection normally.
-                            //
-                            return 0;
+                            if (treatNormalCloseAsError)
+                            {
+                                throw;
+                            }
+                            else
+                            {
+                                //
+                                // Server closed the connection normally.
+                                //
+                                return 0;
+                            }
 
                         case SshRelayCloseCode.NOT_AUTHORIZED:
                             throw new SshRelayDeniedException(
@@ -374,13 +382,14 @@ namespace Google.Solutions.IapTunneling.Iap
                                 }
                                 else
                                 {
-                                    TraceLine("Attemptingr reconnect");
-
                                     //
                                     // Try again.
                                     //
                                     await DisconnectAsync(cancellationToken)
                                         .ConfigureAwait(true);
+
+                                    TraceLine("Attempting to reconnect");
+
                                     break;
                                 }
                             }
