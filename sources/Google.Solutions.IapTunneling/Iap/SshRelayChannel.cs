@@ -31,7 +31,7 @@ namespace Google.Solutions.IapTunneling.Iap
     /// </summary>
     internal sealed class SshRelayChannel
     {
-        private const uint MaxReconnects = 3;
+        private const uint MaxReconnects = 2;
 
         public ISshRelayEndpoint Endpoint { get; }
 
@@ -78,8 +78,6 @@ namespace Google.Solutions.IapTunneling.Iap
                 .AcquireAsync(cancellationToken)
                 .ConfigureAwait(false))
             {
-                Debug.Assert((this.connection != null) == (this.Sid != null));
-
                 if (this.connection != null)
                 {
                     //
@@ -175,6 +173,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     //
                     // Reconnect + sync ack's + resend data.
                     //
+                    Debug.Assert(this.Sid != null);
                     TraceLine($"Attempting reconnect with ack={this.LastAckReceived}");
 
                     var connection = await this.Endpoint
@@ -305,7 +304,6 @@ namespace Google.Solutions.IapTunneling.Iap
                     }
 
                     this.connection = null;
-                    this.Sid = null;
                 }
 
                 TraceLine("Disonnected");
@@ -344,6 +342,11 @@ namespace Google.Solutions.IapTunneling.Iap
                         case SshRelayCloseCode.NORMAL:
                         case SshRelayCloseCode.DESTINATION_READ_FAILED:
                         case SshRelayCloseCode.DESTINATION_WRITE_FAILED:
+                            //
+                            // NB. We get a DESTINATION_*_FAILED if the
+                            // backend closed the connection (as opposed
+                            // to the relay).
+                            //
                             if (treatNormalCloseAsError)
                             {
                                 throw;
@@ -361,15 +364,16 @@ namespace Google.Solutions.IapTunneling.Iap
                                 $"The server denied access: " +
                                 e.CloseStatusDescription);
 
+                        case SshRelayCloseCode.FAILED_TO_REWIND:
                         case SshRelayCloseCode.SID_UNKNOWN:
                         case SshRelayCloseCode.SID_IN_USE:
-                            throw new SshRelayException(
+                            throw new SshRelayReconnectException(
                                 "The server closed the connection unexpectedly and " +
                                 "reestablishing the connection failed: " +
                                 e.CloseStatusDescription);
 
                         case SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND:
-                            throw new SshRelayException(
+                            throw new SshRelayConnectException(
                                 "The server could not connect to the backend: " +
                                 e.CloseStatusDescription);
 

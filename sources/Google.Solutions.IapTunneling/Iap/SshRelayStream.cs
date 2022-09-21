@@ -125,7 +125,8 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public async Task TestConnectionAsync(TimeSpan timeout)
         {
-            //
+            //TODO: Use a WebSocketStream instead, but disable reconnects
+
             // Open a WebSocketStream, without wrapping it as a SshRelayStream
             // and do a zero-byte read. This will fail if access is denied.
             //
@@ -414,9 +415,23 @@ namespace Google.Solutions.IapTunneling.Iap
         }
     }
 
-    public class SshRelayException : Exception
+    public abstract class SshRelayException : NetworkStreamClosedException
     {
         public SshRelayException(string message) : base(message)
+        {
+        }
+    }
+
+    public class SshRelayConnectException : SshRelayException
+    {
+        public SshRelayConnectException(string message) : base(message)
+        {
+        }
+    }
+
+    public class SshRelayReconnectException : SshRelayException
+    {
+        public SshRelayReconnectException(string message) : base(message)
         {
         }
     }

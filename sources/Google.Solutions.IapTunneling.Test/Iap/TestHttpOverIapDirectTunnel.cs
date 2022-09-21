@@ -128,7 +128,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
 
-            ExceptionAssert.ThrowsAggregateException<SshRelayException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(() =>
             {
                 byte[] buffer = new byte[SshRelayStream.MinReadSize];
                 stream.WriteAsync(request, 0, request.Length, CancellationToken.None).Wait();

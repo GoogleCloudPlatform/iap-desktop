@@ -26,6 +26,7 @@ using Google.Solutions.Common.Net;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
@@ -67,6 +68,8 @@ namespace Google.Solutions.IapTunneling.Iap
             string sid,
             ulong ack)
         {
+            Debug.Assert((sid == null) == (ack == 0));
+
             var urlParams = new Dictionary<string, string>
             {
                 { "project", this.VmInstance.ProjectId },

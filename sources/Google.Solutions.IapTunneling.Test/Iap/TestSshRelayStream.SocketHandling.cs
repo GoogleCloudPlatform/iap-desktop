@@ -182,9 +182,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenServerClosesConnectionNormally_ThenReadReturnsZeroAndDoesNotReconnect(
              [Values(
-                SshRelayCloseCode.NORMAL,
                 SshRelayCloseCode.DESTINATION_READ_FAILED,
-                SshRelayCloseCode.DESTINATION_WRITE_FAILED)] SshRelayCloseCode code)
+                SshRelayCloseCode.DESTINATION_WRITE_FAILED,
+                SshRelayCloseCode.NORMAL)] SshRelayCloseCode code)
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
             {
@@ -232,11 +232,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             }
         }
 
+
         [Test]
-        public async Task WhenServerClosesConnectionWithProtocolError_ThenReadReturnsZeroAndDoesNotReconnect(
+        public async Task WhenServerClosesConnectionWithConnectError_ThenReadReturnsZeroAndDoesNotReconnect(
              [Values(
-                SshRelayCloseCode.SID_UNKNOWN,
-                SshRelayCloseCode.SID_IN_USE,
                 SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND)] SshRelayCloseCode code)
         {
             using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
@@ -248,7 +247,31 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 using (var clientStream = new SshRelayStream(endpoint))
                 {
                     var buffer = new byte[SshRelayStream.MinReadSize];
-                    ExceptionAssert.ThrowsAggregateException<SshRelayException>(
+                    ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(
+                        () => clientStream
+                            .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
+                            .Wait());
+                    Assert.AreEqual(0, endpoint.ReconnectCalls);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenServerClosesConnectionWithReconnectError_ThenReadReturnsZeroAndDoesNotReconnect(
+             [Values(
+                SshRelayCloseCode.SID_UNKNOWN,
+                SshRelayCloseCode.SID_IN_USE)] SshRelayCloseCode code)
+        {
+            using (var endpoint = await CreateEndpointAsync().ConfigureAwait(false))
+            {
+                await endpoint.Server
+                    .CloseOutputAsync((WebSocketCloseStatus)code)
+                    .ConfigureAwait(false);
+
+                using (var clientStream = new SshRelayStream(endpoint))
+                {
+                    var buffer = new byte[SshRelayStream.MinReadSize];
+                    ExceptionAssert.ThrowsAggregateException<SshRelayReconnectException>(
                         () => clientStream
                             .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
                             .Wait());

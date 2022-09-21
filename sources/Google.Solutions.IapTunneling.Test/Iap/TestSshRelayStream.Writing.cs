@@ -180,7 +180,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
-            ExceptionAssert.ThrowsAggregateException<SshRelayException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(() =>
             {
                 request = new byte[] { 2 };
                 relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();

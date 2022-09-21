@@ -184,17 +184,14 @@ namespace Google.Solutions.IapTunneling.Net
 
                 return bytesReceived;
             }
-            catch (Exception e) when (IsSocketError(e, SocketError.ConnectionAborted))
+            catch (Exception e) when (
+                IsSocketError(e, SocketError.ConnectionAborted) || 
+                IsWebSocketError(e, WebSocketError.ConnectionClosedPrematurely))
             {
-                IapTraceSources.Default.TraceVerbose("WebSocketStream.Receive: connection aborted - {0}", e);
-
-                //
-                // ClientWebSocket/WinHttp can also throw an exception if
-                // the connection has been closed.
-                //
+                IapTraceSources.Default.TraceVerbose("WebSocketStream.Read: connection aborted - {0}", e);
 
                 throw new WebSocketStreamClosedByServerException(
-                    WebSocketCloseStatus.NormalClosure,
+                    (WebSocketCloseStatus)1006, // Abnormal closure
                     e.Message);
             }
         }
@@ -225,12 +222,14 @@ namespace Google.Solutions.IapTunneling.Net
                     "WebSocketStream: end WriteAsync()... [socket: {0}]",
                     this.socket.State);
             }
-            catch (Exception e) when (IsSocketError(e, SocketError.ConnectionAborted))
+            catch (Exception e) when (
+                IsSocketError(e, SocketError.ConnectionAborted) ||
+                IsWebSocketError(e, WebSocketError.ConnectionClosedPrematurely))
             {
-                IapTraceSources.Default.TraceVerbose("WebSocketStream.Send: connection aborted - {0}", e);
+                IapTraceSources.Default.TraceVerbose("WebSocketStream.Write: connection aborted - {0}", e);
 
                 throw new WebSocketStreamClosedByServerException(
-                    WebSocketCloseStatus.NormalClosure,
+                    (WebSocketCloseStatus)1006, // Abnormal closure
                     e.Message);
             }
         }
