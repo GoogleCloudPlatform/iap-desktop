@@ -48,7 +48,7 @@ namespace Google.Solutions.IapTunneling.Iap
     /// Connection to an SSH Relay endpoint that automatically
     /// reconnects on failure.
     /// </summary>
-    internal sealed class SshRelayChannel
+    internal sealed class SshRelaySession
     {
         private const uint MaxReconnects = 2;
 
@@ -286,7 +286,7 @@ namespace Google.Solutions.IapTunneling.Iap
         // Publics.
         //---------------------------------------------------------------------
 
-        public SshRelayChannel(ISshRelayEndpoint endpoint)
+        public SshRelaySession(ISshRelayEndpoint endpoint)
         {
             this.Endpoint = endpoint;
         }

@@ -36,7 +36,7 @@ namespace Google.Solutions.IapTunneling.Iap
     /// </summary>
     public class SshRelayStream : SingleReaderSingleWriterStream
     {
-        private readonly SshRelayChannel channel;
+        private readonly SshRelaySession session;
 
         // Queue of un-ack'ed messages that might require re-sending.
         private readonly AsyncLock unacknoledgedQueueLock = new AsyncLock();
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapTunneling.Iap
             {
                 IapTraceSources.Default.TraceVerbose(
                     "{0} - {1}",
-                    this.channel,
+                    this.session,
                     message);
             }
         }
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 while (this.unacknoledgedQueue.Any())
                 {
                     var write = this.unacknoledgedQueue.Dequeue();
-                    if (write.ExpectedAck > this.channel.LastAckReceived)
+                    if (write.ExpectedAck > this.session.LastAckReceived)
                     {
                         //
                         // We never got an ACK for this one, resend.
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public SshRelayStream(ISshRelayEndpoint endpoint)
         {
-            this.channel = new SshRelayChannel(endpoint);
+            this.session = new SshRelaySession(endpoint);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     //
                     cts.CancelAfter(timeout);
 
-                    using (var stream = await this.channel.Endpoint
+                    using (var stream = await this.session.Endpoint
                         .ConnectAsync(cts.Token)
                         .ConfigureAwait(false))
                     {
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapTunneling.Iap
         // Overrides.
         //---------------------------------------------------------------------
 
-        public string Sid => this.channel.Sid;
+        public string Sid => this.session.Sid;
 
         protected async override Task<int> ProtectedReadAsync(
             byte[] buffer,
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 SshRelayFormat.MinMessageSize,
                 SshRelayFormat.Data.HeaderLength + count)];
 
-            return (int)await this.channel.IoAsync(
+            return (int)await this.session.IoAsync(
                 async stream => {
                     while (true)
                     {
@@ -275,7 +275,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                             "The server sent a mismatched ack");
                                     }
 
-                                    this.channel.LastAckReceived = ack;
+                                    this.session.LastAckReceived = ack;
 
                                     using (await this.unacknoledgedQueueLock
                                         .AcquireAsync(cancellationToken)
@@ -323,14 +323,14 @@ namespace Google.Solutions.IapTunneling.Iap
                     $"Write buffer too large ({count}), must be at most {MaxWriteSize}");
             }
 
-            await this.channel.IoAsync(
+            await this.session.IoAsync(
                 async stream => {
 
                     //
                     // Take care of outstanding ACKs.
                     //
                     var bytesToAck = (ulong)Thread.VolatileRead(ref this.bytesReceived);
-                    if (this.channel.LastAckSent < bytesToAck)
+                    if (this.session.LastAckSent < bytesToAck)
                     {
                         var ackBuffer = new byte[SshRelayFormat.Ack.MessageLength];
                         SshRelayFormat.Ack.Encode(ackBuffer, bytesToAck);
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 cancellationToken)
                             .ConfigureAwait(false);
 
-                        this.channel.LastAckSent = bytesToAck;
+                        this.session.LastAckSent = bytesToAck;
                     }
 
 
@@ -396,21 +396,21 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public override async Task ProtectedCloseAsync(CancellationToken cancellationToken)
         {
-            await this.channel
+            await this.session
                 .DisconnectAsync(cancellationToken)
                 .ConfigureAwait(false);
         }
 
         public override string ToString()
         {
-            return this.channel.ToString();
+            return this.session.ToString();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
-            this.channel.Dispose();
+            this.session.Dispose();
         }
 
         //---------------------------------------------------------------------
