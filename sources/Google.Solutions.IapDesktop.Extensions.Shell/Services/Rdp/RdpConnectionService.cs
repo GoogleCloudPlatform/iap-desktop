@@ -106,13 +106,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                                 timeout)
                             .ConfigureAwait(false);
                     }
-                    catch (SshRelayDeniedException)
+                    catch (SshRelayDeniedException e)
                     {
                         throw new ConnectionFailedException(
                             "You are not authorized to connect to this VM instance.\n\n" +
                             $"Verify that the Cloud IAP API is enabled in the project {instance.ProjectId} " +
                             "and that your user has the 'IAP-secured Tunnel User' role.",
-                            HelpTopics.IapAccess);
+                            HelpTopics.IapAccess,
+                            e);
                     }
                     catch (NetworkStreamClosedException e)
                     {
