@@ -112,7 +112,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             byte[] buffer = new byte[SshRelayStream.MinReadSize];
 
-            ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayProtocolViolationException>(() =>
             {
                 relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Wait();
             });
@@ -169,6 +169,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             {
                 ExpectedReadData = new byte[][]
                 {
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, (byte)'s' },
                     new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, (byte)request.Length },
                     new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, (byte)(request.Length*3) },
                     new byte[]{ }
@@ -211,7 +212,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public async Task WhenAckIsZero_ThenReadFailsWithInvalidServerResponseException()
+        public void WhenAckIsZero_ThenReadFailsWithInvalidServerResponseException()
         {
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -219,21 +220,16 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 {
                     ExpectedReadData = new byte[][]
                     {
-                        new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0 },
+                        new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, (byte)'s' },
+                        new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, 0  },
                         new byte[]{ }
                     }
                 }
             };
             var relay = new SshRelayStream(endpoint);
 
-            // Send a message.
-            byte[] request = new byte[] { 1, 2, 3, 4 };
-            await relay
-                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
-                .ConfigureAwait(false);
-
             // Receive invalid ACK.
-            ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayProtocolViolationException>(() =>
             {
                 byte[] buffer = new byte[SshRelayStream.MinReadSize];
                 int bytesRead = relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Result;
@@ -249,7 +245,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 {
                     ExpectedReadData = new byte[][]
                     {
-                        new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 10 },
+                        new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, (byte)'s' },
+                        new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, 10 },
                         new byte[]{ }
                     }
                 }
@@ -263,7 +260,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ConfigureAwait(false);
 
             // Receive invalid ACK for byte 10.
-            ExceptionAssert.ThrowsAggregateException<InvalidServerResponseException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayProtocolViolationException>(() =>
             {
                 byte[] buffer = new byte[SshRelayStream.MinReadSize];
                 int bytesRead = relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Result;
@@ -326,8 +323,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             Assert.AreEqual(0, bytesRead);
         }
 
+
         [Test]
-        public async Task WhenServerClosesConnectionWithDestinationReadFailedCode_ThenReadReturnsZero()
+        public async Task WhenServerClosesConnectionWithNonNormalError_ThenReadThrowsException()
         {
             var stream = new MockStream()
             {
@@ -336,7 +334,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
                     new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 }
                 },
-                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)SshRelayCloseCode.DESTINATION_READ_FAILED
+                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)SshRelayCloseCode.NORMAL
             };
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -357,7 +355,41 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionForcefullyOnFirstRead_ThenConnectIsRetried(
+        public async Task WhenServerClosesConnectionWithNonRecoverableError_ThenReadThrowsException(
+            [Values(
+                (WebSocketCloseStatus)SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND
+            )] WebSocketCloseStatus closeStatus)
+        {
+            var stream = new MockStream()
+            {
+                ExpectedReadData = new byte[][]
+                {
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                    new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 }
+                },
+                ExpectServerCloseCodeOnRead = closeStatus
+            };
+            var endpoint = new MockSshRelayEndpoint()
+            {
+                ExpectedStream = stream
+            };
+            var relay = new SshRelayStream(endpoint);
+
+            byte[] buffer = new byte[SshRelayStream.MinReadSize];
+            int bytesRead = await relay
+                .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
+                .ConfigureAwait(false);
+            Assert.AreEqual(1, bytesRead);
+
+            // connection breaks, triggering a reconnect that will fail.
+            ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(() =>
+            {
+                relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Wait();
+            });
+        }
+
+        [Test]
+        public async Task WhenServerClosesConnectionWithRecoverableError_ThenConnectIsRetried(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -434,7 +466,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             Assert.AreEqual(1, bytesRead);
 
             // connection breaks, triggering a reconnect that will fail.
-            ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayReconnectException>(() =>
             {
                 relay.ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token).Wait();
             });
@@ -489,8 +521,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
                 .ConfigureAwait(false);
             Assert.AreEqual(2, bytesRead);
-            Assert.AreEqual(1, endpoint.ConnectCount);
-            Assert.AreEqual(1, endpoint.ReconnectCount);
+            Assert.AreEqual(2, endpoint.ConnectCount);
+            Assert.AreEqual(0, endpoint.ReconnectCount);
         }
 
 
@@ -515,6 +547,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                         ExpectedReadData = new byte[][]
                         {
                             new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, 3 },
                             new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 }
                         },
                         ExpectServerCloseCodeOnRead = closeStatus
@@ -621,9 +654,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             };
             var relay = new SshRelayStream(endpoint);
 
-            ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(
+            ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
                 () => relay
-                    .TestConnectionAsync(TimeSpan.FromSeconds(2))
+                    .ProbeConnectionAsync(TimeSpan.FromSeconds(2))
                     .Wait());
         }
     }

@@ -27,7 +27,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDescription("SSH library")]
 [assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright Â©  2020")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("Google LLC")]
 
 [assembly: AssemblyVersion("2.10.1")]

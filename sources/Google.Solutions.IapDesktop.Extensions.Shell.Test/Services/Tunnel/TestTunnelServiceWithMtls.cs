@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
                         .Probe(TimeSpan.FromSeconds(5))
                         .ConfigureAwait(false);
                 }
-                catch (UnauthorizedException)
+                catch (SshRelayDeniedException)
                 { }
             }
 

@@ -36,7 +36,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     public class TestSshRelayStreamProbing : IapFixtureBase
     {
         [Test]
-        public async Task WhenProjectDoesntExist_ThenProbeFailsWithUnauthorizedException(
+        public async Task WhenProjectDoesntExist_ThenProbeThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
@@ -50,13 +50,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
-                    stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+                ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
+                    stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
             }
         }
 
         [Test]
-        public async Task WhenZoneDoesntExist_ThenProbeFailsWithUnauthorizedException(
+        public async Task WhenZoneDoesntExist_ThenProbeThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
@@ -70,13 +70,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
-                    stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+                ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(() =>
+                    stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
             }
         }
 
         [Test]
-        public async Task WhenInstanceDoesntExist_ThenProbeFailsWithUnauthorizedException(
+        public async Task WhenInstanceDoesntExist_ThenProbeThrowsException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
@@ -90,8 +90,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
             {
-                ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
-                    stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+                ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(() =>
+                    stream.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
             }
         }
 
@@ -109,13 +109,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     TestProject.UserAgent)))
             {
                 await stream
-                    .TestConnectionAsync(TimeSpan.FromSeconds(10))
+                    .ProbeConnectionAsync(TimeSpan.FromSeconds(10))
                     .ConfigureAwait(false);
             }
         }
 
         [Test]
-        public async Task WhenInstanceExistsButNotListening_ThenProbeFailsWithNetworkStreamClosedException(
+        public async Task WhenInstanceExistsButNotListening_ThenProbeThrowsException(
              [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     TestProject.UserAgent)))
             {
                 ExceptionAssert.ThrowsAggregateException<NetworkStreamClosedException>(() =>
-                    stream.TestConnectionAsync(TimeSpan.FromSeconds(5)).Wait());
+                    stream.ProbeConnectionAsync(TimeSpan.FromSeconds(5)).Wait());
             }
         }
     }

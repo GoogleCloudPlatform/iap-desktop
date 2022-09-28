@@ -45,7 +45,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenPerformingFirstWrite_ThenConnectionIsOpened()
         {
-            var stream = new MockStream();
+            var stream = new MockStream()
+            {
+                ExpectedReadData = new byte[][]
+                {
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 }
+                }
+            };
             var endpoint = new MockSshRelayEndpoint()
             {
                 ExpectedStream = stream
@@ -115,6 +121,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         {
             var stream = new MockStream()
             {
+                ExpectedReadData = new byte[][]
+                {
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 }
+                },
                 ExpectedWriteData = new byte[][]
                 {
                     new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 },
@@ -139,20 +149,23 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ConfigureAwait(false);
 
             Assert.AreEqual(2, stream.WriteCount);
-            Assert.AreEqual(0, stream.ReadCount);
+            Assert.AreEqual(1, stream.ReadCount);
         }
 
-
         [Test]
-        public async Task WhenPerformingWriteAfterDestinationWriteFailed_ThenWriteFailsWithException()
+        public async Task WhenPerformingWriteAfterBackendFailure_ThenWriteFailsWithException()
         {
             var stream = new MockStream()
             {
+                ExpectedReadData = new byte[][]
+                {
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 }
+                },
                 ExpectedWriteData = new byte[][]
                 {
                     new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 },
                 },
-                ExpectServerCloseCodeOnWrite = (WebSocketCloseStatus)SshRelayCloseCode.DESTINATION_WRITE_FAILED
+                ExpectServerCloseCodeOnWrite = (WebSocketCloseStatus)SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND
             };
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -167,7 +180,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .ConfigureAwait(false);
 
             // Write another request - this should fail.
-            ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(() =>
             {
                 request = new byte[] { 2 };
                 relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();
@@ -179,6 +192,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         {
             var stream = new MockStream()
             {
+                ExpectedReadData = new byte[][]
+                {
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 }
+                },
                 ExpectedWriteData = new byte[][]
                 {
                     new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 },
@@ -212,6 +229,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         {
             var stream = new MockStream()
             {
+                ExpectedReadData = new byte[][]
+                {
+                    new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 }
+                },
                 ExpectedWriteData = new byte[][]
                 {
                     new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 },
@@ -239,7 +260,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public async Task WhenServerClosesConnectionForcefullyOnFirstWrite_ThenConnectIsRetriedAndDataIsResent(
+        public async Task WhenServerClosesConnectionForcefullyBeforeReceivingFirstAck_ThenChannelConnectsAgainAndDataIsResent(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -247,8 +268,6 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 (WebSocketCloseStatus)SshRelayCloseCode.BAD_ACK,
                 (WebSocketCloseStatus)SshRelayCloseCode.ERROR_UNKNOWN,
                 (WebSocketCloseStatus)SshRelayCloseCode.INVALID_TAG,
-                (WebSocketCloseStatus)SshRelayCloseCode.SID_UNKNOWN,
-                (WebSocketCloseStatus)SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND,
                 (WebSocketCloseStatus)SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE,
                 (WebSocketCloseStatus)SshRelayCloseCode.REAUTHENTICATION_REQUIRED
             )] WebSocketCloseStatus closeStatus)
@@ -259,6 +278,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 {
                     new MockStream()
                     {
+                        ExpectedReadData = new byte[][]
+                        {
+                            new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 }
+                        },
                         ExpectedWriteData = new byte[][]
                         {
                             new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 },
@@ -268,6 +291,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     },
                     new MockStream()
                     {
+                        ExpectedReadData = new byte[][]
+                        {
+                            new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 }
+                        },
                         ExpectedWriteData = new byte[][]
                         {
                             new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 },
@@ -304,7 +331,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public async Task WhenDataReadAndServerClosesConnectionForcefullyOnSubsequentWrite_ThenConnectIsRetriedAndDataIsResent(
+        public async Task WhenDataReadAndServerClosesConnectionForcefullyAfterReceivingFirstAck_ThenChannelReconnectsAndDataIsResent(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -312,8 +339,6 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 (WebSocketCloseStatus)SshRelayCloseCode.BAD_ACK,
                 (WebSocketCloseStatus)SshRelayCloseCode.ERROR_UNKNOWN,
                 (WebSocketCloseStatus)SshRelayCloseCode.INVALID_TAG,
-                (WebSocketCloseStatus)SshRelayCloseCode.SID_UNKNOWN,
-                (WebSocketCloseStatus)SshRelayCloseCode.FAILED_TO_CONNECT_TO_BACKEND,
                 (WebSocketCloseStatus)SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE,
                 (WebSocketCloseStatus)SshRelayCloseCode.REAUTHENTICATION_REQUIRED
             )] WebSocketCloseStatus closeStatus)
@@ -324,25 +349,107 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                  {
                     new MockStream()
                     {
+                        ExpectedReadData = new byte[][]
+                        {
+                            new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, 1 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 2, 1, 2 }
+                        },
                         ExpectedWriteData = new byte[][]
                         {
                             new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 },
                             new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, 2 },
                             new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 2 },
                         },
+                        ExpectServerCloseCodeOnWrite = closeStatus
+                    },
+                    new MockStream()
+                    {
+                        ExpectedReadData = new byte[][]
+                        {
+                            new byte[]{ 0, (byte)SshRelayMessageTag.RECONNECT_SUCCESS_ACK, 0, 0, 0, 0, 0, 0, 0, 1 },
+                        },
+                        ExpectedWriteData = new byte[][]
+                        {
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 2 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 3 },
+                        }
+                    }
+                }
+            };
+            var relay = new SshRelayStream(endpoint);
+
+            // Write a request.
+            var request = new byte[] { 1 };
+            await relay
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
+                .ConfigureAwait(false);
+
+            // Read something..
+            var buffer = new byte[SshRelayStream.MinReadSize];
+            int bytesRead = await relay
+                .ReadAsync(buffer, 0, buffer.Length, this.tokenSource.Token)
+                .ConfigureAwait(false);
+            Assert.AreEqual(2, bytesRead);
+
+            // Write another request, causing an ACK to be sent.
+            request = new byte[] { 2 };
+            await relay
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
+                .ConfigureAwait(false);
+
+            // Write another request - this should cause a reconnect and resend.
+            request = new byte[] { 3 };
+            await relay
+                .WriteAsync(request, 0, request.Length, this.tokenSource.Token)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(1, endpoint.ConnectCount);
+            Assert.AreEqual(1, endpoint.ReconnectCount);
+        }
+
+
+        [Test]
+        public async Task WhenDataReadAndServerClosesConnectionForcefullyAfterReceivingFirstAck_ThenChannelReconnectsAndDataSinceReconnectAckIsResent(
+            [Values(
+                WebSocketCloseStatus.EndpointUnavailable,
+                WebSocketCloseStatus.InvalidMessageType,
+                WebSocketCloseStatus.ProtocolError,
+                (WebSocketCloseStatus)SshRelayCloseCode.BAD_ACK,
+                (WebSocketCloseStatus)SshRelayCloseCode.ERROR_UNKNOWN,
+                (WebSocketCloseStatus)SshRelayCloseCode.INVALID_TAG,
+                (WebSocketCloseStatus)SshRelayCloseCode.INVALID_WEBSOCKET_OPCODE,
+                (WebSocketCloseStatus)SshRelayCloseCode.REAUTHENTICATION_REQUIRED
+            )] WebSocketCloseStatus closeStatus)
+        {
+            var endpoint = new MockSshRelayEndpoint()
+            {
+                ExpectedStreams = new[]
+                 {
+                    new MockStream()
+                    {
                         ExpectedReadData = new byte[][]
                         {
                             new byte[]{ 0, (byte)SshRelayMessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, 1 },
                             new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 2, 1, 2 }
+                        },
+                        ExpectedWriteData = new byte[][]
+                        {
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.ACK, 0, 0, 0, 0, 0, 0, 0, 2 },
+                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 2 },
                         },
                         ExpectServerCloseCodeOnWrite = closeStatus
                     },
                     new MockStream()
                     {
+                        ExpectedReadData = new byte[][]
+                        {
+                            new byte[]{ 0, (byte)SshRelayMessageTag.RECONNECT_SUCCESS_ACK, 0, 0, 0, 0, 0, 0, 0, 2 },
+                        },
                         ExpectedWriteData = new byte[][]
                         {
-                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 1 },
-                            new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 2 },
                             new byte[]{ 0, (byte)SshRelayMessageTag.DATA, 0, 0, 0, 1, 3 },
                         }
                     }
@@ -384,7 +491,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         {
             var stream = new MockStream()
             {
-                ExpectServerCloseCodeOnWrite = (WebSocketCloseStatus)SshRelayCloseCode.NOT_AUTHORIZED
+                ExpectServerCloseCodeOnRead = (WebSocketCloseStatus)SshRelayCloseCode.NOT_AUTHORIZED
             };
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -393,7 +500,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             var relay = new SshRelayStream(endpoint);
 
             // Write first request - this should fail.
-            ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
             {
                 var request = new byte[] { 2 };
                 relay.WriteAsync(request, 0, request.Length, this.tokenSource.Token).Wait();

@@ -89,19 +89,14 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent));
 
-            await stream
-                .WriteAsync(request, 0, request.Length, CancellationToken.None)
-                .ConfigureAwait(false);
-
-            ExceptionAssert.ThrowsAggregateException<UnauthorizedException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(() =>
             {
-                byte[] buffer = new byte[64 * 1024];
-                stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Wait();
+                stream.WriteAsync(request, 0, request.Length, CancellationToken.None).Wait();
             });
         }
 
         [Test]
-        public async Task WhenFirstReadCompleted_ThenSidIsAvailable(
+        public async Task WhenFirstWriteCompleted_ThenSidIsAvailable(
             [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
@@ -118,21 +113,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 .WriteAsync(request, 0, request.Length, CancellationToken.None)
                 .ConfigureAwait(false);
 
-            Assert.IsNull(stream.Sid);
-
-            // Read a bit.
-            byte[] buffer = new byte[SshRelayStream.MinReadSize];
-            await stream
-                .ReadAsync(buffer, 0, buffer.Length, CancellationToken.None)
-                .ConfigureAwait(false);
-
             Assert.IsNotNull(stream.Sid);
         }
 
-
         [Test]
-        [Ignore("Can also throw an UnauthorizedException")]
-        public async Task WhenServerNotListening_ThenReadFails(
+        public async Task WhenServerNotListening_ThenWriteFails(
             [LinuxInstance] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
@@ -142,14 +127,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
-            await stream
-                .WriteAsync(request, 0, request.Length, CancellationToken.None)
-                .ConfigureAwait(false);
 
-            ExceptionAssert.ThrowsAggregateException<WebSocketStreamClosedByServerException>(() =>
+            ExceptionAssert.ThrowsAggregateException<SshRelayConnectException>(() =>
             {
                 byte[] buffer = new byte[SshRelayStream.MinReadSize];
-                stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Wait();
+                stream.WriteAsync(request, 0, request.Length, CancellationToken.None).Wait();
             });
         }
     }

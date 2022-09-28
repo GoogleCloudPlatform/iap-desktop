@@ -68,7 +68,9 @@
     <Compile Include="BigEndian.cs" />
     <Compile Include="Iap\ISshRelayPolicy.cs" />
     <Compile Include="Iap\AllowAllRelayPolicy.cs" />
+    <Compile Include="Iap\SshRelaySession.cs" />
     <Compile Include="Iap\SshRelayFormat.cs" />
+    <Compile Include="Iap\SshRelayStream.cs" />
     <Compile Include="Net\RestrictedHeaderConfigPatch.cs" />
     <Compile Include="Net\ConnectionStatistics.cs" />
     <Compile Include="IapTraceSources.cs" />
@@ -79,7 +81,6 @@
     <Compile Include="Net\OneTimeUseStream.cs" />
     <Compile Include="Net\SingleReaderSingleWriterStream.cs" />
     <Compile Include="Net\SocketStream.cs" />
-    <Compile Include="Iap\SshRelayStream.cs" />
     <Compile Include="Iap\SshRelayListener.cs" />
     <Compile Include="Net\WebSocketStream.cs" />
     <Compile Include="Net\PortFinder.cs" />

@@ -26,6 +26,7 @@ using Google.Solutions.Common.Net;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
@@ -63,9 +64,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
         private readonly X509Certificate2 clientCertificate;
 
-        private Uri CreateUri(
-            string sid,
-            ulong ack)
+        private Uri CreateConnectUri()
         {
             var urlParams = new Dictionary<string, string>
             {
@@ -76,57 +75,38 @@ namespace Google.Solutions.IapTunneling.Iap
                 { "port", this.Port.ToString() },
                 { "_", Guid.NewGuid().ToString() }  // Cache buster.
             };
+            var queryString = string.Join(
+                "&",
+                urlParams.Select(kvp => kvp.Key + "=" + WebUtility.UrlEncode(kvp.Value)));
 
-            if (sid != null)
+            return new Uri(
+                (this.clientCertificate == null ? TlsBaseUri : MtlsBaseUri) + "connect?" +
+                queryString);
+        }
+
+        private Uri CreateReconnectUri(
+            string sid,
+            ulong ack)
+        {
+            var urlParams = new Dictionary<string, string>
             {
-                urlParams["sid"] = sid;
-                urlParams["ack"] = ack.ToString();
-            }
+                { "sid", sid },
+                { "ack", ack.ToString() },
+                { "zone", this.VmInstance.Zone },
+                { "_", Guid.NewGuid().ToString() }  // Cache buster.
+            };
 
             var queryString = string.Join(
                 "&",
                 urlParams.Select(kvp => kvp.Key + "=" + WebUtility.UrlEncode(kvp.Value)));
 
             return new Uri(
-                (this.clientCertificate == null ? TlsBaseUri : MtlsBaseUri) +
-                (sid == null ? "connect" : "reconnect") +
-                "?" +
+                (this.clientCertificate == null ? TlsBaseUri : MtlsBaseUri) + "reconnect?" +
                 queryString);
         }
 
-        public IapTunnelingEndpoint(
-            ICredential credential,
-            InstanceLocator vmInstance,
-            ushort port,
-            string nic,
-            UserAgent userAgent,
-            X509Certificate2 clientCertificate)
-        {
-            this.credential = credential;
-            this.VmInstance = vmInstance;
-            this.Port = port;
-            this.Interface = nic;
-            this.UserAgent = userAgent;
-            this.clientCertificate = clientCertificate;
-        }
-
-        public IapTunnelingEndpoint(
-            ICredential credential,
-            InstanceLocator vmInstance,
-            ushort port,
-            string nic,
-            UserAgent userAgent)
-            : this(credential, vmInstance, port, nic, userAgent, null)
-        { }
-
-        public Task<INetworkStream> ConnectAsync(CancellationToken token)
-        {
-            return ReconnectAsync(null, 0, token);
-        }
-
-        public async Task<INetworkStream> ReconnectAsync(
-            string sid,
-            ulong ack,
+        private async Task<INetworkStream> ConnectOrReconnectAsync(
+            Uri endpoint,
             CancellationToken token)
         {
             //
@@ -160,9 +140,9 @@ namespace Google.Solutions.IapTunneling.Iap
 
             try
             {
-                await websocket.ConnectAsync(
-                    CreateUri(sid, ack),
-                    token).ConfigureAwait(false);
+                await websocket
+                    .ConnectAsync(endpoint, token)
+                    .ConfigureAwait(false);
 
                 return new WebSocketStream(websocket);
             }
@@ -177,6 +157,48 @@ namespace Google.Solutions.IapTunneling.Iap
                 //
                 throw new WebSocketConnectionDeniedException();
             }
+        }
+
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
+        public IapTunnelingEndpoint(
+            ICredential credential,
+            InstanceLocator vmInstance,
+            ushort port,
+            string nic,
+            UserAgent userAgent,
+            X509Certificate2 clientCertificate)
+        {
+            this.credential = credential;
+            this.VmInstance = vmInstance;
+            this.Port = port;
+            this.Interface = nic;
+            this.UserAgent = userAgent;
+            this.clientCertificate = clientCertificate;
+        }
+
+        public IapTunnelingEndpoint(
+            ICredential credential,
+            InstanceLocator vmInstance,
+            ushort port,
+            string nic,
+            UserAgent userAgent)
+            : this(credential, vmInstance, port, nic, userAgent, null)
+        { }
+
+        public Task<INetworkStream> ConnectAsync(CancellationToken token)
+        {
+            return ConnectOrReconnectAsync(CreateConnectUri(), token);
+        }
+
+        public Task<INetworkStream> ReconnectAsync(
+            string sid,
+            ulong ack,
+            CancellationToken token)
+        {
+            return ConnectOrReconnectAsync(CreateReconnectUri(sid, ack), token);
         }
     }
 }

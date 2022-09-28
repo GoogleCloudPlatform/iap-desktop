@@ -45,6 +45,8 @@ namespace Google.Solutions.IapTunneling.Iap
     public enum SshRelayCloseCode : uint
     {
         NORMAL = 1000,
+        ABNORMAL_CLOSURE = 1006,
+
         ERROR_UNKNOWN = 4000,
         SID_UNKNOWN = 4001,
         SID_IN_USE = 4002,
@@ -60,7 +62,9 @@ namespace Google.Solutions.IapTunneling.Iap
         INVALID_DATA = 4013,
         NOT_AUTHORIZED = 4033,
         LOOKUP_FAILED = 4047,
-        LOOKUP_FAILED_RECONNECT = 4051
+        LOOKUP_FAILED_RECONNECT = 4051,
+
+        FAILED_TO_REWIND = 4074
     }
 }
 

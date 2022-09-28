@@ -25,8 +25,6 @@ using System;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Net.WebSockets;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -184,17 +182,14 @@ namespace Google.Solutions.IapTunneling.Net
 
                 return bytesReceived;
             }
-            catch (Exception e) when (IsSocketError(e, SocketError.ConnectionAborted))
+            catch (Exception e) when (
+                IsSocketError(e, SocketError.ConnectionAborted) || 
+                IsWebSocketError(e, WebSocketError.ConnectionClosedPrematurely))
             {
-                IapTraceSources.Default.TraceVerbose("WebSocketStream.Receive: connection aborted - {0}", e);
-
-                //
-                // ClientWebSocket/WinHttp can also throw an exception if
-                // the connection has been closed.
-                //
+                IapTraceSources.Default.TraceVerbose("WebSocketStream.Read: connection aborted - {0}", e);
 
                 throw new WebSocketStreamClosedByServerException(
-                    WebSocketCloseStatus.NormalClosure,
+                    (WebSocketCloseStatus)1006, // Abnormal closure
                     e.Message);
             }
         }
@@ -225,12 +220,14 @@ namespace Google.Solutions.IapTunneling.Net
                     "WebSocketStream: end WriteAsync()... [socket: {0}]",
                     this.socket.State);
             }
-            catch (Exception e) when (IsSocketError(e, SocketError.ConnectionAborted))
+            catch (Exception e) when (
+                IsSocketError(e, SocketError.ConnectionAborted) ||
+                IsWebSocketError(e, WebSocketError.ConnectionClosedPrematurely))
             {
-                IapTraceSources.Default.TraceVerbose("WebSocketStream.Send: connection aborted - {0}", e);
+                IapTraceSources.Default.TraceVerbose("WebSocketStream.Write: connection aborted - {0}", e);
 
                 throw new WebSocketStreamClosedByServerException(
-                    WebSocketCloseStatus.NormalClosure,
+                    (WebSocketCloseStatus)1006, // Abnormal closure
                     e.Message);
             }
         }
@@ -268,18 +265,15 @@ namespace Google.Solutions.IapTunneling.Net
     public class WebSocketStreamClosedByClientException : NetworkStreamClosedException
     {
         public WebSocketStreamClosedByClientException()
+            : base("The connection has already been closed by the client")
         {
         }
     }
 
     public class WebSocketConnectionDeniedException : Exception
     {
-        protected WebSocketConnectionDeniedException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
         public WebSocketConnectionDeniedException()
+            : base("The server denied the use of WebSockets")
         {
         }
     }
@@ -292,6 +286,7 @@ namespace Google.Solutions.IapTunneling.Net
         public WebSocketStreamClosedByServerException(
             WebSocketCloseStatus closeStatus,
             string closeStatusDescription)
+            : base($"{closeStatusDescription} (code {closeStatus})")
         {
             this.CloseStatus = closeStatus;
             this.CloseStatusDescription = closeStatusDescription;

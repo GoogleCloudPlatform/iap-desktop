@@ -376,7 +376,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             tunnelBrokerService.Setup(s => s.ConnectAsync(
                 It.IsAny<TunnelDestination>(),
                 It.IsAny<ISshRelayPolicy>(),
-                It.IsAny<TimeSpan>())).ThrowsAsync(new UnauthorizedException("mock"));
+                It.IsAny<TimeSpan>())).ThrowsAsync(new SshRelayDeniedException("mock"));
 
             var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
