@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             {
                 Assert.AreEqual(destination, tunnel.Destination);
 
-                ExceptionAssert.ThrowsAggregateException<SshRelayDeniedException>(
+                ExceptionAssert.ThrowsAggregateException<SshRelayBackendNotFoundException>(
                     () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
             }
         }
