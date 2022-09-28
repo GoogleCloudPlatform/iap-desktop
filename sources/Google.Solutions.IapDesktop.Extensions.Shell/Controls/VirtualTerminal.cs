@@ -249,6 +249,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         protected override void OnLayout(LayoutEventArgs e)
         {
+            if (this.Width == 0 && this.Height == 0)
+            {
+                //
+                // Window is probably being minimized. Don't layout
+                // and don't update dimensions as that might screw up
+                // the screen buffer.
+                //
+                return;
+            }
+
             UpdateDimensions();
             base.OnLayout(e);
         }
