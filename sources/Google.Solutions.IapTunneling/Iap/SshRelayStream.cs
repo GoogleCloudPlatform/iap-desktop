@@ -44,9 +44,6 @@ namespace Google.Solutions.IapTunneling.Iap
         private readonly AsyncLock unacknoledgedQueueLock = new AsyncLock();
         private readonly Queue<UnacknoledgedWrite> unacknoledgedQueue = new Queue<UnacknoledgedWrite>();
 
-        private long bytesReceived = 0;
-        private long bytesSent = 0;
-
         //---------------------------------------------------------------------
         // Privates
         //---------------------------------------------------------------------
@@ -73,7 +70,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 while (this.unacknoledgedQueue.Any())
                 {
                     var write = this.unacknoledgedQueue.Dequeue();
-                    if (write.ExpectedAck > this.session.LastAckReceived)
+                    if (write.ExpectedAck > this.session.State.LastAckReceived)
                     {
                         //
                         // We never got an ACK for this one, resend.
@@ -244,7 +241,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
                                     TraceVerbose($"Received DATA message ({dataLength} bytes)");
 
-                                    Interlocked.Add(ref this.bytesReceived, dataLength);
+                                    this.session.State.AddBytesReceived(dataLength);
 
                                     return dataLength;
                                 }
@@ -259,13 +256,13 @@ namespace Google.Solutions.IapTunneling.Iap
                                         throw new SshRelayProtocolViolationException(
                                             "The server sent an invalid zero-ack");
                                     }
-                                    else if (ack > (ulong)this.bytesSent)
+                                    else if (ack > (ulong)this.session.State.BytesSent)
                                     {
                                         throw new SshRelayProtocolViolationException(
                                             "The server sent a mismatched ack");
                                     }
 
-                                    this.session.LastAckReceived = ack;
+                                    this.session.State.LastAckReceived = ack;
 
                                     using (await this.unacknoledgedQueueLock
                                         .AcquireAsync(cancellationToken)
@@ -319,8 +316,8 @@ namespace Google.Solutions.IapTunneling.Iap
                     //
                     // Take care of outstanding ACKs.
                     //
-                    var bytesToAck = (ulong)Thread.VolatileRead(ref this.bytesReceived);
-                    if (this.session.LastAckSent < bytesToAck)
+                    var bytesToAck = this.session.State.BytesReceived;
+                    if (this.session.State.LastAckSent < bytesToAck)
                     {
                         var ackBuffer = new byte[SshRelayFormat.Ack.MessageLength];
                         SshRelayFormat.Ack.Encode(ackBuffer, bytesToAck);
@@ -335,13 +332,13 @@ namespace Google.Solutions.IapTunneling.Iap
                                 cancellationToken)
                             .ConfigureAwait(false);
 
-                        this.session.LastAckSent = bytesToAck;
+                        this.session.State.LastAckSent = bytesToAck;
                     }
 
                     //
                     // Send data.
                     //
-                    var sequenceNumber = (ulong)Thread.VolatileRead(ref this.bytesSent);
+                    var sequenceNumber = this.session.State.BytesSent;
 
                     var message = new byte[SshRelayFormat.Data.HeaderLength + count];
                     SshRelayFormat.Data.Encode(message, buffer, (uint)offset, (uint)count);
@@ -353,7 +350,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     // otherwise we might see an ACK before bytesSent even reflects
                     // that the data has been sent.
                     //
-                    Interlocked.Add(ref this.bytesSent, count);
+                    this.session.State.AddBytesSent((uint)count);
 
                     await stream
                         .WriteAsync(

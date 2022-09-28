@@ -61,32 +61,20 @@ namespace Google.Solutions.IapTunneling.Iap
         private INetworkStream connection = null;
         private readonly AsyncLock connectLock = new AsyncLock();
 
+        internal SessionState State { get; } = new SessionState();
+
         /// <summary>
         /// Unique identifier of session. Available after initial
         /// connection has been established.
         /// </summary>
         public string Sid { get; private set; }
 
-        /// <summary>
-        /// Last ACK received, only to be accessed from writer thread.
-        /// </summary>
-        public ulong LastAckReceived { get; set; } = 0;
-
-        /// <summary>
-        /// Last ACK sent, only to be accessed from reader thread.
-        /// </summary>
-        public ulong LastAckSent { get; set; } = 0;
-
         private void TraceVerbose(string message)
         {
             if (IapTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
             {
                 IapTraceSources.Default.TraceVerbose(
-                    "SshRelayStream [{0}] AR:{1} AS:{2}: {3}",
-                    this.Sid,
-                    this.LastAckReceived,
-                    this.LastAckSent,
-                    message);
+                    $"SshRelayStream [{this.Sid}] {this.State}: {message}");
             }
         }
 
@@ -109,7 +97,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     //
                     return this.connection;
                 }
-                else if (this.LastAckReceived == 0)
+                else if (this.State.LastAckReceived == 0)
                 {
                     //
                     // Initial connect.
@@ -198,12 +186,12 @@ namespace Google.Solutions.IapTunneling.Iap
                     // Reconnect + sync ack's + resend data.
                     //
                     Debug.Assert(this.Sid != null);
-                    TraceVerbose($"Attempting reconnect with ack={this.LastAckReceived}");
+                    TraceVerbose($"Attempting reconnect with ack={this.State.LastAckReceived}");
 
                     var connection = await this.Endpoint
                         .ReconnectAsync(
                             this.Sid,
-                            this.LastAckReceived,
+                            this.State.BytesReceived,
                             cancellationToken)
                         .ConfigureAwait(false);
 
@@ -243,7 +231,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                     var bytesDecoded = SshRelayFormat.ReconnectAck.Decode(
                                         message,
                                         out var ack);
-                                    this.LastAckReceived = ack;
+                                    this.State.LastAckReceived = ack;
 
                                     Debug.Assert(bytesDecoded == bytesRead);
 
@@ -443,6 +431,64 @@ namespace Google.Solutions.IapTunneling.Iap
                 ? this.Sid.Substring(0, Math.Min(this.Sid.Length, 10))
                 : "(unknown)";
             return $"[SshRelaySession {sidToken}]";
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
+        internal class SessionState
+        {
+            //
+            // Counters for keeping track of the connection state.
+            // The values can be read from any thread, but written
+            // only by the current reader or writer thread.
+            //
+
+            private long lastAckReceived = 0;
+            private long lastAckSent = 0;
+            private long bytesReceived = 0;
+            private long bytesSent = 0;
+
+            public ulong LastAckReceived
+            {
+                get => (ulong)Thread.VolatileRead(ref this.lastAckReceived);
+                set => this.lastAckReceived = (long)value;
+            }
+
+            public ulong LastAckSent
+            {
+                get => (ulong)Thread.VolatileRead(ref this.lastAckSent);
+                set => this.lastAckSent = (long)value;
+            }
+
+            public ulong BytesReceived
+            {
+                get => (ulong)Thread.VolatileRead(ref this.bytesReceived);
+            }
+
+            public ulong BytesSent
+            {
+                get => (ulong)Thread.VolatileRead(ref this.bytesSent);
+            }
+
+            public void AddBytesReceived(uint delta)
+            {
+                Debug.Assert(delta > 0);
+                Interlocked.Add(ref this.bytesReceived, delta);
+            }
+
+            public void AddBytesSent(uint delta)
+            {
+                Debug.Assert(delta > 0);
+                Interlocked.Add(ref this.bytesSent, delta);
+            }
+
+            public override string ToString()
+            {
+                return $"AR: {this.LastAckReceived} AS: {this.LastAckSent} " +
+                       $"TR: {this.BytesReceived} TX: {this.BytesSent}";
+            }
         }
     }
 }
