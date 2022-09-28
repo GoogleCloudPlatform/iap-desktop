@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System;
 using System.ComponentModel;

@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;

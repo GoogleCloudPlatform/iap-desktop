@@ -30,7 +30,6 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
@@ -538,7 +537,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 "Command: Throw ExceptionWithHelp (sync)",
                 _ => CommandState.Enabled,
                 _ => throw new ResourceAccessDeniedException(
-                        "DEBUG", 
+                        "DEBUG",
                         HelpTopics.General,
                         new ApplicationException("DEBUG"))));
             crashCommand.AddCommand(new Command<IMainForm>(

@@ -23,7 +23,6 @@ using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
-using System;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings

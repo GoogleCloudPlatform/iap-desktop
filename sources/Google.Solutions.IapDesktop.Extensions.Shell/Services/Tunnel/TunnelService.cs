@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapTunneling.Iap;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

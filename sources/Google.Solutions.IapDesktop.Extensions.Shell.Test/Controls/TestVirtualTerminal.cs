@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using Google.Solutions.Mvvm.Controls;
 using NUnit.Framework;

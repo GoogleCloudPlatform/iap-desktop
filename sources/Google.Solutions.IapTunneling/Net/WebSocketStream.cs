@@ -183,7 +183,7 @@ namespace Google.Solutions.IapTunneling.Net
                 return bytesReceived;
             }
             catch (Exception e) when (
-                IsSocketError(e, SocketError.ConnectionAborted) || 
+                IsSocketError(e, SocketError.ConnectionAborted) ||
                 IsWebSocketError(e, WebSocketError.ConnectionClosedPrematurely))
             {
                 IapTraceSources.Default.TraceVerbose("WebSocketStream.Read: connection aborted - {0}", e);

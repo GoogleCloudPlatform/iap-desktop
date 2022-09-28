@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Extensions.Management.Properties;
 using Google.Solutions.Mvvm.Controls;
 using System.Windows.Forms;

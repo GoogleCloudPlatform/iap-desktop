@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
         private readonly BuganizerAdapter buganizerAdapter;
 
         public ExceptionDialog(
-            HelpAdapter helpAdapter, 
+            HelpAdapter helpAdapter,
             BuganizerAdapter buganizerAdapter)
         {
             this.helpAdapter = helpAdapter.ThrowIfNull(nameof(helpAdapter));

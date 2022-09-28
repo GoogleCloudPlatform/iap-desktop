@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace Google.Solutions.Mvvm.Test.Controls
 {
     [TestFixture]
-    public class TestHtmlClipboardFormat 
+    public class TestHtmlClipboardFormat
     {
         [Test]
         public void FormatAddsHeader()

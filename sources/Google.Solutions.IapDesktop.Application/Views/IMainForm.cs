@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.Mvvm.Commands;
 using System;
 using System.Windows.Forms;

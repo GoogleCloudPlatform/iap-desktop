@@ -77,7 +77,7 @@ namespace Google.Solutions.IapTunneling.Test.Util
                 await connectTask.ConfigureAwait(false);
 
                 return new WebSocketConnection(
-                    new ServerWebSocketConnection(serverSocket), 
+                    new ServerWebSocketConnection(serverSocket),
                     clientSocket);
             }
         }
@@ -105,9 +105,9 @@ namespace Google.Solutions.IapTunneling.Test.Util
             this.Server.Dispose();
         }
     }
-    
+
     internal sealed class ServerWebSocketConnection : IDisposable
-    { 
+    {
         public HttpListenerWebSocketContext Context { get; }
 
         private void ThrowIfNotConnected()

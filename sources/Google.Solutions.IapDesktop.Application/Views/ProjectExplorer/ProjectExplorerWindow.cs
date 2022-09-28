@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Services;
@@ -127,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 if (!args.Exception.IsCancellation())
                 {
                     this.exceptionDialog.Show(
-                        this, 
+                        this,
                         "Loading project failed", args.Exception);
                 }
             };
@@ -316,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             catch (Exception e)
             {
                 this.exceptionDialog.Show(
-                    this, 
+                    this,
                     "Adding project failed", e);
                 return false;
             }
@@ -362,7 +361,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             var command = (ICommand)sender;
             this.exceptionDialog.Show(
-                this, 
+                this,
                 $"{command.ActivityText} failed", e.Exception);
         }
 
@@ -400,7 +399,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             catch (Exception e)
             {
                 this.exceptionDialog.Show(
-                    this, 
+                    this,
                     "Loading projects failed", e);
 
                 // Do not close the application, otherwise the user has no 

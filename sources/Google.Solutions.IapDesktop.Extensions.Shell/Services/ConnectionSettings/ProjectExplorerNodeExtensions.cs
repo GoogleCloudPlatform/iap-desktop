@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings

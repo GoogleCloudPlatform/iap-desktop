@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.CloudResourceManager.v1.Data;
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.Mvvm.Controls;
 using System.Windows.Forms;

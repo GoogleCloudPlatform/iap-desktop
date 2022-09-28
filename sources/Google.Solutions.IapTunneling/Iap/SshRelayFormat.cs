@@ -116,7 +116,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 out string sid)
             {
                 ThrowIfBufferSmallerThan(messageBuffer, sizeof(ushort) + sizeof(uint));
-                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == 
+                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) ==
                     SshRelayMessageTag.CONNECT_SUCCESS_SID);
 
                 var arrayLength = BigEndian.DecodeUInt32(messageBuffer, 2);
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 out ulong ack)
             {
                 ThrowIfBufferSmallerThan(messageBuffer, MessageLength);
-                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == 
+                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) ==
                     SshRelayMessageTag.RECONNECT_SUCCESS_ACK);
 
                 ack = BigEndian.DecodeUInt64(messageBuffer, 2);
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 out ulong ack)
             {
                 ThrowIfBufferSmallerThan(messageBuffer, MessageLength);
-                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == 
+                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) ==
                     SshRelayMessageTag.ACK);
 
                 ack = BigEndian.DecodeUInt64(messageBuffer, 2);
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 out uint dataLength)
             {
                 ThrowIfBufferSmallerThan(messageBuffer, HeaderLength + 1);
-                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) == 
+                Debug.Assert((SshRelayMessageTag)BigEndian.DecodeUInt16(messageBuffer, 0) ==
                     SshRelayMessageTag.DATA);
 
                 dataLength = BigEndian.DecodeUInt32(messageBuffer, 2);

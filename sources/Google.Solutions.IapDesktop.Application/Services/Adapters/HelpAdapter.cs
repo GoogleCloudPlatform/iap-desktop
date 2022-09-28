@@ -20,8 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Util;
 using System;
 
 #pragma warning disable CA1822 // Mark members as static

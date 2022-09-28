@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
