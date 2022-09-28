@@ -427,7 +427,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public override string ToString()
         {
-            var sidToken = this.Sid != null 
+            var sidToken = this.Sid != null
                 ? this.Sid.Substring(0, Math.Min(this.Sid.Length, 10))
                 : "(unknown)";
             return $"[SshRelaySession {sidToken}]";

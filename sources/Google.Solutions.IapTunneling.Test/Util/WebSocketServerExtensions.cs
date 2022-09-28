@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapTunneling.Test.Net;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapTunneling.Test.Util
@@ -28,7 +27,7 @@ namespace Google.Solutions.IapTunneling.Test.Util
     internal static class SshRelayServerExtensions
     {
         public static async Task SendConnectSuccessSidAsync(
-            this ServerWebSocketConnection server, 
+            this ServerWebSocketConnection server,
             string sid)
         {
             var buffer = new byte[64];

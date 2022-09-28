@@ -28,7 +28,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestListViewExtensions 
+    public class TestListViewExtensions
     {
         private ListView listView;
         private Form form;

@@ -24,11 +24,9 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.Mvvm.Commands;
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -49,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         private readonly IProjectModelService projectModelService;
 
         public HtmlPageGenerator(
-            IConnectionSettingsService settingsService, 
+            IConnectionSettingsService settingsService,
             IProjectModelService projectModelService,
             IProjectExplorer projectExplorer)
         {

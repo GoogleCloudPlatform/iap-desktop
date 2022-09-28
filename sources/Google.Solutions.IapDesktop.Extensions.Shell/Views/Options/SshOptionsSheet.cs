@@ -27,7 +27,6 @@ using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Ssh.Auth;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Windows.Forms;

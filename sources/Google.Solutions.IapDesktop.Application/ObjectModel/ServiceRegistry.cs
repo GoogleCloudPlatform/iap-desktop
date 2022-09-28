@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                     // Don't allow recursion
                     return false;
                 }
-                
+
                 if (IsServiceRegistered(t))
                 {
                     return true;
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         public object GetService(Type serviceType)
         {
-            if (serviceType.IsGenericType && 
+            if (serviceType.IsGenericType &&
                 serviceType.GetGenericTypeDefinition() == typeof(Service<>))
             {
                 Debug.Assert(serviceType.GetGenericArguments().Length == 1);

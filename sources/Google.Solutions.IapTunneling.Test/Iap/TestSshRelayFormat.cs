@@ -361,9 +361,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                 var data = new byte[1];
                 var bytesRead = SshRelayFormat.Data.Decode(
-                    message, 
-                    data, 
-                    0, 
+                    message,
+                    data,
+                    0,
                     (uint)data.Length,
                     out var dataLength);
 
@@ -383,9 +383,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                 var data = new byte[2];
                 var bytesRead = SshRelayFormat.Data.Decode(
-                    message, 
-                    data, 
-                    1, 
+                    message,
+                    data,
+                    1,
                     1,
                     out var dataLength);
 
@@ -407,9 +407,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                 Assert.Throws<ArgumentException>(
                     () => SshRelayFormat.Data.Decode(
-                        message, 
-                        data, 
-                        1, 
+                        message,
+                        data,
+                        1,
                         (uint)data.Length,
                         out var dataLength));
             }
@@ -427,9 +427,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                 Assert.Throws<IndexOutOfRangeException>(
                     () => SshRelayFormat.Data.Decode(
-                        message, 
-                        data, 
-                        0, 
+                        message,
+                        data,
+                        0,
                         (uint)data.Length,
                         out var dataLength));
             }
@@ -451,7 +451,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                 Assert.Throws<ArgumentException>(
                     () => SshRelayFormat.LongClose.Encode(
-                        message, 
+                        message,
                         SshRelayCloseCode.ERROR_UNKNOWN,
                         string.Empty));
             }

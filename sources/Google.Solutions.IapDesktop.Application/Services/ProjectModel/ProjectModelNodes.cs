@@ -22,8 +22,6 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

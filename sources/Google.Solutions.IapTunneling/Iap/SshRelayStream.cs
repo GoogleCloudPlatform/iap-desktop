@@ -203,7 +203,8 @@ namespace Google.Solutions.IapTunneling.Iap
                 SshRelayFormat.Data.HeaderLength + count)];
 
             return (int)await this.session.IoAsync(
-                async stream => {
+                async stream =>
+                {
                     while (true)
                     {
                         var bytesRead = await stream
@@ -299,9 +300,9 @@ namespace Google.Solutions.IapTunneling.Iap
         }
 
         protected override async Task ProtectedWriteAsync(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             if (count > MaxWriteSize)
@@ -311,7 +312,8 @@ namespace Google.Solutions.IapTunneling.Iap
             }
 
             await this.session.IoAsync(
-                async stream => {
+                async stream =>
+                {
 
                     //
                     // Take care of outstanding ACKs.

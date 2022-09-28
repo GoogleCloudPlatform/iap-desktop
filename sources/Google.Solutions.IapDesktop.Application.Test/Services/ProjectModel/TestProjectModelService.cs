@@ -22,7 +22,6 @@
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
@@ -260,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAccessDeniedException("test", new Exception()));
 
-            var resourceManagerAdapter = new Mock <IResourceManagerAdapter>();
+            var resourceManagerAdapter = new Mock<IResourceManagerAdapter>();
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "accessible-project"),
                     It.IsAny<CancellationToken>()))

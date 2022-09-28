@@ -21,13 +21,11 @@
 
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
-using Google.Solutions.IapTunneling.Test.Net;
 using Google.Solutions.IapTunneling.Test.Util;
 using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;

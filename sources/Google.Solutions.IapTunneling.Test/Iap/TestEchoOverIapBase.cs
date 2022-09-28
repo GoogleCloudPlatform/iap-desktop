@@ -21,9 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
-using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System;
 using System.Threading;
@@ -73,14 +71,14 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                         messageSize - totalBytesWritten);
                     await stream
                         .WriteAsync(
-                            message, 
+                            message,
                             totalBytesWritten,
-                            bytesToWrite, 
+                            bytesToWrite,
                             this.tokenSource.Token)
                         .ConfigureAwait(false);
                     totalBytesWritten += bytesToWrite;
                 }
-                
+
 
                 var response = new byte[messageSize];
                 int totalBytesRead = 0;
