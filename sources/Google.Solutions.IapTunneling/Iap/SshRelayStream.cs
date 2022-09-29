@@ -52,10 +52,7 @@ namespace Google.Solutions.IapTunneling.Iap
         {
             if (IapTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
             {
-                IapTraceSources.Default.TraceVerbose(
-                    "[SshRelayStream {0}] {1}",
-                    this.Sid,
-                    message);
+                IapTraceSources.Default.TraceVerbose($"{this.session}: {message}");
             }
         }
 

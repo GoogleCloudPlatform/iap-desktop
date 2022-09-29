@@ -73,8 +73,7 @@ namespace Google.Solutions.IapTunneling.Iap
         {
             if (IapTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
             {
-                IapTraceSources.Default.TraceVerbose(
-                    $"SshRelayStream [{this.Sid}] {this.State}: {message}");
+                IapTraceSources.Default.TraceVerbose($"{this}: {message}");
             }
         }
 
@@ -430,7 +429,7 @@ namespace Google.Solutions.IapTunneling.Iap
             var sidToken = this.Sid != null
                 ? this.Sid.Substring(0, Math.Min(this.Sid.Length, 10))
                 : "(unknown)";
-            return $"[SshRelaySession {sidToken}]";
+            return $"[SshRelaySession {sidToken} {this.State}]";
         }
 
         //---------------------------------------------------------------------
