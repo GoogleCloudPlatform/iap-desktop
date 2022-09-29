@@ -518,11 +518,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 settingsRepository,
                 this.proxyAdapterMock.Object)
             {
-
                 // Enable proxy with authentication.
                 IsCustomProxyServerEnabled = true,
-                ProxyServer = "prx",
-                ProxyPort = "123",
+                ProxyServer = " prx ", // Spaces should be ignored.
+                ProxyPort = " 123 ",   // Spaces should be ignored.
                 ProxyUsername = "user",
                 ProxyPassword = "pass"
             };
@@ -561,10 +560,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 settingsRepository,
                 this.proxyAdapterMock.Object)
             {
-
                 // Enable proxy with authentication.
                 IsProxyAutoConfigurationEnabled = true,
-                ProxyAutoconfigurationAddress = "https://www/proxy.pac",
+                ProxyAutoconfigurationAddress = " https://www/proxy.pac ", // Spaces should be ignored.
                 ProxyUsername = "user",
                 ProxyPassword = "pass"
             };

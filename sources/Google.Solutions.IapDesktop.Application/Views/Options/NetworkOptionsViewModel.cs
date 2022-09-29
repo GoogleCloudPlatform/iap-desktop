@@ -111,32 +111,32 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             switch (this.Proxy)
             {
                 case ProxyType.Custom:
-                    if (!IsValidProxyHost(this.proxyServer))
+                    if (!IsValidProxyHost(this.proxyServer?.Trim()))
                     {
                         throw new ArgumentException(
                             $"'{this.proxyServer}' is not a valid host name");
                     }
 
-                    if (!IsValidProxyPort(this.proxyPort))
+                    if (!IsValidProxyPort(this.proxyPort?.Trim()))
                     {
                         throw new ArgumentException(
                             $"'{this.proxyPort}' is not a valid port number");
                     }
 
-                    settings.ProxyUrl.StringValue = $"http://{this.proxyServer}:{this.proxyPort}";
+                    settings.ProxyUrl.StringValue = $"http://{this.proxyServer?.Trim()}:{this.proxyPort?.Trim()}";
                     settings.ProxyPacUrl.Reset();
                     break;
 
                 case ProxyType.Autoconfig:
 
-                    if (!IsValidProxyAutoConfigurationAddress(this.proxyPacAddress))
+                    if (!IsValidProxyAutoConfigurationAddress(this.proxyPacAddress?.Trim()))
                     {
                         throw new ArgumentException(
-                            $"'{this.proxyPacAddress}' is not a valid proxy autoconfiguration URL");
+                            $"'{this.proxyPacAddress?.Trim()}' is not a valid proxy autoconfiguration URL");
                     }
 
                     settings.ProxyUrl.Reset();
-                    settings.ProxyPacUrl.StringValue = this.proxyPacAddress;
+                    settings.ProxyPacUrl.StringValue = this.proxyPacAddress?.Trim();
                     break;
 
                 case ProxyType.System:
