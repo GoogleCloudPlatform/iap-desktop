@@ -212,17 +212,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     .ConfigureAwait(false);
             }
             catch (SshNativeException e) when (
-                e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED &&
-                this.authorizedKey.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED)
             {
-                throw new OsLoginAuthenticationFailedException(
-                    "You do not have sufficient permissions to access this VM instance.\n\n" +
-                    "To perform this action, you need the following roles (or an equivalent custom role):\n\n" +
-                    " 1. 'Compute OS Login' or 'Compute OS Admin Login'\n" +
-                    " 2. 'Service Account User' (if the VM uses a service account)\n" +
-                    " 3. 'Compute OS Login External User' (if the VM belongs to a different GCP organization\n",
-                    e,
-                    HelpTopics.GrantingOsLoginRoles);
+                var keyPairWarning = string.Empty;
+                if (this.authorizedKey.KeyPair is RsaSshKeyPair)
+                {
+                    keyPairWarning =
+                        "Some Linux distributions also no longer support the " +
+                        $"'{this.authorizedKey.KeyPair.Type}' algorithm that you're " +
+                        "currently using for SSH authentication. To use a more modern " +
+                        "algorithm, go to Tools > Options > SSH and " +
+                        "configure IAP Desktop to use ECDSA instead of RSA.";
+                }
+
+                if (this.authorizedKey.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                {
+                    throw new OsLoginAuthenticationFailedException(
+                        "You do not have sufficient permissions to access this VM instance.\n\n" +
+                        "To perform this action, you need the following roles (or an equivalent custom role):\n\n" +
+                        " 1. 'Compute OS Login' or 'Compute OS Admin Login'\n" +
+                        " 2. 'Service Account User' (if the VM uses a service account)\n" +
+                        " 3. 'Compute OS Login External User' (if the VM belongs to a different GCP organization)\n\n" +
+                        keyPairWarning,
+                        e,
+                        HelpTopics.GrantingOsLoginRoles);
+                }
+                else
+                {
+                    throw new MetadataKeyAuthenticationFailedException(
+                        "Authentication failed. Verify that the Compute Engine guest environment " +
+                        "is installed on the VM and that the agent is running.\n\n" +
+                        keyPairWarning,
+                        e,
+                        HelpTopics.ManagingMetadataAuthorizedKeys);
+                }
             }
         }
 
@@ -450,6 +473,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public IHelpTopic Help { get; }
 
         public OsLoginAuthenticationFailedException(
+            string message,
+            Exception inner,
+            IHelpTopic helpTopic)
+            : base(message, inner)
+        {
+            this.Help = helpTopic;
+        }
+    }
+
+    public class MetadataKeyAuthenticationFailedException : Exception, IExceptionWithHelpTopic
+    {
+        public IHelpTopic Help { get; }
+
+        public MetadataKeyAuthenticationFailedException(
             string message,
             Exception inner,
             IHelpTopic helpTopic)
