@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// Path containing profiles.
         /// </summary>
-        private const string ProfilesKeyPath = @"Software\Google\IapDesktop";
+        internal const string ProfilesKeyPath = @"Software\Google\IapDesktop";
 
         /// <summary>
         /// Path to policies. This path is independent of the profile.
@@ -205,6 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 {
                     return profiles.GetSubKeyNames()
                         .EnsureNotNull()
+                        .Where(n => n == DefaultProfileKey || n.StartsWith(ProfileKeyPrefix))
                         .Select(n => n == DefaultProfileKey
                             ? DefaultProfileName
                             : n.Substring(ProfileKeyPrefix.Length));
