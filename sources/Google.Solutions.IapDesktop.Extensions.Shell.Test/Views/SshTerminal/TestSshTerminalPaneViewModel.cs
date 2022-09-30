@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ConnectAsync(new TerminalSize(80, 24))
                     .ConfigureAwait(true);
 
-                Assert.IsInstanceOf<SshNativeException>(argsReceived.Error);
+                Assert.IsInstanceOf<MetadataKeyAuthenticationFailedException>(argsReceived.Error);
                 eventService.Verify(s => s.FireAsync(
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
 
