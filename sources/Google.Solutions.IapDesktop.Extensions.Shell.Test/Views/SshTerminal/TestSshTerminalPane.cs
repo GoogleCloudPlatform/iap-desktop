@@ -255,10 +255,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     TimeSpan.FromSeconds(10)))
                 .ConfigureAwait(true);
 
-            Assert.IsInstanceOf(typeof(SshNativeException), this.ExceptionShown);
-            Assert.AreEqual(
-                LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                ((SshNativeException)this.ExceptionShown).ErrorCode);
+            Assert.IsInstanceOf(typeof(MetadataKeyAuthenticationFailedException), this.ExceptionShown);
 
             await CompleteBackgroundWorkAsync().ConfigureAwait(true);
         }
