@@ -21,8 +21,10 @@
 
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.Testing.Application.Test;
+using Microsoft.Win32;
 using NUnit.Framework;
 using System;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Host
 {
@@ -198,6 +200,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
 
             Assert.IsNotNull(list);
             CollectionAssert.Contains(list, "Default");
+        }
+
+        [Test]
+        public void WhenNonProfileKeysPresent_ThenListProfilesIgnoresKeys()
+        {
+            using (var hive = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
+            {
+                hive.CreateSubKey($"{Profile.ProfilesKeyPath}\\________Notaprofile", true);
+            }
+
+            using (Profile.OpenProfile(null))
+            { }
+
+            var list = Profile.ListProfiles();
+
+            Assert.IsNotNull(list);
+            Assert.IsFalse(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)));
         }
 
         //---------------------------------------------------------------------
