@@ -31,12 +31,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
     [TestFixture]
     public class TestProfile : ApplicationFixtureBase
     {
+        private const string TestProfilesKeyPath = @"Software\Google\__Test";
         private const string TestProfileName = "__Test";
+
+        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
+            RegistryHive.CurrentUser,
+            RegistryView.Default);
 
         [SetUp]
         public void SetUp()
         {
-            Profile.DeleteProfile(TestProfileName);
+            this.hkcu.DeleteSubKeyTree(TestProfilesKeyPath, false);
+            using (this.hkcu.CreateSubKey(TestProfilesKeyPath, false))
+            { }
         }
 
         //---------------------------------------------------------------------
@@ -47,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void WhenNameIsNullOrEmpty_ThenIsValidProfileNameReturnsFalse()
         {
             Assert.IsFalse(Profile.IsValidProfileName(null));
-            Assert.IsFalse(Profile.IsValidProfileName(String.Empty));
+            Assert.IsFalse(Profile.IsValidProfileName(string.Empty));
             Assert.IsFalse(Profile.IsValidProfileName(" "));
         }
 
@@ -90,21 +97,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void WhenProfileNameIsNotValid_ThenCreateProfileThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => Profile.CreateProfile("Föö"));
+                () => Profile.CreateProfile("Föö", TestProfilesKeyPath));
         }
 
         [Test]
         public void WhenProfileNameIsNull_ThenCreateProfileThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => Profile.CreateProfile(null));
+                () => Profile.CreateProfile(null, TestProfilesKeyPath));
         }
 
         [Test]
         public void WhenProfileExists_ThenCreateProfileOpensProfile()
         {
-            Profile.CreateProfile(TestProfileName);
-            using (var profile = Profile.CreateProfile(TestProfileName))
+            Profile.CreateProfile(TestProfileName, TestProfilesKeyPath);
+            using (var profile = Profile.CreateProfile(TestProfileName, TestProfilesKeyPath))
             {
                 Assert.IsNotNull(profile);
                 Assert.AreEqual(TestProfileName, profile.Name);
@@ -119,23 +126,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void WhenProfileNameIsNotValid_ThenOpenProfileThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => Profile.OpenProfile("Föö"));
+                () => Profile.OpenProfile("Föö", TestProfilesKeyPath));
         }
 
         [Test]
         public void WhenProfileDoesNotExist_ThenOpenProfileThrowsException()
         {
             Assert.Throws<ProfileNotFoundException>(
-                () => Profile.OpenProfile("This does not exist"));
+                () => Profile.OpenProfile("This does not exist", TestProfilesKeyPath));
         }
 
         [Test]
         public void WhenProfileExists_ThenOpenProfileOpensProfile()
         {
-            using (Profile.CreateProfile(TestProfileName))
+            using (Profile.CreateProfile(TestProfileName, TestProfilesKeyPath))
             { }
 
-            using (var profile = Profile.OpenProfile(TestProfileName))
+            using (var profile = Profile.OpenProfile(TestProfileName, TestProfilesKeyPath))
             {
                 Assert.IsNotNull(profile);
                 Assert.AreEqual(TestProfileName, profile.Name);
@@ -147,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenProfileNameIsNullThenOpenProfileReturnsDefaultProfile()
         {
-            var profile = Profile.OpenProfile(null);
+            var profile = Profile.OpenProfile(null, TestProfilesKeyPath);
             Assert.AreEqual("Default", profile.Name);
             Assert.IsTrue(profile.IsDefault);
         }
@@ -159,19 +166,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenProfileDoesNotExist_ThenDeleteProfileDoesNothing()
         {
-            Profile.DeleteProfile("This does not exist");
+            Profile.DeleteProfile("This does not exist", TestProfilesKeyPath);
         }
 
         [Test]
         public void WhenProfileExists_ThenDeleteProfileDeletesProfile()
         {
-            using (Profile.CreateProfile(TestProfileName))
+            using (Profile.CreateProfile(TestProfileName, TestProfilesKeyPath))
             { }
 
-            Profile.DeleteProfile(TestProfileName);
+            Profile.DeleteProfile(TestProfileName, TestProfilesKeyPath);
 
             Assert.Throws<ProfileNotFoundException>(
-                () => Profile.OpenProfile(TestProfileName));
+                () => Profile.OpenProfile(TestProfileName, TestProfilesKeyPath));
         }
 
         //---------------------------------------------------------------------
@@ -181,10 +188,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenProfileCreated_ThenListProfilesIncludesProfile()
         {
-            using (Profile.CreateProfile(TestProfileName))
+            using (Profile.CreateProfile(TestProfileName, TestProfilesKeyPath))
             { }
 
-            var list = Profile.ListProfiles();
+            var list = Profile.ListProfiles(TestProfilesKeyPath);
 
             Assert.IsNotNull(list);
             CollectionAssert.Contains(list, TestProfileName);
@@ -193,10 +200,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenDefaultProfileCreated_ThenListProfilesIncludesDefaultProfile()
         {
-            using (Profile.OpenProfile(null))
+            using (Profile.OpenProfile(null, TestProfilesKeyPath))
             { }
 
-            var list = Profile.ListProfiles();
+            var list = Profile.ListProfiles(TestProfilesKeyPath);
 
             Assert.IsNotNull(list);
             CollectionAssert.Contains(list, "Default");
@@ -205,15 +212,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenNonProfileKeysPresent_ThenListProfilesIgnoresKeys()
         {
-            using (var hive = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
-            {
-                hive.CreateSubKey($"{Profile.ProfilesKeyPath}\\________Notaprofile", true);
-            }
+            this.hkcu.CreateSubKey($"{TestProfilesKeyPath}\\________Notaprofile", true);
 
-            using (Profile.OpenProfile(null))
+            using (Profile.OpenProfile(null, TestProfilesKeyPath))
             { }
 
-            var list = Profile.ListProfiles();
+            var list = Profile.ListProfiles(TestProfilesKeyPath);
 
             Assert.IsNotNull(list);
             Assert.IsFalse(list.Any(p => p.EndsWith("Notaprofile", StringComparison.OrdinalIgnoreCase)));
@@ -224,9 +228,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
+        public void WhenDefaultProfileDoesNotExist_ThenSchemaVersionIsCurrent()
+        {
+            using (var profile = Profile.OpenProfile(null, TestProfilesKeyPath))
+            {
+                Assert.AreNotEqual(Profile.SchemaVersion.Initial, profile.Version);
+                Assert.AreEqual(Profile.SchemaVersion.Current, profile.Version);
+            }
+        }
+
+        [Test]
+        public void WhenDefaultProfileExistsWithoutVersion_ThenSchemaVersionIsInitial()
+        {
+            this.hkcu.CreateSubKey($@"{TestProfilesKeyPath}\1.0");
+            using (var profile = Profile.OpenProfile(null, TestProfilesKeyPath))
+            {
+                Assert.AreEqual(Profile.SchemaVersion.Initial, profile.Version);
+            }
+        }
+
+        [Test]
         public void WhenNewProfileCreated_ThenSchemaVersionIsCurrent()
         {
-            using (var profile = Profile.CreateProfile(TestProfileName))
+            using (var profile = Profile.CreateProfile(TestProfileName, TestProfilesKeyPath))
             {
                 Assert.AreNotEqual(Profile.SchemaVersion.Initial, profile.Version);
                 Assert.AreEqual(Profile.SchemaVersion.Current, profile.Version);
@@ -236,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenProfileLacksVersionValue_ThenSchemaVersionIsOne()
         {
-            using (var profile = Profile.CreateProfile(TestProfileName))
+            using (var profile = Profile.CreateProfile(TestProfileName, TestProfilesKeyPath))
             {
                 profile.SettingsKey.DeleteValue("SchemaVersion");
                 Assert.AreEqual(Profile.SchemaVersion.Initial, profile.Version);
@@ -246,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenProfileVersionInvalid_ThenSchemaVersionIsOne()
         {
-            using (var profile = Profile.CreateProfile(TestProfileName))
+            using (var profile = Profile.CreateProfile(TestProfileName, TestProfilesKeyPath))
             {
                 profile.SettingsKey.DeleteValue("SchemaVersion");
                 profile.SettingsKey.SetValue("SchemaVersion", "junk");
