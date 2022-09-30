@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
@@ -252,6 +253,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 baseLayer.AddSingleton(profile);
 
+                baseLayer.AddSingleton<IClock>(SystemClock.Default);
                 baseLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
                 baseLayer.AddTransient<ITaskDialog, TaskDialog>();
                 baseLayer.AddTransient<ICredentialDialog, CredentialDialog>();
@@ -259,7 +261,7 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
 
                 baseLayer.AddTransient<HelpAdapter>();
-                baseLayer.AddTransient<GithubAdapter>();
+                baseLayer.AddTransient<IGithubAdapter, GithubAdapter>();
                 baseLayer.AddTransient<BuganizerAdapter>();
                 baseLayer.AddTransient<ICloudConsoleAdapter, CloudConsoleAdapter>();
 
