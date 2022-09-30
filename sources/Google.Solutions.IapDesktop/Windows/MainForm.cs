@@ -281,16 +281,17 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             var settings = this.applicationSettings.GetSettings();
 
+            var updateService = this.serviceProvider.GetService<IUpdateService>();
             if (settings.IsUpdateCheckEnabled.BoolValue &&
-                (DateTime.UtcNow - DateTime.FromBinary(settings.LastUpdateCheck.LongValue)).TotalDays > 7)
+                updateService.IsUpdateCheckDue(DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
             {
+                //
                 // Time to check for updates again.
+                //
                 try
                 {
-                    var updateService = this.serviceProvider.GetService<IUpdateService>();
                     updateService.CheckForUpdates(
                         this,
-                        TimeSpan.FromSeconds(5),
                         out bool donotCheckForUpdatesAgain);
 
                     settings.IsUpdateCheckEnabled.BoolValue = !donotCheckForUpdatesAgain;
@@ -302,7 +303,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 }
             }
 
+            //
             // Save window state.
+            //
             settings.IsMainWindowMaximized.BoolValue = this.WindowState == FormWindowState.Maximized;
             settings.MainWindowHeight.IntValue = this.Size.Height;
             settings.MainWindowWidth.IntValue = this.Size.Width;

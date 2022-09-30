@@ -33,35 +33,60 @@ namespace Google.Solutions.IapDesktop.Application.Services
     public interface IUpdateService
     {
         Version InstalledVersion { get; }
-        void CheckForUpdates(IWin32Window parent, TimeSpan timeout, out bool donotCheckForUpdatesAgain);
-    }
 
-    public class UpdateService : IUpdateService
-    {
-        private readonly GithubAdapter githubAdapter;
-        private readonly ITaskDialog taskDialog;
-
-        public Version InstalledVersion => typeof(UpdateService).Assembly.GetName().Version;
-
-        public UpdateService(GithubAdapter githubAdapter, ITaskDialog taskDialog)
-        {
-            this.githubAdapter = githubAdapter.ThrowIfNull(nameof(githubAdapter));
-            this.taskDialog = taskDialog.ThrowIfNull(nameof(taskDialog));
-        }
+        /// <summary>
+        /// Check if an update check should be performed.
+        /// </summary>
+        bool IsUpdateCheckDue(DateTime lastCheck);
 
         /// <summary>
         /// Check for updates and prompt the user to update.
         /// </summary>
-        public void CheckForUpdates(IWin32Window parent, TimeSpan timeout, out bool donotCheckForUpdatesAgain)
+        void CheckForUpdates(
+            IWin32Window parent, 
+            out bool donotCheckForUpdatesAgain);
+    }
+
+    public class UpdateService : IUpdateService
+    {
+        /// <summary>
+        /// Determines how often update checks are performed. 
+        /// A higher number implies a slower pace of updates.
+        /// </summary>
+        public const int DaysBetweenUpdateChecks = 7;
+
+        private readonly IGithubAdapter githubAdapter;
+        private readonly ITaskDialog taskDialog;
+        private readonly IClock clock;
+
+        public Version InstalledVersion => typeof(UpdateService).Assembly.GetName().Version;
+
+        private TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
+
+        public UpdateService(IGithubAdapter githubAdapter, ITaskDialog taskDialog, IClock clock)
+        {
+            this.githubAdapter = githubAdapter.ThrowIfNull(nameof(githubAdapter));
+            this.taskDialog = taskDialog.ThrowIfNull(nameof(taskDialog));
+            this.clock = clock.ThrowIfNull(nameof(clock));
+        }
+
+        public bool IsUpdateCheckDue(DateTime lastCheck)
+        {
+            return (this.clock.UtcNow - lastCheck).TotalDays >= DaysBetweenUpdateChecks;
+        }
+
+        public void CheckForUpdates(IWin32Window parent, out bool donotCheckForUpdatesAgain)
         {
             donotCheckForUpdatesAgain = false;
             using (var cts = new CancellationTokenSource())
             {
+                //
                 // Check for updates. This check must be performed synchronously,
                 // otherwise this methis returns and the application exits.
                 // In order not to block everything for too long in case of a network
                 // problem, use a timeout.
-                cts.CancelAfter(timeout);
+                //
+                cts.CancelAfter(this.Timeout);
 
                 var latestRelease = this.githubAdapter.FindLatestReleaseAsync(cts.Token).Result;
                 if (latestRelease == null ||
@@ -98,16 +123,13 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
                     using (var launchBrowser = new Process())
                     {
-                        if (selectedOption == 0 && latestRelease.Assets.Any())
+                        if (selectedOption == 0 && latestRelease.DownloadUrl != null)
                         {
-                            launchBrowser.StartInfo.FileName = latestRelease
-                                .Assets
-                                .First(u => u.DownloadUrl.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
-                                .DownloadUrl;
+                            launchBrowser.StartInfo.FileName = latestRelease.DownloadUrl;
                         }
                         else
                         {
-                            launchBrowser.StartInfo.FileName = latestRelease.HtmlUrl;
+                            launchBrowser.StartInfo.FileName = latestRelease.DetailsUrl;
                         }
 
                         launchBrowser.StartInfo.UseShellExecute = true;

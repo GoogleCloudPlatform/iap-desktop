@@ -21,9 +21,11 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Net;
+using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,12 +35,25 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public class GithubAdapter
+    public interface IGithubAdapter
     {
-        private const string LatestReleaseUrl = "https://api.github.com/repos/GoogleCloudPlatform/iap-desktop/releases/latest";
-        public const string BaseUrl = "https://github.com/GoogleCloudPlatform/iap-desktop";
+        Task<IGitHubRelease> FindLatestReleaseAsync(CancellationToken cancellationToken);
+    }
 
-        public async Task<Release> FindLatestReleaseAsync(CancellationToken cancellationToken)
+    public interface IGitHubRelease
+    {
+        Version TagVersion { get; }
+
+        string DownloadUrl { get; }
+
+        string DetailsUrl { get; }
+    }
+
+    public class GithubAdapter : IGithubAdapter
+    {
+        public string RepositoryName { get; set; } = "GoogleCloudPlatform/iap-desktop";
+
+        public async Task<IGitHubRelease> FindLatestReleaseAsync(CancellationToken cancellationToken)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -49,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 };
 
                 var latestRelease = await client.GetAsync<Release>(
-                    LatestReleaseUrl,
+                    $"https://api.github.com/repos/{this.RepositoryName}/releases/latest",
                     cancellationToken).ConfigureAwait(false);
                 if (latestRelease == null)
                 {
@@ -65,18 +80,39 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public class Release
+        public class Release : IGitHubRelease
         {
             [JsonProperty("tag_name")]
             public string TagName { get; set; }
-
-            public Version TagVersion => Version.Parse(this.TagName);
 
             [JsonProperty("html_url")]
             public string HtmlUrl { get; set; }
 
             [JsonProperty("assets")]
             public List<ReleaseAsset> Assets { get; set; }
+
+            public Version TagVersion
+            {
+                get
+                {
+                    if (Version.TryParse(this.TagName, out var version))
+                    {
+                        return version;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+
+            public string DownloadUrl => this
+                .Assets
+                .EnsureNotNull()
+                .FirstOrDefault(u => u.DownloadUrl.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))?
+                .DownloadUrl;
+
+            public string DetailsUrl => this.HtmlUrl;
         }
 
         public class ReleaseAsset
