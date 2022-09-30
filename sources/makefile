@@ -126,8 +126,8 @@ $(INSTALLER_PACKAGE).wixobj: \
 		-dVERSION=$(BINARY_VERSION) \
 		-dBASEDIR=$(MAKEDIR)\installer \
 		-arch x86 \
-		-ext packages\Wix.$(WIX)\tools\WixUIExtension.dll \
-		-ext packages\Wix.$(WIX)\tools\WixUtilExtension.dll \
+		-ext WixUIExtension.dll \
+		-ext WixUtilExtension.dll \
 		 $(MAKEDIR)\installer\Product.wxs
 
 $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
@@ -152,8 +152,8 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 		-sw1076 \
 		-cultures:null \
 		-loc $(MAKEDIR)\installer\Product.wxl \
-		-ext packages\Wix.$(WIX)\tools\WixUIExtension.dll \
-		-ext packages\Wix.$(WIX)\tools\WixUtilExtension.dll \
+		-ext WixUIExtension.dll \
+		-ext WixUtilExtension.dll \
 		$(INSTALLER_PACKAGE).wixobj
 
 !if ( "$(CODESIGN)" != "" ) 
