@@ -31,10 +31,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         private void ReportBug(int component, int template, BugReport report)
         {
             var body = "NOTE: This issue report will be visible to the public. Make sure you don't include any confidential information.\n\n" +
-                       "> What are the steps to reproduce this issue?\n\n" +
-                       "> What's the expected behavior?\n\n" +
-                       "> What's the observed behavior?\n\n" +
-                       "> Does the issue occur every time or only occasionally?\n\n" +
+                       "You can help us fix this issue by answering a few questions:\n\n" +
+                       "+ What are the steps to reproduce this issue?\n\n" +
+                       "+ What's the expected behavior?\n\n" +
+                       "+ What's the observed behavior?\n\n" +
+                       "+ Does the issue occur every time or only occasionally?\n\n" +
                        "\n" +
                        "```\n" + report + "```";
 
