@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         /// Determines how often update checks are performed. 
         /// A higher number implies a slower pace of updates.
         /// </summary>
-        public const int DaysBetweenUpdateChecks = 7;
+        public const int DaysBetweenUpdateChecks = 10;
 
         private readonly IGithubAdapter githubAdapter;
         private readonly ITaskDialog taskDialog;
