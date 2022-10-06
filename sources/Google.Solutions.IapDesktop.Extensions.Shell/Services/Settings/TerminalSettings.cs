@@ -206,12 +206,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public static int DwordFromFontSize(float fontSize) => (int)(fontSize * 100);
 
         //
-        // Use a dark gray as default, same as Cloud Shell.
+        // Use a dark gray as default (xterm 236).
         //
 #if DEBUG
         internal static Color DefaultBackgroundColor = Color.DarkBlue;
 #else
-        internal static Color DefaultBackgroundColor = Color.FromArgb(34, 34, 34);
+        internal static Color DefaultBackgroundColor = Color.FromArgb(48, 48, 48);
 #endif
     }
 }
