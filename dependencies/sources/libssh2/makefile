@@ -29,7 +29,7 @@ TAG = 28
 # - libssh2: vcpkg-ports\libssh2\portfile.cmake
 # - openssl: https://github.com/microsoft/vcpkg/blob/master/ports/openssl/portfile.cmake
 #
-VCPKG_TAG = 2022.03.10
+VCPKG_TAG = 2022.09.27
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
 LIBSSH2_VERSION = 1.10.0.$(TAG)
 
