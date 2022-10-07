@@ -21,15 +21,22 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 28
+TAG = 29
 
 #
-# NB. The exact versions of libssh2 and openssl are specified
-# in the ports file:
-# - libssh2: vcpkg-ports\libssh2\portfile.cmake
-# - openssl: https://github.com/microsoft/vcpkg/blob/master/ports/openssl/portfile.cmake
+# NB. We're using custom ports for libssh2 and openssl:
 #
-VCPKG_TAG = 2022.03.10
+#  libssh2 port: Uses custom build flags and embeds version number
+#  openssl port: Uses 1.1.1 instead of 3.0 
+#                (vcpkg migrated from 1.1.1 to 3.0 in 22Q2)
+#
+# To update the versions of ports, edit:
+#
+#  vcpkg.json: Bump 'port-version', update 'version'
+#  portfile.cmake: Update version/tag, file hash
+#
+#
+VCPKG_TAG = 2022.09.27
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
 LIBSSH2_VERSION = 1.10.0.$(TAG)
 
@@ -126,11 +133,11 @@ clean: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
 	@echo "========================================================"
 	@echo "=== Cleaning libssh2                                 ==="
 	@echo "========================================================"
-	$(MAKEDIR)\obj\vcpkg\vcpkg.exe remove libssh2 \
+	$(MAKEDIR)\obj\vcpkg\vcpkg.exe remove openssl libssh2 \
 		--triplet libssh2-x86-windows-mixed \
 		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
 		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
-	$(MAKEDIR)\obj\vcpkg\vcpkg.exe remove libssh2 \
+	$(MAKEDIR)\obj\vcpkg\vcpkg.exe remove openssl libssh2 \
 		--triplet libssh2-x64-windows-mixed \
 		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
 		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
