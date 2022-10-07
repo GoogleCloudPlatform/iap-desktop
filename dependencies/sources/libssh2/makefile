@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 27
+TAG = 28
 
 #
 # NB. The exact versions of libssh2 and openssl are specified
