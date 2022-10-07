@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 28
+TAG = 29
 
 #
 # NB. We're using custom ports for libssh2 and openssl:
