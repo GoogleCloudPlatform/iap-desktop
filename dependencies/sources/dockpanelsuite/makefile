@@ -91,7 +91,8 @@ package: \
     $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_VERSION).nupkg \
     $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.ThemeVS2015.$(DOCKPANELSUITE_VERSION).nupkg
     
-    copy /Y $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.*.nupkg $(MAKEDIR)\obj\
+    copy /Y $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_VERSION).nupkg $(MAKEDIR)\obj\dockpanelsuite.nupkg
+    copy /Y $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.ThemeVS2015.$(DOCKPANELSUITE_VERSION).nupkg $(MAKEDIR)\obj\dockpanelsuite.ThemeVS2015.nupkg
 
 clean:
 	msbuild \
