@@ -23,6 +23,19 @@ CONFIGURATION = Release
 # GCS bucket used for storing results
 PACKAGES_BUCKET = iapdesktop-kokoro-artifacts
 
+# Directories containing projects
+DIRS=\
+    $(MAKEDIR)\sources\vtnetcore \
+    $(MAKEDIR)\sources\dockpanelsuite \
+    $(MAKEDIR)\sources\libssh2
+    
+# Nuget packages to build
+PACKAGES=\
+    $(MAKEDIR)\sources\vtnetcore\obj\vtnetcore.nupkg \
+    $(MAKEDIR)\sources\dockpanelsuite\obj\dockpanelsuite.nupkg \
+    $(MAKEDIR)\sources\dockpanelsuite\obj\dockpanelsuite.ThemeVS2015.nupkg \
+    $(MAKEDIR)\sources\libssh2\obj\libssh2.nupkg \
+
 default: publish
 
 #------------------------------------------------------------------------------
@@ -40,36 +53,25 @@ $(MAKEDIR)\NuGetPackages:
 # Main targets
 #------------------------------------------------------------------------------
 
-package: $(MAKEDIR)\NuGetPackages
-    cd $(MAKEDIR)\sources\vtnetcore
-    $(MAKE) CONFIGURATION=$(CONFIGURATION) package
+$(PACKAGES): $(MAKEDIR)\NuGetPackages
+    cd $(@D)\..
+    $(MAKE) /NOLOGO CONFIGURATION=$(CONFIGURATION) package
     cd $(MAKEDIR)
     
-    cd $(MAKEDIR)\sources\libssh2
-    $(MAKE) CONFIGURATION=$(CONFIGURATION) package
-    cd $(MAKEDIR)
+package: $(PACKAGES)
 
-publish: package
-	nuget add \
-		$(MAKEDIR)\sources\vtnetcore\obj\vtnetcore.nupkg \
-		-Source $(MAKEDIR)\NuGetPackages
-	nuget add \
-		$(MAKEDIR)\sources\libssh2\obj\libssh2.nupkg \
-		-Source $(MAKEDIR)\NuGetPackages
+publish: $(PACKAGES)
+    !nuget add $** -Source $(MAKEDIR)\NuGetPackages
 
 !if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
     gsutil cp -r NuGetPackages/* gs://$(PACKAGES_BUCKET)/NuGetPackages/
 !endif
 
-clean:
-    cd $(MAKEDIR)\sources\vtnetcore
-    $(MAKE) CONFIGURATION=$(CONFIGURATION) clean
-    cd $(MAKEDIR)
+clean force-clean: $(DIRS)
+    !cd $** && \
+        $(MAKE) /NOLOGO CONFIGURATION=$(CONFIGURATION) $@ && \
+        cd $(MAKEDIR)
 
-    cd $(MAKEDIR)\sources\libssh2
-    $(MAKE) CONFIGURATION=$(CONFIGURATION) clean
-    cd $(MAKEDIR)
-    
     -rd /S /Q $(MAKEDIR)\NuGetPackages
     -rd /S /Q $(MAKEDIR)\..\sources\packages\vtnetcore.*
     -rd /S /Q $(MAKEDIR)\..\sources\packages\libssh2.*
