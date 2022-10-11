@@ -23,11 +23,11 @@ CONFIGURATION = Release
 # The tag should be increased whenever one of the dependencies is changed
 TAG = 2
 
-DOCKPANELSUITE_TAG = Release_3.1.0
+DOCKPANELSUITE_TAG = Release_3.0.6
 DOCKPANELSUITE_URL = https://github.com/dockpanelsuite/dockpanelsuite.git
-DOCKPANELSUITE_VERSION = 3.1.0.$(TAG)
+DOCKPANELSUITE_VERSION = 3.0.6.$(TAG)
 
-MSBUILD_PROPERTIES=Configuration=$(CONFIGURATION);Platform=Any CPU;TargetFrameworks=net40;TargetFrameworkVersion=4.0;PackageVersion=$(DOCKPANELSUITE_VERSION);OutputPath=bin\$(CONFIGURATION)
+MSBUILD_PROPERTIES=Configuration=$(CONFIGURATION);Platform=Any CPU;TargetFrameworkVersion=4.0;OutputPath=bin\$(CONFIGURATION);AllowUnsafeBlocks=true
 
 default: package
 
@@ -59,19 +59,29 @@ $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_V
 		"/p:$(MSBUILD_PROPERTIES)" \
 		"$(MAKEDIR)\obj\WinFormsUI\WinFormsUI.csproj"
 
-	cd $(MAKEDIR)
-
-$(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.ThemeVS2015.$(DOCKPANELSUITE_VERSION).nupkg: \
-		$(MAKEDIR)\obj\WinFormsUI\ThemeVS2015.csproj
-	@echo "========================================================"
-	@echo "=== Building dockpanelsuite theme                    ==="
-	@echo "========================================================"
-	cd $(MAKEDIR)\obj
-
 	msbuild \
 		/t:Restore;Build \
 		"/p:$(MSBUILD_PROPERTIES)" \
 		"$(MAKEDIR)\obj\WinFormsUI\ThemeVS2015.csproj"
+        
+    	nuget pack -OutputDirectory $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\ <<dockpanelsuite.nuspec
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>DockPanelSuite</id>
+    <version>$(DOCKPANELSUITE_VERSION)</version>
+    <authors>http://dockpanelsuite.com</authors>
+    <owners>http://dockpanelsuite.com</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>DockPanelSuite</description>
+    <tags></tags>
+  </metadata>
+  <files>
+    <file src="$(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.dll" target="lib\net40\WeifenLuo.WinFormsUI.Docking.dll" />
+    <file src="$(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" target="lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" />
+  </files>
+</package>
+<<NOKEEP
 
 	cd $(MAKEDIR)
 
@@ -81,10 +91,8 @@ $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.ThemeVS2015.$(DOCK
 
 package: \
     $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_VERSION).nupkg \
-    $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.ThemeVS2015.$(DOCKPANELSUITE_VERSION).nupkg
     
     copy /Y $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_VERSION).nupkg $(MAKEDIR)\obj\dockpanelsuite.nupkg
-    copy /Y $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.ThemeVS2015.$(DOCKPANELSUITE_VERSION).nupkg $(MAKEDIR)\obj\dockpanelsuite.ThemeVS2015.nupkg
 
 clean:
 	msbuild \
@@ -96,7 +104,7 @@ clean:
 		"/p:$(MSBUILD_PROPERTIES)" \
 		"$(MAKEDIR)\obj\WinFormsUI\ThemeVS2015.csproj"
     
-    -rd /S /Q $(MAKEDIR)\obj\dockpanelsuite\bin
+    -rd /S /Q $(MAKEDIR)\obj\WinFormsUI\bin
     -del $(MAKEDIR)\obj\dockpanelsuite.nupkg
     
 force-clean:
