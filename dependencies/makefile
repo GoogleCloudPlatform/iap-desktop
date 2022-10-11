@@ -33,7 +33,6 @@ DIRS=\
 PACKAGES=\
     $(MAKEDIR)\sources\vtnetcore\obj\vtnetcore.nupkg \
     $(MAKEDIR)\sources\dockpanelsuite\obj\dockpanelsuite.nupkg \
-    $(MAKEDIR)\sources\dockpanelsuite\obj\dockpanelsuite.ThemeVS2015.nupkg \
     $(MAKEDIR)\sources\libssh2\obj\libssh2.nupkg \
 
 default: publish
