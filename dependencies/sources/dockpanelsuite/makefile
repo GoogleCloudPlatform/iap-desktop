@@ -55,11 +55,7 @@ $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.$(DOCKPANELSUITE_V
 	cd $(MAKEDIR)\obj
 
 	msbuild \
-		/t:Restore \
-		"/p:$(MSBUILD_PROPERTIES)" \
-		"$(MAKEDIR)\obj\WinFormsUI\WinFormsUI.csproj"
-	msbuild \
-		/t:Build \
+		/t:Restore;Build \
 		"/p:$(MSBUILD_PROPERTIES)" \
 		"$(MAKEDIR)\obj\WinFormsUI\WinFormsUI.csproj"
 
@@ -73,11 +69,7 @@ $(MAKEDIR)\obj\WinFormsUI\bin\$(CONFIGURATION)\dockpanelsuite.ThemeVS2015.$(DOCK
 	cd $(MAKEDIR)\obj
 
 	msbuild \
-		/t:Restore \
-		"/p:$(MSBUILD_PROPERTIES)" \
-		"$(MAKEDIR)\obj\WinFormsUI\ThemeVS2015.csproj"
-	msbuild \
-		/t:Build \
+		/t:Restore;Build \
 		"/p:$(MSBUILD_PROPERTIES)" \
 		"$(MAKEDIR)\obj\WinFormsUI\ThemeVS2015.csproj"
 

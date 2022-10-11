@@ -67,9 +67,9 @@ publish: $(PACKAGES)
     gsutil cp -r NuGetPackages/* gs://$(PACKAGES_BUCKET)/NuGetPackages/
 !endif
 
-clean: $(DIRS)
+clean force-clean: $(DIRS)
     !cd $** && \
-        $(MAKE) /NOLOGO CONFIGURATION=$(CONFIGURATION) clean && \
+        $(MAKE) /NOLOGO CONFIGURATION=$(CONFIGURATION) $@ && \
         cd $(MAKEDIR)
 
     -rd /S /Q $(MAKEDIR)\NuGetPackages
