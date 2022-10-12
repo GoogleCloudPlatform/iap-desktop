@@ -1,0 +1,27 @@
+From 3cf7913c372ade752a29ee7679bad0b7d2dc00e3 Mon Sep 17 00:00:00 2001
+From: IAP Desktop Build <iap-desktop+build@google.com>
+Date: Wed, 12 Oct 2022 17:14:37 +1100
+Subject: [PATCH] Refresh focus when active pane has changed
+
+This ensures that the active pane and content is updated
+when the pane hosts an ActiveX (such as the RDP ActiveX)
+---
+ WinFormsUI/Docking/DockPanel.FocusManager.cs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/WinFormsUI/Docking/DockPanel.FocusManager.cs b/WinFormsUI/Docking/DockPanel.FocusManager.cs
+index 514cbea..d630d9f 100644
+--- a/WinFormsUI/Docking/DockPanel.FocusManager.cs
++++ b/WinFormsUI/Docking/DockPanel.FocusManager.cs
+@@ -362,7 +362,7 @@ private void HookEventHandler(object sender, HookEventArgs e)
+                 {
+                     IntPtr wParam = Marshal.ReadIntPtr(e.lParam, IntPtr.Size * 2);
+                     DockPane pane = GetPaneFromHandle(wParam);
+-                    if (pane == null)
++                    if (pane != ActivePane)
+                         RefreshActiveWindow();
+                 }
+                 else if (msg == Win32.Msgs.WM_SETFOCUS || msg == Win32.Msgs.WM_MDIACTIVATE)
+-- 
+2.37.1.windows.1
+
