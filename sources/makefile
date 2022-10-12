@@ -266,27 +266,8 @@ policies: $(POLICIES_PACKAGE)
 # Kokoro specific targets
 #------------------------------------------------------------------------------
 
-kokoro-iap-firewallrule:
-	@echo "========================================================"
-	@echo "=== Creating firewall rule                           ==="
-	@echo "========================================================"
-
-	-gcloud compute firewall-rules create allow-ingress-from-iap \
-		--direction=INGRESS \
-		--action=allow \
-		--rules=tcp \
-		--source-ranges=35.235.240.0/20 \
-		--project=$(GOOGLE_CLOUD_PROJECT)
-	-gcloud compute firewall-rules create allow-ssh-ingress \
-		--direction=INGRESS \
-		--action=allow \
-		--rules=tcp:22 \
-		--source-ranges=0.0.0.0/0 \
-		--project=$(GOOGLE_CLOUD_PROJECT)
-
 kokoro-continuous-integration: \
 	check-copyright-headers \
-	kokoro-iap-firewallrule \
 	installer \
 	installer-snapshot \
 	symbols \
