@@ -82,12 +82,36 @@ if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null)
 if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 {
     #
-    # Register feed containing pre-built dependencies.
+    # Generate a nuget.config that prioritizes packages from the local feed.
     #
     if (Test-Path "${env:KOKORO_GFILE_DIR}\NuGetPackages")
     {
-        & nuget sources add -Name iap-desktop-dependencies -Source "${env:KOKORO_GFILE_DIR}\NuGetPackages" | Out-Default
+        $LocalFeed = "${env:KOKORO_GFILE_DIR}\NuGetPackages"
     }
+    else 
+    {
+        $LocalFeed = (Resolve-Path "${PSScriptRoot}\..\dependencies\NuGetPackages").Path
+    }
+ 
+    $LocalFeedPrefixes = (Get-ChildItem $LocalFeed | ForEach-Object { "<package pattern='$($_.Name)*' />" }) -join "`n"
+    $NuGetConfig = @"
+<?xml version='1.0' encoding='utf-8'?>
+<configuration>
+  <packageSources>
+    <clear />
+    <add key='nuget.org' value='https://api.nuget.org/v3/index.json' protocolVersion='3' />
+    <add key='dependencies' value='{0}' />
+  </packageSources>
+  <packageSourceMapping>
+    <packageSource key="nuget.org">
+      <package pattern="*" />
+    </packageSource>
+    <packageSource key="dependencies">
+    {1}
+    </packageSource>
+  </packageSourceMapping>
+</configuration>
+"@ -f $LocalFeed,$LocalFeedPrefixes | Out-File -Encoding ASCII ${PSScriptRoot}\NuGet.config
 
     #
     # Restore packages for solution.
@@ -111,7 +135,7 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 	# Add environment variables indicating package versions, for example
 	# $env:Google_Apis_Auth = 1.2.3
 	#
-	(nuget list -Source (Resolve-Path packages)) `
+	(nuget list -Source (Resolve-Path ${PSScriptRoot}\packages)) `
 		| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: -Force }
 }
 
