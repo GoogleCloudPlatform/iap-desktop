@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 28
+TAG = 29
 
 VTNETCORE_TAG = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
@@ -53,6 +53,8 @@ $(MAKEDIR)\obj\VtNetCore\VtNetCore.csproj:
     git am $(MAKEDIR)\patches\0009-Propagate-terminal-attributes.patch
     git am $(MAKEDIR)\patches\0010-Allow-custom-default-attributes.patch
 	git am $(MAKEDIR)\patches\0011-Expose-properties-for-back-foreground-color.patch
+    git am $(MAKEDIR)\patches\0012-Add-missing-ISO-8613-3-color-mappings.patch
+    git am $(MAKEDIR)\patches\0013-Change-TerminalColor-class-to-be-readonly.patch
 
 	cd $(MAKEDIR)
 
