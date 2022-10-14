@@ -184,12 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         private static TerminalColor TerminalColorFromColor(Color c)
         {
-            return new TerminalColor()
-            {
-                Red = c.R,
-                Green = c.G,
-                Blue = c.B
-            };
+            return new TerminalColor(c.R, c.G, c.B);
         }
 
         private static Color GetSolidColorBrush(string hex)
