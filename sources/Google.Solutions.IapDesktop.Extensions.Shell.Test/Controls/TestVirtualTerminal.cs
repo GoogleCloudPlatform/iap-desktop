@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 
             this.terminal.PasteClipboard();
 
-            Assert.AreEqual("sample\ntext", this.sendData.ToString());
+            Assert.AreEqual("sample\rtext", this.sendData.ToString());
         }
 
         [Test]
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.EnableCtrlV = true;
             this.terminal.SimulateKey(Keys.Control | Keys.V);
 
-            Assert.AreEqual("sample\ntext", this.sendData.ToString());
+            Assert.AreEqual("sample\rtext", this.sendData.ToString());
         }
 
         [Test]
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.EnableShiftInsert = true;
             this.terminal.SimulateKey(Keys.Shift | Keys.Insert);
 
-            Assert.AreEqual("sample\ntext", this.sendData.ToString());
+            Assert.AreEqual("sample\rtext", this.sendData.ToString());
         }
 
         [Test]

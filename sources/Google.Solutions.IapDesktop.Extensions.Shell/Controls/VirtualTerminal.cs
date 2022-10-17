@@ -598,20 +598,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             if (!string.IsNullOrEmpty(text))
             {
                 //
-                // Convert to Unix line endings, otherwise pasting a multi-
-                // line command will be interpreted as a sequence of
-                // commands.
+                // Avoid pasting CRLF line endings as causes line
+                // endings to be duplicated.
                 //
-                text = text.Replace("\r\n", "\n");
+                // Converting CRLF => NL works for most applications,
+                // but not for older versions of nano. The correct
+                // behavior is to only send a CR.
+                //
+                text = text.Replace("\r\n", "\r");
 
                 if (this.EnableTypographicQuoteConversionOnPaste)
                 {
+                    //
                     // Copied code snippets might contain typographic 
                     // quotes (thanks to Word and Docs) - convert them
                     // to plain ASCII single/double quotes.
+                    //
                     text = TypographicQuotes.ToAsciiQuotes(text);
                 }
-
+                
                 this.controller.Paste(Encoding.UTF8.GetBytes(text));
             }
         }
