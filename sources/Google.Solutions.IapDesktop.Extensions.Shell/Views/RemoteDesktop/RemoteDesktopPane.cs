@@ -444,8 +444,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             }
         }
 
-        public bool IsConnected => this.rdpClient.Connected == 1 && !this.connecting;
-        public bool IsConnecting => this.rdpClient.Connected == 2 && !this.connecting;
+        public bool IsConnected
+        {
+            get
+            {
+                try
+                {
+                    return this.rdpClient.Connected == 1 && !this.connecting;
+                }
+                catch (COMException e)
+                {
+                    //
+                    // During an unorderly disconnect, it's possible that we
+                    // get an exception here, cf. b/251163460.
+                    //
+                    ApplicationTraceSources.Default.TraceError(e);
+                    return false;
+                }
+            }
+        }
+
+        public bool IsConnecting
+        {
+            get
+            {
+                try
+                {
+                    return this.rdpClient.Connected == 2 && !this.connecting;
+                }
+                catch (COMException e)
+                {
+                    //
+                    // During an unorderly disconnect, it's possible that we
+                    // get an exception here, cf. b/251163460.
+                    //
+                    ApplicationTraceSources.Default.TraceError(e);
+                    return false;
+                }
+            }
+        }
+
         public bool CanEnterFullScreen => this.IsConnected && !IsAnyDocumentInFullScreen;
 
         //---------------------------------------------------------------------
