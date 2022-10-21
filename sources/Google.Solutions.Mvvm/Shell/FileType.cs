@@ -63,15 +63,15 @@ namespace Google.Solutions.Mvvm.Shell
                   NativeMethods.SHGFI_USEFILEATTRIBUTES
                 | NativeMethods.SHGFI_ICON
                 | NativeMethods.SHGFI_DISPLAYNAME
-                | NativeMethods.SHGFI_TYPEYNAME
+                | NativeMethods.SHGFI_TYPENAME
                 | (uint)iconFlags;
 
-            var fileInfo = new NativeMethods.SHFILEINFO();
+            var fileInfo = new NativeMethods.SHFILEINFOA();
             if (NativeMethods.SHGetFileInfo(
                 filePath,
                 fileAttributes,
                 ref fileInfo,
-                (uint)Marshal.SizeOf<NativeMethods.SHFILEINFO>(),
+                (uint)Marshal.SizeOf<NativeMethods.SHFILEINFOA>(),
                 flags) == IntPtr.Zero)
             {
                 throw new COMException(
@@ -110,13 +110,13 @@ namespace Google.Solutions.Mvvm.Shell
             internal const uint SHGFI_USEFILEATTRIBUTES = 0x10;
             internal const uint SHGFI_ICON = 0x100;
             internal const uint SHGFI_DISPLAYNAME = 0x200;
-            internal const uint SHGFI_TYPEYNAME = 0x400;
+            internal const uint SHGFI_TYPENAME = 0x400;
 
             internal const int MAX_PATH = 260;
             internal const int NAMESIZE = 80;
 
             [StructLayout(LayoutKind.Sequential)]
-            public struct SHFILEINFO
+            public struct SHFILEINFOA
             {
                 public IntPtr hIcon;
                 public int iIcon;
@@ -127,11 +127,11 @@ namespace Google.Solutions.Mvvm.Shell
                 public string szTypeName;
             };
 
-            [DllImport("Shell32.dll", CharSet = CharSet.Auto)]
+            [DllImport("Shell32.dll", CharSet = CharSet.Ansi)]
             public static extern IntPtr SHGetFileInfo(
                 [In] string pszPath,
                 [In] FileAttributes dwFileAttributes,
-                [In][Out] ref SHFILEINFO psfi,
+                [In][Out] ref SHFILEINFOA psfi,
                 [In] uint cbFileInfo,
                 [In] uint uFlags
             );

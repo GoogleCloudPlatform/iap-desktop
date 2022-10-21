@@ -94,6 +94,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.typeColumn,
             this.sizeColumn});
             this.fileList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.fileList.FullRowSelect = true;
             this.fileList.HideSelection = false;
             this.fileList.Location = new System.Drawing.Point(0, 0);
             this.fileList.Name = "fileList";

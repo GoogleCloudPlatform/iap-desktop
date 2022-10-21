@@ -51,6 +51,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             {
                 Assert.IsNotNull(type.DisplayName);
                 Assert.AreNotEqual(string.Empty, type.DisplayName);
+                Assert.AreNotEqual(string.Empty, type.TypeName);
                 Assert.IsNotNull(type.FileIcon);
             }
         }
@@ -71,6 +72,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             {
                 Assert.IsNotNull(type.DisplayName);
                 Assert.AreNotEqual(string.Empty, type.DisplayName);
+                Assert.AreNotEqual(string.Empty, type.TypeName);
                 Assert.IsNotNull(type.FileIcon);
             }
         }
