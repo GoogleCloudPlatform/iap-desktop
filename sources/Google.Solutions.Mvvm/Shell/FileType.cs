@@ -30,10 +30,15 @@ namespace Google.Solutions.Mvvm.Shell
 {
     public sealed class FileType : IDisposable
     {
+        /// <summary>
+        /// Icon for file or directory.
+        /// </summary>
         public Image FileIcon { get; }
 
+        /// <summary>
+        /// Type of file, for ex "Text document".
+        /// </summary>
         public string TypeName { get; }
-        public string DisplayName { get; }
 
         public FileType(
             string typeName,
@@ -41,7 +46,6 @@ namespace Google.Solutions.Mvvm.Shell
             Image icon)
         {
             this.TypeName = typeName;
-            this.DisplayName = displayName;
             this.FileIcon = icon;
         }
 
@@ -62,7 +66,6 @@ namespace Google.Solutions.Mvvm.Shell
             var flags =
                   NativeMethods.SHGFI_USEFILEATTRIBUTES
                 | NativeMethods.SHGFI_ICON
-                | NativeMethods.SHGFI_DISPLAYNAME
                 | NativeMethods.SHGFI_TYPENAME
                 | (uint)iconFlags;
 

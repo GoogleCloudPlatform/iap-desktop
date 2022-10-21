@@ -21,6 +21,7 @@
 
 using Google.Solutions.Mvvm.Shell;
 using NUnit.Framework;
+using System.Drawing;
 using System.IO;
 using System.Threading;
 
@@ -49,8 +50,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 attributes,
                 size))
             {
-                Assert.IsNotNull(type.DisplayName);
-                Assert.AreNotEqual(string.Empty, type.DisplayName);
+                Assert.IsNotNull(type.TypeName);
                 Assert.AreNotEqual(string.Empty, type.TypeName);
                 Assert.IsNotNull(type.FileIcon);
             }
@@ -70,8 +70,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 attributes,
                 size))
             {
-                Assert.IsNotNull(type.DisplayName);
-                Assert.AreNotEqual(string.Empty, type.DisplayName);
+                Assert.IsNotNull(type.TypeName);
                 Assert.AreNotEqual(string.Empty, type.TypeName);
                 Assert.IsNotNull(type.FileIcon);
             }

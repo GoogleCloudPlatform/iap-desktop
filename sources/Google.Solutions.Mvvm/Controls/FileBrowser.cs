@@ -100,7 +100,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.BindImageIndex(i => GetImageIndex(i, FileType.IconFlags.Small));
             this.fileList.BindColumn(0, i => i.Name);
             this.fileList.BindColumn(1, i => i.LastModified.ToString()); // TODO: Formatting?
-            this.fileList.BindColumn(2, i => GetFileType(i, FileType.IconFlags.Small).DisplayName);
+            this.fileList.BindColumn(2, i => GetFileType(i, FileType.IconFlags.Small).TypeName);
             this.fileList.BindColumn(3, i => i.Size.ToString()); // TODO: Use ByteSizeFormatter
 
             this.directoryTree.SelectedModelNodeChanged += async (s, e) =>

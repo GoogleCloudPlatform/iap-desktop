@@ -21,6 +21,8 @@
 
 using Google.Solutions.Mvvm.Shell;
 using NUnit.Framework;
+using System;
+using System.Drawing;
 using System.IO;
 using System.Threading;
 
@@ -30,6 +32,10 @@ namespace Google.Solutions.Mvvm.Test.Shell
     [Apartment(ApartmentState.STA)]
     public class TestFileTypeCache
     {
+        //---------------------------------------------------------------------
+        // Lookup.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenDirectory_ThenLookupUsesCache()
         {
@@ -80,6 +86,20 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 Assert.AreNotSame(type1, type2);
                 Assert.AreEqual(2, cache.CacheSize);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenDisposed_FileTypesAndIconsAreDisposed()
+        {
+            var cache = new FileTypeCache();
+            var type = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Small);
+            cache.Dispose();
+
+            Assert.Throws<ArgumentException>(() => ((Bitmap)type.FileIcon).GetHicon());
         }
     }
 }

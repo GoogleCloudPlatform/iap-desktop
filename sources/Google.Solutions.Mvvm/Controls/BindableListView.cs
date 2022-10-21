@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Controls
 
         private string ExtractColumnValue(int columnIndex, TModelItem modelItem)
         {
-            if (this.columnAccessors.TryGetValue(columnIndex, out Func<TModelItem, string> accessorFunc))
+            if (this.columnAccessors.TryGetValue(columnIndex, out var accessorFunc))
             {
                 return accessorFunc(modelItem);
             }
@@ -81,7 +81,10 @@ namespace Google.Solutions.Mvvm.Controls
 
             this.Items.AddRange(items
                 .Select(item => new ListViewItem(
-                    Columns.OfType<ColumnHeader>().Select(c => ExtractColumnValue(c.Index, item)).ToArray())
+                    this.Columns
+                        .OfType<ColumnHeader>()
+                        .Select(c => ExtractColumnValue(c.Index, item))
+                        .ToArray())
                 {
                     Tag = item,
                     ImageIndex = ExtractImageIndex(item)
