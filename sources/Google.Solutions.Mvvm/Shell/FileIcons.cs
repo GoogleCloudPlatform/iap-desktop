@@ -1,0 +1,154 @@
+﻿//
+// Copyright 2022 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
+
+namespace Google.Solutions.Mvvm.Shell
+{
+    public static class FileIcons
+    {
+        /// <summary>
+        /// Look up the file icon for a file name. The file does not
+        /// have to exist.
+        /// </summary>
+        public static Icon GetFileIcon(
+            string filePath, 
+            IconSize size,
+            bool linkOverlay)
+        {
+            if (filePath == null)
+            {
+                throw new ArgumentException(nameof(filePath));
+            }
+
+            //
+            // NB. The file might not exist, so pass the
+            // SHGFI_USEFILEATTRIBUTES flag.
+            //
+            var flags =
+                  NativeMethods.SHGFI_USEFILEATTRIBUTES
+                | NativeMethods.SHGFI_ICON
+                | (uint)size
+                | (linkOverlay ? NativeMethods.SHGFI_LINKOVERLAY : 0u);
+
+            var fileInfo = new NativeMethods.SHFILEINFO();
+            if (NativeMethods.SHGetFileInfo(
+                filePath,
+                NativeMethods.FILE_ATTRIBUTE_NORMAL,
+                ref fileInfo,
+                (uint)Marshal.SizeOf<NativeMethods.SHFILEINFO>(),
+                flags) == IntPtr.Zero)
+            {
+                throw new COMException(
+                    $"Looking up the file icon for file {filePath} failed");
+            }
+
+            Debug.Assert(fileInfo.hIcon != IntPtr.Zero);
+
+            var icon = Icon.FromHandle(fileInfo.hIcon);
+            NativeMethods.DestroyIcon(fileInfo.hIcon);
+
+            return icon;
+        }
+
+        /// <summary>
+        /// Look up icon for folder.
+        /// </summary>
+        public static Icon GetFolderIcon(
+            string folderPath,
+            IconSize size,
+            bool opened)
+        {
+            var flags =
+                  NativeMethods.SHGFI_USEFILEATTRIBUTES
+                | NativeMethods.SHGFI_ICON
+                | (uint)size
+                | (opened ? NativeMethods.SHGFI_OPENICON : 0u);
+
+            var fileInfo = new NativeMethods.SHFILEINFO();
+            if (NativeMethods.SHGetFileInfo(
+                folderPath ?? Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+                NativeMethods.FILE_ATTRIBUTE_DIRECTORY,
+                ref fileInfo,
+                (uint)Marshal.SizeOf<NativeMethods.SHFILEINFO>(),
+                flags) == IntPtr.Zero)
+            {
+                throw new COMException("Looking up the folder icon failed");
+            }
+
+            Debug.Assert(fileInfo.hIcon != IntPtr.Zero);
+
+            var icon = Icon.FromHandle(fileInfo.hIcon);
+            NativeMethods.DestroyIcon(fileInfo.hIcon);
+
+            return icon;
+        }
+
+        public enum IconSize : uint
+        {
+            Large = NativeMethods.SHGFI_LARGEICON,
+            Small = NativeMethods.SHGFI_SMALLICON
+        }
+
+        private static class NativeMethods
+        {
+            internal const uint SHGFI_ICON = 0x100;
+            internal const uint SHGFI_LARGEICON = 0x0;
+            internal const uint SHGFI_SMALLICON = 0x1;
+            internal const uint SHGFI_OPENICON = 0x2;
+            internal const uint SHGFI_USEFILEATTRIBUTES = 0x10;
+            internal const uint SHGFI_LINKOVERLAY = 0x8000;
+
+            internal const uint FILE_ATTRIBUTE_NORMAL = 0x80;
+            internal const uint FILE_ATTRIBUTE_DIRECTORY = 0x10;
+
+            internal const int MAX_PATH = 260;
+            internal const int NAMESIZE = 80;
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct SHFILEINFO
+            {
+                public IntPtr hIcon;
+                public int iIcon;
+                public uint dwAttributes;
+                [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+                public string szDisplayName;
+                [MarshalAs(UnmanagedType.ByValTStr, SizeConst = NAMESIZE)]
+                public string szTypeName;
+            };
+
+            [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
+            public static extern IntPtr SHGetFileInfo(
+                [In] string pszPath,
+                [In] uint dwFileAttributes,
+                [In][Out] ref SHFILEINFO psfi,
+                [In] uint cbFileInfo,
+                [In] uint uFlags
+            );
+
+            [DllImport("user32.dll")]
+            public static extern bool DestroyIcon(IntPtr handle);
+        }
+    }
+}
