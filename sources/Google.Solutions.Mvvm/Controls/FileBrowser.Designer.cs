@@ -29,9 +29,11 @@ namespace Google.Solutions.Mvvm.Controls
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
-            this.fileList = new Google.Solutions.Mvvm.Controls.FlatListView();
             this.directoryTree = new System.Windows.Forms.TreeView();
+            this.fileList = new Google.Solutions.Mvvm.Controls.FlatListView();
+            this.fileIconsList = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -58,6 +60,14 @@ namespace Google.Solutions.Mvvm.Controls
             this.splitContainer.SplitterDistance = 200;
             this.splitContainer.TabIndex = 0;
             // 
+            // directoryTree
+            // 
+            this.directoryTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.directoryTree.Location = new System.Drawing.Point(0, 0);
+            this.directoryTree.Name = "directoryTree";
+            this.directoryTree.Size = new System.Drawing.Size(200, 256);
+            this.directoryTree.TabIndex = 0;
+            // 
             // fileList
             // 
             this.fileList.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -69,13 +79,11 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.TabIndex = 0;
             this.fileList.UseCompatibleStateImageBehavior = false;
             // 
-            // directoryTree
+            // fileIconsList
             // 
-            this.directoryTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.directoryTree.Location = new System.Drawing.Point(0, 0);
-            this.directoryTree.Name = "directoryTree";
-            this.directoryTree.Size = new System.Drawing.Size(200, 256);
-            this.directoryTree.TabIndex = 0;
+            this.fileIconsList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.fileIconsList.ImageSize = new System.Drawing.Size(16, 16);
+            this.fileIconsList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // FileBrowser
             // 
@@ -97,5 +105,6 @@ namespace Google.Solutions.Mvvm.Controls
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.TreeView directoryTree;
         private FlatListView fileList;
+        private System.Windows.Forms.ImageList fileIconsList;
     }
 }

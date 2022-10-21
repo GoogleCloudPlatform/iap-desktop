@@ -51,7 +51,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             {
                 Assert.IsNotNull(type.DisplayName);
                 Assert.AreNotEqual(string.Empty, type.DisplayName);
-                Assert.IsNotNull(type.Icon);
+                Assert.IsNotNull(type.FileIcon);
             }
         }
 
@@ -66,12 +66,12 @@ namespace Google.Solutions.Mvvm.Test.Shell
         {
             using (var type = FileType.Lookup(
                 "noextension",
-                FileAttributes.Normal,
+                attributes,
                 size))
             {
                 Assert.IsNotNull(type.DisplayName);
                 Assert.AreNotEqual(string.Empty, type.DisplayName);
-                Assert.IsNotNull(type.Icon);
+                Assert.IsNotNull(type.FileIcon);
             }
         }
     }

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -29,17 +30,20 @@ namespace Google.Solutions.Mvvm.Shell
 {
     public sealed class FileType : IDisposable
     {
-        public Icon Icon { get; }
+        public Image FileIcon { get; }
+
+        public string TypeName { get; }
         public string DisplayName { get; }
 
         public FileType(
+            string typeName,
             string displayName,
-            Icon icon)
+            Image icon)
         {
+            this.TypeName = typeName;
             this.DisplayName = displayName;
-            this.Icon = icon;
+            this.FileIcon = icon;
         }
-
 
         /// <summary>
         /// Look up type information for a file or folder.
@@ -49,10 +53,7 @@ namespace Google.Solutions.Mvvm.Shell
             FileAttributes fileAttributes,
             IconSize size)
         {
-            if (filePath == null)
-            {
-                throw new ArgumentException(nameof(filePath));
-            }
+            filePath.ThrowIfNull(nameof(filePath));
 
             //
             // NB. The file might not exist, so pass the
@@ -62,6 +63,7 @@ namespace Google.Solutions.Mvvm.Shell
                   NativeMethods.SHGFI_USEFILEATTRIBUTES
                 | NativeMethods.SHGFI_ICON
                 | NativeMethods.SHGFI_DISPLAYNAME
+                | NativeMethods.SHGFI_TYPEYNAME
                 | (uint)size;
 
             var fileInfo = new NativeMethods.SHFILEINFO();
@@ -78,15 +80,15 @@ namespace Google.Solutions.Mvvm.Shell
 
             Debug.Assert(fileInfo.hIcon != IntPtr.Zero);
 
-            var icon = Icon.FromHandle(fileInfo.hIcon);
-            NativeMethods.DestroyIcon(fileInfo.hIcon);
-
-            return new FileType(fileInfo.szDisplayName, icon);
+            using (var icon = Icon.FromHandle(fileInfo.hIcon))
+            {
+                return new FileType(fileInfo.szTypeName, fileInfo.szDisplayName, icon.ToBitmap());
+            }
         }
 
         public void Dispose()
         {
-            this.Icon.Dispose();
+            this.FileIcon.Dispose();
         }
 
         public enum IconSize : uint
@@ -107,6 +109,7 @@ namespace Google.Solutions.Mvvm.Shell
             internal const uint SHGFI_USEFILEATTRIBUTES = 0x10;
             internal const uint SHGFI_ICON = 0x100;
             internal const uint SHGFI_DISPLAYNAME = 0x200;
+            internal const uint SHGFI_TYPEYNAME = 0x400;
 
             internal const int MAX_PATH = 260;
             internal const int NAMESIZE = 80;
@@ -131,9 +134,6 @@ namespace Google.Solutions.Mvvm.Shell
                 [In] uint cbFileInfo,
                 [In] uint uFlags
             );
-
-            [DllImport("user32.dll")]
-            public static extern bool DestroyIcon(IntPtr handle);
         }
     }
 }

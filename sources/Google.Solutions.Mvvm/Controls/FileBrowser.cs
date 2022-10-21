@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,16 +18,20 @@ namespace Google.Solutions.Mvvm.Controls
             InitializeComponent();
         }
 
-        public interface IFileItem
+        //---------------------------------------------------------------------
+        // Selection properties.
+        //---------------------------------------------------------------------
+
+        public IEnumerable<IFileItem> SelectedItems => throw new NotImplementedException();
+
+        //---------------------------------------------------------------------
+        // Data Binding.
+        //---------------------------------------------------------------------
+
+        public void Bind(
+            Func<IFileItem, Task<ObservableCollection<IFileItem>>> listFiles)
         {
-            /// <summary>
-            /// Unqualified name of file.
-            /// </summary>
-            string Name { get; }
-
-            FileAttributes Attributes { get; }
-
-            DateTime LastModified { get; }
+            throw new NotImplementedException();
         }
     }
 }
