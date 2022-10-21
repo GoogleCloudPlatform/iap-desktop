@@ -37,8 +37,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         [Test]
         public void WhenFileExtensionKnown_ThenLookupReturnsIcon(
             [Values(
-                FileType.IconSize.Large,
-                FileType.IconSize.Small)] FileType.IconSize size,
+                FileType.IconFlags.Open,
+                FileType.IconFlags.Small)] FileType.IconFlags size,
             [Values(
                 FileAttributes.Normal,
                 FileAttributes.ReadOnly,
@@ -58,8 +58,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         [Test]
         public void WhenFileExtensionUnknown_ThenLookupReturnsIcon(
             [Values(
-                FileType.IconSize.Large,
-                FileType.IconSize.Small)] FileType.IconSize size,
+                FileType.IconFlags.Open,
+                FileType.IconFlags.Small)] FileType.IconFlags size,
             [Values(
                 FileAttributes.Normal,
                 FileAttributes.Directory)] FileAttributes attributes)

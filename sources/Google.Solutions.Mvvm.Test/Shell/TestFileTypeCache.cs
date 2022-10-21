@@ -35,8 +35,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         {
             using (var cache = new FileTypeCache())
             {
-                var type1 = cache.Lookup("dir-1", FileAttributes.Directory, FileType.IconSize.Small);
-                var type2 = cache.Lookup("dir-2", FileAttributes.Directory, FileType.IconSize.Small);
+                var type1 = cache.Lookup("dir-1", FileAttributes.Directory, FileType.IconFlags.Small);
+                var type2 = cache.Lookup("dir-2", FileAttributes.Directory, FileType.IconFlags.Small);
 
                 Assert.AreSame(type1, type2);
                 Assert.AreEqual(1, cache.CacheSize);
@@ -48,8 +48,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         {
             using (var cache = new FileTypeCache())
             {
-                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconSize.Small);
-                var type2 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconSize.Small);
+                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Small);
+                var type2 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Small);
 
                 Assert.AreSame(type1, type2);
                 Assert.AreEqual(1, cache.CacheSize);
@@ -61,8 +61,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         {
             using (var cache = new FileTypeCache())
             {
-                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconSize.Small);
-                var type2 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconSize.Large);
+                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Small);
+                var type2 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Open);
 
                 Assert.AreNotSame(type1, type2);
                 Assert.AreEqual(2, cache.CacheSize);
@@ -74,8 +74,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         {
             using (var cache = new FileTypeCache())
             {
-                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconSize.Small);
-                var type2 = cache.Lookup("test-1.txt", FileAttributes.ReadOnly, FileType.IconSize.Small);
+                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Small);
+                var type2 = cache.Lookup("test-1.txt", FileAttributes.ReadOnly, FileType.IconFlags.Small);
 
                 Assert.AreNotSame(type1, type2);
                 Assert.AreEqual(2, cache.CacheSize);

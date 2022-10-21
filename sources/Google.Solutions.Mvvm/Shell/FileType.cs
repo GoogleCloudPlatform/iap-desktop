@@ -51,7 +51,7 @@ namespace Google.Solutions.Mvvm.Shell
         public static FileType Lookup(
             string filePath,
             FileAttributes fileAttributes,
-            IconSize size)
+            IconFlags iconFlags)
         {
             filePath.ThrowIfNull(nameof(filePath));
 
@@ -64,7 +64,7 @@ namespace Google.Solutions.Mvvm.Shell
                 | NativeMethods.SHGFI_ICON
                 | NativeMethods.SHGFI_DISPLAYNAME
                 | NativeMethods.SHGFI_TYPEYNAME
-                | (uint)size;
+                | (uint)iconFlags;
 
             var fileInfo = new NativeMethods.SHFILEINFO();
             if (NativeMethods.SHGetFileInfo(
@@ -91,10 +91,11 @@ namespace Google.Solutions.Mvvm.Shell
             this.FileIcon.Dispose();
         }
 
-        public enum IconSize : uint
+        [Flags]
+        public enum IconFlags : uint
         {
-            Large = NativeMethods.SHGFI_LARGEICON,
-            Small = NativeMethods.SHGFI_SMALLICON
+            Small = NativeMethods.SHGFI_SMALLICON,
+            Open = NativeMethods.SHGFI_OPENICON,
         }
 
         //---------------------------------------------------------------------
@@ -126,7 +127,7 @@ namespace Google.Solutions.Mvvm.Shell
                 public string szTypeName;
             };
 
-            [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
+            [DllImport("Shell32.dll", CharSet = CharSet.Auto)]
             public static extern IntPtr SHGetFileInfo(
                 [In] string pszPath,
                 [In] FileAttributes dwFileAttributes,

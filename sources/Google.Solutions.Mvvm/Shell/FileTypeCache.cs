@@ -30,7 +30,7 @@ namespace Google.Solutions.Mvvm.Shell
         public FileType Lookup(
             string filePath,
             FileAttributes fileAttributes,
-            IconSize size)
+            IconFlags size)
         {
             //
             // Determine the file extension and cache based on that.
@@ -65,7 +65,7 @@ namespace Google.Solutions.Mvvm.Shell
         {
             public FileAttributes Attributes;
             public string FileExtension;
-            public IconSize IconSize;
+            public IconFlags IconSize;
 
             public override bool Equals(object obj)
             {

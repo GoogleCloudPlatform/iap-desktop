@@ -73,6 +73,7 @@
     <Compile Include="Commands\TestCommandContainer.cs" />
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
+    <Compile Include="Controls\TestFileBrowser.cs" />
     <Compile Include="Controls\TestHtmlClipboardFormat.cs" />
     <Compile Include="Controls\TestListViewExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
