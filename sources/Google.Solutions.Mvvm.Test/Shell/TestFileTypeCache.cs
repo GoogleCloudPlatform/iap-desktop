@@ -41,8 +41,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         {
             using (var cache = new FileTypeCache())
             {
-                var type1 = cache.Lookup("dir-1", FileAttributes.Directory, FileType.IconFlags.Small);
-                var type2 = cache.Lookup("dir-2", FileAttributes.Directory, FileType.IconFlags.Small);
+                var type1 = cache.Lookup("dir-1", FileAttributes.Directory, FileType.IconFlags.None);
+                var type2 = cache.Lookup("dir-2", FileAttributes.Directory, FileType.IconFlags.None);
 
                 Assert.AreSame(type1, type2);
                 Assert.AreEqual(1, cache.CacheSize);
@@ -54,8 +54,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         {
             using (var cache = new FileTypeCache())
             {
-                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Small);
-                var type2 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Small);
+                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.None);
+                var type2 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.None);
 
                 Assert.AreSame(type1, type2);
                 Assert.AreEqual(1, cache.CacheSize);
@@ -67,7 +67,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         {
             using (var cache = new FileTypeCache())
             {
-                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Small);
+                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.None);
                 var type2 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Open);
 
                 Assert.AreNotSame(type1, type2);
@@ -80,8 +80,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         {
             using (var cache = new FileTypeCache())
             {
-                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Small);
-                var type2 = cache.Lookup("test-1.txt", FileAttributes.ReadOnly, FileType.IconFlags.Small);
+                var type1 = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.None);
+                var type2 = cache.Lookup("test-1.txt", FileAttributes.ReadOnly, FileType.IconFlags.None);
 
                 Assert.AreNotSame(type1, type2);
                 Assert.AreEqual(2, cache.CacheSize);
@@ -96,7 +96,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         public void WhenDisposed_FileTypesAndIconsAreDisposed()
         {
             var cache = new FileTypeCache();
-            var type = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.Small);
+            var type = cache.Lookup("test-1.txt", FileAttributes.Normal, FileType.IconFlags.None);
             cache.Dispose();
 
             Assert.Throws<ArgumentException>(() => ((Bitmap)type.FileIcon).GetHicon());

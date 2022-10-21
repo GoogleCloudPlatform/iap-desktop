@@ -80,6 +80,7 @@ namespace Google.Solutions.Mvvm.Controls
             // directoryTree
             // 
             this.directoryTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.directoryTree.HideSelection = false;
             this.directoryTree.Location = new System.Drawing.Point(0, 0);
             this.directoryTree.Name = "directoryTree";
             this.directoryTree.Size = new System.Drawing.Size(200, 256);

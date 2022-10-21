@@ -38,8 +38,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         [Test]
         public void WhenFileExtensionKnown_ThenLookupReturnsIcon(
             [Values(
-                FileType.IconFlags.Open,
-                FileType.IconFlags.Small)] FileType.IconFlags size,
+                FileType.IconFlags.None,
+                FileType.IconFlags.Open)] FileType.IconFlags size,
             [Values(
                 FileAttributes.Normal,
                 FileAttributes.ReadOnly,
@@ -59,8 +59,8 @@ namespace Google.Solutions.Mvvm.Test.Shell
         [Test]
         public void WhenFileExtensionUnknown_ThenLookupReturnsIcon(
             [Values(
-                FileType.IconFlags.Open,
-                FileType.IconFlags.Small)] FileType.IconFlags size,
+                FileType.IconFlags.None,
+                FileType.IconFlags.Open)] FileType.IconFlags size,
             [Values(
                 FileAttributes.Normal,
                 FileAttributes.Directory)] FileAttributes attributes)
@@ -73,6 +73,34 @@ namespace Google.Solutions.Mvvm.Test.Shell
                 Assert.IsNotNull(type.TypeName);
                 Assert.AreNotEqual(string.Empty, type.TypeName);
                 Assert.IsNotNull(type.FileIcon);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IsFile.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenFileHasDirectoryAttribute_ThenIsFileIsFalse()
+        {
+            using (var type = FileType.Lookup(
+                "folder",
+                FileAttributes.Directory,
+                FileType.IconFlags.None))
+            {
+                Assert.IsFalse(type.IsFile);
+            }
+        }
+
+        [Test]
+        public void WhenFileDoesNotHaveDirectoryAttribute_ThenIsFileIsTrue()
+        {
+            using (var type = FileType.Lookup(
+                "folder",
+                FileAttributes.ReadOnly | FileAttributes.Normal,
+                FileType.IconFlags.None))
+            {
+                Assert.IsTrue(type.IsFile);
             }
         }
     }

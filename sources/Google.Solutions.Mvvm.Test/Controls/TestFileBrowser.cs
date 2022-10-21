@@ -22,12 +22,15 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Testing.Common;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -41,61 +44,48 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestFileBrowser
     {
+        private static readonly FileType SampleFileType 
+            = new FileType("Sample", false, SystemIcons.Application.ToBitmap());
+
+        //---------------------------------------------------------------------
+        // NavigationFailed.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void _____() // TODO: Remove test case
+        public void WhenListingFilesFails_ThenNavigationFailedEventIsRaised()
         {
-            var form = new Form();
-            var browser = new FileBrowser()
+            var item = new Mock<IFileItem>();
+            item.SetupGet(i => i.Name).Returns("Item");
+            item.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
+            item.SetupGet(i => i.Type).Returns(SampleFileType);
+            item.SetupGet(i => i.Size).Returns(1);
+            item.SetupGet(i => i.IsExpanded).Returns(true);
+
+            using (var form = new Form()
             {
-                Dock = DockStyle.Fill
-            };
-
-            browser.Bind(
-                new File(new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.Personal))),
-                item => Task.FromResult(new ObservableCollection<IFileItem>(((File)item).GetChildren())));
-
-            form.Controls.Add(browser);
-
-            form.ShowDialog();
-        }
-
-        private class File : IFileItem
-        {
-            internal readonly FileSystemInfo fileInfo;
-
-            public File(FileSystemInfo fileInfo)
+                Size = new Size(800, 600)
+            })
             {
-                this.fileInfo = fileInfo;
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+
+                bool eventRaised = false;
+                browser.NavigationFailed += (sender, args) =>
+                {
+                    Assert.AreSame(browser, sender);
+                    Assert.IsInstanceOf<ApplicationException>(args.Exception.Unwrap());
+                    eventRaised = true;
+                };
+
+                browser.Bind(
+                    item.Object,
+                    i => Task.FromException<ObservableCollection<IFileItem>>(new ApplicationException("test")));
+
+                Application.DoEvents();
+                Assert.IsTrue(eventRaised);
             }
-
-            public IEnumerable<IFileItem> GetChildren()
-                => this.GetDirectories().Concat(this.GetFiles());
-
-            public IEnumerable<IFileItem> GetFiles()
-                => (this.fileInfo as DirectoryInfo)?
-                    .GetFiles()
-                    .EnsureNotNull()
-                    .Select(f => new File(f))
-                    .ToList();
-
-            public IEnumerable<IFileItem> GetDirectories()
-                => (this.fileInfo as DirectoryInfo)?
-                    .GetDirectories()
-                    .EnsureNotNull()
-                    .Select(f => new File(f))
-                    .ToList();
-
-            public string Name => this.fileInfo.Name;
-
-            public bool IsFile => this.fileInfo is FileInfo;
-
-            public FileAttributes Attributes => this.fileInfo.Attributes;
-
-            public DateTime LastModified => this.fileInfo.LastWriteTimeUtc;
-
-            public ulong Size => (ulong)((this.fileInfo as FileInfo)?.Length ?? 0);
-
-            public event PropertyChangedEventHandler PropertyChanged;
         }
     }
 }

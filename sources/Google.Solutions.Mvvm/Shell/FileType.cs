@@ -40,12 +40,18 @@ namespace Google.Solutions.Mvvm.Shell
         /// </summary>
         public string TypeName { get; }
 
+        /// <summary>
+        /// Check if this is a file (as opposed to a directory).
+        /// </summary>
+        public bool IsFile { get; }
+
         public FileType(
             string typeName,
-            string displayName,
+            bool isFile,
             Image icon)
         {
             this.TypeName = typeName;
+            this.IsFile = isFile;
             this.FileIcon = icon;
         }
 
@@ -66,6 +72,7 @@ namespace Google.Solutions.Mvvm.Shell
             var flags =
                   NativeMethods.SHGFI_USEFILEATTRIBUTES
                 | NativeMethods.SHGFI_ICON
+                | NativeMethods.SHGFI_SMALLICON
                 | NativeMethods.SHGFI_TYPENAME
                 | (uint)iconFlags;
 
@@ -85,7 +92,10 @@ namespace Google.Solutions.Mvvm.Shell
 
             using (var icon = Icon.FromHandle(fileInfo.hIcon))
             {
-                return new FileType(fileInfo.szTypeName, fileInfo.szDisplayName, icon.ToBitmap());
+                return new FileType(
+                    fileInfo.szTypeName, 
+                    !fileAttributes.HasFlag(FileAttributes.Directory), 
+                    icon.ToBitmap());
             }
         }
 
@@ -97,7 +107,7 @@ namespace Google.Solutions.Mvvm.Shell
         [Flags]
         public enum IconFlags : uint
         {
-            Small = NativeMethods.SHGFI_SMALLICON,
+            None = 0,
             Open = NativeMethods.SHGFI_OPENICON,
         }
 
