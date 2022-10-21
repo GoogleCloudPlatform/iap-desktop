@@ -22,20 +22,32 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Google.Solutions.Mvvm.Shell
 {
-    public static class FileIcons
+    public sealed class FileType : IDisposable
     {
+        public Icon Icon { get; }
+        public string DisplayName { get; }
+
+        public FileType(
+            string displayName,
+            Icon icon)
+        {
+            this.DisplayName = displayName;
+            this.Icon = icon;
+        }
+
+
         /// <summary>
-        /// Look up the file icon for a file name. The file does not
-        /// have to exist.
+        /// Look up type information for a file or folder.
         /// </summary>
-        public static Icon GetFileIcon(
-            string filePath, 
-            IconSize size,
-            bool linkOverlay)
+        public static FileType Lookup(
+            string filePath,
+            FileAttributes fileAttributes,
+            IconSize size)
         {
             if (filePath == null)
             {
@@ -49,19 +61,19 @@ namespace Google.Solutions.Mvvm.Shell
             var flags =
                   NativeMethods.SHGFI_USEFILEATTRIBUTES
                 | NativeMethods.SHGFI_ICON
-                | (uint)size
-                | (linkOverlay ? NativeMethods.SHGFI_LINKOVERLAY : 0u);
+                | NativeMethods.SHGFI_DISPLAYNAME
+                | (uint)size;
 
             var fileInfo = new NativeMethods.SHFILEINFO();
             if (NativeMethods.SHGetFileInfo(
                 filePath,
-                NativeMethods.FILE_ATTRIBUTE_NORMAL,
+                fileAttributes,
                 ref fileInfo,
                 (uint)Marshal.SizeOf<NativeMethods.SHFILEINFO>(),
                 flags) == IntPtr.Zero)
             {
                 throw new COMException(
-                    $"Looking up the file icon for file {filePath} failed");
+                    $"Looking up the file type for file {filePath} failed");
             }
 
             Debug.Assert(fileInfo.hIcon != IntPtr.Zero);
@@ -69,40 +81,12 @@ namespace Google.Solutions.Mvvm.Shell
             var icon = Icon.FromHandle(fileInfo.hIcon);
             NativeMethods.DestroyIcon(fileInfo.hIcon);
 
-            return icon;
+            return new FileType(fileInfo.szDisplayName, icon);
         }
 
-        /// <summary>
-        /// Look up icon for folder.
-        /// </summary>
-        public static Icon GetFolderIcon(
-            string folderPath,
-            IconSize size,
-            bool opened)
+        public void Dispose()
         {
-            var flags =
-                  NativeMethods.SHGFI_USEFILEATTRIBUTES
-                | NativeMethods.SHGFI_ICON
-                | (uint)size
-                | (opened ? NativeMethods.SHGFI_OPENICON : 0u);
-
-            var fileInfo = new NativeMethods.SHFILEINFO();
-            if (NativeMethods.SHGetFileInfo(
-                folderPath ?? Environment.GetFolderPath(Environment.SpecialFolder.Windows),
-                NativeMethods.FILE_ATTRIBUTE_DIRECTORY,
-                ref fileInfo,
-                (uint)Marshal.SizeOf<NativeMethods.SHFILEINFO>(),
-                flags) == IntPtr.Zero)
-            {
-                throw new COMException("Looking up the folder icon failed");
-            }
-
-            Debug.Assert(fileInfo.hIcon != IntPtr.Zero);
-
-            var icon = Icon.FromHandle(fileInfo.hIcon);
-            NativeMethods.DestroyIcon(fileInfo.hIcon);
-
-            return icon;
+            this.Icon.Dispose();
         }
 
         public enum IconSize : uint
@@ -111,17 +95,18 @@ namespace Google.Solutions.Mvvm.Shell
             Small = NativeMethods.SHGFI_SMALLICON
         }
 
+        //---------------------------------------------------------------------
+        // P/Invoke declations.
+        //---------------------------------------------------------------------
+
         private static class NativeMethods
         {
-            internal const uint SHGFI_ICON = 0x100;
             internal const uint SHGFI_LARGEICON = 0x0;
             internal const uint SHGFI_SMALLICON = 0x1;
             internal const uint SHGFI_OPENICON = 0x2;
             internal const uint SHGFI_USEFILEATTRIBUTES = 0x10;
-            internal const uint SHGFI_LINKOVERLAY = 0x8000;
-
-            internal const uint FILE_ATTRIBUTE_NORMAL = 0x80;
-            internal const uint FILE_ATTRIBUTE_DIRECTORY = 0x10;
+            internal const uint SHGFI_ICON = 0x100;
+            internal const uint SHGFI_DISPLAYNAME = 0x200;
 
             internal const int MAX_PATH = 260;
             internal const int NAMESIZE = 80;
@@ -141,7 +126,7 @@ namespace Google.Solutions.Mvvm.Shell
             [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
             public static extern IntPtr SHGetFileInfo(
                 [In] string pszPath,
-                [In] uint dwFileAttributes,
+                [In] FileAttributes dwFileAttributes,
                 [In][Out] ref SHFILEINFO psfi,
                 [In] uint cbFileInfo,
                 [In] uint uFlags

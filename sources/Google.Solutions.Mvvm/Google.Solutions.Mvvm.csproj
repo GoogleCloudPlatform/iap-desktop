@@ -69,6 +69,12 @@
     <Compile Include="Controls\ClipboardUtil.cs" />
     <Compile Include="Controls\ControlExtensions.cs" />
     <Compile Include="Controls\ExceptionEventArgs.cs" />
+    <Compile Include="Controls\FileBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FileBrowser.Designer.cs">
+      <DependentUpon>FileBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -88,7 +94,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Shell\FileIcons.cs" />
+    <Compile Include="Shell\FileType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -100,6 +106,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\FileBrowser.resx">
+      <DependentUpon>FileBrowser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\SearchableList.resx">
       <DependentUpon>SearchableList.cs</DependentUpon>
     </EmbeddedResource>
