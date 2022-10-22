@@ -17,8 +17,11 @@ namespace Google.Solutions.Mvvm.Controls
 {
     public partial class FileBrowser : UserControl
     {
-        private bool bound = false;
         private readonly FileTypeCache fileTypeCache = new FileTypeCache();
+
+        private Func<IFileItem, Task<ObservableCollection<IFileItem>>> listFilesFunc;
+        private IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
+            new Dictionary<IFileItem, ObservableCollection<IFileItem>>();
 
         //---------------------------------------------------------------------
         // Privates.
@@ -65,12 +68,36 @@ namespace Google.Solutions.Mvvm.Controls
         // Selection properties.
         //---------------------------------------------------------------------
 
-        public IEnumerable<IFileItem> SelectedItems => this.fileList.SelectedModelItems;
-        public IFileItem SelectedItem => this.fileList.SelectedModelItem;
+        //public IEnumerable<IFileItem> SelectedItems => this.fileList.SelectedModelItems;
+        //public IFileItem SelectedItem => this.fileList.SelectedModelItem;
+
+        /// <summary>
+        /// Folder that is being viewed.
+        /// </summary>
+        public IFileItem Folder { get; private set; }
 
         //---------------------------------------------------------------------
         // Data Binding.
         //---------------------------------------------------------------------
+
+        private async Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem folder)
+        {
+            // TODO: Merge into Navigate
+            Debug.Assert(this.listFilesFunc != null);
+
+            //
+            // NB. Both controls must use the same file items so that expansion
+            // tracking works correctly. Instead of bining each control individually,
+            // we therefore put a cache in between.
+            //
+            if (!this.listFilesCache.TryGetValue(folder, out var children))
+            {
+                children = await this.listFilesFunc(folder).ConfigureAwait(true);
+                this.listFilesCache[folder] = children;
+            }
+
+            return children;
+        }
 
         public void Bind(
             IFileItem root,
@@ -79,14 +106,17 @@ namespace Google.Solutions.Mvvm.Controls
             root.ThrowIfNull(nameof(root));
             listFiles.ThrowIfNull(nameof(listFiles));
 
-            if (this.bound)
+            if (this.listFilesFunc != null)
             {
                 throw new InvalidOperationException("Control is already bound");
             }
-            else
+
+            if (root.Type.IsFile)
             {
-                this.bound = true;
+                throw new ArgumentException("The root item must be a folder");
             }
+
+            this.listFilesFunc = listFiles;
 
             //
             // Bind directory tree.
@@ -96,7 +126,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.BindIsExpanded(i => i.IsExpanded);
 
             // TODO: Project to filter out files
-            this.directoryTree.BindChildren(listFiles);
+            this.directoryTree.BindChildren(ListFilesAsync);
             this.directoryTree.Bind(root);
 
             // TODO: Change to accept Func<> also
@@ -104,6 +134,7 @@ namespace Google.Solutions.Mvvm.Controls
             //this.directoryTree.BindImageIndex(i => i.ImageIndex);
             //this.directoryTree.BindSelectedImageIndex(i => i.SelectedImageIndex);
 
+            this.Folder = root;
 
             //
             // Bind file list.
@@ -116,28 +147,45 @@ namespace Google.Solutions.Mvvm.Controls
 
             this.directoryTree.SelectedModelNodeChanged += async (s, _) =>
             {
-                try
-                {
-                    var files = await listFiles(this.directoryTree.SelectedModelNode)
-                        .ConfigureAwait(true);
-                    this.fileList.BindCollection(files);
-                }
-                catch (Exception e)
-                {
-                    OnNavigationFailed(e);
-                }
+                await OpenFolder(this.directoryTree.SelectedModelNode).ConfigureAwait(true);
             };
+
             this.directoryTree.LoadingChildrenFailed += (s, args) => OnNavigationFailed(args.Exception);
         }
 
-        private void directoryTree_LoadingChildrenFailed(object sender, ExceptionEventArgs e)
-        {
 
+        private async void fileList_DoubleClick(object sender, EventArgs e)
+        {
+            //
+            // Make sure the parent folder is expanded.
+            //
+            this.Folder.IsExpanded = true;
+
+            await OpenFolder(this.fileList.SelectedModelItem).ConfigureAwait(true);
         }
 
-        private void directoryTree_SelectedModelNodeChanged(object sender, EventArgs e)
+        private async Task OpenFolder(IFileItem folder)
         {
+            if (folder.Type.IsFile)
+            {
+                return;
+            }
 
+            try
+            {
+
+                // TODO: Select folder in tree (on a best-effort basis)
+
+                var files = await ListFilesAsync(folder).ConfigureAwait(true);
+
+                this.fileList.BindCollection(files);
+
+                this.Folder = folder;
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
         }
     }
 }

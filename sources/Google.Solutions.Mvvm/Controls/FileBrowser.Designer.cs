@@ -105,6 +105,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.TabIndex = 0;
             this.fileList.UseCompatibleStateImageBehavior = false;
             this.fileList.View = System.Windows.Forms.View.Details;
+            this.fileList.DoubleClick += new System.EventHandler(this.fileList_DoubleClick);
             // 
             // typeColumn
             // 

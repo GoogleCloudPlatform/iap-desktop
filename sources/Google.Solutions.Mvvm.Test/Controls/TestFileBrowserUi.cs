@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using NUnit.Framework;
@@ -75,8 +76,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
-        private class LocalFileItem : IFileItem
+        private class LocalFileItem : ViewModelBase, IFileItem
         {
+            private bool expanded;
             private readonly FileSystemInfo fileInfo;
             private readonly FileTypeCache fileTypeCache;
 
@@ -120,9 +122,15 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 this.fileInfo.Attributes, 
                 FileType.IconFlags.None);
 
-            public bool IsExpanded { get; set; }
-
-            public event PropertyChangedEventHandler PropertyChanged;
+            public bool IsExpanded
+            {
+                get => this.expanded;
+                set
+                {
+                    this.expanded = value;
+                    RaisePropertyChange();
+                }
+            }
         }
     }
 }
