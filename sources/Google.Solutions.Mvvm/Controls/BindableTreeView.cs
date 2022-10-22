@@ -41,9 +41,13 @@ namespace Google.Solutions.Mvvm.Controls
         where TModelNode : class, INotifyPropertyChanged
     {
         private Expression<Func<TModelNode, bool>> isExpandedExpression = null;
+        private Expression<Func<TModelNode, string>> textExpression = null;
+
         private Expression<Func<TModelNode, int>> imageIndexExpression = null;
         private Expression<Func<TModelNode, int>> selectedImageIndexExpression = null;
-        private Expression<Func<TModelNode, string>> textExpression = null;
+
+        private bool imageIndexExpressionReadonly = false;
+        private bool selectedImageIndexExpressionReadonly = false;
 
         private Func<TModelNode, bool> isLeafFunc = _ => false;
         private Action<TModelNode, bool> setExpandedFunc = (n, state) => { };
@@ -113,19 +117,25 @@ namespace Google.Solutions.Mvvm.Controls
             this.Nodes.Add(new Node(this, rootNode));
         }
 
-        public void BindImageIndex(Expression<Func<TModelNode, int>> imageIndexExpression)
-        {
-            this.imageIndexExpression = imageIndexExpression;
-        }
-
         public void BindIsLeaf(Func<TModelNode, bool> isLeafFunc)
         {
             this.isLeafFunc = isLeafFunc;
         }
 
-        public void BindSelectedImageIndex(Expression<Func<TModelNode, int>> selectedImageIndexExpression)
+        public void BindImageIndex(
+            Expression<Func<TModelNode, int>> imageIndexExpression,
+            bool readOnly = false)
+        {
+            this.imageIndexExpression = imageIndexExpression;
+            this.imageIndexExpressionReadonly = readOnly;
+        }
+
+        public void BindSelectedImageIndex(Expression<Func<TModelNode, int>> 
+            selectedImageIndexExpression,
+            bool readOnly = false)
         {
             this.selectedImageIndexExpression = selectedImageIndexExpression;
+            this.selectedImageIndexExpressionReadonly = readOnly;
         }
 
         public void BindText(Expression<Func<TModelNode, string>> nameExpression)
@@ -185,17 +195,23 @@ namespace Google.Solutions.Mvvm.Controls
                 if (this.treeView.imageIndexExpression != null)
                 {
                     this.ImageIndex = this.treeView.imageIndexExpression.Compile()(this.Model);
-                    this.bindings.Add(this.Model.OnPropertyChange(
-                        this.treeView.imageIndexExpression,
-                        iconIndex => this.ImageIndex = iconIndex));
+                    if (!this.treeView.imageIndexExpressionReadonly)
+                    {
+                        this.bindings.Add(this.Model.OnPropertyChange(
+                            this.treeView.imageIndexExpression,
+                            iconIndex => this.ImageIndex = iconIndex));
+                    }
                 }
 
                 if (this.treeView.selectedImageIndexExpression != null)
                 {
                     this.SelectedImageIndex = this.treeView.selectedImageIndexExpression.Compile()(this.Model);
-                    this.bindings.Add(this.Model.OnPropertyChange(
-                        this.treeView.selectedImageIndexExpression,
-                        iconIndex => this.SelectedImageIndex = iconIndex));
+                    if (!this.treeView.selectedImageIndexExpressionReadonly)
+                    {
+                        this.bindings.Add(this.Model.OnPropertyChange(
+                            this.treeView.selectedImageIndexExpression,
+                            iconIndex => this.SelectedImageIndex = iconIndex));
+                    }
                 }
 
                 if (this.treeView.isExpandedExpression != null)

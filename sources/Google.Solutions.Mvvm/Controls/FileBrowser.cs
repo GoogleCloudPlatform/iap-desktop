@@ -54,7 +54,6 @@ namespace Google.Solutions.Mvvm.Controls
             };
         }
 
-
         //---------------------------------------------------------------------
         // Events.
         //---------------------------------------------------------------------
@@ -68,13 +67,14 @@ namespace Google.Solutions.Mvvm.Controls
         // Selection properties.
         //---------------------------------------------------------------------
 
+        // TODO: Add obvservable properties
         //public IEnumerable<IFileItem> SelectedItems => this.fileList.SelectedModelItems;
         //public IFileItem SelectedItem => this.fileList.SelectedModelItem;
 
         /// <summary>
         /// Folder that is being viewed.
         /// </summary>
-        public IFileItem Folder { get; private set; }
+        public IFileItem Folder { get; private set; } // TODO: Make observable.
 
         //---------------------------------------------------------------------
         // Data Binding.
@@ -128,11 +128,8 @@ namespace Google.Solutions.Mvvm.Controls
             // TODO: Project to filter out files
             this.directoryTree.BindChildren(ListFilesAsync);
             this.directoryTree.Bind(root);
-
-            // TODO: Change to accept Func<> also
-            //
-            //this.directoryTree.BindImageIndex(i => i.ImageIndex);
-            //this.directoryTree.BindSelectedImageIndex(i => i.SelectedImageIndex);
+            this.directoryTree.BindImageIndex(i => GetImageIndex(i.Type), true);
+            this.directoryTree.BindSelectedImageIndex(i => GetImageIndex(i.Type), true);
 
             this.Folder = root;
 
@@ -141,7 +138,7 @@ namespace Google.Solutions.Mvvm.Controls
             //
             this.fileList.BindImageIndex(i => GetImageIndex(i.Type));
             this.fileList.BindColumn(0, i => i.Name);
-            this.fileList.BindColumn(1, i => i.LastModified.ToString()); // TODO: Formatting?
+            this.fileList.BindColumn(1, i => i.LastModified.ToString());
             this.fileList.BindColumn(2, i => i.Type.TypeName);
             this.fileList.BindColumn(3, i => i.Size.ToString()); // TODO: Use ByteSizeFormatter
 
@@ -189,9 +186,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             try
             {
-
                 var files = await ListFilesAsync(folder).ConfigureAwait(true);
-
                 this.fileList.BindCollection(files);
 
                 //

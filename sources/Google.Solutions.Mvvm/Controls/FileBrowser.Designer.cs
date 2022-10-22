@@ -34,10 +34,10 @@ namespace Google.Solutions.Mvvm.Controls
             System.Windows.Forms.ColumnHeader lastModifiedColumn;
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.directoryTree = new Google.Solutions.Mvvm.Controls.FileBrowser.DirectoryTreeView();
+            this.fileIconsList = new System.Windows.Forms.ImageList(this.components);
             this.fileList = new Google.Solutions.Mvvm.Controls.FileBrowser.FileListView();
             this.typeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.sizeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.fileIconsList = new System.Windows.Forms.ImageList(this.components);
             nameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             lastModifiedColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -54,7 +54,7 @@ namespace Google.Solutions.Mvvm.Controls
             // lastModifiedColumn
             // 
             lastModifiedColumn.Text = "Date Modified";
-            lastModifiedColumn.Width = 100;
+            lastModifiedColumn.Width = 125;
             // 
             // splitContainer
             // 
@@ -82,10 +82,20 @@ namespace Google.Solutions.Mvvm.Controls
             // 
             this.directoryTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.directoryTree.HideSelection = false;
+            this.directoryTree.ImageIndex = 0;
+            this.directoryTree.ImageList = this.fileIconsList;
+            this.directoryTree.ItemHeight = 18;
             this.directoryTree.Location = new System.Drawing.Point(0, 0);
             this.directoryTree.Name = "directoryTree";
+            this.directoryTree.SelectedImageIndex = 0;
             this.directoryTree.Size = new System.Drawing.Size(200, 256);
             this.directoryTree.TabIndex = 0;
+            // 
+            // fileIconsList
+            // 
+            this.fileIconsList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.fileIconsList.ImageSize = new System.Drawing.Size(16, 16);
+            this.fileIconsList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // fileList
             // 
@@ -116,13 +126,8 @@ namespace Google.Solutions.Mvvm.Controls
             // sizeColumn
             // 
             this.sizeColumn.Text = "Size";
-            this.sizeColumn.Width = 32;
-            // 
-            // fileIconsList
-            // 
-            this.fileIconsList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.fileIconsList.ImageSize = new System.Drawing.Size(16, 16);
-            this.fileIconsList.TransparentColor = System.Drawing.Color.Transparent;
+            this.sizeColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.sizeColumn.Width = 7;
             // 
             // FileBrowser
             // 
