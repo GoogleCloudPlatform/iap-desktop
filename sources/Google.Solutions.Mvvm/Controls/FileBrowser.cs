@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Util;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Mvvm.Shell.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,7 +21,7 @@ namespace Google.Solutions.Mvvm.Controls
         private readonly FileTypeCache fileTypeCache = new FileTypeCache();
 
         private Func<IFileItem, Task<ObservableCollection<IFileItem>>> listFilesFunc;
-        private IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
+        private readonly IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
             new Dictionary<IFileItem, ObservableCollection<IFileItem>>();
 
         //---------------------------------------------------------------------
@@ -82,7 +83,6 @@ namespace Google.Solutions.Mvvm.Controls
 
         private async Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem folder)
         {
-            // TODO: Merge into Navigate
             Debug.Assert(this.listFilesFunc != null);
 
             //
@@ -126,6 +126,8 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.BindIsExpanded(i => i.IsExpanded);
 
             // TODO: Project to filter out files
+            //  change treeview to use ICollection and test for INotify*Changed
+
             this.directoryTree.BindChildren(ListFilesAsync);
             this.directoryTree.Bind(root);
             this.directoryTree.BindImageIndex(i => GetImageIndex(i.Type), true);
@@ -140,7 +142,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.BindColumn(0, i => i.Name);
             this.fileList.BindColumn(1, i => i.LastModified.ToString());
             this.fileList.BindColumn(2, i => i.Type.TypeName);
-            this.fileList.BindColumn(3, i => i.Size.ToString()); // TODO: Use ByteSizeFormatter
+            this.fileList.BindColumn(3, i => ByteSizeFormatter.Format(i.Size));
 
             this.directoryTree.SelectedModelNodeChanged += async (s, _) =>
             {

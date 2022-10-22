@@ -68,7 +68,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                     browser.Bind(
                         root,
-                        item => Task.FromResult(((LocalFileItem)item).GetChildren()));
+                        async item =>
+                        {
+                            await Task.Delay(750);
+                            return (((LocalFileItem)item).GetChildren());
+                        });
 
                     form.Controls.Add(browser);
                     form.ShowDialog();

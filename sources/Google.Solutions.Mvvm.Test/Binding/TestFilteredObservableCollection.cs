@@ -47,7 +47,6 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 new ObservableCollection<string>());
 
             Assert.Throws<InvalidOperationException>(() => collection.Add(""));
-            Assert.Throws<InvalidOperationException>(() => collection.Add((object)""));
         }
 
         [Test]
@@ -71,10 +70,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void Contains()
         {
-            var collection = new ObservableCollection<string>();
-            collection.Add("one");
-            collection.Add("Two");
-            collection.Add("THREE");
+            var collection = new ObservableCollection<string>
+            {
+                "one",
+                "Two",
+                "THREE"
+            };
 
             var filtered = new FilteredObservableCollection<string>(collection)
             {
@@ -89,10 +90,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void Count()
         {
-            var collection = new ObservableCollection<string>();
-            collection.Add("one");
-            collection.Add("Two");
-            collection.Add("THREE");
+            var collection = new ObservableCollection<string>
+            {
+                "one",
+                "Two",
+                "THREE"
+            };
 
             var filtered = new FilteredObservableCollection<string>(collection)
             {
@@ -105,10 +108,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void CopyTo()
         {
-            var collection = new ObservableCollection<string>();
-            collection.Add("one");
-            collection.Add("Two");
-            collection.Add("THREE");
+            var collection = new ObservableCollection<string>
+            {
+                "one",
+                "Two",
+                "THREE"
+            };
 
             var filtered = new FilteredObservableCollection<string>(collection)
             {
@@ -124,10 +129,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void GetEnumerator()
         {
-            var collection = new ObservableCollection<string>();
-            collection.Add("one");
-            collection.Add("Two");
-            collection.Add("THREE");
+            var collection = new ObservableCollection<string>
+            {
+                "one",
+                "Two",
+                "THREE"
+            };
 
             var filtered = new FilteredObservableCollection<string>(collection)
             {
@@ -142,10 +149,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenPredicateChanged_ThenResetEventIsRaised()
         {
-            var collection = new ObservableCollection<string>();
-            collection.Add("one");
-            collection.Add("Two");
-            collection.Add("THREE");
+            var collection = new ObservableCollection<string>
+            {
+                "one",
+                "Two",
+                "THREE"
+            };
 
             var filtered = new FilteredObservableCollection<string>(collection)
             {
@@ -215,9 +224,11 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenRemovingMatchedItem_ThenNoAddEventIsRaised()
         {
-            var collection = new ObservableCollection<string>();
-            collection.Add("UPPERCASE");
-            collection.Add("lowercase");
+            var collection = new ObservableCollection<string>
+            {
+                "UPPERCASE",
+                "lowercase"
+            };
 
             var filtered = new FilteredObservableCollection<string>(collection)
             {
@@ -243,8 +254,10 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenRemovingUnmatchedItem_ThenNoAddEventIsRaised()
         {
-            var collection = new ObservableCollection<string>();
-            collection.Add("lowercase");
+            var collection = new ObservableCollection<string>
+            {
+                "lowercase"
+            };
 
             var filtered = new FilteredObservableCollection<string>(collection)
             {
@@ -265,8 +278,10 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenClearingCollection_ThenResetIsRaised()
         {
-            var collection = new ObservableCollection<string>();
-            collection.Add("lowercase");
+            var collection = new ObservableCollection<string>
+            {
+                "lowercase"
+            };
 
             var filtered = new FilteredObservableCollection<string>(collection)
             {

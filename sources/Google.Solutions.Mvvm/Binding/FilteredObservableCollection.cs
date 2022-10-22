@@ -29,7 +29,7 @@ using System.Linq;
 
 namespace Google.Solutions.Mvvm.Binding
 {
-    public class FilteredObservableCollection<T> // TODO: Test
+    public class FilteredObservableCollection<T>
         : ICollection<T>, IEnumerable<T>, ICollection, IEnumerable, INotifyCollectionChanged, INotifyPropertyChanged
     {
         private readonly ObservableCollection<T> collection;
@@ -132,9 +132,6 @@ namespace Google.Solutions.Mvvm.Binding
         //---------------------------------------------------------------------
 
         public void Add(T item) 
-            => throw new InvalidOperationException("List is immutable");
-
-        public int Add(object value) 
             => throw new InvalidOperationException("List is immutable");
 
         public void Clear() 

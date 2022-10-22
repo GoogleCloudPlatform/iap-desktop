@@ -149,8 +149,6 @@
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
-    <Compile Include="Util\ByteSizeFormatter.cs" />
-    <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Data\IHelpTopic.cs" />
     <Compile Include="Util\StringExtensions.cs" />

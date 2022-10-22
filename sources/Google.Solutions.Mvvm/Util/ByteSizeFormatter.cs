@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
+namespace Google.Solutions.Mvvm.Shell.Util
 {
     public static class ByteSizeFormatter
     {

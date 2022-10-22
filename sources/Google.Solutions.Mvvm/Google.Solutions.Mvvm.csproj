@@ -97,6 +97,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Shell\FileType.cs" />
+    <Compile Include="Util\ByteSizeFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\FileBrowser.Interfaces.cs">
