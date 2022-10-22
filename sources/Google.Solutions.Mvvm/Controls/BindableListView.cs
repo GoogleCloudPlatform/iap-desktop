@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Controls
     /// <typeparam name="TModelItem"></typeparam>
     public class BindableListView<TModelItem> : FlatListView
     {
-        private ObservableCollection<TModelItem> model;
+        private ICollection<TModelItem> model;
 
         private readonly IDictionary<int, Func<TModelItem, string>> columnAccessors =
             new Dictionary<int, Func<TModelItem, string>>();
@@ -153,14 +153,17 @@ namespace Google.Solutions.Mvvm.Controls
         // List Binding.
         //---------------------------------------------------------------------
 
-        public void BindCollection(ObservableCollection<TModelItem> model)
+        public void BindCollection(ICollection<TModelItem> model)
         {
             // Reset.
             if (this.model != null)
             {
                 UnobserveItems(this.model);
 
-                this.model.CollectionChanged -= Model_CollectionChanged;
+                if (this.model is INotifyCollectionChanged observable)
+                {
+                    observable.CollectionChanged -= Model_CollectionChanged;
+                }
             }
 
             this.Items.Clear();
@@ -171,7 +174,10 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 AddViewItems(this.model);
 
-                this.model.CollectionChanged += Model_CollectionChanged;
+                if (this.model is INotifyCollectionChanged observable)
+                {
+                    observable.CollectionChanged += Model_CollectionChanged;
+                }
             }
         }
 

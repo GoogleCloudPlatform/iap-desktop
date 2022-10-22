@@ -52,8 +52,8 @@ namespace Google.Solutions.Mvvm.Controls
         private Func<TModelNode, bool> isLeafFunc = _ => false;
         private Action<TModelNode, bool> setExpandedFunc = (n, state) => { };
         private Func<TModelNode, bool> isExpandedFunc = _ => false;
-        private Func<TModelNode, Task<ObservableCollection<TModelNode>>> getChildrenAsyncFunc
-            = _ => Task.FromResult(new ObservableCollection<TModelNode>());
+        private Func<TModelNode, Task<ICollection<TModelNode>>> getChildrenAsyncFunc
+            = _ => Task.FromResult<ICollection<TModelNode>>(new ObservableCollection<TModelNode>());
 
         private readonly TaskScheduler taskScheduler;
 
@@ -160,6 +160,12 @@ namespace Google.Solutions.Mvvm.Controls
 
         public void BindChildren(
             Func<TModelNode, Task<ObservableCollection<TModelNode>>> getChildrenAsyncFunc)
+        {
+            this.getChildrenAsyncFunc = async n => await getChildrenAsyncFunc(n).ConfigureAwait(true);
+        }
+
+        public void BindChildren(
+            Func<TModelNode, Task<ICollection<TModelNode>>> getChildrenAsyncFunc)
         {
             this.getChildrenAsyncFunc = getChildrenAsyncFunc;
         }
@@ -308,7 +314,10 @@ namespace Google.Solutions.Mvvm.Controls
                             }
 
                             // Observe for changes.
-                            children.CollectionChanged += ModelChildrenChanged;
+                            if (children is INotifyCollectionChanged observable)
+                            {
+                                observable.CollectionChanged += ModelChildrenChanged;
+                            }
                         }
                         catch (Exception e)
                         {

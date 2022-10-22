@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Util;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Mvvm.Shell.Util;
 using System;
@@ -128,7 +129,15 @@ namespace Google.Solutions.Mvvm.Controls
             // TODO: Project to filter out files
             //  change treeview to use ICollection and test for INotify*Changed
 
-            this.directoryTree.BindChildren(ListFilesAsync);
+            this.directoryTree.BindChildren(async item =>
+            {
+                var files = await ListFilesAsync(item).ConfigureAwait(true);
+
+                return new FilteredObservableCollection<IFileItem>(files)
+                {
+                    Predicate = f => !f.Type.IsFile
+                };
+            });
             this.directoryTree.Bind(root);
             this.directoryTree.BindImageIndex(i => GetImageIndex(i.Type), true);
             this.directoryTree.BindSelectedImageIndex(i => GetImageIndex(i.Type), true);
