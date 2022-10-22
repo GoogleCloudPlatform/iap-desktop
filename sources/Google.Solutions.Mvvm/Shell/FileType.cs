@@ -120,6 +120,7 @@ namespace Google.Solutions.Mvvm.Shell
             internal const uint SHGFI_LARGEICON = 0x0;
             internal const uint SHGFI_SMALLICON = 0x1;
             internal const uint SHGFI_OPENICON = 0x2;
+            internal const uint SHGFI_SHELLICONSIZE = 0x4;
             internal const uint SHGFI_USEFILEATTRIBUTES = 0x10;
             internal const uint SHGFI_ICON = 0x100;
             internal const uint SHGFI_DISPLAYNAME = 0x200;

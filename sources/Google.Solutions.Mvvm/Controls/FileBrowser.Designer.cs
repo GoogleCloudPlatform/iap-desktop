@@ -103,6 +103,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.OwnerDraw = true;
             this.fileList.SelectedModelItem = null;
             this.fileList.Size = new System.Drawing.Size(390, 256);
+            this.fileList.SmallImageList = this.fileIconsList;
             this.fileList.TabIndex = 1;
             this.fileList.UseCompatibleStateImageBehavior = false;
             this.fileList.View = System.Windows.Forms.View.Details;
@@ -119,7 +120,7 @@ namespace Google.Solutions.Mvvm.Controls
             // 
             // fileIconsList
             // 
-            this.fileIconsList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.fileIconsList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
             this.fileIconsList.ImageSize = new System.Drawing.Size(16, 16);
             this.fileIconsList.TransparentColor = System.Drawing.Color.Transparent;
             // 
