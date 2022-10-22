@@ -149,19 +149,35 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 await OpenFolder(this.directoryTree.SelectedModelNode).ConfigureAwait(true);
             };
+            this.fileList.DoubleClick += async (s, _) =>
+            {
+                this.Folder.IsExpanded = true;
+                await OpenFolder(this.fileList.SelectedModelItem).ConfigureAwait(true);
+            };
+            this.fileList.KeyDown += async (s, args) =>
+            {
+                if (args.KeyCode == Keys.Enter &&
+                    this.fileList.SelectedModelItem is var item &&
+                    item != null &&
+                    !item.Type.IsFile)
+                {
+                    //
+                    // Go down one level.
+                    //
+                    this.Folder.IsExpanded = true;
+                    await OpenFolder(this.fileList.SelectedModelItem).ConfigureAwait(true);
+                }
+                else if (args.KeyCode == Keys.Up && args.Alt &&
+                    this.directoryTree.SelectedNode?.Parent != null)
+                {
+                    //
+                    // Go up one level.
+                    //
+                    this.directoryTree.SelectedNode = this.directoryTree.SelectedNode.Parent;
+                }
+            };
 
             this.directoryTree.LoadingChildrenFailed += (s, args) => OnNavigationFailed(args.Exception);
-        }
-
-
-        private async void fileList_DoubleClick(object sender, EventArgs e)
-        {
-            //
-            // Make sure the parent folder is expanded.
-            //
-            this.Folder.IsExpanded = true;
-
-            await OpenFolder(this.fileList.SelectedModelItem).ConfigureAwait(true);
         }
 
         private async Task OpenFolder(IFileItem folder)
@@ -174,11 +190,23 @@ namespace Google.Solutions.Mvvm.Controls
             try
             {
 
-                // TODO: Select folder in tree (on a best-effort basis)
-
                 var files = await ListFilesAsync(folder).ConfigureAwait(true);
 
                 this.fileList.BindCollection(files);
+
+                //
+                // Try to select folder in tree. This only works if the nodes
+                // have been loaded already, so it's on a best-effort basis.
+                //
+                if (this.directoryTree.SelectedModelNode == this.Folder)
+                {
+                    var treeNode = ((BindableTreeView<IFileItem>.Node)this.directoryTree.SelectedNode)
+                        .FindTreeNodeByModelNode(folder);
+                    if (treeNode != null)
+                    {
+                        this.directoryTree.SelectedNode = treeNode;
+                    }
+                }
 
                 this.Folder = folder;
             }

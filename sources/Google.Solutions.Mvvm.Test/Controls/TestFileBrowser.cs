@@ -54,12 +54,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void WhenListingFilesFails_ThenNavigationFailedEventIsRaised()
         {
-            var item = new Mock<IFileItem>();
-            item.SetupGet(i => i.Name).Returns("Item");
-            item.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
-            item.SetupGet(i => i.Type).Returns(SampleFileType);
-            item.SetupGet(i => i.Size).Returns(1);
-            item.SetupGet(i => i.IsExpanded).Returns(true);
+            var root = new Mock<IFileItem>();
+            root.SetupGet(i => i.Name).Returns("Item");
+            root.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
+            root.SetupGet(i => i.Type).Returns(SampleFileType);
+            root.SetupGet(i => i.Size).Returns(1);
+            root.SetupGet(i => i.IsExpanded).Returns(true);
 
             using (var form = new Form()
             {
@@ -80,11 +80,45 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 };
 
                 browser.Bind(
-                    item.Object,
+                    root.Object,
                     i => Task.FromException<ObservableCollection<IFileItem>>(new ApplicationException("test")));
 
                 Application.DoEvents();
                 Assert.IsTrue(eventRaised);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Folder.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenBound_ThenFolderIsRoot()
+        {
+            var root = new Mock<IFileItem>();
+            root.SetupGet(i => i.Name).Returns("Item");
+            root.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
+            root.SetupGet(i => i.Type).Returns(SampleFileType);
+            root.SetupGet(i => i.Size).Returns(1);
+            root.SetupGet(i => i.IsExpanded).Returns(true);
+
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+
+                browser.Bind(
+                    root.Object,
+                    i => Task.FromException<ObservableCollection<IFileItem>>(new ApplicationException("test")));
+
+                Application.DoEvents();
+
+                Assert.AreSame(root.Object, browser.Folder);
             }
         }
     }

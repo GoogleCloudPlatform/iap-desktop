@@ -326,7 +326,7 @@ namespace Google.Solutions.Mvvm.Controls
                 }
             }
 
-            private Node FindTreeNodeByModelNode(TModelNode modelNode)
+            internal Node FindTreeNodeByModelNode(TModelNode modelNode)
             {
                 return this.Nodes
                     .OfType<Node>()
