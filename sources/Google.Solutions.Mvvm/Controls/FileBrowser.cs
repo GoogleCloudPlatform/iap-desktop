@@ -21,6 +21,8 @@ namespace Google.Solutions.Mvvm.Controls
     {
         private readonly FileTypeCache fileTypeCache = new FileTypeCache();
 
+        private IFileItem currentFolder;
+
         private Func<IFileItem, Task<ObservableCollection<IFileItem>>> listFilesFunc;
         private readonly IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
             new Dictionary<IFileItem, ObservableCollection<IFileItem>>();
@@ -61,22 +63,33 @@ namespace Google.Solutions.Mvvm.Controls
         //---------------------------------------------------------------------
 
         public EventHandler<ExceptionEventArgs> NavigationFailed;
+        public EventHandler CurrentFolderChanged;
 
         protected void OnNavigationFailed(Exception e)
             => this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));
+
+        protected void OnCurrentFolderChanged()
+            => this.CurrentFolderChanged?.Invoke(this, EventArgs.Empty);
 
         //---------------------------------------------------------------------
         // Selection properties.
         //---------------------------------------------------------------------
 
-        // TODO: Add obvservable properties
-        //public IEnumerable<IFileItem> SelectedItems => this.fileList.SelectedModelItems;
-        //public IFileItem SelectedItem => this.fileList.SelectedModelItem;
+        // TODO: Add obvservable property: SelectedFiles
+        // TODO: Context menu
 
         /// <summary>
-        /// Folder that is being viewed.
+        /// Folder that is currently being viewed.
         /// </summary>
-        public IFileItem Folder { get; private set; } // TODO: Make observable.
+        public IFileItem CurrentFolder
+        {
+            get => this.currentFolder;
+            private set
+            {
+                this.currentFolder = value;
+                OnCurrentFolderChanged();
+            }
+        }
 
         //---------------------------------------------------------------------
         // Data Binding.
@@ -142,7 +155,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.BindImageIndex(i => GetImageIndex(i.Type), true);
             this.directoryTree.BindSelectedImageIndex(i => GetImageIndex(i.Type), true);
 
-            this.Folder = root;
+            this.CurrentFolder = root;
 
             //
             // Bind file list.
@@ -155,11 +168,14 @@ namespace Google.Solutions.Mvvm.Controls
 
             this.directoryTree.SelectedModelNodeChanged += async (s, _) =>
             {
-                await OpenFolder(this.directoryTree.SelectedModelNode).ConfigureAwait(true);
+                if (this.directoryTree.SelectedModelNode != null)
+                {
+                    await OpenFolder(this.directoryTree.SelectedModelNode).ConfigureAwait(true);
+                }
             };
             this.fileList.DoubleClick += async (s, _) =>
             {
-                this.Folder.IsExpanded = true;
+                this.CurrentFolder.IsExpanded = true;
                 await OpenFolder(this.fileList.SelectedModelItem).ConfigureAwait(true);
             };
             this.fileList.KeyDown += async (s, args) =>
@@ -172,7 +188,7 @@ namespace Google.Solutions.Mvvm.Controls
                     //
                     // Go down one level.
                     //
-                    this.Folder.IsExpanded = true;
+                    this.CurrentFolder.IsExpanded = true;
                     await OpenFolder(this.fileList.SelectedModelItem).ConfigureAwait(true);
                 }
                 else if (args.KeyCode == Keys.Up && args.Alt &&
@@ -204,7 +220,7 @@ namespace Google.Solutions.Mvvm.Controls
                 // Try to select folder in tree. This only works if the nodes
                 // have been loaded already, so it's on a best-effort basis.
                 //
-                if (this.directoryTree.SelectedModelNode == this.Folder)
+                if (this.directoryTree.SelectedModelNode == this.CurrentFolder)
                 {
                     var treeNode = ((BindableTreeView<IFileItem>.Node)this.directoryTree.SelectedNode)
                         .FindTreeNodeByModelNode(folder);
@@ -214,7 +230,7 @@ namespace Google.Solutions.Mvvm.Controls
                     }
                 }
 
-                this.Folder = folder;
+                this.CurrentFolder = folder;
             }
             catch (Exception e)
             {

@@ -48,6 +48,41 @@ namespace Google.Solutions.Mvvm.Test.Controls
             = new FileType("Sample", false, SystemIcons.Application.ToBitmap());
 
         //---------------------------------------------------------------------
+        // Bind.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenBoundAlready_ThenBindThrowsException()
+        {
+            var root = new Mock<IFileItem>();
+            root.SetupGet(i => i.Name).Returns("Item");
+            root.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
+            root.SetupGet(i => i.Type).Returns(SampleFileType);
+            root.SetupGet(i => i.Size).Returns(1);
+            root.SetupGet(i => i.IsExpanded).Returns(true);
+
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+
+                browser.Bind(
+                    root.Object,
+                    i => Task.FromResult(new ObservableCollection<IFileItem>())));
+
+                Assert.Throws<InvalidOperationException>(
+                    () => browser.Bind(
+                        root.Object,
+                        i => Task.FromResult(new ObservableCollection<IFileItem>())));
+            }
+        }
+
+        //---------------------------------------------------------------------
         // NavigationFailed.
         //---------------------------------------------------------------------
 
@@ -89,11 +124,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // Folder.
+        // CurrentFolder.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenBound_ThenFolderIsRoot()
+        public void WhenBound_ThenCurrentFolderSetToRoot()
         {
             var root = new Mock<IFileItem>();
             root.SetupGet(i => i.Name).Returns("Item");
@@ -112,13 +147,20 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     Dock = DockStyle.Fill
                 };
 
+                bool eventRaised = false;
+                browser.CurrentFolderChanged += (sender, args) =>
+                {
+                    eventRaised = true;
+                };
+
                 browser.Bind(
                     root.Object,
-                    i => Task.FromException<ObservableCollection<IFileItem>>(new ApplicationException("test")));
+                    i => Task.FromResult(new ObservableCollection<IFileItem>()));
 
                 Application.DoEvents();
 
-                Assert.AreSame(root.Object, browser.Folder);
+                Assert.AreSame(root.Object, browser.CurrentFolder);
+                Assert.IsTrue(eventRaised);
             }
         }
     }
