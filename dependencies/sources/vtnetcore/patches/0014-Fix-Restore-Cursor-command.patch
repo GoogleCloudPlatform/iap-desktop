@@ -1,4 +1,4 @@
-From e612f6f36de7f95b42b704605a07b61922d28cf7 Mon Sep 17 00:00:00 2001
+From 8b4b7532fe303f14b7eae20bd44eab1f88081f28 Mon Sep 17 00:00:00 2001
 From: IAP Desktop Build <iap-desktop+build@google.com>
 Date: Tue, 25 Oct 2022 16:12:04 +1100
 Subject: [PATCH 14/14] Fix Restore Cursor command
@@ -77,7 +77,7 @@ index ab52881..5781dfb 100644
      }
  }
 diff --git a/VtNetCore/VirtualTerminal/VirtualTerminalController.cs b/VtNetCore/VirtualTerminal/VirtualTerminalController.cs
-index d8c88da..9dcce7a 100644
+index d8c88da..406e340 100644
 --- a/VtNetCore/VirtualTerminal/VirtualTerminalController.cs
 +++ b/VtNetCore/VirtualTerminal/VirtualTerminalController.cs
 @@ -1983,8 +1983,22 @@
@@ -87,7 +87,7 @@ index d8c88da..9dcce7a 100644
 -            if (SavedCursorState != null)
 -                CursorState = SavedCursorState.Clone();
 +            var restoredState = (SavedCursorState != null)
-+                ? SavedCursorState
++                ? SavedCursorState.Clone()
 +                : new TerminalCursorState(TerminalAttribute.CreateDefault());
 +
 +            // Copy back settings that need to be kept.
