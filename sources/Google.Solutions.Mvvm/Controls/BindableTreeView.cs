@@ -309,39 +309,61 @@ namespace Google.Solutions.Mvvm.Controls
                                 //
                                 this.treeView.BeginUpdate();
 
+                                //
                                 // Clear any dummy node if present.
+                                //
                                 Debug.Assert(!this.Nodes.OfType<Node>().Any());
                                 DisposeAndClear(this.Nodes);
 
+                                //
                                 // Add nodes.
+                                //
                                 AddTreeNodesForModelNodes(children);
-
-                                this.lazyLoadResult.SetResult(children);
                             }
                             finally
                             {
                                 this.treeView.EndUpdate();
                             }
 
+                            //
                             // Observe for changes.
+                            //
                             if (children is INotifyCollectionChanged observable)
                             {
                                 observable.CollectionChanged += ModelChildrenChanged;
                             }
+
+                            //
+                            // Notify waiters (but only the first time, not on retry).
+                            //
+                            if (!this.lazyLoadResult.Task.IsCompleted)
+                            {
+                                this.lazyLoadResult.SetResult(children);
+                            }
                         }
                         catch (Exception e)
                         {
+                            //
                             // Reset state so that the action can be retried.
+                            //
                             this.Collapse();
                             this.treeView.setExpandedFunc(this.Model, false);
                             this.lazyLoadTriggered = false;
 
+                            //
                             // Report error.
+                            //
                             this.treeView.LoadingChildrenFailed?.Invoke(
                                 this.Model,
                                 new ExceptionEventArgs(e));
 
-                            this.lazyLoadResult.SetException(e);
+                            //
+                            // Notify waiters (but only the first time, not on retry).
+                            //
+                            if (!this.lazyLoadResult.Task.IsCompleted)
+                            {
+                                this.lazyLoadResult.SetException(e);
+                            }
                         }
                     },
                     CancellationToken.None,

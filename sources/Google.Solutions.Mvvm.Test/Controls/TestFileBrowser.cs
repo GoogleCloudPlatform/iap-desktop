@@ -54,7 +54,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             file.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
             file.SetupGet(i => i.Type).Returns(DirectoryType);
             file.SetupGet(i => i.Size).Returns(1);
-            file.SetupGet(i => i.IsExpanded).Returns(true);
+            file.SetupGet(i => i.IsExpanded).Returns(false);
 
             return file;
         }
@@ -104,6 +104,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 {
                     Dock = DockStyle.Fill
                 };
+                form.Controls.Add(browser);
 
                 var fileSystem = CreateFileSystemWithEmptyRoot().Object;
 
@@ -113,6 +114,52 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     () => browser.Bind(fileSystem));
             }
         }
+
+        [Test]
+        public void WhenListingFilesFails_ThenBindRaisesNavigationFailedEvent()
+        {
+            var root = new Mock<IFileItem>();
+            root.SetupGet(i => i.Name).Returns("Item");
+            root.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
+            root.SetupGet(i => i.Type).Returns(DirectoryType);
+            root.SetupGet(i => i.Size).Returns(1);
+            root.SetupGet(i => i.IsExpanded).Returns(true);
+
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsIn<IFileItem>(root.Object)))
+                .ThrowsAsync(new ApplicationException("TEST"));
+
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+
+                bool eventRaised = false;
+                browser.NavigationFailed += (sender, args) =>
+                {
+                    Assert.AreSame(browser, sender);
+                    Assert.IsInstanceOf<ApplicationException>(args.Exception.Unwrap());
+                    eventRaised = true;
+                };
+
+                browser.Bind(fileSystem.Object);
+
+                Application.DoEvents();
+                Assert.IsTrue(eventRaised);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Bind - observation.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenDirectoryAdded_ThenDirectoryTreeIsUpdated()
@@ -140,6 +187,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 {
                     Dock = DockStyle.Fill
                 };
+                form.Controls.Add(browser);
 
                 browser.NavigationFailed += (sender, args) => Assert.Fail();
 
@@ -182,6 +230,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 {
                     Dock = DockStyle.Fill
                 };
+                form.Controls.Add(browser);
 
                 browser.NavigationFailed += (sender, args) => Assert.Fail();
 
@@ -201,51 +250,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // NavigationFailed.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenListingFilesFails_ThenNavigationFailedEventIsRaised()
-        {
-            var root = new Mock<IFileItem>();
-            root.SetupGet(i => i.Name).Returns("Item");
-            root.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
-            root.SetupGet(i => i.Type).Returns(DirectoryType);
-            root.SetupGet(i => i.Size).Returns(1);
-            root.SetupGet(i => i.IsExpanded).Returns(true);
-
-            var fileSystem = new Mock<IFileSystem>();
-            fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
-            fileSystem
-                .Setup(fs => fs.ListFilesAsync(It.IsIn<IFileItem>(root.Object)))
-                .ThrowsAsync(new ApplicationException("TEST"));
-
-            using (var form = new Form()
-            {
-                Size = new Size(800, 600)
-            })
-            {
-                var browser = new FileBrowser()
-                {
-                    Dock = DockStyle.Fill
-                };
-
-                bool eventRaised = false;
-                browser.NavigationFailed += (sender, args) =>
-                {
-                    Assert.AreSame(browser, sender);
-                    Assert.IsInstanceOf<ApplicationException>(args.Exception.Unwrap());
-                    eventRaised = true;
-                };
-
-                browser.Bind(fileSystem.Object);
-
-                Application.DoEvents();
-                Assert.IsTrue(eventRaised);
-            }
-        }
-
-        //---------------------------------------------------------------------
         // CurrentDirectory.
         //---------------------------------------------------------------------
 
@@ -261,17 +265,19 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 {
                     Dock = DockStyle.Fill
                 };
+                form.Controls.Add(browser);
 
                 var fileSystem = CreateFileSystemWithEmptyRoot().Object;
                 browser.Bind(fileSystem);
                 Application.DoEvents();
 
                 Assert.AreSame(fileSystem.Root, browser.CurrentDirectory);
+                Assert.AreEqual("/Item", browser.CurrentPath);
             }
         }
 
         [Test]
-        public async Task WhenBrowsingSubfolder_ThenCurrentDirectoryIsUpdated()
+        public async Task WhenPathInvalid_ThenBrowseDirectoryRaisesNavigationFailedEvent()
         {
             using (var form = new Form()
             {
@@ -282,6 +288,45 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 {
                     Dock = DockStyle.Fill
                 };
+                form.Controls.Add(browser);
+
+                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
+                browser.Bind(fileSystem);
+                Application.DoEvents();
+
+                form.Show();
+
+                Exception exception = null;
+                browser.NavigationFailed += (s, e) =>
+                {
+                    exception = e.Exception;
+                };
+
+                try
+                {
+                    await browser
+                        .BrowseDirectoryAsync(new[] { "Item", "Does not exist" })
+                        .ConfigureAwait(true);
+                    Assert.Fail("Expected exception");
+                }
+                catch (ArgumentException)
+                { }
+            }
+        }
+
+        [Test]
+        public async Task WhenBrowsedToSubfolder_ThenCurrentDirectoryAndPathIsUpdated()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
 
                 var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
                 browser.Bind(fileSystem);
@@ -292,6 +337,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 {
                     currentDirectory = browser.CurrentDirectory;
                 };
+
+                form.Show();
 
                 await browser
                     .BrowseDirectoryAsync(new[] { "Item", "Item" })

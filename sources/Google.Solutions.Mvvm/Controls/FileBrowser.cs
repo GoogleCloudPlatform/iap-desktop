@@ -65,7 +65,7 @@ namespace Google.Solutions.Mvvm.Controls
         // Events.
         //---------------------------------------------------------------------
 
-        public event EventHandler<ExceptionEventArgs> NavigationFailed;
+        public event EventHandler<ExceptionEventArgs> NavigationFailed; // TODO: Rename
         public event EventHandler CurrentDirectoryChanged;
 
         protected void OnNavigationFailed(Exception e)
@@ -238,16 +238,6 @@ namespace Google.Solutions.Mvvm.Controls
                 }
             }
         }
-
-        //public Task BrowseAsync(IFileItem item)
-        //{
-        //    if (item.Type.IsFile)
-        //    {
-        //        return Task.CompletedTask;
-        //    }
-
-        //    return BrowseAsync(item.Name);
-        //}
 
         public async Task BrowseRelativeDirectoryAsync(string directoryName)
         {
