@@ -21,8 +21,6 @@ namespace Google.Solutions.Mvvm.Controls
     {
         private readonly FileTypeCache fileTypeCache = new FileTypeCache();
 
-        private IFileItem currentFolder;
-
         private IFileSystem fileSystem = null;
         private readonly IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
             new Dictionary<IFileItem, ObservableCollection<IFileItem>>();
@@ -67,35 +65,30 @@ namespace Google.Solutions.Mvvm.Controls
         // Events.
         //---------------------------------------------------------------------
 
-        public EventHandler<ExceptionEventArgs> NavigationFailed;
-        public EventHandler CurrentFolderChanged;
+        public event EventHandler<ExceptionEventArgs> NavigationFailed;
+        public event EventHandler CurrentDirectoryChanged;
 
         protected void OnNavigationFailed(Exception e)
             => this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));
 
-        protected void OnCurrentFolderChanged()
-            => this.CurrentFolderChanged?.Invoke(this, EventArgs.Empty);
+        protected void OnCurrentDirectoryChanged()
+            => this.CurrentDirectoryChanged?.Invoke(this, EventArgs.Empty);
 
         //---------------------------------------------------------------------
         // Selection properties.
         //---------------------------------------------------------------------
 
+        private Breadcrumb navigationState;
+
         // TODO: Add obvservable property: SelectedFiles
         // TODO: Context menu
 
         /// <summary>
-        /// Folder that is currently being viewed.
+        /// Directory that is currently being viewed.
         /// </summary>
-        public IFileItem CurrentFolder
-        {
-            get => this.currentFolder;
-            private set
-            {
-                this.currentFolder = value;
-                OnCurrentFolderChanged();
-            }
-        }
+        public IFileItem CurrentDirectory => this.navigationState.Directory;
 
+        public string CurrentPath => this.navigationState.Path;
 
         //---------------------------------------------------------------------
         // Data Binding.
@@ -115,6 +108,8 @@ namespace Google.Solutions.Mvvm.Controls
                 children = await this.fileSystem
                     .ListFilesAsync(folder)
                     .ConfigureAwait(true);
+                Debug.Assert(children != null);
+
                 this.listFilesCache[folder] = children;
             }
 
@@ -160,9 +155,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.root = new Breadcrumb(
                 null,
                 this.directoryTree.Nodes.Cast<DirectoryTreeView.Node>().First());
-            this.current = this.root;
-
-            this.CurrentFolder = this.fileSystem.Root;
+            this.navigationState = this.root;
 
             //
             // Bind file list.
@@ -173,17 +166,32 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.BindColumn(2, i => i.Type.TypeName);
             this.fileList.BindColumn(3, i => ByteSizeFormatter.Format(i.Size));
 
-            this.directoryTree.SelectedModelNodeChanged += async (s, _) =>
+            this.directoryTree.SelectedModelNodeChanged += async (s, _) => // TODO: Add catch handler to callbacks
             {
-                if (this.directoryTree.SelectedModelNode != null)
+                if (this.directoryTree.SelectedNode is DirectoryTreeView.Node node &&
+                    node != null)
                 {
-                    await OpenFolderAsync((DirectoryTreeView.Node)this.directoryTree.SelectedNode).ConfigureAwait(true);
+                    //
+                    // The node could be anywhere, so build new breadcrumb path.
+                    //
+                    Breadcrumb CreatePathTo(DirectoryTreeView.Node n)
+                    {
+                        return new Breadcrumb(
+                            n.Parent == null
+                                ? null
+                                : CreatePathTo((DirectoryTreeView.Node)n.Parent),
+                            n);
+                    }
+
+                    this.navigationState = CreatePathTo(node);
+
+                    await BrowseContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
                 }
             };
             this.fileList.DoubleClick += async (s, _) =>
             {
-                this.CurrentFolder.IsExpanded = true;
-                await OpenFolderAsync(this.fileList.SelectedModelItem.Name).ConfigureAwait(true);
+                this.CurrentDirectory.IsExpanded = true;
+                await BrowseRelativeDirectoryAsync(this.fileList.SelectedModelItem.Name).ConfigureAwait(true);
             };
             this.fileList.KeyDown += async (s, args) =>
             {
@@ -195,8 +203,8 @@ namespace Google.Solutions.Mvvm.Controls
                     //
                     // Go down one level.
                     //
-                    this.CurrentFolder.IsExpanded = true;
-                    await OpenFolderAsync(this.fileList.SelectedModelItem.Name).ConfigureAwait(true);
+                    this.CurrentDirectory.IsExpanded = true;
+                    await BrowseRelativeDirectoryAsync(this.fileList.SelectedModelItem.Name).ConfigureAwait(true);
                 }
                 else if (args.KeyCode == Keys.Up && args.Alt &&
                     this.directoryTree.SelectedNode?.Parent != null)
@@ -211,131 +219,69 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.LoadingChildrenFailed += (s, args) => OnNavigationFailed(args.Exception);
         }
 
-        //public async Task JumpToFolderAsync(IEnumerable<string> path)
-        //{
-        //    //
-        //    // Start with the root.
-        //    //
-        //    if (this.fileSystem == null)
-        //    {
-        //        throw new InvalidOperationException("No file system has been bound");
-        //    }
-
-        //    Debug.Assert(this.root != null);
-
-        //    var current = this.root;
-
-        //    foreach (var pathItem in path)
-        //    {
-        //        //
-        //        // Expand the node and wait for it to be populated.
-        //        //
-        //        await current.TreeNode
-        //            .ExpandAsync()
-        //            .ConfigureAwait(true);
-                
-        //        //
-        //        // Make it visible.
-        //        //
-        //        current.TreeNode.EnsureVisible();
-
-        //        //
-        //        // Drill down.
-        //        //
-        //        var child = current.TreeNode.Nodes
-        //            .Cast<DirectoryTreeView.Node>()
-        //            .FirstOrDefault(n => n.Model.Name == pathItem);
-                
-        //        if (child == null)
-        //        {
-        //            throw new ArgumentException($"The folder '{0}' does not exist");
-        //        }
-
-        //        current = new Breadcrumb(current, child);
-        //    }
-
-        //    Debug.Assert(current != null);
-        //    Debug.Assert(!current.Folder.Type.IsFile);
-
-        //    await BrowseFolder(current.Folder);
-        //}
-
-        private Breadcrumb current;
-
-        public async Task OpenFolderAsync(IEnumerable<string> path)
+        public async Task BrowseDirectoryAsync(IEnumerable<string> path)
         {
             //
             // Reset to root.
             //
-            this.current = this.root;
+            this.navigationState = this.root;
 
-            foreach (var pathItem in path)
+            if (path == null)
             {
-                await OpenFolderAsync(pathItem).ConfigureAwait(true);
+                await BrowseContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
+            }
+            else
+            {
+                foreach (var pathItem in path)
+                {
+                    await BrowseRelativeDirectoryAsync(pathItem).ConfigureAwait(true);
+                }
             }
         }
 
-        public Task OpenFolderAsync(IFileItem item)
-        {
-            if (item.Type.IsFile)
-            {
-                return Task.CompletedTask;
-            }
+        //public Task BrowseAsync(IFileItem item)
+        //{
+        //    if (item.Type.IsFile)
+        //    {
+        //        return Task.CompletedTask;
+        //    }
 
-            return OpenFolderAsync(item.Name);
-        }
+        //    return BrowseAsync(item.Name);
+        //}
 
-        public async Task OpenFolderAsync(string folderName) // TODO: folder -> directory
+        public async Task BrowseRelativeDirectoryAsync(string directoryName)
         {
             //
             // Expand the node and wait for it to be populated.
             //
-            await this.current.TreeNode
+            await this.navigationState.TreeNode
                 .ExpandAsync()
                 .ConfigureAwait(true);
 
             //
             // Make it visible.
             //
-            this.current.TreeNode.EnsureVisible();
+            this.navigationState.TreeNode.EnsureVisible();
 
             //
             // Drill down.
             //
-            var child = this.current.TreeNode.Nodes
+            var child = this.navigationState.TreeNode.Nodes
                 .Cast<DirectoryTreeView.Node>()
-                .FirstOrDefault(n => n.Model.Name == folderName);
+                .FirstOrDefault(n => n.Model.Name == directoryName);
 
             if (child == null)
             {
-                throw new ArgumentException($"The folder '{folderName}' does not exist");
+                throw new ArgumentException($"The folder '{directoryName}' does not exist");
             }
 
-            this.current = new Breadcrumb(current, child);
+            this.navigationState = new Breadcrumb(navigationState, child);
 
-            await BrowseFolderContentsAsync(this.current.Folder).ConfigureAwait(true);
+            await BrowseContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
         }
 
-        private async Task OpenFolderAsync(DirectoryTreeView.Node node)
-        {
-            //
-            // The node could be anywhere, so build new breadcrumb path.
-            //
-            Breadcrumb CreatePathTo(DirectoryTreeView.Node n)
-            {
-                return new Breadcrumb(
-                    n.Parent == null
-                        ? null
-                        : CreatePathTo((DirectoryTreeView.Node)n.Parent),
-                    n);
-            }
 
-            this.current = CreatePathTo(node);
-
-            await BrowseFolderContentsAsync(this.current.Folder).ConfigureAwait(true);
-        }
-
-        private async Task BrowseFolderContentsAsync(IFileItem folder)
+        private async Task BrowseContentsAsync(IFileItem folder)
         {
             Debug.Assert(!folder.Type.IsFile);
 
@@ -344,48 +290,14 @@ namespace Google.Solutions.Mvvm.Controls
             //
             var files = await ListFilesAsync(folder).ConfigureAwait(true);
             this.fileList.BindCollection(files);
+
+            OnCurrentDirectoryChanged();
         }
-
-
-        //private async Task BrowseFolder(IFileItem folder)
-        //{
-        //    if (folder.Type.IsFile)
-        //    {
-        //        return;
-        //    }
-
-        //    try
-        //    {
-        //        var files = await ListFilesAsync(folder).ConfigureAwait(true);
-        //        this.fileList.BindCollection(files);
-
-        //        //
-        //        // Try to select folder in tree. This only works if the nodes
-        //        // have been loaded already, so it's on a best-effort basis.
-        //        //
-        //        if (this.directoryTree.SelectedModelNode == this.CurrentFolder)
-        //        {
-        //            var treeNode = ((BindableTreeView<IFileItem>.Node)this.directoryTree.SelectedNode)
-        //                .FindTreeNodeByModelNode(folder);
-        //            if (treeNode != null)
-        //            {
-        //                this.directoryTree.SelectedNode = treeNode;
-        //            }
-        //        }
-
-        //        this.CurrentFolder = folder;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        OnNavigationFailed(e);
-        //    }
-        //}
-
 
         public class Breadcrumb
         {
             public Breadcrumb Parent { get; }
-            public IFileItem Folder => this.TreeNode.Model;
+            public IFileItem Directory => this.TreeNode.Model;
             internal DirectoryTreeView.Node TreeNode { get; }
 
             internal Breadcrumb(
@@ -395,6 +307,10 @@ namespace Google.Solutions.Mvvm.Controls
                 this.Parent = parent;
                 this.TreeNode = treeNode.ThrowIfNull(nameof(treeNode));
             }
+
+            public string Path =>
+                (this.Parent?.Path ?? string.Empty) + "/" + this.Directory.Name;
+                
         }
     }
 }

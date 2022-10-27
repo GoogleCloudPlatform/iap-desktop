@@ -65,6 +65,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 browser.Bind(fileSystem);
 
+                browser.OnControlPropertyChange(
+                    b => b.CurrentDirectory,
+                    path => form.Text = browser.CurrentPath);
+
                 form.Controls.Add(browser);
                 form.ShowDialog();
             }

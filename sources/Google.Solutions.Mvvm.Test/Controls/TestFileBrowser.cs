@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         private static readonly FileType DirectoryType 
             = new FileType("Directory", false, SystemIcons.Application.ToBitmap());
 
-        private static Mock<IFileItem> CreateFolder()
+        private static Mock<IFileItem> CreateDirectory()
         {
             var file = new Mock<IFileItem>();
             file.SetupGet(i => i.Name).Returns("Item");
@@ -61,7 +61,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
         private static Mock<IFileSystem> CreateFileSystemWithEmptyRoot()
         {
-            var root = CreateFolder();
+            var root = CreateDirectory();
 
             var fileSystem = new Mock<IFileSystem>();
             fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
@@ -72,21 +72,21 @@ namespace Google.Solutions.Mvvm.Test.Controls
             return fileSystem;
         }
 
-        //private static Mock<IFileSystem> CreateFileSystemWithInfinitelyNestedFolders()
-        //{
-        //    var root = CreateFolder();
+        private static Mock<IFileSystem> CreateFileSystemWithInfinitelyNestedDirectories()
+        {
+            var root = CreateDirectory();
 
-        //    var fileSystem = new Mock<IFileSystem>();
-        //    fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
-        //    fileSystem
-        //        .Setup(fs => fs.ListFilesAsync(It.IsIn<IFileItem>(root.Object)))
-        //        .ReturnsAsync(new ObservableCollection<IFileItem>()
-        //        {
-        //            CreateFolder().Object
-        //        });
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsAny<IFileItem>()))
+                .ReturnsAsync(new ObservableCollection<IFileItem>()
+                {
+                    CreateDirectory().Object
+                });
 
-        //    return fileSystem;
-        //}
+            return fileSystem;
+        }
 
         //---------------------------------------------------------------------
         // Bind.
@@ -117,7 +117,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void WhenDirectoryAdded_ThenDirectoryTreeIsUpdated()
         {
-            var root = CreateFolder();
+            var root = CreateDirectory();
             root.SetupGet(f => f.IsExpanded).Returns(true);
 
             var children = new ObservableCollection<IFileItem>();
@@ -149,7 +149,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Assert.AreEqual(1, browser.Directories.Nodes.Count);
                 Assert.AreEqual(0, browser.Directories.Nodes[0].Nodes.Count);
 
-                children.Add(CreateFolder().Object);
+                children.Add(CreateDirectory().Object);
                 Application.DoEvents();
 
                 Assert.AreEqual(1, browser.Directories.Nodes[0].Nodes.Count);
@@ -157,9 +157,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public void WhenDirectoryAdded_ThenFileListIsUpdated()
+        public async Task WhenDirectoryAdded_ThenFileListIsUpdated()
         {
-            var root = CreateFolder();
+            var root = CreateDirectory();
             root.SetupGet(f => f.IsExpanded).Returns(true);
 
             var children = new ObservableCollection<IFileItem>();
@@ -186,12 +186,13 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 browser.NavigationFailed += (sender, args) => Assert.Fail();
 
                 browser.Bind(fileSystem.Object);
+                await browser.BrowseDirectoryAsync(null);
                 Application.DoEvents();
 
                 // Root directory is empty.
                 Assert.AreEqual(0, browser.Files.Items.Count);
 
-                children.Add(CreateFolder().Object);
+                children.Add(CreateDirectory().Object);
                 Application.DoEvents();
 
                 // Root directory contains 1 item..
@@ -245,11 +246,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // CurrentFolder.
+        // CurrentDirectory.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenBound_ThenCurrentFolderSetToRoot()
+        public void WhenBound_ThenCurrentDirectorySetToRoot()
         {
             using (var form = new Form()
             {
@@ -261,19 +262,44 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     Dock = DockStyle.Fill
                 };
 
-                bool eventRaised = false;
-                browser.CurrentFolderChanged += (sender, args) =>
-                {
-                    eventRaised = true;
-                };
-
                 var fileSystem = CreateFileSystemWithEmptyRoot().Object;
                 browser.Bind(fileSystem);
-
                 Application.DoEvents();
 
-                Assert.AreSame(fileSystem.Root, browser.CurrentFolder);
-                Assert.IsTrue(eventRaised);
+                Assert.AreSame(fileSystem.Root, browser.CurrentDirectory);
+            }
+        }
+
+        [Test]
+        public async Task WhenBrowsingSubfolder_ThenCurrentDirectoryIsUpdated()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+
+                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
+                browser.Bind(fileSystem);
+                Application.DoEvents();
+
+                IFileItem currentDirectory = null;
+                browser.CurrentDirectoryChanged += (s, e) =>
+                {
+                    currentDirectory = browser.CurrentDirectory;
+                };
+
+                await browser
+                    .BrowseDirectoryAsync(new[] { "Item", "Item" })
+                    .ConfigureAwait(true);
+
+                Application.DoEvents();
+                Assert.IsNotNull(currentDirectory);
+                Assert.AreEqual("/Item/Item/Item", browser.CurrentPath);
             }
         }
     }

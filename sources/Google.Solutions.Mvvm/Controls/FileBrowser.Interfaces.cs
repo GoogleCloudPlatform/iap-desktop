@@ -39,7 +39,8 @@ namespace Google.Solutions.Mvvm.Controls
             IFileItem Root { get; }
 
             /// <summary>
-            /// List files and folders.
+            /// List files and directory. 
+            /// Returns an empty collection if the directory is empty.
             /// </summary>
             Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem folder);
         }
