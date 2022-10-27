@@ -47,12 +47,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         private static readonly FileType SampleFileType 
             = new FileType("Sample", false, SystemIcons.Application.ToBitmap());
 
-        //---------------------------------------------------------------------
-        // Bind.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenBoundAlready_ThenBindThrowsException()
+        private static Mock<IFileSystem> CreateFileSystemWithEmptyRoot()
         {
             var root = new Mock<IFileItem>();
             root.SetupGet(i => i.Name).Returns("Item");
@@ -61,6 +56,22 @@ namespace Google.Solutions.Mvvm.Test.Controls
             root.SetupGet(i => i.Size).Returns(1);
             root.SetupGet(i => i.IsExpanded).Returns(true);
 
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsIn<IFileItem>(root.Object)))
+                .ReturnsAsync(new ObservableCollection<IFileItem>());
+
+            return fileSystem;
+        }
+
+        //---------------------------------------------------------------------
+        // Bind.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenBoundAlready_ThenBindThrowsException()
+        {
             using (var form = new Form()
             {
                 Size = new Size(800, 600)
@@ -71,14 +82,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     Dock = DockStyle.Fill
                 };
 
-                browser.Bind(
-                    root.Object,
-                    i => Task.FromResult(new ObservableCollection<IFileItem>())));
+                var fileSystem = CreateFileSystemWithEmptyRoot().Object;
+
+                browser.Bind(fileSystem);
 
                 Assert.Throws<InvalidOperationException>(
-                    () => browser.Bind(
-                        root.Object,
-                        i => Task.FromResult(new ObservableCollection<IFileItem>())));
+                    () => browser.Bind(fileSystem));
             }
         }
 
@@ -95,6 +104,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
             root.SetupGet(i => i.Type).Returns(SampleFileType);
             root.SetupGet(i => i.Size).Returns(1);
             root.SetupGet(i => i.IsExpanded).Returns(true);
+
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsIn<IFileItem>(root.Object)))
+                .ThrowsAsync(new ApplicationException("TEST"));
 
             using (var form = new Form()
             {
@@ -114,9 +129,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     eventRaised = true;
                 };
 
-                browser.Bind(
-                    root.Object,
-                    i => Task.FromException<ObservableCollection<IFileItem>>(new ApplicationException("test")));
+                browser.Bind(fileSystem.Object);
 
                 Application.DoEvents();
                 Assert.IsTrue(eventRaised);
@@ -130,13 +143,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void WhenBound_ThenCurrentFolderSetToRoot()
         {
-            var root = new Mock<IFileItem>();
-            root.SetupGet(i => i.Name).Returns("Item");
-            root.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
-            root.SetupGet(i => i.Type).Returns(SampleFileType);
-            root.SetupGet(i => i.Size).Returns(1);
-            root.SetupGet(i => i.IsExpanded).Returns(true);
-
             using (var form = new Form()
             {
                 Size = new Size(800, 600)
@@ -153,13 +159,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     eventRaised = true;
                 };
 
-                browser.Bind(
-                    root.Object,
-                    i => Task.FromResult(new ObservableCollection<IFileItem>()));
+                var fileSystem = CreateFileSystemWithEmptyRoot().Object;
+                browser.Bind(fileSystem);
 
                 Application.DoEvents();
 
-                Assert.AreSame(root.Object, browser.CurrentFolder);
+                Assert.AreSame(fileSystem.Root, browser.CurrentFolder);
                 Assert.IsTrue(eventRaised);
             }
         }

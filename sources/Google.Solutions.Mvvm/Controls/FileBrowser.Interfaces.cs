@@ -23,11 +23,27 @@ using System;
 using System.IO;
 using System.ComponentModel;
 using Google.Solutions.Mvvm.Shell;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Google.Solutions.Mvvm.Controls
 {
     public partial class FileBrowser
     {
+        public interface IFileSystem
+        {
+            /// <summary>
+            /// Root of the file system.
+            /// </summary>
+            IFileItem Root { get; }
+
+            /// <summary>
+            /// List files and folders.
+            /// </summary>
+            Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem folder);
+        }
+
         /// <summary>
         /// A file or directory.
         /// </summary>

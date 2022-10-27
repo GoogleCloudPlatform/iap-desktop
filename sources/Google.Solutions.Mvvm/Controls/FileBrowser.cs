@@ -23,7 +23,7 @@ namespace Google.Solutions.Mvvm.Controls
 
         private IFileItem currentFolder;
 
-        private Func<IFileItem, Task<ObservableCollection<IFileItem>>> listFilesFunc;
+        private IFileSystem fileSystem = null;
         private readonly IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
             new Dictionary<IFileItem, ObservableCollection<IFileItem>>();
 
@@ -97,7 +97,7 @@ namespace Google.Solutions.Mvvm.Controls
 
         private async Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem folder)
         {
-            Debug.Assert(this.listFilesFunc != null);
+            Debug.Assert(this.fileSystem != null);
 
             //
             // NB. Both controls must use the same file items so that expansion
@@ -106,31 +106,30 @@ namespace Google.Solutions.Mvvm.Controls
             //
             if (!this.listFilesCache.TryGetValue(folder, out var children))
             {
-                children = await this.listFilesFunc(folder).ConfigureAwait(true);
+                children = await this.fileSystem
+                    .ListFilesAsync(folder)
+                    .ConfigureAwait(true);
                 this.listFilesCache[folder] = children;
             }
 
             return children;
         }
 
-        public void Bind(
-            IFileItem root,
-            Func<IFileItem, Task<ObservableCollection<IFileItem>>> listFiles)
+        public void Bind(IFileSystem fileSystem)
         {
-            root.ThrowIfNull(nameof(root));
-            listFiles.ThrowIfNull(nameof(listFiles));
+            fileSystem.ThrowIfNull(nameof(fileSystem));
 
-            if (this.listFilesFunc != null)
+            if (this.fileSystem != null)
             {
                 throw new InvalidOperationException("Control is already bound");
             }
 
-            if (root.Type.IsFile)
+            if (fileSystem.Root.Type.IsFile)
             {
                 throw new ArgumentException("The root item must be a folder");
             }
 
-            this.listFilesFunc = listFiles;
+            this.fileSystem = fileSystem;
 
             //
             // Bind directory tree.
@@ -151,11 +150,11 @@ namespace Google.Solutions.Mvvm.Controls
                     Predicate = f => !f.Type.IsFile
                 };
             });
-            this.directoryTree.Bind(root);
+            this.directoryTree.Bind(this.fileSystem.Root);
             this.directoryTree.BindImageIndex(i => GetImageIndex(i.Type), true);
             this.directoryTree.BindSelectedImageIndex(i => GetImageIndex(i.Type), true);
 
-            this.CurrentFolder = root;
+            this.CurrentFolder = this.fileSystem.Root;
 
             //
             // Bind file list.

@@ -46,84 +46,91 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void TestUI() // TODO: Remove test case
         {
-            using (var fileTypeCache = new FileTypeCache())
+            using (var form = new Form()
             {
-                using (var form = new Form()
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
                 {
-                    Size = new Size(800, 600)
-                })
-                {
-                    var browser = new FileBrowser()
-                    {
-                        Dock = DockStyle.Fill
-                    };
+                    Dock = DockStyle.Fill
+                };
 
-                    var root = new LocalFileItem(
-                        new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.Personal)),
-                        fileTypeCache);
+                var fileSystem = new LocalFileSystem(
+                    new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.Personal)));
 
-                    browser.NavigationFailed += (s, e) => MessageBox.Show(
-                        form,
-                        e.Exception.Message);
+                browser.NavigationFailed += (s, e) => MessageBox.Show(
+                    form,
+                    e.Exception.Message);
 
-                    browser.Bind(
-                        root,
-                        async item =>
-                        {
-                            await Task.Delay(750);
-                            return (((LocalFileItem)item).GetChildren());
-                        });
+                browser.Bind(fileSystem);
 
-                    form.Controls.Add(browser);
-                    form.ShowDialog();
-                }
+                form.Controls.Add(browser);
+                form.ShowDialog();
+            }
+        }
+
+        private class LocalFileSystem : IFileSystem
+        {
+            private readonly FileTypeCache fileTypeCache = new FileTypeCache();
+            private readonly DirectoryInfo directory;
+
+            public IFileItem Root { get; }
+
+            public LocalFileSystem(DirectoryInfo directory)
+            {
+                this.directory = directory;
+                this.Root = new LocalFileItem(directory, this.fileTypeCache);
+            }
+
+            public async Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem folder)
+            {
+                var localFolder = (LocalFileItem)folder;
+                var directories = (localFolder.FileInfo as DirectoryInfo)?
+                    .GetDirectories()
+                    .EnsureNotNull()
+                    .Select(f => new LocalFileItem(f, this.fileTypeCache))
+                    .ToList();
+
+                var files = (localFolder.FileInfo as DirectoryInfo)?
+                    .GetFiles()
+                    .EnsureNotNull()
+                    .Select(f => new LocalFileItem(f, this.fileTypeCache))
+                    .ToList();
+
+                await Task.Delay(750);
+                return (new ObservableCollection<IFileItem>(directories.Concat(files)));
             }
         }
 
         private class LocalFileItem : ViewModelBase, IFileItem
         {
             private bool expanded;
-            private readonly FileSystemInfo fileInfo;
             private readonly FileTypeCache fileTypeCache;
+
+            internal FileSystemInfo FileInfo { get; }
 
             public LocalFileItem(
                 FileSystemInfo fileInfo,
                 FileTypeCache fileTypeCache)
             {
-                this.fileInfo = fileInfo;
+                this.FileInfo = fileInfo;
                 this.fileTypeCache = fileTypeCache;
             }
 
-            public ObservableCollection<IFileItem> GetChildren()
-            {
-                var directories = (this.fileInfo as DirectoryInfo)?
-                    .GetDirectories()
-                    .EnsureNotNull()
-                    .Select(f => new LocalFileItem(f, this.fileTypeCache))
-                    .ToList();
+            public string Name => this.FileInfo.Name;
 
-                var files = (this.fileInfo as DirectoryInfo)?
-                    .GetFiles()
-                    .EnsureNotNull()
-                    .Select(f => new LocalFileItem(f, this.fileTypeCache))
-                    .ToList();
+            public bool IsFile => this.FileInfo is FileInfo;
 
-                return (new ObservableCollection<IFileItem>(directories.Concat(files)));
-            }
+            public FileAttributes Attributes => this.FileInfo.Attributes;
 
-            public string Name => this.fileInfo.Name;
+            public DateTime LastModified => this.FileInfo.LastWriteTimeUtc;
 
-            public bool IsFile => this.fileInfo is FileInfo;
-
-            public FileAttributes Attributes => this.fileInfo.Attributes;
-
-            public DateTime LastModified => this.fileInfo.LastWriteTimeUtc;
-
-            public ulong Size => (ulong)((this.fileInfo as FileInfo)?.Length ?? 0);
+            public ulong Size => (ulong)((this.FileInfo as FileInfo)?.Length ?? 0);
 
             public FileType Type => this.fileTypeCache.Lookup(
-                this.fileInfo.Name,
-                this.fileInfo.Attributes, 
+                this.FileInfo.Name,
+                this.FileInfo.Attributes, 
                 FileType.IconFlags.None);
 
             public bool IsExpanded
