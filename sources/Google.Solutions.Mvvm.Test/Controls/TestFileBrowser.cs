@@ -22,17 +22,12 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
-using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -235,7 +230,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 browser.NavigationFailed += (sender, args) => Assert.Fail();
 
                 browser.Bind(fileSystem.Object);
-                await browser.BrowseDirectoryAsync(null);
+                await browser.NavigateAsync((IEnumerable<string>)null);
                 Application.DoEvents();
 
                 // Root directory is empty.
@@ -277,7 +272,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         }
 
         [Test]
-        public async Task WhenPathInvalid_ThenBrowseDirectoryRaisesNavigationFailedEvent()
+        public async Task WhenPathInvalid_ThenNavigateRaisesNavigationFailedEvent()
         {
             using (var form = new Form()
             {
@@ -305,7 +300,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 try
                 {
                     await browser
-                        .BrowseDirectoryAsync(new[] { "Item", "Does not exist" })
+                        .NavigateAsync(new[] { "Item", "Does not exist" })
                         .ConfigureAwait(true);
                     Assert.Fail("Expected exception");
                 }
@@ -341,7 +336,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.Show();
 
                 await browser
-                    .BrowseDirectoryAsync(new[] { "Item", "Item" })
+                    .NavigateAsync(new[] { "Item", "Item" })
                     .ConfigureAwait(true);
 
                 Application.DoEvents();

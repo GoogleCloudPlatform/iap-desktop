@@ -1,17 +1,34 @@
-﻿using Google.Apis.Util;
-using Google.Solutions.Common.Util;
+﻿//
+// Copyright 2022 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Apis.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Mvvm.Shell.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -65,7 +82,7 @@ namespace Google.Solutions.Mvvm.Controls
         // Events.
         //---------------------------------------------------------------------
 
-        public event EventHandler<ExceptionEventArgs> NavigationFailed; // TODO: Rename
+        public event EventHandler<ExceptionEventArgs> NavigationFailed;
         public event EventHandler CurrentDirectoryChanged;
 
         protected void OnNavigationFailed(Exception e)
@@ -166,7 +183,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.BindColumn(2, i => i.Type.TypeName);
             this.fileList.BindColumn(3, i => ByteSizeFormatter.Format(i.Size));
 
-            this.directoryTree.SelectedModelNodeChanged += async (s, _) => // TODO: Add catch handler to callbacks
+            this.directoryTree.SelectedModelNodeChanged += async (s, _) =>
             {
                 if (this.directoryTree.SelectedNode is DirectoryTreeView.Node node &&
                     node != null)
@@ -185,13 +202,30 @@ namespace Google.Solutions.Mvvm.Controls
 
                     this.navigationState = CreatePathTo(node);
 
-                    await BrowseContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
+                    try
+                    {
+                        await ShowDirectoryContentsAsync(this.navigationState.Directory)
+                            .ConfigureAwait(true);
+                    }
+                    catch (Exception e)
+                    {
+                        OnNavigationFailed(e);
+                    }
                 }
             };
             this.fileList.DoubleClick += async (s, _) =>
             {
-                this.CurrentDirectory.IsExpanded = true;
-                await BrowseRelativeDirectoryAsync(this.fileList.SelectedModelItem.Name).ConfigureAwait(true);
+                try
+                {
+                    await NavigateAsync(this.fileList.SelectedModelItem.Name)
+                        .ConfigureAwait(true);
+
+                    this.CurrentDirectory.IsExpanded = true;
+                }
+                catch (Exception e)
+                {
+                    OnNavigationFailed(e);
+                }
             };
             this.fileList.KeyDown += async (s, args) =>
             {
@@ -204,7 +238,7 @@ namespace Google.Solutions.Mvvm.Controls
                     // Go down one level.
                     //
                     this.CurrentDirectory.IsExpanded = true;
-                    await BrowseRelativeDirectoryAsync(this.fileList.SelectedModelItem.Name).ConfigureAwait(true);
+                    await NavigateAsync(this.fileList.SelectedModelItem.Name).ConfigureAwait(true);
                 }
                 else if (args.KeyCode == Keys.Up && args.Alt &&
                     this.directoryTree.SelectedNode?.Parent != null)
@@ -219,7 +253,11 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.LoadingChildrenFailed += (s, args) => OnNavigationFailed(args.Exception);
         }
 
-        public async Task BrowseDirectoryAsync(IEnumerable<string> path)
+
+
+
+
+        public async Task NavigateAsync(IEnumerable<string> path)
         {
             //
             // Reset to root.
@@ -228,18 +266,18 @@ namespace Google.Solutions.Mvvm.Controls
 
             if (path == null)
             {
-                await BrowseContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
+                await ShowDirectoryContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
             }
             else
             {
                 foreach (var pathItem in path)
                 {
-                    await BrowseRelativeDirectoryAsync(pathItem).ConfigureAwait(true);
+                    await NavigateAsync(pathItem).ConfigureAwait(true);
                 }
             }
         }
 
-        public async Task BrowseRelativeDirectoryAsync(string directoryName)
+        public async Task NavigateAsync(string directoryName)
         {
             //
             // Expand the node and wait for it to be populated.
@@ -267,11 +305,11 @@ namespace Google.Solutions.Mvvm.Controls
 
             this.navigationState = new Breadcrumb(navigationState, child);
 
-            await BrowseContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
+            await ShowDirectoryContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
         }
 
 
-        private async Task BrowseContentsAsync(IFileItem folder)
+        private async Task ShowDirectoryContentsAsync(IFileItem folder)
         {
             Debug.Assert(!folder.Type.IsFile);
 
