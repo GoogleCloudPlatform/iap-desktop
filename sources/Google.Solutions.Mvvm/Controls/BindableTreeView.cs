@@ -178,7 +178,15 @@ namespace Google.Solutions.Mvvm.Controls
         {
             private readonly BindableTreeView<TModelNode> treeView;
             public TModelNode Model { get; }
+
+            //
+            // Flag indicating whether a lazy load has been kicked off (it
+            // might not be finished yet though).
+            //
             private bool lazyLoadTriggered = false;
+
+            private readonly TaskCompletionSource<ICollection<TModelNode>> lazyLoadResult
+                = new TaskCompletionSource<ICollection<TModelNode>>();
 
             private readonly IContainer bindings = new Container();
 
@@ -278,7 +286,7 @@ namespace Google.Solutions.Mvvm.Controls
                 }
             }
 
-            public void LazyLoadChildren()
+            private void LazyLoadChildren()
             {
                 if (this.lazyLoadTriggered)
                 {
@@ -307,6 +315,8 @@ namespace Google.Solutions.Mvvm.Controls
 
                                 // Add nodes.
                                 AddTreeNodesForModelNodes(children);
+
+                                this.lazyLoadResult.SetResult(children);
                             }
                             finally
                             {
@@ -330,6 +340,8 @@ namespace Google.Solutions.Mvvm.Controls
                             this.treeView.LoadingChildrenFailed?.Invoke(
                                 this.Model,
                                 new ExceptionEventArgs(e));
+
+                            this.lazyLoadResult.SetException(e);
                         }
                     },
                     CancellationToken.None,
@@ -341,6 +353,18 @@ namespace Google.Solutions.Mvvm.Controls
                     // Therefore, use a task scheduler object captured previously.
                     // Cf. https://stackoverflow.com/questions/4659257/
                     this.treeView.taskScheduler);
+            }
+
+            public Task ExpandAsync()
+            {
+                Expand();
+
+                //
+                // Return task indicating the lazy load result. If the
+                // node was expanded already/before, then this task might
+                // have been completed for a while.
+                //
+                return this.lazyLoadResult.Task;
             }
 
             private void AddTreeNodesForModelNodes(IEnumerable<TModelNode> children)

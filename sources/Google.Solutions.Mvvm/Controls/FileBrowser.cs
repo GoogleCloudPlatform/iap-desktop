@@ -27,6 +27,9 @@ namespace Google.Solutions.Mvvm.Controls
         private readonly IDictionary<IFileItem, ObservableCollection<IFileItem>> listFilesCache =
             new Dictionary<IFileItem, ObservableCollection<IFileItem>>();
 
+        internal DirectoryTreeView Directories => this.directoryTree;
+        internal FileListView Files => this.fileList;
+
         //---------------------------------------------------------------------
         // Privates.
         //---------------------------------------------------------------------
@@ -138,9 +141,6 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.BindText(i => i.Name);
             this.directoryTree.BindIsExpanded(i => i.IsExpanded);
 
-            // TODO: Project to filter out files
-            //  change treeview to use ICollection and test for INotify*Changed
-
             this.directoryTree.BindChildren(async item =>
             {
                 var files = await ListFilesAsync(item).ConfigureAwait(true);
@@ -169,13 +169,13 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 if (this.directoryTree.SelectedModelNode != null)
                 {
-                    await OpenFolder(this.directoryTree.SelectedModelNode).ConfigureAwait(true);
+                    await BrowseFolder(this.directoryTree.SelectedModelNode).ConfigureAwait(true);
                 }
             };
             this.fileList.DoubleClick += async (s, _) =>
             {
                 this.CurrentFolder.IsExpanded = true;
-                await OpenFolder(this.fileList.SelectedModelItem).ConfigureAwait(true);
+                await BrowseFolder(this.fileList.SelectedModelItem).ConfigureAwait(true);
             };
             this.fileList.KeyDown += async (s, args) =>
             {
@@ -188,7 +188,7 @@ namespace Google.Solutions.Mvvm.Controls
                     // Go down one level.
                     //
                     this.CurrentFolder.IsExpanded = true;
-                    await OpenFolder(this.fileList.SelectedModelItem).ConfigureAwait(true);
+                    await BrowseFolder(this.fileList.SelectedModelItem).ConfigureAwait(true);
                 }
                 else if (args.KeyCode == Keys.Up && args.Alt &&
                     this.directoryTree.SelectedNode?.Parent != null)
@@ -203,7 +203,48 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.LoadingChildrenFailed += (s, args) => OnNavigationFailed(args.Exception);
         }
 
-        private async Task OpenFolder(IFileItem folder)
+        public async Task JumpToFolderAsync(IEnumerable<string> path)
+        {
+            //
+            // Start with the root.
+            //
+            var treeNode = this.directoryTree.Nodes
+                .Cast<DirectoryTreeView.Node>()
+                .First();
+            var fileNode = treeNode.Model;
+
+            foreach (var pathItem in path)
+            {
+                //
+                // Expand the node and wait for it to be populated.
+                //
+                await treeNode
+                    .ExpandAsync()
+                    .ConfigureAwait(true);
+
+                //
+                // Drill down.
+                //
+                treeNode = treeNode.Nodes
+                    .Cast<DirectoryTreeView.Node>()
+                    .FirstOrDefault(n => n.Model.Name == pathItem);
+                
+                if (treeNode == null)
+                {
+                    throw new ArgumentException($"The folder '{0}' does not exist");
+                }
+
+                fileNode = treeNode.Model;
+            }
+
+            Debug.Assert(treeNode != null);
+            Debug.Assert(fileNode != null);
+            Debug.Assert(!fileNode.Type.IsFile);
+
+            await BrowseFolder(fileNode);
+        }
+
+        private async Task BrowseFolder(IFileItem folder)
         {
             if (folder.Type.IsFile)
             {

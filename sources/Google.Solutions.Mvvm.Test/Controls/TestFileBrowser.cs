@@ -44,17 +44,24 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestFileBrowser
     {
-        private static readonly FileType SampleFileType 
-            = new FileType("Sample", false, SystemIcons.Application.ToBitmap());
+        private static readonly FileType DirectoryType 
+            = new FileType("Directory", false, SystemIcons.Application.ToBitmap());
+
+        private static Mock<IFileItem> CreateFolder()
+        {
+            var file = new Mock<IFileItem>();
+            file.SetupGet(i => i.Name).Returns("Item");
+            file.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
+            file.SetupGet(i => i.Type).Returns(DirectoryType);
+            file.SetupGet(i => i.Size).Returns(1);
+            file.SetupGet(i => i.IsExpanded).Returns(true);
+
+            return file;
+        }
 
         private static Mock<IFileSystem> CreateFileSystemWithEmptyRoot()
         {
-            var root = new Mock<IFileItem>();
-            root.SetupGet(i => i.Name).Returns("Item");
-            root.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
-            root.SetupGet(i => i.Type).Returns(SampleFileType);
-            root.SetupGet(i => i.Size).Returns(1);
-            root.SetupGet(i => i.IsExpanded).Returns(true);
+            var root = CreateFolder();
 
             var fileSystem = new Mock<IFileSystem>();
             fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
@@ -64,6 +71,22 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             return fileSystem;
         }
+
+        //private static Mock<IFileSystem> CreateFileSystemWithInfinitelyNestedFolders()
+        //{
+        //    var root = CreateFolder();
+
+        //    var fileSystem = new Mock<IFileSystem>();
+        //    fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
+        //    fileSystem
+        //        .Setup(fs => fs.ListFilesAsync(It.IsIn<IFileItem>(root.Object)))
+        //        .ReturnsAsync(new ObservableCollection<IFileItem>()
+        //        {
+        //            CreateFolder().Object
+        //        });
+
+        //    return fileSystem;
+        //}
 
         //---------------------------------------------------------------------
         // Bind.
@@ -91,6 +114,91 @@ namespace Google.Solutions.Mvvm.Test.Controls
             }
         }
 
+        [Test]
+        public void WhenDirectoryAdded_ThenDirectoryTreeIsUpdated()
+        {
+            var root = CreateFolder();
+            root.SetupGet(f => f.IsExpanded).Returns(true);
+
+            var children = new ObservableCollection<IFileItem>();
+
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsIn<IFileItem>(root.Object)))
+                .ReturnsAsync(children);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsNotIn<IFileItem>(root.Object)))
+                .ReturnsAsync(new ObservableCollection<IFileItem>());
+
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+
+                browser.NavigationFailed += (sender, args) => Assert.Fail();
+
+                browser.Bind(fileSystem.Object);
+                Application.DoEvents();
+
+                Assert.AreEqual(1, browser.Directories.Nodes.Count);
+                Assert.AreEqual(0, browser.Directories.Nodes[0].Nodes.Count);
+
+                children.Add(CreateFolder().Object);
+                Application.DoEvents();
+
+                Assert.AreEqual(1, browser.Directories.Nodes[0].Nodes.Count);
+            }
+        }
+
+        [Test]
+        public void WhenDirectoryAdded_ThenFileListIsUpdated()
+        {
+            var root = CreateFolder();
+            root.SetupGet(f => f.IsExpanded).Returns(true);
+
+            var children = new ObservableCollection<IFileItem>();
+
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsIn<IFileItem>(root.Object)))
+                .ReturnsAsync(children);
+            fileSystem
+                .Setup(fs => fs.ListFilesAsync(It.IsNotIn<IFileItem>(root.Object)))
+                .ReturnsAsync(new ObservableCollection<IFileItem>());
+
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+
+                browser.NavigationFailed += (sender, args) => Assert.Fail();
+
+                browser.Bind(fileSystem.Object);
+                Application.DoEvents();
+
+                // Root directory is empty.
+                Assert.AreEqual(0, browser.Files.Items.Count);
+
+                children.Add(CreateFolder().Object);
+                Application.DoEvents();
+
+                // Root directory contains 1 item..
+                Assert.AreEqual(1, browser.Files.Items.Count);
+            }
+        }
+
         //---------------------------------------------------------------------
         // NavigationFailed.
         //---------------------------------------------------------------------
@@ -101,7 +209,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             var root = new Mock<IFileItem>();
             root.SetupGet(i => i.Name).Returns("Item");
             root.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
-            root.SetupGet(i => i.Type).Returns(SampleFileType);
+            root.SetupGet(i => i.Type).Returns(DirectoryType);
             root.SetupGet(i => i.Size).Returns(1);
             root.SetupGet(i => i.IsExpanded).Returns(true);
 
