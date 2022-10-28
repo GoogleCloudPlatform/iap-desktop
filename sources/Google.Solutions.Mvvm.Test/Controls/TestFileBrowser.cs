@@ -267,7 +267,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Application.DoEvents();
 
                 Assert.AreSame(fileSystem.Root, browser.CurrentDirectory);
-                Assert.AreEqual("/Item", browser.CurrentPath);
+                Assert.AreEqual("/", browser.CurrentPath);
             }
         }
 
@@ -341,7 +341,76 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 Application.DoEvents();
                 Assert.IsNotNull(currentDirectory);
-                Assert.AreEqual("/Item/Item/Item", browser.CurrentPath);
+                Assert.AreEqual("/Item/Item", browser.CurrentPath);
+            }
+        }
+
+        [Test]
+        public async Task WhenNavigatedToSubfolder_ThenNavigateUpGoesBackToRoot()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+
+                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
+                browser.Bind(fileSystem);
+                Application.DoEvents();
+
+                form.Show();
+
+                await browser
+                    .NavigateAsync(new[] { "Item", "Item" })
+                    .ConfigureAwait(true);
+
+                for (int i = 0; i < 5; i++)
+                {
+                    await browser
+                        .NavigateUpAsync()
+                        .ConfigureAwait(false);
+                }
+
+                Application.DoEvents();
+                Assert.AreEqual("/", browser.CurrentPath);
+            }
+        }
+
+        [Test]
+        public async Task WhenNavigatedToSubfolder_ThenNavigateNullGoesBackToRoot()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+
+                var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
+                browser.Bind(fileSystem);
+                Application.DoEvents();
+
+                form.Show();
+
+                await browser
+                    .NavigateAsync(new[] { "Item", "Item" })
+                    .ConfigureAwait(true);
+
+                await browser
+                    .NavigateAsync(null)
+                    .ConfigureAwait(true);
+
+                Application.DoEvents();
+                Assert.AreEqual("/", browser.CurrentPath);
             }
         }
     }

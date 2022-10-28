@@ -23,6 +23,7 @@ using Google.Apis.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Mvvm.Shell.Util;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -105,7 +106,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// </summary>
         public IFileItem CurrentDirectory => this.navigationState.Directory;
 
-        public string CurrentPath => this.navigationState.Path;
+        public string CurrentPath => "/" + string.Join("/", this.navigationState.Path);
 
         //---------------------------------------------------------------------
         // Data Binding.
@@ -131,6 +132,19 @@ namespace Google.Solutions.Mvvm.Controls
             }
 
             return children;
+        }
+
+        private async Task ShowDirectoryContentsAsync(IFileItem folder)
+        {
+            Debug.Assert(!folder.Type.IsFile);
+
+            //
+            // Update list view.
+            //
+            var files = await ListFilesAsync(folder).ConfigureAwait(true);
+            this.fileList.BindCollection(files);
+
+            OnCurrentDirectoryChanged();
         }
 
         public void Bind(IFileSystem fileSystem)
@@ -183,79 +197,90 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.BindColumn(2, i => i.Type.TypeName);
             this.fileList.BindColumn(3, i => ByteSizeFormatter.Format(i.Size));
 
-            this.directoryTree.SelectedModelNodeChanged += async (s, _) =>
-            {
-                if (this.directoryTree.SelectedNode is DirectoryTreeView.Node node &&
+            this.directoryTree.LoadingChildrenFailed += (s, args) => OnNavigationFailed(args.Exception);
+        }
+
+        //---------------------------------------------------------------------
+        // Event handlers.
+        //---------------------------------------------------------------------
+
+        private async void directoryTree_SelectedModelNodeChanged(object sender, EventArgs args)
+        {
+            if (this.directoryTree.SelectedNode is DirectoryTreeView.Node node &&
                     node != null)
-                {
-                    //
-                    // The node could be anywhere, so build new breadcrumb path.
-                    //
-                    Breadcrumb CreatePathTo(DirectoryTreeView.Node n)
-                    {
-                        return new Breadcrumb(
-                            n.Parent == null
-                                ? null
-                                : CreatePathTo((DirectoryTreeView.Node)n.Parent),
-                            n);
-                    }
-
-                    this.navigationState = CreatePathTo(node);
-
-                    try
-                    {
-                        await ShowDirectoryContentsAsync(this.navigationState.Directory)
-                            .ConfigureAwait(true);
-                    }
-                    catch (Exception e)
-                    {
-                        OnNavigationFailed(e);
-                    }
-                }
-            };
-            this.fileList.DoubleClick += async (s, _) =>
             {
+                //
+                // The node could be anywhere, so build new breadcrumb path.
+                //
+                Breadcrumb CreatePathTo(DirectoryTreeView.Node n)
+                {
+                    return new Breadcrumb(
+                        n.Parent == null
+                            ? null
+                            : CreatePathTo((DirectoryTreeView.Node)n.Parent),
+                        n);
+                }
+
+                this.navigationState = CreatePathTo(node);
+
                 try
                 {
-                    await NavigateAsync(this.fileList.SelectedModelItem.Name)
+                    await ShowDirectoryContentsAsync(this.navigationState.Directory)
                         .ConfigureAwait(true);
-
-                    this.CurrentDirectory.IsExpanded = true;
                 }
                 catch (Exception e)
                 {
                     OnNavigationFailed(e);
                 }
-            };
-            this.fileList.KeyDown += async (s, args) =>
+            }
+        }
+
+        private async void fileList_DoubleClick(object sender, EventArgs args)
+        {
+            try
             {
-                if (args.KeyCode == Keys.Enter &&
+                await NavigateDownAsync(this.fileList.SelectedModelItem.Name)
+                    .ConfigureAwait(true);
+
+                this.CurrentDirectory.IsExpanded = true;
+            }
+            catch (Exception e)
+            {
+                OnNavigationFailed(e);
+            }
+        }
+
+        private async void fileList_KeyDown(object sender, KeyEventArgs args)
+        {
+            if (args.KeyCode == Keys.Enter &&
                     this.fileList.SelectedModelItem is var item &&
                     item != null &&
                     !item.Type.IsFile)
+            {
+                //
+                // Go down one level, same as double-click.
+                //
+                fileList_DoubleClick(sender, EventArgs.Empty);
+            }
+            else if (args.KeyCode == Keys.Up && args.Alt)
+            {
+                //
+                // Go up one level.
+                //
+                try
                 {
-                    //
-                    // Go down one level.
-                    //
-                    this.CurrentDirectory.IsExpanded = true;
-                    await NavigateAsync(this.fileList.SelectedModelItem.Name).ConfigureAwait(true);
+                    await NavigateUpAsync();
                 }
-                else if (args.KeyCode == Keys.Up && args.Alt &&
-                    this.directoryTree.SelectedNode?.Parent != null)
+                catch (Exception e)
                 {
-                    //
-                    // Go up one level.
-                    //
-                    this.directoryTree.SelectedNode = this.directoryTree.SelectedNode.Parent;
+                    OnNavigationFailed(e);
                 }
-            };
-
-            this.directoryTree.LoadingChildrenFailed += (s, args) => OnNavigationFailed(args.Exception);
+            }
         }
 
-
-
-
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
 
         public async Task NavigateAsync(IEnumerable<string> path)
         {
@@ -264,7 +289,7 @@ namespace Google.Solutions.Mvvm.Controls
             //
             this.navigationState = this.root;
 
-            if (path == null)
+            if (path == null || !path.Any())
             {
                 await ShowDirectoryContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
             }
@@ -272,12 +297,12 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 foreach (var pathItem in path)
                 {
-                    await NavigateAsync(pathItem).ConfigureAwait(true);
+                    await NavigateDownAsync(pathItem).ConfigureAwait(true);
                 }
             }
         }
 
-        public async Task NavigateAsync(string directoryName)
+        public async Task NavigateDownAsync(string directoryName)
         {
             //
             // Expand the node and wait for it to be populated.
@@ -308,19 +333,23 @@ namespace Google.Solutions.Mvvm.Controls
             await ShowDirectoryContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
         }
 
-
-        private async Task ShowDirectoryContentsAsync(IFileItem folder)
+        public async Task NavigateUpAsync()
         {
-            Debug.Assert(!folder.Type.IsFile);
+            if (this.navigationState.Parent == null)
+            {
+                //
+                // Already at root level.
+                //
+                return;
+            }
 
-            //
-            // Update list view.
-            //
-            var files = await ListFilesAsync(folder).ConfigureAwait(true);
-            this.fileList.BindCollection(files);
-
-            OnCurrentDirectoryChanged();
+            await NavigateAsync(this.navigationState.Parent.Path)
+                .ConfigureAwait(true);
         }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
 
         public class Breadcrumb
         {
@@ -336,9 +365,10 @@ namespace Google.Solutions.Mvvm.Controls
                 this.TreeNode = treeNode.ThrowIfNull(nameof(treeNode));
             }
 
-            public string Path =>
-                (this.Parent?.Path ?? string.Empty) + "/" + this.Directory.Name;
-                
+            public IEnumerable<string> Path
+                => this.Parent == null
+                    ? Enumerable.Empty<string>()
+                    : this.Parent.Path.ConcatItem(this.Directory.Name);
         }
     }
 }

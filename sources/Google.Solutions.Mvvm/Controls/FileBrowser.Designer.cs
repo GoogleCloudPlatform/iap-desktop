@@ -90,6 +90,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.SelectedImageIndex = 0;
             this.directoryTree.Size = new System.Drawing.Size(200, 256);
             this.directoryTree.TabIndex = 0;
+            this.directoryTree.SelectedModelNodeChanged += new System.EventHandler(this.directoryTree_SelectedModelNodeChanged);
             // 
             // fileIconsList
             // 
@@ -117,6 +118,8 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.TabIndex = 1;
             this.fileList.UseCompatibleStateImageBehavior = false;
             this.fileList.View = System.Windows.Forms.View.Details;
+            this.fileList.DoubleClick += new System.EventHandler(this.fileList_DoubleClick);
+            this.fileList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fileList_KeyDown);
             // 
             // typeColumn
             // 
