@@ -25,10 +25,7 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using NUnit.Framework;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -43,8 +40,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestFileBrowserUi
     {
+        [Ignore("For manual testing only")]
         [Test]
-        public void TestUI() // TODO: Remove test case
+        public void TestUI()
         {
             using (var form = new Form()
             {

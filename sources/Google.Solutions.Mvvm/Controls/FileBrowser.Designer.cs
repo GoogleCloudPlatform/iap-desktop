@@ -87,6 +87,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.directoryTree.ItemHeight = 18;
             this.directoryTree.Location = new System.Drawing.Point(0, 0);
             this.directoryTree.Name = "directoryTree";
+            this.directoryTree.PathSeparator = "/";
             this.directoryTree.SelectedImageIndex = 0;
             this.directoryTree.Size = new System.Drawing.Size(200, 256);
             this.directoryTree.TabIndex = 0;

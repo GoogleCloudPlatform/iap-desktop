@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -41,6 +42,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
     {
         private static readonly FileType DirectoryType 
             = new FileType("Directory", false, SystemIcons.Application.ToBitmap());
+        private static readonly FileType FileType
+            = new FileType("File", false, SystemIcons.Application.ToBitmap());
 
         private static Mock<IFileItem> CreateDirectory()
         {
@@ -48,6 +51,18 @@ namespace Google.Solutions.Mvvm.Test.Controls
             file.SetupGet(i => i.Name).Returns("Item");
             file.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
             file.SetupGet(i => i.Type).Returns(DirectoryType);
+            file.SetupGet(i => i.Size).Returns(1);
+            file.SetupGet(i => i.IsExpanded).Returns(false);
+
+            return file;
+        }
+
+        private static Mock<IFileItem> CreateFile()
+        {
+            var file = new Mock<IFileItem>();
+            file.SetupGet(i => i.Name).Returns("Item");
+            file.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
+            file.SetupGet(i => i.Type).Returns(FileType);
             file.SetupGet(i => i.Size).Returns(1);
             file.SetupGet(i => i.IsExpanded).Returns(false);
 
@@ -411,6 +426,51 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 Application.DoEvents();
                 Assert.AreEqual("/", browser.CurrentPath);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // SelectedFiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenFilesSelected_ThenSelectedFileIsSet()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+
+                var root = CreateDirectory();
+
+                var fileSystem = new Mock<IFileSystem>();
+                fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
+                fileSystem
+                    .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
+                    .ReturnsAsync(new ObservableCollection<IFileItem>()
+                    {
+                        CreateFile().Object,
+                        CreateFile().Object,
+                        CreateFile().Object
+                    });
+
+                browser.Bind(fileSystem.Object);
+                Application.DoEvents();
+
+                form.Show();
+
+                foreach (var item in browser.Files.Items.Cast<ListViewItem>())
+                {
+                    item.Selected = true;
+                }
+
+                Assert.AreEqual(3, browser.SelectedFiles.Count());
             }
         }
     }

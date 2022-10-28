@@ -47,6 +47,7 @@ namespace Google.Solutions.Mvvm.Controls
         internal FileListView Files => this.fileList;
 
         private Breadcrumb root;
+        private Breadcrumb navigationState;
 
         //---------------------------------------------------------------------
         // Privates.
@@ -85,28 +86,31 @@ namespace Google.Solutions.Mvvm.Controls
 
         public event EventHandler<ExceptionEventArgs> NavigationFailed;
         public event EventHandler CurrentDirectoryChanged;
+        public event EventHandler SelectedFilesChanged;
 
         protected void OnNavigationFailed(Exception e)
             => this.NavigationFailed?.Invoke(this, new ExceptionEventArgs(e));
 
         protected void OnCurrentDirectoryChanged()
             => this.CurrentDirectoryChanged?.Invoke(this, EventArgs.Empty);
+        protected void OnSelectedFilesChanged()
+            => this.SelectedFilesChanged?.Invoke(this, EventArgs.Empty);
 
         //---------------------------------------------------------------------
         // Selection properties.
         //---------------------------------------------------------------------
 
-        private Breadcrumb navigationState;
-
-        // TODO: Add obvservable property: SelectedFiles
-        // TODO: Context menu
-
+        public IEnumerable<IFileItem> SelectedFiles => this.fileList.SelectedModelItems;
+        
         /// <summary>
         /// Directory that is currently being viewed.
         /// </summary>
         public IFileItem CurrentDirectory => this.navigationState.Directory;
 
-        public string CurrentPath => "/" + string.Join("/", this.navigationState.Path);
+        public string CurrentPath => 
+            this.directoryTree.PathSeparator + string.Join(
+                this.directoryTree.PathSeparator, 
+                this.navigationState.Path);
 
         //---------------------------------------------------------------------
         // Data Binding.
@@ -198,6 +202,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.BindColumn(3, i => ByteSizeFormatter.Format(i.Size));
 
             this.directoryTree.LoadingChildrenFailed += (s, args) => OnNavigationFailed(args.Exception);
+            this.fileList.SelectedIndexChanged += (s, args) => OnSelectedFilesChanged();
         }
 
         //---------------------------------------------------------------------
