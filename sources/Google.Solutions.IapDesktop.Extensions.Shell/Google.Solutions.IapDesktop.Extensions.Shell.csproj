@@ -212,14 +212,14 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\SshTerminal\SftpFileSystem.cs" />
-    <Compile Include="Views\SshTerminal\SftpFileDialog.cs" />
-    <Compile Include="Views\SshTerminal\SftpFileDialogForm.cs">
+    <Compile Include="Views\Download\DownloadFileDialog.cs" />
+    <Compile Include="Views\Download\DownloadFileWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\SshTerminal\SftpFileDialogForm.Designer.cs">
-      <DependentUpon>SftpFileDialogForm.cs</DependentUpon>
+    <Compile Include="Views\Download\DownloadFileWindow.Designer.cs">
+      <DependentUpon>DownloadFileWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\SshTerminal\SftpFileDialogViewModel.cs" />
+    <Compile Include="Views\Download\DownloadFileViewModel.cs" />
     <Compile Include="Views\SshTerminal\SshAuthenticationPromptDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -320,8 +320,8 @@
     <EmbeddedResource Include="Views\SshKeys\AuthorizedPublicKeysWindow.resx">
       <DependentUpon>AuthorizedPublicKeysWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\SshTerminal\SftpFileDialogForm.resx">
-      <DependentUpon>SftpFileDialogForm.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Download\DownloadFileWindow.resx">
+      <DependentUpon>DownloadFileWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SshTerminal\SshAuthenticationPromptDialog.resx">
       <DependentUpon>SshAuthenticationPromptDialog.cs</DependentUpon>

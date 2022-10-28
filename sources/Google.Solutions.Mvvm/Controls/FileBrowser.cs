@@ -100,7 +100,14 @@ namespace Google.Solutions.Mvvm.Controls
         // Selection properties.
         //---------------------------------------------------------------------
 
-        public IEnumerable<IFileItem> SelectedFiles => this.fileList.SelectedModelItems;
+        public IEnumerable<IFileItem> SelectedFiles
+        {
+            get => this.fileList.SelectedModelItems;
+            set
+            {
+                // TODO: Implement Set
+            }
+        }
         
         /// <summary>
         /// Directory that is currently being viewed.
@@ -202,7 +209,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.BindColumn(3, i => ByteSizeFormatter.Format(i.Size));
 
             this.directoryTree.LoadingChildrenFailed += (s, args) => OnNavigationFailed(args.Exception);
-            this.fileList.SelectedIndexChanged += (s, args) => OnSelectedFilesChanged();
+            this.fileList.ItemSelectionChanged += (s, args) => OnSelectedFilesChanged();
         }
 
         //---------------------------------------------------------------------

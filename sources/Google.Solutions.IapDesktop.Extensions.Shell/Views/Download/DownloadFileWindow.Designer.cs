@@ -1,7 +1,27 @@
-﻿
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
+﻿//
+// Copyright 2022 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
 {
-    partial class SftpFileDialogForm
+    partial class DownloadFileWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -111,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.fileBrowser.Size = new System.Drawing.Size(601, 297);
             this.fileBrowser.TabIndex = 1;
             // 
-            // SftpFileDialogForm
+            // DownloadFileWindow
             // 
             this.AcceptButton = this.downloadButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -126,11 +146,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.Controls.Add(this.saveToLabel);
             this.Controls.Add(this.headlineLabel);
             this.Controls.Add(this.fileBrowser);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(640, 480);
-            this.Name = "SftpFileDialogForm";
+            this.Name = "DownloadFileWindow";
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

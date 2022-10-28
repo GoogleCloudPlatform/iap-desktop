@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Inner classes.
         //---------------------------------------------------------------------
 
-        internal interface ISftpFileItem : FileBrowser.IFileItem
+        private interface ISftpFileItem : FileBrowser.IFileItem
         {
             string RemotePath { get; }
         }

@@ -153,6 +153,8 @@
     <Compile Include="Views\Credentials\TestCredentialPrompt.cs" />
     <Compile Include="Views\Credentials\TestCredentialsService.cs" />
     <Compile Include="Views\Credentials\TestGenerateCredentialsViewModel.cs" />
+    <Compile Include="Views\Download\TestDownloadFileDialog.cs" />
+    <Compile Include="Views\Download\TestDownloadFileViewModel.cs" />
     <Compile Include="Views\Options\TestSshOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestTerminalOptionsViewModel.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPane.cs" />
