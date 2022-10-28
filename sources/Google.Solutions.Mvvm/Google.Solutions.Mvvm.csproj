@@ -97,6 +97,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Shell\FileType.cs" />
+    <Compile Include="Shell\KnownFolders.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
   </ItemGroup>
   <ItemGroup>

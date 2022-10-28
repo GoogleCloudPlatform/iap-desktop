@@ -211,6 +211,15 @@
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Views\SshTerminal\SftpFileSystem.cs" />
+    <Compile Include="Views\SshTerminal\SftpFileDialog.cs" />
+    <Compile Include="Views\SshTerminal\SftpFileDialogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SshTerminal\SftpFileDialogForm.Designer.cs">
+      <DependentUpon>SftpFileDialogForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SshTerminal\SftpFileDialogViewModel.cs" />
     <Compile Include="Views\SshTerminal\SshAuthenticationPromptDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -310,6 +319,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SshKeys\AuthorizedPublicKeysWindow.resx">
       <DependentUpon>AuthorizedPublicKeysWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SshTerminal\SftpFileDialogForm.resx">
+      <DependentUpon>SftpFileDialogForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SshTerminal\SshAuthenticationPromptDialog.resx">
       <DependentUpon>SshAuthenticationPromptDialog.cs</DependentUpon>

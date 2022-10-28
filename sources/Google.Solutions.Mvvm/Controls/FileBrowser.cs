@@ -333,7 +333,7 @@ namespace Google.Solutions.Mvvm.Controls
                 throw new ArgumentException($"The folder '{directoryName}' does not exist");
             }
 
-            this.navigationState = new Breadcrumb(navigationState, child);
+            this.navigationState = new Breadcrumb(this.navigationState, child);
 
             await ShowDirectoryContentsAsync(this.navigationState.Directory).ConfigureAwait(true);
         }

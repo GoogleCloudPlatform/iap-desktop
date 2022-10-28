@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Shell
     /// The cache is not synchronized and intended to be used on
     /// the UI thread only.
     /// </summary>
-    internal sealed class FileTypeCache : IDisposable
+    public sealed class FileTypeCache : IDisposable
     {
         private readonly IDictionary<CacheKey, FileType> cache
             = new Dictionary<CacheKey, FileType>();
