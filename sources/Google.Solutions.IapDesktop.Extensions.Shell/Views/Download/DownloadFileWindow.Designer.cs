@@ -49,7 +49,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
         /// </summary>
         private void InitializeComponent()
         {
-            this.headlineLabel = new System.Windows.Forms.Label();
             this.saveToLabel = new System.Windows.Forms.Label();
             this.targetDirectoryTextBox = new System.Windows.Forms.TextBox();
             this.cancelButton = new System.Windows.Forms.Button();
@@ -57,16 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             this.browseButton = new System.Windows.Forms.Button();
             this.fileBrowser = new Google.Solutions.Mvvm.Controls.FileBrowser();
             this.SuspendLayout();
-            // 
-            // headlineLabel
-            // 
-            this.headlineLabel.AutoSize = true;
-            this.headlineLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.headlineLabel.Location = new System.Drawing.Point(11, 15);
-            this.headlineLabel.Name = "headlineLabel";
-            this.headlineLabel.Size = new System.Drawing.Size(155, 30);
-            this.headlineLabel.TabIndex = 5;
-            this.headlineLabel.Text = "Download files";
             // 
             // saveToLabel
             // 
@@ -85,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             this.targetDirectoryTextBox.Location = new System.Drawing.Point(71, 378);
             this.targetDirectoryTextBox.Name = "targetDirectoryTextBox";
             this.targetDirectoryTextBox.ReadOnly = true;
-            this.targetDirectoryTextBox.Size = new System.Drawing.Size(465, 20);
+            this.targetDirectoryTextBox.Size = new System.Drawing.Size(510, 20);
             this.targetDirectoryTextBox.TabIndex = 7;
             this.targetDirectoryTextBox.TabStop = false;
             // 
@@ -93,9 +82,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(542, 405);
+            this.cancelButton.Location = new System.Drawing.Point(587, 404);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelButton.Size = new System.Drawing.Size(85, 23);
             this.cancelButton.TabIndex = 3;
             this.cancelButton.Text = "&Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
@@ -104,9 +93,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             // 
             this.downloadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.downloadButton.Location = new System.Drawing.Point(461, 405);
+            this.downloadButton.Location = new System.Drawing.Point(496, 404);
             this.downloadButton.Name = "downloadButton";
-            this.downloadButton.Size = new System.Drawing.Size(75, 23);
+            this.downloadButton.Size = new System.Drawing.Size(85, 23);
             this.downloadButton.TabIndex = 0;
             this.downloadButton.Text = "&Download";
             this.downloadButton.UseVisualStyleBackColor = true;
@@ -114,9 +103,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             // browseButton
             // 
             this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.browseButton.Location = new System.Drawing.Point(542, 375);
+            this.browseButton.Location = new System.Drawing.Point(587, 375);
             this.browseButton.Name = "browseButton";
-            this.browseButton.Size = new System.Drawing.Size(75, 23);
+            this.browseButton.Size = new System.Drawing.Size(85, 23);
             this.browseButton.TabIndex = 2;
             this.browseButton.Text = "&Browse...";
             this.browseButton.UseVisualStyleBackColor = true;
@@ -126,9 +115,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             this.fileBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.fileBrowser.Location = new System.Drawing.Point(16, 73);
+            this.fileBrowser.Location = new System.Drawing.Point(0, 0);
             this.fileBrowser.Name = "fileBrowser";
-            this.fileBrowser.Size = new System.Drawing.Size(601, 297);
+            this.fileBrowser.Size = new System.Drawing.Size(683, 359);
             this.fileBrowser.TabIndex = 1;
             // 
             // DownloadFileWindow
@@ -136,19 +125,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             this.AcceptButton = this.downloadButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(629, 441);
+            this.ClientSize = new System.Drawing.Size(684, 441);
             this.Controls.Add(this.browseButton);
             this.Controls.Add(this.downloadButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.targetDirectoryTextBox);
             this.Controls.Add(this.saveToLabel);
-            this.Controls.Add(this.headlineLabel);
             this.Controls.Add(this.fileBrowser);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(640, 480);
+            this.MinimumSize = new System.Drawing.Size(700, 480);
             this.Name = "DownloadFileWindow";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -163,7 +150,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
         #endregion
 
         private Mvvm.Controls.FileBrowser fileBrowser;
-        private System.Windows.Forms.Label headlineLabel;
         private System.Windows.Forms.Label saveToLabel;
         private System.Windows.Forms.TextBox targetDirectoryTextBox;
         private System.Windows.Forms.Button cancelButton;

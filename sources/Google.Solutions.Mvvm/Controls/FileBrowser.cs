@@ -103,10 +103,7 @@ namespace Google.Solutions.Mvvm.Controls
         public IEnumerable<IFileItem> SelectedFiles
         {
             get => this.fileList.SelectedModelItems;
-            set
-            {
-                // TODO: Implement Set
-            }
+            set => this.fileList.SelectedModelItems = value;
         }
         
         /// <summary>

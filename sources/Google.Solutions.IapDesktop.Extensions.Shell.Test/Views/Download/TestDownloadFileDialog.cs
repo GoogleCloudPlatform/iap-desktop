@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
             return file;
         }
 
-        //TODO: [Ignore("For manual testing only")]
+        [Ignore("For manual testing only")]
         [Test]
         public void TestUI()
         {

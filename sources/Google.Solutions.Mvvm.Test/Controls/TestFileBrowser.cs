@@ -434,7 +434,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFilesSelected_ThenSelectedFileIsSet()
+        public void WhenFilesSelectedOneByOne_ThenSelectedFileIsSet()
         {
             using (var form = new Form()
             {
@@ -465,12 +465,58 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 form.Show();
 
+                int selectionEvents = 0;
+                browser.SelectedFilesChanged += (s, a) => selectionEvents++;
+
                 foreach (var item in browser.Files.Items.Cast<ListViewItem>())
                 {
                     item.Selected = true;
                 }
 
                 Assert.AreEqual(3, browser.SelectedFiles.Count());
+                Assert.AreEqual(3, selectionEvents);
+            }
+        }
+
+        [Test]
+        public void WhenFilesSelected_ThenSelectedFileIsSet()
+        {
+            using (var form = new Form()
+            {
+                Size = new Size(800, 600)
+            })
+            {
+                var browser = new FileBrowser()
+                {
+                    Dock = DockStyle.Fill
+                };
+                form.Controls.Add(browser);
+
+                var root = CreateDirectory();
+                var files = new ObservableCollection<IFileItem>()
+                {
+                    CreateFile().Object,
+                    CreateFile().Object,
+                    CreateFile().Object
+                };
+                var fileSystem = new Mock<IFileSystem>();
+                fileSystem.SetupGet(fs => fs.Root).Returns(root.Object);
+                fileSystem
+                    .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
+                    .ReturnsAsync(files);
+
+                browser.Bind(fileSystem.Object);
+                Application.DoEvents();
+
+                form.Show();
+
+                int selectionEvents = 0;
+                browser.SelectedFilesChanged += (s, a) => selectionEvents++;
+
+                browser.SelectedFiles = new[] { files[0], files[1] };
+
+                Assert.AreEqual(2, browser.SelectedFiles.Count());
+                Assert.AreEqual(2, selectionEvents);
             }
         }
     }
