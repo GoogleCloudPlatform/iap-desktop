@@ -74,6 +74,7 @@ namespace Google.Solutions.Mvvm.Controls
         {
             InitializeComponent();
 
+            this.fileIconsList.Images.Add(StockIcons.GetIcon(StockIcons.IconId.Find, StockIcons.IconSize.Small));
             this.Disposed += (s, e) =>
             {
                 this.fileTypeCache.Dispose();
