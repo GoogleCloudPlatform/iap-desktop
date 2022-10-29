@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             // browseButton
             // 
             this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.browseButton.Location = new System.Drawing.Point(587, 375);
+            this.browseButton.Location = new System.Drawing.Point(587, 377);
             this.browseButton.Name = "browseButton";
             this.browseButton.Size = new System.Drawing.Size(85, 23);
             this.browseButton.TabIndex = 2;

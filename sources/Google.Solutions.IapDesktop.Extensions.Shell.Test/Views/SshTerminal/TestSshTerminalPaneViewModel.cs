@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Test.Services;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
@@ -140,6 +141,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 new SynchronousJobService(),
                 confirmationDialog ?? new Mock<IConfirmationDialog>().Object,
                 progressDialog.Object,
+                new Mock<IDownloadFileDialog>().Object,
+                new Mock<IExceptionDialog>().Object,
                 instance,
                 new IPEndPoint(address, 22),
                 authorizedKey,
@@ -326,6 +329,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new SynchronousJobService(),
                     new Mock<IConfirmationDialog>().Object,
                     new Mock<IOperationProgressDialog>().Object,
+                    new Mock<IDownloadFileDialog>().Object,
+                    new Mock<IExceptionDialog>().Object,
                     instance,
                     new IPEndPoint(address, 22),
                     nonAuthorizedKey,

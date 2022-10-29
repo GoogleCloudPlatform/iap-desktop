@@ -282,7 +282,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Application.DoEvents();
 
                 Assert.AreSame(fileSystem.Root, browser.CurrentDirectory);
-                Assert.AreEqual("/", browser.CurrentPath);
+                Assert.AreEqual(string.Empty, browser.CurrentPath);
             }
         }
 
@@ -356,7 +356,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 Application.DoEvents();
                 Assert.IsNotNull(currentDirectory);
-                Assert.AreEqual("/Item/Item", browser.CurrentPath);
+                Assert.AreEqual("Item/Item", browser.CurrentPath);
             }
         }
 
@@ -392,7 +392,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 }
 
                 Application.DoEvents();
-                Assert.AreEqual("/", browser.CurrentPath);
+                Assert.AreEqual(string.Empty, browser.CurrentPath);
             }
         }
 
@@ -425,7 +425,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     .ConfigureAwait(true);
 
                 Application.DoEvents();
-                Assert.AreEqual("/", browser.CurrentPath);
+                Assert.AreEqual(string.Empty, browser.CurrentPath);
             }
         }
 

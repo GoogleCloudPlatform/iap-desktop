@@ -11,17 +11,19 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    internal sealed class SftpFileSystem : FileBrowser.IFileSystem, IDisposable // TODO: Test
+    internal sealed class SftpFileSystem : FileBrowser.IFileSystem, IDisposable
     {
-        private readonly RemoteFileSystemChannel channel;
+        private readonly Func<string, Task<IReadOnlyCollection<SshSftpFileInfo>>> listRemoteFilesFunc;
         private readonly FileTypeCache fileTypeCache;
 
-        private FileType TranslateFileType(SshSftpFileInfo sftpFile)
+        private static Regex configFileNamePattern = new Regex("co?ni?f(ig)?$");
+
+        internal FileType TranslateFileType(SshSftpFileInfo sftpFile)
         {
             if (sftpFile.IsDirectory)
             {
@@ -30,16 +32,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     FileAttributes.Directory, 
                     FileType.IconFlags.None);
             }
+            else if (sftpFile.Permissions.HasFlag(FilePermissions.SymbolicLink))
+            {
+                //
+                // Treat like an LNK file.
+                //
+                // NB. We can't tell whether the symlink points to a directory
+                // or not, that would require resolving the link. So we treat
+                // all symlinks like files.
+                //
+                return this.fileTypeCache.Lookup(
+                    ".lnk",
+                    FileAttributes.Normal,
+                    FileType.IconFlags.None);
+            }
             else if (sftpFile.Permissions.HasFlag(FilePermissions.OwnerExecute) ||
                      sftpFile.Permissions.HasFlag(FilePermissions.GroupExecute) ||
                      sftpFile.Permissions.HasFlag(FilePermissions.OtherExecute))
             {
                 //
-                // Treat like an exe file.
+                // Treat like an EXE file.
                 //
                 return this.fileTypeCache.Lookup(
                     ".exe", 
                     FileAttributes.Normal, 
+                    FileType.IconFlags.None);
+            }
+            else if (configFileNamePattern.IsMatch(sftpFile.Name))
+            {
+                //
+                // Treat like an INI file.
+                //
+                return this.fileTypeCache.Lookup(
+                    ".ini",
+                    FileAttributes.Normal,
                     FileType.IconFlags.None);
             }
             else 
@@ -49,16 +75,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     FileAttributes.Normal, 
                     FileType.IconFlags.None);
             }
-            // TODO: Map config -> INI
-            // TODO: Map symlinks
         }
-
-        public SftpFileSystem(RemoteFileSystemChannel channel)
+        
+        internal SftpFileSystem(
+            Func<string, Task<IReadOnlyCollection<SshSftpFileInfo>>> listRemoteFilesFunc)
         {
-            this.channel = channel.ThrowIfNull(nameof(channel));
+            this.listRemoteFilesFunc = listRemoteFilesFunc;
             this.fileTypeCache = new FileTypeCache();
 
             this.Root = new SftpRootItem();
+        }
+
+        public SftpFileSystem(RemoteFileSystemChannel channel)
+            : this((path) => channel.ListFilesAsync(path))
+        {
+            channel.ThrowIfNull(nameof(channel));
         }
 
         //---------------------------------------------------------------------
@@ -70,29 +101,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public async Task<ObservableCollection<FileBrowser.IFileItem>> ListFilesAsync(
             FileBrowser.IFileItem directory)
         {
-            var sftpDirectory = (ISftpFileItem)directory;
+            var sftpDirectory = (ISftpFileItem)directory.ThrowIfNull(nameof(directory));
             Debug.Assert(!sftpDirectory.Type.IsFile);
 
-            var sftpFiles = await this.channel
-                .ListFilesAsync(sftpDirectory.RemotePath)
+            var remotePath = sftpDirectory == this.Root
+                ? "/"
+                : sftpDirectory.RemotePath;
+            Debug.Assert(!remotePath.StartsWith("//"));
+
+            var sftpFiles = await this
+                .listRemoteFilesFunc(remotePath)
                 .ConfigureAwait(false);
 
-            var fileItems = new ObservableCollection<FileBrowser.IFileItem>();
+            //
+            // NB. SFTP returns files/directories in arbitrary order.
+            //
 
-            foreach (var sftpFile in sftpFiles)
-            {
-                if (sftpFile.Name == "." || sftpFile.Name == "..")
-                {
-                    continue;
-                }
+            var filteredSftpFiles = sftpFiles
+                .Where(f => f.Name != "." && f.Name != "..")
+                .OrderBy(f => !f.IsDirectory).ThenBy(f => f.Name)
+                .Select(f => new SftpFileItem(
+                    sftpDirectory,
+                    f,
+                    TranslateFileType(f)))
+                .ToList();
 
-                fileItems.Add(new SftpFileItem(
-                    sftpDirectory, 
-                    sftpFile, 
-                    TranslateFileType(sftpFile)));
-            }
-
-            return fileItems;
+            return new ObservableCollection<FileBrowser.IFileItem>(filteredSftpFiles);
         }
 
         //---------------------------------------------------------------------
@@ -115,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         private class SftpRootItem : ISftpFileItem
         {
-            public string Name => string.Empty; // TODO: Verify impact on FileBrowser.CurrentPath
+            public string Name => string.Empty;
 
             public FileAttributes Attributes => FileAttributes.Directory;
 
@@ -130,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             public bool IsExpanded { get; set; } = true;
 
-            public string RemotePath => "/";
+            public string RemotePath => string.Empty;
 
             public event PropertyChangedEventHandler PropertyChanged;
         }
@@ -178,8 +212,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     {
                         attributes |= FileAttributes.Hidden;
                     }
-
-                    // TODO: Device?
 
                     return attributes;
                 }

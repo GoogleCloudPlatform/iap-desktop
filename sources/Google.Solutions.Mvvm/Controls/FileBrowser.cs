@@ -111,8 +111,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// </summary>
         public IFileItem CurrentDirectory => this.navigationState.Directory;
 
-        public string CurrentPath => 
-            this.directoryTree.PathSeparator + string.Join(
+        public string CurrentPath => string.Join(
                 this.directoryTree.PathSeparator, 
                 this.navigationState.Path);
 
@@ -187,9 +186,9 @@ namespace Google.Solutions.Mvvm.Controls
                     Predicate = f => !f.Type.IsFile
                 };
             });
-            this.directoryTree.Bind(this.fileSystem.Root);
             this.directoryTree.BindImageIndex(i => GetImageIndex(i.Type), true);
             this.directoryTree.BindSelectedImageIndex(i => GetImageIndex(i.Type), true);
+            this.directoryTree.Bind(this.fileSystem.Root);
 
             this.root = new Breadcrumb(
                 null,

@@ -162,6 +162,7 @@
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopSessionBroker.cs" />
     <Compile Include="Views\SshKeys\TestAuthorizedPublicKeysModel.cs" />
     <Compile Include="Views\SshKeys\TestAuthorizedPublicKeysViewModel.cs" />
+    <Compile Include="Views\SshTerminal\TestSftpFileSystem.cs" />
     <Compile Include="Views\SshTerminal\TestSshAuthenticationPromptViewModel.cs" />
     <Compile Include="Views\SshTerminal\TestSshTerminalPane.cs" />
     <Compile Include="Views\SshTerminal\TestSshTerminalSessionBroker.cs" />

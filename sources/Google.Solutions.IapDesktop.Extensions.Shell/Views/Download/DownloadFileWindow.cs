@@ -37,6 +37,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
         {
             InitializeComponent();
 
+            SuspendLayout();
+
             this.viewModel = new DownloadFileViewModel();
 
             this.targetDirectoryTextBox.BindProperty(
@@ -72,6 +74,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
                     }
                 }
             };
+
+            ResumeLayout();
         }
 
         public string TargetDirectory => this.targetDirectoryTextBox.Text;
