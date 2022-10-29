@@ -98,6 +98,7 @@
     </Compile>
     <Compile Include="Shell\FileType.cs" />
     <Compile Include="Shell\KnownFolders.cs" />
+    <Compile Include="Shell\StockIcons.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
   </ItemGroup>
   <ItemGroup>

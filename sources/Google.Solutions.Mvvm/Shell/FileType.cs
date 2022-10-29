@@ -126,8 +126,8 @@ namespace Google.Solutions.Mvvm.Shell
             internal const uint SHGFI_DISPLAYNAME = 0x200;
             internal const uint SHGFI_TYPENAME = 0x400;
 
-            internal const int MAX_PATH = 260;
-            internal const int NAMESIZE = 80;
+            private const int MAX_PATH = 260;
+            private const int NAMESIZE = 80;
 
             [StructLayout(LayoutKind.Sequential)]
             public struct SHFILEINFOA

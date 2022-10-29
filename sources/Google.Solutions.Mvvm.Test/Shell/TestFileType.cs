@@ -21,7 +21,6 @@
 
 using Google.Solutions.Mvvm.Shell;
 using NUnit.Framework;
-using System.Drawing;
 using System.IO;
 using System.Threading;
 

@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             public FileType Type => new FileType(
                 "Server",
                 false,
-                SystemIcons.WinLogo.ToBitmap()); // TODO: Use static image for VM
+                StockIcons.GetIcon(StockIcons.IconId.Server, StockIcons.IconSize.Small));
 
             public bool IsExpanded { get; set; } = true;
 
