@@ -475,7 +475,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                         sshSession => sshSession.IsConnected),
                     session => (session as ISshTerminalSession)?.DownloadFilesAsync())
                 {
-                    Image = Resources.Copy_16x, // TODO: Use Download icon
+                    Image = Resources.DownloadFile_16,
                     ActivityText = "Downloading files"
                 });
             this.sessionCommands.AddCommand(

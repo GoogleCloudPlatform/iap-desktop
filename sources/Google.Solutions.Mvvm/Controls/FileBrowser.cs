@@ -74,7 +74,14 @@ namespace Google.Solutions.Mvvm.Controls
         {
             InitializeComponent();
 
-            this.fileIconsList.Images.Add(StockIcons.GetIcon(StockIcons.IconId.Find, StockIcons.IconSize.Small));
+            //
+            // The first icon in the image list is used for the "Loading..."
+            // dummy node in the directory tree. Use the Find icon for that.
+            //
+            this.fileIconsList.Images.Add(
+                StockIcons.GetIcon(StockIcons.IconId.Find, 
+                StockIcons.IconSize.Small));
+
             this.Disposed += (s, e) =>
             {
                 this.fileTypeCache.Dispose();
