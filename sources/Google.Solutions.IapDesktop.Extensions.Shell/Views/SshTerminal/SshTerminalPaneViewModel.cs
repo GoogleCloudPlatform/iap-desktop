@@ -380,9 +380,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 if (conflicts.Any())
                 {
                     var message = 
-                        $"The following files already exist in {targetDirectory.FullName}. " +
-                        $"Do you want to overwrite existing files?\n\n - " +
-                        string.Join("\n - ", conflicts.Select(s => s.Truncate(30)));
+                        $"The following files already exist in {targetDirectory.FullName}.\n\n - " +
+                        string.Join("\n - ", conflicts.Select(s => s.Truncate(30))) +
+                        $"\n\nDo you want to overwrite existing files?";
 
                     if (this.confirmationDialog.Confirm(
                         this.View,
