@@ -122,6 +122,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             public string Name => this.FileInfo.Name;
 
+            public string Path => this.FileInfo.FullName;
+
             public bool IsFile => this.FileInfo is FileInfo;
 
             public FileAttributes Attributes => this.FileInfo.Attributes;
@@ -144,6 +146,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     RaisePropertyChange();
                 }
             }
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Util;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Ssh;
@@ -12,6 +13,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
@@ -101,12 +103,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public async Task<ObservableCollection<FileBrowser.IFileItem>> ListFilesAsync(
             FileBrowser.IFileItem directory)
         {
-            var sftpDirectory = (ISftpFileItem)directory.ThrowIfNull(nameof(directory));
-            Debug.Assert(!sftpDirectory.Type.IsFile);
+            directory.ThrowIfNull(nameof(directory));
+            Debug.Assert(!directory.Type.IsFile);
 
-            var remotePath = sftpDirectory == this.Root
+            var remotePath = directory == this.Root
                 ? "/"
-                : sftpDirectory.RemotePath;
+                : directory.Path;
             Debug.Assert(!remotePath.StartsWith("//"));
 
             var sftpFiles = await this
@@ -121,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 .Where(f => f.Name != "." && f.Name != "..")
                 .OrderBy(f => !f.IsDirectory).ThenBy(f => f.Name)
                 .Select(f => new SftpFileItem(
-                    sftpDirectory,
+                    directory,
                     f,
                     TranslateFileType(f)))
                 .ToList();
@@ -142,12 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Inner classes.
         //---------------------------------------------------------------------
 
-        private interface ISftpFileItem : FileBrowser.IFileItem
-        {
-            string RemotePath { get; }
-        }
-
-        private class SftpRootItem : ISftpFileItem
+        private class SftpRootItem : FileBrowser.IFileItem
         {
             public string Name => string.Empty;
 
@@ -164,18 +161,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             public bool IsExpanded { get; set; } = true;
 
-            public string RemotePath => string.Empty;
+            public string Path => string.Empty;
 
             public event PropertyChangedEventHandler PropertyChanged;
         }
 
-        private class SftpFileItem : ISftpFileItem
+        private class SftpFileItem : FileBrowser.IFileItem
         {
-            private readonly ISftpFileItem parent;
+            private readonly FileBrowser.IFileItem parent;
             private readonly SshSftpFileInfo fileInfo;
 
             public SftpFileItem(
-                ISftpFileItem parent,
+                FileBrowser.IFileItem parent,
                 SshSftpFileInfo fileInfo, 
                 FileType type)
             {
@@ -184,8 +181,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 this.Type = type;
             }
 
-            public string RemotePath
-                => (this.parent?.RemotePath ?? string.Empty) + "/" + this.Name;
+            public string Path
+                => (this.parent?.Path ?? string.Empty) + "/" + this.Name;
 
             public string Name => this.fileInfo.Name;
 

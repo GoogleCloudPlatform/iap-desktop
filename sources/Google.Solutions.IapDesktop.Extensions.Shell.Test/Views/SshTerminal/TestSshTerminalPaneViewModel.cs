@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Test.Services;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
@@ -37,6 +38,7 @@ using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -113,7 +115,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             ICredential credential,
             SshKeyType keyType,
             CultureInfo language = null,
-            IConfirmationDialog confirmationDialog = null)
+            IConfirmationDialog confirmationDialog = null,
+            IDownloadFileDialog downloadFileDialog = null)
         {
             var authorizedKey = await CreateAuthorizedKeyAsync(
                     instance,
@@ -141,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 new SynchronousJobService(),
                 confirmationDialog ?? new Mock<IConfirmationDialog>().Object,
                 progressDialog.Object,
-                new Mock<IDownloadFileDialog>().Object,
+                downloadFileDialog ?? new Mock<IDownloadFileDialog>().Object,
                 new Mock<IExceptionDialog>().Object,
                 instance,
                 new IPEndPoint(address, 22),
@@ -385,6 +388,185 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         //---------------------------------------------------------------------
+        // DownloadFiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenNoFileSelected_ThenDownloadIsCancelled(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            var confirmationDialog = new Mock<IConfirmationDialog>();
+            var downloadFileDialog = new Mock<IDownloadFileDialog>();
+            var eventService = new Mock<IEventService>();
+
+            using (var window = new Form())
+            using (var viewModel = await CreateViewModelAsync(
+                    eventService.Object,
+                    await instanceLocatorTask,
+                    await credential,
+                    SshKeyType.Rsa3072,
+                    null,
+                    confirmationDialog.Object,
+                    downloadFileDialog.Object)
+                .ConfigureAwait(true))
+            {
+                viewModel.View = window;
+                viewModel.ConnectionFailed += (s, e) => Assert.Fail("Connection failed: " + e.Error);
+                viewModel.ConnectionLost += (s, e) => Assert.Fail("Connection lost: " + e.Error);
+
+                await viewModel
+                    .ConnectAsync(new TerminalSize(80, 24))
+                    .ConfigureAwait(false);
+
+                var selection = It.IsAny<IEnumerable<FileBrowser.IFileItem>>();
+                var targetDir = It.IsAny<DirectoryInfo>();
+                downloadFileDialog
+                    .Setup(d => d.SelectDownloadFiles(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<string>(),
+                        It.IsAny<FileBrowser.IFileSystem>(),
+                        It.IsAny<IExceptionDialog>(),
+                        out selection,
+                        out targetDir))
+                    .Returns(DialogResult.Cancel);
+
+                Assert.IsFalse(await viewModel.DownloadFilesAsync());
+            }
+
+            await SshWorkerThread
+                .JoinAllWorkerThreadsAsync()
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task WhenFileExists_ThenDownloadShowsConfirmationPrompt(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            var confirmationDialog = new Mock<IConfirmationDialog>();
+            var downloadFileDialog = new Mock<IDownloadFileDialog>();
+            var eventService = new Mock<IEventService>();
+
+            using (var window = new Form())
+            using (var viewModel = await CreateViewModelAsync(
+                    eventService.Object,
+                    await instanceLocatorTask,
+                    await credential,
+                    SshKeyType.Rsa3072,
+                    null,
+                    confirmationDialog.Object,
+                    downloadFileDialog.Object)
+                .ConfigureAwait(true))
+            {
+                viewModel.View = window;
+                viewModel.ConnectionFailed += (s, e) => Assert.Fail("Connection failed: " + e.Error);
+                viewModel.ConnectionLost += (s, e) => Assert.Fail("Connection lost: " + e.Error);
+
+                await viewModel
+                    .ConnectAsync(new TerminalSize(80, 24))
+                    .ConfigureAwait(false);
+
+                var targetDirectory = Path.GetTempPath();
+                var existingFileName = $"{Guid.NewGuid()}.txt";
+                File.WriteAllText(Path.Combine(targetDirectory, existingFileName), string.Empty);
+
+                //
+                // Download existing file, but deny overwrite.
+                //
+                confirmationDialog
+                    .Setup(c => c.Confirm(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>()))
+                    .Returns(DialogResult.Cancel);
+
+                var existingFile = new Mock<FileBrowser.IFileItem>();
+                existingFile.SetupGet(f => f.Name).Returns(existingFileName);
+
+                var selection = (IEnumerable<FileBrowser.IFileItem>)new[] { existingFile.Object };
+                var targetDir = new DirectoryInfo(targetDirectory);
+                downloadFileDialog
+                    .Setup(d => d.SelectDownloadFiles(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<string>(),
+                        It.IsAny<FileBrowser.IFileSystem>(),
+                        It.IsAny<IExceptionDialog>(),
+                        out selection,
+                        out targetDir))
+                    .Returns(DialogResult.OK);
+
+                Assert.IsFalse(await viewModel.DownloadFilesAsync());
+                confirmationDialog
+                    .Verify(c => c.Confirm(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>()), Times.Once);
+            }
+
+            await SshWorkerThread
+                .JoinAllWorkerThreadsAsync()
+                .ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task WhenNoConflictsFound_ThenDownloadSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            var confirmationDialog = new Mock<IConfirmationDialog>();
+            var downloadFileDialog = new Mock<IDownloadFileDialog>();
+            var eventService = new Mock<IEventService>();
+
+            using (var window = new Form())
+            using (var viewModel = await CreateViewModelAsync(
+                    eventService.Object,
+                    await instanceLocatorTask,
+                    await credential,
+                    SshKeyType.Rsa3072,
+                    null,
+                    confirmationDialog.Object,
+                    downloadFileDialog.Object)
+                .ConfigureAwait(true))
+            {
+                viewModel.View = window;
+                viewModel.ConnectionFailed += (s, e) => Assert.Fail("Connection failed: " + e.Error);
+                viewModel.ConnectionLost += (s, e) => Assert.Fail("Connection lost: " + e.Error);
+
+                await viewModel
+                    .ConnectAsync(new TerminalSize(80, 24))
+                    .ConfigureAwait(false);
+
+                var targetDirectory = Directory.CreateDirectory(
+                    $"{Path.GetTempPath()}\\{Guid.NewGuid()}.txt");
+
+                var bash = new Mock<FileBrowser.IFileItem>();
+                bash.SetupGet(f => f.Name).Returns("bash");
+                bash.SetupGet(f => f.Path).Returns("/bin/bash");
+
+                var selection = (IEnumerable<FileBrowser.IFileItem>)new[] { bash.Object };
+                downloadFileDialog
+                    .Setup(d => d.SelectDownloadFiles(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<string>(),
+                        It.IsAny<FileBrowser.IFileSystem>(),
+                        It.IsAny<IExceptionDialog>(),
+                        out selection,
+                        out targetDirectory))
+                    .Returns(DialogResult.OK);
+
+                Assert.IsTrue(await viewModel.DownloadFilesAsync());
+                Assert.IsTrue(File.Exists(Path.Combine(targetDirectory.FullName, "bash")));
+            }
+
+            await SshWorkerThread
+                .JoinAllWorkerThreadsAsync()
+                .ConfigureAwait(false);
+        }
+
+        //---------------------------------------------------------------------
         // UploadFiles.
         //---------------------------------------------------------------------
 
@@ -407,6 +589,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .ConfigureAwait(true))
             {
                 viewModel.View = window;
+                viewModel.ConnectionFailed += (s, e) => Assert.Fail("Connection failed: " + e.Error);
+                viewModel.ConnectionLost += (s, e) => Assert.Fail("Connection lost: " + e.Error);
 
                 await viewModel
                     .ConnectAsync(new TerminalSize(80, 24))

@@ -394,8 +394,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     }
                 }
 
-                // TODO: Start transfer
-                throw new NotImplementedException(); 
+                //
+                // Download files in a background job. For better UX, wrap
+                // the background job using the Shell progress dialog.
+                //
+                using (var progressDialog = this.operationProgressDialog.ShowCopyDialog(
+                    this.View,
+                    (ulong)selectedFiles.Count(),
+                    (ulong)selectedFiles.Sum(f => (long)f.Size)))
+                {
+                    return await this.jobService.RunInBackground<bool>(
+                        new JobDescription(
+                            $"Downloading files from {this.Instance.Name}",
+                            JobUserFeedbackType.BackgroundFeedback),
+                        async _ =>
+                        {
+                            foreach (var file in selectedFiles)
+                            {
+                                var targetFile = new FileInfo(Path.Combine(targetDirectory.FullName, file.Name));
+                                using (var fileStream = targetFile.OpenWrite())
+                                {
+                                    await fsChannel.DownloadFileAsync(
+                                            file.Path,
+                                            fileStream,
+                                            new Progress<uint>(delta => progressDialog.OnBytesCompleted(delta)),
+                                            progressDialog.CancellationToken)
+                                        .ConfigureAwait(false);
+                                }
+
+                                progressDialog.OnItemCompleted();
+                            }
+
+                            return true;
+                        })
+                        .ConfigureAwait(true);
+                }
             }
         }
 
@@ -448,7 +481,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 }
 
                 //
-                // Upload files in a background job. For better UX, wrao 
+                // Upload files in a background job. For better UX, wrap
                 // the background job using the Shell progress dialog.
                 //
                 using (var progressDialog = this.operationProgressDialog.ShowCopyDialog(
@@ -462,7 +495,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                             JobUserFeedbackType.BackgroundFeedback),
                         async _ =>
                         {
-                            foreach (var file in files) // TODO: Move to SftpFileSystem (passing in OpDlg)
+                            foreach (var file in files)
                             {
                                 using (var fileStream = file.OpenRead())
                                 {

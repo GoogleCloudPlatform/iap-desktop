@@ -51,6 +51,11 @@ namespace Google.Solutions.Mvvm.Controls
         public interface IFileItem : INotifyPropertyChanged
         {
             /// <summary>
+            /// Absolute path of file. Empty for the root.
+            /// </summary>
+            string Path { get; }
+
+            /// <summary>
             /// Unqualified name of file.
             /// </summary>
             string Name { get; }
