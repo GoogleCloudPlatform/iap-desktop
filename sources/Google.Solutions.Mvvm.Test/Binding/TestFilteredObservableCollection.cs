@@ -142,7 +142,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             };
 
             CollectionAssert.AreEquivalent(
-                new [] { "THREE" },
+                new[] { "THREE" },
                 filtered.ToList());
         }
 

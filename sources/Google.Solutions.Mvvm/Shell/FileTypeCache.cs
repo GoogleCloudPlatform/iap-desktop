@@ -64,7 +64,7 @@ namespace Google.Solutions.Mvvm.Shell
                 info = FileType.Lookup(filePath, fileAttributes, size);
                 this.cache.Add(cacheKey, info);
             }
-                
+
             return info;
         }
 

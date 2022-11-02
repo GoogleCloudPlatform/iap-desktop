@@ -183,8 +183,8 @@ namespace Google.Solutions.Mvvm.Shell
 
             [DllImport("Shell32.dll", SetLastError = false)]
             internal static extern int SHGetStockIconInfo(
-                IconId siid, 
-                uint uFlags, 
+                IconId siid,
+                uint uFlags,
                 ref SHSTOCKICONINFO psii);
         }
     }

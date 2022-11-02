@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                             SchemaVersion.Current,
                             RegistryValueKind.DWord);
                     }
-                    
+
                     return new Profile()
                     {
                         Name = DefaultProfileName,

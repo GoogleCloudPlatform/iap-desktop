@@ -90,7 +90,7 @@ namespace Google.Solutions.Mvvm.Binding
 
                     case NotifyCollectionChangedAction.Reset:
                         this.CollectionChanged?.Invoke(
-                            this, 
+                            this,
                             new NotifyCollectionChangedEventArgs(args.Action));
                         break;
                 }
@@ -115,29 +115,29 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        public bool IsFixedSize 
+        public bool IsFixedSize
             => ((IList)this.collection).IsFixedSize;
 
-        public bool IsReadOnly 
+        public bool IsReadOnly
             => true;
 
-        public bool IsSynchronized 
+        public bool IsSynchronized
             => ((IList)this.collection).IsSynchronized;
 
-        public object SyncRoot 
+        public object SyncRoot
             => ((IList)this.collection).SyncRoot;
 
         //---------------------------------------------------------------------
         // Modification.
         //---------------------------------------------------------------------
 
-        public void Add(T item) 
+        public void Add(T item)
             => throw new InvalidOperationException("List is immutable");
 
-        public void Clear() 
+        public void Clear()
             => throw new InvalidOperationException("List is immutable");
 
-        public bool Remove(T item) 
+        public bool Remove(T item)
             => throw new InvalidOperationException("List is immutable");
 
         //---------------------------------------------------------------------
@@ -160,10 +160,10 @@ namespace Google.Solutions.Mvvm.Binding
                 .ToList()
                 .CopyTo(array, index);
 
-        public void CopyTo(Array array, int index) 
+        public void CopyTo(Array array, int index)
             => CopyTo((T[])array, index);
 
-        public int Count 
+        public int Count
             => this.collection.Where(i => this.predicate(i)).Count();
 
         public IEnumerator<T> GetEnumerator()

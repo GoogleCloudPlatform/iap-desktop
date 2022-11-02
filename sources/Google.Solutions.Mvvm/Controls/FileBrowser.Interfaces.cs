@@ -19,13 +19,12 @@
 // under the License.
 //
 
-using System;
-using System.IO;
-using System.ComponentModel;
 using Google.Solutions.Mvvm.Shell;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Mvvm.Controls
 {

@@ -38,8 +38,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
             FileAttributes attributes)
         {
             var fileType = new FileType(
-                "Type", 
-                !attributes.HasFlag(FileAttributes.Directory), 
+                "Type",
+                !attributes.HasFlag(FileAttributes.Directory),
                 SystemIcons.Application.ToBitmap());
 
             var file = new Mock<FileBrowser.IFileItem>();

@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Shell
             }
         }
 
-        public static string Downloads 
+        public static string Downloads
             => GetKnownFolderPath(new Guid("374DE290-123F-4565-9164-39C4925E467B"));
 
         //---------------------------------------------------------------------
@@ -58,7 +58,7 @@ namespace Google.Solutions.Mvvm.Shell
         {
             [DllImport("shell32", CharSet = CharSet.Unicode, ExactSpelling = true)]
             internal static extern int SHGetKnownFolderPath(
-                [MarshalAs(UnmanagedType.LPStruct)] Guid rfid, 
+                [MarshalAs(UnmanagedType.LPStruct)] Guid rfid,
                 uint dwFlags,
                 IntPtr hToken,
                 out CoTaskMemAllocSafeHandle ppszPath);

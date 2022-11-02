@@ -48,8 +48,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             if (sftpFile.IsDirectory)
             {
                 return this.fileTypeCache.Lookup(
-                    sftpFile.Name, 
-                    FileAttributes.Directory, 
+                    sftpFile.Name,
+                    FileAttributes.Directory,
                     FileType.IconFlags.None);
             }
             else if (sftpFile.Permissions.HasFlag(FilePermissions.SymbolicLink))
@@ -74,8 +74,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 // Treat like an EXE file.
                 //
                 return this.fileTypeCache.Lookup(
-                    ".exe", 
-                    FileAttributes.Normal, 
+                    ".exe",
+                    FileAttributes.Normal,
                     FileType.IconFlags.None);
             }
             else if (configFileNamePattern.IsMatch(sftpFile.Name))
@@ -88,15 +88,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     FileAttributes.Normal,
                     FileType.IconFlags.None);
             }
-            else 
+            else
             {
                 return this.fileTypeCache.Lookup(
-                    sftpFile.Name, 
-                    FileAttributes.Normal, 
+                    sftpFile.Name,
+                    FileAttributes.Normal,
                     FileType.IconFlags.None);
             }
         }
-        
+
         internal SftpFileSystem(
             Func<string, Task<IReadOnlyCollection<SshSftpFileInfo>>> listRemoteFilesFunc)
         {
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             public SftpFileItem(
                 FileBrowser.IFileItem parent,
-                SshSftpFileInfo fileInfo, 
+                SshSftpFileInfo fileInfo,
                 FileType type)
             {
                 this.parent = parent;
