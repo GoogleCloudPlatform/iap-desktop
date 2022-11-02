@@ -130,7 +130,7 @@ namespace Google.Solutions.Mvvm.Controls
             this.imageIndexExpressionReadonly = readOnly;
         }
 
-        public void BindSelectedImageIndex(Expression<Func<TModelNode, int>> 
+        public void BindSelectedImageIndex(Expression<Func<TModelNode, int>>
             selectedImageIndexExpression,
             bool readOnly = false)
         {

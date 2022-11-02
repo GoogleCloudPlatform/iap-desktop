@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -43,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         /// Check for updates and prompt the user to update.
         /// </summary>
         void CheckForUpdates(
-            IWin32Window parent, 
+            IWin32Window parent,
             out bool donotCheckForUpdatesAgain);
     }
 

@@ -62,8 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
         {
             System.Windows.Forms.Application.EnableVisualStyles();
             var directoryType = FileType.Lookup(
-                ".", 
-                FileAttributes.Directory, 
+                ".",
+                FileAttributes.Directory,
                 FileType.IconFlags.None);
 
             var root = CreateFileItem("Root", true);

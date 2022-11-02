@@ -35,7 +35,6 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
-using Google.Solutions.Ssh.Native;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Google.Solutions.Testing.Common.Integration;

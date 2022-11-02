@@ -20,9 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
-using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
-using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -178,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             {
                 var regularType = fs.TranslateFileType(
                     CreateFile(
-                        "file", 
+                        "file",
                         FilePermissions.OtherRead));
                 var exeType = fs.TranslateFileType(
                     CreateFile(

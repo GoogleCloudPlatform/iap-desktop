@@ -20,10 +20,10 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Mvvm.Shell.Util;
-using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -79,7 +79,7 @@ namespace Google.Solutions.Mvvm.Controls
             // dummy node in the directory tree. Use the Find icon for that.
             //
             this.fileIconsList.Images.Add(
-                StockIcons.GetIcon(StockIcons.IconId.Find, 
+                StockIcons.GetIcon(StockIcons.IconId.Find,
                 StockIcons.IconSize.Small));
 
             this.Disposed += (s, e) =>
@@ -113,14 +113,14 @@ namespace Google.Solutions.Mvvm.Controls
             get => this.fileList.SelectedModelItems;
             set => this.fileList.SelectedModelItems = value;
         }
-        
+
         /// <summary>
         /// Directory that is currently being viewed.
         /// </summary>
         public IFileItem CurrentDirectory => this.navigationState.Directory;
 
         public string CurrentPath => string.Join(
-                this.directoryTree.PathSeparator, 
+                this.directoryTree.PathSeparator,
                 this.navigationState.Path);
 
         //---------------------------------------------------------------------

@@ -93,8 +93,8 @@ namespace Google.Solutions.Mvvm.Shell
             using (var icon = Icon.FromHandle(fileInfo.hIcon))
             {
                 return new FileType(
-                    fileInfo.szTypeName, 
-                    !fileAttributes.HasFlag(FileAttributes.Directory), 
+                    fileInfo.szTypeName,
+                    !fileAttributes.HasFlag(FileAttributes.Directory),
                     icon.ToBitmap());
             }
         }

@@ -134,7 +134,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             public FileType Type => this.fileTypeCache.Lookup(
                 this.FileInfo.Name,
-                this.FileInfo.Attributes, 
+                this.FileInfo.Attributes,
                 FileType.IconFlags.None);
 
             public bool IsExpanded

@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             : base(eventService, vmInstance)
         {
             this.jobService = jobService;
-            
+
             this.confirmationDialog = confirmationDialog;
             this.operationProgressDialog = operationProgressDialog;
             this.downloadFileDialog = downloadFileDialog;
@@ -379,7 +379,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
                 if (conflicts.Any())
                 {
-                    var message = 
+                    var message =
                         $"The following files already exist in {targetDirectory.FullName}.\n\n - " +
                         string.Join("\n - ", conflicts.Select(s => s.Truncate(30))) +
                         $"\n\nDo you want to overwrite existing files?";

@@ -40,7 +40,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestFileBrowser
     {
-        private static readonly FileType DirectoryType 
+        private static readonly FileType DirectoryType
             = new FileType("Directory", false, SystemIcons.Application.ToBitmap());
         private static readonly FileType FileType
             = new FileType("File", false, SystemIcons.Application.ToBitmap());

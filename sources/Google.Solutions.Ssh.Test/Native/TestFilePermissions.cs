@@ -27,7 +27,7 @@ namespace Google.Solutions.Ssh.Test.Native
     [TestFixture]
     public class TestFilePermissions
     {
-        private const FilePermissions basePermissions = 
+        private const FilePermissions basePermissions =
             FilePermissions.OtherRead |
             FilePermissions.OwnerRead |
             FilePermissions.OtherWrite;

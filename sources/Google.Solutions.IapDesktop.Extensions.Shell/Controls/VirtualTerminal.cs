@@ -616,7 +616,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     //
                     text = TypographicQuotes.ToAsciiQuotes(text);
                 }
-                
+
                 this.controller.Paste(Encoding.UTF8.GetBytes(text));
             }
         }

@@ -33,7 +33,6 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
-using Google.Solutions.Ssh.Native;
 using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;

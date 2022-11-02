@@ -35,7 +35,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
         {
             Assert.Throws<COMException>(
                 () => StockIcons.GetIcon(
-                    (StockIcons.IconId)int.MaxValue, 
+                    (StockIcons.IconId)int.MaxValue,
                     StockIcons.IconSize.Small));
         }
 
