@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             this.downloadButton.Location = new System.Drawing.Point(496, 404);
             this.downloadButton.Name = "downloadButton";
             this.downloadButton.Size = new System.Drawing.Size(85, 23);
-            this.downloadButton.TabIndex = 0;
+            this.downloadButton.TabIndex = 2;
             this.downloadButton.Text = "&Download";
             this.downloadButton.UseVisualStyleBackColor = true;
             // 
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             this.browseButton.Location = new System.Drawing.Point(587, 377);
             this.browseButton.Name = "browseButton";
             this.browseButton.Size = new System.Drawing.Size(85, 23);
-            this.browseButton.TabIndex = 2;
+            this.browseButton.TabIndex = 1;
             this.browseButton.Text = "&Browse...";
             this.browseButton.UseVisualStyleBackColor = true;
             // 
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             this.fileBrowser.Location = new System.Drawing.Point(0, 0);
             this.fileBrowser.Name = "fileBrowser";
             this.fileBrowser.Size = new System.Drawing.Size(683, 359);
-            this.fileBrowser.TabIndex = 1;
+            this.fileBrowser.TabIndex = 0;
             // 
             // DownloadFileWindow
             // 

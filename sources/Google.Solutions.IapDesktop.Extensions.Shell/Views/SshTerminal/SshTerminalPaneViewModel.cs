@@ -341,7 +341,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
         }
 
-        public async Task<bool> DownloadFilesAsync() // TODO: Test View Model
+        public async Task<bool> DownloadFilesAsync()
         {
             if (this.sshChannel == null)
             {
@@ -395,13 +395,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 }
 
                 //
-                // Download files in a background job. For better UX, wrap
+                // Download files non-recursively in a background job. For better UX, wrap
                 // the background job using the Shell progress dialog.
                 //
+                // NB. The size calculation doesn't work for links, but we're not allowing
+                // links to be selected in the dialog.
+                //
+                Debug.Assert(!selectedFiles.Any(i => i.Attributes.HasFlag(FileAttributes.ReparsePoint)));
+                Debug.Assert(!selectedFiles.Any(i => i.Attributes.HasFlag(FileAttributes.Directory)));
+
                 using (var progressDialog = this.operationProgressDialog.ShowCopyDialog(
                     this.View,
                     (ulong)selectedFiles.Count(),
-                    (ulong)selectedFiles.Sum(f => (long)f.Size))) // TODO: Calculation wrong for links
+                    (ulong)selectedFiles.Sum(f => (long)f.Size)))
                 {
                     return await this.jobService.RunInBackground<bool>(
                         new JobDescription(

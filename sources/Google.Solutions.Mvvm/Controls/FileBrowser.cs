@@ -274,9 +274,9 @@ namespace Google.Solutions.Mvvm.Controls
         private async void fileList_KeyDown(object sender, KeyEventArgs args)
         {
             if (args.KeyCode == Keys.Enter &&
-                    this.fileList.SelectedModelItem is var item &&
-                    item != null &&
-                    !item.Type.IsFile)
+                this.fileList.SelectedModelItem is var item &&
+                item != null &&
+                !item.Type.IsFile)
             {
                 //
                 // Go down one level, same as double-click.

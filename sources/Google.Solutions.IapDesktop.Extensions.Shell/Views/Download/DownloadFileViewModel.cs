@@ -29,13 +29,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
 {
     internal class DownloadFileViewModel : ViewModelBase
     {
+        //
+        // NB. We're not allowing:
+        // - directories, because that would require a recursive download.
+        // - links, because we don't have proper file sizes for those.
+        //
+        private static bool IsDownloadable(FileBrowser.IFileItem item)
+            => item.Type.IsFile &&
+               !item.Attributes.HasFlag(System.IO.FileAttributes.ReparsePoint);
+
         public DownloadFileViewModel()
         {
             this.SelectedFiles = ObservableProperty.Build(Enumerable.Empty<FileBrowser.IFileItem>());
             this.TargetDirectory = ObservableProperty.Build(KnownFolders.Downloads);
             this.IsDownloadButtonEnabled = ObservableProperty.Build(
                 this.SelectedFiles,
-                files => files.Any() && files.All(f => f.Type.IsFile));
+                files => files.Any() && files.All(IsDownloadable));
         }
 
         //---------------------------------------------------------------------

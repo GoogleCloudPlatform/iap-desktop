@@ -26,6 +26,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Drawing;
+using System.IO;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
 {
@@ -34,11 +35,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
     {
         private static Mock<FileBrowser.IFileItem> CreateFileItem(
             string name,
-            bool directory)
+            FileAttributes attributes)
         {
             var fileType = new FileType(
                 "Type", 
-                !directory, 
+                !attributes.HasFlag(FileAttributes.Directory), 
                 SystemIcons.Application.ToBitmap());
 
             var file = new Mock<FileBrowser.IFileItem>();
@@ -46,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
             file.SetupGet(i => i.LastModified).Returns(DateTime.UtcNow);
             file.SetupGet(i => i.Type).Returns(fileType);
             file.SetupGet(i => i.Size).Returns(0);
+            file.SetupGet(i => i.Attributes).Returns(attributes);
             file.SetupGet(i => i.IsExpanded).Returns(false);
 
             return file;
@@ -68,8 +70,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
             var viewModel = new DownloadFileViewModel();
             viewModel.SelectedFiles.Value = new[]
             {
-                CreateFileItem("Directory", true).Object,
-                CreateFileItem("File", false).Object
+                CreateFileItem("Directory", FileAttributes.Directory).Object,
+                CreateFileItem("File", FileAttributes.Normal).Object
+            };
+
+            Assert.IsFalse(viewModel.IsDownloadButtonEnabled.Value);
+        }
+
+        [Test]
+        public void WhenLinkSelected_ThenIsDownloadButtonEnabledReturnsFalse()
+        {
+            var viewModel = new DownloadFileViewModel();
+            viewModel.SelectedFiles.Value = new[]
+            {
+                CreateFileItem("Link", FileAttributes.ReparsePoint).Object,
+                CreateFileItem("File", FileAttributes.Normal).Object
             };
 
             Assert.IsFalse(viewModel.IsDownloadButtonEnabled.Value);
@@ -81,8 +96,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
             var viewModel = new DownloadFileViewModel();
             viewModel.SelectedFiles.Value = new[]
             {
-                CreateFileItem("File 1", false).Object,
-                CreateFileItem("File 2", false).Object
+                CreateFileItem("File 1", FileAttributes.Normal).Object,
+                CreateFileItem("File 2", FileAttributes.Normal).Object
             };
 
             Assert.IsTrue(viewModel.IsDownloadButtonEnabled.Value);
