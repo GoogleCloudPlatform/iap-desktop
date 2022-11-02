@@ -26,6 +26,7 @@ using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -74,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task ListFilesReturnsOrderedList()
+        public async Task WhenServerReturnsUnorderedList_ThenListFilesReturnsOrderedList()
         {
             using (var fs = CreateFileSystem(
                 CreateFile("dir-2", FilePermissions.Directory),
@@ -99,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         [Test]
-        public async Task ListFilesIgnoresDotLinks()
+        public async Task WhenFileIsDotLink_ThenListFilesIgnoresFile()
         {
             using (var fs = CreateFileSystem(
                 CreateFile(".", FilePermissions.SymbolicLink),
@@ -110,6 +111,59 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ConfigureAwait(false);
 
                 CollectionAssert.IsEmpty(files.Select(f => f.Name));
+            }
+        }
+
+        [Test]
+        public async Task WhenFileStartsWithDot_ThenListFilesAppliesAttribute()
+        {
+            using (var fs = CreateFileSystem(
+                CreateFile(".hidden", FilePermissions.OtherRead)))
+            {
+                var files = await fs
+                    .ListFilesAsync(fs.Root)
+                    .ConfigureAwait(false);
+
+                Assert.AreEqual(
+                    FileAttributes.Normal | FileAttributes.Hidden,
+                    files.First().Attributes);
+            }
+        }
+
+        [Test]
+        public async Task WhenFileIsSymlink_ThenListFilesAppliesAttribute()
+        {
+            using (var fs = CreateFileSystem(
+                CreateFile("symlink", FilePermissions.SymbolicLink)))
+            {
+                var files = await fs
+                    .ListFilesAsync(fs.Root)
+                    .ConfigureAwait(false);
+
+                Assert.AreEqual(
+                    FileAttributes.Normal | FileAttributes.ReparsePoint,
+                    files.First().Attributes);
+            }
+        }
+
+        [Test]
+        public async Task WhenFileIsDevice_ThenListFilesAppliesAttribute(
+            [Values(
+                FilePermissions.Socket,
+                FilePermissions.Fifo,
+                FilePermissions.CharacterDevice,
+                FilePermissions.BlockSpecial)] FilePermissions permissions)
+        {
+            using (var fs = CreateFileSystem(
+                CreateFile("devide", FilePermissions.OtherRead | permissions)))
+            {
+                var files = await fs
+                    .ListFilesAsync(fs.Root)
+                    .ConfigureAwait(false);
+
+                Assert.AreEqual(
+                    FileAttributes.Normal | FileAttributes.Device,
+                    files.First().Attributes);
             }
         }
 

@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Format\TestSshReader.cs" />
+    <Compile Include="Native\TestFilePermissions.cs" />
     <Compile Include="Native\TestSshSftpChannel.cs" />
     <Compile Include="Native\TestSshSftpFileChannel.cs" />
     <Compile Include="TestRemoteFileSystemChannel.cs" />

@@ -210,6 +210,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         attributes |= FileAttributes.Hidden;
                     }
 
+                    if (this.fileInfo.Permissions.IsLink())
+                    {
+                        attributes |= FileAttributes.ReparsePoint;
+                    }
+
+                    if (this.fileInfo.Permissions.IsSocket() ||
+                        this.fileInfo.Permissions.IsFifo() ||
+                        this.fileInfo.Permissions.IsCharacterDevice() ||
+                        this.fileInfo.Permissions.IsBlockDevice())
+                    {
+                        attributes |= FileAttributes.Device;
+                    }
+
                     return attributes;
                 }
             }
