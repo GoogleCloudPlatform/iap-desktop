@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
@@ -81,6 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             this.ServiceRegistry.AddMock<IConfirmationDialog>();
             this.ServiceRegistry.AddMock<IOperationProgressDialog>();
+            this.ServiceRegistry.AddMock<IDownloadFileDialog>();
         }
 
         private async Task<SshTerminalPane> ConnectSshTerminalPane(
@@ -380,6 +382,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         // Copy command with a line continuation.
                         ClipboardUtil.SetText("whoami \\\r\n--help;exit\n\n");
                         pane.Terminal.PasteClipboard();
+                        pane.Terminal.SimulateKey(Keys.Enter);
 
                         return Task.CompletedTask;
                     })
