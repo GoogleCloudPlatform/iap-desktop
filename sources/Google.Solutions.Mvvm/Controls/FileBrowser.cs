@@ -253,6 +253,11 @@ namespace Google.Solutions.Mvvm.Controls
 
         private async void fileList_DoubleClick(object sender, EventArgs args)
         {
+            if (this.fileList.SelectedModelItem.Type.IsFile)
+            {
+                return;
+            }
+
             try
             {
                 await NavigateDownAsync(this.fileList.SelectedModelItem.Name)

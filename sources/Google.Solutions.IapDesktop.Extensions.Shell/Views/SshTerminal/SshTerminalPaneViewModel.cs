@@ -401,7 +401,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 using (var progressDialog = this.operationProgressDialog.ShowCopyDialog(
                     this.View,
                     (ulong)selectedFiles.Count(),
-                    (ulong)selectedFiles.Sum(f => (long)f.Size)))
+                    (ulong)selectedFiles.Sum(f => (long)f.Size))) // TODO: Calculation wrong for links
                 {
                     return await this.jobService.RunInBackground<bool>(
                         new JobDescription(
