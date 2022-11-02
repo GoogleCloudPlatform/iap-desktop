@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Application.ObjectModel;
@@ -53,6 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             this.ServiceRegistry.AddMock<IConfirmationDialog>();
             this.ServiceRegistry.AddMock<IOperationProgressDialog>();
+            this.ServiceRegistry.AddMock<IDownloadFileDialog>();
 
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             this.ServiceRegistry.AddSingleton(new TerminalSettingsRepository(

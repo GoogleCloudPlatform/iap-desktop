@@ -49,4 +49,44 @@ namespace Google.Solutions.Ssh.Native
         SymbolicLink = 0xa000,
         Socket = 0xc000
     }
+
+    public static class FilePermissionExtensions
+    {
+        private static readonly FilePermissions FormatMask = (FilePermissions)0xF000;
+
+        public static bool IsRegular(this FilePermissions mode)
+        {
+            return (mode & FormatMask) == FilePermissions.Regular;
+        }
+
+        public static bool IsLink(this FilePermissions mode)
+        {
+            return (mode & FormatMask) == FilePermissions.SymbolicLink;
+        }
+
+        public static bool IsDirectory(this FilePermissions mode)
+        {
+            return (mode & FormatMask) == FilePermissions.Directory;
+        }
+
+        public static bool IsCharacterDevice(this FilePermissions mode)
+        {
+            return (mode & FormatMask) == FilePermissions.CharacterDevice;
+        }
+
+        public static bool IsBlockDevice(this FilePermissions mode)
+        {
+            return (mode & FormatMask) == FilePermissions.BlockSpecial;
+        }
+
+        public static bool IsFifo(this FilePermissions mode)
+        {
+            return (mode & FormatMask) == FilePermissions.Fifo;
+        }
+
+        public static bool IsSocket(this FilePermissions mode)
+        {
+            return (mode & FormatMask) == FilePermissions.Socket;
+        }
+    }
 }

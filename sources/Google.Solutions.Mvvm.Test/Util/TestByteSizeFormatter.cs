@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer;
+using Google.Solutions.Mvvm.Shell.Util;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Util
+namespace Google.Solutions.Mvvm.Test.Util
 {
     [TestFixture]
     public class TestByteSizeFormatter

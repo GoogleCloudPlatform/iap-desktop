@@ -34,6 +34,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
     public interface ISshTerminalSession : ISession
     {
         InstanceLocator Instance { get; }
+
+        Task DownloadFilesAsync();
     }
 
     public interface ISshTerminalSessionBroker : ISessionBroker

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2021 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,27 +19,25 @@
 // under the License.
 //
 
-using System;
+using Google.Solutions.Mvvm.Shell;
+using NUnit.Framework;
+using System.Drawing;
+using System.IO;
+using System.Threading;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Mvvm.Test.Shell
 {
-    public sealed class Disposable : IDisposable
+    [TestFixture]
+    [Apartment(ApartmentState.STA)]
+    public class TestKnownFolders
     {
-        private readonly Action dispose;
-
-        private Disposable(Action dispose)
+        [Test]
+        public void Downloads()
         {
-            this.dispose = dispose;
-        }
+            var path = KnownFolders.Downloads;
 
-        public static IDisposable For(Action dispose)
-        {
-            return new Disposable(dispose);
-        }
-
-        public void Dispose()
-        {
-            this.dispose();
+            Assert.IsNotNull(path);
+            Assert.IsTrue(Directory.Exists(path));
         }
     }
 }

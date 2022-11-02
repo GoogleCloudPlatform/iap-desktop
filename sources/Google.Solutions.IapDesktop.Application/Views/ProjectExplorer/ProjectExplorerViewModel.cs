@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;

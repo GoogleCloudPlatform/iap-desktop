@@ -41,15 +41,19 @@ namespace Google.Solutions.Mvvm.Controls
         where TModelNode : class, INotifyPropertyChanged
     {
         private Expression<Func<TModelNode, bool>> isExpandedExpression = null;
+        private Expression<Func<TModelNode, string>> textExpression = null;
+
         private Expression<Func<TModelNode, int>> imageIndexExpression = null;
         private Expression<Func<TModelNode, int>> selectedImageIndexExpression = null;
-        private Expression<Func<TModelNode, string>> textExpression = null;
+
+        private bool imageIndexExpressionReadonly = false;
+        private bool selectedImageIndexExpressionReadonly = false;
 
         private Func<TModelNode, bool> isLeafFunc = _ => false;
         private Action<TModelNode, bool> setExpandedFunc = (n, state) => { };
         private Func<TModelNode, bool> isExpandedFunc = _ => false;
-        private Func<TModelNode, Task<ObservableCollection<TModelNode>>> getChildrenAsyncFunc
-            = _ => Task.FromResult(new ObservableCollection<TModelNode>());
+        private Func<TModelNode, Task<ICollection<TModelNode>>> getChildrenAsyncFunc
+            = _ => Task.FromResult<ICollection<TModelNode>>(new ObservableCollection<TModelNode>());
 
         private readonly TaskScheduler taskScheduler;
 
@@ -113,19 +117,25 @@ namespace Google.Solutions.Mvvm.Controls
             this.Nodes.Add(new Node(this, rootNode));
         }
 
-        public void BindImageIndex(Expression<Func<TModelNode, int>> imageIndexExpression)
-        {
-            this.imageIndexExpression = imageIndexExpression;
-        }
-
         public void BindIsLeaf(Func<TModelNode, bool> isLeafFunc)
         {
             this.isLeafFunc = isLeafFunc;
         }
 
-        public void BindSelectedImageIndex(Expression<Func<TModelNode, int>> selectedImageIndexExpression)
+        public void BindImageIndex(
+            Expression<Func<TModelNode, int>> imageIndexExpression,
+            bool readOnly = false)
+        {
+            this.imageIndexExpression = imageIndexExpression;
+            this.imageIndexExpressionReadonly = readOnly;
+        }
+
+        public void BindSelectedImageIndex(Expression<Func<TModelNode, int>> 
+            selectedImageIndexExpression,
+            bool readOnly = false)
         {
             this.selectedImageIndexExpression = selectedImageIndexExpression;
+            this.selectedImageIndexExpressionReadonly = readOnly;
         }
 
         public void BindText(Expression<Func<TModelNode, string>> nameExpression)
@@ -151,6 +161,12 @@ namespace Google.Solutions.Mvvm.Controls
         public void BindChildren(
             Func<TModelNode, Task<ObservableCollection<TModelNode>>> getChildrenAsyncFunc)
         {
+            this.getChildrenAsyncFunc = async n => await getChildrenAsyncFunc(n).ConfigureAwait(true);
+        }
+
+        public void BindChildren(
+            Func<TModelNode, Task<ICollection<TModelNode>>> getChildrenAsyncFunc)
+        {
             this.getChildrenAsyncFunc = getChildrenAsyncFunc;
         }
 
@@ -162,7 +178,15 @@ namespace Google.Solutions.Mvvm.Controls
         {
             private readonly BindableTreeView<TModelNode> treeView;
             public TModelNode Model { get; }
+
+            //
+            // Flag indicating whether a lazy load has been kicked off (it
+            // might not be finished yet though).
+            //
             private bool lazyLoadTriggered = false;
+
+            private readonly TaskCompletionSource<ICollection<TModelNode>> lazyLoadResult
+                = new TaskCompletionSource<ICollection<TModelNode>>();
 
             private readonly IContainer bindings = new Container();
 
@@ -185,17 +209,23 @@ namespace Google.Solutions.Mvvm.Controls
                 if (this.treeView.imageIndexExpression != null)
                 {
                     this.ImageIndex = this.treeView.imageIndexExpression.Compile()(this.Model);
-                    this.bindings.Add(this.Model.OnPropertyChange(
-                        this.treeView.imageIndexExpression,
-                        iconIndex => this.ImageIndex = iconIndex));
+                    if (!this.treeView.imageIndexExpressionReadonly)
+                    {
+                        this.bindings.Add(this.Model.OnPropertyChange(
+                            this.treeView.imageIndexExpression,
+                            iconIndex => this.ImageIndex = iconIndex));
+                    }
                 }
 
                 if (this.treeView.selectedImageIndexExpression != null)
                 {
                     this.SelectedImageIndex = this.treeView.selectedImageIndexExpression.Compile()(this.Model);
-                    this.bindings.Add(this.Model.OnPropertyChange(
-                        this.treeView.selectedImageIndexExpression,
-                        iconIndex => this.SelectedImageIndex = iconIndex));
+                    if (!this.treeView.selectedImageIndexExpressionReadonly)
+                    {
+                        this.bindings.Add(this.Model.OnPropertyChange(
+                            this.treeView.selectedImageIndexExpression,
+                            iconIndex => this.SelectedImageIndex = iconIndex));
+                    }
                 }
 
                 if (this.treeView.isExpandedExpression != null)
@@ -256,7 +286,7 @@ namespace Google.Solutions.Mvvm.Controls
                 }
             }
 
-            public void LazyLoadChildren()
+            private void LazyLoadChildren()
             {
                 if (this.lazyLoadTriggered)
                 {
@@ -279,11 +309,15 @@ namespace Google.Solutions.Mvvm.Controls
                                 //
                                 this.treeView.BeginUpdate();
 
+                                //
                                 // Clear any dummy node if present.
+                                //
                                 Debug.Assert(!this.Nodes.OfType<Node>().Any());
                                 DisposeAndClear(this.Nodes);
 
+                                //
                                 // Add nodes.
+                                //
                                 AddTreeNodesForModelNodes(children);
                             }
                             finally
@@ -291,20 +325,45 @@ namespace Google.Solutions.Mvvm.Controls
                                 this.treeView.EndUpdate();
                             }
 
+                            //
                             // Observe for changes.
-                            children.CollectionChanged += ModelChildrenChanged;
+                            //
+                            if (children is INotifyCollectionChanged observable)
+                            {
+                                observable.CollectionChanged += ModelChildrenChanged;
+                            }
+
+                            //
+                            // Notify waiters (but only the first time, not on retry).
+                            //
+                            if (!this.lazyLoadResult.Task.IsCompleted)
+                            {
+                                this.lazyLoadResult.SetResult(children);
+                            }
                         }
                         catch (Exception e)
                         {
+                            //
                             // Reset state so that the action can be retried.
+                            //
                             this.Collapse();
                             this.treeView.setExpandedFunc(this.Model, false);
                             this.lazyLoadTriggered = false;
 
+                            //
                             // Report error.
+                            //
                             this.treeView.LoadingChildrenFailed?.Invoke(
                                 this.Model,
                                 new ExceptionEventArgs(e));
+
+                            //
+                            // Notify waiters (but only the first time, not on retry).
+                            //
+                            if (!this.lazyLoadResult.Task.IsCompleted)
+                            {
+                                this.lazyLoadResult.SetException(e);
+                            }
                         }
                     },
                     CancellationToken.None,
@@ -318,6 +377,18 @@ namespace Google.Solutions.Mvvm.Controls
                     this.treeView.taskScheduler);
             }
 
+            public Task ExpandAsync()
+            {
+                Expand();
+
+                //
+                // Return task indicating the lazy load result. If the
+                // node was expanded already/before, then this task might
+                // have been completed for a while.
+                //
+                return this.lazyLoadResult.Task;
+            }
+
             private void AddTreeNodesForModelNodes(IEnumerable<TModelNode> children)
             {
                 foreach (var child in children)
@@ -326,7 +397,7 @@ namespace Google.Solutions.Mvvm.Controls
                 }
             }
 
-            private Node FindTreeNodeByModelNode(TModelNode modelNode)
+            internal Node FindTreeNodeByModelNode(TModelNode modelNode)
             {
                 return this.Nodes
                     .OfType<Node>()

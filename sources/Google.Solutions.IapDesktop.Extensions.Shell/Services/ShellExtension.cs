@@ -469,6 +469,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             this.sessionCommands.AddSeparator();
             this.sessionCommands.AddCommand(
                 new Command<ISession>(
+                    "Do&wnload files...",
+                    session => GetSessionMenuCommandState<ISshTerminalSession>(
+                        session,
+                        sshSession => sshSession.IsConnected),
+                    session => (session as ISshTerminalSession)?.DownloadFilesAsync())
+                {
+                    Image = Resources.DownloadFile_16,
+                    ActivityText = "Downloading files"
+                });
+            this.sessionCommands.AddCommand(
+                new Command<ISession>(
                     "Show &security screen (send Ctrl+Alt+Esc)",
                     session => GetSessionMenuCommandState<IRemoteDesktopSession>(
                         session,

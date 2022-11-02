@@ -282,7 +282,7 @@ namespace Google.Solutions.Ssh.Native
             => (FilePermissions)this.attributes.permissions;
 
         public bool IsDirectory
-            => this.Permissions.HasFlag(FilePermissions.Directory);
+            => this.Permissions.IsDirectory();
 
         public uint UserId
             => this.attributes.uid;

@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
@@ -55,8 +56,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly AuthorizedKeyPair authorizedKey;
         private readonly TimeSpan connectionTimeout;
         private RemoteShellChannel sshChannel = null;
+
         private readonly IConfirmationDialog confirmationDialog;
         private readonly IOperationProgressDialog operationProgressDialog;
+        private readonly IDownloadFileDialog downloadFileDialog;
+        private readonly IExceptionDialog exceptionDialog;
+
         private readonly IJobService jobService;
 
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
@@ -70,6 +75,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             IJobService jobService,
             IConfirmationDialog confirmationDialog,
             IOperationProgressDialog operationProgressDialog,
+            IDownloadFileDialog downloadFileDialog,
+            IExceptionDialog exceptionDialog,
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKeyPair authorizedKey,
@@ -78,8 +85,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             : base(eventService, vmInstance)
         {
             this.jobService = jobService;
+            
             this.confirmationDialog = confirmationDialog;
             this.operationProgressDialog = operationProgressDialog;
+            this.downloadFileDialog = downloadFileDialog;
+            this.exceptionDialog = exceptionDialog;
+
             this.endpoint = endpoint;
             this.authorizedKey = authorizedKey;
             this.language = language;
@@ -330,6 +341,103 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
         }
 
+        public async Task<bool> DownloadFilesAsync()
+        {
+            if (this.sshChannel == null)
+            {
+                return false;
+            }
+
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (var fsChannel = await this.sshChannel.Connection
+                .OpenFileSystemAsync()
+                .ConfigureAwait(true))
+            using (var fs = new SftpFileSystem(fsChannel))
+            {
+                if (this.downloadFileDialog.SelectDownloadFiles(
+                    this.View,
+                    "Select files to download",
+                    fs,
+                    this.exceptionDialog,
+                    out var selectedFiles,
+                    out var targetDirectory) != DialogResult.OK ||
+                    !targetDirectory.Exists)
+                {
+                    return false;
+                }
+
+                //
+                // Check if any of the files exist already.
+                //
+                var existingFileNames = targetDirectory
+                    .GetFiles()
+                    .Select(f => f.Name)
+                    .ToHashSet();
+
+                var conflicts = existingFileNames
+                    .Intersect(selectedFiles.Select(i => i.Name));
+
+                if (conflicts.Any())
+                {
+                    var message = 
+                        $"The following files already exist in {targetDirectory.FullName}.\n\n - " +
+                        string.Join("\n - ", conflicts.Select(s => s.Truncate(30))) +
+                        $"\n\nDo you want to overwrite existing files?";
+
+                    if (this.confirmationDialog.Confirm(
+                        this.View,
+                        message,
+                        $"Download files from {this.Instance.Name}",
+                        "Download files") != DialogResult.Yes)
+                    {
+                        return false;
+                    }
+                }
+
+                //
+                // Download files non-recursively in a background job. For better UX, wrap
+                // the background job using the Shell progress dialog.
+                //
+                // NB. The size calculation doesn't work for links, but we're not allowing
+                // links to be selected in the dialog.
+                //
+                Debug.Assert(!selectedFiles.Any(i => i.Attributes.HasFlag(FileAttributes.ReparsePoint)));
+                Debug.Assert(!selectedFiles.Any(i => i.Attributes.HasFlag(FileAttributes.Directory)));
+
+                using (var progressDialog = this.operationProgressDialog.ShowCopyDialog(
+                    this.View,
+                    (ulong)selectedFiles.Count(),
+                    (ulong)selectedFiles.Sum(f => (long)f.Size)))
+                {
+                    return await this.jobService.RunInBackground<bool>(
+                        new JobDescription(
+                            $"Downloading files from {this.Instance.Name}",
+                            JobUserFeedbackType.BackgroundFeedback),
+                        async _ =>
+                        {
+                            foreach (var file in selectedFiles)
+                            {
+                                var targetFile = new FileInfo(Path.Combine(targetDirectory.FullName, file.Name));
+                                using (var fileStream = targetFile.OpenWrite())
+                                {
+                                    await fsChannel.DownloadFileAsync(
+                                            file.Path,
+                                            fileStream,
+                                            new Progress<uint>(delta => progressDialog.OnBytesCompleted(delta)),
+                                            progressDialog.CancellationToken)
+                                        .ConfigureAwait(false);
+                                }
+
+                                progressDialog.OnItemCompleted();
+                            }
+
+                            return true;
+                        })
+                        .ConfigureAwait(true);
+                }
+            }
+        }
+
         public async Task<bool> UploadFilesAsync(IEnumerable<FileInfo> files)
         {
             if (this.sshChannel == null)
@@ -338,83 +446,81 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(files))
+            using (var fsChannel = await this.sshChannel.Connection
+                .OpenFileSystemAsync()
+                .ConfigureAwait(true))
             {
-                using (var fsChannel = await this.sshChannel.Connection
-                    .OpenFileSystemAsync()
-                    .ConfigureAwait(true))
+                //
+                // Check if any of the files exist already.
+                //
+                var allFilesInHomeDir = await fsChannel
+                    .ListFilesAsync(".")
+                    .ConfigureAwait(true);
+
+                var existingFileNames = allFilesInHomeDir
+                    .Where(f => !f.IsDirectory)
+                    .Select(f => f.Name)
+                    .ToHashSet();
+
+                var fileNamesToUpload = files
+                    .Select(f => f.Name);
+
+                var conflicts = existingFileNames.Intersect(fileNamesToUpload);
+
+                var message = "Are you sure you want to upload the following " +
+                    $"file(s) to your home directory on {this.Instance.Name}?\n\n - " +
+                    string.Join("\n - ", fileNamesToUpload.Select(s => s.Truncate(30)));
+                if (conflicts.Any())
                 {
-                    //
-                    // Check if any of the files exist already.
-                    //
-                    var allFilesInHomeDir = await fsChannel
-                        .ListFilesAsync(".")
-                        .ConfigureAwait(true);
+                    message +=
+                        "\n\nThe following files already exist on the server and will be replaced:\n\n - " +
+                        string.Join("\n - ", conflicts.Select(s => s.Truncate(30)));
+                }
 
-                    var existingFileNames = allFilesInHomeDir
-                        .Where(f => !f.IsDirectory)
-                        .Select(f => f.Name)
-                        .ToHashSet();
+                if (this.confirmationDialog.Confirm(
+                    this.View,
+                    message,
+                    $"Upload file(s) to {this.Instance.Name}",
+                    "Upload file") != DialogResult.Yes)
+                {
+                    return false;
+                }
 
-                    var fileNamesToUpload = files
-                        .Select(f => f.Name);
-
-                    var conflicts = existingFileNames.Intersect(fileNamesToUpload);
-
-                    var message = "Are you sure you want to upload the following " +
-                        $"file(s) to your home directory on {this.Instance.Name}?\n\n - " +
-                        string.Join("\n - ", fileNamesToUpload.Select(s => s.Truncate(30)));
-                    if (conflicts.Any())
-                    {
-                        message +=
-                            "\n\nThe following files already exist on the server and will be replaced:\n\n - " +
-                            string.Join("\n - ", conflicts.Select(s => s.Truncate(30)));
-                    }
-
-                    if (this.confirmationDialog.Confirm(
-                        this.View,
-                        message,
-                        $"Upload file(s) to {this.Instance.Name}",
-                        "Upload file") != DialogResult.Yes)
-                    {
-                        return false;
-                    }
-
-                    //
-                    // Upload files in a background job. For better UX, wrao 
-                    // the background job using the Shell progress dialog.
-                    //
-                    using (var progressDialog = this.operationProgressDialog.ShowCopyDialog(
-                        this.View,
-                        (ulong)files.Count(),
-                        (ulong)files.Sum(f => f.Length)))
-                    {
-                        return await this.jobService.RunInBackground<bool>(
-                            new JobDescription(
-                                $"Uploading files to {this.Instance.Name}",
-                                JobUserFeedbackType.BackgroundFeedback),
-                            async _ =>
+                //
+                // Upload files in a background job. For better UX, wrap
+                // the background job using the Shell progress dialog.
+                //
+                using (var progressDialog = this.operationProgressDialog.ShowCopyDialog(
+                    this.View,
+                    (ulong)files.Count(),
+                    (ulong)files.Sum(f => f.Length)))
+                {
+                    return await this.jobService.RunInBackground<bool>(
+                        new JobDescription(
+                            $"Uploading files to {this.Instance.Name}",
+                            JobUserFeedbackType.BackgroundFeedback),
+                        async _ =>
+                        {
+                            foreach (var file in files)
                             {
-                                foreach (var file in files)
+                                using (var fileStream = file.OpenRead())
                                 {
-                                    using (var fileStream = file.OpenRead())
-                                    {
-                                        await fsChannel.UploadFileAsync(
-                                                file.Name,  // Relative path -> place in home directory
-                                                fileStream,
-                                                LIBSSH2_FXF_FLAGS.TRUNC | LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
-                                                FilePermissions.OwnerRead | FilePermissions.OwnerWrite,
-                                                new Progress<uint>(delta => progressDialog.OnBytesCompleted(delta)),
-                                                progressDialog.CancellationToken)
-                                            .ConfigureAwait(false);
-                                    }
-
-                                    progressDialog.OnItemCompleted();
+                                    await fsChannel.UploadFileAsync(
+                                            file.Name,  // Relative path -> place in home directory
+                                            fileStream,
+                                            LIBSSH2_FXF_FLAGS.TRUNC | LIBSSH2_FXF_FLAGS.CREAT | LIBSSH2_FXF_FLAGS.WRITE,
+                                            FilePermissions.OwnerRead | FilePermissions.OwnerWrite,
+                                            new Progress<uint>(delta => progressDialog.OnBytesCompleted(delta)),
+                                            progressDialog.CancellationToken)
+                                        .ConfigureAwait(false);
                                 }
 
-                                return true;
-                            })
-                            .ConfigureAwait(true);
-                    }
+                                progressDialog.OnItemCompleted();
+                            }
+
+                            return true;
+                        })
+                        .ConfigureAwait(true);
                 }
             }
         }

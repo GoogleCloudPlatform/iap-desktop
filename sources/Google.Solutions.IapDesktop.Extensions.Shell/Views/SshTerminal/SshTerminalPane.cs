@@ -26,11 +26,13 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
@@ -62,6 +64,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     serviceProvider.GetService<IJobService>(),
                     serviceProvider.GetService<IConfirmationDialog>(),
                     serviceProvider.GetService<IOperationProgressDialog>(),
+                    serviceProvider.GetService<IDownloadFileDialog>(),
+                    serviceProvider.GetService<IExceptionDialog>(),
                     vmInstance,
                     endpoint,
                     authorizedKey,
@@ -84,6 +88,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 "2-step verification",
                 e.Prompt,
                 e.IsPasswordPrompt);
+        }
+
+        //---------------------------------------------------------------------
+        // ISshTerminalSession.
+        //---------------------------------------------------------------------
+
+        public Task DownloadFilesAsync()
+        {
+            return this.viewModel.DownloadFilesAsync();
         }
 
         //---------------------------------------------------------------------

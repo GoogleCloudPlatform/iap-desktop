@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Controls
     /// <typeparam name="TModelItem"></typeparam>
     public class BindableListView<TModelItem> : FlatListView
     {
-        private ObservableCollection<TModelItem> model;
+        private ICollection<TModelItem> model;
 
         private readonly IDictionary<int, Func<TModelItem, string>> columnAccessors =
             new Dictionary<int, Func<TModelItem, string>>();
@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Controls
 
         private string ExtractColumnValue(int columnIndex, TModelItem modelItem)
         {
-            if (this.columnAccessors.TryGetValue(columnIndex, out Func<TModelItem, string> accessorFunc))
+            if (this.columnAccessors.TryGetValue(columnIndex, out var accessorFunc))
             {
                 return accessorFunc(modelItem);
             }
@@ -81,7 +81,10 @@ namespace Google.Solutions.Mvvm.Controls
 
             this.Items.AddRange(items
                 .Select(item => new ListViewItem(
-                    Columns.OfType<ColumnHeader>().Select(c => ExtractColumnValue(c.Index, item)).ToArray())
+                    this.Columns
+                        .OfType<ColumnHeader>()
+                        .Select(c => ExtractColumnValue(c.Index, item))
+                        .ToArray())
                 {
                     Tag = item,
                     ImageIndex = ExtractImageIndex(item)
@@ -150,14 +153,17 @@ namespace Google.Solutions.Mvvm.Controls
         // List Binding.
         //---------------------------------------------------------------------
 
-        public void BindCollection(ObservableCollection<TModelItem> model)
+        public void BindCollection(ICollection<TModelItem> model)
         {
             // Reset.
             if (this.model != null)
             {
                 UnobserveItems(this.model);
 
-                this.model.CollectionChanged -= Model_CollectionChanged;
+                if (this.model is INotifyCollectionChanged observable)
+                {
+                    observable.CollectionChanged -= Model_CollectionChanged;
+                }
             }
 
             this.Items.Clear();
@@ -168,7 +174,10 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 AddViewItems(this.model);
 
-                this.model.CollectionChanged += Model_CollectionChanged;
+                if (this.model is INotifyCollectionChanged observable)
+                {
+                    observable.CollectionChanged += Model_CollectionChanged;
+                }
             }
         }
 
