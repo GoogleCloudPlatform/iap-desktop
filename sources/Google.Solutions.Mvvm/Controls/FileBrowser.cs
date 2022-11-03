@@ -55,6 +55,16 @@ namespace Google.Solutions.Mvvm.Controls
 
         private int GetImageIndex(FileType fileType)
         {
+            Debug.Assert(!this.InvokeRequired, "Running on UI thread");
+            
+            if (this.IsDisposed)
+            {
+                //
+                // Don't touch the image list if we're already disposing.
+                //
+                return 0;
+            }
+
             var imageIndex = this.fileIconsList.Images.IndexOfKey(fileType.TypeName);
             if (imageIndex == -1)
             {
@@ -129,6 +139,7 @@ namespace Google.Solutions.Mvvm.Controls
 
         private async Task<ObservableCollection<IFileItem>> ListFilesAsync(IFileItem folder)
         {
+            Debug.Assert(!this.InvokeRequired, "Running on UI thread");
             Debug.Assert(this.fileSystem != null);
 
             //
@@ -305,6 +316,8 @@ namespace Google.Solutions.Mvvm.Controls
 
         public async Task NavigateAsync(IEnumerable<string> path)
         {
+            Debug.Assert(!this.InvokeRequired, "Running on UI thread");
+
             //
             // Reset to root.
             //
@@ -325,6 +338,8 @@ namespace Google.Solutions.Mvvm.Controls
 
         public async Task NavigateDownAsync(string directoryName)
         {
+            Debug.Assert(!this.InvokeRequired, "Running on UI thread");
+
             //
             // Expand the node and wait for it to be populated.
             //
@@ -356,6 +371,8 @@ namespace Google.Solutions.Mvvm.Controls
 
         public async Task NavigateUpAsync()
         {
+            Debug.Assert(!this.InvokeRequired, "Running on UI thread");
+
             if (this.navigationState.Parent == null)
             {
                 //
