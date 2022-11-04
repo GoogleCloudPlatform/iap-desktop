@@ -27,13 +27,11 @@ using static Google.Solutions.Mvvm.Shell.FileType;
 namespace Google.Solutions.Mvvm.Shell
 {
     /// <summary>
-    /// Cache for file type information.
-    /// 
-    /// The cache is not synchronized and intended to be used on
-    /// the UI thread only.
+    /// Thread-safe cache for file type information.
     /// </summary>
     public sealed class FileTypeCache : IDisposable
     {
+        private readonly object cacheLock = new object();
         private readonly IDictionary<CacheKey, FileType> cache
             = new Dictionary<CacheKey, FileType>();
 
@@ -59,20 +57,26 @@ namespace Google.Solutions.Mvvm.Shell
                 Flags = size
             };
 
-            if (!this.cache.TryGetValue(cacheKey, out var info))
+            lock (this.cacheLock)
             {
-                info = FileType.Lookup(filePath, fileAttributes, size);
-                this.cache.Add(cacheKey, info);
-            }
+                if (!this.cache.TryGetValue(cacheKey, out var info))
+                {
+                    info = FileType.Lookup(filePath, fileAttributes, size);
+                    this.cache.Add(cacheKey, info);
+                }
 
-            return info;
+                return info;
+            }
         }
 
         public void Dispose()
         {
-            foreach (var fileType in this.cache.Values)
+            lock (this.cacheLock)
             {
-                fileType.Dispose();
+                foreach (var fileType in this.cache.Values)
+                {
+                    fileType.Dispose();
+                }
             }
         }
 
