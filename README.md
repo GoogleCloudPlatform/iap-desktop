@@ -7,7 +7,7 @@ to VM instances that run on Google Cloud.
 
 ## Access Linux and Windows VMs from anywhere
 
-<img src='doc/images/Screenshot_350.gif' align='right'>
+<img src='doc/images/Screenshot_350.png' align='right'>
 
 IAP Desktop uses [Identity-Aware-Proxy (IAP)](https://cloud.google.com/iap/docs/tcp-forwarding-overview) to connect to VM instances so that you can:
 
@@ -24,7 +24,7 @@ The application automatically manages IAP TCP tunnels for you, and protects them
 
 <img src='doc/images/pix.gif' width='100%' height='1'>
 
-[Show larger screenshot](doc/images/Screenshot_1400.gif?raw=true)
+[Show larger screenshot](doc/images/Screenshot_1400.png?raw=true)
 
 ## Connect to Windows VMs with Remote Desktop
 
