@@ -5,23 +5,79 @@ to VM instances that run on Google Cloud.
 
 [<img src="doc/images/download.png">](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktop.msi)
 
-## Overview
 
-IAP Desktop uses 
-[Identity-Aware-Proxy TCP tunneling](https://cloud.google.com/iap/docs/tcp-forwarding-overview) to 
-connect to VM instances, combining the convenience of a Remote
-Desktop connection manager with the security and flexibility of Identity-Aware-Proxy:
+## Access Linux and Windows VMs from anywhere
 
 
-* You can connect from anywhere, not only from selected networks.
-* You can connect to VM instance that do not have a public IP address or NAT access to the internet.
-* Because the TCP forwarding tunnel is established over HTTPS, you can connect even if your workstation
-  is behind a corporate firewall or proxy.
-* You can control who should be allowed to connect to a VM in a fine-grained manner by using 
-  [Cloud IAM](https://cloud.google.com/iap/docs/using-tcp-forwarding#configuring_access_and_permissions).
-* You do not need to expose SSH or RDP over the public internet. 
+IAP Desktop uses [Identity-Aware-Proxy (IAP)](https://cloud.google.com/iap/docs/tcp-forwarding-overview) to connect to VM instances so that you can:
 
-![Screenshot of IAP Desktop](doc/images/iapdesktop-animated-800.gif)
+*   Connect to VM instances that don’t have a public IP address
+*   Connect from anywhere over the internet
+
+Together, IAP Desktop and [Identity-Aware-Proxy (IAP)](https://cloud.google.com/iap/docs/tcp-forwarding-overview) let you apply zero-trust security to your VMs:
+
+*   Apply fine-grained access controls that define [who can access which VM](https://cloud.google.com/iap/docs/using-tcp-forwarding#configuring_access_and_permissions)
+*   Use [access levels](https://cloud.google.com/iap/docs/cloud-iap-context-aware-access-howto) to restrict access by time or location
+*   Use [BeycondCorp Enterprise](https://cloud.google.com/beyondcorp-enterprise) to limit access to trusted devices
+
+The application automatically manages IAP TCP tunnels for you, and protects them so that no other users or programs can access them.
+
+<img src='doc/images/pix.gif' width='100%' height='1'>
+
+
+## Connect to Windows VMs with Remote Desktop
+
+<img src='doc/images/RemoteDesktop_350.gif' align='right' width='350' height='280' margin='10'>
+
+IAP Desktop is a full-featured Remote Desktop client that lets you:
+
+*   Use multiple Remote Desktop sessions at the same time
+*   Switch between full-screen and tabbed Remote Desktop sessions
+*   Upload and download files
+
+To help you authenticate to Windows VMs, IAP Desktop can:
+
+*   Automatically generate Windows credentials by using the Compute Engine guest agent environment
+*   Encrypt and store your Windows credentials locally
+
+[Show larger screenshot](doc/images/RemoteDesktop_1024.gif?raw=true)
+
+<img src='doc/images/pix.gif' width='100%' height='1'>
+
+## Connect to Linux VMs with SSH
+
+<img src='doc/images/SSH_350.gif' align='right' width='350' height='280' margin='10'>
+
+IAP Desktop includes an SSH client and terminal so that you can:
+
+*   Use multiple SSH sessions in parallel, and switch between them using tabs
+*   Upload and download files using SFTP
+
+To help you authenticate to Linux VMs, IAP Desktop can:
+
+*   Automatically create and publish SSH keys to [OS Login](https://cloud.google.com/compute/docs/oslogin) or [metadata](https://cloud.google.com/compute/docs/connect/add-ssh-keys#metadata)
+*   Use OS Login [2-factor authentication](https://cloud.google.com/compute/docs/oslogin/set-up-oslogin)
+*   Store our SSH keys locally using Windows CNG
+
+[Show larger screenshot](doc/images/SSH_1024.gif?raw=true)
+
+<img src='doc/images/pix.gif' width='100%' height='1'>
+
+
+## Manage VMs across projects
+
+<img src='doc/images/Manage_350.gif' align='right' width='350' height='280' margin='10'>
+
+IAP Desktop gives you a consolidated view of your VMs and lets you:
+
+*   Connect to VMs across multiple projects and Google Cloud organizations
+*   View diagnostics information such as logs and serial port output
+*   Perform common operations such as starting or stopping VMs
+
+
+[Show larger screenshot](doc/images/Manage_1024.gif?raw=true)
+
+<img src='doc/images/pix.gif' width='100%' height='1'>
 
 
 
