@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         [Test]
-        public void WheFileIsConfigFile_ThenFileTypeIsIsSpecial()
+        public void WheFileIsConfigFile_ThenFileTypeIsSpecial()
         {
             using (var fs = CreateFileSystem())
             {
@@ -237,6 +237,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         FilePermissions.Directory));
 
                 Assert.IsTrue(!dirType.IsFile);
+            }
+        }
+
+        [Test]
+        public void WheFileNameContainsInvalidCharacters_ThenFileTypeIsPlain(
+            [Values("file?", "<file", "COM1", "file.")] string fileName)
+        {
+            using (var fs = CreateFileSystem())
+            {
+                var regularType = fs.TranslateFileType(
+                    CreateFile(
+                        fileName,
+                        FilePermissions.OtherRead));
+                var iniType = fs.TranslateFileType(
+                    CreateFile(
+                        "file",
+                        FilePermissions.OtherRead | FilePermissions.OwnerExecute));
+
+                Assert.IsTrue(iniType.IsFile);
+                Assert.AreNotEqual(regularType.TypeName, iniType.TypeName);
             }
         }
     }

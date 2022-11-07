@@ -153,6 +153,7 @@
     <Compile Include="Data\IHelpTopic.cs" />
     <Compile Include="Util\StringExtensions.cs" />
     <Compile Include="Util\TypographicQuotes.cs" />
+    <Compile Include="Util\Filename.cs" />
     <Compile Include="Util\WindowMessage.cs" />
     <Compile Include="Views\Authorization\DeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authorization\NewProfileDialog.cs">
