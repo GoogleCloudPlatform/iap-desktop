@@ -417,7 +417,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         {
                             foreach (var file in selectedFiles)
                             {
-                                var targetFile = new FileInfo(Path.Combine(targetDirectory.FullName, file.Name));
+                                //
+                                // NB. The remote file name might not be Win32-compliant,
+                                // so we need to escape it.
+                                //
+                                var targetFile = new FileInfo(Path.Combine(
+                                    targetDirectory.FullName, 
+                                    Filename.EscapeFilename(file.Name)));
                                 using (var fileStream = targetFile.OpenWrite())
                                 {
                                     await fsChannel.DownloadFileAsync(
