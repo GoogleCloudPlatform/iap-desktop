@@ -7,6 +7,7 @@ to VM instances that run on Google Cloud.
 
 ## Access Linux and Windows VMs from anywhere
 
+<img src='doc/images/Screenshot_350.gif' align='right'>
 
 IAP Desktop uses [Identity-Aware-Proxy (IAP)](https://cloud.google.com/iap/docs/tcp-forwarding-overview) to connect to VM instances so that you can:
 
@@ -23,10 +24,11 @@ The application automatically manages IAP TCP tunnels for you, and protects them
 
 <img src='doc/images/pix.gif' width='100%' height='1'>
 
+[Show larger screenshot](doc/images/Screenshot_1400.gif?raw=true)
 
 ## Connect to Windows VMs with Remote Desktop
 
-<img src='doc/images/RemoteDesktop_350.gif' align='right' width='350' height='280' margin='10'>
+<img src='doc/images/RemoteDesktop_350.gif' align='right'>
 
 IAP Desktop is a full-featured Remote Desktop client that lets you:
 
@@ -45,7 +47,7 @@ To help you authenticate to Windows VMs, IAP Desktop can:
 
 ## Connect to Linux VMs with SSH
 
-<img src='doc/images/SSH_350.gif' align='right' width='350' height='280' margin='10'>
+<img src='doc/images/SSH_350.gif' align='right'>
 
 IAP Desktop includes an SSH client and terminal so that you can:
 
@@ -65,7 +67,7 @@ To help you authenticate to Linux VMs, IAP Desktop can:
 
 ## Manage VMs across projects
 
-<img src='doc/images/Manage_350.gif' align='right' width='350' height='280' margin='10'>
+<img src='doc/images/Manage_350.gif' align='right'>
 
 IAP Desktop gives you a consolidated view of your VMs and lets you:
 
