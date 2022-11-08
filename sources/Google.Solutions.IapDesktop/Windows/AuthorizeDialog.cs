@@ -153,6 +153,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.signInButton.Click += (s, a) => signIn(BrowserPreference.Default);
             this.signInWithDefaultBrowserMenuItem.Click += (s, a) => signIn(BrowserPreference.Default);
             this.signInWithChromeMenuItem.Click += (s, a) => signIn(BrowserPreference.Chrome);
+            this.signInWithChromeGuestMenuItem.Click += (s, a) => signIn(BrowserPreference.ChromeGuest);
             this.cancelSignInLink.Click += (s, a) =>
             {
                 cancellationSource?.Cancel();

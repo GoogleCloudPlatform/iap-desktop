@@ -35,7 +35,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         /// <summary>
         /// Use Chrome if available.
         /// </summary>
-        Chrome
+        Chrome,
+
+        /// <summary>
+        /// Use Chrome in Guest mode if available.
+        /// </summary>
+        ChromeGuest
     }
 
     public interface IBrowser
@@ -60,6 +65,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             if (preference == BrowserPreference.Chrome && ChromeBrowser.IsAvailable)
             {
                 return new ChromeBrowser();
+            }
+            else if (preference == BrowserPreference.ChromeGuest && ChromeBrowser.IsAvailable)
+            {
+                return new ChromeBrowser("--guest");
             }
             else
             {
@@ -97,8 +106,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     public class ChromeBrowser : Browser
     {
         private const string AppPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths";
-
         private static string ChromeExecutablePath { get; }
+
+        private readonly string arguments;
 
         static ChromeBrowser()
         {
@@ -109,6 +119,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
+        public ChromeBrowser(string arguments = null)
+        {
+            this.arguments = arguments;
+        }
+
         public static bool IsAvailable => ChromeExecutablePath != null;
 
         public override void Navigate(Uri address)
@@ -117,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 UseShellExecute = false,
                 FileName = ChromeExecutablePath,
-                Arguments = $"\"{address}\""
+                Arguments = $"{this.arguments ?? string.Empty} \"{address}\""
             }))
             { };
         }
