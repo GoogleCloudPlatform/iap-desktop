@@ -1,9 +1,12 @@
 # IAP Desktop
 
-IAP Desktop is a Windows application that allows you to manage multiple Remote Desktop and SSH connections 
-to VM instances that run on Google Cloud. 
+IAP Desktop is a Remote Desktop and SSH client that lets you connect to your Google Cloud VM instances from anywhere.
 
 [<img src="doc/images/download.png">](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktop.msi)
+
+<sub>
+For Windows 11/10/8.1. No admin rights required.
+</sub>
 
 ## Access Linux and Windows VMs from anywhere
 
