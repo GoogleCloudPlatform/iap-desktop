@@ -28,7 +28,7 @@ The application automatically manages IAP TCP tunnels for you, and protects them
 
 ## Connect to Windows VMs with Remote Desktop
 
-<img src='doc/images/RemoteDesktop_350.gif' align='right'>
+<img src='doc/images/RemoteDesktop_350.gif?_=1' align='right'>
 
 IAP Desktop is a [full-featured Remote Desktop client](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-instances) that lets you:
 
@@ -47,7 +47,7 @@ To help you authenticate to Windows VMs, IAP Desktop can:
 
 ## Connect to Linux VMs with SSH
 
-<img src='doc/images/SSH_350.gif' align='right'>
+<img src='doc/images/SSH_350.gif?_=1' align='right'>
 
 IAP Desktop [includes an SSH client and terminal](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-linux-instances) so that you can:
 
@@ -67,7 +67,7 @@ To help you authenticate to Linux VMs, IAP Desktop can:
 
 ## Manage VMs across projects
 
-<img src='doc/images/Manage_350.gif' align='right'>
+<img src='doc/images/Manage_350.gif?_=1' align='right'>
 
 IAP Desktop gives you a consolidated view of your VMs and lets you:
 
