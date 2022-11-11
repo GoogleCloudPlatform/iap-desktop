@@ -1,0 +1,75 @@
+From 81d1c356b242e352c820eda0d350d707019ef9fa Mon Sep 17 00:00:00 2001
+From: IAP Desktop Build <iap-desktop+build@google.com>
+Date: Fri, 11 Nov 2022 16:25:30 +1100
+Subject: [PATCH] Change target to terminal.dll
+
+---
+ .../PublicTerminalCore.vcxproj                | 40 ++++++++++++++++++-
+ 1 file changed, 38 insertions(+), 2 deletions(-)
+
+diff --git a/src/cascadia/PublicTerminalCore/PublicTerminalCore.vcxproj b/src/cascadia/PublicTerminalCore/PublicTerminalCore.vcxproj
+index 62a94791f..29e11a720 100644
+--- a/src/cascadia/PublicTerminalCore/PublicTerminalCore.vcxproj
++++ b/src/cascadia/PublicTerminalCore/PublicTerminalCore.vcxproj
+@@ -7,6 +7,7 @@
+     <RootNamespace>PublicTerminalCore</RootNamespace>
+     <ProjectName>PublicTerminalCore</ProjectName>
+     <ConfigurationType>DynamicLibrary</ConfigurationType>
++    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(SolutionDir)src\common.build.pre.props" />
+   <Import Project="$(SolutionDir)src\common.nugetversions.props" />
+@@ -47,7 +48,42 @@
+   </ItemDefinitionGroup>
+   <Import Project="$(SolutionDir)src\common.build.post.props" />
+   <Import Project="$(SolutionDir)src\common.nugetversions.targets" />
+-
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='AuditMode|ARM64'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fuzzing|ARM64'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='AuditMode|Win32'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fuzzing|Win32'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='AuditMode|x64'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Fuzzing|x64'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
++  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
++    <TargetName>terminal</TargetName>
++  </PropertyGroup>
+   <!-- LATE LINK LINE OVERRIDES. This project must link named forwarders
+        instead of APISet forwarders for easier Windows 7 compatibility. -->
+   <ItemDefinitionGroup>
+@@ -55,4 +91,4 @@
+       <AdditionalDependencies>Uiautomationcore.lib;onecoreuap.lib;%(AdditionalDependencies)</AdditionalDependencies>
+     </Link>
+   </ItemDefinitionGroup>
+-</Project>
++</Project>
+\ No newline at end of file
+-- 
+2.34.1.windows.1
+
