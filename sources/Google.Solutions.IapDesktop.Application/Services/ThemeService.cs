@@ -127,6 +127,30 @@ namespace Google.Solutions.IapDesktop.Application.Services
                     base.WndProc(ref m);
                 }
             }
+
+            protected override void Dispose(bool disposing)
+            {
+                try
+                {
+                    base.Dispose(disposing);
+                }
+                catch (InvalidOperationException)
+                {
+                    //
+                    // b/262842025: When the parent window is closed, it requests float 
+                    // windows to dispose by sending it a WM_USER+1 message (see FloátWindow 
+                    // in DockPanelSuite).
+                    //
+                    // This WM_USER+1 message is handled asynchronously. Thus, the parent 
+                    // window's handle might have already been destroyed when this window is
+                    // dispatching the message. However, the base class, under some
+                    // circumstances, touches the main window handle, triggering
+                    // an exception. The exception is benign as we're disposing anyway,
+                    // so ignore it.
+                    // 
+                    Debug.Assert(false, "Disposing float window failed");
+                }
+            }
         }
 
         private class FloatWindowFactory : DockPanelExtender.IFloatWindowFactory
