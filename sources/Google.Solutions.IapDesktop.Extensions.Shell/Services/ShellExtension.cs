@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
     /// <summary>
     /// Main class of the extension, instantiated on load.
     /// </summary>
-    [Service(ServiceLifetime.Singleton)]
+    [Service(ServiceLifetime.Singleton, DelayCreation = false)]
     public class ShellExtension
     {
         private readonly IServiceProvider serviceProvider;

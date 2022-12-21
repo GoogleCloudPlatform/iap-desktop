@@ -30,10 +30,26 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class ServiceAttribute : Attribute
     {
+        /// <summary>
+        /// Interface by which the service can be looked up.
+        /// </summary>
         public Type ServiceInterface { get; }
+
+        /// <summary>
+        /// Instance lifetime of the service object.
+        /// </summary>
         public ServiceLifetime Lifetime { get; }
 
+        /// <summary>
+        /// Restrict visibility to other services.
+        /// </summary>
         public ServiceVisibility Visibility { get; } = ServiceVisibility.Scoped;
+
+        /// <summary>
+        /// Delay instance creation until first use. Ignored
+        /// for transient services.
+        /// </summary>
+        public bool DelayCreation { get; set; } = true;
 
         public ServiceAttribute(
             Type serviceInterface,

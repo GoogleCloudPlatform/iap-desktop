@@ -384,25 +384,22 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             }
 
             //
-            // Register singletons. Because transients are already registered,
-            // it is ok if singletons instantiate transients in their constructor.
-            //
-            // As singletons might depend on another, we cannot instantiate them
-            // in a single pass. Instead, register stubs in the first pass,
-            // then force their instantiation in a second pass.
-            //
-
-            //
-            // (2) Register stubs, but do not create instances yet.
+            // (2) Register stubs, but do not create instances yet because they
+            //     might depend on another and we don't know what the right order
+            //     would have to be.
             //
             foreach (var type in assembly.GetTypes())
             {
                 if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
                     attribute.Lifetime == ServiceLifetime.Singleton)
                 {
+                    var stub = attribute.DelayCreation
+                        ? new SingletonStub(() => CreateInstance(type))
+                        : new SingletonStub(CreateInstance(type));
+
                     GetServiceRegistryToRegisterWith(attribute).AddSingleton(
                         attribute.ServiceInterface ?? type,
-                        new SingletonStub(() => CreateInstance(type)));
+                        stub);
                 }
             }
 

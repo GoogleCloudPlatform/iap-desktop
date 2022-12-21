@@ -216,9 +216,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenSingletonServiceOnlyHasRecursiveConstructor_ThenAddSingletonThrowsException()
         {
             var registry = new ServiceRegistry();
+            registry.AddSingleton<ServiceWithRecursiveConstructor>();
 
             Assert.Throws<UnknownServiceException>(
-                () => registry.AddSingleton<ServiceWithRecursiveConstructor>());
+                () => registry.GetService<ServiceWithRecursiveConstructor>());
         }
 
         [Test]

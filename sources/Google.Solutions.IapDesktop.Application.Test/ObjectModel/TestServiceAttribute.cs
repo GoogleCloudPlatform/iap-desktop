@@ -45,6 +45,60 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         {
         }
 
+        [Service(ServiceLifetime.Singleton)]
+        public class CounterService
+        {
+            public uint SingletonWithoutDelayCreationAttributeCount = 0;
+            public uint SingletonWithDelayCreationAttributeCount = 0;
+        }
+
+        [Service(ServiceLifetime.Singleton)]
+        public class SingletonWithoutDelayCreationAttribute 
+        {
+            public SingletonWithoutDelayCreationAttribute(CounterService counter)
+            {
+                counter.SingletonWithoutDelayCreationAttributeCount++;
+            }
+        }
+
+        [Service(ServiceLifetime.Singleton, DelayCreation=false)]
+        public class SingletonWithDelayCreationAttribute
+        {
+            public SingletonWithDelayCreationAttribute(CounterService counter)
+            {
+                counter.SingletonWithDelayCreationAttributeCount++;
+            }
+        }
+
+        [Test]
+        public void WhenDelayCreationNotSet_ThenServiceIsCreatedLazily()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
+
+            Assert.AreEqual(
+                0, 
+                registry.GetService<CounterService>().SingletonWithoutDelayCreationAttributeCount);
+
+            registry.GetService<SingletonWithoutDelayCreationAttribute>();
+            registry.GetService<SingletonWithoutDelayCreationAttribute>();
+
+            Assert.AreEqual(
+                1,
+                registry.GetService<CounterService>().SingletonWithoutDelayCreationAttributeCount);
+        }
+
+        [Test]
+        public void WhenDelayCreationIsFalse_ThenServiceIsCreatedEagerly()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
+
+            Assert.AreEqual(
+                1,
+                registry.GetService<CounterService>().SingletonWithDelayCreationAttributeCount);
+        }
+
         [Test]
         public void WhenClassAnnotatedAsSingletonServiceWithInterface_ThenServiceIsRegistered()
         {

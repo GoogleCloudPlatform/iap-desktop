@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
     /// <summary>
     /// Main class of the extension, instantiated on load.
     /// </summary>
-    [Service(ServiceLifetime.Singleton)]
+    [Service(ServiceLifetime.Singleton, DelayCreation = false)]
     public class ManagementExtension
     {
         private readonly IServiceProvider serviceProvider;
