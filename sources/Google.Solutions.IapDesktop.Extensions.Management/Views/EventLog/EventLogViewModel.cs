@@ -294,7 +294,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            using (var auditLogAdapter = this.auditLogAdapter.CreateInstance())
+                            using (var auditLogAdapter = this.auditLogAdapter.GetInstance())
                             using (var combinedTokenSource = jobToken.Combine(token))
                             {
                                 var model = new EventLogModel(displayName);

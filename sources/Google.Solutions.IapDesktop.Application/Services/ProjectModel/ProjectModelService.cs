@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                     tasks.Add(
                         new ProjectLocator(project.ProjectId),
                         this.resourceManagerAdapter
-                            .CreateInstance()
+                            .GetInstance()
                             .GetProjectAsync(project.ProjectId, token));
                 }
 
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var instances = await this.computeEngineAdapter
-                    .CreateInstance()
+                    .GetInstance()
                     .ListInstancesAsync(project.ProjectId, token)
                     .ConfigureAwait(false);
 

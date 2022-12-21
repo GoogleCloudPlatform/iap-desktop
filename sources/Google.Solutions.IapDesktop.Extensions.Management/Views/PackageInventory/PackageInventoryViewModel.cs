@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                         async jobToken =>
                         {
                             return await PackageInventoryModel.LoadAsync(
-                                    this.inventoryService.CreateInstance(),
+                                    this.inventoryService.GetInstance(),
                                     this.inventoryType,
                                     node,
                                     jobToken)

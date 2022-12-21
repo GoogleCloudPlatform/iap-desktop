@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 {
                     if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                     {
-                        using (var osLoginService = this.osLoginService.CreateInstance())
+                        using (var osLoginService = this.osLoginService.GetInstance())
                         {
                             await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
                                     osLoginService,
@@ -222,8 +222,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     else
                     {
                         await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
-                                this.computeEngineAdapter.CreateInstance(),
-                                this.resourceManagerAdapter.CreateInstance(),
+                                this.computeEngineAdapter.GetInstance(),
+                                this.resourceManagerAdapter.GetInstance(),
                                 this.ModelKey,
                                 this.selectedItem,
                                 cancellationToken)
@@ -270,11 +270,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            using (var osLoginService = this.osLoginService.CreateInstance())
+                            using (var osLoginService = this.osLoginService.GetInstance())
                             {
                                 return await AuthorizedPublicKeysModel.LoadAsync(
-                                        this.computeEngineAdapter.CreateInstance(),
-                                        this.resourceManagerAdapter.CreateInstance(),
+                                        this.computeEngineAdapter.GetInstance(),
+                                        this.resourceManagerAdapter.GetInstance(),
                                         osLoginService,
                                         node,
                                         jobToken)

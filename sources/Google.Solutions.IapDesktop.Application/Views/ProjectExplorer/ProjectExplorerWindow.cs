@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     .SelectCloudProjects(
                         this,
                         "Add projects",
-                        this.resourceManagerAdapter.CreateInstance(),
+                        this.resourceManagerAdapter.GetInstance(),
                         this.exceptionDialog,
                         out var projects) == DialogResult.OK)
                 {

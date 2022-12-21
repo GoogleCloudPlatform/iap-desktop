@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
         }
 
-        public TService CreateInstance() // TODO: Rename to GetInstance
+        public TService GetInstance()
         {
             return (TService)this.serviceProvider.GetService(typeof(TService));
         }

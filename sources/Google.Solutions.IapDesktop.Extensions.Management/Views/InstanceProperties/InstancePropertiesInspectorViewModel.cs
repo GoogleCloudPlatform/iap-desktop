@@ -144,8 +144,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
                             {
                                 return await InstancePropertiesInspectorModel.LoadAsync(
                                         vmNode.Instance,
-                                        this.computeEngineAdapter.CreateInstance(),
-                                        this.inventoryService.CreateInstance(),
+                                        this.computeEngineAdapter.GetInstance(),
+                                        this.inventoryService.GetInstance(),
                                         combinedTokenSource.Token)
                                     .ConfigureAwait(false);
                             }
