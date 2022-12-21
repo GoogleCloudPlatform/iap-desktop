@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading;
 
 #pragma warning disable CA1032 // Implement standard exception constructors
 
@@ -193,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         public void AddSingleton<TService, TServiceClass>()
         {
-            AddSingleton(typeof(TService), new SingletonStub(CreateInstance<TServiceClass>()));
+            AddSingleton(typeof(TService), new SingletonStub(() => CreateInstance<TServiceClass>()));
         }
 
         public void AddSingleton<TService>()
@@ -418,16 +419,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                         attribute.ServiceInterface ?? type);
                 }
             }
-
-            //
-            // (4) Trigger stubs to run constructors of singletons. The constructors
-            //     now have access to all services.
-            //
-            foreach (var stub in this.singletons.Values)
-            {
-                var instance = stub.Object;
-                Debug.Assert(instance != null);
-            }
         }
 
         //---------------------------------------------------------------------
@@ -436,38 +427,21 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         private class SingletonStub
         {
-            private object value;
-            private readonly Func<object> factoryFunc;
+            private readonly Lazy<object> factoryFunc;
 
             public SingletonStub(object value)
+                : this(() => value)
             {
-                this.value = value;
             }
 
             public SingletonStub(Func<object> factoryFunc)
             {
-                this.factoryFunc = factoryFunc;
+                this.factoryFunc = new Lazy<object>(
+                    factoryFunc, 
+                    LazyThreadSafetyMode.ExecutionAndPublication);
             }
 
-            public object Object
-            {
-                get
-                {
-                    //
-                    // NB. This does not need to be thread-safe as the
-                    // initialization happens synchronously,
-                    // see CreateInstance().
-                    //
-                    if (this.value == null)
-                    {
-                        Debug.Assert(this.factoryFunc != null);
-                        this.value = this.factoryFunc();
-                        Debug.Assert(this.value != null);
-                    }
-
-                    return this.value;
-                }
-            }
+            public object Object => this.factoryFunc.Value;
         }
     }
 
