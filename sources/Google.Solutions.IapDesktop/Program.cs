@@ -219,8 +219,7 @@ namespace Google.Solutions.IapDesktop
             }
 
             //
-            // Lift limit on concurrent HTTP connections to same endpoint,
-            // relevant for GCS downloads.
+            // Lift limit on concurrent HTTP connections to same endpoint.
             //
             ServicePointManager.DefaultConnectionLimit = 16;
 
@@ -264,11 +263,13 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddTransient<IGithubAdapter, GithubAdapter>();
                 baseLayer.AddTransient<BuganizerAdapter>();
                 baseLayer.AddTransient<ICloudConsoleAdapter, CloudConsoleAdapter>();
+                baseLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
-                // TODO: Use singletons for other adapters
+                //
+                // Register adapters as singletons to ensure connection resuse.
+                //
                 baseLayer.AddSingleton<IResourceManagerAdapter, ResourceManagerAdapter>();
                 baseLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
-                baseLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
                 baseLayer.AddSingleton<IThemeService, ThemeService>();
 
