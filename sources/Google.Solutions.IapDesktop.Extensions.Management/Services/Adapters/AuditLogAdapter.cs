@@ -44,7 +44,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
 {
-    public interface IAuditLogAdapter : IDisposable
+    public interface IAuditLogAdapter
     {
         Task ProcessInstanceEventsAsync(
             IEnumerable<string> projectIds,
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             CancellationToken cancellationToken);
     }
 
-    [Service(typeof(IAuditLogAdapter), ServiceLifetime.Transient)]
+    [Service(typeof(IAuditLogAdapter), ServiceLifetime.Singleton)]
     public class AuditLogAdapter : IAuditLogAdapter
     {
         private const string MtlsBaseUri = "https://logging.mtls.googleapis.com/";
@@ -227,15 +227,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
                     new ExponentialBackOff(initialBackOff, MaxRetries),
                     cancellationToken).ConfigureAwait(false);
             }
-        }
-
-        //---------------------------------------------------------------------
-        // IDisposable.
-        //---------------------------------------------------------------------
-
-        public void Dispose()
-        {
-            this.service.Dispose();
         }
     }
 }
