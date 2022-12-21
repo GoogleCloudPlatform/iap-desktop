@@ -38,7 +38,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public interface IResourceManagerAdapter : IDisposable
+    public interface IResourceManagerAdapter
     {
         Task<Project> GetProjectAsync(
             string projectId,

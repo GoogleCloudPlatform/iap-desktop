@@ -265,7 +265,8 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddTransient<BuganizerAdapter>();
                 baseLayer.AddTransient<ICloudConsoleAdapter, CloudConsoleAdapter>();
 
-                baseLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
+                // TODO: Use singletons for other adapters
+                baseLayer.AddSingleton<IResourceManagerAdapter, ResourceManagerAdapter>();
                 baseLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
                 baseLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 

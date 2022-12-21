@@ -222,11 +222,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     else
                     {
                         using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
-                        using (var resourceManagerAdapter = this.resourceManagerAdapter.CreateInstance())
                         {
                             await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
                                     computeEngineAdapter,
-                                    resourceManagerAdapter,
+                                    this.resourceManagerAdapter.CreateInstance(),
                                     this.ModelKey,
                                     this.selectedItem,
                                     cancellationToken)
@@ -275,12 +274,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                         async jobToken =>
                         {
                             using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
-                            using (var resourceManagerAdapter = this.resourceManagerAdapter.CreateInstance())
                             using (var osLoginService = this.osLoginService.CreateInstance())
                             {
                                 return await AuthorizedPublicKeysModel.LoadAsync(
                                         computeEngineAdapter,
-                                        resourceManagerAdapter,
+                                        this.resourceManagerAdapter.CreateInstance(),
                                         osLoginService,
                                         node,
                                         jobToken)
