@@ -38,7 +38,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
-    public interface IWindowsCredentialService : IDisposable
+    public interface IWindowsCredentialService
     {
         Task<bool> IsGrantedPermissionToCreateWindowsCredentialsAsync(
             InstanceLocator instanceRef);
@@ -311,15 +311,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             return this.computeEngineAdapter.IsGrantedPermission(
                 instanceRef,
                 Permissions.ComputeInstancesSetMetadata);
-        }
-
-        //---------------------------------------------------------------------
-        // IDisposable.
-        //---------------------------------------------------------------------
-
-        public void Dispose()
-        {
-            this.computeEngineAdapter.Dispose();
         }
 
         //---------------------------------------------------------------------

@@ -221,16 +221,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     }
                     else
                     {
-                        using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
-                        {
-                            await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
-                                    computeEngineAdapter,
-                                    this.resourceManagerAdapter.CreateInstance(),
-                                    this.ModelKey,
-                                    this.selectedItem,
-                                    cancellationToken)
-                                .ConfigureAwait(true);
-                        }
+                        await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
+                                this.computeEngineAdapter.CreateInstance(),
+                                this.resourceManagerAdapter.CreateInstance(),
+                                this.ModelKey,
+                                this.selectedItem,
+                                cancellationToken)
+                            .ConfigureAwait(true);
                     }
 
                     return null;
@@ -273,11 +270,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
                             using (var osLoginService = this.osLoginService.CreateInstance())
                             {
                                 return await AuthorizedPublicKeysModel.LoadAsync(
-                                        computeEngineAdapter,
+                                        this.computeEngineAdapter.CreateInstance(),
                                         this.resourceManagerAdapter.CreateInstance(),
                                         osLoginService,
                                         node,

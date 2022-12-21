@@ -91,21 +91,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var authorizationSource = CreateAuthorizationSource();
 
-            using (var keyAdapter = new KeyAuthorizationService(
+            var keyAdapter = new KeyAuthorizationService(
                 authorizationSource.Object,
                 new ComputeEngineAdapter(credential),
                 new ResourceManagerAdapter(credential),
-                new Mock<IOsLoginService>().Object))
-            {
-                return await keyAdapter.AuthorizeKeyAsync(
-                        instance,
-                        SshKeyPair.NewEphemeralKeyPair(keyType),
-                        TimeSpan.FromMinutes(10),
-                        null,
-                        KeyAuthorizationMethods.InstanceMetadata,
-                        CancellationToken.None)
-                    .ConfigureAwait(true);
-            }
+                new Mock<IOsLoginService>().Object);
+            
+            return await keyAdapter.AuthorizeKeyAsync(
+                    instance,
+                    SshKeyPair.NewEphemeralKeyPair(keyType),
+                    TimeSpan.FromMinutes(10),
+                    null,
+                    KeyAuthorizationMethods.InstanceMetadata,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
         }
 
         private async Task<SshTerminalPaneViewModel> CreateViewModelAsync(

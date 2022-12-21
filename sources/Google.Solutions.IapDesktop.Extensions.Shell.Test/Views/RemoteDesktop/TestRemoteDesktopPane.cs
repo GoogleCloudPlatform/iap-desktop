@@ -178,9 +178,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
-            using (var credentialAdapter = new WindowsCredentialService(
-                new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>())))
             {
+                var credentialAdapter = new WindowsCredentialService(
+                    new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>()));
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                         locator,
                         CreateRandomUsername(),
@@ -238,9 +238,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
-            using (var credentialAdapter = new WindowsCredentialService(
-                new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>())))
             {
+                var credentialAdapter = new WindowsCredentialService(
+                    new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>()));
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                         locator,
                         CreateRandomUsername(),
@@ -297,9 +297,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
-            using (var credentialAdapter = new WindowsCredentialService(
-                new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>())))
             {
+                var credentialAdapter = new WindowsCredentialService(
+                    new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>()));
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                        locator,
                        CreateRandomUsername(),

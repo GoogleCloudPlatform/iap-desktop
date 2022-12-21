@@ -51,13 +51,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
             [DomainJoinWindowsInstance] ResourceTask<InstanceLocator> instanceTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credentialTask)
         {
-            using (var computeEngineAdapter = new ComputeEngineAdapter(await credentialTask))
             using (var cts = new CancellationTokenSource())
             {
                 var instance = await instanceTask;
 
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
+                var computeEngineAdapter = new ComputeEngineAdapter(await credentialTask);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
                     instance,
@@ -89,13 +89,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Active
             [DomainJoinWindowsInstance] ResourceTask<InstanceLocator> instanceTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credentialTask)
         {
-            using (var computeEngineAdapter = new ComputeEngineAdapter(await credentialTask))
             using (var cts = new CancellationTokenSource())
             {
                 var instance = await instanceTask;
 
                 cts.CancelAfter(TimeSpan.FromSeconds(30));
 
+                var computeEngineAdapter = new ComputeEngineAdapter(await credentialTask);
                 using (var operation = new StartupScriptOperation(
                     Guid.Empty,
                     instance,

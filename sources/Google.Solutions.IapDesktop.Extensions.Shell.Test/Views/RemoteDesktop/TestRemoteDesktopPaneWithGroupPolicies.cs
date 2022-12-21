@@ -44,32 +44,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         private async Task<InstanceConnectionSettings> CreateSettingsAsync(
             InstanceLocator instanceLocator)
         {
-            using (var credentialAdapter = new WindowsCredentialService(
-                new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>())))
-            {
-                var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
-                    instanceLocator,
-                    CreateRandomUsername(),
-                    UserFlags.AddToAdministrators,
-                    TimeSpan.FromSeconds(60),
-                    CancellationToken.None)
-                .ConfigureAwait(true);
+            var credentialAdapter = new WindowsCredentialService(
+                new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>()));
+            
+            var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
+                instanceLocator,
+                CreateRandomUsername(),
+                UserFlags.AddToAdministrators,
+                TimeSpan.FromSeconds(60),
+                CancellationToken.None)
+            .ConfigureAwait(true);
 
-                var settings = InstanceConnectionSettings.CreateNew(instanceLocator);
-                settings.RdpUsername.Value = credentials.UserName;
-                settings.RdpPassword.Value = credentials.SecurePassword;
-                settings.RdpAuthenticationLevel.Value = RdpAuthenticationLevel.NoServerAuthentication;
-                settings.RdpBitmapPersistence.Value = RdpBitmapPersistence.Disabled;
-                settings.RdpDesktopSize.Value = RdpDesktopSize.ClientSize;
-                settings.RdpRedirectClipboard.Value = RdpRedirectClipboard.Enabled;
-                settings.RdpRedirectPrinter.Value = RdpRedirectPrinter.Enabled;
-                settings.RdpRedirectPort.Value = RdpRedirectPort.Enabled;
-                settings.RdpRedirectSmartCard.Value = RdpRedirectSmartCard.Enabled;
-                settings.RdpRedirectDrive.Value = RdpRedirectDrive.Enabled;
-                settings.RdpRedirectDevice.Value = RdpRedirectDevice.Enabled;
+            var settings = InstanceConnectionSettings.CreateNew(instanceLocator);
+            settings.RdpUsername.Value = credentials.UserName;
+            settings.RdpPassword.Value = credentials.SecurePassword;
+            settings.RdpAuthenticationLevel.Value = RdpAuthenticationLevel.NoServerAuthentication;
+            settings.RdpBitmapPersistence.Value = RdpBitmapPersistence.Disabled;
+            settings.RdpDesktopSize.Value = RdpDesktopSize.ClientSize;
+            settings.RdpRedirectClipboard.Value = RdpRedirectClipboard.Enabled;
+            settings.RdpRedirectPrinter.Value = RdpRedirectPrinter.Enabled;
+            settings.RdpRedirectPort.Value = RdpRedirectPort.Enabled;
+            settings.RdpRedirectSmartCard.Value = RdpRedirectSmartCard.Enabled;
+            settings.RdpRedirectDrive.Value = RdpRedirectDrive.Enabled;
+            settings.RdpRedirectDevice.Value = RdpRedirectDevice.Enabled;
 
-                return settings;
-            }
+            return settings;
         }
 
         private async Task<IRemoteDesktopSession> ConnectAsync(

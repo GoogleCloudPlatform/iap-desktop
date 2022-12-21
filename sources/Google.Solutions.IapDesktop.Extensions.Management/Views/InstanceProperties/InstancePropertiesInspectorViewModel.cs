@@ -141,14 +141,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
                         async jobToken =>
                         {
                             using (var combinedTokenSource = jobToken.Combine(token))
-                            using (var gceAdapter = this.computeEngineAdapter.CreateInstance())
-                            using (var inventoryService = this.inventoryService.CreateInstance())
                             {
                                 return await InstancePropertiesInspectorModel.LoadAsync(
-                                    vmNode.Instance,
-                                    gceAdapter,
-                                    inventoryService,
-                                    combinedTokenSource.Token)
+                                        vmNode.Instance,
+                                        this.computeEngineAdapter.CreateInstance(),
+                                        this.inventoryService.CreateInstance(),
+                                        combinedTokenSource.Token)
                                     .ConfigureAwait(false);
                             }
                         }).ConfigureAwait(true);  // Back to original (UI) thread.

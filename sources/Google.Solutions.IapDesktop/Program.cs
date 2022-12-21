@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop
 
                 // TODO: Use singletons for other adapters
                 baseLayer.AddSingleton<IResourceManagerAdapter, ResourceManagerAdapter>();
-                baseLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
+                baseLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
                 baseLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
                 baseLayer.AddSingleton<IThemeService, ThemeService>();

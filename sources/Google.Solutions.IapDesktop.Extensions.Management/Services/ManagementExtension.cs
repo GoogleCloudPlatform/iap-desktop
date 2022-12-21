@@ -81,15 +81,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                         JobUserFeedbackType.BackgroundFeedback),
                     async jobToken =>
                     {
-                        using (var service = this.serviceProvider
-                            .GetService<IInstanceControlService>())
-                        {
-                            await service.ControlInstanceAsync(
+                        await this.serviceProvider
+                            .GetService<IInstanceControlService>()
+                            .ControlInstanceAsync(
                                     instance,
                                     command,
                                     jobToken)
                             .ConfigureAwait(false);
-                        }
 
                         return null;
                     })

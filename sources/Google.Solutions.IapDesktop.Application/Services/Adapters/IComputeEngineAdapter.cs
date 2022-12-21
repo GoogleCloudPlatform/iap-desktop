@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public interface IComputeEngineAdapter : IDisposable
+    public interface IComputeEngineAdapter
     {
         //---------------------------------------------------------------------
         // Projects.

@@ -139,23 +139,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 }
             }
         }
-
-        //---------------------------------------------------------------------
-        // IDisposable.
-        //---------------------------------------------------------------------
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.computeEngineAdapter.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
     }
 }

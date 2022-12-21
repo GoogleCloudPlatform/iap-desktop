@@ -127,7 +127,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
             {
                 var accessibleProjects = new List<ProjectNode>();
 
@@ -200,9 +199,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
             {
-                var instances = await computeEngineAdapter
+                var instances = await this.computeEngineAdapter
+                    .CreateInstance()
                     .ListInstancesAsync(project.ProjectId, token)
                     .ConfigureAwait(false);
 
