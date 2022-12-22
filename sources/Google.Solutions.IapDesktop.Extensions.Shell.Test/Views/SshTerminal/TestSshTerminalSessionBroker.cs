@@ -81,53 +81,52 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var locator = await testInstance;
             var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072);
 
-            using (var gceAdapter = new ComputeEngineAdapter(
-                this.ServiceProvider.GetService<IAuthorizationSource>()))
-            using (var keyAdapter = new KeyAuthorizationService(
+            var gceAdapter = new ComputeEngineAdapter(
+                this.ServiceProvider.GetService<IAuthorizationSource>());
+            var keyAdapter = new KeyAuthorizationService(
                 this.ServiceProvider.GetService<IAuthorizationSource>(),
                 new ComputeEngineAdapter(await credential),
                 new ResourceManagerAdapter(await credential),
-                new Mock<IOsLoginService>().Object))
-            {
-                var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
-                        locator,
-                        key,
-                        TimeSpan.FromMinutes(10),
-                        null,
-                        KeyAuthorizationMethods.InstanceMetadata,
-                        CancellationToken.None)
-                    .ConfigureAwait(true);
+                new Mock<IOsLoginService>().Object);
+            
+            var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
+                    locator,
+                    key,
+                    TimeSpan.FromMinutes(10),
+                    null,
+                    KeyAuthorizationMethods.InstanceMetadata,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
-                var instance = await gceAdapter.GetInstanceAsync(
-                        locator,
-                        CancellationToken.None)
-                    .ConfigureAwait(true);
+            var instance = await gceAdapter.GetInstanceAsync(
+                    locator,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
-                // Connect
-                var broker = new SshTerminalSessionBroker(this.ServiceProvider);
+            // Connect
+            var broker = new SshTerminalSessionBroker(this.ServiceProvider);
 
-                ISshTerminalSession session = null;
-                await AssertRaisesEventAsync<SessionStartedEvent>(
-                    async () => session = await broker.ConnectAsync(
-                        locator,
-                        new IPEndPoint(instance.PublicAddress(), 22),
-                        authorizedKey,
-                        null,
-                        TimeSpan.FromSeconds(10))
-                    .ConfigureAwait(true))
-                    .ConfigureAwait(true);
+            ISshTerminalSession session = null;
+            await AssertRaisesEventAsync<SessionStartedEvent>(
+                async () => session = await broker.ConnectAsync(
+                    locator,
+                    new IPEndPoint(instance.PublicAddress(), 22),
+                    authorizedKey,
+                    null,
+                    TimeSpan.FromSeconds(10))
+                .ConfigureAwait(true))
+                .ConfigureAwait(true);
 
-                Assert.IsNull(this.ExceptionShown);
+            Assert.IsNull(this.ExceptionShown);
 
-                Assert.AreSame(session, SshTerminalPane.TryGetActivePane(this.MainForm));
-                Assert.AreSame(session, SshTerminalPane.TryGetExistingPane(this.MainForm, locator));
-                Assert.IsTrue(broker.IsConnected(locator));
-                Assert.IsTrue(broker.TryActivate(locator));
+            Assert.AreSame(session, SshTerminalPane.TryGetActivePane(this.MainForm));
+            Assert.AreSame(session, SshTerminalPane.TryGetExistingPane(this.MainForm, locator));
+            Assert.IsTrue(broker.IsConnected(locator));
+            Assert.IsTrue(broker.TryActivate(locator));
 
-                await AssertRaisesEventAsync<SessionEndedEvent>(
-                        () => session.Close())
-                    .ConfigureAwait(true);
-            }
+            await AssertRaisesEventAsync<SessionEndedEvent>(
+                    () => session.Close())
+                .ConfigureAwait(true);
         }
 
         //---------------------------------------------------------------------

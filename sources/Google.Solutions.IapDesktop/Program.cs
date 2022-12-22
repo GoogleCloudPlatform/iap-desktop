@@ -218,12 +218,6 @@ namespace Google.Solutions.IapDesktop
                     SecurityProtocolType.Tls11;
             }
 
-            //
-            // Lift limit on concurrent HTTP connections to same endpoint,
-            // relevant for GCS downloads.
-            //
-            ServicePointManager.DefaultConnectionLimit = 16;
-
             // Allow custom User-Agent headers.
             try
             {
@@ -264,10 +258,13 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddTransient<IGithubAdapter, GithubAdapter>();
                 baseLayer.AddTransient<BuganizerAdapter>();
                 baseLayer.AddTransient<ICloudConsoleAdapter, CloudConsoleAdapter>();
-
-                baseLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
-                baseLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
                 baseLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
+
+                //
+                // Register adapters as singletons to ensure connection resuse.
+                //
+                baseLayer.AddSingleton<IResourceManagerAdapter, ResourceManagerAdapter>();
+                baseLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
 
                 baseLayer.AddSingleton<IThemeService, ThemeService>();
 
@@ -293,14 +290,26 @@ namespace Google.Solutions.IapDesktop
                     SignInAdapter.StoreUserId));
 
                 //
-                // Load proxy settings and main form.
+                // Configure networking settings.
                 //
-
+                // NB. Until now, no network connections have been made.
+                //
                 try
                 {
+                    var settings = baseLayer
+                        .GetService<ApplicationSettingsRepository>()
+                        .GetSettings();
+
+                    //
+                    // Set connection pool limit. This limit applies per endpoint,
+                    // and GCE, RM, OS Login, etc are all separate endpoints.
+                    //
+                    ServicePointManager.DefaultConnectionLimit = settings.ConnectionLimit.IntValue;
+
+                    //
                     // Activate proxy settings based on app settings.
-                    baseLayer.GetService<IHttpProxyAdapter>().ActivateSettings(
-                        baseLayer.GetService<ApplicationSettingsRepository>().GetSettings());
+                    //
+                    baseLayer.GetService<IHttpProxyAdapter>().ActivateSettings(settings);
                 }
                 catch (Exception)
                 {

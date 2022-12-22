@@ -99,45 +99,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .Setup(a => a.Authorization)
                 .Returns(authorization.Object);
 
-            using (var keyAdapter = new KeyAuthorizationService(
+            var keyAdapter = new KeyAuthorizationService(
                 authorizationSource.Object,
                 new ComputeEngineAdapter(credential),
                 new ResourceManagerAdapter(credential),
-                new Mock<IOsLoginService>().Object))
-            {
-                var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
-                        instanceLocator,
-                        SshKeyPair.NewEphemeralKeyPair(keyType),
-                        TimeSpan.FromMinutes(10),
-                        null,
-                        KeyAuthorizationMethods.InstanceMetadata,
-                        CancellationToken.None)
-                    .ConfigureAwait(true);
+                new Mock<IOsLoginService>().Object);
+            
+            var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
+                    instanceLocator,
+                    SshKeyPair.NewEphemeralKeyPair(keyType),
+                    TimeSpan.FromMinutes(10),
+                    null,
+                    KeyAuthorizationMethods.InstanceMetadata,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
-                var broker = new SshTerminalSessionBroker(
-                    this.ServiceProvider);
+            var broker = new SshTerminalSessionBroker(
+                this.ServiceProvider);
 
-                var address = await PublicAddressFromLocator(instanceLocator)
-                    .ConfigureAwait(true);
+            var address = await PublicAddressFromLocator(instanceLocator)
+                .ConfigureAwait(true);
 
-                SshTerminalPane pane = null;
-                await AssertRaisesEventAsync<SessionStartedEvent>(
-                    async () =>
-                    {
-                        pane = (SshTerminalPane)await broker.ConnectAsync(
-                                instanceLocator,
-                                new IPEndPoint(address, 22),
-                                authorizedKey,
-                                language,
-                                TimeSpan.FromSeconds(10))
-                            .ConfigureAwait(true);
-                    })
-                    .ConfigureAwait(true);
+            SshTerminalPane pane = null;
+            await AssertRaisesEventAsync<SessionStartedEvent>(
+                async () =>
+                {
+                    pane = (SshTerminalPane)await broker.ConnectAsync(
+                            instanceLocator,
+                            new IPEndPoint(address, 22),
+                            authorizedKey,
+                            language,
+                            TimeSpan.FromSeconds(10))
+                        .ConfigureAwait(true);
+                })
+                .ConfigureAwait(true);
 
-                PumpWindowMessages();
+            PumpWindowMessages();
 
-                return (SshTerminalPane)pane;
-            }
+            return (SshTerminalPane)pane;
         }
 
         [SetUp]

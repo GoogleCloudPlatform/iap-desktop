@@ -226,15 +226,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            using (var inventoryService = this.inventoryService.CreateInstance())
-                            {
-                                return await PackageInventoryModel.LoadAsync(
-                                        inventoryService,
-                                        this.inventoryType,
-                                        node,
-                                        jobToken)
-                                    .ConfigureAwait(false);
-                            }
+                            return await PackageInventoryModel.LoadAsync(
+                                    this.inventoryService.GetInstance(),
+                                    this.inventoryType,
+                                    node,
+                                    jobToken)
+                                .ConfigureAwait(false);
                         }).ConfigureAwait(true);  // Back to original (UI) thread.
                 }
                 finally

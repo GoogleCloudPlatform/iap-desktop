@@ -294,17 +294,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            using (var auditLogAdapter = this.auditLogAdapter.CreateInstance())
                             using (var combinedTokenSource = jobToken.Combine(token))
                             {
                                 var model = new EventLogModel(displayName);
-                                await auditLogAdapter.ProcessInstanceEventsAsync(
-                                    new[] { projectIdFilter },
-                                    zonesFilter,
-                                    instanceIdFilter,
-                                    DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
-                                    model,
-                                    combinedTokenSource.Token).ConfigureAwait(false);
+                                await this.auditLogAdapter
+                                    .GetInstance()
+                                    .ProcessInstanceEventsAsync(
+                                        new[] { projectIdFilter },
+                                        zonesFilter,
+                                        instanceIdFilter,
+                                        DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
+                                        model,
+                                        combinedTokenSource.Token)
+                                    .ConfigureAwait(false);
+
                                 return model;
                             }
                         }).ConfigureAwait(true);  // Back to original (UI) thread.

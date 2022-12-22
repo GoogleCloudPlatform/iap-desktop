@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    public interface IKeyAuthorizationService : IDisposable
+    public interface IKeyAuthorizationService
     {
         Task<AuthorizedKeyPair> AuthorizeKeyAsync(
             InstanceLocator instance,

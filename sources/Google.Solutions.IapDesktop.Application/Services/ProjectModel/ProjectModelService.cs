@@ -127,8 +127,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
-            using (var resourceManagerAdapter = this.resourceManagerAdapter.CreateInstance())
             {
                 var accessibleProjects = new List<ProjectNode>();
 
@@ -145,9 +143,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 {
                     tasks.Add(
                         new ProjectLocator(project.ProjectId),
-                        resourceManagerAdapter.GetProjectAsync(
-                            project.ProjectId,
-                            token));
+                        this.resourceManagerAdapter
+                            .GetInstance()
+                            .GetProjectAsync(project.ProjectId, token));
                 }
 
                 foreach (var task in tasks)
@@ -201,9 +199,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
             {
-                var instances = await computeEngineAdapter
+                var instances = await this.computeEngineAdapter
+                    .GetInstance()
                     .ListInstancesAsync(project.ProjectId, token)
                     .ConfigureAwait(false);
 

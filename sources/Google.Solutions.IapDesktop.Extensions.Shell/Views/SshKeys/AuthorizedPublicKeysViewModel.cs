@@ -210,28 +210,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 {
                     if (this.selectedItem.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                     {
-                        using (var osLoginService = this.osLoginService.CreateInstance())
-                        {
-                            await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
-                                    osLoginService,
-                                    this.selectedItem,
-                                    cancellationToken)
-                                .ConfigureAwait(true);
-                        }
+                        await AuthorizedPublicKeysModel.DeleteFromOsLoginAsync(
+                                this.osLoginService.GetInstance(),
+                                this.selectedItem,
+                                cancellationToken)
+                            .ConfigureAwait(true);
                     }
                     else
                     {
-                        using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
-                        using (var resourceManagerAdapter = this.resourceManagerAdapter.CreateInstance())
-                        {
-                            await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
-                                    computeEngineAdapter,
-                                    resourceManagerAdapter,
-                                    this.ModelKey,
-                                    this.selectedItem,
-                                    cancellationToken)
-                                .ConfigureAwait(true);
-                        }
+                        await AuthorizedPublicKeysModel.DeleteFromMetadataAsync(
+                                this.computeEngineAdapter.GetInstance(),
+                                this.resourceManagerAdapter.GetInstance(),
+                                this.ModelKey,
+                                this.selectedItem,
+                                cancellationToken)
+                            .ConfigureAwait(true);
                     }
 
                     return null;
@@ -274,18 +267,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            using (var computeEngineAdapter = this.computeEngineAdapter.CreateInstance())
-                            using (var resourceManagerAdapter = this.resourceManagerAdapter.CreateInstance())
-                            using (var osLoginService = this.osLoginService.CreateInstance())
-                            {
-                                return await AuthorizedPublicKeysModel.LoadAsync(
-                                        computeEngineAdapter,
-                                        resourceManagerAdapter,
-                                        osLoginService,
-                                        node,
-                                        jobToken)
-                                    .ConfigureAwait(false);
-                            }
+                            return await AuthorizedPublicKeysModel
+                                .LoadAsync(
+                                    this.computeEngineAdapter.GetInstance(),
+                                    this.resourceManagerAdapter.GetInstance(),
+                                    this.osLoginService.GetInstance(),
+                                    node,
+                                    jobToken)
+                                .ConfigureAwait(false);
                         }).ConfigureAwait(true);  // Back to original (UI) thread.
                 }
                 finally

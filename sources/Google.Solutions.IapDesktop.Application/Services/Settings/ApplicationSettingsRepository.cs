@@ -85,6 +85,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public RegistryStringSetting CollapsedProjects { get; private set; }
 
+        public RegistryDwordSetting ConnectionLimit { get; private set; }
+
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             this.IsMainWindowMaximized,
@@ -101,7 +103,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.FullScreenDevices,
             this.IncludeOperatingSystems,
             this.DeviceCertificateSelector,
-            this.CollapsedProjects
+            this.CollapsedProjects,
+            this.ConnectionLimit
         };
 
         private ApplicationSettings()
@@ -177,6 +180,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                         SecureConnectEnrollment.DefaultDeviceCertificateSelector,
                         settingsKey,
                         selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _))
+                    .ApplyPolicy(userPolicyKey)
+                    .ApplyPolicy(machinePolicyKey),
+                ConnectionLimit = RegistryDwordSetting.FromKey(
+                        "ConnectionLimit",
+                        "ConnectionLimit",
+                        null,
+                        null,
+                        16,
+                        settingsKey,
+                        1,
+                        32)
                     .ApplyPolicy(userPolicyKey)
                     .ApplyPolicy(machinePolicyKey),
 

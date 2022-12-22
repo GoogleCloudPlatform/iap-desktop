@@ -156,8 +156,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
             var service = registry.GetService<Service<ServiceWithDefaultConstructor>>();
             Assert.IsNotNull(service);
-            Assert.IsNotNull(service.CreateInstance());
-            Assert.AreNotSame(service.CreateInstance(), service.CreateInstance());
+            Assert.IsNotNull(service.GetInstance());
+            Assert.AreNotSame(service.GetInstance(), service.GetInstance());
         }
 
         [Test]
@@ -168,8 +168,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
             var service = registry.GetService<Service<ServiceWithDefaultConstructor>>();
             Assert.IsNotNull(service);
-            Assert.IsNotNull(service.CreateInstance());
-            Assert.AreSame(service.CreateInstance(), service.CreateInstance());
+            Assert.IsNotNull(service.GetInstance());
+            Assert.AreSame(service.GetInstance(), service.GetInstance());
         }
 
         //---------------------------------------------------------------------
@@ -216,9 +216,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenSingletonServiceOnlyHasRecursiveConstructor_ThenAddSingletonThrowsException()
         {
             var registry = new ServiceRegistry();
+            registry.AddSingleton<ServiceWithRecursiveConstructor>();
 
             Assert.Throws<UnknownServiceException>(
-                () => registry.AddSingleton<ServiceWithRecursiveConstructor>());
+                () => registry.GetService<ServiceWithRecursiveConstructor>());
         }
 
         [Test]

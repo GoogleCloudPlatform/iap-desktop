@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
                             {
                                 return await SerialOutputModel.LoadAsync(
                                     vmNode.Instance.Name,
-                                    this.computeEngineAdapter.CreateInstance(),
+                                    this.computeEngineAdapter.GetInstance(),
                                     vmNode.Instance,
                                     this.serialPortNumber,
                                     combinedTokenSource.Token)

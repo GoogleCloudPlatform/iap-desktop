@@ -273,7 +273,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirec
         {
             Debug.Assert(!this.itemsToRestore.EnsureNotNull().Any());
             Debug.Assert(!this.itemsToCleanup.EnsureNotNull().Any());
-            this.ComputeEngineAdapter.Dispose();
         }
 
         //---------------------------------------------------------------------

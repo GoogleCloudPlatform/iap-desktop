@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Management
 {
-    public interface IInstanceControlService : IDisposable
+    public interface IInstanceControlService
     {
         /// <summary>
         /// Start, stop, or otherwise control the lifecycle of an instance
@@ -79,15 +79,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Management
                             command == InstanceControlCommand.Resume))
                     .ConfigureAwait(false);
             }
-        }
-
-        //---------------------------------------------------------------------
-        // InstanceControlService.
-        //---------------------------------------------------------------------
-
-        public void Dispose()
-        {
-            this.computeEngineAdapter.Dispose();
         }
     }
 

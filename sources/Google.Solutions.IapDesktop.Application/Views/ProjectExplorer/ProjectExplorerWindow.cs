@@ -285,26 +285,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 //
                 // Show project picker
                 //
-                using (var resourceManager = this.resourceManagerAdapter.CreateInstance())
+                if (this.projectPickerDialog
+                    .SelectCloudProjects(
+                        this,
+                        "Add projects",
+                        this.resourceManagerAdapter.GetInstance(),
+                        this.exceptionDialog,
+                        out var projects) == DialogResult.OK)
                 {
-                    if (this.projectPickerDialog
-                        .SelectCloudProjects(
-                            this,
-                            "Add projects",
-                            resourceManager,
-                            this.exceptionDialog,
-                            out var projects) == DialogResult.OK)
-                    {
-                        await this.viewModel
-                            .AddProjectsAsync(projects.ToArray())
-                            .ConfigureAwait(true);
+                    await this.viewModel
+                        .AddProjectsAsync(projects.ToArray())
+                        .ConfigureAwait(true);
 
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
             catch (Exception e) when (e.IsCancellation())

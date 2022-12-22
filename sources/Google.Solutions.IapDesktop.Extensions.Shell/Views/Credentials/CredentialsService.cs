@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
     {
         private readonly IServiceProvider serviceProvider;
 
-        public CredentialsService(IServiceProvider serviceProvider)
+        public CredentialsService(IServiceProvider serviceProvider) // TODO: Inject Service<>
         {
             this.serviceProvider = serviceProvider;
         }
@@ -87,43 +87,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 }
             }
 
-            using (var windowsCredentialService = this.serviceProvider.GetService<IWindowsCredentialService>())
+            var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
+                new JobDescription("Generating Windows logon credentials..."),
+                token => this.serviceProvider
+                    .GetService<IWindowsCredentialService>()
+                    .CreateWindowsCredentialsAsync(
+                        instanceLocator,
+                        username,
+                        UserFlags.AddToAdministrators,
+                        token))
+                .ConfigureAwait(true);
+
+            if (!silent)
             {
-                var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
-                    new JobDescription("Generating Windows logon credentials..."),
-                    token => windowsCredentialService
-                        .CreateWindowsCredentialsAsync(
-                            instanceLocator,
-                            username,
-                            UserFlags.AddToAdministrators,
-                            token))
-                    .ConfigureAwait(true);
-
-                if (!silent)
-                {
-                    this.serviceProvider.GetService<IShowCredentialsDialog>().ShowDialog(
-                        owner,
-                        credentials.UserName,
-                        credentials.Password);
-                }
-
-                // Save credentials.
-                settings.RdpUsername.StringValue = credentials.UserName;
-                settings.RdpPassword.ClearTextValue = credentials.Password;
-
-                // NB. The computer might be joined to a domain, therefore force a local logon.
-                settings.RdpDomain.StringValue = ".";
+                this.serviceProvider.GetService<IShowCredentialsDialog>().ShowDialog(
+                    owner,
+                    credentials.UserName,
+                    credentials.Password);
             }
+
+            // Save credentials.
+            settings.RdpUsername.StringValue = credentials.UserName;
+            settings.RdpPassword.ClearTextValue = credentials.Password;
+
+            // NB. The computer might be joined to a domain, therefore force a local logon.
+            settings.RdpDomain.StringValue = ".";
         }
 
         public async Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
         {
-            using (var windowsCredentialService = this.serviceProvider.GetService<IWindowsCredentialService>())
-            {
-                return await windowsCredentialService
-                    .IsGrantedPermissionToCreateWindowsCredentialsAsync(instance)
-                    .ConfigureAwait(false);
-            }
+            return await this.serviceProvider
+                .GetService<IWindowsCredentialService>()
+                .IsGrantedPermissionToCreateWindowsCredentialsAsync(instance)
+                .ConfigureAwait(false);
         }
     }
 }
