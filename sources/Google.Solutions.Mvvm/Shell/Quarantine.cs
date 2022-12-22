@@ -29,19 +29,24 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Mvvm.Shell
 {
     /// <summary>
-    /// Helper class for validating and applying marks-of-the-web.
+    /// Helper class for scanning, quarantining, and marking downloaded 
+    /// files wih a MOTW (mark of the web).
+    /// 
+    /// For details, see Chromium source: /content/browser/download/quarantine_win.cc
     /// </summary>
-    public static class MarkOfTheWeb
+    public static class Quarantine
     {
+        private const uint E_FAILED = unchecked(0x80004005);
+        private const uint INET_E_SECURITY_PROBLEM = unchecked(0x800c000e);
+
         public static readonly Uri DefaultSource = new Uri("about:internet");
 
         /// <summary>
-        /// Let the operating system scan a file and apply a mark-of-the-web
-        /// file that indicates that the file has been downloaded from a possibly
-        /// untrusted source.
+        /// Scan a file and apply a mark-of-the-web that indicates which zone
+        /// (for ex, internet) the file originated from.
         /// </summary>
         /// <returns></returns>
-        public static Task ScanAndApplyZoneAsync(
+        public static Task ScanAsync(
             IntPtr owner,
             string filePath, 
             Uri source,
@@ -83,6 +88,28 @@ namespace Google.Solutions.Mvvm.Shell
                         attachment.SaveWithUI(owner);
                     }
                 }
+                catch (COMException e) when ((uint)e.HResult == E_FAILED)
+                {
+                    //
+                    // Indicates that Defender (or some other AV) found an infection.
+                    //
+                    throw new QuarantineException(
+                        "The downloaded file is infected with a virus", e);
+                }
+                catch (COMException e) when ((uint)e.HResult == INET_E_SECURITY_PROBLEM)
+                {
+                    //
+                    // Indicates that a policy has blocked this download, possibly
+                    // because the source has been set as "restricted".
+                    //
+                    throw new QuarantineException(
+                        "The download was blocked by policy", e);
+                }
+                catch (COMException e)
+                {
+                    throw new QuarantineException(
+                        "The security check for the file failed", e);
+                }
                 finally
                 {
                     Marshal.ReleaseComObject(attachment);
@@ -93,7 +120,7 @@ namespace Google.Solutions.Mvvm.Shell
         /// <summary>
         /// Determine the zone a file is originating from inspecting its mark-of-the-web.
         /// </summary>
-        public static Task<Zone> GetZoneAsync(Uri url)
+        public static Task<Zone> GetSourceZoneAsync(Uri url)
         {
             //
             // NB. Zone lookups can be slow, but need to be done on a STA-enabled thread.
@@ -116,7 +143,7 @@ namespace Google.Solutions.Mvvm.Shell
 
         public static Task<Zone> GetZoneAsync(string filePath)
         {
-            return GetZoneAsync(new Uri(filePath));
+            return GetSourceZoneAsync(new Uri(filePath));
         }
 
         public enum Zone : uint
@@ -251,6 +278,15 @@ namespace Google.Solutions.Mvvm.Shell
         [ComImport]
         [Guid("7b8a2d94-0ac9-11d1-896c-00c04fb6bfc4")]
         private class InternetSecurityManager
+        {
+        }
+    }
+
+    public class QuarantineException : Exception
+    {
+        public QuarantineException(
+            string message, 
+            Exception innerException) : base(message, innerException)
         {
         }
     }

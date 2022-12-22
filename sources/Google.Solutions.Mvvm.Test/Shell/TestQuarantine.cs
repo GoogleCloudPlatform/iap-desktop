@@ -20,76 +20,96 @@
 //
 
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Mvvm.Test.Shell
 {
     [TestFixture]
-    public class TestMarkOfTheWeb
+    public class TestQuarantine
     {
+        //
+        // EICAR dummy-malware, see
+        // https://www.eicar.org/download-anti-malware-testfile/
+        //
+        private const string Eicar = @"X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*";
+
         //---------------------------------------------------------------------
-        // ScanAndApplyZoneAsync.
+        // ScanAsync.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileOriginatesFromInternet_ThenScanAndApplyZoneAppliesMotw()
+        public async Task WhenFileOriginatesFromInternet_ThenScanAppliesMotw()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, "test");
 
-            await MarkOfTheWeb.ScanAndApplyZoneAsync(
+            await Quarantine.ScanAsync(
                     IntPtr.Zero,
                     filePath,
                     new Uri("https://example.com/"),
                     Guid.Empty)
                 .ConfigureAwait(true);
 
-            var zone = await MarkOfTheWeb
+            var zone = await Quarantine
                 .GetZoneAsync(filePath)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(MarkOfTheWeb.Zone.Internet, zone);
+            Assert.AreEqual(Quarantine.Zone.Internet, zone);
         }
 
         [Test]
-        public async Task WhenFileOriginatesFromLocalMachine_ThenScanAndApplyZoneAppliesMotw()
+        public async Task WhenFileOriginatesFromLocalMachine_ThenScanAppliesMotw()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, "test");
 
-            await MarkOfTheWeb.ScanAndApplyZoneAsync(
+            await Quarantine.ScanAsync(
                     IntPtr.Zero,
                     filePath,
                     new Uri(@"c:\some\local\file\path.txt"),
                     Guid.Empty)
                 .ConfigureAwait(true);
 
-            var zone = await MarkOfTheWeb
+            var zone = await Quarantine
                 .GetZoneAsync(filePath)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(MarkOfTheWeb.Zone.LocalMachine, zone);
+            Assert.AreEqual(Quarantine.Zone.LocalMachine, zone);
+        }
+
+        [Test]
+        public void WhenFileIsMalicious_ThenScanThrowsException()
+        {
+            var filePath = Path.GetTempFileName();
+            File.WriteAllText(filePath, Eicar);
+
+            ExceptionAssert.ThrowsAggregateException<QuarantineException>(
+                () => Quarantine.ScanAsync(
+                    IntPtr.Zero,
+                    filePath,
+                    new Uri(@"c:\some\local\file\path.txt"),
+                    Guid.Empty).Wait());
         }
 
         //---------------------------------------------------------------------
-        // GetZoneAsync.
+        // GetSourceZoneAsync.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenFileIsLocal_ThenGetZoneReturnsLocalMachine()
+        public async Task WhenFileIsLocal_ThenGetSourceZoneReturnsLocalMachine()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, "test");
 
-            var zone = await MarkOfTheWeb
+            var zone = await Quarantine
                 .GetZoneAsync(filePath)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(MarkOfTheWeb.Zone.LocalMachine, zone);
+            Assert.AreEqual(Quarantine.Zone.LocalMachine, zone);
         }
     }
 }
