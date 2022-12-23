@@ -49,7 +49,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
 
             await Quarantine.ScanAsync(
                     IntPtr.Zero,
-                    filePath,
+                    new FileInfo(filePath),
                     new Uri("https://example.com/"),
                     Guid.Empty)
                 .ConfigureAwait(true);
@@ -69,7 +69,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
 
             await Quarantine.ScanAsync(
                     IntPtr.Zero,
-                    filePath,
+                    new FileInfo(filePath),
                     new Uri(@"c:\some\local\file\path.txt"),
                     Guid.Empty)
                 .ConfigureAwait(true);
@@ -90,7 +90,7 @@ namespace Google.Solutions.Mvvm.Test.Shell
             ExceptionAssert.ThrowsAggregateException<QuarantineException>(
                 () => Quarantine.ScanAsync(
                     IntPtr.Zero,
-                    filePath,
+                    new FileInfo(filePath),
                     new Uri(@"c:\some\local\file\path.txt"),
                     Guid.Empty).Wait());
         }

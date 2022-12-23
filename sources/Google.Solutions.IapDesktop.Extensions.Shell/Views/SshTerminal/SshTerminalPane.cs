@@ -73,6 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     connectionTimeout))
         {
             this.viewModel = (SshTerminalPaneViewModel)this.ViewModel;
+            this.viewModel.View = this;
             this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
 
             this.AllowDrop = true;

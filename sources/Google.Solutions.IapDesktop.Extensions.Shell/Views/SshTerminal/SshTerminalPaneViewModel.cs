@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
+using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
@@ -65,6 +66,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly IJobService jobService;
 
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
+
+        private static readonly Guid quarantineClientGuid = 
+            new Guid("79ab36ca-bdae-4c10-86ac-a0025a9c0a2d");
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -404,42 +408,73 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 Debug.Assert(!selectedFiles.Any(i => i.Attributes.HasFlag(FileAttributes.ReparsePoint)));
                 Debug.Assert(!selectedFiles.Any(i => i.Attributes.HasFlag(FileAttributes.Directory)));
 
-                using (var progressDialog = this.operationProgressDialog.ShowCopyDialog(
-                    this.View,
-                    (ulong)selectedFiles.Count(),
-                    (ulong)selectedFiles.Sum(f => (long)f.Size)))
+                try
                 {
-                    return await this.jobService.RunInBackground<bool>(
-                        new JobDescription(
-                            $"Downloading files from {this.Instance.Name}",
-                            JobUserFeedbackType.BackgroundFeedback),
-                        async _ =>
-                        {
-                            foreach (var file in selectedFiles)
+                    using (var progressDialog = this.operationProgressDialog.ShowCopyDialog(
+                        this.View,
+                        (ulong)selectedFiles.Count(),
+                        (ulong)selectedFiles.Sum(f => (long)f.Size)))
+                    {
+                        return await this.jobService.RunInBackground<bool>(
+                            new JobDescription(
+                                $"Downloading files from {this.Instance.Name}",
+                                JobUserFeedbackType.BackgroundFeedback),
+                            async _ =>
                             {
                                 //
-                                // NB. The remote file name might not be Win32-compliant,
-                                // so we need to escape it.
+                                // Perform downloads sequentally as we're only using a single
+                                // SSH connection anyway.
                                 //
-                                var targetFile = new FileInfo(Path.Combine(
-                                    targetDirectory.FullName, 
-                                    Filename.EscapeFilename(file.Name)));
-                                using (var fileStream = targetFile.OpenWrite())
+                                var quarantineTasks = new List<Task>();
+                                foreach (var file in selectedFiles)
                                 {
-                                    await fsChannel.DownloadFileAsync(
-                                            file.Path,
-                                            fileStream,
-                                            new Progress<uint>(delta => progressDialog.OnBytesCompleted(delta)),
-                                            progressDialog.CancellationToken)
-                                        .ConfigureAwait(false);
+                                    //
+                                    // NB. The remote file name might not be Win32-compliant,
+                                    // so we need to escape it.
+                                    //
+                                    var targetFile = new FileInfo(Path.Combine(
+                                        targetDirectory.FullName,
+                                        Filename.EscapeFilename(file.Name)));
+                                    using (var fileStream = targetFile.OpenWrite())
+                                    {
+                                        await fsChannel.DownloadFileAsync(
+                                                file.Path,
+                                                fileStream,
+                                                new Progress<uint>(delta => progressDialog.OnBytesCompleted(delta)),
+                                                progressDialog.CancellationToken)
+                                            .ConfigureAwait(true);
+                                    }
+
+                                    //
+                                    // Scan for malware and apply MOTW.
+                                    //
+                                    // Don't block downloads while scanning take place, and don't
+                                    // abort pending downloads when scanning fails.
+                                    //
+                                    quarantineTasks.Add(Quarantine.ScanAsync(
+                                        IntPtr.Zero, // Can't use window handle on this thread.
+                                        targetFile,
+                                        Quarantine.DefaultSource,
+                                        quarantineClientGuid));
+
+                                    progressDialog.OnItemCompleted();
                                 }
 
-                                progressDialog.OnItemCompleted();
-                            }
+                                //
+                                // Propagate exception if a file has been qurantined so
+                                // that we can handle it when we're back on the UI thread.
+                                //
+                                await Task.WhenAll(quarantineTasks.ToArray());
 
-                            return true;
-                        })
-                        .ConfigureAwait(true);
+                                return true;
+                            })
+                            .ConfigureAwait(true);
+                    }
+                }
+                catch (Exception e) when (e.Is<QuarantineException>())
+                {
+                    this.exceptionDialog.Show(this.View, "Download blocked", e);
+                    return false;
                 }
             }
         }
@@ -605,6 +640,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             : base(message, inner)
         {
             this.Help = helpTopic;
+        }
+    }
+
+    public class DownloadBlockedException : Exception
+    {
+        public DownloadBlockedException(string message, Exception innerException) 
+            : base(message, innerException)
+        {
         }
     }
 }

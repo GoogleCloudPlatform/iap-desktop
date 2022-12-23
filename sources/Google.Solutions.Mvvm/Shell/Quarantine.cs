@@ -23,6 +23,7 @@ using Google.Apis.Util;
 using Google.Solutions.Mvvm.Util;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -48,14 +49,16 @@ namespace Google.Solutions.Mvvm.Shell
         /// <returns></returns>
         public static Task ScanAsync(
             IntPtr owner,
-            string filePath, 
+            FileInfo filePath, 
             Uri source,
             Guid clientGuid)
         {
             filePath.ThrowIfNull(nameof(filePath));
             source.ThrowIfNull(nameof(source));
 
-            Debug.Assert(source == null || source.Scheme.StartsWith("http"));
+            Debug.Assert(source == null ||
+                source == DefaultSource ||
+                source.Scheme.StartsWith("http"));
 
             //
             // NB. Scanning can be slow, but needs to be done on a STA-enabled thread.
@@ -70,7 +73,7 @@ namespace Google.Solutions.Mvvm.Shell
                     // be used to persistently suppress promots.
                     //
                     attachment.SetClientGuid(clientGuid);
-                    attachment.SetLocalPath(filePath);
+                    attachment.SetLocalPath(filePath.FullName);
 
                     //
                     // Set source to the actual URL or the generic "internet" source.
@@ -92,9 +95,11 @@ namespace Google.Solutions.Mvvm.Shell
                 {
                     //
                     // Indicates that Defender (or some other AV) found an infection.
+                    // Typically, this leads to the file being auto-deleted.
                     //
                     throw new QuarantineException(
-                        "The downloaded file is infected with a virus", e);
+                        $"The file {filePath.Name} has been blocked because it contains " +
+                        "a virus or other malware");
                 }
                 catch (COMException e) when ((uint)e.HResult == INET_E_SECURITY_PROBLEM)
                 {
@@ -103,12 +108,12 @@ namespace Google.Solutions.Mvvm.Shell
                     // because the source has been set as "restricted".
                     //
                     throw new QuarantineException(
-                        "The download was blocked by policy", e);
+                        $"The file {filePath.Name} has been blocked by policy");
                 }
                 catch (COMException e)
                 {
                     throw new QuarantineException(
-                        "The security check for the file failed", e);
+                        $"The file {filePath.Name} could not be scanned for malware", e);
                 }
                 finally
                 {
@@ -284,9 +289,13 @@ namespace Google.Solutions.Mvvm.Shell
 
     public class QuarantineException : Exception
     {
-        public QuarantineException(
-            string message, 
-            Exception innerException) : base(message, innerException)
+        public QuarantineException(string message) 
+            : base(message)
+        {
+        }
+
+        public QuarantineException(string message, Exception innerException) 
+            : base(message, innerException)
         {
         }
     }
