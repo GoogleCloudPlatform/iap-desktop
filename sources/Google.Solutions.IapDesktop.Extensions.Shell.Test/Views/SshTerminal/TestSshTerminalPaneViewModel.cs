@@ -55,6 +55,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
     [Apartment(ApartmentState.STA)]
     public class TestSshTerminalPaneViewModel : ShellFixtureBase
     {
+        private Mock<IEventService> eventService = new Mock<IEventService>();
+
         private static async Task<IPAddress> PublicAddressFromLocator(
             InstanceLocator instanceLocator)
         {
@@ -109,7 +111,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         private async Task<SshTerminalPaneViewModel> CreateViewModelAsync(
-            IEventService eventService,
             InstanceLocator instance,
             ICredential credential,
             SshKeyType keyType,
@@ -139,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .Returns(progressOperation.Object);
 
             return new SshTerminalPaneViewModel(
-                eventService,
+                this.eventService.Object,
                 new SynchronousJobService(),
                 confirmationDialog ?? new Mock<IConfirmationDialog>().Object,
                 progressDialog.Object,
@@ -162,11 +163,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
@@ -193,11 +191,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
@@ -237,11 +232,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
@@ -278,11 +270,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     keyType,
@@ -399,11 +388,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var confirmationDialog = new Mock<IConfirmationDialog>();
             var downloadFileDialog = new Mock<IDownloadFileDialog>();
-            var eventService = new Mock<IEventService>();
 
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
@@ -447,11 +434,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var confirmationDialog = new Mock<IConfirmationDialog>();
             var downloadFileDialog = new Mock<IDownloadFileDialog>();
-            var eventService = new Mock<IEventService>();
 
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
@@ -519,11 +504,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var confirmationDialog = new Mock<IConfirmationDialog>();
             var downloadFileDialog = new Mock<IDownloadFileDialog>();
-            var eventService = new Mock<IEventService>();
 
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
@@ -577,11 +560,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var confirmationDialog = new Mock<IConfirmationDialog>();
-            var eventService = new Mock<IEventService>();
 
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
