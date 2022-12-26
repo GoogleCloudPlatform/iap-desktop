@@ -142,8 +142,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.ConnectionStatus = Status.ConnectionLost;
             this.ConnectionLost?.Invoke(this, args);
 
-            await this.eventService.FireAsync(
-                new SessionAbortedEvent(this.Instance, args.Error))
+            await this.eventService
+                .FireAsync(new SessionAbortedEvent(this.Instance, args.Error))
                 .ConfigureAwait(true);
         }
 
@@ -152,8 +152,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.ConnectionStatus = Status.ConnectionFailed;
             this.ConnectionFailed?.Invoke(this, args);
 
-            await this.eventService.FireAsync(
-                new SessionAbortedEvent(this.Instance, args.Error))
+            await this.eventService
+                .FireAsync(new SessionAbortedEvent(this.Instance, args.Error))
                 .ConfigureAwait(true);
         }
 
@@ -168,15 +168,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.ConnectionStatus = Status.Connected;
 
             // Notify listeners.
-            await this.eventService.FireAsync(
-                new SessionStartedEvent(this.Instance))
+            await this.eventService
+                .FireAsync(new SessionStartedEvent(this.Instance))
                 .ConfigureAwait(true);
         }
 
         protected async Task OnDisconnected()
         {
-            await this.eventService.FireAsync(
-                new SessionEndedEvent(this.Instance))
+            await this.eventService
+                .FireAsync(new SessionEndedEvent(this.Instance))
                 .ConfigureAwait(true);
         }
 
