@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.Mvvm.Shell;
@@ -62,13 +63,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly IOperationProgressDialog operationProgressDialog;
         private readonly IDownloadFileDialog downloadFileDialog;
         private readonly IExceptionDialog exceptionDialog;
+        private readonly IQuarantineAdapter quarantineAdapter;
 
         private readonly IJobService jobService;
 
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
-
-        private static readonly Guid quarantineClientGuid = 
-            new Guid("79ab36ca-bdae-4c10-86ac-a0025a9c0a2d");
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -81,6 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             IOperationProgressDialog operationProgressDialog,
             IDownloadFileDialog downloadFileDialog,
             IExceptionDialog exceptionDialog,
+            IQuarantineAdapter quarantineAdapter,
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKeyPair authorizedKey,
@@ -94,6 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.operationProgressDialog = operationProgressDialog;
             this.downloadFileDialog = downloadFileDialog;
             this.exceptionDialog = exceptionDialog;
+            this.quarantineAdapter = quarantineAdapter;
 
             this.endpoint = endpoint;
             this.authorizedKey = authorizedKey;
@@ -451,11 +452,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                                     // Don't block downloads while scanning take place, and don't
                                     // abort pending downloads when scanning fails.
                                     //
-                                    quarantineTasks.Add(Quarantine.ScanAsync(
+                                    quarantineTasks.Add(this.quarantineAdapter.ScanAsync(
                                         IntPtr.Zero, // Can't use window handle on this thread.
-                                        targetFile,
-                                        Quarantine.DefaultSource,
-                                        quarantineClientGuid));
+                                        targetFile));
 
                                     progressDialog.OnItemCompleted();
                                 }

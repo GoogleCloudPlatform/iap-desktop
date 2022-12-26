@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Test.Services;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
@@ -144,6 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 progressDialog.Object,
                 downloadFileDialog ?? new Mock<IDownloadFileDialog>().Object,
                 new Mock<IExceptionDialog>().Object,
+                new Mock<IQuarantineAdapter>().Object,
                 instance,
                 new IPEndPoint(address, 22),
                 authorizedKey,
@@ -332,6 +334,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new Mock<IOperationProgressDialog>().Object,
                     new Mock<IDownloadFileDialog>().Object,
                     new Mock<IExceptionDialog>().Object,
+                    new Mock<IQuarantineAdapter>().Object,
                     instance,
                     new IPEndPoint(address, 22),
                     nonAuthorizedKey,

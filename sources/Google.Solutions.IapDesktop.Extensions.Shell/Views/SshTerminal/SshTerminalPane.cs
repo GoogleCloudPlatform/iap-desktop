@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using System;
@@ -66,6 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     serviceProvider.GetService<IOperationProgressDialog>(),
                     serviceProvider.GetService<IDownloadFileDialog>(),
                     serviceProvider.GetService<IExceptionDialog>(),
+                    serviceProvider.GetService<IQuarantineAdapter>(),
                     vmInstance,
                     endpoint,
                     authorizedKey,
