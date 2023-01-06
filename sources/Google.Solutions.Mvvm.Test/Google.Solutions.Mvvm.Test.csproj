@@ -82,6 +82,7 @@
     <Compile Include="Shell\TestFileType.cs" />
     <Compile Include="Shell\TestFileTypeCache.cs" />
     <Compile Include="Shell\TestKnownFolders.cs" />
+    <Compile Include="Shell\TestQuarantine.cs" />
     <Compile Include="Shell\TestStockIcons.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
   </ItemGroup>

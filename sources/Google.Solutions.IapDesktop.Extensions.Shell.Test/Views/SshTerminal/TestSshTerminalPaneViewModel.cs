@@ -26,11 +26,13 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Test.Services;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Testing.Common.Integration;
@@ -54,6 +56,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
     [Apartment(ApartmentState.STA)]
     public class TestSshTerminalPaneViewModel : ShellFixtureBase
     {
+        private Mock<IEventService> eventService;
+        private Mock<IConfirmationDialog> confirmationDialog;
+        private Mock<IExceptionDialog> exceptionDialog;
+        private Mock<IDownloadFileDialog> downloadFileDialog;
+        private Mock<IQuarantineAdapter> quarantineAdapter;
+
+        [SetUp]
+        public void SetUp()
+        {
+            this.eventService = new Mock<IEventService>();
+            this.confirmationDialog = new Mock<IConfirmationDialog>();
+            this.exceptionDialog = new Mock<IExceptionDialog>();
+            this.downloadFileDialog = new Mock<IDownloadFileDialog>();
+            this.quarantineAdapter = new Mock<IQuarantineAdapter>();
+        }
+
         private static async Task<IPAddress> PublicAddressFromLocator(
             InstanceLocator instanceLocator)
         {
@@ -108,13 +126,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         private async Task<SshTerminalPaneViewModel> CreateViewModelAsync(
-            IEventService eventService,
             InstanceLocator instance,
             ICredential credential,
             SshKeyType keyType,
-            CultureInfo language = null,
-            IConfirmationDialog confirmationDialog = null,
-            IDownloadFileDialog downloadFileDialog = null)
+            CultureInfo language = null)
         {
             var authorizedKey = await CreateAuthorizedKeyAsync(
                     instance,
@@ -138,12 +153,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .Returns(progressOperation.Object);
 
             return new SshTerminalPaneViewModel(
-                eventService,
+                this.eventService.Object,
                 new SynchronousJobService(),
-                confirmationDialog ?? new Mock<IConfirmationDialog>().Object,
+                this.confirmationDialog.Object,
                 progressDialog.Object,
-                downloadFileDialog ?? new Mock<IDownloadFileDialog>().Object,
-                new Mock<IExceptionDialog>().Object,
+                this.downloadFileDialog.Object,
+                this.exceptionDialog.Object,
+                this.quarantineAdapter.Object,
                 instance,
                 new IPEndPoint(address, 22),
                 authorizedKey,
@@ -160,11 +176,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
@@ -191,11 +204,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
@@ -235,11 +245,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
@@ -276,11 +283,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     keyType,
@@ -293,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .ConnectAsync(new TerminalSize(80, 24))
                     .ConfigureAwait(false);
 
-                eventService.Verify(s => s.FireAsync(
+                this.eventService.Verify(s => s.FireAsync(
                     It.IsAny<SessionStartedEvent>()), Times.Once());
 
                 Assert.AreEqual(
@@ -332,6 +336,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new Mock<IOperationProgressDialog>().Object,
                     new Mock<IDownloadFileDialog>().Object,
                     new Mock<IExceptionDialog>().Object,
+                    new Mock<IQuarantineAdapter>().Object,
                     instance,
                     new IPEndPoint(address, 22),
                     nonAuthorizedKey,
@@ -394,19 +399,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var confirmationDialog = new Mock<IConfirmationDialog>();
-            var downloadFileDialog = new Mock<IDownloadFileDialog>();
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
-                    null,
-                    confirmationDialog.Object,
-                    downloadFileDialog.Object)
+                    null)
                 .ConfigureAwait(true))
             {
                 viewModel.View = window;
@@ -419,7 +417,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 var selection = It.IsAny<IEnumerable<FileBrowser.IFileItem>>();
                 var targetDir = It.IsAny<DirectoryInfo>();
-                downloadFileDialog
+                this.downloadFileDialog
                     .Setup(d => d.SelectDownloadFiles(
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
@@ -442,19 +440,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var confirmationDialog = new Mock<IConfirmationDialog>();
-            var downloadFileDialog = new Mock<IDownloadFileDialog>();
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
-                    null,
-                    confirmationDialog.Object,
-                    downloadFileDialog.Object)
+                    null)
                 .ConfigureAwait(true))
             {
                 viewModel.View = window;
@@ -472,7 +463,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 //
                 // Download existing file, but deny overwrite.
                 //
-                confirmationDialog
+                this.confirmationDialog
                     .Setup(c => c.Confirm(
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
@@ -485,7 +476,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 var selection = (IEnumerable<FileBrowser.IFileItem>)new[] { existingFile.Object };
                 var targetDir = new DirectoryInfo(targetDirectory);
-                downloadFileDialog
+                this.downloadFileDialog
                     .Setup(d => d.SelectDownloadFiles(
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
@@ -496,7 +487,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     .Returns(DialogResult.OK);
 
                 Assert.IsFalse(await viewModel.DownloadFilesAsync());
-                confirmationDialog
+                this.confirmationDialog
                     .Verify(c => c.Confirm(
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
@@ -510,23 +501,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         [Test]
-        public async Task WhenNoConflictsFound_ThenDownloadSucceeds(
+        public async Task WhenQuarantineScanFails_ThenDownloadShowsErrorDialog(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var confirmationDialog = new Mock<IConfirmationDialog>();
-            var downloadFileDialog = new Mock<IDownloadFileDialog>();
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
-                    null,
-                    confirmationDialog.Object,
-                    downloadFileDialog.Object)
+                    null)
                 .ConfigureAwait(true))
             {
                 viewModel.View = window;
@@ -545,7 +529,69 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 bash.SetupGet(f => f.Path).Returns("/bin/bash");
 
                 var selection = (IEnumerable<FileBrowser.IFileItem>)new[] { bash.Object };
-                downloadFileDialog
+                this.downloadFileDialog
+                    .Setup(d => d.SelectDownloadFiles(
+                        It.IsAny<IWin32Window>(),
+                        It.IsAny<string>(),
+                        It.IsAny<FileBrowser.IFileSystem>(),
+                        It.IsAny<IExceptionDialog>(),
+                        out selection,
+                        out targetDirectory))
+                    .Returns(DialogResult.OK);
+
+                this.quarantineAdapter
+                    .Setup(a => a.ScanAsync(
+                        It.IsAny<IntPtr>(),
+                        It.IsAny<FileInfo>()))
+                    .ThrowsAsync(new QuarantineException("mock"));
+
+                Assert.IsFalse(await viewModel.DownloadFilesAsync());
+
+                this.quarantineAdapter.Verify(a => a.ScanAsync(
+                        It.IsAny<IntPtr>(),
+                        It.IsAny<FileInfo>()), Times.Once);
+                this.exceptionDialog.Verify(d => d.Show(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<QuarantineException>()), Times.Once);
+            }
+
+            await SshWorkerThread
+                .JoinAllWorkerThreadsAsync()
+                .ConfigureAwait(false);
+        }
+
+
+        [Test]
+        public async Task WhenNoConflictsFound_ThenDownloadSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            using (var window = new Form())
+            using (var viewModel = await CreateViewModelAsync(
+                    await instanceLocatorTask,
+                    await credential,
+                    SshKeyType.Rsa3072,
+                    null)
+                .ConfigureAwait(true))
+            {
+                viewModel.View = window;
+                viewModel.ConnectionFailed += (s, e) => Assert.Fail("Connection failed: " + e.Error);
+                viewModel.ConnectionLost += (s, e) => Assert.Fail("Connection lost: " + e.Error);
+
+                await viewModel
+                    .ConnectAsync(new TerminalSize(80, 24))
+                    .ConfigureAwait(false);
+
+                var targetDirectory = Directory.CreateDirectory(
+                    $"{Path.GetTempPath()}\\{Guid.NewGuid()}.txt");
+
+                var bash = new Mock<FileBrowser.IFileItem>();
+                bash.SetupGet(f => f.Name).Returns("bash");
+                bash.SetupGet(f => f.Path).Returns("/bin/bash");
+
+                var selection = (IEnumerable<FileBrowser.IFileItem>)new[] { bash.Object };
+                this.downloadFileDialog
                     .Setup(d => d.SelectDownloadFiles(
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
@@ -573,17 +619,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var confirmationDialog = new Mock<IConfirmationDialog>();
-            var eventService = new Mock<IEventService>();
-
             using (var window = new Form())
             using (var viewModel = await CreateViewModelAsync(
-                    eventService.Object,
                     await instanceLocatorTask,
                     await credential,
                     SshKeyType.Rsa3072,
-                    null,
-                    confirmationDialog.Object)
+                    null)
                 .ConfigureAwait(true))
             {
                 viewModel.View = window;
@@ -602,7 +643,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 //
                 // First upload -> file does not exist yet.
                 //
-                confirmationDialog
+                this.confirmationDialog
                     .Setup(d => d.Confirm(
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
@@ -619,7 +660,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 //
                 // Second upload -> file exists.
                 //
-                confirmationDialog
+                this.confirmationDialog
                     .Setup(d => d.Confirm(
                         It.IsAny<IWin32Window>(),
                         It.Is<string>(m => m.Contains("exist")),

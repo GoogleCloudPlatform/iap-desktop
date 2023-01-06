@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
@@ -82,6 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             this.ServiceRegistry.AddMock<IConfirmationDialog>();
             this.ServiceRegistry.AddMock<IOperationProgressDialog>();
             this.ServiceRegistry.AddMock<IDownloadFileDialog>();
+            this.ServiceRegistry.AddMock<IQuarantineAdapter>();
         }
 
         private async Task<SshTerminalPane> ConnectSshTerminalPane(
