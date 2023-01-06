@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 "AuthenticationLevel",
                 "Server authentication",
                 "Require server authentication when connecting.",
-                Categories.RdpConnection,
+                Categories.RdpAdvanced,
                 ConnectionSettings.RdpAuthenticationLevel._Default,
                 key);
             this.RdpColorDepth = RegistryEnumSetting<RdpColorDepth>.FromKey(
@@ -381,9 +381,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 key);
             this.RdpConnectionTimeout = RegistryDwordSetting.FromKey(
                 "ConnectionTimeout",
-                null, // Hidden.
-                null, // Hidden.
-                null, // Hidden.
+                "Connection timeout",
+                "Timeout for establishing a Remote Desktop connection, in seconds. " +
+                    "Use a timeout that allows sufficient time for credential prompts.",
+                Categories.RdpAdvanced,
                 30,
                 key,
                 0, 300);
