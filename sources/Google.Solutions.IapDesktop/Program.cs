@@ -368,7 +368,20 @@ namespace Google.Solutions.IapDesktop
                 // Run app.
                 //
                 this.initializedMainForm = mainForm;
-                this.mainFormInitialized.Set();
+                this.initializedMainForm.Shown += (_, __) =>
+                {
+                    //
+                    // Form is now ready to handle subsequent invocations.
+                    //
+                    this.mainFormInitialized.Set();
+                };
+                this.initializedMainForm.FormClosing += (_, __) =>
+                {
+                    //
+                    // Stop handling subsequent invocations.
+                    //
+                    this.initializedMainForm = null;
+                };
 
                 //
                 // Replace the standard WinForms exception dialog.
@@ -391,19 +404,24 @@ namespace Google.Solutions.IapDesktop
         {
             var options = CommandLineOptions.ParseOrExit(args);
 
+            //
             // Make sure the main form is ready.
+            //
             this.mainFormInitialized.WaitOne();
-            Debug.Assert(this.initializedMainForm != null);
-
-            // This method is called on the named pipe server thread - switch to 
-            // main thread before doing any GUI stuff.
-            this.initializedMainForm.Invoke(((Action)(() =>
+            if (this.initializedMainForm != null)
             {
-                if (options.StartupUrl != null)
+                //
+                // This method is called on the named pipe server thread - switch to 
+                // main thread before doing any GUI stuff.
+                //
+                this.initializedMainForm.Invoke(((Action)(() =>
                 {
-                    this.initializedMainForm.ConnectToUrl(options.StartupUrl);
-                }
-            })));
+                    if (options.StartupUrl != null)
+                    {
+                        this.initializedMainForm.ConnectToUrl(options.StartupUrl);
+                    }
+                })));
+            }
 
             return 1;
         }
