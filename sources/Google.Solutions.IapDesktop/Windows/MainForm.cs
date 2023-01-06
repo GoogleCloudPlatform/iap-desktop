@@ -57,6 +57,14 @@ namespace Google.Solutions.IapDesktop.Windows
 {
     public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationSource
     {
+        //
+        // Calculate minimum size so that it's a quarter of a 1080p screen,
+        // leaving some room for the taskbar (typically <= 50px).
+        //
+        private static readonly Size MinimumWindowSize = new Size(
+            1920 / 2,
+            (1080 - 50) / 2);
+
         private readonly MainFormViewModel viewModel;
 
         private readonly IThemeService themeService;
@@ -110,6 +118,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.themeService.ApplyTheme(this.statusStrip);
 
             ResumeLayout();
+
+            this.MinimumSize = MinimumWindowSize;
 
             // Set fixed size for the left/right panels (in pixels).
             this.dockPanel.DockLeftPortion =
