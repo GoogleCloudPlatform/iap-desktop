@@ -232,6 +232,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 message.Append(reasonText);
             }
 
+            if (disconnectReason == 3 || disconnectReason == 264)
+            {
+                message.Append(
+                    " Consider increasing the connection " +
+                    "timeout in the connection settings.");
+            }
 
             if (message.Length == 0)
             {
