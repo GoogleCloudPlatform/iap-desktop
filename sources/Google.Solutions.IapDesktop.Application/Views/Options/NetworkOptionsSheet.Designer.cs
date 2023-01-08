@@ -72,6 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.connectionPoolSizeLabel = new System.Windows.Forms.Label();
             this.connectionLimitUpDown = new System.Windows.Forms.NumericUpDown();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.proxyBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.linkIcon)).BeginInit();
             this.connectionBox.SuspendLayout();
@@ -264,6 +265,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // 
             // connectionBox
             // 
+            this.connectionBox.Controls.Add(this.label1);
             this.connectionBox.Controls.Add(this.connectionPoolSizeLabel);
             this.connectionBox.Controls.Add(this.connectionLimitUpDown);
             this.connectionBox.Controls.Add(this.pictureBox1);
@@ -277,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // connectionPoolSizeLabel
             // 
             this.connectionPoolSizeLabel.AutoSize = true;
-            this.connectionPoolSizeLabel.Location = new System.Drawing.Point(58, 24);
+            this.connectionPoolSizeLabel.Location = new System.Drawing.Point(58, 22);
             this.connectionPoolSizeLabel.Name = "connectionPoolSizeLabel";
             this.connectionPoolSizeLabel.Size = new System.Drawing.Size(159, 13);
             this.connectionPoolSizeLabel.TabIndex = 12;
@@ -285,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // 
             // connectionLimitUpDown
             // 
-            this.connectionLimitUpDown.Location = new System.Drawing.Point(232, 22);
+            this.connectionLimitUpDown.Location = new System.Drawing.Point(232, 20);
             this.connectionLimitUpDown.Maximum = new decimal(new int[] {
             32,
             0,
@@ -313,6 +315,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.pictureBox1.Size = new System.Drawing.Size(36, 36);
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(58, 45);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(236, 13);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "Changes take effect after restarting IAP Desktop";
             // 
             // NetworkOptionsSheet
             // 
@@ -357,5 +368,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private System.Windows.Forms.Label connectionPoolSizeLabel;
         private System.Windows.Forms.NumericUpDown connectionLimitUpDown;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
