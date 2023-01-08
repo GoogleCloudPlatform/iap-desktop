@@ -69,14 +69,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.useCustomRadioButton = new System.Windows.Forms.RadioButton();
             this.useSystemRadioButton = new System.Windows.Forms.RadioButton();
             this.connectionBox = new System.Windows.Forms.GroupBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.connectionPoolSizeUpDown = new System.Windows.Forms.NumericUpDown();
             this.connectionPoolSizeLabel = new System.Windows.Forms.Label();
+            this.connectionLimitUpDown = new System.Windows.Forms.NumericUpDown();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.proxyBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.linkIcon)).BeginInit();
             this.connectionBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.connectionLimitUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.connectionPoolSizeUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // proxyBox
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // connectionBox
             // 
             this.connectionBox.Controls.Add(this.connectionPoolSizeLabel);
-            this.connectionBox.Controls.Add(this.connectionPoolSizeUpDown);
+            this.connectionBox.Controls.Add(this.connectionLimitUpDown);
             this.connectionBox.Controls.Add(this.pictureBox1);
             this.connectionBox.Location = new System.Drawing.Point(3, 346);
             this.connectionBox.Name = "connectionBox";
@@ -273,37 +273,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.connectionBox.TabIndex = 3;
             this.connectionBox.TabStop = false;
             this.connectionBox.Text = "Connection pool";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(10, 21);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(36, 36);
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
-            // 
-            // connectionPoolSizeUpDown
-            // 
-            this.connectionPoolSizeUpDown.Location = new System.Drawing.Point(232, 22);
-            this.connectionPoolSizeUpDown.Maximum = new decimal(new int[] {
-            32,
-            0,
-            0,
-            0});
-            this.connectionPoolSizeUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.connectionPoolSizeUpDown.Name = "connectionPoolSizeUpDown";
-            this.connectionPoolSizeUpDown.Size = new System.Drawing.Size(75, 20);
-            this.connectionPoolSizeUpDown.TabIndex = 11;
-            this.connectionPoolSizeUpDown.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
             // 
             // connectionPoolSizeLabel
             // 
@@ -313,6 +282,37 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.connectionPoolSizeLabel.Size = new System.Drawing.Size(159, 13);
             this.connectionPoolSizeLabel.TabIndex = 12;
             this.connectionPoolSizeLabel.Text = "Connections per endpoint (max):";
+            // 
+            // connectionLimitUpDown
+            // 
+            this.connectionLimitUpDown.Location = new System.Drawing.Point(232, 22);
+            this.connectionLimitUpDown.Maximum = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+            this.connectionLimitUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.connectionLimitUpDown.Name = "connectionLimitUpDown";
+            this.connectionLimitUpDown.Size = new System.Drawing.Size(75, 20);
+            this.connectionLimitUpDown.TabIndex = 11;
+            this.connectionLimitUpDown.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(10, 21);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(36, 36);
+            this.pictureBox1.TabIndex = 5;
+            this.pictureBox1.TabStop = false;
             // 
             // NetworkOptionsSheet
             // 
@@ -327,8 +327,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             ((System.ComponentModel.ISupportInitialize)(this.linkIcon)).EndInit();
             this.connectionBox.ResumeLayout(false);
             this.connectionBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.connectionLimitUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.connectionPoolSizeUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -355,7 +355,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private System.Windows.Forms.RadioButton usePacRadioButton;
         private System.Windows.Forms.GroupBox connectionBox;
         private System.Windows.Forms.Label connectionPoolSizeLabel;
-        private System.Windows.Forms.NumericUpDown connectionPoolSizeUpDown;
+        private System.Windows.Forms.NumericUpDown connectionLimitUpDown;
         private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

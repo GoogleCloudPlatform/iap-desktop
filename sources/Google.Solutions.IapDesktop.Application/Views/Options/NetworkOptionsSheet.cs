@@ -158,6 +158,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 this.viewModel,
                 m => m.IsProxyAuthenticationEnabled,
                 this.Container);
+
+            //
+            // Connection pool.
+            //
+            this.connectionLimitUpDown.BindProperty(
+                c => c.Value,
+                this.viewModel,
+                m => m.ConnectionLimit,
+                this.Container);
         }
 
         //---------------------------------------------------------------------
