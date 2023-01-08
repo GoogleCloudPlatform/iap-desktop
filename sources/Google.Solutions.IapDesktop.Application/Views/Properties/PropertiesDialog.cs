@@ -38,11 +38,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
     {
         private readonly IExceptionDialog exceptionDialog;
 
-        public PropertiesDialog(IServiceProvider serviceProvider)
+        protected PropertiesDialog()
+        {
+            InitializeComponent();
+        }
+
+        public PropertiesDialog(IServiceProvider serviceProvider) : this()
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-
-            InitializeComponent();
         }
 
         private DialogResult ApplyChanges()

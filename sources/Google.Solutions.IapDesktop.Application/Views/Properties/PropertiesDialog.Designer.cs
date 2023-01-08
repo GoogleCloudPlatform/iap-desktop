@@ -63,13 +63,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.tabs.Location = new System.Drawing.Point(5, 5);
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
-            this.tabs.Size = new System.Drawing.Size(355, 404);
+            this.tabs.Size = new System.Drawing.Size(355, 444);
             this.tabs.TabIndex = 0;
             // 
             // applyButton
             // 
             this.applyButton.Enabled = false;
-            this.applyButton.Location = new System.Drawing.Point(282, 412);
+            this.applyButton.Location = new System.Drawing.Point(282, 452);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(75, 23);
             this.applyButton.TabIndex = 2;
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(201, 412);
+            this.cancelButton.Location = new System.Drawing.Point(201, 452);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(120, 412);
+            this.okButton.Location = new System.Drawing.Point(120, 452);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 0;
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(364, 441);
+            this.ClientSize = new System.Drawing.Size(364, 481);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.applyButton);
