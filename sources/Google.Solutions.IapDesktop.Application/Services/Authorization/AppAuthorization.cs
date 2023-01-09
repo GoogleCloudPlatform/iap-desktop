@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Http;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System.Diagnostics;
 using System.Threading;
@@ -32,19 +31,30 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
     {
         private readonly ISignInAdapter adapter;
 
+        //
+        // Credential to use.
+        //
+        // NB. We must use the same UserCredential object throghout the
+        // lifetime of the app because existing clients maintain a 
+        // reference to the object.
+        //
+        // In case of re-auth, we therefore don't swap the credential
+        // object, but merely replace its embedded refresh token.
+        //
+
         private readonly UserCredential credential;
 
         private AppAuthorization(
             ISignInAdapter adapter,
             IDeviceEnrollment deviceEnrollment,
-            ICredential credential,
+            UserCredential credential,
             UserInfo userInfo)
         {
             Debug.Assert(credential != null);
 
             this.adapter = adapter;
             this.DeviceEnrollment = deviceEnrollment;
-            this.credential = (UserCredential)credential;// TODO: Avoid cast
+            this.credential = credential;
             this.UserInfo = userInfo;
         }
 
@@ -74,9 +84,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
                 //
                 // Authorize worked, so the token was still valid.
                 //
-                var userInfo = await oauthAdapter.QueryUserInfoAsync(
-                    credential,
-                    token).ConfigureAwait(false);
+                var userInfo = await oauthAdapter
+                    .QueryUserInfoAsync(credential, token)
+                    .ConfigureAwait(false);
 
                 return new AppAuthorization(
                     oauthAdapter,
@@ -102,9 +112,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
                 .SignInWithBrowserAsync(null, token)
                 .ConfigureAwait(false);
 
-            var userInfo = await oauthAdapter.QueryUserInfoAsync(
-                credential,
-                token).ConfigureAwait(false);
+            var userInfo = await oauthAdapter
+                .QueryUserInfoAsync(credential, token)
+                .ConfigureAwait(false);
 
             return new AppAuthorization(
                 oauthAdapter,
@@ -129,51 +139,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             // Use the current user as login hint to simplify the browser flow
             // a little.
             //
-            var newCredential = (UserCredential) await this.adapter // TODO: Avoid cast
+            var newCredential = await this.adapter
                 .SignInWithBrowserAsync(this.Email, token)
                 .ConfigureAwait(false);
 
+            //
+            // Keep the credential object, but swap out its refresh token.
+            //
             this.credential.Token = newCredential.Token;
-
 
             //
             // The user might have changed to a different user account,
             // so we have to re-fetch user information.
             //
-            this.UserInfo = await this.adapter.QueryUserInfoAsync(
-                newCredential,
-                token).ConfigureAwait(false);
+            this.UserInfo = await this.adapter
+                .QueryUserInfoAsync(newCredential, token)
+                .ConfigureAwait(false);
         }
-
-        //private class SwappableCredential : ICredential
-        //{
-        //    private ICredential currentCredential;
-
-        //    public UserInfo UserInfo { get; private set; }
-
-        //    public SwappableCredential(ICredential curentCredential, UserInfo currentUserInfo)
-        //    {
-        //        this.currentCredential = curentCredential;
-        //        this.UserInfo = currentUserInfo;
-        //    }
-
-        //    public void SwapCredential(ICredential newCredential, UserInfo newUserInfo)
-        //    {
-        //        this.currentCredential = newCredential;
-        //        this.UserInfo = newUserInfo;
-        //    }
-
-        //    public void Initialize(ConfigurableHttpClient httpClient)
-        //    {
-        //        this.currentCredential.Initialize(httpClient);
-        //    }
-
-        //    public Task<string> GetAccessTokenForRequestAsync(
-        //        string authUri = null,
-        //        CancellationToken cancellationToken = default(CancellationToken))
-        //    {
-        //        return this.currentCredential.GetAccessTokenForRequestAsync(authUri, cancellationToken);
-        //    }
-        //}
     }
 }
