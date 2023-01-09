@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,28 +32,27 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
     {
         private readonly ISignInAdapter adapter;
 
-        //
-        // NB. The OAuth credential changes after each reauth. Therefore, use
-        // a SwappableCredential as indirection.
-        //
-        private readonly SwappableCredential credential;
+        private readonly UserCredential credential;
 
         private AppAuthorization(
             ISignInAdapter adapter,
             IDeviceEnrollment deviceEnrollment,
-            ICredential initialCredential,
+            ICredential credential,
             UserInfo userInfo)
         {
+            Debug.Assert(credential != null);
+
             this.adapter = adapter;
             this.DeviceEnrollment = deviceEnrollment;
-            this.credential = new SwappableCredential(initialCredential, userInfo);
+            this.credential = (UserCredential)credential;// TODO: Avoid cast
+            this.UserInfo = userInfo;
         }
 
         public ICredential Credential => this.credential;
 
-        public string Email => this.credential.UserInfo.Email;
+        public string Email => this.UserInfo.Email;
 
-        public UserInfo UserInfo => this.credential.UserInfo;
+        public UserInfo UserInfo { get; private set; }
 
         public IDeviceEnrollment DeviceEnrollment { get; }
 
@@ -129,50 +129,51 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             // Use the current user as login hint to simplify the browser flow
             // a little.
             //
-            var newCredential = await this.adapter
+            var newCredential = (UserCredential) await this.adapter // TODO: Avoid cast
                 .SignInWithBrowserAsync(this.Email, token)
                 .ConfigureAwait(false);
+
+            this.credential.Token = newCredential.Token;
+
 
             //
             // The user might have changed to a different user account,
             // so we have to re-fetch user information.
             //
-            var newUserInfo = await this.adapter.QueryUserInfoAsync(
+            this.UserInfo = await this.adapter.QueryUserInfoAsync(
                 newCredential,
                 token).ConfigureAwait(false);
-
-            this.credential.SwapCredential(newCredential, newUserInfo);
         }
 
-        private class SwappableCredential : ICredential
-        {
-            private ICredential currentCredential;
+        //private class SwappableCredential : ICredential
+        //{
+        //    private ICredential currentCredential;
 
-            public UserInfo UserInfo { get; private set; }
+        //    public UserInfo UserInfo { get; private set; }
 
-            public SwappableCredential(ICredential curentCredential, UserInfo currentUserInfo)
-            {
-                this.currentCredential = curentCredential;
-                this.UserInfo = currentUserInfo;
-            }
+        //    public SwappableCredential(ICredential curentCredential, UserInfo currentUserInfo)
+        //    {
+        //        this.currentCredential = curentCredential;
+        //        this.UserInfo = currentUserInfo;
+        //    }
 
-            public void SwapCredential(ICredential newCredential, UserInfo newUserInfo)
-            {
-                this.currentCredential = newCredential;
-                this.UserInfo = newUserInfo;
-            }
+        //    public void SwapCredential(ICredential newCredential, UserInfo newUserInfo)
+        //    {
+        //        this.currentCredential = newCredential;
+        //        this.UserInfo = newUserInfo;
+        //    }
 
-            public void Initialize(ConfigurableHttpClient httpClient)
-            {
-                this.currentCredential.Initialize(httpClient);
-            }
+        //    public void Initialize(ConfigurableHttpClient httpClient)
+        //    {
+        //        this.currentCredential.Initialize(httpClient);
+        //    }
 
-            public Task<string> GetAccessTokenForRequestAsync(
-                string authUri = null,
-                CancellationToken cancellationToken = default(CancellationToken))
-            {
-                return this.currentCredential.GetAccessTokenForRequestAsync(authUri, cancellationToken);
-            }
-        }
+        //    public Task<string> GetAccessTokenForRequestAsync(
+        //        string authUri = null,
+        //        CancellationToken cancellationToken = default(CancellationToken))
+        //    {
+        //        return this.currentCredential.GetAccessTokenForRequestAsync(authUri, cancellationToken);
+        //    }
+        //}
     }
 }
