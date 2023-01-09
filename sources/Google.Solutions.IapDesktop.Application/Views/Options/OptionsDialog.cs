@@ -32,6 +32,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
     [SkipCodeCoverage("UI code")]
     public class OptionsDialog : PropertiesDialog
     {
+        protected OptionsDialog()
+        {
+            // Designer only
+        }
+
         public OptionsDialog(IServiceCategoryProvider serviceProvider)
             : base(serviceProvider)
         {

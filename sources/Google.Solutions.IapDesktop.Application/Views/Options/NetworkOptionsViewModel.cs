@@ -36,6 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private readonly IHttpProxyAdapter proxyAdapter;
         private readonly ApplicationSettingsRepository settingsRepository;
 
+        private int connectionLimit;
         private string proxyPacAddress = null;
         private string proxyServer = null;
         private string proxyPort = null;
@@ -59,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             var settings = this.settingsRepository.GetSettings();
 
+            this.connectionLimit = settings.ConnectionLimit.IntValue;
             this.IsProxyEditable =
                 !settings.ProxyUrl.IsReadOnly &&
                 !settings.ProxyPacUrl.IsReadOnly;
@@ -107,6 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // Validate ans save settings.
             //
             var settings = this.settingsRepository.GetSettings();
+            settings.ConnectionLimit.IntValue = this.connectionLimit;
 
             switch (this.Proxy)
             {
@@ -180,6 +183,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         //---------------------------------------------------------------------
 
         public bool IsProxyEditable { get; }
+
+        public decimal ConnectionLimit
+        {
+            get => this.connectionLimit;
+            set
+            {
+                this.connectionLimit = (int)value;
+                this.IsDirty = true;
+                RaisePropertyChange();
+            }
+        }
 
         public enum ProxyType
         {
