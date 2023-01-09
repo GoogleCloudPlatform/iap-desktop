@@ -182,17 +182,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                         selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _))
                     .ApplyPolicy(userPolicyKey)
                     .ApplyPolicy(machinePolicyKey),
-                ConnectionLimit = RegistryDwordSetting.FromKey(
-                        "ConnectionLimit",
-                        "ConnectionLimit",
-                        null,
-                        null,
-                        16,
-                        settingsKey,
-                        1,
-                        32)
-                    .ApplyPolicy(userPolicyKey)
-                    .ApplyPolicy(machinePolicyKey),
 
                 //
                 // User preferences. These cannot be overriden by policy.
@@ -269,6 +258,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     settingsKey,
                     _ => true),
+                ConnectionLimit = RegistryDwordSetting.FromKey(
+                    "ConnectionLimit",
+                    "ConnectionLimit",
+                    null,
+                    null,
+                    16,
+                    settingsKey,
+                    1,
+                    32)
             };
         }
     }
