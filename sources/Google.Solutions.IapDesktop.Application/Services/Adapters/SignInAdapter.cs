@@ -43,10 +43,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     {
         Task DeleteStoredRefreshToken();
 
-        Task<ICredential> TrySignInWithRefreshTokenAsync(
+        Task<UserCredential> TrySignInWithRefreshTokenAsync(
             CancellationToken token);
 
-        Task<ICredential> SignInWithBrowserAsync(
+        Task<UserCredential> SignInWithBrowserAsync(
             String loginHint,
             CancellationToken token);
 
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Authorize.
         //---------------------------------------------------------------------
 
-        public async Task<ICredential> TrySignInWithRefreshTokenAsync(
+        public async Task<UserCredential> TrySignInWithRefreshTokenAsync(
             CancellationToken token)
         {
             //
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<ICredential> SignInWithBrowserAsync(
+        public async Task<UserCredential> SignInWithBrowserAsync(
             string loginHint,
             CancellationToken token)
         {
