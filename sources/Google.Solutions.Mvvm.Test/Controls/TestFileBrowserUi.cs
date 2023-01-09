@@ -75,13 +75,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
         private class LocalFileSystem : IFileSystem
         {
             private readonly FileTypeCache fileTypeCache = new FileTypeCache();
-            private readonly DirectoryInfo directory;
 
             public IFileItem Root { get; }
 
             public LocalFileSystem(DirectoryInfo directory)
             {
-                this.directory = directory;
                 this.Root = new LocalFileItem(directory, this.fileTypeCache);
             }
 
