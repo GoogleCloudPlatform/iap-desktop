@@ -34,12 +34,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
     [TestFixture]
     public class TestAuthorization : ApplicationFixtureBase
     {
-        private static UserCredential CreateUserCredentialMock()
+        private static UserCredential CreateUserCredentialMock(string refreshToken = null)
         {
             return new UserCredential(
                 new Mock<IAuthorizationCodeFlow>().Object,
                 "mock",
-                new Apis.Auth.OAuth2.Responses.TokenResponse());
+                new Apis.Auth.OAuth2.Responses.TokenResponse()
+                {
+                    RefreshToken = refreshToken
+                });
         }
 
         //---------------------------------------------------------------------
@@ -150,13 +153,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenReauthorizeUsesDifferentUser_ThenReauthorizeAsyncSwapsCredential()
+        public async Task WhenReauthorizeUsesDifferentUser_ThenReauthorizeAsyncSwapsToken()
         {
+            var userCredential = CreateUserCredentialMock("original");
+
             var adapter = new Mock<ISignInAdapter>();
             adapter.Setup(a => a.SignInWithBrowserAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(CreateUserCredentialMock());
+                .ReturnsAsync(userCredential);
             adapter.Setup(a => a.QueryUserInfoAsync(
                     It.IsAny<ICredential>(),
                     It.IsAny<CancellationToken>()))
@@ -175,6 +180,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
             Assert.AreEqual("alice@example.com", authorization.Email);
             Assert.AreEqual("alice@example.com", authorization.UserInfo.Email);
 
+            adapter.Setup(a => a.SignInWithBrowserAsync(
+                   It.IsAny<string>(),
+                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(CreateUserCredentialMock("new"));
             adapter.Setup(a => a.QueryUserInfoAsync(
                     It.IsAny<ICredential>(),
                     It.IsAny<CancellationToken>()))
@@ -188,6 +197,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
             Assert.IsNotNull(authorization);
             Assert.AreEqual("bob@example.com", authorization.Email);
             Assert.AreEqual("bob@example.com", authorization.UserInfo.Email);
+
+            // Same credential object, but new token.
+            Assert.AreSame(userCredential, authorization.Credential);
+            Assert.AreEqual("new", ((UserCredential)authorization.Credential).Token.RefreshToken);
         }
 
         [Test]
