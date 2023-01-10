@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly Func<string, Task<IReadOnlyCollection<SshSftpFileInfo>>> listRemoteFilesFunc;
         private readonly FileTypeCache fileTypeCache;
 
-        private static Regex configFileNamePattern = new Regex("co?ni?f(ig)?$");
+        private static readonly Regex configFileNamePattern = new Regex("co?ni?f(ig)?$");
 
         internal FileType TranslateFileType(SshSftpFileInfo sftpFile)
         {

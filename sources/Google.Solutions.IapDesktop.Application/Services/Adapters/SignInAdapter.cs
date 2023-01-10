@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             CancellationToken token);
 
         Task<UserCredential> SignInWithBrowserAsync(
-            String loginHint,
+            string loginHint,
             CancellationToken token);
 
         Task<UserInfo> QueryUserInfoAsync(
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     : null)
             {
                 ClientSecrets = clientSecrets,
-                Scopes = scopes.Concat(new[] { SignInAdapter.EmailScope }),
+                Scopes = this.scopes.Concat(new[] { SignInAdapter.EmailScope }),
                 DataStore = dataStore
             };
         }

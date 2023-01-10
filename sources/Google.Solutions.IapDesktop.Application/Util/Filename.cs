@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
             
             if (name.EndsWith("."))
             {
-                name = name + "_";
+                name += "_";
             }
 
             foreach (var c in Path.GetInvalidFileNameChars())

@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.TunnelsViewer
             return broker;
         }
 
-        class MockEventService : IEventService
+        private class MockEventService : IEventService
         {
             public virtual void BindHandler<TEvent>(Action<TEvent> handler)
             {

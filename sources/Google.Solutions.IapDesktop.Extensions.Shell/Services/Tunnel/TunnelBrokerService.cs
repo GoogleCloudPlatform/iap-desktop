@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
         {
             lock (this.tunnelsLock)
             {
-                if (this.tunnels.TryGetValue(endpoint, out Task<ITunnel> tunnel))
+                if (this.tunnels.TryGetValue(endpoint, out var tunnel))
                 {
                     return !tunnel.IsFaulted;
                 }
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
         {
             lock (this.tunnelsLock)
             {
-                if (!this.tunnels.TryGetValue(endpoint, out Task<ITunnel> tunnel))
+                if (!this.tunnels.TryGetValue(endpoint, out var tunnel))
                 {
                     return ConnectAndCacheAsync(endpoint, relayPolicy);
                 }

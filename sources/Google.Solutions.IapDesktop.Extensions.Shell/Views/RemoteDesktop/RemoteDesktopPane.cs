@@ -588,7 +588,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 }
 
                 // Do not fire again.
-                reconnectToResizeTimer.Stop();
+                this.reconnectToResizeTimer.Stop();
             }
         }
 
@@ -910,8 +910,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             if (this.rescueWindow == null && this.rdpClient != null)
             {
                 this.rescueWindow = new Form();
-                this.rdpClient.Parent = rescueWindow;
-                this.rdpClient.ContainingControl = rescueWindow;
+                this.rdpClient.Parent = this.rescueWindow;
+                this.rdpClient.ContainingControl = this.rescueWindow;
             }
 
             base.OnDockBegin();
