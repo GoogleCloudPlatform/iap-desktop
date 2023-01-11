@@ -240,11 +240,13 @@ namespace Google.Solutions.IapDesktop
             var serviceLayer = new ServiceRegistry(baseLayer);
             var windowLayer = new ServiceRegistry(serviceLayer);
 
+            var install = new Install(Install.DefaultBaseKeyPath);
             using (var profile = LoadProfileOrExit(this.commandLineOptions))
             {
                 // 
                 // Load base layer: Platform abstractions, API adapters.
                 //
+                baseLayer.AddSingleton(install);
                 baseLayer.AddSingleton(profile);
 
                 baseLayer.AddSingleton<IClock>(SystemClock.Default);

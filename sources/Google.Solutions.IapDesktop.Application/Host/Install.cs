@@ -39,6 +39,8 @@ namespace Google.Solutions.IapDesktop.Application.Host
     {
         private const string VersionHistoryValueName = "InstalledVersionHistory";
 
+        public const string DefaultBaseKeyPath = @"Software\Google\IapDesktop";
+
         /// <summary>
         /// Base registry key for profiles, etc.
         /// </summary>
