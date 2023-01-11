@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         private readonly ITaskDialog taskDialog;
         private readonly IClock clock;
 
-        public Version InstalledVersion => typeof(UpdateService).Assembly.GetName().Version;
+        public Version InstalledVersion => typeof(UpdateService).Assembly.GetName().Version; // TODO: Fix
 
         private TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
 

@@ -94,6 +94,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Host\CommandLineOptions.cs" />
+    <Compile Include="Host\Install.cs" />
     <Compile Include="Host\Profile.cs" />
     <Compile Include="ObjectModel\IServiceCategoryProvider.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />

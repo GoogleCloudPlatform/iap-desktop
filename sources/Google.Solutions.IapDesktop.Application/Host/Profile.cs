@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// <summary>
         /// Path containing profiles.
         /// </summary>
-        private const string DefaultProfilesKeyPath = @"Software\Google\IapDesktop";
+        private const string DefaultProfilesKeyPath = @"Software\Google\IapDesktop";//TODO: Use Install.
 
         /// <summary>
         /// Path to policies. This path is independent of the profile.
