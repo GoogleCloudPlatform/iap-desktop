@@ -138,11 +138,11 @@ namespace Google.Solutions.IapDesktop
                 .Select(dllPath => Assembly.LoadFrom(dllPath));
         }
 
-        private static Profile LoadProfileOrExit(CommandLineOptions options)
+        private static Profile LoadProfileOrExit(Install install, CommandLineOptions options)
         {
             try
             {
-                return Profile.OpenProfile(options.Profile);
+                return Profile.OpenProfile(install, options.Profile);
             }
             catch (Exception e)
             {
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop
             var windowLayer = new ServiceRegistry(serviceLayer);
 
             var install = new Install(Install.DefaultBaseKeyPath);
-            using (var profile = LoadProfileOrExit(this.commandLineOptions))
+            using (var profile = LoadProfileOrExit(install, this.commandLineOptions))
             {
                 // 
                 // Load base layer: Platform abstractions, API adapters.

@@ -49,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IThemeService themeService;
         private readonly AuthSettingsRepository authSettings;
         private readonly ApplicationSettingsRepository applicationSettings;
+        private readonly Install install;
         private readonly Profile profile;
 
         // NB. This list is only access from the UI thread, so no locking required.
@@ -64,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public MainFormViewModel(
             Control view,
+            Install install,
             Profile profile,
             ApplicationSettingsRepository applicationSettings,
             AuthSettingsRepository authSettings,
@@ -72,8 +74,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.View = view;
             this.themeService = themeService;
 
-            this.profile = profile
-                .ThrowIfNull(nameof(profile));
+            this.install = install.ThrowIfNull(nameof(install));
+            this.profile = profile.ThrowIfNull(nameof(profile));
             this.applicationSettings = applicationSettings
                 .ThrowIfNull(nameof(applicationSettings));
             this.authSettings = authSettings
@@ -195,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Windows
         public IEnumerable<string> AlternativeProfileNames
         {
             get => Profile
-                .ListProfiles()
+                .ListProfiles(this.install)
                 .Where(name => name != this.profile.Name);
         }
 

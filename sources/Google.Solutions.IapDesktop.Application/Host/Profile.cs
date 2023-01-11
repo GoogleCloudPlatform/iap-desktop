@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 using System;
@@ -47,11 +48,6 @@ namespace Google.Solutions.IapDesktop.Application.Host
         private const string SchemaVersionValueName = "SchemaVersion";
 
         private static readonly Regex ProfileNamePattern = new Regex(@"^[a-zA-Z0-9_\-\ ]+$");
-
-        /// <summary>
-        /// Path containing profiles.
-        /// </summary>
-        private const string DefaultProfilesKeyPath = @"Software\Google\IapDesktop";//TODO: Use Install.
 
         /// <summary>
         /// Path to policies. This path is independent of the profile.
@@ -104,9 +100,10 @@ namespace Google.Solutions.IapDesktop.Application.Host
         }
 
         public static Profile CreateProfile(
-            string name,
-            string profilesKeyPath = DefaultProfilesKeyPath)
+            Install install,
+            string name)
         {
+            install.ThrowIfNull(nameof(install));
             if (!IsValidProfileName(name))
             {
                 throw new ArgumentException("Invalid profile name");
@@ -114,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
             using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
             {
-                using (var profileKey = hkcu.CreateSubKey($@"{profilesKeyPath}\{ProfileKeyPrefix}{name}"))
+                using (var profileKey = hkcu.CreateSubKey($@"{install.BaseKeyPath}\{ProfileKeyPrefix}{name}"))
                 {
                     //
                     // Store the current schema version to allow future readers
@@ -128,13 +125,14 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 }
             }
 
-            return OpenProfile(name, profilesKeyPath);
+            return OpenProfile(install, name);
         }
 
         public static Profile OpenProfile(
-            string name,
-            string profilesKeyPath = DefaultProfilesKeyPath)
+            Install install,
+            string name)
         {
+            install.ThrowIfNull(nameof(install));
             if (name != null && !IsValidProfileName(name))
             {
                 throw new ArgumentException($"Invalid profile name: {name}");
@@ -149,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     // Open or create default profile. For backwards compatbility
                     // reasons, the default profile uses the key "1.0".
                     //
-                    var profileKeyPath = $@"{profilesKeyPath}\{DefaultProfileKey}";
+                    var profileKeyPath = $@"{install.BaseKeyPath}\{DefaultProfileKey}";
                     var profileKey = hkcu.OpenSubKey(profileKeyPath, true);
                     if (profileKey != null)
                     {
@@ -184,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     //
                     // Open existing profile.
                     //
-                    var profileKey = hkcu.OpenSubKey($@"{profilesKeyPath}\{ProfileKeyPrefix}{name}", true);
+                    var profileKey = hkcu.OpenSubKey($@"{install.BaseKeyPath}\{ProfileKeyPrefix}{name}", true);
                     if (profileKey == null)
                     {
                         throw new ProfileNotFoundException("Unknown profile: " + name);
@@ -203,12 +201,14 @@ namespace Google.Solutions.IapDesktop.Application.Host
         }
 
         public static void DeleteProfile(
-            string name,
-            string profilesKeyPath = DefaultProfilesKeyPath)
+            Install install,
+            string name)
         {
+            install.ThrowIfNull(nameof(install));
+
             using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
             {
-                var path = $@"{profilesKeyPath}\{ProfileKeyPrefix}{name}";
+                var path = $@"{install.BaseKeyPath}\{ProfileKeyPrefix}{name}";
                 using (var key = hkcu.OpenSubKey(path))
                 {
                     if (key != null)
@@ -219,11 +219,12 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
         }
 
-        public static IEnumerable<string> ListProfiles(
-            string profilesKeyPath = DefaultProfilesKeyPath)
+        public static IEnumerable<string> ListProfiles(Install install)
         {
+            install.ThrowIfNull(nameof(install));
+
             using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
-            using (var profiles = hkcu.OpenSubKey(profilesKeyPath))
+            using (var profiles = hkcu.OpenSubKey(install.BaseKeyPath))
             {
                 if (profiles == null)
                 {
