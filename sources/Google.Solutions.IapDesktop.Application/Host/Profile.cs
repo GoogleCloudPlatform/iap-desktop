@@ -99,6 +99,9 @@ namespace Google.Solutions.IapDesktop.Application.Host
                 ProfileNamePattern.IsMatch(name);
         }
 
+        /// <summary>
+        /// Create a new (secondary) profile.
+        /// </summary>
         public static Profile CreateProfile(
             Install install,
             string name)
@@ -128,6 +131,10 @@ namespace Google.Solutions.IapDesktop.Application.Host
             return OpenProfile(install, name);
         }
 
+        /// <summary>
+        /// Open the default profile or a secondary profile. The default profile
+        /// is created automatically if it doesn't exist yet.
+        /// </summary>
         public static Profile OpenProfile(
             Install install,
             string name)
