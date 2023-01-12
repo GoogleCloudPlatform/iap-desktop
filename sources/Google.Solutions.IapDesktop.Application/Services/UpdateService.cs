@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
@@ -54,16 +55,22 @@ namespace Google.Solutions.IapDesktop.Application.Services
         /// </summary>
         public const int DaysBetweenUpdateChecks = 10;
 
+        private readonly Install install;
         private readonly IGithubAdapter githubAdapter;
         private readonly ITaskDialog taskDialog;
         private readonly IClock clock;
 
-        public Version InstalledVersion => typeof(UpdateService).Assembly.GetName().Version;
-
         private TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
 
-        public UpdateService(IGithubAdapter githubAdapter, ITaskDialog taskDialog, IClock clock)
+        public Version InstalledVersion => this.install.CurrentVersion;
+
+        public UpdateService(
+            Install install,
+            IGithubAdapter githubAdapter, 
+            ITaskDialog taskDialog, 
+            IClock clock)
         {
+            this.install = install.ThrowIfNull(nameof(install));
             this.githubAdapter = githubAdapter.ThrowIfNull(nameof(githubAdapter));
             this.taskDialog = taskDialog.ThrowIfNull(nameof(taskDialog));
             this.clock = clock.ThrowIfNull(nameof(clock));
@@ -89,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
                 var latestRelease = this.githubAdapter.FindLatestReleaseAsync(cts.Token).Result;
                 if (latestRelease == null ||
-                    latestRelease.TagVersion.CompareTo(this.InstalledVersion) <= 0)
+                    latestRelease.TagVersion.CompareTo(this.install.CurrentVersion) <= 0)
                 {
                     // Installed version is up to date.
                     return;

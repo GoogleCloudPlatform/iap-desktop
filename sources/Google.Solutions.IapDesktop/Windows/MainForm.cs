@@ -173,6 +173,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             this.viewModel = new MainFormViewModel(
                 this,
+                bootstrappingServiceProvider.GetService<Install>(),
                 bootstrappingServiceProvider.GetService<Profile>(),
                 bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
                 bootstrappingServiceProvider.GetService<AuthSettingsRepository>(),
@@ -786,7 +787,9 @@ namespace Google.Solutions.IapDesktop.Windows
                         // selection, we couldn't know for sure that the profile
                         // isn't currently being used by another instance.
                         //
-                        Profile.DeleteProfile(profile.Name);
+                        Profile.DeleteProfile(
+                            this.serviceProvider.GetService<Install>(),
+                            profile.Name);
 
                         //
                         // Perform a hard exit to avoid touching the
@@ -933,7 +936,9 @@ namespace Google.Solutions.IapDesktop.Windows
                     var result = dialog.ShowDialog(this);
                     if (result.Result == DialogResult.OK)
                     {
-                        using (var profile = Profile.CreateProfile(result.ProfileName))
+                        using (var profile = Profile.CreateProfile(
+                            this.serviceProvider.GetService<Install>(),
+                            result.ProfileName))
                         {
                             this.viewModel.LaunchInstanceWithProfile(profile.Name);
                         }

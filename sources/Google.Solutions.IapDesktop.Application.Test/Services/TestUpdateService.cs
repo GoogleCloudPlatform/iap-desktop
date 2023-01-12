@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -43,6 +44,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
             return clock.Object;
         }
 
+        private static Install CreateInstall()
+        {
+            return new Install(Install.DefaultBaseKeyPath);
+        }
+
         //---------------------------------------------------------------------
         // IsUpdateCheckDue.
         //---------------------------------------------------------------------
@@ -53,6 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
             var now = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             var updateService = new UpdateService(
+                CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 new Mock<ITaskDialog>().Object,
                 CreateClock(now));
@@ -69,6 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
             var now = new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             var updateService = new UpdateService(
+                CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 new Mock<ITaskDialog>().Object,
                 CreateClock(now));
@@ -92,6 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
             var taskDialog = new Mock<ITaskDialog>();
 
             var updateService = new UpdateService(
+                CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
@@ -125,6 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
             var taskDialog = new Mock<ITaskDialog>();
 
             var updateService = new UpdateService(
+                CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
@@ -148,6 +158,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
         public void WhenSameVersionAvailable_ThenCheckForUpdatesReturns()
         {
             var installedVersion = new UpdateService(
+                CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 new Mock<ITaskDialog>().Object,
                 new Mock<IClock>().Object).InstalledVersion;
@@ -163,6 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
             var taskDialog = new Mock<ITaskDialog>();
 
             var updateService = new UpdateService(
+                CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
@@ -213,6 +225,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
                 .Throws(new OperationCanceledException());
 
             var updateService = new UpdateService(
+                CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
@@ -247,6 +260,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
                 .Returns(2);
 
             var updateService = new UpdateService(
+                CreateInstall(),
                 new Mock<IGithubAdapter>().Object,
                 taskDialog.Object,
                 new Mock<IClock>().Object);
