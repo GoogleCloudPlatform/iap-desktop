@@ -97,6 +97,17 @@ namespace Google.Solutions.Mvvm.Controls
         }
 
         //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+
+            Theme.ApplyExplorerTheme(this);
+        }
+
+        //---------------------------------------------------------------------
         // Data Binding.
         //---------------------------------------------------------------------
 
