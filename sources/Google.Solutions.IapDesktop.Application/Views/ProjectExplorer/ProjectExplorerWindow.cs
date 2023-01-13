@@ -80,9 +80,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             this.HideOnClose = true;
 
-            serviceProvider
-                .GetService<IThemeService>()
-                .ApplyTheme(this.toolStrip);
+            var themeService = serviceProvider.GetService<IThemeService>();
+            themeService.ApplyTheme(this.toolStrip);
+            themeService.ApplyTheme(this.treeView);
 
             this.mainForm = serviceProvider.GetService<IMainForm>();
             this.jobService = serviceProvider.GetService<IJobService>();

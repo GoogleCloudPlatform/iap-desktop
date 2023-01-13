@@ -35,6 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         DockPanelColorPalette ColorPalette { get; }
         void ApplyTheme(DockPanel dockPanel);
         void ApplyTheme(ToolStrip toolStrip);
+        void ApplyTheme(TreeView treeView);
     }
 
     public class ThemeService : IThemeService
@@ -65,6 +66,29 @@ namespace Google.Solutions.IapDesktop.Application.Services
             this.theme.ApplyTo(toolStrip);
         }
 
+        public void ApplyTheme(TreeView treeView)
+        {
+            //
+            // Apply post-Vista Explorer theme.
+            //
+            treeView.BackColor = OverrideSystemColors.ControlLightLight;
+            treeView.HotTracking = true;
+
+            treeView.HandleCreated += (_, __) =>
+            {
+                NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
+            };
+        }
+
+        //---------------------------------------------------------------------
+        // Colors.
+        //---------------------------------------------------------------------
+
+        private static class OverrideSystemColors
+        {
+            public static Color ControlLightLight = Color.FromArgb(255, 245, 245, 245);
+        }
+
         //---------------------------------------------------------------------
         // DockPaneFactory.
         //---------------------------------------------------------------------
@@ -76,6 +100,12 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
             [DllImport("user32.dll")]
             internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+
+            [DllImport("uxtheme", ExactSpelling = true, CharSet = CharSet.Unicode)]
+            public static extern int SetWindowTheme(
+                IntPtr hWnd,
+                string textSubAppName, 
+                string textSubIdList);
         }
 
         private class MinimizableFloatWindow : FloatWindow

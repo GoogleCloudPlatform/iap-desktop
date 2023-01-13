@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         private void UpdateRestoreState(DockState newState)
         {
             Debug.Assert(this.DesignMode || this.restoreState != DockState.Unknown);
-            Debug.Assert(this.DesignMode || his.restoreState != DockState.Float);
+            Debug.Assert(this.DesignMode || this.restoreState != DockState.Float);
             Debug.Assert(this.DesignMode || this.restoreState != DockState.Hidden);
 
             switch (newState)
