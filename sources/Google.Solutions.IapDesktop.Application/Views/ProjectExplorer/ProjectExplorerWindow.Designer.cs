@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // contextMenu
             // 
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(181, 26);
+            this.contextMenu.Size = new System.Drawing.Size(61, 4);
             // 
             // imageList
             // 
