@@ -351,12 +351,6 @@
     <None Include="Resources\Fullscreen_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Disconnect_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Settings_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Key_36.png" />
   </ItemGroup>
   <ItemGroup>
@@ -376,6 +370,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Connect_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Disconnect_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
