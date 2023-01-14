@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         : CommandState.Unavailable,
                     _ => this.viewModel.RefreshSelectedNodeAsync())
                 {
-                    Image = Resources.Refresh_161,
+                    Image = Resources.Refresh_16,
                     ActivityText = "Refreshing project"
                 });
             this.contextMenuCommands.AddCommand(
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         : CommandState.Unavailable,
                     _ => this.viewModel.RefreshAsync(false))
                 {
-                    Image = Resources.Refresh_161,
+                    Image = Resources.Refresh_16,
                     ActivityText = "Refreshing project"
                 });
             this.contextMenuCommands.AddCommand(

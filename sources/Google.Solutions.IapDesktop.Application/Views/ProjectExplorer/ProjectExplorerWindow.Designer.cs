@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // windowsInstancesToolStripMenuItem
             // 
             this.windowsInstancesToolStripMenuItem.CheckOnClick = true;
-            this.windowsInstancesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Computer_16;
+            this.windowsInstancesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("windowsInstancesToolStripMenuItem.Image")));
             this.windowsInstancesToolStripMenuItem.Name = "windowsInstancesToolStripMenuItem";
             this.windowsInstancesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.windowsInstancesToolStripMenuItem.Text = "Windows instances";
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // linuxInstancesToolStripMenuItem
             // 
             this.linuxInstancesToolStripMenuItem.CheckOnClick = true;
-            this.linuxInstancesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.ComputerTerminal_161;
+            this.linuxInstancesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("linuxInstancesToolStripMenuItem.Image")));
             this.linuxInstancesToolStripMenuItem.Name = "linuxInstancesToolStripMenuItem";
             this.linuxInstancesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.linuxInstancesToolStripMenuItem.Text = "Linux instances";
