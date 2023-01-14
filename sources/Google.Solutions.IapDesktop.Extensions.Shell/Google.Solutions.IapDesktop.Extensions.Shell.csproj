@@ -342,9 +342,6 @@
     <None Include="Resources\Password_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Connect_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Tunnel_16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -376,6 +373,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\DownloadFile_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Connect_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
