@@ -416,31 +416,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\About.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Spinner.gif" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Project.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Project_small.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Copy_16x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Connect_16.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Password_16.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Settings_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Refresh_161.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Search_16.png" />
