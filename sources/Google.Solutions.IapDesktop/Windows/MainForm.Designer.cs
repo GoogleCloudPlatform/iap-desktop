@@ -172,14 +172,14 @@ namespace Google.Solutions.IapDesktop.Windows
             // enableloggingToolStripMenuItem
             // 
             this.enableloggingToolStripMenuItem.Name = "enableloggingToolStripMenuItem";
-            this.enableloggingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.enableloggingToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.enableloggingToolStripMenuItem.Text = "Enable &logging";
             this.enableloggingToolStripMenuItem.Click += new System.EventHandler(this.enableloggingToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.optionsToolStripMenuItem.Text = "&Options...";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // viewHelpToolStripMenuItem
             // 
-            this.viewHelpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viewHelpToolStripMenuItem.Image")));
+            this.viewHelpToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Documentation_16;
             this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
             this.viewHelpToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
             this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // openIapDocsToolStripMenuItem
             // 
-            this.openIapDocsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openIapDocsToolStripMenuItem.Image")));
+            this.openIapDocsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Documentation_16;
             this.openIapDocsToolStripMenuItem.Name = "openIapDocsToolStripMenuItem";
             this.openIapDocsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
             this.openIapDocsToolStripMenuItem.Text = "&IAP TCP forwarding overview";
@@ -262,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // openIapAccessDocsToolStripMenuItem
             // 
-            this.openIapAccessDocsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openIapAccessDocsToolStripMenuItem.Image")));
+            this.openIapAccessDocsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.Documentation_16;
             this.openIapAccessDocsToolStripMenuItem.Name = "openIapAccessDocsToolStripMenuItem";
             this.openIapAccessDocsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
             this.openIapAccessDocsToolStripMenuItem.Text = "How to &grant permissions to use IAP";
