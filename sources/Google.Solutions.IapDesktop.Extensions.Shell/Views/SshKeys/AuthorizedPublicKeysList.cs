@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         public AuthorizedPublicKeysList()
         {
             this.List.SmallImageList = new ImageList();
-            this.List.SmallImageList.Images.Add(Resources.Key_16);
+            this.List.SmallImageList.Images.Add(Resources.AuthorizedKey_16);
 
             AddColumn("User", 170);
             AddColumn("Key type", 120);

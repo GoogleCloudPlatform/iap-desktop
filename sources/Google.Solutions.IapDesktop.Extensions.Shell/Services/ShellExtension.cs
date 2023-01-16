@@ -381,7 +381,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     node => AuthorizedPublicKeysViewModel.GetCommandState(node),
                     _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
                 {
-                    Image = Resources.Key_16
+                    Image = Resources.AuthorizedKey_16
                 },
                 11);
 
@@ -404,7 +404,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     _ => CommandState.Enabled,
                     _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
                 {
-                    Image = Resources.Key_16,
+                    Image = Resources.AuthorizedKey_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.K
                 });
 
