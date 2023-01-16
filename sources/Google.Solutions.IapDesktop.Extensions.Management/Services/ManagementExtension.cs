@@ -330,7 +330,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     PackageInventoryViewModel.GetCommandState,
                     context => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
                 {
-                    Image = Resources.Package_16
+                    Image = Resources.PackageInspect_16
                 });
             osCommand.AddCommand(
                 new Command<IProjectModelNode>(
@@ -416,7 +416,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     _ => CommandState.Enabled,
                     _ => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
                 {
-                    Image = Resources.Package_16,
+                    Image = Resources.PackageInspect_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
                 });
             mainForm.ViewMenu.AddCommand(

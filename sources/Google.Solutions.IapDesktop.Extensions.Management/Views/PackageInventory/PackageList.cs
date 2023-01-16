@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         public PackageList()
         {
             this.List.SmallImageList = new ImageList();
-            this.List.SmallImageList.Images.Add(Resources.PackageLight_16);
+            this.List.SmallImageList.Images.Add(Resources.Package_16);
             this.List.SmallImageList.Images.Add(Resources.PackageWarn_16);
 
             AddColumn("Type", 120);

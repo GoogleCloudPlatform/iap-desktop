@@ -103,9 +103,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PackageLight_16 {
+        internal static System.Drawing.Bitmap PackageInspect_16 {
             get {
-                object obj = ResourceManager.GetObject("PackageLight_16", resourceCulture);
+                object obj = ResourceManager.GetObject("PackageInspect_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
