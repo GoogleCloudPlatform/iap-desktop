@@ -290,10 +290,10 @@
     <None Include="Resources\Package_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\PackageUpdate_16.png" />
+    <None Include="Resources\PackageWarn_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\PackageWarn_16.png" />
+    <None Include="Resources\PackageUpdate_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
