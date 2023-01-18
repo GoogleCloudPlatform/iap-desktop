@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
     /// Generic project picker.
     /// </summary>
     [SkipCodeCoverage("All logic in view model")]
-    public partial class ProjectPickerWindow : Form
+    public partial class ProjectPickerWindow : Form, IThemedControl
     {
         private readonly ProjectPickerViewModel viewModel;
 
@@ -124,6 +124,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         {
             get => this.pickProjectButton.Text;
             set => this.pickProjectButton.Text = value;
+        }
+
+        //---------------------------------------------------------------------
+        // IThemedControl.
+        //---------------------------------------------------------------------
+
+        public IControlTheme Theme
+        {
+            get => this.projectList.Theme;
+            set => this.projectList.Theme = value;
         }
     }
 }

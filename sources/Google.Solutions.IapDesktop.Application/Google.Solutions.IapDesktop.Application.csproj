@@ -253,7 +253,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ProjectExplorer\ProjectExplorerViewModel.cs" />
-    <Compile Include="Views\ProjectPicker\IProjectPickerDialog.cs" />
+    <Compile Include="Views\ProjectPicker\ProjectPickerDialog.cs" />
     <Compile Include="Views\ProjectPicker\IProjectPickerModel.cs" />
     <Compile Include="Views\ProjectPicker\ProjectList.cs">
       <SubType>UserControl</SubType>

@@ -291,7 +291,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         this,
                         "Add projects",
                         this.resourceManagerAdapter.GetInstance(),
-                        this.exceptionDialog,
                         out var projects) == DialogResult.OK)
                 {
                     await this.viewModel
@@ -325,7 +324,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this,
                 "Unload projects",
                 this.viewModel.Projects,
-                this.exceptionDialog,
                 out var projects) == DialogResult.OK)
             {
                 await this.viewModel

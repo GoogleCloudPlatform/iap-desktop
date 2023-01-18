@@ -20,10 +20,12 @@
 //
 
 using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Apis.Util;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Collections.Generic;
@@ -40,19 +42,28 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             IWin32Window owner,
             string caption,
             IResourceManagerAdapter resourceManager,
-            IExceptionDialog exceptionDialog,
             out IReadOnlyCollection<ProjectLocator> selectedProjects);
 
         DialogResult SelectLocalProjects(
             IWin32Window owner,
             string caption,
             IReadOnlyCollection<IProjectModelProjectNode> projects,
-            IExceptionDialog exceptionDialog,
             out IReadOnlyCollection<ProjectLocator> selectedProjects);
     }
 
     public class ProjectPickerDialog : IProjectPickerDialog
     {
+        private readonly IExceptionDialog exceptionDialog;
+        private readonly ITheme theme;
+
+        public ProjectPickerDialog(
+            IExceptionDialog exceptionDialog,
+            ITheme theme)
+        {
+            this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
+            this.theme = theme.ThrowIfNull(nameof(theme));
+        }
+
         private DialogResult SelectProjects(
             IWin32Window owner,
             ProjectPickerWindow window,
@@ -71,16 +82,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             return result;
         }
 
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
         public DialogResult SelectCloudProjects(
             IWin32Window owner,
             string caption,
             IResourceManagerAdapter resourceManager,
-            IExceptionDialog exceptionDialog,
             out IReadOnlyCollection<ProjectLocator> selectedProjects)
         {
             var model = new CloudModel(resourceManager);
 
-            using (var window = new ProjectPickerWindow(model, exceptionDialog))
+            using (var window = new ProjectPickerWindow(model, this.exceptionDialog)
+            {
+                Theme = this.theme
+            })
             {
                 return SelectProjects(owner, window, caption, out selectedProjects);
             }
@@ -90,7 +107,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             IWin32Window owner,
             string caption,
             IReadOnlyCollection<IProjectModelProjectNode> projects,
-            IExceptionDialog exceptionDialog,
             out IReadOnlyCollection<ProjectLocator> selectedProjects)
         {
             var model = new StaticModel(projects
@@ -101,7 +117,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 })
                 .ToList());
 
-            using (var window = new ProjectPickerWindow(model, exceptionDialog))
+            using (var window = new ProjectPickerWindow(model, this.exceptionDialog)
+            {
+                Theme = this.theme
+            })
             {
                 return SelectProjects(owner, window, caption, out selectedProjects);
             }
