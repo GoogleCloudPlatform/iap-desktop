@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
@@ -67,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private readonly MainFormViewModel viewModel;
 
-        private readonly IThemeService themeService;
+        private readonly ITheme themeService;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly IServiceProvider serviceProvider;
         private IIapUrlHandler urlHandler;
@@ -86,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.serviceProvider = serviceProvider;
 
-            this.themeService = this.serviceProvider.GetService<IThemeService>();
+            this.themeService = this.serviceProvider.GetService<ITheme>();
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
 
             // 

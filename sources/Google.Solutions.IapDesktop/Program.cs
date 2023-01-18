@@ -33,6 +33,7 @@ using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
@@ -268,7 +269,7 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddSingleton<IResourceManagerAdapter, ResourceManagerAdapter>();
                 baseLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
 
-                baseLayer.AddSingleton<IThemeService, ThemeService>();
+                baseLayer.AddSingleton<ITheme, Theme>();
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),

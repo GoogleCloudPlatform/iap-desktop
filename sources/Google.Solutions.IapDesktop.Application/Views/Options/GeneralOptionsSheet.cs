@@ -47,33 +47,33 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             this.updateBox.BindReadonlyProperty(
                 c => c.Enabled,
-                viewModel,
+                this.viewModel,
                 m => m.IsUpdateCheckEditable,
                 this.Container);
             this.secureConnectBox.BindReadonlyProperty(
                 c => c.Enabled,
-                viewModel,
+                this.viewModel,
                 m => m.IsDeviceCertificateAuthenticationEditable,
                 this.Container);
 
             this.enableUpdateCheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsUpdateCheckEnabled,
                 this.Container);
             this.enableDcaCheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsDeviceCertificateAuthenticationEnabled,
                 this.Container);
             this.lastCheckLabel.BindProperty(
                 c => c.Text,
-                viewModel,
+                this.viewModel,
                 m => m.LastUpdateCheck,
                 this.Container);
             this.enableBrowserIntegrationCheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsBrowserIntegrationEnabled,
                 this.Container);
         }

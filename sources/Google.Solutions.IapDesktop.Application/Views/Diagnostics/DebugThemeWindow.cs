@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Theme;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -42,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             InitializeComponent();
 
             var palette = serviceProvider
-                .GetService<IThemeService>()
+                .GetService<ITheme>()
                 .ColorPalette;
 
             this.propertyGrid.SelectedObject = new ColorPaletteInspector(palette);

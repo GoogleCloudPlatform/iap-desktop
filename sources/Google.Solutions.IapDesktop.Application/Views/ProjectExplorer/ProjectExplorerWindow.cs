@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.Mvvm.Binding;
@@ -80,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             this.HideOnClose = true;
 
-            var themeService = serviceProvider.GetService<IThemeService>();
+            var themeService = serviceProvider.GetService<ITheme>();
             themeService.ApplyTheme(this.toolStrip);
             themeService.ApplyTheme(this.treeView);
 

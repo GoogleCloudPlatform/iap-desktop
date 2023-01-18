@@ -28,9 +28,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Application.Services
+namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    public interface IThemeService
+    public interface ITheme
     {
         DockPanelColorPalette ColorPalette { get; }
         void ApplyTheme(DockPanel dockPanel);
@@ -38,11 +38,11 @@ namespace Google.Solutions.IapDesktop.Application.Services
         void ApplyTheme(TreeView treeView);
     }
 
-    public class ThemeService : IThemeService
+    public class Theme : ITheme
     {
         private readonly ThemeBase theme;
 
-        public ThemeService()
+        public Theme()
         {
             this.theme = new VS2015LightTheme();
             this.theme.Extender.FloatWindowFactory = new FloatWindowFactory();
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
         public void ApplyTheme(DockPanel dockPanel)
         {
-            dockPanel.Theme = theme;
+            dockPanel.Theme = this.theme;
         }
 
         public void ApplyTheme(ToolStrip toolStrip)

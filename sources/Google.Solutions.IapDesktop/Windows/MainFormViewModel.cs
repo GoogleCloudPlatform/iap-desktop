@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Interop;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Mvvm.Binding;
@@ -46,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Windows
 {
     internal class MainFormViewModel : ViewModelBase
     {
-        private readonly IThemeService themeService;
+        private readonly ITheme themeService;
         private readonly AuthSettingsRepository authSettings;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly Install install;
@@ -69,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Windows
             Profile profile,
             ApplicationSettingsRepository applicationSettings,
             AuthSettingsRepository authSettings,
-            IThemeService themeService)
+            ITheme themeService)
         {
             this.View = view;
             this.themeService = themeService;
