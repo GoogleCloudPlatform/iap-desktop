@@ -63,6 +63,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AddCredentials_16 {
+            get {
+                object obj = ResourceManager.GetObject("AddCredentials_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AuthorizedKey_16 {
             get {
                 object obj = ResourceManager.GetObject("AuthorizedKey_16", resourceCulture);
@@ -156,16 +166,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         internal static System.Drawing.Bitmap Key_32 {
             get {
                 object obj = ResourceManager.GetObject("Key_32", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Password_16 {
-            get {
-                object obj = ResourceManager.GetObject("Password_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -73,6 +73,16 @@ namespace Google.Solutions.IapDesktop.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AddUser_16 {
+            get {
+                object obj = ResourceManager.GetObject("AddUser_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ConsentScreen {
             get {
                 object obj = ResourceManager.GetObject("ConsentScreen", resourceCulture);
@@ -86,16 +96,6 @@ namespace Google.Solutions.IapDesktop.Properties {
         internal static System.Drawing.Bitmap Documentation_16 {
             get {
                 object obj = ResourceManager.GetObject("Documentation_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap NewProfile_16 {
-            get {
-                object obj = ResourceManager.GetObject("NewProfile_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

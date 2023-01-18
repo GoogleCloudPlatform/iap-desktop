@@ -242,6 +242,7 @@
     <Content Include="icon.ico" />
     <Content Include="logo.ico" />
     <Content Include="ProductIcon.ico" />
+    <None Include="Resources\AddUser_16.png" />
     <None Include="Resources\ConsentScreen.png" />
     <None Include="Resources\NewProfile_16.png" />
     <None Include="Resources\Documentation_16.png" />
