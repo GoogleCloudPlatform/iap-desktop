@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
@@ -53,6 +52,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             serviceProvider
                 .GetService<ITheme>()
                 .ApplyTheme(this.toolStrip);
+            serviceProvider
+                .GetService<ITheme>()
+                .ApplyTheme(this.tunnelsList);
 
             //
             // This window is a singleton, so we never want it to be closed,

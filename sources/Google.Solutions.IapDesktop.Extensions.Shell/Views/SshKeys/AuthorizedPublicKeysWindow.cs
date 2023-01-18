@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -53,6 +52,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             serviceProvider
                 .GetService<ITheme>()
                 .ApplyTheme(this.toolStrip);
+            serviceProvider
+                .GetService<ITheme>()
+                .ApplyTheme(this.keysList.List);
 
             this.viewModel = new AuthorizedPublicKeysViewModel(serviceProvider)
             {

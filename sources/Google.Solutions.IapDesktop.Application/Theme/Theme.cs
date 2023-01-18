@@ -36,6 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         void ApplyTheme(DockPanel dockPanel);
         void ApplyTheme(ToolStrip toolStrip);
         void ApplyTheme(TreeView treeView);
+        void ApplyTheme(ListView listView);
     }
 
     public class Theme : ITheme
@@ -77,6 +78,20 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             treeView.HandleCreated += (_, __) =>
             {
                 NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
+            };
+        }
+
+        public void ApplyTheme(ListView listView)
+        {
+            //
+            // Apply post-Vista Explorer theme.
+            //
+            listView.BackColor = OverrideSystemColors.ControlLightLight;
+            listView.HotTracking = false;
+
+            listView.HandleCreated += (_, __) =>
+            {
+                NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
             };
         }
 
