@@ -49,9 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TerminalOptionsSheet));
             this.clipboardBox = new System.Windows.Forms.GroupBox();
-            this.keyboardIcon = new System.Windows.Forms.PictureBox();
             this.convertTypographicQuotesCheckBox = new System.Windows.Forms.CheckBox();
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox = new System.Windows.Forms.CheckBox();
@@ -59,54 +57,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.selectUsingShiftArrrowEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.navigationUsingControlArrrowEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.selectAllUsingCtrlAEnabledCheckBox = new System.Windows.Forms.CheckBox();
-            this.textSelectionIcon = new System.Windows.Forms.PictureBox();
             this.scollingBox = new System.Windows.Forms.GroupBox();
             this.scrollUsingCtrlUpDownCheckBox = new System.Windows.Forms.CheckBox();
             this.scrollUsingCtrlHomeEndcheckBox = new System.Windows.Forms.CheckBox();
-            this.scrollingIcon = new System.Windows.Forms.PictureBox();
             this.themeBox = new System.Windows.Forms.GroupBox();
-            this.fontIcon = new System.Windows.Forms.PictureBox();
             this.terminalLook = new System.Windows.Forms.Label();
             this.selectBackgroundColorButton = new System.Windows.Forms.Button();
             this.selectForegroundColorButton = new System.Windows.Forms.Button();
             this.selectFontButton = new System.Windows.Forms.Button();
             this.clipboardBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).BeginInit();
             this.textSelectionBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.textSelectionIcon)).BeginInit();
             this.scollingBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.scrollingIcon)).BeginInit();
             this.themeBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.fontIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // clipboardBox
             // 
-            this.clipboardBox.Controls.Add(this.keyboardIcon);
             this.clipboardBox.Controls.Add(this.convertTypographicQuotesCheckBox);
             this.clipboardBox.Controls.Add(this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox);
             this.clipboardBox.Controls.Add(this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox);
             this.clipboardBox.Location = new System.Drawing.Point(4, 3);
             this.clipboardBox.Name = "clipboardBox";
-            this.clipboardBox.Size = new System.Drawing.Size(336, 85);
+            this.clipboardBox.Size = new System.Drawing.Size(336, 89);
             this.clipboardBox.TabIndex = 2;
             this.clipboardBox.TabStop = false;
             this.clipboardBox.Text = "Clipboard:";
-            // 
-            // keyboardIcon
-            // 
-            this.keyboardIcon.Image = ((System.Drawing.Image)(resources.GetObject("keyboardIcon.Image")));
-            this.keyboardIcon.Location = new System.Drawing.Point(10, 21);
-            this.keyboardIcon.Name = "keyboardIcon";
-            this.keyboardIcon.Size = new System.Drawing.Size(36, 36);
-            this.keyboardIcon.TabIndex = 2;
-            this.keyboardIcon.TabStop = false;
             // 
             // convertTypographicQuotesCheckBox
             // 
             this.convertTypographicQuotesCheckBox.AutoSize = true;
             this.convertTypographicQuotesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.convertTypographicQuotesCheckBox.Location = new System.Drawing.Point(58, 58);
+            this.convertTypographicQuotesCheckBox.Location = new System.Drawing.Point(18, 60);
             this.convertTypographicQuotesCheckBox.Name = "convertTypographicQuotesCheckBox";
             this.convertTypographicQuotesCheckBox.Size = new System.Drawing.Size(222, 17);
             this.convertTypographicQuotesCheckBox.TabIndex = 3;
@@ -117,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.AutoSize = true;
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.Location = new System.Drawing.Point(58, 40);
+            this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.Location = new System.Drawing.Point(18, 42);
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.Name = "copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox";
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.Size = new System.Drawing.Size(222, 17);
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.TabIndex = 2;
@@ -128,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.AutoSize = true;
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.Location = new System.Drawing.Point(58, 22);
+            this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.Location = new System.Drawing.Point(18, 24);
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.Name = "copyPasteUsingCtrlCAndCtrlVEnabledCheckBox";
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.Size = new System.Drawing.Size(178, 17);
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.TabIndex = 1;
@@ -140,10 +121,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.textSelectionBox.Controls.Add(this.selectUsingShiftArrrowEnabledCheckBox);
             this.textSelectionBox.Controls.Add(this.navigationUsingControlArrrowEnabledCheckBox);
             this.textSelectionBox.Controls.Add(this.selectAllUsingCtrlAEnabledCheckBox);
-            this.textSelectionBox.Controls.Add(this.textSelectionIcon);
-            this.textSelectionBox.Location = new System.Drawing.Point(4, 94);
+            this.textSelectionBox.Location = new System.Drawing.Point(4, 98);
             this.textSelectionBox.Name = "textSelectionBox";
-            this.textSelectionBox.Size = new System.Drawing.Size(336, 87);
+            this.textSelectionBox.Size = new System.Drawing.Size(336, 89);
             this.textSelectionBox.TabIndex = 3;
             this.textSelectionBox.TabStop = false;
             this.textSelectionBox.Text = "Text selection:";
@@ -152,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             this.selectUsingShiftArrrowEnabledCheckBox.AutoSize = true;
             this.selectUsingShiftArrrowEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.selectUsingShiftArrrowEnabledCheckBox.Location = new System.Drawing.Point(58, 21);
+            this.selectUsingShiftArrrowEnabledCheckBox.Location = new System.Drawing.Point(18, 24);
             this.selectUsingShiftArrrowEnabledCheckBox.Name = "selectUsingShiftArrrowEnabledCheckBox";
             this.selectUsingShiftArrrowEnabledCheckBox.Size = new System.Drawing.Size(185, 17);
             this.selectUsingShiftArrrowEnabledCheckBox.TabIndex = 4;
@@ -163,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             this.navigationUsingControlArrrowEnabledCheckBox.AutoSize = true;
             this.navigationUsingControlArrrowEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.navigationUsingControlArrrowEnabledCheckBox.Location = new System.Drawing.Point(58, 57);
+            this.navigationUsingControlArrrowEnabledCheckBox.Location = new System.Drawing.Point(18, 60);
             this.navigationUsingControlArrrowEnabledCheckBox.Name = "navigationUsingControlArrrowEnabledCheckBox";
             this.navigationUsingControlArrrowEnabledCheckBox.Size = new System.Drawing.Size(260, 17);
             this.navigationUsingControlArrrowEnabledCheckBox.TabIndex = 6;
@@ -174,30 +154,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             this.selectAllUsingCtrlAEnabledCheckBox.AutoSize = true;
             this.selectAllUsingCtrlAEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.selectAllUsingCtrlAEnabledCheckBox.Location = new System.Drawing.Point(58, 39);
+            this.selectAllUsingCtrlAEnabledCheckBox.Location = new System.Drawing.Point(18, 42);
             this.selectAllUsingCtrlAEnabledCheckBox.Name = "selectAllUsingCtrlAEnabledCheckBox";
             this.selectAllUsingCtrlAEnabledCheckBox.Size = new System.Drawing.Size(152, 17);
             this.selectAllUsingCtrlAEnabledCheckBox.TabIndex = 5;
             this.selectAllUsingCtrlAEnabledCheckBox.Text = "Use Ctrl+&A to select all text";
             this.selectAllUsingCtrlAEnabledCheckBox.UseVisualStyleBackColor = true;
             // 
-            // textSelectionIcon
-            // 
-            this.textSelectionIcon.Image = ((System.Drawing.Image)(resources.GetObject("textSelectionIcon.Image")));
-            this.textSelectionIcon.Location = new System.Drawing.Point(10, 21);
-            this.textSelectionIcon.Name = "textSelectionIcon";
-            this.textSelectionIcon.Size = new System.Drawing.Size(36, 36);
-            this.textSelectionIcon.TabIndex = 3;
-            this.textSelectionIcon.TabStop = false;
-            // 
             // scollingBox
             // 
             this.scollingBox.Controls.Add(this.scrollUsingCtrlUpDownCheckBox);
             this.scollingBox.Controls.Add(this.scrollUsingCtrlHomeEndcheckBox);
-            this.scollingBox.Controls.Add(this.scrollingIcon);
-            this.scollingBox.Location = new System.Drawing.Point(4, 189);
+            this.scollingBox.Location = new System.Drawing.Point(4, 193);
             this.scollingBox.Name = "scollingBox";
-            this.scollingBox.Size = new System.Drawing.Size(336, 87);
+            this.scollingBox.Size = new System.Drawing.Size(336, 73);
             this.scollingBox.TabIndex = 7;
             this.scollingBox.TabStop = false;
             this.scollingBox.Text = "Scrolling:";
@@ -206,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             this.scrollUsingCtrlUpDownCheckBox.AutoSize = true;
             this.scrollUsingCtrlUpDownCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.scrollUsingCtrlUpDownCheckBox.Location = new System.Drawing.Point(58, 21);
+            this.scrollUsingCtrlUpDownCheckBox.Location = new System.Drawing.Point(18, 24);
             this.scrollUsingCtrlUpDownCheckBox.Name = "scrollUsingCtrlUpDownCheckBox";
             this.scrollUsingCtrlUpDownCheckBox.Size = new System.Drawing.Size(155, 17);
             this.scrollUsingCtrlUpDownCheckBox.TabIndex = 7;
@@ -217,60 +187,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             this.scrollUsingCtrlHomeEndcheckBox.AutoSize = true;
             this.scrollUsingCtrlHomeEndcheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.scrollUsingCtrlHomeEndcheckBox.Location = new System.Drawing.Point(58, 39);
+            this.scrollUsingCtrlHomeEndcheckBox.Location = new System.Drawing.Point(18, 42);
             this.scrollUsingCtrlHomeEndcheckBox.Name = "scrollUsingCtrlHomeEndcheckBox";
             this.scrollUsingCtrlHomeEndcheckBox.Size = new System.Drawing.Size(227, 17);
             this.scrollUsingCtrlHomeEndcheckBox.TabIndex = 8;
             this.scrollUsingCtrlHomeEndcheckBox.Text = "Use Ctrl+&Home/End to scroll to top/bottom";
             this.scrollUsingCtrlHomeEndcheckBox.UseVisualStyleBackColor = true;
             // 
-            // scrollingIcon
-            // 
-            this.scrollingIcon.Image = ((System.Drawing.Image)(resources.GetObject("scrollingIcon.Image")));
-            this.scrollingIcon.Location = new System.Drawing.Point(10, 21);
-            this.scrollingIcon.Name = "scrollingIcon";
-            this.scrollingIcon.Size = new System.Drawing.Size(36, 36);
-            this.scrollingIcon.TabIndex = 3;
-            this.scrollingIcon.TabStop = false;
-            // 
             // themeBox
             // 
-            this.themeBox.Controls.Add(this.fontIcon);
             this.themeBox.Controls.Add(this.terminalLook);
             this.themeBox.Controls.Add(this.selectBackgroundColorButton);
             this.themeBox.Controls.Add(this.selectForegroundColorButton);
             this.themeBox.Controls.Add(this.selectFontButton);
-            this.themeBox.Location = new System.Drawing.Point(4, 282);
+            this.themeBox.Location = new System.Drawing.Point(4, 272);
             this.themeBox.Name = "themeBox";
             this.themeBox.Size = new System.Drawing.Size(336, 87);
             this.themeBox.TabIndex = 8;
             this.themeBox.TabStop = false;
             this.themeBox.Text = "Theme:";
             // 
-            // fontIcon
-            // 
-            this.fontIcon.Image = ((System.Drawing.Image)(resources.GetObject("fontIcon.Image")));
-            this.fontIcon.Location = new System.Drawing.Point(10, 21);
-            this.fontIcon.Name = "fontIcon";
-            this.fontIcon.Size = new System.Drawing.Size(36, 36);
-            this.fontIcon.TabIndex = 4;
-            this.fontIcon.TabStop = false;
-            // 
             // terminalLook
             // 
             this.terminalLook.BackColor = System.Drawing.Color.Black;
             this.terminalLook.ForeColor = System.Drawing.Color.White;
-            this.terminalLook.Location = new System.Drawing.Point(55, 19);
+            this.terminalLook.Location = new System.Drawing.Point(18, 24);
             this.terminalLook.Name = "terminalLook";
             this.terminalLook.Padding = new System.Windows.Forms.Padding(3);
-            this.terminalLook.Size = new System.Drawing.Size(203, 51);
+            this.terminalLook.Size = new System.Drawing.Size(226, 51);
             this.terminalLook.TabIndex = 1;
             this.terminalLook.Text = "[user@host ~]$";
             // 
             // selectBackgroundColorButton
             // 
             this.selectBackgroundColorButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.BackgroundColor_16;
-            this.selectBackgroundColorButton.Location = new System.Drawing.Point(300, 47);
+            this.selectBackgroundColorButton.Location = new System.Drawing.Point(284, 52);
             this.selectBackgroundColorButton.Name = "selectBackgroundColorButton";
             this.selectBackgroundColorButton.Size = new System.Drawing.Size(30, 23);
             this.selectBackgroundColorButton.TabIndex = 9;
@@ -280,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // selectForegroundColorButton
             // 
             this.selectForegroundColorButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.TextColor_16;
-            this.selectForegroundColorButton.Location = new System.Drawing.Point(266, 47);
+            this.selectForegroundColorButton.Location = new System.Drawing.Point(250, 52);
             this.selectForegroundColorButton.Name = "selectForegroundColorButton";
             this.selectForegroundColorButton.Size = new System.Drawing.Size(30, 23);
             this.selectForegroundColorButton.TabIndex = 9;
@@ -289,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             // 
             // selectFontButton
             // 
-            this.selectFontButton.Location = new System.Drawing.Point(266, 19);
+            this.selectFontButton.Location = new System.Drawing.Point(250, 24);
             this.selectFontButton.Name = "selectFontButton";
             this.selectFontButton.Size = new System.Drawing.Size(64, 23);
             this.selectFontButton.TabIndex = 9;
@@ -297,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.selectFontButton.UseVisualStyleBackColor = true;
             this.selectFontButton.Click += new System.EventHandler(this.selectFontButton_Click);
             // 
-            // TerminalOptionsControl
+            // TerminalOptionsSheet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -306,19 +257,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.Controls.Add(this.textSelectionBox);
             this.Controls.Add(this.clipboardBox);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "TerminalOptionsControl";
+            this.Name = "TerminalOptionsSheet";
             this.Size = new System.Drawing.Size(343, 369);
             this.clipboardBox.ResumeLayout(false);
             this.clipboardBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).EndInit();
             this.textSelectionBox.ResumeLayout(false);
             this.textSelectionBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.textSelectionIcon)).EndInit();
             this.scollingBox.ResumeLayout(false);
             this.scollingBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.scrollingIcon)).EndInit();
             this.themeBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.fontIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -326,23 +273,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         #endregion
 
         private System.Windows.Forms.GroupBox clipboardBox;
-        private System.Windows.Forms.PictureBox keyboardIcon;
         private System.Windows.Forms.CheckBox copyPasteUsingCtrlCAndCtrlVEnabledCheckBox;
         private System.Windows.Forms.CheckBox copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox;
         private System.Windows.Forms.CheckBox convertTypographicQuotesCheckBox;
         private System.Windows.Forms.GroupBox textSelectionBox;
-        private System.Windows.Forms.PictureBox textSelectionIcon;
         private System.Windows.Forms.CheckBox selectUsingShiftArrrowEnabledCheckBox;
         private System.Windows.Forms.CheckBox selectAllUsingCtrlAEnabledCheckBox;
         private System.Windows.Forms.CheckBox navigationUsingControlArrrowEnabledCheckBox;
         private System.Windows.Forms.GroupBox scollingBox;
         private System.Windows.Forms.CheckBox scrollUsingCtrlUpDownCheckBox;
         private System.Windows.Forms.CheckBox scrollUsingCtrlHomeEndcheckBox;
-        private System.Windows.Forms.PictureBox scrollingIcon;
         private System.Windows.Forms.GroupBox themeBox;
         private System.Windows.Forms.Button selectFontButton;
         private System.Windows.Forms.Label terminalLook;
-        private System.Windows.Forms.PictureBox fontIcon;
         private System.Windows.Forms.Button selectForegroundColorButton;
         private System.Windows.Forms.Button selectBackgroundColorButton;
     }

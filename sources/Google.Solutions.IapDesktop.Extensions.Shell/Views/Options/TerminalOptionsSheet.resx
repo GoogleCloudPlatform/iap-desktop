@@ -117,42 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="keyboardIcon.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wwAADsMBx2+oZAAAAN9JREFUWEftmM0KwkAMhPdNBQVRWkSRggdvQg+9CIKvIIIPWUmJYcWEaeovkg8G
-        luzO7LS3Nj3L/nBsi8W6E615/B3G06IdTWZ3ohlvf5ZyWT2UuYn2+Njr2NVN97TahbmqzVYup7V2Jhdl
-        UjZb+jEvV2qYptP5IuG01s5oojvYhtECLHnfUC62YSxDHuYR2wVrboKCvGK7YM1NUJBXbBesuQkK8ort
-        gjU3cRucRCFEFEJEIUQUQkQhRBRCRCFEFEJEIcT/FHq3+DqM51N6qFyf0kTfnw1eDfrZEPwuKV0BQsSx
-        Sc+yWBsAAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="textSelectionIcon.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wwAADsMBx2+oZAAAAKBJREFUWEdjGAWjYESA+YuW/o9PzvgP5cIBSIwa4mmZeRhieAGpFlBLfBSMApoB
-        Wic6ks0fdA4aBaOAUjDoEvWgc9AoGAWUAmolOpg5uDBUGWFAsgYcANlybBiqjH4A3QHlVfUDm9XRHQTC
-        UKmBATBHgHoZg8JRMAesWbfh/+SpM8l3FC5NlIqT7ai+CVOIsgAGSBGHOQrKHQWjYLgDBgYAec/cWomI
-        OQkAAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="scrollingIcon.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wwAADsMBx2+oZAAAAOFJREFUWEft1t8KwiAchmEhqCv0tGA7cCdeQxfVn9srP/MDc4Ijpj8hXxA2p+1h
-        UE2N/rLztFwxwqlsgFzm5YUhjoox4qgchqM5ao0xz88QQOUw1toTRnNUinHnD+sg4bLCMeaSNXVQJQzD
-        XHXUCjObu81gGK5hzdeePVExqIRhWBOj6jylydy01scwVQxrsWd3DHM3OITDzf2yZzQadVNXX/uufhg9
-        pqe/jhjkP7yAwrUY4/fUfErhBnKvH6yEwnEzDEtRoq+wLIcSw7A1ShDDcigxDItR4hgGSDeYUduUegON
-        6GXg5gdWzgAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="fontIcon.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAABGdBTUEAALGPC/xhBQAAAItJREFUWEft
-        kVEKgCAUBD1aJ6moPrxFR+tohWARg9mjLCJ2YL9y18GcEOKL1J0fm97PpRJnryOhMz4n1A6+ClJHSVw6
-        pc6tibPPQaFXLs1RTGj/jNaE3xfrG8WEOGRJ6jLLGRMcskRCZ3lUiIQhjsdPWdiREGFHQoQdCRF2JETY
-        kRBh579CQojbOLcANBua7l55OL8AAAAASUVORK5CYII=
-</value>
-  </data>
 </root>
