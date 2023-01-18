@@ -242,6 +242,8 @@
     <Content Include="icon.ico" />
     <Content Include="logo.ico" />
     <Content Include="ProductIcon.ico" />
+    <None Include="Resources\EndpointVerificationWhite_16.png" />
+    <None Include="Resources\UserWhite_16.png" />
     <None Include="Resources\AddUser_16.png" />
     <None Include="Resources\ConsentScreen.png" />
     <None Include="Resources\NewProfile_16.png" />

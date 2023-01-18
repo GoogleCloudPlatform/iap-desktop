@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // deviceStateButton
             // 
-            this.deviceStateButton.Image = ((System.Drawing.Image)(resources.GetObject("deviceStateButton.Image")));
+            this.deviceStateButton.Image = global::Google.Solutions.IapDesktop.Properties.Resources.EndpointVerificationWhite_16;
             this.deviceStateButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.deviceStateButton.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
             this.deviceStateButton.Name = "deviceStateButton";
@@ -299,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.profileStateButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addProfileToolStripMenuItem,
             this.toolStripMenuItem1});
-            this.profileStateButton.Image = ((System.Drawing.Image)(resources.GetObject("profileStateButton.Image")));
+            this.profileStateButton.Image = global::Google.Solutions.IapDesktop.Properties.Resources.UserWhite_16;
             this.profileStateButton.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
             this.profileStateButton.Name = "profileStateButton";
             this.profileStateButton.Size = new System.Drawing.Size(78, 20);
@@ -309,14 +309,14 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             this.addProfileToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.AddUser_16;
             this.addProfileToolStripMenuItem.Name = "addProfileToolStripMenuItem";
-            this.addProfileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addProfileToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.addProfileToolStripMenuItem.Text = "&Add profile...";
             this.addProfileToolStripMenuItem.Click += new System.EventHandler(this.addProfileToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(139, 6);
             // 
             // addProjectToolStripMenuItem
             // 

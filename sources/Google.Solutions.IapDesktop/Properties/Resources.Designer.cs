@@ -103,9 +103,29 @@ namespace Google.Solutions.IapDesktop.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap EndpointVerificationWhite_16 {
+            get {
+                object obj = ResourceManager.GetObject("EndpointVerificationWhite_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Splash {
             get {
                 object obj = ResourceManager.GetObject("Splash", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UserWhite_16 {
+            get {
+                object obj = ResourceManager.GetObject("UserWhite_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
