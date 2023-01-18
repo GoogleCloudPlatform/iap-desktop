@@ -363,7 +363,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     this.View,
                     "Select files to download",
                     fs,
-                    this.exceptionDialog,
                     out var selectedFiles,
                     out var targetDirectory) != DialogResult.OK ||
                     !targetDirectory.Exists)

@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
 {
-    internal partial class DownloadFileWindow : Form
+    internal partial class DownloadFileWindow : Form, IThemedControl
     {
         private readonly DownloadFileViewModel viewModel;
 
@@ -83,5 +83,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
         public IEnumerable<FileBrowser.IFileItem> SelectedFiles => this.viewModel
             .SelectedFiles
             .Value;
+
+        //---------------------------------------------------------------------
+        // IThemedControl.
+        //---------------------------------------------------------------------
+
+        public IControlTheme Theme
+        {
+            get => this.fileBrowser.Theme;
+            set => this.fileBrowser.Theme = value;
+        }
     }
 }

@@ -422,7 +422,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
                         It.IsAny<FileBrowser.IFileSystem>(),
-                        It.IsAny<IExceptionDialog>(),
                         out selection,
                         out targetDir))
                     .Returns(DialogResult.Cancel);
@@ -481,7 +480,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
                         It.IsAny<FileBrowser.IFileSystem>(),
-                        It.IsAny<IExceptionDialog>(),
                         out selection,
                         out targetDir))
                     .Returns(DialogResult.OK);
@@ -534,7 +532,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
                         It.IsAny<FileBrowser.IFileSystem>(),
-                        It.IsAny<IExceptionDialog>(),
                         out selection,
                         out targetDirectory))
                     .Returns(DialogResult.OK);
@@ -596,7 +593,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         It.IsAny<IWin32Window>(),
                         It.IsAny<string>(),
                         It.IsAny<FileBrowser.IFileSystem>(),
-                        It.IsAny<IExceptionDialog>(),
                         out selection,
                         out targetDirectory))
                     .Returns(DialogResult.OK);

@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -30,13 +31,10 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    public interface ITheme
+    public interface ITheme : IControlTheme
     {
-        DockPanelColorPalette ColorPalette { get; }
         void ApplyTheme(DockPanel dockPanel);
-        void ApplyTheme(ToolStrip toolStrip);
-        void ApplyTheme(TreeView treeView);
-        void ApplyTheme(ListView listView);
+        DockPanelColorPalette ColorPalette { get; }
     }
 
     public class Theme : ITheme

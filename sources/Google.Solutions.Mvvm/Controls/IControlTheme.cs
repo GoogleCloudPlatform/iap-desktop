@@ -19,30 +19,28 @@
 // under the License.
 //
 
-using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Controls
 {
-    internal static class Theme
+    /// <summary>
+    /// Theme that can be applied to common controls.
+    /// </summary>
+    public interface IControlTheme
     {
-        public static void ApplyExplorerTheme(IWin32Window window)
-        {
-            NativeMethods.SetWindowTheme(window.Handle, "Explorer", null);
-        }
+        void ApplyTheme(ToolStrip toolStrip);
+        void ApplyTheme(TreeView treeView);
+        void ApplyTheme(ListView listView);
+    }
 
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        private static class NativeMethods
-        {
-            [DllImport("uxtheme", ExactSpelling = true, CharSet = CharSet.Unicode)]
-            public static extern int SetWindowTheme(
-                IntPtr hWnd,
-                string textSubAppName,
-                string textSubIdList);
-        }
+    /// <summary>
+    /// A themable control.
+    /// </summary>
+    public interface IThemedControl
+    {
+        /// <summary>
+        /// Apply a theme to the control.
+        /// </summary>
+        IControlTheme Theme { get; set; }
     }
 }

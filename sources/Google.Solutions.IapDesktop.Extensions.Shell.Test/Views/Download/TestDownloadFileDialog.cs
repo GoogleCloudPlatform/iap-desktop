@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.Mvvm.Controls;
@@ -77,12 +78,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
                 });
 
             var exceptionDialog = new Mock<IExceptionDialog>();
-            var dialog = new DownloadFileDialog();
+            var dialog = new DownloadFileDialog(
+                exceptionDialog.Object,
+                new Mock<ITheme>().Object);
             dialog.SelectDownloadFiles(
                 null,
                 "Test",
                 fileSystem.Object,
-                exceptionDialog.Object,
                 out var sourceItems,
                 out var targetDirectory);
         }

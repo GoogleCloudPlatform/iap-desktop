@@ -19,7 +19,9 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Controls;
 using System.Collections.Generic;
@@ -38,7 +40,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             IWin32Window owner,
             string caption,
             FileBrowser.IFileSystem fileSystem,
-            IExceptionDialog exceptionDialog,
             out IEnumerable<FileBrowser.IFileItem> sourceItems,
             out DirectoryInfo targetDirectory);
     }
@@ -47,19 +48,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
     [Service(typeof(IDownloadFileDialog))]
     public class DownloadFileDialog : IDownloadFileDialog
     {
+        private readonly IExceptionDialog exceptionDialog;
+        private readonly ITheme theme;
+
+        public DownloadFileDialog(
+            IExceptionDialog exceptionDialog,
+            ITheme theme)
+        {
+            this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
+            this.theme = theme.ThrowIfNull(nameof(theme));
+        }
+
         public DialogResult SelectDownloadFiles(
             IWin32Window owner,
             string caption,
             FileBrowser.IFileSystem fileSystem,
-            IExceptionDialog exceptionDialog,
             out IEnumerable<FileBrowser.IFileItem> sourceItems,
             out DirectoryInfo targetDirectory)
         {
             sourceItems = null;
             targetDirectory = null;
 
-            using (var form = new DownloadFileWindow(fileSystem, exceptionDialog)
+            using (var form = new DownloadFileWindow(fileSystem, this.exceptionDialog)
             {
+                Theme = this.theme,
                 Text = caption
             })
             {
