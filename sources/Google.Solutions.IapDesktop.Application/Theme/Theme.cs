@@ -34,6 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     public interface ITheme : IControlTheme
     {
         void ApplyTheme(DockPanel dockPanel);
+        void ApplyTheme(IThemedControl control);
         DockPanelColorPalette ColorPalette { get; }
     }
 
@@ -91,6 +92,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             {
                 NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
             };
+        }
+
+        public void ApplyTheme(IThemedControl control)
+        {
+            control.Theme = this;
         }
 
         //---------------------------------------------------------------------

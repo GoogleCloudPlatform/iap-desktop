@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Properties;
 using System;
@@ -30,8 +31,10 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Controls
 {
     [SkipCodeCoverage("Pure UI code")]
-    public partial class SearchableList<TModelItem> : UserControl
+    public partial class SearchableList<TModelItem> : UserControl, IThemedControl
     {
+        private IControlTheme theme;
+
         public event EventHandler LoadingChanged;
         public event EventHandler SearchTermChanged;
 
@@ -39,6 +42,26 @@ namespace Google.Solutions.Mvvm.Controls
         {
             InitializeComponent();
         }
+
+        //---------------------------------------------------------------------
+        // IThemedControl.
+        //---------------------------------------------------------------------
+
+        public IControlTheme Theme
+        {
+            get => this.theme;
+            set
+            {
+                value.ThrowIfNull(nameof(value));
+                value.ApplyTheme(this.list);
+
+                this.theme = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         public bool SearchOnKeyDown { get; set; } = false;

@@ -117,6 +117,23 @@ namespace Google.Solutions.Mvvm.Controls
             => this.SelectedFilesChanged?.Invoke(this, EventArgs.Empty);
 
         //---------------------------------------------------------------------
+        // IThemedControl.
+        //---------------------------------------------------------------------
+
+        public IControlTheme Theme
+        {
+            get => this.theme;
+            set
+            {
+                value.ThrowIfNull(nameof(value));
+                value.ApplyTheme(this.directoryTree);
+                value.ApplyTheme(this.fileList);
+
+                this.theme = value;
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Selection properties.
         //---------------------------------------------------------------------
 
@@ -309,23 +326,6 @@ namespace Google.Solutions.Mvvm.Controls
                 {
                     OnNavigationFailed(e);
                 }
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // IThemedControl.
-        //---------------------------------------------------------------------
-
-        public IControlTheme Theme
-        {
-            get => this.theme;
-            set
-            {
-                value.ThrowIfNull(nameof(value));
-                value.ApplyTheme(this.directoryTree);
-                value.ApplyTheme(this.fileList);
-
-                this.theme = value;
             }
         }
 
