@@ -52,7 +52,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TunnelsWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.disconnectToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -85,8 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             // refreshToolStripButton
             // 
             this.refreshToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshToolStripButton.Image")));
-            this.refreshToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.refreshToolStripButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.Refresh_16;
             this.refreshToolStripButton.Name = "refreshToolStripButton";
             this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.refreshToolStripButton.Text = "Refresh";
@@ -96,8 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             // 
             this.disconnectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.disconnectToolStripButton.Enabled = false;
-            this.disconnectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("disconnectToolStripButton.Image")));
-            this.disconnectToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.disconnectToolStripButton.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.Delete_16;
             this.disconnectToolStripButton.Name = "disconnectToolStripButton";
             this.disconnectToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.disconnectToolStripButton.Text = "Disconnect tunnel";

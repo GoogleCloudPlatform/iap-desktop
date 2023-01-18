@@ -55,15 +55,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.lifecycleEventsDropDown = new System.Windows.Forms.ToolStripDropDownButton();
-            this.includeLifecycleEventsButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.includeSystemEventsButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.includeAccessEventsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.timeFrameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.openLogsButton = new System.Windows.Forms.ToolStripButton();
             this.list = new Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog.EventsListView();
             this.timestampColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instanceNameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -73,6 +67,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             this.deviceColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.deviceStateColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.accessLevelsColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.refreshButton = new System.Windows.Forms.ToolStripButton();
+            this.lifecycleEventsDropDown = new System.Windows.Forms.ToolStripDropDownButton();
+            this.includeLifecycleEventsButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.includeSystemEventsButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.includeAccessEventsButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.openLogsButton = new System.Windows.Forms.ToolStripButton();
             this.contextMenuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -114,54 +114,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             this.toolStrip.TabIndex = 0;
             this.toolStrip.Text = "toolStrip1";
             // 
-            // refreshButton
-            // 
-            this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshButton.Enabled = false;
-            this.refreshButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshButton.Image")));
-            this.refreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.refreshButton.Name = "refreshButton";
-            this.refreshButton.Size = new System.Drawing.Size(23, 22);
-            this.refreshButton.Text = "Refresh";
-            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
-            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // lifecycleEventsDropDown
-            // 
-            this.lifecycleEventsDropDown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.includeLifecycleEventsButton,
-            this.includeSystemEventsButton,
-            this.includeAccessEventsButton});
-            this.lifecycleEventsDropDown.Image = ((System.Drawing.Image)(resources.GetObject("lifecycleEventsDropDown.Image")));
-            this.lifecycleEventsDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.lifecycleEventsDropDown.Name = "lifecycleEventsDropDown";
-            this.lifecycleEventsDropDown.Size = new System.Drawing.Size(96, 22);
-            this.lifecycleEventsDropDown.Text = "Event types";
-            // 
-            // includeLifecycleEventsButton
-            // 
-            this.includeLifecycleEventsButton.CheckOnClick = true;
-            this.includeLifecycleEventsButton.Name = "includeLifecycleEventsButton";
-            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(175, 22);
-            this.includeLifecycleEventsButton.Text = "VM lifecycle events";
-            // 
-            // includeSystemEventsButton
-            // 
-            this.includeSystemEventsButton.CheckOnClick = true;
-            this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(175, 22);
-            this.includeSystemEventsButton.Text = "VM system events";
-            // 
-            // includeAccessEventsButton
-            // 
-            this.includeAccessEventsButton.CheckOnClick = true;
-            this.includeAccessEventsButton.Name = "includeAccessEventsButton";
-            this.includeAccessEventsButton.Size = new System.Drawing.Size(175, 22);
-            this.includeAccessEventsButton.Text = "VM access events";
             // 
             // timeFrameComboBox
             // 
@@ -173,16 +129,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // openLogsButton
-            // 
-            this.openLogsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.openLogsButton.Image = ((System.Drawing.Image)(resources.GetObject("openLogsButton.Image")));
-            this.openLogsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.openLogsButton.Name = "openLogsButton";
-            this.openLogsButton.Size = new System.Drawing.Size(23, 22);
-            this.openLogsButton.Text = "Open logs in Cloud Console";
-            this.openLogsButton.Click += new System.EventHandler(this.openLogsButton_Click);
             // 
             // list
             // 
@@ -250,6 +196,59 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             // 
             this.accessLevelsColumn.Text = "Access levels";
             this.accessLevelsColumn.Width = 25;
+            // 
+            // refreshButton
+            // 
+            this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.refreshButton.Enabled = false;
+            this.refreshButton.Image = global::Google.Solutions.IapDesktop.Extensions.Management.Properties.Resources.Refresh_16;
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(23, 22);
+            this.refreshButton.Text = "Refresh";
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            // 
+            // lifecycleEventsDropDown
+            // 
+            this.lifecycleEventsDropDown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.includeLifecycleEventsButton,
+            this.includeSystemEventsButton,
+            this.includeAccessEventsButton});
+            this.lifecycleEventsDropDown.Image = ((System.Drawing.Image)(resources.GetObject("lifecycleEventsDropDown.Image")));
+            this.lifecycleEventsDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.lifecycleEventsDropDown.Name = "lifecycleEventsDropDown";
+            this.lifecycleEventsDropDown.Size = new System.Drawing.Size(96, 22);
+            this.lifecycleEventsDropDown.Text = "Event types";
+            // 
+            // includeLifecycleEventsButton
+            // 
+            this.includeLifecycleEventsButton.CheckOnClick = true;
+            this.includeLifecycleEventsButton.Name = "includeLifecycleEventsButton";
+            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(175, 22);
+            this.includeLifecycleEventsButton.Text = "VM lifecycle events";
+            // 
+            // includeSystemEventsButton
+            // 
+            this.includeSystemEventsButton.CheckOnClick = true;
+            this.includeSystemEventsButton.Name = "includeSystemEventsButton";
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(175, 22);
+            this.includeSystemEventsButton.Text = "VM system events";
+            // 
+            // includeAccessEventsButton
+            // 
+            this.includeAccessEventsButton.CheckOnClick = true;
+            this.includeAccessEventsButton.Name = "includeAccessEventsButton";
+            this.includeAccessEventsButton.Size = new System.Drawing.Size(175, 22);
+            this.includeAccessEventsButton.Text = "VM access events";
+            // 
+            // openLogsButton
+            // 
+            this.openLogsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.openLogsButton.Image = ((System.Drawing.Image)(resources.GetObject("openLogsButton.Image")));
+            this.openLogsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.openLogsButton.Name = "openLogsButton";
+            this.openLogsButton.Size = new System.Drawing.Size(23, 22);
+            this.openLogsButton.Text = "Open logs in Cloud Console";
+            this.openLogsButton.Click += new System.EventHandler(this.openLogsButton_Click);
             // 
             // EventLogWindow
             // 

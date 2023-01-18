@@ -145,6 +145,9 @@
   <data name="Pause_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pause_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Refresh_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Refresh_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Report_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Report_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

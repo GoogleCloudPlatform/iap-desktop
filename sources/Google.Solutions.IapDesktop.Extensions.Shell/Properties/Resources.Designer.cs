@@ -113,6 +113,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Delete_16 {
+            get {
+                object obj = ResourceManager.GetObject("Delete_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DeleteKey_16 {
+            get {
+                object obj = ResourceManager.GetObject("DeleteKey_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Disconnect_16 {
             get {
                 object obj = ResourceManager.GetObject("Disconnect_16", resourceCulture);
@@ -166,6 +186,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         internal static System.Drawing.Bitmap Key_32 {
             get {
                 object obj = ResourceManager.GetObject("Key_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Refresh_16 {
+            get {
+                object obj = ResourceManager.GetObject("Refresh_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
