@@ -113,6 +113,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Disconnected_32 {
+            get {
+                object obj = ResourceManager.GetObject("Disconnected_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DownloadFile_16 {
             get {
                 object obj = ResourceManager.GetObject("DownloadFile_16", resourceCulture);

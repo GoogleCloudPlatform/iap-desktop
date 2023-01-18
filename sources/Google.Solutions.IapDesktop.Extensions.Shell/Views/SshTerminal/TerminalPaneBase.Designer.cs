@@ -68,38 +68,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.reconnectPanel.Controls.Add(this.timeoutIcon);
             this.reconnectPanel.Location = new System.Drawing.Point(141, 261);
             this.reconnectPanel.Name = "reconnectPanel";
-            this.reconnectPanel.Size = new System.Drawing.Size(207, 100);
+            this.reconnectPanel.Size = new System.Drawing.Size(200, 100);
             this.reconnectPanel.TabIndex = 8;
             this.reconnectPanel.Visible = false;
             // 
             // reconnectLabel
             // 
             this.reconnectLabel.AutoSize = true;
-            this.reconnectLabel.Location = new System.Drawing.Point(37, 56);
+            this.reconnectLabel.Location = new System.Drawing.Point(23, 56);
             this.reconnectLabel.Name = "reconnectLabel";
-            this.reconnectLabel.Size = new System.Drawing.Size(195, 40);
+            this.reconnectLabel.Size = new System.Drawing.Size(153, 26);
             this.reconnectLabel.TabIndex = 8;
-            this.reconnectLabel.Text = "SSH connection timed out\r\nor has been disconnected";
+            this.reconnectLabel.Text = "The SSH connection timed out\r\nor has been disconnected";
             this.reconnectLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // reconnectButton
             // 
             this.reconnectButton.AutoSize = true;
-            this.reconnectButton.Location = new System.Drawing.Point(71, 85);
+            this.reconnectButton.Location = new System.Drawing.Point(70, 85);
             this.reconnectButton.Name = "reconnectButton";
-            this.reconnectButton.Size = new System.Drawing.Size(87, 20);
+            this.reconnectButton.Size = new System.Drawing.Size(60, 13);
             this.reconnectButton.TabIndex = 7;
             this.reconnectButton.TabStop = true;
             this.reconnectButton.Text = "Reconnect";
+            this.reconnectButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.reconnectButton.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnReconnectLinkClicked);
             // 
             // timeoutIcon
             // 
             this.timeoutIcon.BackColor = System.Drawing.Color.Transparent;
-            this.timeoutIcon.Image = ((System.Drawing.Image)(resources.GetObject("timeoutIcon.Image")));
-            this.timeoutIcon.Location = new System.Drawing.Point(77, 3);
+            this.timeoutIcon.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.Disconnected_32;
+            this.timeoutIcon.Location = new System.Drawing.Point(86, 21);
             this.timeoutIcon.Name = "timeoutIcon";
-            this.timeoutIcon.Size = new System.Drawing.Size(51, 48);
+            this.timeoutIcon.Size = new System.Drawing.Size(32, 32);
             this.timeoutIcon.TabIndex = 5;
             this.timeoutIcon.TabStop = false;
             // 
@@ -116,6 +117,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             // terminal
             // 
             this.terminal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.terminal.EnableCtrlA = false;
+            this.terminal.EnableCtrlC = true;
+            this.terminal.EnableCtrlHomeEnd = true;
+            this.terminal.EnableCtrlInsert = true;
+            this.terminal.EnableCtrlLeftRight = true;
+            this.terminal.EnableCtrlUpDown = true;
+            this.terminal.EnableCtrlV = true;
+            this.terminal.EnableShiftInsert = true;
+            this.terminal.EnableShiftLeftRight = true;
+            this.terminal.EnableShiftUpDown = true;
+            this.terminal.EnableTypographicQuoteConversionOnPaste = true;
             this.terminal.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.terminal.Location = new System.Drawing.Point(0, 0);
             this.terminal.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -124,16 +136,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.terminal.TabIndex = 0;
             this.terminal.WindowTitle = null;
             // 
-            // SshTerminalPane
+            // TerminalPaneBase
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.spinner);
             this.Controls.Add(this.reconnectPanel);
             this.Controls.Add(this.terminal);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "SshTerminalPane";
+            this.Name = "TerminalPaneBase";
             this.Text = "TerminalPaneBase";
             this.Layout += new System.Windows.Forms.LayoutEventHandler(this.OnLayout);
             this.reconnectPanel.ResumeLayout(false);
