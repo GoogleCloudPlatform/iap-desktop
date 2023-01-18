@@ -383,6 +383,9 @@
   <ItemGroup>
     <None Include="Resources\Disconnected_32.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Duplicate.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)

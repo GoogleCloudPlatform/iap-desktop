@@ -451,7 +451,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                         sshSession => sshSession.IsConnected),
                     session => DuplicateSessionAsync((ISshTerminalSession)session))
                 {
-                    Image = Resources.Copy_16x,
+                    Image = Resources.Duplicate,
                     ActivityText = "Duplicating session"
                 });
             this.sessionCommands.AddCommand(
