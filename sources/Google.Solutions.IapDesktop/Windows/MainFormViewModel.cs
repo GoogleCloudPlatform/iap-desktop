@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Windows
 {
     internal class MainFormViewModel : ViewModelBase
     {
-        private readonly ITheme themeService;
+        private readonly IThemeService themeService;
         private readonly AuthSettingsRepository authSettings;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly Install install;
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Windows
             Profile profile,
             ApplicationSettingsRepository applicationSettings,
             AuthSettingsRepository authSettings,
-            ITheme themeService)
+            IThemeService themeService)
         {
             this.View = view;
             this.themeService = themeService;

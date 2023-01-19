@@ -269,7 +269,7 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddSingleton<IResourceManagerAdapter, ResourceManagerAdapter>();
                 baseLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
 
-                baseLayer.AddSingleton<ITheme, Theme>();
+                baseLayer.AddSingleton<IThemeService, ThemeService>();
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),

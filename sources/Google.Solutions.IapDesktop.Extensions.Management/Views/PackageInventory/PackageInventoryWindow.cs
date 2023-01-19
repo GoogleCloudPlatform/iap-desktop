@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             InitializeComponent();
 
             serviceProvider
-                .GetService<ITheme>()
+                .GetService<IThemeService>()
                 .ToolWindowTheme
                 .ApplyTheme(this.packageList);
 

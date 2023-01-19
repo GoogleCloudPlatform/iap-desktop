@@ -48,11 +48,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
     public class DownloadFileDialog : IDownloadFileDialog
     {
         private readonly IExceptionDialog exceptionDialog;
-        private readonly ITheme theme;
+        private readonly IThemeService theme;
 
         public DownloadFileDialog(
             IExceptionDialog exceptionDialog,
-            ITheme theme)
+            IThemeService theme)
         {
             this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
             this.theme = theme.ThrowIfNull(nameof(theme));

@@ -54,11 +54,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
     public class ProjectPickerDialog : IProjectPickerDialog
     {
         private readonly IExceptionDialog exceptionDialog;
-        private readonly ITheme theme;
+        private readonly IThemeService theme;
 
         public ProjectPickerDialog(
             IExceptionDialog exceptionDialog,
-            ITheme theme)
+            IThemeService theme)
         {
             this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
             this.theme = theme.ThrowIfNull(nameof(theme));

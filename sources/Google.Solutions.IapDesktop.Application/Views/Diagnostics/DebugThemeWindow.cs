@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             InitializeComponent();
 
             var palette = serviceProvider
-                .GetService<ITheme>()
+                .GetService<IThemeService>()
                 .DockPanelTheme
                 .ColorPalette;
 

@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             InitializeComponent();
 
             serviceProvider
-                .GetService<ITheme>()
+                .GetService<IThemeService>()
                 .ToolWindowTheme
                 .ApplyTheme(this.toolStrip);
 

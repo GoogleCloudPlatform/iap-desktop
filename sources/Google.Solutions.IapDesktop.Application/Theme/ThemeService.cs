@@ -31,7 +31,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    public interface ITheme // TODO: Rename back to ThemeService
+    public interface IThemeService
     {
         IControlTheme DialogTheme { get; }
         IControlTheme ToolWindowTheme { get; }
@@ -39,9 +39,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         ThemeBase DockPanelTheme { get; }
     }
 
-    public class Theme : ITheme
+    public class ThemeService : IThemeService
     {
-        public Theme()
+        public ThemeService()
         {
             this.DockPanelTheme = new VS2015LightTheme();
             this.DockPanelTheme.Extender.FloatWindowFactory = new FloatWindowFactory();

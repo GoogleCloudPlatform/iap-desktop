@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             this.HideOnClose = true;
 
-            var themeService = serviceProvider.GetService<ITheme>();
+            var themeService = serviceProvider.GetService<IThemeService>();
             themeService.ToolWindowTheme.ApplyTheme(this.toolStrip);
             themeService.ToolWindowTheme.ApplyTheme(this.treeView);
 

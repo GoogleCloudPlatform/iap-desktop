@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private readonly MainFormViewModel viewModel;
 
-        private readonly ITheme themeService;
+        private readonly IThemeService themeService;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly IServiceProvider serviceProvider;
         private IIapUrlHandler urlHandler;
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.serviceProvider = serviceProvider;
 
-            this.themeService = this.serviceProvider.GetService<ITheme>();
+            this.themeService = this.serviceProvider.GetService<IThemeService>();
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
 
             // 

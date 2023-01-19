@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
         {
             InitializeComponent();
 
-            var theme = serviceProvider.GetService<ITheme>();
+            var theme = serviceProvider.GetService<IThemeService>();
             theme.ToolWindowTheme.ApplyTheme(this.toolStrip);
             theme.ToolWindowTheme.ApplyTheme(this.list);
 

@@ -49,9 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 
             this.TabText = this.Text;
 
-            var theme = serviceProvider.GetService<ITheme>();
-            theme.ToolWindowTheme.ApplyTheme(this.toolStrip);
-            theme.ToolWindowTheme.ApplyTheme(this.tunnelsList);
+            var themeService = serviceProvider.GetService<IThemeService>();
+            themeService.ToolWindowTheme.ApplyTheme(this.toolStrip);
+            themeService.ToolWindowTheme.ApplyTheme(this.tunnelsList);
 
             //
             // This window is a singleton, so we never want it to be closed,

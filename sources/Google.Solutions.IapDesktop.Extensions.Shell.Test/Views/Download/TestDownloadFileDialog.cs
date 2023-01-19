@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
             var exceptionDialog = new Mock<IExceptionDialog>();
             var dialog = new DownloadFileDialog(
                 exceptionDialog.Object,
-                new Mock<ITheme>().Object);
+                new Mock<IThemeService>().Object);
             dialog.SelectDownloadFiles(
                 null,
                 "Test",
