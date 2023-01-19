@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             get => this.IsLoggingEnabled
                 ? Color.Red
-                : this.themeService.ColorPalette.ToolWindowCaptionActive.Background;
+                : this.themeService.DockPanelTheme.ColorPalette.ToolWindowCaptionActive.Background;
         }
 
         public string StatusText

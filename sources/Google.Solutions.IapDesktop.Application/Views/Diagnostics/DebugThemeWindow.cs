@@ -44,6 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
             var palette = serviceProvider
                 .GetService<ITheme>()
+                .DockPanelTheme
                 .ColorPalette;
 
             this.propertyGrid.SelectedObject = new ColorPaletteInspector(palette);

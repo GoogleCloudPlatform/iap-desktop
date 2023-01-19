@@ -44,7 +44,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             out DirectoryInfo targetDirectory);
     }
 
-
     [Service(typeof(IDownloadFileDialog))]
     public class DownloadFileDialog : IDownloadFileDialog
     {
@@ -71,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
 
             using (var form = new DownloadFileWindow(fileSystem, this.exceptionDialog)
             {
-                Theme = this.theme,
+                Theme = this.theme.DialogTheme,
                 Text = caption
             })
             {

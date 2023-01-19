@@ -49,8 +49,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             InitializeComponent();
 
             var theme = serviceProvider.GetService<ITheme>();
-            theme.ApplyTheme(this.toolStrip);
-            theme.ApplyTheme(this.list);
+            theme.ToolWindowTheme.ApplyTheme(this.toolStrip);
+            theme.ToolWindowTheme.ApplyTheme(this.list);
 
             this.viewModel = new EventLogViewModel(this, serviceProvider);
 

@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 
             using (var window = new ProjectPickerWindow(model, this.exceptionDialog)
             {
-                Theme = this.theme
+                Theme = this.theme.DialogTheme
             })
             {
                 return SelectProjects(owner, window, caption, out selectedProjects);
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 
             using (var window = new ProjectPickerWindow(model, this.exceptionDialog)
             {
-                Theme = this.theme
+                Theme = this.theme.DialogTheme
             })
             {
                 return SelectProjects(owner, window, caption, out selectedProjects);

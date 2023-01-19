@@ -31,101 +31,40 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    public interface ITheme : IControlTheme
+    public interface ITheme // TODO: Rename back to ThemeService
     {
-        void ApplyTheme(DockPanel dockPanel);
-        void ApplyTheme(IThemedControl control);
-        DockPanelColorPalette ColorPalette { get; }
+        IControlTheme DialogTheme { get; }
+        IControlTheme ToolWindowTheme { get; }
+        IControlTheme MainWindowTheme { get; }
+        ThemeBase DockPanelTheme { get; }
     }
 
     public class Theme : ITheme
     {
-        private readonly ThemeBase theme;
-
         public Theme()
         {
-            this.theme = new VS2015LightTheme();
-            this.theme.Extender.FloatWindowFactory = new FloatWindowFactory();
-            this.theme.Extender.DockPaneFactory =
-                new DockPaneFactory(this.theme.Extender.DockPaneFactory);
+            this.DockPanelTheme = new VS2015LightTheme();
+            this.DockPanelTheme.Extender.FloatWindowFactory = new FloatWindowFactory();
+            this.DockPanelTheme.Extender.DockPaneFactory =
+                new DockPaneFactory(this.DockPanelTheme.Extender.DockPaneFactory);
+
+            this.DialogTheme = new ControlTheme();
+            this.ToolWindowTheme = new ToolWindowTheme(this.DockPanelTheme);
+            this.MainWindowTheme = this.ToolWindowTheme;
         }
 
         //---------------------------------------------------------------------
-        // IThemeService.
+        // ITheme.
         //---------------------------------------------------------------------
 
-        public DockPanelColorPalette ColorPalette => this.theme.ColorPalette;
-
-        public void ApplyTheme(DockPanel dockPanel)
-        {
-            dockPanel.Theme = this.theme;
-        }
-
-        public void ApplyTheme(ToolStrip toolStrip)
-        {
-            this.theme.ApplyTo(toolStrip);
-        }
-
-        public void ApplyTheme(TreeView treeView)
-        {
-            //
-            // Apply post-Vista Explorer theme.
-            //
-            treeView.BackColor = OverrideSystemColors.ControlLightLight;
-            treeView.HotTracking = true;
-
-            treeView.HandleCreated += (_, __) =>
-            {
-                NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
-            };
-        }
-
-        public void ApplyTheme(ListView listView)
-        {
-            //
-            // Apply post-Vista Explorer theme.
-            //
-            listView.BackColor = OverrideSystemColors.ControlLightLight;
-            listView.HotTracking = false;
-
-            listView.HandleCreated += (_, __) =>
-            {
-                NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
-            };
-        }
-
-        public void ApplyTheme(IThemedControl control)
-        {
-            control.Theme = this;
-        }
-
-        //---------------------------------------------------------------------
-        // Colors.
-        //---------------------------------------------------------------------
-
-        private static class OverrideSystemColors
-        {
-            public static Color ControlLightLight = Color.FromArgb(255, 245, 245, 245);
-        }
+        public ThemeBase DockPanelTheme { get; }
+        public IControlTheme DialogTheme { get; }
+        public IControlTheme ToolWindowTheme { get; }
+        public IControlTheme MainWindowTheme { get; }
 
         //---------------------------------------------------------------------
         // DockPaneFactory.
         //---------------------------------------------------------------------
-
-        private static class NativeMethods
-        {
-            internal const int HTREDUCE = 8;
-            internal const int SC_MINIMIZE = 0xF020;
-
-            [DllImport("user32.dll")]
-            internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-
-            [DllImport("uxtheme", ExactSpelling = true, CharSet = CharSet.Unicode)]
-            public static extern int SetWindowTheme(
-                IntPtr hWnd,
-                string textSubAppName, 
-                string textSubIdList);
-        }
 
         private class MinimizableFloatWindow : FloatWindow
         {
@@ -296,6 +235,20 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     return this.factory.CreateDockPane(content, floatWindowBounds, show);
                 }
             }
+        }
+
+
+        //---------------------------------------------------------------------
+        // P/Invoke.
+        //---------------------------------------------------------------------
+
+        private static class NativeMethods
+        {
+            internal const int HTREDUCE = 8;
+            internal const int SC_MINIMIZE = 0xF020;
+
+            [DllImport("user32.dll")]
+            internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
         }
     }
 }

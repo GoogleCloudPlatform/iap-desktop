@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
 
             serviceProvider
                 .GetService<ITheme>()
+                .ToolWindowTheme
                 .ApplyTheme(this.packageList);
 
             this.viewModel = new PackageInventoryViewModel(
