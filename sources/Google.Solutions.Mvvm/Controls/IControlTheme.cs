@@ -28,10 +28,11 @@ namespace Google.Solutions.Mvvm.Controls
     /// </summary>
     public interface IControlTheme
     {
-        void ApplyTheme(TreeView treeView);
-        void ApplyTheme(ListView listView);
-        void ApplyTheme(IThemedControl control);
-        void ApplyTheme(ToolStrip toolStrip);
+        void ApplyTo(TreeView treeView);
+        void ApplyTo(ListView listView);
+        void ApplyTo(IThemedControl control);
+        void ApplyTo(ToolStrip toolStrip);
+        void ApplyTo(PropertyGrid grid);
     }
 
     /// <summary>

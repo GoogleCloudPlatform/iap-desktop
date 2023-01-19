@@ -126,8 +126,8 @@ namespace Google.Solutions.Mvvm.Controls
             set
             {
                 value.ThrowIfNull(nameof(value));
-                value.ApplyTheme(this.directoryTree);
-                value.ApplyTheme(this.fileList);
+                value.ApplyTo(this.directoryTree);
+                value.ApplyTo(this.fileList);
 
                 this.theme = value;
             }

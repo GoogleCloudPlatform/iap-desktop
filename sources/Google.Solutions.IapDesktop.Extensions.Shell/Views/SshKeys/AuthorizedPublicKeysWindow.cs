@@ -50,8 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             InitializeComponent();
 
             var themeService = serviceProvider.GetService<IThemeService>();
-            themeService.ToolWindowTheme.ApplyTheme(this.toolStrip);
-            themeService.ToolWindowTheme.ApplyTheme(this.keysList);
+            themeService.ToolWindowTheme.ApplyTo(this.toolStrip);
+            themeService.ToolWindowTheme.ApplyTo(this.keysList);
 
             this.viewModel = new AuthorizedPublicKeysViewModel(serviceProvider)
             {

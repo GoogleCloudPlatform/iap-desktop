@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             serviceProvider
                 .GetService<IThemeService>()
                 .ToolWindowTheme
-                .ApplyTheme(this.toolStrip);
+                .ApplyTo(this.toolStrip);
 
             this.viewModel = new SerialOutputViewModel(serviceProvider, serialPortNumber);
 

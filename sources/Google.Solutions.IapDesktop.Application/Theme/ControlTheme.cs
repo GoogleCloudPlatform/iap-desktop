@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     {
         public Color ControlLightLight { get; set; } = SystemColors.ControlLightLight;
 
-        public void ApplyTheme(TreeView treeView)
+        public void ApplyTo(TreeView treeView)
         {
             //
             // Apply post-Vista Explorer theme.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             };
         }
 
-        public void ApplyTheme(ListView listView)
+        public void ApplyTo(ListView listView)
         {
             //
             // Apply post-Vista Explorer theme.
@@ -63,12 +63,18 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             };
         }
 
-        public void ApplyTheme(IThemedControl control)
+        public void ApplyTo(IThemedControl control)
         {
             control.Theme = this;
         }
 
-        public virtual void ApplyTheme(ToolStrip toolStrip)
+        public void ApplyTo(PropertyGrid grid)
+        {
+            grid.ViewBackColor = this.ControlLightLight;
+            grid.LineColor = SystemColors.Control;
+        }
+
+        public virtual void ApplyTo(ToolStrip toolStrip)
         { }
 
         //---------------------------------------------------------------------
@@ -87,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
     public class ToolWindowTheme : ControlTheme
     {
-        private ThemeBase dockPanelTheme;
+        private readonly ThemeBase dockPanelTheme;
 
         public ToolWindowTheme(ThemeBase dockPanelTheme)
         {
@@ -99,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             this.ControlLightLight = Color.FromArgb(255, 245, 245, 245);
         }
 
-        public override void ApplyTheme(ToolStrip toolStrip)
+        public override void ApplyTo(ToolStrip toolStrip)
         {
             this.dockPanelTheme.ApplyTo(toolStrip);
         }

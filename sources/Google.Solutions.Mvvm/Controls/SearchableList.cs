@@ -53,7 +53,7 @@ namespace Google.Solutions.Mvvm.Controls
             set
             {
                 value.ThrowIfNull(nameof(value));
-                value.ApplyTheme(this.list);
+                value.ApplyTo(this.list);
 
                 this.theme = value;
             }

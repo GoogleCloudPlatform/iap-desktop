@@ -31,11 +31,29 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
+    /// <summary>
+    /// Applies themes to controls and dialogs.
+    /// </summary>
     public interface IThemeService
     {
+        /// <summary>
+        /// Theme for dialogs and other secondary windows.
+        /// </summary>
         IControlTheme DialogTheme { get; }
+
+        /// <summary>
+        /// Theme for tool windows, docked or undocked.
+        /// </summary>
         IControlTheme ToolWindowTheme { get; }
+
+        /// <summary>
+        /// Theme for the main window.
+        /// </summary>
         IControlTheme MainWindowTheme { get; }
+
+        /// <summary>
+        /// Theme for the docking suite.
+        /// </summary>
         ThemeBase DockPanelTheme { get; }
     }
 
