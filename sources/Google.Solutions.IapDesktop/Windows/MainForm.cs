@@ -114,9 +114,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             SuspendLayout();
 
-            this.dockPanel.Theme = this.themeService.DockPanelTheme;
-            this.themeService.MainWindowTheme.ApplyTo(this.mainMenu);
-            this.themeService.MainWindowTheme.ApplyTo(this.statusStrip);
+            this.themeService.MainWindowTheme.ApplyTo(this);
 
             ResumeLayout();
 

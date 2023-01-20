@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// </summary>
     public class ToolWindowTheme : ControlTheme
     {
-        private readonly ThemeBase dockPanelTheme;
+        protected readonly ThemeBase dockPanelTheme;
 
         public ToolWindowTheme(ThemeBase dockPanelTheme)
         {
@@ -157,6 +157,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             if (control is FlyoutWindow flyout)
             {
                 flyout.BorderColor = Color.FromArgb(0, 122, 204);
+            }
+            else if (control is DockPanel dockPanel)
+            {
+                dockPanel.Theme = this.dockPanelTheme;
             }
             else
             {
