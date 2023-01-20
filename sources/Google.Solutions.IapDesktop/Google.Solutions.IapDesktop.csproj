@@ -142,12 +142,12 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\MainFormViewModel.cs" />
+    <Compile Include="Interop\TaskBarList.cs" />
     <Compile Include="Windows\Resources.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Interop\TaskBarList.cs" />
     <Compile Include="Windows\ToolStripExtensions.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -170,8 +170,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />
@@ -242,6 +242,9 @@
     <Content Include="icon.ico" />
     <Content Include="logo.ico" />
     <Content Include="ProductIcon.ico" />
+    <None Include="Resources\EndpointVerificationWhite_16.png" />
+    <None Include="Resources\UserWhite_16.png" />
+    <None Include="Resources\AddUser_16.png" />
     <None Include="Resources\ConsentScreen.png" />
     <None Include="Resources\NewProfile_16.png" />
     <None Include="Resources\Documentation_16.png" />

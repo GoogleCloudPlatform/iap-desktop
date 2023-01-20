@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // windowsInstancesToolStripMenuItem
             // 
             this.windowsInstancesToolStripMenuItem.CheckOnClick = true;
-            this.windowsInstancesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Computer_16;
+            this.windowsInstancesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("windowsInstancesToolStripMenuItem.Image")));
             this.windowsInstancesToolStripMenuItem.Name = "windowsInstancesToolStripMenuItem";
             this.windowsInstancesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.windowsInstancesToolStripMenuItem.Text = "Windows instances";
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // linuxInstancesToolStripMenuItem
             // 
             this.linuxInstancesToolStripMenuItem.CheckOnClick = true;
-            this.linuxInstancesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.ComputerTerminal_161;
+            this.linuxInstancesToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("linuxInstancesToolStripMenuItem.Image")));
             this.linuxInstancesToolStripMenuItem.Name = "linuxInstancesToolStripMenuItem";
             this.linuxInstancesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.linuxInstancesToolStripMenuItem.Text = "Linux instances";
@@ -154,16 +154,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // contextMenu
             // 
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(181, 26);
+            this.contextMenu.Size = new System.Drawing.Size(61, 4);
             // 
             // imageList
             // 
             this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
             this.imageList.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList.Images.SetKeyName(0, "Cloud.ico");
-            this.imageList.Images.SetKeyName(1, "Project.ico");
+            this.imageList.Images.SetKeyName(1, "Project_16.png");
             this.imageList.Images.SetKeyName(2, "Region.ico");
-            this.imageList.Images.SetKeyName(3, "Zone.ico");
+            this.imageList.Images.SetKeyName(3, "Zone_16.png");
             this.imageList.Images.SetKeyName(4, "Computer_16.png");
             this.imageList.Images.SetKeyName(5, "ComputerBlue_16.png");
             this.imageList.Images.SetKeyName(6, "ComputerStopped_16.png");

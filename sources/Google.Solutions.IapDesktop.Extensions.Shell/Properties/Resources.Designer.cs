@@ -63,6 +63,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AddCredentials_16 {
+            get {
+                object obj = ResourceManager.GetObject("AddCredentials_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AuthorizedKey_16 {
+            get {
+                object obj = ResourceManager.GetObject("AuthorizedKey_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap BackgroundColor_16 {
             get {
                 object obj = ResourceManager.GetObject("BackgroundColor_16", resourceCulture);
@@ -93,9 +113,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Delete_16 {
+            get {
+                object obj = ResourceManager.GetObject("Delete_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DeleteKey_16 {
+            get {
+                object obj = ResourceManager.GetObject("DeleteKey_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Disconnect_16 {
             get {
                 object obj = ResourceManager.GetObject("Disconnect_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Disconnected_32 {
+            get {
+                object obj = ResourceManager.GetObject("Disconnected_32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +163,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Fullscreen_16 {
+        internal static System.Drawing.Bitmap Duplicate {
             get {
-                object obj = ResourceManager.GetObject("Fullscreen_16", resourceCulture);
+                object obj = ResourceManager.GetObject("Duplicate", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +173,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Key_16 {
+        internal static System.Drawing.Bitmap Fullscreen_16 {
             get {
-                object obj = ResourceManager.GetObject("Key_16", resourceCulture);
+                object obj = ResourceManager.GetObject("Fullscreen_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,9 +193,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Password_16 {
+        internal static System.Drawing.Bitmap Refresh_16 {
             get {
-                object obj = ResourceManager.GetObject("Password_16", resourceCulture);
+                object obj = ResourceManager.GetObject("Refresh_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

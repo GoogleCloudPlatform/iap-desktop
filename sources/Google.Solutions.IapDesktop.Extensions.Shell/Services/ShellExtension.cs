@@ -328,7 +328,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,
                     GenerateCredentialsAsync)
                 {
-                    Image = Resources.Password_16,
+                    Image = Resources.AddCredentials_16,
                     ActivityText = "Generating Windows logon credentials"
                 },
                 3);
@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     GetToolbarCommandStateWhenRunningWindowsInstanceRequired,
                     GenerateCredentialsAsync)
                 {
-                    Image = Resources.Password_16,
+                    Image = Resources.AddCredentials_16,
                     ActivityText = "Generating Windows logon credentials"
                 });
 
@@ -381,7 +381,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     node => AuthorizedPublicKeysViewModel.GetCommandState(node),
                     _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
                 {
-                    Image = Resources.Key_16
+                    Image = Resources.AuthorizedKey_16
                 },
                 11);
 
@@ -404,7 +404,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     _ => CommandState.Enabled,
                     _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
                 {
-                    Image = Resources.Key_16,
+                    Image = Resources.AuthorizedKey_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.K
                 });
 
@@ -451,7 +451,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                         sshSession => sshSession.IsConnected),
                     session => DuplicateSessionAsync((ISshTerminalSession)session))
                 {
-                    Image = Resources.Copy_16x,
+                    Image = Resources.Duplicate,
                     ActivityText = "Duplicating session"
                 });
             this.sessionCommands.AddCommand(

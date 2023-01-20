@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
@@ -113,9 +114,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             SuspendLayout();
 
-            this.themeService.ApplyTheme(this.dockPanel);
-            this.themeService.ApplyTheme(this.mainMenu);
-            this.themeService.ApplyTheme(this.statusStrip);
+            this.themeService.MainWindowTheme.ApplyTo(this);
 
             ResumeLayout();
 
@@ -919,12 +918,13 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.statusStrip.PointToScreen(button.Bounds.Location),
                 button.Size);
 
-            new DeviceFlyoutWindow(
-                    new DeviceFlyoutViewModel(this, this.Authorization.DeviceEnrollment))
-                .Show(
-                    this,
-                    screenPosition,
-                    ContentAlignment.TopLeft);
+            var window = new DeviceFlyoutWindow(
+                new DeviceFlyoutViewModel(
+                    this, 
+                    this.Authorization.DeviceEnrollment));
+
+            this.themeService.MainWindowTheme.ApplyTo(window);
+            window.Show(this, screenPosition, ContentAlignment.TopLeft);
         }
 
         private void addProfileToolStripMenuItem_Click(object sender, EventArgs _)
@@ -933,6 +933,8 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 using (var dialog = new NewProfileDialog())
                 {
+                    this.themeService.DialogTheme.ApplyTo(dialog);
+
                     var result = dialog.ShowDialog(this);
                     if (result.Result == DialogResult.OK)
                     {

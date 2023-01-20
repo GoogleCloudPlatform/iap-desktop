@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.Mvvm.Controls;
@@ -43,10 +44,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
     [SkipCodeCoverage("View code")]
     public partial class ShowCredentialsDialog : Form, IShowCredentialsDialog
     {
-        public ShowCredentialsDialog()
+        public ShowCredentialsDialog(IThemeService themeService)
         {
             InitializeComponent();
-            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
+
+            themeService.DialogTheme.ApplyTo(this);
         }
 
         private void ShowCredentialsDialog_Load(object sender, System.EventArgs e)

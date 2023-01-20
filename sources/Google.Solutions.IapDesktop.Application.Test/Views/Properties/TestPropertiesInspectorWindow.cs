@@ -21,11 +21,14 @@
 
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
+using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -96,12 +99,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
             }
         }
 
+        [SetUp]
+        public void SetUpServices()
+        {
+            this.ServiceRegistry.AddMock<IProjectExplorer>();
+            this.ServiceRegistry.AddMock<IThemeService>()
+                .SetupGet(t => t.ToolWindowTheme)
+                .Returns(new Mock<IControlTheme>().Object);
+        }
+
         [Test]
         public void WhenObjectIsPocoWithNoBrowsableProperties_ThenNoPropertiesShown()
         {
-            this.ServiceRegistry.AddMock<IProjectExplorer>();
             var viewModel = new ViewModel<PocoWithoutProperty>();
-
             var window = new PropertiesInspectorWindow(this.ServiceProvider, viewModel);
             viewModel.InspectedObject = new PocoWithoutProperty();
 
@@ -118,9 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         [Test]
         public void WhenObjectIsPocoWithBrowsableProperty_ThenPropertyIsShown()
         {
-            this.ServiceRegistry.AddMock<IProjectExplorer>();
             var viewModel = new ViewModel<PocoWithoutProperty>();
-
             var window = new PropertiesInspectorWindow(this.ServiceProvider, viewModel);
             viewModel.InspectedObject = new PocoWithProperty();
 
@@ -137,9 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         [Test]
         public void WhenObjectIsSettingsCollection_ThenSettingIsShown()
         {
-            this.ServiceRegistry.AddMock<IProjectExplorer>();
             var viewModel = new ViewModel<Settings>();
-
             var window = new PropertiesInspectorWindow(this.ServiceProvider, viewModel);
             viewModel.InspectedObject = new Settings();
 

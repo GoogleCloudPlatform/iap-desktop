@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Properties;
 using System;
@@ -39,6 +40,10 @@ namespace Google.Solutions.Mvvm.Controls
         {
             InitializeComponent();
         }
+
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         public bool SearchOnKeyDown { get; set; } = false;

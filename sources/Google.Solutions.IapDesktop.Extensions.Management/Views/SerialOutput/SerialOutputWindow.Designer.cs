@@ -49,10 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SerialOutputWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.enableTailButton = new System.Windows.Forms.ToolStripButton();
             this.output = new System.Windows.Forms.TextBox();
+            this.enableTailButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,15 +65,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             this.toolStrip.TabIndex = 0;
             this.toolStrip.Text = "toolStrip1";
             // 
-            // enableTailButton
-            // 
-            this.enableTailButton.CheckOnClick = true;
-            this.enableTailButton.Image = ((System.Drawing.Image)(resources.GetObject("enableTailButton.Image")));
-            this.enableTailButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.enableTailButton.Name = "enableTailButton";
-            this.enableTailButton.Size = new System.Drawing.Size(64, 22);
-            this.enableTailButton.Text = "Stream";
-            // 
             // output
             // 
             this.output.AcceptsReturn = true;
@@ -87,6 +77,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             this.output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.output.Size = new System.Drawing.Size(800, 425);
             this.output.TabIndex = 1;
+            // 
+            // enableTailButton
+            // 
+            this.enableTailButton.CheckOnClick = true;
+            this.enableTailButton.Image = global::Google.Solutions.IapDesktop.Extensions.Management.Properties.Resources.LogTail_16;
+            this.enableTailButton.Name = "enableTailButton";
+            this.enableTailButton.Size = new System.Drawing.Size(64, 22);
+            this.enableTailButton.Text = "Stream";
             // 
             // SerialOutputWindow
             // 

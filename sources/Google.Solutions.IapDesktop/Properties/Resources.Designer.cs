@@ -73,6 +73,16 @@ namespace Google.Solutions.IapDesktop.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AddUser_16 {
+            get {
+                object obj = ResourceManager.GetObject("AddUser_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ConsentScreen {
             get {
                 object obj = ResourceManager.GetObject("ConsentScreen", resourceCulture);
@@ -93,19 +103,9 @@ namespace Google.Solutions.IapDesktop.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap NewProfile_16 {
+        internal static System.Drawing.Bitmap EndpointVerificationWhite_16 {
             get {
-                object obj = ResourceManager.GetObject("NewProfile_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap project1 {
-            get {
-                object obj = ResourceManager.GetObject("project1", resourceCulture);
+                object obj = ResourceManager.GetObject("EndpointVerificationWhite_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -116,6 +116,16 @@ namespace Google.Solutions.IapDesktop.Properties {
         internal static System.Drawing.Bitmap Splash {
             get {
                 object obj = ResourceManager.GetObject("Splash", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap UserWhite_16 {
+            get {
+                object obj = ResourceManager.GetObject("UserWhite_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

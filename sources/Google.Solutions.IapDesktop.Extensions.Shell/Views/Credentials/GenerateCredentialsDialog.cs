@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Binding;
 using System.Windows.Forms;
@@ -41,9 +42,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         private readonly GenerateCredentialsViewModel viewModel
             = new GenerateCredentialsViewModel();
 
-        public GenerateCredentialsDialog()
+        public GenerateCredentialsDialog(IThemeService themeService)
         {
             InitializeComponent();
+
+            themeService.DialogTheme.ApplyTo(this);
 
             this.usernameText.BindProperty(
                 c => c.Text,
@@ -62,8 +65,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 this.viewModel,
                 m => m.IsOkButtonEnabled,
                 this.components);
-
-            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
         }
 
         private void usernameText_KeyPress(object sender, KeyPressEventArgs e)

@@ -20,8 +20,10 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
@@ -51,6 +53,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.viewModel = viewModel;
 
             InitializeComponent();
+
+            serviceProvider.GetService<IThemeService>().ToolWindowTheme.ApplyTo(this.propertyGrid);
 
             this.propertyGrid.EnableRichTextDescriptions();
 

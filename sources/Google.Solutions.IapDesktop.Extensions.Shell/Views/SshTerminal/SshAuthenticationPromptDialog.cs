@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             viewModel.View = this;
 
-            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
+            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue; // TODO: Apply theme
 
             this.BindProperty(
                 c => c.Text,

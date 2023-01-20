@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.Mvvm.Binding;
@@ -80,9 +81,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             this.HideOnClose = true;
 
-            serviceProvider
-                .GetService<IThemeService>()
-                .ApplyTheme(this.toolStrip);
+            var themeService = serviceProvider.GetService<IThemeService>();
+            themeService.ToolWindowTheme.ApplyTo(this.toolStrip);
+            themeService.ToolWindowTheme.ApplyTo(this.treeView);
 
             this.mainForm = serviceProvider.GetService<IMainForm>();
             this.jobService = serviceProvider.GetService<IJobService>();
@@ -216,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         : CommandState.Unavailable,
                     _ => this.viewModel.RefreshSelectedNodeAsync())
                 {
-                    Image = Resources.Refresh_161,
+                    Image = Resources.Refresh_16,
                     ActivityText = "Refreshing project"
                 });
             this.contextMenuCommands.AddCommand(
@@ -227,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         : CommandState.Unavailable,
                     _ => this.viewModel.RefreshAsync(false))
                 {
-                    Image = Resources.Refresh_161,
+                    Image = Resources.Refresh_16,
                     ActivityText = "Refreshing project"
                 });
             this.contextMenuCommands.AddCommand(
@@ -290,7 +291,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         this,
                         "Add projects",
                         this.resourceManagerAdapter.GetInstance(),
-                        this.exceptionDialog,
                         out var projects) == DialogResult.OK)
                 {
                     await this.viewModel
@@ -324,7 +324,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this,
                 "Unload projects",
                 this.viewModel.Projects,
-                this.exceptionDialog,
                 out var projects) == DialogResult.OK)
             {
                 await this.viewModel

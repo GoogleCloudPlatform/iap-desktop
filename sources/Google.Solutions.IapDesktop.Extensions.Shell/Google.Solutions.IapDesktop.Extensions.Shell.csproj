@@ -339,25 +339,10 @@
     <None Include="Resources\Copy_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Password_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Connect_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Tunnel_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Spinner.gif" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Fullscreen_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Disconnect_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Settings_16.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Key_36.png" />
@@ -375,7 +360,43 @@
     <None Include="Resources\BackgroundColor_16.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Connect_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Password_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Tunnel_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AuthorizedKey_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Disconnect_16.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\DownloadFile_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Disconnected_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Duplicate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AddCredentials_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DeleteKey_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

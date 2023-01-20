@@ -52,8 +52,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                 this.viewModel,
                 m => m.IsOkButtonEnabled,
                 this.components);
-
-            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
         }
 
         public new NewProfileDialogResult ShowDialog(

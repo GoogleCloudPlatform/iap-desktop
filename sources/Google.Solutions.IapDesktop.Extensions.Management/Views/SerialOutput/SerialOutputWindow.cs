@@ -21,8 +21,8 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
 using System;
@@ -49,7 +49,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 
             serviceProvider
                 .GetService<IThemeService>()
-                .ApplyTheme(this.toolStrip);
+                .ToolWindowTheme
+                .ApplyTo(this.toolStrip);
 
             this.viewModel = new SerialOutputViewModel(serviceProvider, serialPortNumber);
 
@@ -110,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
-            Debug.Assert(!InvokeRequired, "running on UI thread");
+            Debug.Assert(!this.InvokeRequired, "running on UI thread");
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }

@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Interop;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Mvvm.Binding;
@@ -112,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             get => this.IsLoggingEnabled
                 ? Color.Red
-                : this.themeService.ColorPalette.ToolWindowCaptionActive.Background;
+                : this.themeService.DockPanelTheme.ColorPalette.ToolWindowCaptionActive.Background;
         }
 
         public string StatusText

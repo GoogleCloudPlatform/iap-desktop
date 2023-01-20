@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -103,6 +104,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             string newComputerName;
             using (var dialog = new JoinDialog())
             {
+                this.serviceProvider
+                    .GetService<IThemeService>()
+                    .DialogTheme
+                    .ApplyTo(dialog);
+
                 //
                 // Prompt for domain name, computer name.
                 //
@@ -330,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     PackageInventoryViewModel.GetCommandState,
                     context => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
                 {
-                    Image = Resources.Package_16
+                    Image = Resources.PackageInspect_16
                 });
             osCommand.AddCommand(
                 new Command<IProjectModelNode>(
@@ -416,7 +422,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     _ => CommandState.Enabled,
                     _ => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
                 {
-                    Image = Resources.Package_16,
+                    Image = Resources.PackageInspect_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
                 });
             mainForm.ViewMenu.AddCommand(

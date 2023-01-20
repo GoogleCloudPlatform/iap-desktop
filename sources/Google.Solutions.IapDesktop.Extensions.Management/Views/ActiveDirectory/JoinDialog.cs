@@ -33,8 +33,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirector
         {
             InitializeComponent();
 
-            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
-
             this.viewModel = new JoinViewModel();
             this.domainText.BindProperty(
                 c => c.Text,

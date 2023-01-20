@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
     partial class ShowCredentialsDialog
@@ -58,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.usernameText = new System.Windows.Forms.TextBox();
             this.statusIcon = new System.Windows.Forms.PictureBox();
             this.savePwdNote = new System.Windows.Forms.Label();
-            this.headlineLabel = new System.Windows.Forms.Label();
+            this.headlineLabel = new HeaderLabel();
             this.groupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.statusIcon)).BeginInit();
             this.SuspendLayout();
@@ -202,6 +204,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         private System.Windows.Forms.TextBox usernameText;
         private System.Windows.Forms.PictureBox statusIcon;
         private System.Windows.Forms.Label savePwdNote;
-        private System.Windows.Forms.Label headlineLabel;
+        private HeaderLabel headlineLabel;
     }
 }

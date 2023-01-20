@@ -19,7 +19,9 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Controls;
 using System.Collections.Generic;
@@ -38,37 +40,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             IWin32Window owner,
             string caption,
             FileBrowser.IFileSystem fileSystem,
-            IExceptionDialog exceptionDialog,
             out IEnumerable<FileBrowser.IFileItem> sourceItems,
             out DirectoryInfo targetDirectory);
     }
 
-
     [Service(typeof(IDownloadFileDialog))]
     public class DownloadFileDialog : IDownloadFileDialog
     {
+        private readonly IExceptionDialog exceptionDialog;
+        private readonly IThemeService theme;
+
+        public DownloadFileDialog(
+            IExceptionDialog exceptionDialog,
+            IThemeService theme)
+        {
+            this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
+            this.theme = theme.ThrowIfNull(nameof(theme));
+        }
+
         public DialogResult SelectDownloadFiles(
             IWin32Window owner,
             string caption,
             FileBrowser.IFileSystem fileSystem,
-            IExceptionDialog exceptionDialog,
             out IEnumerable<FileBrowser.IFileItem> sourceItems,
             out DirectoryInfo targetDirectory)
         {
             sourceItems = null;
             targetDirectory = null;
 
-            using (var form = new DownloadFileWindow(fileSystem, exceptionDialog)
+            using (var window = new DownloadFileWindow(fileSystem, this.exceptionDialog)
             {
                 Text = caption
             })
             {
-                var result = form.ShowDialog(owner);
+                this.theme.DialogTheme.ApplyTo(window);
+
+                var result = window.ShowDialog(owner);
 
                 if (result == DialogResult.OK)
                 {
-                    targetDirectory = new DirectoryInfo(form.TargetDirectory);
-                    sourceItems = form.SelectedFiles;
+                    targetDirectory = new DirectoryInfo(window.TargetDirectory);
+                    sourceItems = window.SelectedFiles;
                 }
 
                 return result;

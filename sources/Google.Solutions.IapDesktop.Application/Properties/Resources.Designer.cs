@@ -63,16 +63,6 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap About {
-            get {
-                object obj = ResourceManager.GetObject("About", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap Computer_16 {
             get {
                 object obj = ResourceManager.GetObject("Computer_16", resourceCulture);
@@ -86,16 +76,6 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         internal static System.Drawing.Bitmap ComputerTerminal_16 {
             get {
                 object obj = ResourceManager.GetObject("ComputerTerminal_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ComputerTerminal_161 {
-            get {
-                object obj = ResourceManager.GetObject("ComputerTerminal_161", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,19 +103,9 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Project {
+        internal static System.Drawing.Bitmap Project_16 {
             get {
-                object obj = ResourceManager.GetObject("Project", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Project_small {
-            get {
-                object obj = ResourceManager.GetObject("Project_small", resourceCulture);
+                object obj = ResourceManager.GetObject("Project_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -146,16 +116,6 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         internal static System.Drawing.Bitmap Refresh_16 {
             get {
                 object obj = ResourceManager.GetObject("Refresh_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Refresh_161 {
-            get {
-                object obj = ResourceManager.GetObject("Refresh_161", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

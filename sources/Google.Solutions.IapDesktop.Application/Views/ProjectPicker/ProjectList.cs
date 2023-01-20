@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         public ProjectList()
         {
             this.List.SmallImageList = new ImageList();
-            this.List.SmallImageList.Images.Add(Resources.Project_small);
+            this.List.SmallImageList.Images.Add(Resources.Project_16);
 
             AddColumn("Name", 200);
             AddColumn("ID", 200);

@@ -19,7 +19,10 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -29,7 +32,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
     [SkipCodeCoverage("View")]
     public partial class FlyoutWindow : Form
     {
-        public FlyoutWindow()
+        public Color BorderColor { get; set; } = SystemColors.ActiveBorder;
+
+        protected FlyoutWindow()
         {
             InitializeComponent();
         }
@@ -113,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             ControlPaint.DrawBorder(
                 e.Graphics,
                 this.ClientRectangle,
-                UiColors.Accent,
+                this.BorderColor,
                 ButtonBorderStyle.Solid);
         }
     }

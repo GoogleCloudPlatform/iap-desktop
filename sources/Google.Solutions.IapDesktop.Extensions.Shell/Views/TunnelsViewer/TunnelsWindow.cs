@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Mvvm.Binding;
@@ -49,9 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 
             this.TabText = this.Text;
 
-            serviceProvider
-                .GetService<IThemeService>()
-                .ApplyTheme(this.toolStrip);
+            var themeService = serviceProvider.GetService<IThemeService>();
+            themeService.ToolWindowTheme.ApplyTo(this.toolStrip);
+            themeService.ToolWindowTheme.ApplyTo(this.tunnelsList);
 
             //
             // This window is a singleton, so we never want it to be closed,

@@ -20,8 +20,10 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
@@ -46,6 +48,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
+
+            serviceProvider
+                .GetService<IThemeService>()
+                .ToolWindowTheme
+                .ApplyTo(this.packageList);
 
             this.viewModel = new PackageInventoryViewModel(
                 serviceProvider,

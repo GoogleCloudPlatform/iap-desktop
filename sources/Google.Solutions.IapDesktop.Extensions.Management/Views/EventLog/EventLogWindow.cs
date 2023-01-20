@@ -21,8 +21,8 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.Mvvm.Binding;
@@ -48,9 +48,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
         {
             InitializeComponent();
 
-            serviceProvider
-                .GetService<IThemeService>()
-                .ApplyTheme(this.toolStrip);
+            var theme = serviceProvider.GetService<IThemeService>();
+            theme.ToolWindowTheme.ApplyTo(this.toolStrip);
+            theme.ToolWindowTheme.ApplyTo(this.list);
 
             this.viewModel = new EventLogViewModel(this, serviceProvider);
 
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
-            Debug.Assert(!InvokeRequired, "running on UI thread");
+            Debug.Assert(!this.InvokeRequired, "running on UI thread");
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
