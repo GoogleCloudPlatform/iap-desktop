@@ -55,12 +55,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// Theme for the docking suite.
         /// </summary>
         ThemeBase DockPanelTheme { get; }
-
-        /// <summary>
-        /// Raw color pallete, for controls that can't be
-        /// themed using IControlTheme.
-        /// </summary>
-        ColorPalette Palette { get; }
     }
 
     public class ThemeService : IThemeService
@@ -74,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             this.DialogTheme = new ControlTheme();
             this.ToolWindowTheme = new ToolWindowTheme(this.DockPanelTheme);
-            this.MainWindowTheme = this.ToolWindowTheme;
+            this.MainWindowTheme = new MainWindowTheme(this.DockPanelTheme);
         }
 
         //---------------------------------------------------------------------
@@ -85,7 +79,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         public IControlTheme DialogTheme { get; }
         public IControlTheme ToolWindowTheme { get; }
         public IControlTheme MainWindowTheme { get; }
-        public ColorPalette Palette { get; } = new ColorPalette();
 
         //---------------------------------------------------------------------
         // DockPaneFactory.

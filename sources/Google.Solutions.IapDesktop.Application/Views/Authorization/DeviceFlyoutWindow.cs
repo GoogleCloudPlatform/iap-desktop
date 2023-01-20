@@ -31,9 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         private readonly DeviceFlyoutViewModel viewModel;
 
         public DeviceFlyoutWindow(
-            IServiceProvider serviceProvider,
             DeviceFlyoutViewModel viewModel) 
-            : base(serviceProvider)
         {
             this.viewModel = viewModel;
 

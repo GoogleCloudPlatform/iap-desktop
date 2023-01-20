@@ -32,20 +32,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
     [SkipCodeCoverage("View")]
     public partial class FlyoutWindow : Form
     {
-        private readonly ColorPalette pallete;
+        public Color BorderColor { get; set; } = SystemColors.ActiveBorder;
 
         protected FlyoutWindow()
         {
-            // Designer only
-        }
-
-        protected FlyoutWindow(IServiceProvider serviceProvider)
-        {
-            this.pallete = serviceProvider
-                .ThrowIfNull(nameof(serviceProvider))
-                .GetService<IThemeService>()
-                .Palette;
-
             InitializeComponent();
         }
 
@@ -128,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             ControlPaint.DrawBorder(
                 e.Graphics,
                 this.ClientRectangle,
-                this.pallete.FlyoutBorder,
+                this.BorderColor,
                 ButtonBorderStyle.Solid);
         }
     }

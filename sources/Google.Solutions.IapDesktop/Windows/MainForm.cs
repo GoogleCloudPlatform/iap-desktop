@@ -920,13 +920,13 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.statusStrip.PointToScreen(button.Bounds.Location),
                 button.Size);
 
-            new DeviceFlyoutWindow(
-                    this.serviceProvider,
-                    new DeviceFlyoutViewModel(this, this.Authorization.DeviceEnrollment))
-                .Show(
-                    this,
-                    screenPosition,
-                    ContentAlignment.TopLeft);
+            var window = new DeviceFlyoutWindow(
+                new DeviceFlyoutViewModel(
+                    this, 
+                    this.Authorization.DeviceEnrollment));
+
+            this.themeService.MainWindowTheme.ApplyTo(window);
+            window.Show(this, screenPosition, ContentAlignment.TopLeft);
         }
 
         private void addProfileToolStripMenuItem_Click(object sender, EventArgs _)

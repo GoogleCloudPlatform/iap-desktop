@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -28,13 +29,17 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
+    /// <summary>
+    /// Theme that can be applied to a control (and its
+    /// children).
+    /// </summary>
     public interface IControlTheme
     {
         void ApplyTo(Control control);
     }
 
     /// <summary>
-    /// VS-style theme.
+    /// VS-style theme for any windows.
     /// </summary>
     public class ControlTheme : IControlTheme
     {
@@ -78,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         protected virtual void ApplyTo(ToolStrip toolStrip)
         { }
 
-        public void ApplyTo(Control control)
+        public virtual void ApplyTo(Control control)
         {
             if (control is TreeView treeView)
             {
@@ -117,6 +122,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         }
     }
 
+    /// <summary>
+    /// VS-style theme for tool windows.
+    /// </summary>
     public class ToolWindowTheme : ControlTheme
     {
         private readonly ThemeBase dockPanelTheme;
@@ -134,6 +142,26 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         protected override void ApplyTo(ToolStrip toolStrip)
         {
             this.dockPanelTheme.ApplyTo(toolStrip);
+        }
+    }
+
+    public class MainWindowTheme : ToolWindowTheme
+    {
+        public MainWindowTheme(ThemeBase dockPanelTheme) 
+            : base(dockPanelTheme)
+        {
+        }
+
+        public override void ApplyTo(Control control)
+        {
+            if (control is FlyoutWindow flyout)
+            {
+                flyout.BorderColor = Color.FromArgb(0, 122, 204);
+            }
+            else
+            {
+                base.ApplyTo(control);
+            }
         }
     }
 }
