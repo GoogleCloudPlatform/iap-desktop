@@ -921,6 +921,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 button.Size);
 
             new DeviceFlyoutWindow(
+                    this.serviceProvider,
                     new DeviceFlyoutViewModel(this, this.Authorization.DeviceEnrollment))
                 .Show(
                     this,

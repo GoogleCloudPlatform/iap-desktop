@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -21,10 +21,14 @@
 
 using System.Drawing;
 
-namespace Google.Solutions.IapDesktop.Application.Views
+namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    public static class UiColors
+    public class ColorPalette
     {
-        public static readonly Color Accent = Color.FromArgb(0, 122, 204);
+        internal ColorPalette()
+        {
+        }
+
+        public Color FlyoutBorder { get; } = Color.FromArgb(0, 122, 204);
     }
 }

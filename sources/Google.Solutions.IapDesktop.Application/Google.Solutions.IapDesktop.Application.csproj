@@ -146,6 +146,7 @@
     <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
     <Compile Include="Services\Settings\ToolWindowStateRepository.cs" />
     <Compile Include="Theme\ControlTheme.cs" />
+    <Compile Include="Theme\ColorPalette.cs" />
     <Compile Include="Theme\ThemeService.cs" />
     <Compile Include="Settings\ISetting.cs" />
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
@@ -315,7 +316,6 @@
     <Compile Include="Views\ToolWindow.Designer.cs">
       <DependentUpon>ToolWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\UiColors.cs" />
     <Compile Include="Views\WaitDialog.cs">
       <SubType>Form</SubType>
     </Compile>
