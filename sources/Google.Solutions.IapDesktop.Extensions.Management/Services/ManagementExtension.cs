@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -103,6 +104,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             string newComputerName;
             using (var dialog = new JoinDialog())
             {
+                this.serviceProvider
+                    .GetService<IThemeService>()
+                    .DialogTheme
+                    .ApplyTo(dialog);
+
                 //
                 // Prompt for domain name, computer name.
                 //

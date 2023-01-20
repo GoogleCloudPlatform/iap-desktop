@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory
 {
     partial class JoinDialog
@@ -49,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirector
         /// </summary>
         private void InitializeComponent()
         {
-            this.headlineLabel = new System.Windows.Forms.Label();
+            this.headlineLabel = new HeaderLabel();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.domainLabel = new System.Windows.Forms.Label();
@@ -185,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirector
 
         #endregion
 
-        private System.Windows.Forms.Label headlineLabel;
+        private HeaderLabel headlineLabel;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Label domainLabel;

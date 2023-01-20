@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Windows
         public OAuthScopeNotGrantedErrorDialog()
         {
             InitializeComponent();
-            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
+            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue; // TODO: Apply theme
         }
     }
 }

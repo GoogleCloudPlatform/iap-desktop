@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -44,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     public class ControlTheme : IControlTheme
     {
         protected Color ControlLightLight { get; set; } = SystemColors.ControlLightLight;
+        protected Color Accent { get; set; } = Color.FromArgb(98, 136, 242);
 
         protected virtual void ApplyTo(TreeView treeView)
         {
@@ -83,6 +85,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         protected virtual void ApplyTo(ToolStrip toolStrip)
         { }
 
+        protected virtual void ApplyTo(HeaderLabel headerLabel)
+        {
+            headerLabel.ForeColor = this.Accent;
+        }
+
         public virtual void ApplyTo(Control control)
         {
             if (control is TreeView treeView)
@@ -100,6 +107,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             else if (control is ToolStrip toolStrip)
             {
                 ApplyTo(toolStrip);
+            }
+            else if (control is HeaderLabel headerLabel)
+            {
+                ApplyTo(headerLabel);
             }
 
             foreach (var child in control.Controls.OfType<Control>())

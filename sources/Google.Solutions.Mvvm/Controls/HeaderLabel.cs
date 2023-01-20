@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2021 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,11 +20,19 @@
 //
 
 using System.Drawing;
+using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views
+namespace Google.Solutions.Mvvm.Controls
 {
-    public static class ThemeColors
+    public class HeaderLabel : Label
     {
-        public static readonly Color HighlightBlue = Color.FromArgb(98, 136, 242);
+        public HeaderLabel()
+        {
+            this.Font = new Font(
+                "Segoe UI", 
+                16F, 
+                FontStyle.Regular, 
+                GraphicsUnit.Point, ((byte)(0)));
+        }
     }
 }

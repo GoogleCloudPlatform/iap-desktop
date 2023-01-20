@@ -933,6 +933,8 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 using (var dialog = new NewProfileDialog())
                 {
+                    this.themeService.DialogTheme.ApplyTo(dialog);
+
                     var result = dialog.ShowDialog(this);
                     if (result.Result == DialogResult.OK)
                     {

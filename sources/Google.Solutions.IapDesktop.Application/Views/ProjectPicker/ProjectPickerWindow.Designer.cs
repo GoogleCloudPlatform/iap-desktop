@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
     partial class ProjectPickerWindow
@@ -49,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         /// </summary>
         private void InitializeComponent()
         {
-            this.headlineLabel = new System.Windows.Forms.Label();
+            this.headlineLabel = new HeaderLabel();
             this.cancelButton = new System.Windows.Forms.Button();
             this.pickProjectButton = new System.Windows.Forms.Button();
             this.projectList = new Google.Solutions.IapDesktop.Application.Views.ProjectPicker.ProjectList();
@@ -140,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 
         #endregion
 
-        private System.Windows.Forms.Label headlineLabel;
+        private HeaderLabel headlineLabel;
         private ProjectList projectList;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button pickProjectButton;

@@ -93,8 +93,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 this.viewModel,
                 m => m.IsProjectSelected,
                 this.components);
-
-            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
         }
 
         private void addProjectButton_Click(object sender, EventArgs e)

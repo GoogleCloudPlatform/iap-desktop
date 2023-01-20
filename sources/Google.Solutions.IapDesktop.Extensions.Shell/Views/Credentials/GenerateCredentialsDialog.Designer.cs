@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
     partial class GenerateCredentialsDialog
@@ -56,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.titleLabel = new System.Windows.Forms.Label();
             this.savePwdNote = new System.Windows.Forms.Label();
             this.statusIcon = new System.Windows.Forms.PictureBox();
-            this.headlineLabel = new System.Windows.Forms.Label();
+            this.headlineLabel = new HeaderLabel();
             this.usernameReservedLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.statusIcon)).BeginInit();
             this.SuspendLayout();
@@ -185,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         private System.Windows.Forms.Label titleLabel;
         private System.Windows.Forms.Label savePwdNote;
         private System.Windows.Forms.PictureBox statusIcon;
-        private System.Windows.Forms.Label headlineLabel;
+        private HeaderLabel headlineLabel;
         private System.Windows.Forms.Label usernameReservedLabel;
     }
 }

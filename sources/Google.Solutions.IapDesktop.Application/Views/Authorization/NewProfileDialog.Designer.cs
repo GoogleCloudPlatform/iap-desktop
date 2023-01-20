@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
     partial class NewProfileDialog
@@ -50,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         private void InitializeComponent()
         {
             this.profileNameInvalidLabel = new System.Windows.Forms.Label();
-            this.headlineLabel = new System.Windows.Forms.Label();
+            this.headlineLabel = new HeaderLabel();
             this.titleLabel = new System.Windows.Forms.Label();
             this.profileNameTextBox = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
@@ -164,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         #endregion
 
         private System.Windows.Forms.Label profileNameInvalidLabel;
-        private System.Windows.Forms.Label headlineLabel;
+        private HeaderLabel headlineLabel;
         private System.Windows.Forms.Label titleLabel;
         private System.Windows.Forms.TextBox profileNameTextBox;
         private System.Windows.Forms.Button okButton;
