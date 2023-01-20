@@ -68,18 +68,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             sourceItems = null;
             targetDirectory = null;
 
-            using (var form = new DownloadFileWindow(fileSystem, this.exceptionDialog)
+            using (var window = new DownloadFileWindow(fileSystem, this.exceptionDialog)
             {
-                Theme = this.theme.DialogTheme,
                 Text = caption
             })
             {
-                var result = form.ShowDialog(owner);
+                this.theme.DialogTheme.ApplyTo(window);
+
+                var result = window.ShowDialog(owner);
 
                 if (result == DialogResult.OK)
                 {
-                    targetDirectory = new DirectoryInfo(form.TargetDirectory);
-                    sourceItems = form.SelectedFiles;
+                    targetDirectory = new DirectoryInfo(window.TargetDirectory);
+                    sourceItems = window.SelectedFiles;
                 }
 
                 return result;

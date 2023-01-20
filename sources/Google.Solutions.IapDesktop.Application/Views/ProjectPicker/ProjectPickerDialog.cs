@@ -94,11 +94,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         {
             var model = new CloudModel(resourceManager);
 
-            using (var window = new ProjectPickerWindow(model, this.exceptionDialog)
+            using (var window = new ProjectPickerWindow(model, this.exceptionDialog))
             {
-                Theme = this.theme.DialogTheme
-            })
-            {
+                this.theme.DialogTheme.ApplyTo(window);
+
                 return SelectProjects(owner, window, caption, out selectedProjects);
             }
         }
@@ -117,11 +116,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 })
                 .ToList());
 
-            using (var window = new ProjectPickerWindow(model, this.exceptionDialog)
+            using (var window = new ProjectPickerWindow(model, this.exceptionDialog))
             {
-                Theme = this.theme.DialogTheme
-            })
-            {
+                this.theme.DialogTheme.ApplyTo(window);
+
                 return SelectProjects(owner, window, caption, out selectedProjects);
             }
         }

@@ -35,7 +35,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Controls
 {
-    public partial class FileBrowser : UserControl, IThemedControl
+    public partial class FileBrowser : UserControl
     {
         private readonly FileTypeCache fileTypeCache = new FileTypeCache();
 
@@ -45,8 +45,6 @@ namespace Google.Solutions.Mvvm.Controls
 
         internal DirectoryTreeView Directories => this.directoryTree;
         internal FileListView Files => this.fileList;
-
-        private IControlTheme theme;
 
         private Breadcrumb root;
         private Breadcrumb navigationState;
@@ -115,23 +113,6 @@ namespace Google.Solutions.Mvvm.Controls
             => this.CurrentDirectoryChanged?.Invoke(this, EventArgs.Empty);
         protected void OnSelectedFilesChanged()
             => this.SelectedFilesChanged?.Invoke(this, EventArgs.Empty);
-
-        //---------------------------------------------------------------------
-        // IThemedControl.
-        //---------------------------------------------------------------------
-
-        public IControlTheme Theme
-        {
-            get => this.theme;
-            set
-            {
-                value.ThrowIfNull(nameof(value));
-                value.ApplyTo(this.directoryTree);
-                value.ApplyTo(this.fileList);
-
-                this.theme = value;
-            }
-        }
 
         //---------------------------------------------------------------------
         // Selection properties.

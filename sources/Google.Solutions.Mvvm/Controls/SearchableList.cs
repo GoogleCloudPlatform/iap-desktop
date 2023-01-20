@@ -31,32 +31,14 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Controls
 {
     [SkipCodeCoverage("Pure UI code")]
-    public partial class SearchableList<TModelItem> : UserControl, IThemedControl
+    public partial class SearchableList<TModelItem> : UserControl
     {
-        private IControlTheme theme;
-
         public event EventHandler LoadingChanged;
         public event EventHandler SearchTermChanged;
 
         public SearchableList()
         {
             InitializeComponent();
-        }
-
-        //---------------------------------------------------------------------
-        // IThemedControl.
-        //---------------------------------------------------------------------
-
-        public IControlTheme Theme
-        {
-            get => this.theme;
-            set
-            {
-                value.ThrowIfNull(nameof(value));
-                value.ApplyTo(this.list);
-
-                this.theme = value;
-            }
         }
 
         //---------------------------------------------------------------------

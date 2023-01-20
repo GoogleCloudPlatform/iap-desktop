@@ -76,7 +76,6 @@
     <Compile Include="Controls\FileBrowser.Designer.cs">
       <DependentUpon>FileBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\IControlTheme.cs" />
     <Compile Include="Shell\FileTypeCache.cs" />
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>

@@ -19,24 +19,30 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
+    public interface IControlTheme
+    {
+        void ApplyTo(Control control);
+    }
+
     /// <summary>
-    /// VS-style theme for common controls.
+    /// VS-style theme.
     /// </summary>
     public class ControlTheme : IControlTheme
     {
-        public Color ControlLightLight { get; set; } = SystemColors.ControlLightLight;
+        protected Color ControlLightLight { get; set; } = SystemColors.ControlLightLight;
 
-        public void ApplyTo(TreeView treeView)
+        protected virtual void ApplyTo(TreeView treeView)
         {
+
             //
             // Apply post-Vista Explorer theme.
             //
@@ -49,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             };
         }
 
-        public void ApplyTo(ListView listView)
+        protected virtual void ApplyTo(ListView listView)
         {
             //
             // Apply post-Vista Explorer theme.
@@ -63,19 +69,39 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             };
         }
 
-        public void ApplyTo(IThemedControl control)
-        {
-            control.Theme = this;
-        }
-
-        public void ApplyTo(PropertyGrid grid)
+        protected virtual void ApplyTo(PropertyGrid grid)
         {
             grid.ViewBackColor = this.ControlLightLight;
             grid.LineColor = SystemColors.Control;
         }
 
-        public virtual void ApplyTo(ToolStrip toolStrip)
+        protected virtual void ApplyTo(ToolStrip toolStrip)
         { }
+
+        public void ApplyTo(Control control)
+        {
+            if (control is TreeView treeView)
+            {
+                ApplyTo(treeView);
+            }
+            else if (control is ListView listView)
+            {
+                ApplyTo(listView);
+            }
+            else if (control is PropertyGrid grid)
+            {
+                ApplyTo(grid);
+            }
+            else if (control is ToolStrip toolStrip)
+            {
+                ApplyTo(toolStrip);
+            }
+
+            foreach (var child in control.Controls.OfType<Control>())
+            {
+                ApplyTo(child);
+            }
+        }
 
         //---------------------------------------------------------------------
         // P/Invoke.
@@ -105,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             this.ControlLightLight = Color.FromArgb(255, 245, 245, 245);
         }
 
-        public override void ApplyTo(ToolStrip toolStrip)
+        protected override void ApplyTo(ToolStrip toolStrip)
         {
             this.dockPanelTheme.ApplyTo(toolStrip);
         }
