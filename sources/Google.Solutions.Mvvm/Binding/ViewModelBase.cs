@@ -79,5 +79,6 @@ namespace Google.Solutions.Mvvm.Binding
         }
 
         public bool HasPropertyChangeListeners => this.PropertyChanged != null;
+
     }
 }

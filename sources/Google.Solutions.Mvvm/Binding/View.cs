@@ -40,15 +40,7 @@ namespace Google.Solutions.Mvvm.Windows
         /// </summary>
         void Bind(TViewModel viewModel);
 
-        /// <summary>
-        /// Show view, typically forwarded or implemented by Form.Show.
-        /// </summary>
-        void Show(IWin32Window parent);
-
-        /// <summary>
-        /// Show view as dialog, typically forwarded or implemented by Form.ShowDialog.
-        /// </summary>
-        DialogResult ShowDialog(IWin32Window parent);
+        DialogResult Show(IWin32Window parent);
     }
 
     /// <summary>
@@ -124,17 +116,16 @@ namespace Google.Solutions.Mvvm.Windows
     /// be shown.
     /// </summary>
     public class View<TView, TViewModel>
-        where TView : Control, IView<TViewModel>
+        where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
-#if DEBUG
-        private bool shown = false;
-#endif
         private readonly IServiceProvider serviceProvider;
 
         public TViewModel ViewModel { get; }
 
         public IControlTheme Theme { get; set; }
+
+        public bool Shown { get; private set; } = false;
 
         internal View(IServiceProvider serviceProvider, TViewModel viewModel)
         {
@@ -142,16 +133,27 @@ namespace Google.Solutions.Mvvm.Windows
             this.ViewModel = viewModel;
         }
 
-        private DialogResult Show(Func<TView, IWin32Window, DialogResult> showFunc, IWin32Window parent)
+        private void CheckNotShownBefore()
         {
-#if DEBUG
-            Debug.Assert(!this.shown, "View can only be shown once");
-            this.shown = true;
-#endif
+            if (this.Shown)
+            {
+                throw new InvalidOperationException("View can only be shown once");
+            }
+
+            this.Shown = true;
+        }
+
+        /// <summary>
+        /// Show dialog. Disposes the view and view model afterwards.
+        /// </summary>
+        public DialogResult ShowDialog(IWin32Window parent)
+        {
+            CheckNotShownBefore();
 
             //
             // Create view.
             //
+            using (this.ViewModel as IDisposable)
             using (var view = (TView)this.serviceProvider.GetService(typeof(TView)))
             {
                 this.Theme?.ApplyTo(view);
@@ -162,7 +164,7 @@ namespace Google.Solutions.Mvvm.Windows
                 this.ViewModel.View = view;
                 view.Bind(this.ViewModel);
 
-                var result = showFunc(view, parent);
+                var result = view.ShowDialog(parent);
 
                 //
                 // Retain view model so that the caller can extract
@@ -175,18 +177,39 @@ namespace Google.Solutions.Mvvm.Windows
             }
         }
 
-        public void Show(IWin32Window parent)
+        /// <summary>
+        /// Show form.
+        /// </summary>
+        public TView Show(IWin32Window parent)
         {
-            Show(
-                (view, p) => { view.Show(p); return DialogResult.None; }, 
-                parent);
-        }
+            CheckNotShownBefore();
 
-        public DialogResult ShowDialog(IWin32Window parent)
-        {
-            return Show(
-                (view, p) => view.ShowDialog(p), 
-                parent);
+            //
+            // Create view.
+            //
+            var view = (TView)this.serviceProvider.GetService(typeof(TView));
+            this.Theme?.ApplyTo(view);
+
+            //
+            // Bind view <-> view model.
+            //
+            this.ViewModel.View = view;
+            view.Bind(this.ViewModel);
+
+            //
+            // Dispose view model when form is disposed.
+            //
+            if (this.ViewModel is IDisposable disposableViewModel)
+            {
+                view.Disposed += (_, __) => disposableViewModel.Dispose();
+            }
+
+            //
+            // Show the form and leave it to the caller to decide when to close
+            // and dispose it.
+            //
+            view.Show(parent);
+            return view;
         }
     }
 }
