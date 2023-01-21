@@ -29,6 +29,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
 {
+    /// <summary>
+    /// MVVM view model.
+    /// </summary>
     public class ViewModelBase : INotifyPropertyChanged
     {
         /// <summary>

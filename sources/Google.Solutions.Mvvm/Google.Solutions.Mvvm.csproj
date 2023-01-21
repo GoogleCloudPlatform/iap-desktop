@@ -55,6 +55,7 @@
     <Compile Include="Binding\ObservableProperty.cs" />
     <Compile Include="Binding\RangeObservableCollection.cs" />
     <Compile Include="Binding\ToolStripMenuBindingExtensions.cs" />
+    <Compile Include="Binding\View.cs" />
     <Compile Include="Binding\ViewModelBase.cs" />
     <Compile Include="Cache\LeastRecentlyUsedCache.cs" />
     <Compile Include="Cache\ModelCachingViewModel.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Shell\KnownFolders.cs" />
     <Compile Include="Shell\Quarantine.cs" />
     <Compile Include="Shell\StockIcons.cs" />
+    <Compile Include="Theme\ITheme.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\StaTask.cs" />
   </ItemGroup>

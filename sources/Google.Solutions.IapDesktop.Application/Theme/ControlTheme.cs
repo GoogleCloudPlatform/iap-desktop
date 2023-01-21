@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -30,15 +31,6 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    /// <summary>
-    /// Theme that can be applied to a control (and its
-    /// children).
-    /// </summary>
-    public interface IControlTheme
-    {
-        void ApplyTo(Control control);
-    }
-
     /// <summary>
     /// VS-style theme for any windows.
     /// </summary>
