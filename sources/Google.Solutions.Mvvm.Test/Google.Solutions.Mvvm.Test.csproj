@@ -68,6 +68,7 @@
     <Compile Include="Binding\TestObservableProperty.cs" />
     <Compile Include="Binding\TestRangeObservableCollection.cs" />
     <Compile Include="Binding\TestToolStripMenuBindingExtensions.cs" />
+    <Compile Include="Binding\TestView.cs" />
     <Compile Include="Cache\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Cache\TestModelCachingViewModelBase.cs" />
     <Compile Include="Commands\TestCommand.cs" />

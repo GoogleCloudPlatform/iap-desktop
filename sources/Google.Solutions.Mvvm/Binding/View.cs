@@ -20,13 +20,11 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using System;
-using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace Google.Solutions.Mvvm.Windows
+namespace Google.Solutions.Mvvm.Binding
 {
     /// <summary>
     /// MVVM view.
@@ -39,8 +37,6 @@ namespace Google.Solutions.Mvvm.Windows
         /// called once, briefly after construction.
         /// </summary>
         void Bind(TViewModel viewModel);
-
-        DialogResult Show(IWin32Window parent);
     }
 
     /// <summary>
@@ -153,7 +149,7 @@ namespace Google.Solutions.Mvvm.Windows
             //
             // Create view.
             //
-            using (this.ViewModel as IDisposable)
+            using (this.ViewModel)
             using (var view = (TView)this.serviceProvider.GetService(typeof(TView)))
             {
                 this.Theme?.ApplyTo(view);
@@ -199,10 +195,7 @@ namespace Google.Solutions.Mvvm.Windows
             //
             // Dispose view model when form is disposed.
             //
-            if (this.ViewModel is IDisposable disposableViewModel)
-            {
-                view.Disposed += (_, __) => disposableViewModel.Dispose();
-            }
+            view.Disposed += (_, __) => this.ViewModel.Dispose();
 
             //
             // Show the form and leave it to the caller to decide when to close

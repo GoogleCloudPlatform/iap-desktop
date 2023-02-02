@@ -32,13 +32,17 @@ namespace Google.Solutions.Mvvm.Binding
     /// <summary>
     /// MVVM view model.
     /// </summary>
-    public class ViewModelBase : INotifyPropertyChanged
+    public class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// Sets the view, enabling the view model to query the most
         /// basic information such as the window handle.
         /// </summary>
         public IWin32Window View { get; set; }
+
+        //---------------------------------------------------------------------
+        // INotifyPropertyChanged and helpers.
+        //---------------------------------------------------------------------
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -80,5 +84,28 @@ namespace Google.Solutions.Mvvm.Binding
 
         public bool HasPropertyChangeListeners => this.PropertyChanged != null;
 
+        //---------------------------------------------------------------------
+        // IDispose and helpers.
+        //---------------------------------------------------------------------
+
+        protected bool Disposed { get; private set; }
+
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+
+        public void Dispose()
+        {
+            if (!this.Disposed)
+            {
+                this.Disposed = true;
+                Dispose(disposing: true);
+                GC.SuppressFinalize(this);
+            }
+            else
+            {
+                Debug.Fail("Object has been disposed already");
+            }
+        }
     }
 }
