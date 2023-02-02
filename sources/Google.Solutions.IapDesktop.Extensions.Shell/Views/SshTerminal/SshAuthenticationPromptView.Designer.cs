@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    partial class SshAuthenticationPromptDialog
+    partial class SshAuthenticationPromptView
     {
         /// <summary>
         /// Required designer variable.
@@ -54,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.headlineLabel = new System.Windows.Forms.Label();
+            this.headlineLabel = new HeaderLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -155,6 +157,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private System.Windows.Forms.TextBox inputTextBox;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button okButton;
-        private System.Windows.Forms.Label headlineLabel;
+        private HeaderLabel headlineLabel;
     }
 }

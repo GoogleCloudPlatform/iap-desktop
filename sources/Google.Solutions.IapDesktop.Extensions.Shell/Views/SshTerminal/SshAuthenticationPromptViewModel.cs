@@ -19,10 +19,12 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
+    [Service]
     public class SshAuthenticationPromptViewModel : ViewModelBase
     {
         private string title;

@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Drawing;
@@ -29,22 +29,22 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
     [SkipCodeCoverage("UI code")]
-    public partial class SshAuthenticationPromptDialog : Form
+    [Service]
+    public partial class SshAuthenticationPromptView 
+        : Form, IView<SshAuthenticationPromptViewModel>
     {
-        public SshAuthenticationPromptDialog(
-            SshAuthenticationPromptViewModel viewModel)
+        public SshAuthenticationPromptView()
         {
             InitializeComponent();
+        }
 
-            viewModel.View = this;
-
-            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue; // TODO: Apply theme
-
+        public void Bind(SshAuthenticationPromptViewModel viewModel)
+        {
             this.BindProperty(
-                c => c.Text,
-                viewModel,
-                m => m.Title,
-                this.Container);
+               c => c.Text,
+               viewModel,
+               m => m.Title,
+               this.Container);
             this.headlineLabel.BindProperty(
                 c => c.Text,
                 viewModel,
@@ -80,30 +80,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.Size = new Size(
                 this.Size.Width,
                 230 - 16 + this.descriptionLabel.Height);
-        }
-
-        public static string ShowPrompt(
-            IWin32Window parent,
-            string title,
-            string description,
-            bool isPasswordMasked)
-        {
-            var viewModel = new SshAuthenticationPromptViewModel()
-            {
-                Title = title,
-                Description = description,
-                IsPasswordMasked = isPasswordMasked
-            };
-
-            if (new SshAuthenticationPromptDialog(viewModel).ShowDialog(parent)
-                == DialogResult.OK)
-            {
-                return viewModel.Input;
-            }
-            else
-            {
-                throw new OperationCanceledException();
-            }
         }
     }
 }

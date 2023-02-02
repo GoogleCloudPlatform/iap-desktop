@@ -108,6 +108,8 @@ namespace Google.Solutions.Mvvm.Binding
     {
         private readonly IServiceProvider serviceProvider;
 
+        public IControlTheme Theme { get; set; }
+
         internal ViewFactory(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
@@ -115,9 +117,16 @@ namespace Google.Solutions.Mvvm.Binding
 
         public View<TView, TViewModel> Create()
         {
-            return new View<TView, TViewModel>(
+            var view = new View<TView, TViewModel>(
                 serviceProvider,
                 (TViewModel)serviceProvider.GetService(typeof(TViewModel)));
+
+            if (this.Theme != null)
+            {
+                view.Theme = this.Theme;
+            }
+
+            return view;
         }
     }
 

@@ -74,6 +74,24 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         //---------------------------------------------------------------------
+        // ViewExtensions.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenFactoryThemeSet_ThenCreateAppliesTheme()
+        {
+            var serviceProvider = CreateServiceProvider(new SampleForm(), new SampleViewModel());
+            var theme = new Mock<IControlTheme>().Object;
+
+            var factory = serviceProvider.GetViewFactory<SampleForm, SampleViewModel>();
+            factory.Theme = theme;
+
+            var view = factory.Create();
+
+            Assert.AreSame(theme, view.Theme);
+        }
+
+        //---------------------------------------------------------------------
         // ShowDialog.
         //---------------------------------------------------------------------
 

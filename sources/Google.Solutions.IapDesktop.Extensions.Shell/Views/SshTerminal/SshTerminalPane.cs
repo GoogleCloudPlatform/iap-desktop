@@ -23,11 +23,13 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -41,6 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
     public class SshTerminalPane : TerminalPaneBase, ISshTerminalSession
     {
         private readonly SshTerminalPaneViewModel viewModel;
+        private readonly ViewFactory<SshAuthenticationPromptView, SshAuthenticationPromptViewModel> promptFactory;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -78,6 +81,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.viewModel.View = this;
             this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
 
+            this.promptFactory = serviceProvider.GetViewFactory<SshAuthenticationPromptView, SshAuthenticationPromptViewModel>();
+            this.promptFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
+
             this.AllowDrop = true;
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.SshTerminalPane_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.SshTerminalPane_DragEnter);
@@ -86,11 +92,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private void OnAuthenticationPrompt(object sender, AuthenticationPromptEventArgs e)
         {
             Debug.Assert(!this.InvokeRequired);
-            e.Response = SshAuthenticationPromptDialog.ShowPrompt(
-                this,
-                "2-step verification",
-                e.Prompt,
-                e.IsPasswordPrompt);
+
+            var prompt = this.promptFactory.Create(); //TODO: Test manually
+            prompt.ViewModel.Title = "2-step verification";
+            prompt.ViewModel.Description = e.Prompt;
+            prompt.ViewModel.IsPasswordMasked = e.IsPasswordPrompt;
+
+            if (prompt.ShowDialog(this) == DialogResult.OK)
+            {
+                e.Response = prompt.ViewModel.Input;
+            }
+            else
+            {
+                throw new OperationCanceledException();
+            }
         }
 
         //---------------------------------------------------------------------
