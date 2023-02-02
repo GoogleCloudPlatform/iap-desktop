@@ -68,6 +68,20 @@ namespace Google.Solutions.Mvvm.Binding
         }
 
         /// <summary>
+        /// Create an MVVM-enabled View and view model using the service provider.
+        /// </summary>
+        public static View<TView, TViewModel> GetView<TView, TViewModel>(
+            this IServiceProvider serviceProvider,
+            IControlTheme theme)
+            where TView : Form, IView<TViewModel>
+            where TViewModel : ViewModelBase
+        {
+            var view = GetView<TView, TViewModel>(serviceProvider);
+            view.Theme = theme;
+            return view;
+        }
+
+        /// <summary>
         /// Create an MVVM-enabled View using the service provider, and bind
         /// a custom view model.
         /// </summary>

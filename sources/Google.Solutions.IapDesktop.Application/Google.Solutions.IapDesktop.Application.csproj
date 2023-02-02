@@ -171,14 +171,15 @@
     <Compile Include="Views\Authorization\DeviceFlyoutWindow.Designer.cs">
       <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Authorization\OAuthScopeNotGrantedErrorDialog.cs">
+    <Compile Include="Views\Authorization\OAuthScopeNotGrantedView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Authorization\OAuthScopeNotGrantedErrorDialog.Designer.cs">
-      <DependentUpon>OAuthScopeNotGrantedErrorDialog.cs</DependentUpon>
+    <Compile Include="Views\Authorization\OAuthScopeNotGrantedView.Designer.cs">
+      <DependentUpon>OAuthScopeNotGrantedView.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
+    <Compile Include="Views\Authorization\OAuthScopeNotGrantedViewModel.cs" />
     <Compile Include="Views\Diagnostics\DebugFullScreenPane.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -363,8 +364,8 @@
     <EmbeddedResource Include="Views\Authorization\NewProfileDialog.resx">
       <DependentUpon>NewProfileDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Authorization\OAuthScopeNotGrantedErrorDialog.resx">
-      <DependentUpon>OAuthScopeNotGrantedErrorDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Authorization\OAuthScopeNotGrantedView.resx">
+      <DependentUpon>OAuthScopeNotGrantedView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugDockingWindow.resx">
       <DependentUpon>DebugDockingWindow.cs</DependentUpon>

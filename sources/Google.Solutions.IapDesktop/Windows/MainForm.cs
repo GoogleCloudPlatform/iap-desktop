@@ -344,13 +344,12 @@ namespace Google.Solutions.IapDesktop.Windows
                     //
                     // User did not grant 'cloud-platform' scope.
                     //
-                    using (var dialog = new OAuthScopeNotGrantedErrorDialog())
+                    if (this.serviceProvider
+                        .GetView<OAuthScopeNotGrantedView, OAuthScopeNotGrantedViewModel>(this.themeService.DialogTheme)
+                        .ShowDialog(this) == DialogResult.OK)
                     {
-                        if (dialog.ShowDialog(this) == DialogResult.OK)
-                        {
-                            // Retry sign-in.
-                            continue;
-                        }
+                        // Retry sign-in.
+                        continue;
                     }
                 }
                 catch (AuthorizationFailedException e)

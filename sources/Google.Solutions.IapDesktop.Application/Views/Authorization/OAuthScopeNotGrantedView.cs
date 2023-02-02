@@ -19,17 +19,21 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.Mvvm.Binding;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Windows
+namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
-    public partial class OAuthScopeNotGrantedErrorDialog : Form
+    public partial class OAuthScopeNotGrantedView 
+        : Form, IView<OAuthScopeNotGrantedViewModel>
     {
-        public OAuthScopeNotGrantedErrorDialog()
+        public OAuthScopeNotGrantedView()
         {
             InitializeComponent();
-            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue; // TODO: Apply theme
+        }
+
+        public void Bind(OAuthScopeNotGrantedViewModel viewModel)
+        {
         }
     }
 }

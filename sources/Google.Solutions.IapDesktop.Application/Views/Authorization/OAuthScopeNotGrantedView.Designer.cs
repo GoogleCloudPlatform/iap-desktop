@@ -19,9 +19,11 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Windows
+using Google.Solutions.Mvvm.Controls;
+
+namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
-    partial class OAuthScopeNotGrantedErrorDialog
+    partial class OAuthScopeNotGrantedView
     {
         /// <summary>
         /// Required designer variable.
@@ -49,11 +51,11 @@ namespace Google.Solutions.IapDesktop.Windows
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OAuthScopeNotGrantedErrorDialog));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OAuthScopeNotGrantedView));
             this.panel1 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.headlineLabel = new System.Windows.Forms.Label();
+            this.headlineLabel = new HeaderLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
@@ -160,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label headlineLabel;
+        private HeaderLabel headlineLabel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Label label2;

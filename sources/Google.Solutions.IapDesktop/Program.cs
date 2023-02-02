@@ -37,6 +37,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
+using Google.Solutions.IapDesktop.Application.Views.Authorization;
 using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
@@ -345,6 +346,8 @@ namespace Google.Solutions.IapDesktop
                 // Load window layer.
                 //
                 windowLayer.AddSingleton<IMainForm>(mainForm);
+                windowLayer.AddTransient<OAuthScopeNotGrantedView>();
+                windowLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
                 windowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
                 windowLayer.AddTransient<AboutWindow>();
                 windowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
