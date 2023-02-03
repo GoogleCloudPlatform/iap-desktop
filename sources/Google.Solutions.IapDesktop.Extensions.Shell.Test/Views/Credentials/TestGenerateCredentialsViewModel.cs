@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         [Test]
         public void WhenUsernameIsEmpty_ThenIsUsernameReservedReturnsFalse()
         {
-            var viewModel = new GenerateCredentialsViewModel()
+            var viewModel = new NewCredentialsViewModel()
             {
                 Username = string.Empty
             };
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         [Test]
         public void WhenUsernameIsNotReserved_ThenIsUsernameReservedReturnsFalse()
         {
-            var viewModel = new GenerateCredentialsViewModel()
+            var viewModel = new NewCredentialsViewModel()
             {
                 Username = "i am bob"
             };
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         [Test]
         public void WhenUsernameIsReserved_ThenIsUsernameReservedReturnsTrue()
         {
-            var viewModel = new GenerateCredentialsViewModel()
+            var viewModel = new NewCredentialsViewModel()
             {
                 Username = "GUEST"
             };
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         [Test]
         public void WhenUsernameIsEmpty_ThenIsOkButtonEnabledReturnsFalse()
         {
-            var viewModel = new GenerateCredentialsViewModel()
+            var viewModel = new NewCredentialsViewModel()
             {
                 Username = string.Empty
             };
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         [Test]
         public void WhenUsernameIsNotReserved_ThenIsOkButtonEnabledReturnsTrue()
         {
-            var viewModel = new GenerateCredentialsViewModel()
+            var viewModel = new NewCredentialsViewModel()
             {
                 Username = "i am bob"
             };
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         [Test]
         public void WhenUsernameIsReserved_ThenIsOkButtonEnabledReturnsFalse()
         {
-            var viewModel = new GenerateCredentialsViewModel()
+            var viewModel = new NewCredentialsViewModel()
             {
                 Username = "GUEST"
             };

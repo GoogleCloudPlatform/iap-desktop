@@ -22,82 +22,45 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Binding;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
-    public interface IGenerateCredentialsDialog
-    {
-        GenerateCredentialsDialogResult ShowDialog(
-            IWin32Window owner,
-            string suggestedUsername);
-    }
-
-    [Service(typeof(IGenerateCredentialsDialog))]
+    [Service]
     [SkipCodeCoverage("View code")]
-    public partial class NewCredentialsView : Form, IGenerateCredentialsDialog
+    public partial class NewCredentialsView : Form, IView<NewCredentialsViewModel>
     {
-        private readonly NewCredentialsViewModel viewModel
-            = new NewCredentialsViewModel();
-
         public NewCredentialsView(IThemeService themeService)
         {
             InitializeComponent();
+        }
 
-            themeService.DialogTheme.ApplyTo(this);
-
+        public void Bind(NewCredentialsViewModel viewModel)
+        {
             this.usernameText.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                viewModel,
                 m => m.Username,
                 this.components);
             this.usernameReservedLabel.BindReadonlyProperty(
                 c => c.Visible,
-                this.viewModel,
+                viewModel,
                 m => m.IsUsernameReserved,
                 this.components);
 
             // Bind buttons.
             this.okButton.BindReadonlyProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsOkButtonEnabled,
                 this.components);
-        }
 
-        private void usernameText_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            // Cancel any keypresses of disallowed characters.
-            e.Handled = !this.viewModel.IsAllowedCharacterForUsername(e.KeyChar);
-        }
-
-        public GenerateCredentialsDialogResult ShowDialog(
-            IWin32Window owner,
-            string suggestedUsername)
-        {
-            this.viewModel.Username = suggestedUsername;
-
-            var result = ShowDialog(owner);
-
-            return new GenerateCredentialsDialogResult(
-                result,
-                this.viewModel.Username);
-        }
-    }
-
-    public class GenerateCredentialsDialogResult
-    {
-        public DialogResult Result { get; }
-        public string Username { get; }
-
-        public GenerateCredentialsDialogResult(
-            DialogResult result,
-            string username)
-        {
-            this.Result = result;
-            this.Username = username;
+            this.usernameText.KeyPress += (_, e) =>
+            {
+                // Cancel any keypresses of disallowed characters.
+                e.Handled = !viewModel.IsAllowedCharacterForUsername(e.KeyChar);
+            };
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         public void WhenSuggestedUserNameProvidedAndDialogCancelled_ThenSuggestionIsUsed()
         {
             var serviceRegistry = new ServiceRegistry();
-            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
             credDialog
                 .Setup(d => d.ShowDialog(
                     It.IsAny<IWin32Window>(),
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             serviceRegistry.AddMock<IAuthorizationSource>()
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
-            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
             credDialog
                 .Setup(d => d.ShowDialog(
                     It.IsAny<IWin32Window>(),
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             serviceRegistry.AddMock<IAuthorizationSource>()
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
-            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
             credDialog
                 .Setup(d => d.ShowDialog(
                     It.IsAny<IWin32Window>(),
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 .ReturnsAsync(new NetworkCredential("bob-admin", "password"));
 
             var showCredDialog = serviceRegistry.AddMock<IShowCredentialsDialog>();
-            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
             credDialog
                 .Setup(d => d.ShowDialog(
                     It.IsAny<IWin32Window>(),
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new NetworkCredential("alice", "password"));
 
-            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpUsername.Value = "alice";
 
@@ -257,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new NetworkCredential("bobsemail", "password"));
 
-            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
 
             var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);

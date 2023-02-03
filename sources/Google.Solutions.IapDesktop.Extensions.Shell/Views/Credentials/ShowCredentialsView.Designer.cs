@@ -23,7 +23,7 @@ using Google.Solutions.Mvvm.Controls;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
-    partial class ShowCredentialsDialog
+    partial class ShowCredentialsView
     {
         /// <summary>
         /// Required designer variable.
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowCredentialsDialog));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowCredentialsView));
             this.closeButton = new System.Windows.Forms.Button();
             this.groupBox = new System.Windows.Forms.GroupBox();
             this.passwordText = new System.Windows.Forms.TextBox();

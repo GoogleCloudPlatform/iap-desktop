@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.titleLabel = new System.Windows.Forms.Label();
             this.savePwdNote = new System.Windows.Forms.Label();
             this.statusIcon = new System.Windows.Forms.PictureBox();
-            this.headlineLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
+            this.headlineLabel = new HeaderLabel();
             this.usernameReservedLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.statusIcon)).BeginInit();
             this.SuspendLayout();
@@ -93,7 +93,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.usernameText.Name = "usernameText";
             this.usernameText.Size = new System.Drawing.Size(254, 24);
             this.usernameText.TabIndex = 1;
-            this.usernameText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.usernameText_KeyPress);
             // 
             // titleLabel
             // 
@@ -131,9 +130,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.headlineLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.headlineLabel.Location = new System.Drawing.Point(11, 15);
             this.headlineLabel.Name = "headlineLabel";
-            this.headlineLabel.Size = new System.Drawing.Size(229, 30);
+            this.headlineLabel.Size = new System.Drawing.Size(274, 30);
             this.headlineLabel.TabIndex = 8;
-            this.headlineLabel.Text = "New logon credentials";
+            this.headlineLabel.Text = "Generate logon credentials";
             // 
             // usernameReservedLabel
             // 
@@ -146,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.usernameReservedLabel.TabIndex = 5;
             this.usernameReservedLabel.Text = "This username is reserved and cannot be used";
             // 
-            // NewCredentialsView
+            // GenerateCredentialsDialog
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -167,12 +166,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "NewCredentialsView";
+            this.Name = "GenerateCredentialsDialog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "New logon credentials";
+            this.Text = "Generate logon credentials";
             ((System.ComponentModel.ISupportInitialize)(this.statusIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

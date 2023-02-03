@@ -155,21 +155,22 @@
     <Compile Include="Views\ConnectionSettings\HtmlPageGenerator.cs" />
     <Compile Include="Views\ConnectionSettings\IConnectionSettingsWindow.cs" />
     <Compile Include="Views\Credentials\AuthorizationExtensions.cs" />
+    <Compile Include="Views\Credentials\NewCredentialsDialog.cs" />
     <Compile Include="Views\Credentials\SelectCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\CreateCredentialsWorkflow.cs" />
-    <Compile Include="Views\Credentials\GenerateCredentialsDialog.cs">
+    <Compile Include="Views\Credentials\NewCredentialsView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Credentials\GenerateCredentialsDialog.Designer.cs">
-      <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
+    <Compile Include="Views\Credentials\NewCredentialsView.Designer.cs">
+      <DependentUpon>NewCredentialsView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Credentials\GenerateCredentialsViewModel.cs" />
+    <Compile Include="Views\Credentials\NewCredentialsViewModel.cs" />
     <Compile Include="Views\Credentials\SamAccountName.cs" />
-    <Compile Include="Views\Credentials\ShowCredentialsDialog.cs">
+    <Compile Include="Views\Credentials\ShowCredentialsView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Credentials\ShowCredentialsDialog.Designer.cs">
-      <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
+    <Compile Include="Views\Credentials\ShowCredentialsView.Designer.cs">
+      <DependentUpon>ShowCredentialsView.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\ShellExtension.cs" />
     <Compile Include="Views\Options\SshOptionsSheet.cs">
@@ -303,11 +304,11 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Credentials\GenerateCredentialsDialog.resx">
-      <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Credentials\NewCredentialsView.resx">
+      <DependentUpon>NewCredentialsView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Credentials\ShowCredentialsDialog.resx">
-      <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Credentials\ShowCredentialsView.resx">
+      <DependentUpon>ShowCredentialsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Options\SshOptionsSheet.resx">
       <DependentUpon>SshOptionsSheet.cs</DependentUpon>

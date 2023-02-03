@@ -42,9 +42,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 
     [Service(typeof(IShowCredentialsDialog))]
     [SkipCodeCoverage("View code")]
-    public partial class ShowCredentialsDialog : Form, IShowCredentialsDialog
+    public partial class ShowCredentialsView : Form, IShowCredentialsDialog
     {
-        public ShowCredentialsDialog(IThemeService themeService)
+        public ShowCredentialsView(IThemeService themeService)
         {
             InitializeComponent();
 

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,107 +19,61 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.Mvvm.Binding;
 using System;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
     public interface INewCredentialsDialog
     {
-        Task ShowDialogAsync(
+        GenerateCredentialsDialogResult ShowDialog(
             IWin32Window owner,
-            InstanceLocator instanceRef,
-            ConnectionSettingsBase settings,
-            bool silent);
+            string suggestedUsername);
+    }
 
-        Task<bool> IsGrantedPermissionToGenerateCredentials(
-            InstanceLocator instanceRef);
+    public class GenerateCredentialsDialogResult
+    {
+        public DialogResult Result { get; }
+        public string Username { get; }
+
+        public GenerateCredentialsDialogResult(
+            DialogResult result,
+            string username)
+        {
+            this.Result = result;
+            this.Username = username;
+        }
     }
 
     [Service(typeof(INewCredentialsDialog))]
     public class NewCredentialsDialog : INewCredentialsDialog
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly ViewFactory<NewCredentialsView, NewCredentialsViewModel> dialogFactory;
 
-        public NewCredentialsDialog(IServiceProvider serviceProvider) // TODO: Inject Service<>
+        public NewCredentialsDialog(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
+            this.dialogFactory = serviceProvider
+                .GetViewFactory<NewCredentialsView, NewCredentialsViewModel>();
+            this.dialogFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
         }
 
-        public async Task ShowDialogAsync(
-            IWin32Window owner,
-            InstanceLocator instanceLocator,
-            ConnectionSettingsBase settings,
-            bool silent)
+        public GenerateCredentialsDialogResult ShowDialog(
+            IWin32Window owner, 
+            string suggestedUsername)
         {
-            var username = string.IsNullOrEmpty(settings.RdpUsername.StringValue)
-                ? this.serviceProvider
-                    .GetService<IAuthorizationSource>()
-                    .Authorization
-                    .SuggestWindowsUsername()
-                : settings.RdpUsername.StringValue;
-
-            if (!silent)
+            using (var dialog = this.dialogFactory.CreateDialog())
             {
-                //
-                // Prompt user to customize the defaults.
-                //
+                dialog.ViewModel.Username = suggestedUsername;
 
-                var dialogResult = this.serviceProvider
-                    .GetService<IGenerateCredentialsDialog>()
-                    .ShowDialog(owner,
-                    username);
+                var result = dialog.ShowDialog(owner);
 
-                if (dialogResult.Result == DialogResult.OK)
-                {
-                    username = dialogResult.Username;
-                }
-                else
-                {
-                    throw new OperationCanceledException();
-                }
+                return new GenerateCredentialsDialogResult(
+                    result,
+                    dialog.ViewModel.Username);
             }
-
-            var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
-                new JobDescription("Generating Windows logon credentials..."),
-                token => this.serviceProvider
-                    .GetService<IWindowsCredentialService>()
-                    .CreateWindowsCredentialsAsync(
-                        instanceLocator,
-                        username,
-                        UserFlags.AddToAdministrators,
-                        token))
-                .ConfigureAwait(true);
-
-            if (!silent)
-            {
-                this.serviceProvider.GetService<IShowCredentialsDialog>().ShowDialog(
-                    owner,
-                    credentials.UserName,
-                    credentials.Password);
-            }
-
-            // Save credentials.
-            settings.RdpUsername.StringValue = credentials.UserName;
-            settings.RdpPassword.ClearTextValue = credentials.Password;
-
-            // NB. The computer might be joined to a domain, therefore force a local logon.
-            settings.RdpDomain.StringValue = ".";
-        }
-
-        public async Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
-        {
-            return await this.serviceProvider
-                .GetService<IWindowsCredentialService>()
-                .IsGrantedPermissionToCreateWindowsCredentialsAsync(instance)
-                .ConfigureAwait(false);
         }
     }
 }

@@ -73,9 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 //
 
                 var dialogResult = this.serviceProvider
-                    .GetService<IGenerateCredentialsDialog>()
-                    .ShowDialog(owner,
-                    username);
+                    .GetService<INewCredentialsDialog>()
+                    .ShowDialog(owner, username);
 
                 if (dialogResult.Result == DialogResult.OK)
                 {

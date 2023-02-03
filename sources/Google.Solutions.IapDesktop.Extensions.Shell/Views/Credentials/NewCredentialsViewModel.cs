@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
+    [Service]
     public class NewCredentialsViewModel : ViewModelBase
     {
         // SAM usernames do not permit these characters, see
@@ -38,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             "defaultaccount",
             "wdagutilityaccount"
         };
+
         static NewCredentialsViewModel()
         {
             Debug.Assert(ReservedUsernames.All(u => u == u.ToLower()));
