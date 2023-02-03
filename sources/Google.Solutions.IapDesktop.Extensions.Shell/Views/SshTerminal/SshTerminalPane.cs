@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             Debug.Assert(!this.InvokeRequired);
 
-            var prompt = this.promptFactory.Create(); //TODO: Test manually
+            var prompt = this.promptFactory.Create();
             prompt.ViewModel.Title = "2-step verification";
             prompt.ViewModel.Description = e.Prompt;
             prompt.ViewModel.IsPasswordMasked = e.IsPasswordPrompt;

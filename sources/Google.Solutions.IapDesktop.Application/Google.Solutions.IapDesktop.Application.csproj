@@ -157,6 +157,7 @@
     <Compile Include="Util\TypographicQuotes.cs" />
     <Compile Include="Util\Filename.cs" />
     <Compile Include="Util\WindowMessage.cs" />
+    <Compile Include="Views\About\AboutViewModel.cs" />
     <Compile Include="Views\Authorization\DeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authorization\NewProfileDialog.cs">
       <SubType>Form</SubType>
@@ -287,11 +288,11 @@
     <Compile Include="ApplicationTraceSources.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
     <Compile Include="Data\IapRdpUrl.cs" />
-    <Compile Include="Views\About\AboutWindow.cs">
+    <Compile Include="Views\About\AboutView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\About\AboutWindow.Designer.cs">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
+    <Compile Include="Views\About\AboutView.Designer.cs">
+      <DependentUpon>AboutView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Diagnostics\DebugJobServiceWindow.cs">
       <SubType>Form</SubType>
@@ -355,8 +356,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\About\AboutWindow.resx">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\About\AboutView.resx">
+      <DependentUpon>AboutView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Authorization\DeviceFlyoutWindow.resx">
       <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>

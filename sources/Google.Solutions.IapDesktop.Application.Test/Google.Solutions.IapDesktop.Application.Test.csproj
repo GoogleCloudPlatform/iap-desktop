@@ -143,6 +143,7 @@
     <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Util\TestStringExtensions.cs" />
     <Compile Include="Util\TestTypographicQuotes.cs" />
+    <Compile Include="Views\About\TestAboutViewModel.cs" />
     <Compile Include="Views\Authorization\TestDeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authorization\TestNewProfileViewModel.cs" />
     <Compile Include="Views\Dialog\TestCredentialDialog.cs" />

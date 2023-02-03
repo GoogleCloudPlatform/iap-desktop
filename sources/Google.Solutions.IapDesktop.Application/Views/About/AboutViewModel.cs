@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,36 +19,26 @@
 // under the License.
 //
 
+
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.Mvvm.Binding;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.About
 {
-    [SkipCodeCoverage("UI code")]
-    public partial class AboutWindow : Form
+    [Service]
+    public class AboutViewModel : ViewModelBase
     {
-        private const string AuthorText = "Johannes Passing";
-        private const string AuthorLink = "https://github.com/jpassing";
-
-        public static Version ProgramVersion => typeof(AboutWindow).Assembly.GetName().Version;
-
-        public AboutWindow(IUpdateService updateService)
+        public AboutViewModel(IUpdateService updateService)
         {
-            InitializeComponent();
-
-            this.infoLabel.Text = $"IAP Desktop\nVersion {updateService.InstalledVersion}\n.NET {ClrVersion.Version}";
-            this.copyrightLabel.Text = $"\u00a9 2019-{DateTime.Now.Year} Google LLC";
-            this.authorLink.Text = AuthorText;
-            this.authorLink.LinkClicked += (sender, args) =>
-            {
-                using (Process.Start(AuthorLink))
-                { }
-            };
+            this.Information = $"IAP Desktop\n" +
+                $"Version {updateService.InstalledVersion}\n" +
+                $".NET {ClrVersion.Version}";
+            this.Copyright = $"\u00a9 2019-{DateTime.Now.Year} Google LLC";
 
             var assembly = GetType().Assembly;
             var resourceName = assembly.GetManifestResourceNames().First(s => s.EndsWith("About.rtf"));
@@ -56,14 +46,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             using (var reader = new StreamReader(stream))
             {
                 string result = reader.ReadToEnd();
-                this.licenseText.Rtf = result;
+                this.LicenseText = result;
             }
         }
 
-        private void licenseText_LinkClicked(object sender, LinkClickedEventArgs e)
-        {
-            using (Process.Start(e.LinkText))
-            { }
-        }
+        public string AuthorText => "Johannes Passing";
+
+        public string AuthorLink => "https://github.com/jpassing";
+
+        public string Information { get; }
+
+        public string Copyright { get; }
+
+        public string LicenseText { get; }
     }
 }

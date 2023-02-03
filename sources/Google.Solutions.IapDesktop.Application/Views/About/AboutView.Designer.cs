@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.About
 {
-    partial class AboutWindow
+    partial class AboutView
     {
         /// <summary>
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutView));
             this.okButton = new System.Windows.Forms.Button();
             this.infoLabel = new System.Windows.Forms.Label();
             this.authorLabel = new System.Windows.Forms.Label();

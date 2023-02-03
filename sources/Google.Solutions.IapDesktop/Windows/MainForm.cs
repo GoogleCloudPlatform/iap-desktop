@@ -748,7 +748,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<AboutWindow>().ShowDialog(this);
+            this.serviceProvider
+                .GetView<AboutView, AboutViewModel>()
+                .ShowDialog(this);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs _)

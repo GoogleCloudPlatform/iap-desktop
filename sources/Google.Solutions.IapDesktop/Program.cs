@@ -348,8 +348,9 @@ namespace Google.Solutions.IapDesktop
                 windowLayer.AddSingleton<IMainForm>(mainForm);
                 windowLayer.AddTransient<OAuthScopeNotGrantedView>();
                 windowLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
+                windowLayer.AddTransient<AboutView>();
+                windowLayer.AddTransient<AboutViewModel>();
                 windowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
-                windowLayer.AddTransient<AboutWindow>();
                 windowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
                 windowLayer.AddTransient<OptionsDialog>();
 
