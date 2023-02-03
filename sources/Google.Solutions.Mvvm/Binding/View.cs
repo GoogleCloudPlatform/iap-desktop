@@ -86,22 +86,6 @@ namespace Google.Solutions.Mvvm.Binding
             return view;
         }
 
-        /// <summary>
-        /// Create an MVVM-enabled dialog using the service provider, and bind
-        /// a custom view model.
-        /// </summary>
-        public static Dialog<TView, TViewModel> GetDialog<TView, TViewModel>(
-            this IServiceProvider serviceProvider,
-            TViewModel viewModel)
-            where TView : Form, IView<TViewModel>
-            where TViewModel : ViewModelBase
-        {
-            serviceProvider.ThrowIfNull(nameof(serviceProvider));
-            viewModel.ThrowIfNull(nameof(viewModel));
-
-            return new Dialog<TView, TViewModel>(serviceProvider, viewModel);
-        }
-
         //---------------------------------------------------------------------
         // Windows.
         //---------------------------------------------------------------------
@@ -130,22 +114,6 @@ namespace Google.Solutions.Mvvm.Binding
             view.Theme = theme;
             return view;
         }
-
-        /// <summary>
-        /// Create an MVVM-enabled window using the service provider, and bind
-        /// a custom view model.
-        /// </summary>
-        public static Window<TView, TViewModel> GetWindow<TView, TViewModel>(
-            this IServiceProvider serviceProvider,
-            TViewModel viewModel)
-            where TView : Form, IView<TViewModel>
-            where TViewModel : ViewModelBase
-        {
-            serviceProvider.ThrowIfNull(nameof(serviceProvider));
-            viewModel.ThrowIfNull(nameof(viewModel));
-
-            return new Window<TView, TViewModel>(serviceProvider, viewModel);
-        }
     }
 
     /// <summary>
@@ -153,10 +121,15 @@ namespace Google.Solutions.Mvvm.Binding
     /// and view model is used for each View.
     /// </summary>
     public class ViewFactory<TView, TViewModel>
-            where TView : Form, IView<TViewModel>
-            where TViewModel : ViewModelBase
+        where TView : Form, IView<TViewModel>
+        where TViewModel : ViewModelBase
     {
         private readonly IServiceProvider serviceProvider;
+
+        private TViewModel CreateViewModel()
+        {
+            return (TViewModel)this.serviceProvider.GetService(typeof(TViewModel));
+        }
 
         public IControlTheme Theme { get; set; }
 
@@ -165,11 +138,9 @@ namespace Google.Solutions.Mvvm.Binding
             this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
         }
 
-        public Dialog<TView, TViewModel> CreateDialog()
+        public Dialog<TView, TViewModel> CreateDialog(TViewModel viewModel)
         {
-            var view = new Dialog<TView, TViewModel>(
-                serviceProvider,
-                (TViewModel)serviceProvider.GetService(typeof(TViewModel)));
+            var view = new Dialog<TView, TViewModel>(serviceProvider, viewModel);
 
             if (this.Theme != null)
             {
@@ -177,6 +148,11 @@ namespace Google.Solutions.Mvvm.Binding
             }
 
             return view;
+        }
+
+        public Dialog<TView, TViewModel> CreateDialog()
+        {
+            return CreateDialog(CreateViewModel());
         }
 
         public Window<TView, TViewModel> CreateWindow()

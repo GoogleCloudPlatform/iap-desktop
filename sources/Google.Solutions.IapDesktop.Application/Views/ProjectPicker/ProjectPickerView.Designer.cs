@@ -23,7 +23,7 @@ using Google.Solutions.Mvvm.Controls;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
-    partial class ProjectPickerWindow
+    partial class ProjectPickerView
     {
         /// <summary>
         /// Required designer variable.

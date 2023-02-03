@@ -256,17 +256,17 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ProjectExplorer\ProjectExplorerViewModel.cs" />
-    <Compile Include="Views\ProjectPicker\ProjectPickerDialog.cs" />
+    <Compile Include="Views\ProjectPicker\ProjectPicker.cs" />
     <Compile Include="Views\ProjectPicker\IProjectPickerModel.cs" />
     <Compile Include="Views\ProjectPicker\ProjectList.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\ProjectPicker\ProjectPickerViewModel.cs" />
-    <Compile Include="Views\ProjectPicker\ProjectPickerWindow.cs">
+    <Compile Include="Views\ProjectPicker\ProjectPickerView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\ProjectPicker\ProjectPickerWindow.Designer.cs">
-      <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
+    <Compile Include="Views\ProjectPicker\ProjectPickerView.Designer.cs">
+      <DependentUpon>ProjectPickerView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Properties\IPropertiesSheet.cs" />
     <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
@@ -398,8 +398,8 @@
     <EmbeddedResource Include="Views\Options\NetworkOptionsSheet.resx">
       <DependentUpon>NetworkOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\ProjectPicker\ProjectPickerWindow.resx">
-      <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\ProjectPicker\ProjectPickerView.resx">
+      <DependentUpon>ProjectPickerView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Properties\PropertiesDialog.resx">
       <DependentUpon>PropertiesDialog.cs</DependentUpon>
