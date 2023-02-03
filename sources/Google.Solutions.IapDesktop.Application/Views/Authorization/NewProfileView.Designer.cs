@@ -23,7 +23,7 @@ using Google.Solutions.Mvvm.Controls;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
-    partial class NewProfileDialog
+    partial class NewProfileView
     {
         /// <summary>
         /// Required designer variable.

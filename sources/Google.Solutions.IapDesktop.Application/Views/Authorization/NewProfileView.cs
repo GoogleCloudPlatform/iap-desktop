@@ -26,55 +26,32 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
     [SkipCodeCoverage("View code")]
-    public partial class NewProfileDialog : Form
+    public partial class NewProfileView : Form, IView<NewProfileViewModel>
     {
-        private readonly NewProfileViewModel viewModel
-            = new NewProfileViewModel();
-
-        public NewProfileDialog()
+        public NewProfileView()
         {
             InitializeComponent();
+        }
 
+        public void Bind(NewProfileViewModel viewModel)
+        {
             this.profileNameTextBox.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                viewModel,
                 m => m.ProfileName,
                 this.components);
             this.profileNameInvalidLabel.BindReadonlyProperty(
                 c => c.Visible,
-                this.viewModel,
+                viewModel,
                 m => m.IsProfileNameInvalid,
                 this.components);
 
             // Bind buttons.
             this.okButton.BindReadonlyProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsOkButtonEnabled,
                 this.components);
-        }
-
-        public new NewProfileDialogResult ShowDialog(
-            IWin32Window owner)
-        {
-            var result = base.ShowDialog(owner);
-            return new NewProfileDialogResult(
-                result,
-                this.viewModel.ProfileName);
-        }
-    }
-
-    public struct NewProfileDialogResult
-    {
-        public DialogResult Result { get; }
-        public string ProfileName { get; }
-
-        public NewProfileDialogResult(
-            DialogResult result,
-            string profileName)
-        {
-            Result = result;
-            ProfileName = profileName;
         }
     }
 }
