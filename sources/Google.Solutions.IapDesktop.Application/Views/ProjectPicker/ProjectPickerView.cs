@@ -51,6 +51,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                     this.exceptionDialog.Show(this, "Loading projects failed", e);
                 });
 
+            this.BindReadonlyProperty(
+                c => c.Text,
+                viewModel,
+                m => m.DialogText,
+                this.components);
             this.headlineLabel.BindReadonlyProperty(
                 c => c.Text,
                 viewModel,

@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IJobService jobService;
         private readonly IAuthorizationSource authService;
         private readonly IExceptionDialog exceptionDialog;
-        private readonly IProjectPicker projectPickerDialog;
+        private readonly IProjectPickerDialog projectPickerDialog;
 
         private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
 
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.jobService = serviceProvider.GetService<IJobService>();
             this.authService = serviceProvider.GetService<IAuthorizationSource>();
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.projectPickerDialog = serviceProvider.GetService<IProjectPicker>();
+            this.projectPickerDialog = serviceProvider.GetService<IProjectPickerDialog>();
             this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
 
             this.viewModel = new ProjectExplorerViewModel(

@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         public async Task WhenCloudModelFilterIsNull_ThenProjectFilterIsNull()
         {
             var resourceManager = new Mock<IResourceManagerAdapter>();
-            var model = new Application.Views.ProjectPicker.ProjectPicker.CloudModel(resourceManager.Object);
+            var model = new Application.Views.ProjectPicker.ProjectPickerDialog.CloudModel(resourceManager.Object);
 
             await model
                 .ListProjectsAsync(null, 1, CancellationToken.None)
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         public async Task WhenCloudModelFilterIsNotNull_ThenProjectFilterIsSet()
         {
             var resourceManager = new Mock<IResourceManagerAdapter>();
-            var model = new Application.Views.ProjectPicker.ProjectPicker.CloudModel(resourceManager.Object);
+            var model = new Application.Views.ProjectPicker.ProjectPickerDialog.CloudModel(resourceManager.Object);
 
             await model
                 .ListProjectsAsync("test", 1, CancellationToken.None)
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         [Test]
         public async Task WhenStaticModelProjectsIsNull_ThenListProjectsReturnsEmptyList()
         {
-            var model = new Application.Views.ProjectPicker.ProjectPicker.StaticModel(null);
+            var model = new Application.Views.ProjectPicker.ProjectPickerDialog.StaticModel(null);
 
             var result = await model
                 .ListProjectsAsync(null, 100, CancellationToken.None)
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 new Project() { ProjectId = "foobar", Name = "Foobar" }
             };
 
-            var model = new Application.Views.ProjectPicker.ProjectPicker.StaticModel(projects);
+            var model = new Application.Views.ProjectPicker.ProjectPickerDialog.StaticModel(projects);
 
             var result = await model
                 .ListProjectsAsync(null, 100, CancellationToken.None)
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 new Project() { ProjectId = "foobar", Name = "Foobar" }
             };
 
-            var model = new Application.Views.ProjectPicker.ProjectPicker.StaticModel(projects);
+            var model = new Application.Views.ProjectPicker.ProjectPickerDialog.StaticModel(projects);
 
             var result = await model
                 .ListProjectsAsync(null, 2, CancellationToken.None)
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                 new Project() { ProjectId = "foobar", Name = "Foobar" }
             };
 
-            var model = new Application.Views.ProjectPicker.ProjectPicker.StaticModel(projects);
+            var model = new Application.Views.ProjectPicker.ProjectPickerDialog.StaticModel(projects);
 
             var result = await model
                 .ListProjectsAsync("FO", 100, CancellationToken.None)

@@ -19,11 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
+using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -77,10 +79,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
                     CreateFileItem("File", false).Object
                 });
 
-            var exceptionDialog = new Mock<IExceptionDialog>();
-            var dialog = new DownloadFileDialog(
-                exceptionDialog.Object,
-                new Mock<IThemeService>().Object);
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IExceptionDialog>();
+            serviceRegistry.AddMock<IThemeService>();
+            serviceRegistry.AddTransient<DownloadFileView>();
+            serviceRegistry.AddTransient<DownloadFileViewModel>();
+
+            var dialog = new DownloadFileDialog(serviceRegistry);
             dialog.SelectDownloadFiles(
                 null,
                 "Test",

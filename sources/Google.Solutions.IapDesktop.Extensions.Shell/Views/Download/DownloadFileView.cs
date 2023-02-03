@@ -19,69 +19,66 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Controls;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
 {
-    internal partial class DownloadFileWindow : Form
+    [Service]
+    internal partial class DownloadFileView : Form, IView<DownloadFileViewModel>
     {
-        private readonly DownloadFileViewModel viewModel;
+        private readonly IExceptionDialog exceptionDialog;
 
-        public DownloadFileWindow(
-            FileBrowser.IFileSystem fileSystem,
-            IExceptionDialog exceptionDialog)
+        public DownloadFileView(IExceptionDialog exceptionDialog)
         {
+            this.exceptionDialog = exceptionDialog;
+
             InitializeComponent();
+        }
 
-            SuspendLayout();
-
-            this.viewModel = new DownloadFileViewModel();
-
+        public void Bind(DownloadFileViewModel viewModel)
+        {
+            this.BindReadonlyProperty(
+                c => c.Text,
+                viewModel,
+                m => m.DialogText,
+                this.Container);
             this.targetDirectoryTextBox.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                viewModel,
                 m => m.TargetDirectory,
                 this.Container);
             this.fileBrowser.BindProperty(
                 c => c.SelectedFiles,
-                this.viewModel,
+                viewModel,
                 m => m.SelectedFiles,
                 this.Container);
             this.downloadButton.BindReadonlyProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsDownloadButtonEnabled,
                 this.Container);
-            this.fileBrowser.Bind(fileSystem);
+            this.fileBrowser.Bind(viewModel.FileSystem);
+
             this.fileBrowser.NavigationFailed += (_, args) =>
-                exceptionDialog.Show(this, "Navigation failed", args.Exception);
+                this.exceptionDialog.Show(this, "Navigation failed", args.Exception);
 
             this.browseButton.Click += (s, args) =>
             {
                 using (var dialog = new FolderBrowserDialog()
                 {
                     Description = "The files are downloaded and saved to this folder",
-                    SelectedPath = this.viewModel.TargetDirectory.Value
+                    SelectedPath = viewModel.TargetDirectory.Value
                 })
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
-                        this.viewModel.TargetDirectory.Value = dialog.SelectedPath;
+                        viewModel.TargetDirectory.Value = dialog.SelectedPath;
                     }
                 }
             };
-
-            ResumeLayout();
         }
-
-        public string TargetDirectory => this.targetDirectoryTextBox.Text;
-
-        public IEnumerable<FileBrowser.IFileItem> SelectedFiles => this.viewModel
-            .SelectedFiles
-            .Value;
     }
 }

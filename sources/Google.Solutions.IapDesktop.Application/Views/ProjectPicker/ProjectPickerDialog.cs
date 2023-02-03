@@ -38,7 +38,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
-    public interface IProjectPicker
+    public interface IProjectPickerDialog
     {
         DialogResult SelectCloudProjects(
             IWin32Window owner,
@@ -53,12 +53,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             out IReadOnlyCollection<ProjectLocator> selectedProjects);
     }
 
-    public class ProjectPicker : IProjectPicker
+    public class ProjectPickerDialog : IProjectPickerDialog
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly ViewFactory<ProjectPickerView, ProjectPickerViewModel> viewFactory;
 
-        public ProjectPicker(IServiceProvider serviceProvider)
+        public ProjectPickerDialog(IServiceProvider serviceProvider)
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.viewFactory = serviceProvider.GetViewFactory<ProjectPickerView, ProjectPickerViewModel>();

@@ -355,7 +355,7 @@ namespace Google.Solutions.IapDesktop
                 windowLayer.AddTransient<NewProfileView>();
                 windowLayer.AddTransient<NewProfileViewModel>();
 
-                windowLayer.AddTransient<IProjectPicker, ProjectPicker>();
+                windowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
                 windowLayer.AddTransient<ProjectPickerView>();
                 windowLayer.AddTransient<ProjectPickerViewModel>();
 

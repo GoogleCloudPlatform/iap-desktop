@@ -33,6 +33,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
     [TestFixture]
     public class TestDownloadFileViewModel
     {
+        private static Mock<FileBrowser.IFileSystem> CreateFileSystem()
+        {
+            return new Mock<FileBrowser.IFileSystem>();
+        }
+
         private static Mock<FileBrowser.IFileItem> CreateFileItem(
             string name,
             FileAttributes attributes)
@@ -60,14 +65,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
         [Test]
         public void WhenNoFileSelected_ThenIsDownloadButtonEnabledReturnsFalse()
         {
-            var viewModel = new DownloadFileViewModel();
+            var viewModel = new DownloadFileViewModel(CreateFileSystem().Object);
             Assert.IsFalse(viewModel.IsDownloadButtonEnabled.Value);
         }
 
         [Test]
         public void WhenDirectorySelected_ThenIsDownloadButtonEnabledReturnsFalse()
         {
-            var viewModel = new DownloadFileViewModel();
+            var viewModel = new DownloadFileViewModel(CreateFileSystem().Object);
             viewModel.SelectedFiles.Value = new[]
             {
                 CreateFileItem("Directory", FileAttributes.Directory).Object,
@@ -80,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
         [Test]
         public void WhenLinkSelected_ThenIsDownloadButtonEnabledReturnsFalse()
         {
-            var viewModel = new DownloadFileViewModel();
+            var viewModel = new DownloadFileViewModel(CreateFileSystem().Object);
             viewModel.SelectedFiles.Value = new[]
             {
                 CreateFileItem("Link", FileAttributes.ReparsePoint).Object,
@@ -93,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
         [Test]
         public void WhenMultipleFilesSelected_ThenIsDownloadButtonEnabledReturnsTrue()
         {
-            var viewModel = new DownloadFileViewModel();
+            var viewModel = new DownloadFileViewModel(CreateFileSystem().Object);
             viewModel.SelectedFiles.Value = new[]
             {
                 CreateFileItem("File 1", FileAttributes.Normal).Object,

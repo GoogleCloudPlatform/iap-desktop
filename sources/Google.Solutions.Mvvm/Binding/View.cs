@@ -218,7 +218,10 @@ namespace Google.Solutions.Mvvm.Binding
                 // Bind view <-> view model.
                 //
                 this.ViewModel.View = view;
+
+                view.SuspendLayout();
                 view.Bind(this.ViewModel);
+                view.ResumeLayout();
 
                 var result = view.ShowDialog(parent);
 
@@ -274,7 +277,10 @@ namespace Google.Solutions.Mvvm.Binding
                     // Bind view <-> view model.
                     //
                     this.ViewModel.View = view;
+
+                    view.SuspendLayout();
                     view.Bind(this.ViewModel);
+                    view.ResumeLayout();
 
                     //
                     // Tie lifetime of the view model to that of the view.
