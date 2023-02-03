@@ -37,14 +37,14 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 {
     [TestFixture]
-    public class TestCredentialPrompt : ShellFixtureBase
+    public class TestSelectCredentialsWorkflow : ShellFixtureBase
     {
         private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
 
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private ICredentialPrompt CreateCredentialsPrompt(
+        private ISelectCredentialsWorkflow CreateCredentialsPrompt(
             bool isGrantedPermissionToGenerateCredentials,
             bool expectSilentCredentialGeneration,
             Mock<ITaskDialog> taskDialogMock)
@@ -53,8 +53,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
             this.serviceRegistry.AddMock<IShowCredentialsDialog>();
 
-            var credentialsService = this.serviceRegistry.AddMock<ICredentialsService>();
-            credentialsService.Setup(s => s.GenerateCredentialsAsync(
+            var credentialsService = this.serviceRegistry.AddMock<ICreateCredentialsWorkflow>();
+            credentialsService.Setup(s => s.CreateCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                     It.IsAny<InstanceLocator>()))
                 .ReturnsAsync(isGrantedPermissionToGenerateCredentials);
 
-            return new CredentialPrompt(serviceRegistry);
+            return new SelectCredentialsWorkflow(serviceRegistry);
         }
 
         //---------------------------------------------------------------------
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Allow;
 
             await credentialPrompt
-                .ShowCredentialsPromptAsync(
+                .SelectCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
             await credentialPrompt
-                .ShowCredentialsPromptAsync(
+                .SelectCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
 
             await credentialPrompt
-                .ShowCredentialsPromptAsync(
+                .SelectCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                () => credentialPrompt.ShowCredentialsPromptAsync(
+                () => credentialPrompt.SelectCredentialsAsync(
                 null,
                 SampleInstance,
                 settings,
@@ -292,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
             await credentialPrompt
-                .ShowCredentialsPromptAsync(
+                .SelectCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -341,7 +341,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                () => credentialPrompt.ShowCredentialsPromptAsync(
+                () => credentialPrompt.SelectCredentialsAsync(
                 null,
                 SampleInstance,
                 settings,
@@ -381,7 +381,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
 
             await credentialPrompt
-                .ShowCredentialsPromptAsync(
+                .SelectCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -427,7 +427,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpPassword.ClearTextValue = "alicespassword";
 
             await credentialPrompt
-                .ShowCredentialsPromptAsync(
+                .SelectCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -465,7 +465,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Force;
 
             await credentialPrompt
-                .ShowCredentialsPromptAsync(
+                .SelectCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -511,7 +511,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Force;
 
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                () => credentialPrompt.ShowCredentialsPromptAsync(
+                () => credentialPrompt.SelectCredentialsAsync(
                 null,
                 SampleInstance,
                 settings,

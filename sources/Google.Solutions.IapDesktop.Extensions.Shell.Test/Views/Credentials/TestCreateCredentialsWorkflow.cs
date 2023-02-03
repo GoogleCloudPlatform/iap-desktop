@@ -39,7 +39,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 {
     [TestFixture]
-    public class TestCredentialsService : ShellFixtureBase
+    public class TestCreateCredentialsWorkflow : ShellFixtureBase
     {
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -64,9 +64,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpUsername.Value = "alice";
 
-            var credentialsService = new CredentialsService(serviceRegistry);
+            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                () => credentialsService.GenerateCredentialsAsync(
+                () => credentialsService.CreateCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -99,9 +99,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
 
-            var credentialsService = new CredentialsService(serviceRegistry);
+            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                () => credentialsService.GenerateCredentialsAsync(
+                () => credentialsService.CreateCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -134,9 +134,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpUsername.Value = "";
 
-            var credentialsService = new CredentialsService(serviceRegistry);
+            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
             ExceptionAssert.ThrowsAggregateException<TaskCanceledException>(
-                () => credentialsService.GenerateCredentialsAsync(
+                () => credentialsService.CreateCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -179,8 +179,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpUsername.Value = "";
 
-            var credentialsService = new CredentialsService(serviceRegistry);
-            await credentialsService.GenerateCredentialsAsync(
+            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
+            await credentialsService.CreateCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -223,8 +223,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpUsername.Value = "alice";
 
-            var credentialsService = new CredentialsService(serviceRegistry);
-            await credentialsService.GenerateCredentialsAsync(
+            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
+            await credentialsService.CreateCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,
@@ -260,8 +260,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
 
-            var credentialsService = new CredentialsService(serviceRegistry);
-            await credentialsService.GenerateCredentialsAsync(
+            var credentialsService = new CreateCredentialsWorkflow(serviceRegistry);
+            await credentialsService.CreateCredentialsAsync(
                     null,
                     SampleInstance,
                     settings,

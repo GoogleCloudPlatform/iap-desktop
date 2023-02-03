@@ -310,7 +310,6 @@
     <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
       <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\ThemeColors.cs" />
     <Compile Include="Views\ToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>

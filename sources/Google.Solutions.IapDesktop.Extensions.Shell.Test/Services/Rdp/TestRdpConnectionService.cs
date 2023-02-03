@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
-                new Mock<ICredentialPrompt>().Object);
+                new Mock<ISelectCredentialsWorkflow>().Object);
 
             var session = await service
                 .ActivateOrConnectInstanceAsync(vmNode.Object, false)
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
-                new Mock<ICredentialPrompt>().Object);
+                new Mock<ISelectCredentialsWorkflow>().Object);
 
             var session = await service
                 .ActivateOrConnectInstanceAsync(vmNode.Object, true)
@@ -189,8 +189,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
         {
             var settingsService = new Mock<IConnectionSettingsService>();
 
-            var credentialPrompt = new Mock<ICredentialPrompt>();
-            credentialPrompt.Setup(p => p.ShowCredentialsPromptAsync(
+            var credentialPrompt = new Mock<ISelectCredentialsWorkflow>();
+            credentialPrompt.Setup(p => p.SelectCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
@@ -241,9 +241,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
         {
             var settingsService = new Mock<IConnectionSettingsService>();
 
-            var credentialPrompt = new Mock<ICredentialPrompt>();
+            var credentialPrompt = new Mock<ISelectCredentialsWorkflow>();
             credentialPrompt
-                .Setup(p => p.ShowCredentialsPromptAsync(
+                .Setup(p => p.SelectCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
@@ -305,9 +305,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
             vmNode.SetupGet(n => n.Instance)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            var credentialPrompt = new Mock<ICredentialPrompt>();
+            var credentialPrompt = new Mock<ISelectCredentialsWorkflow>();
             credentialPrompt
-                .Setup(p => p.ShowCredentialsPromptAsync(
+                .Setup(p => p.SelectCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),

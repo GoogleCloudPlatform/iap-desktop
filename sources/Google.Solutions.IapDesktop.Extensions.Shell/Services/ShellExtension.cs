@@ -151,8 +151,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     .GetService<IConnectionSettingsService>();
                 var settings = settingsService.GetConnectionSettings(vmNode);
 
-                await this.serviceProvider.GetService<ICredentialsService>()
-                    .GenerateCredentialsAsync(
+                await this.serviceProvider.GetService<ICreateCredentialsWorkflow>()
+                    .CreateCredentialsAsync(
                         this.window,
                         vmNode.Instance,
                         settings.TypedCollection,
