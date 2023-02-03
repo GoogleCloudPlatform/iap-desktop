@@ -19,52 +19,49 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory
 {
-    public partial class JoinDialog : Form
+    [Service]
+    public partial class JoinView : Form, IView<JoinViewModel>
     {
-        private readonly JoinViewModel viewModel;
-
-        public JoinDialog()
+        public JoinView()
         {
             InitializeComponent();
+        }
 
-            this.viewModel = new JoinViewModel();
+        public void Bind(JoinViewModel viewModel)
+        { 
             this.domainText.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                viewModel,
                 m => m.DomainName,
                 this.Container);
             this.domainWarning.BindReadonlyProperty(
                 c => c.Visible,
-                this.viewModel,
+                viewModel,
                 m => m.IsDomainNameInvalid,
                 this.Container);
 
             this.computerNameText.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                viewModel,
                 m => m.ComputerName,
                 this.Container);
             this.computerNameWarning.BindReadonlyProperty(
                 c => c.Visible,
-                this.viewModel,
+                viewModel,
                 m => m.IsComputerNameInvalid,
                 this.Container);
 
             this.okButton.BindReadonlyProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsOkButtonEnabled,
                 this.Container);
         }
-
-        public ObservableProperty<string> ComputerName => this.viewModel.ComputerName;
-
-        public ObservableProperty<string> DomainName => this.viewModel.DomainName;
     }
 }

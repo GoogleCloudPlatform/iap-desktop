@@ -37,6 +37,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Commands;
 using System;
 using System.Threading.Tasks;
@@ -51,6 +52,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
     public class ManagementExtension
     {
         private readonly IServiceProvider serviceProvider;
+
+        private readonly ViewFactory<JoinView, JoinViewModel> joinDialogFactory;
 
         private async Task ControlInstanceAsync(
             InstanceLocator instance,
@@ -102,24 +105,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 
             string domainName;
             string newComputerName;
-            using (var dialog = new JoinDialog())
-            {
-                this.serviceProvider
-                    .GetService<IThemeService>()
-                    .DialogTheme
-                    .ApplyTo(dialog);
 
-                //
-                // Prompt for domain name, computer name.
-                //
-                dialog.ComputerName.Value = instance.DisplayName;
+            using (var dialog = this.joinDialogFactory.CreateDialog())
+            {
+                dialog.ViewModel.ComputerName.Value = instance.DisplayName;
+
                 if (dialog.ShowDialog(mainForm.Window) != DialogResult.OK)
                 {
                     return;
                 }
 
-                domainName = dialog.DomainName.Value.Trim();
-                var computerName = dialog.ComputerName.Value.Trim();
+                domainName = dialog.ViewModel.DomainName.Value.Trim();
+                var computerName = dialog.ViewModel.ComputerName.Value.Trim();
 
                 //
                 // Only specify a "new" computer name if it's different.
@@ -175,6 +172,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
         public ManagementExtension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+
+            this.joinDialogFactory = this.serviceProvider.GetViewFactory<JoinView, JoinViewModel>();
+            this.joinDialogFactory.Theme = this.serviceProvider.GetService<IThemeService>().DialogTheme;
+
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             //

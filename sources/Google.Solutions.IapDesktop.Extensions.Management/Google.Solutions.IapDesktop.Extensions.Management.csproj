@@ -153,11 +153,11 @@
     <Compile Include="Services\ActiveDirectory\NetworkCredentialExtensions.cs" />
     <Compile Include="Services\ActiveDirectory\StartupScriptOperation.cs" />
     <Compile Include="Services\Inventory\InventoryService.cs" />
-    <Compile Include="Views\ActiveDirectory\JoinDialog.cs">
+    <Compile Include="Views\ActiveDirectory\JoinView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\ActiveDirectory\JoinDialog.Designer.cs">
-      <DependentUpon>JoinDialog.cs</DependentUpon>
+    <Compile Include="Views\ActiveDirectory\JoinView.Designer.cs">
+      <DependentUpon>JoinView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ActiveDirectory\JoinViewModel.cs" />
     <Compile Include="Views\EventLog\EventLogModel.cs" />
@@ -239,8 +239,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\ActiveDirectory\JoinDialog.resx">
-      <DependentUpon>JoinDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Views\ActiveDirectory\JoinView.resx">
+      <DependentUpon>JoinView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\EventLog\EventLogWindow.resx">
       <DependentUpon>EventLogWindow.cs</DependentUpon>
