@@ -22,11 +22,9 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.Mvvm.Controls;
 using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -49,26 +47,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             InitializeComponent();
 
             themeService.DialogTheme.ApplyTo(this);
-        }
 
-        private void ShowCredentialsDialog_Load(object sender, System.EventArgs e)
-        {
-            var copyPasswordButton = new Button
-            {
-                Size = new Size(25, passwordText.ClientSize.Height + 2)
-            };
-            copyPasswordButton.Location = new Point(passwordText.ClientSize.Width - copyPasswordButton.Width, -1);
-            copyPasswordButton.Image = Resources.Copy_16x;
-            copyPasswordButton.Cursor = Cursors.Default;
-            copyPasswordButton.Click += (s, a) => { ClipboardUtil.SetText(passwordText.Text); };
-            passwordText.Controls.Add(copyPasswordButton);
-
-            // Send EM_SETMARGINS to prevent text from disappearing underneath the button
-            UnsafeNativeMethods.SendMessage(
-                passwordText.Handle,
-                UnsafeNativeMethods.EM_SETMARGINS,
-                (IntPtr)2,
-                (IntPtr)(copyPasswordButton.Width << 16));
+            var copyButton = this.passwordText.AddOverlayButton(Resources.Copy_16x);
+            copyButton.Click += (s, a) => ClipboardUtil.SetText(passwordText.Text);
+            copyButton.TabIndex = this.passwordText.TabIndex + 1;
         }
 
         public void ShowDialog(

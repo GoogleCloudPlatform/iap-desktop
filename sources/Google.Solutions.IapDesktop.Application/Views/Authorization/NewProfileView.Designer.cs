@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         private void InitializeComponent()
         {
             this.profileNameInvalidLabel = new System.Windows.Forms.Label();
-            this.headlineLabel = new HeaderLabel();
+            this.headlineLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
             this.titleLabel = new System.Windows.Forms.Label();
             this.profileNameTextBox = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             // 
             this.profileNameInvalidLabel.AutoSize = true;
             this.profileNameInvalidLabel.ForeColor = System.Drawing.Color.Red;
-            this.profileNameInvalidLabel.Location = new System.Drawing.Point(19, 151);
+            this.profileNameInvalidLabel.Location = new System.Drawing.Point(17, 151);
             this.profileNameInvalidLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.profileNameInvalidLabel.Name = "profileNameInvalidLabel";
             this.profileNameInvalidLabel.Size = new System.Drawing.Size(216, 13);
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             // titleLabel
             // 
             this.titleLabel.AutoSize = true;
-            this.titleLabel.Location = new System.Drawing.Point(19, 102);
+            this.titleLabel.Location = new System.Drawing.Point(17, 102);
             this.titleLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.titleLabel.Name = "titleLabel";
             this.titleLabel.Size = new System.Drawing.Size(68, 13);
@@ -94,8 +94,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             // profileNameTextBox
             // 
             this.profileNameTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.profileNameTextBox.Location = new System.Drawing.Point(21, 121);
-            this.profileNameTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.profileNameTextBox.Location = new System.Drawing.Point(19, 121);
+            this.profileNameTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.profileNameTextBox.MaxLength = 20;
             this.profileNameTextBox.Multiline = true;
             this.profileNameTextBox.Name = "profileNameTextBox";
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             // descriptionLabel
             // 
             this.descriptionLabel.AutoSize = true;
-            this.descriptionLabel.Location = new System.Drawing.Point(19, 57);
+            this.descriptionLabel.Location = new System.Drawing.Point(17, 57);
             this.descriptionLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.descriptionLabel.Name = "descriptionLabel";
             this.descriptionLabel.Size = new System.Drawing.Size(256, 26);
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             this.descriptionLabel.Text = "Profiles let you use multiple instances of IAP Desktop\r\nand switch between differ" +
     "nent user accounts.";
             // 
-            // NewProfileDialog
+            // NewProfileView
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -149,10 +149,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "NewProfileDialog";
+            this.Name = "NewProfileView";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
