@@ -19,10 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Theme;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -34,6 +31,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
     {
         public Color BorderColor { get; set; } = SystemColors.ActiveBorder;
 
+        public IWin32Window FlyoutOwner { get; private set; }
+
         protected FlyoutWindow()
         {
             InitializeComponent();
@@ -44,6 +43,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
             Rectangle screenPositionOfControlToAlignTo,
             ContentAlignment alignment)
         {
+            if (this.FlyoutOwner != null)
+            {
+                throw new InvalidOperationException("Window has already been shown");
+            }
+
+            this.FlyoutOwner = owner;
+
             //
             // Position the window relative to the reference control. 
             //

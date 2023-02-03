@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
-    partial class DeviceFlyoutWindow
+    partial class DeviceFlyoutView
     {
         /// <summary>
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DeviceFlyoutWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DeviceFlyoutView));
             this.deviceEnrolledIcon = new System.Windows.Forms.PictureBox();
             this.enrollmentStateLabel = new System.Windows.Forms.Label();
             this.detailsLink = new System.Windows.Forms.LinkLabel();
@@ -87,7 +87,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             this.detailsLink.TabIndex = 4;
             this.detailsLink.TabStop = true;
             this.detailsLink.Text = "...";
-            this.detailsLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.detailsLink_LinkClicked);
             // 
             // closeButton
             // 
@@ -102,7 +101,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             this.closeButton.Text = "✖";
             this.closeButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.closeButton.UseVisualStyleBackColor = true;
-            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             // 
             // deviceNotEnrolledIcon
             // 

@@ -31,6 +31,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
     [TestFixture]
     public class TestDeviceFlyoutViewModel : ApplicationFixtureBase
     {
+        private static IAuthorizationSource CreateAuthorizationSource(
+            IDeviceEnrollment enrollment)
+        {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("test@example.com");
+            authorization
+                .SetupGet(a => a.DeviceEnrollment)
+                .Returns(enrollment);
+            var authorizationSource = new Mock<IAuthorizationSource>();
+            authorizationSource
+                .Setup(a => a.Authorization)
+                .Returns(authorization.Object);
+
+            return authorizationSource.Object;
+        }
+
         [Test]
         public void WhenNotInstalled_ThenPropertiesAreSetAccordingly()
         {
@@ -38,8 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
 
             var viewModel = new DeviceFlyoutViewModel(
-                new Mock<IWin32Window>().Object,
-                enrollment.Object);
+                CreateAuthorizationSource(enrollment.Object));
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
             Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
@@ -55,8 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
 
             var viewModel = new DeviceFlyoutViewModel(
-                new Mock<IWin32Window>().Object,
-                enrollment.Object);
+                CreateAuthorizationSource(enrollment.Object));
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
             Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
@@ -72,8 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
 
             var viewModel = new DeviceFlyoutViewModel(
-                new Mock<IWin32Window>().Object,
-                enrollment.Object);
+                CreateAuthorizationSource(enrollment.Object));
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
             Assert.IsTrue(viewModel.IsDeviceEnrolledIconVisible);

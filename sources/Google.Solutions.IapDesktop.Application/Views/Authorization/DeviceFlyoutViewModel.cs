@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.Mvvm.Binding;
+using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 
@@ -40,12 +41,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         public string DetailsLinkCaption { get; }
         public bool IsDetailsLinkVisible { get; }
 
-        public DeviceFlyoutViewModel(
-            IWin32Window window,
-            IDeviceEnrollment enrollment)
+        public DeviceFlyoutViewModel(IAuthorizationSource authorizationSource)
         {
-            this.View = window;
-            this.enrollment = enrollment;
+            this.enrollment = authorizationSource.Authorization.DeviceEnrollment;
 
             switch (enrollment.State)
             {
@@ -87,22 +85,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         {
             Browser.Default.Navigate(
                 "https://cloud.google.com/endpoint-verification/docs/overview");
-
         }
 
-        private void OpenDeviceCertificate()
+        private void OpenDeviceCertificate(IWin32Window owner)
         {
+            //
+            // NB. Use parent handle instead of this.View as the flyout
+            // window might have already been destroyed.
+            //
             X509Certificate2UI.DisplayCertificate(
                 this.enrollment.Certificate,
-                this.View.Handle);
+                owner.Handle);
         }
 
-        public void OpenDetails()
+        public void OpenDetails(IWin32Window owner)
         {
+            Debug.Assert(owner != null);
+
             switch (this.enrollment.State)
             {
                 case DeviceEnrollmentState.Enrolled:
-                    OpenDeviceCertificate();
+                    OpenDeviceCertificate(owner);
                     break;
 
                 default:

@@ -163,6 +163,37 @@ namespace Google.Solutions.Mvvm.Binding
         }
 
         /// <summary>
+        /// Create underlying form.
+        /// </summary>
+        public TView CreateForm()
+        {
+            CheckNotShownBefore();
+
+            //
+            // Create view.
+            //
+            var view = (TView)this.serviceProvider.GetService(typeof(TView));
+            this.Theme?.ApplyTo(view);
+
+            //
+            // Bind view <-> view model.
+            //
+            this.ViewModel.View = view;
+            view.Bind(this.ViewModel);
+
+            //
+            // Dispose view model when form is disposed.
+            //
+            view.Disposed += (_, __) => this.ViewModel.Dispose();
+
+            //
+            // Create the form and leave it to the caller to decide when to
+            // show, close, and dispose it.
+            //
+            return view;
+        }
+
+        /// <summary>
         /// Show dialog. Disposes the view and view model afterwards.
         /// </summary>
         public DialogResult ShowDialog(IWin32Window parent)
@@ -172,7 +203,7 @@ namespace Google.Solutions.Mvvm.Binding
             //
             // Create view.
             //
-            using (this.ViewModel)
+            using (this.ViewModel) // TODO: Don't dispose here yet!
             using (var view = (TView)this.serviceProvider.GetService(typeof(TView)))
             {
                 this.Theme?.ApplyTo(view);
@@ -201,29 +232,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// </summary>
         public TView Show(IWin32Window parent)
         {
-            CheckNotShownBefore();
-
-            //
-            // Create view.
-            //
-            var view = (TView)this.serviceProvider.GetService(typeof(TView));
-            this.Theme?.ApplyTo(view);
-
-            //
-            // Bind view <-> view model.
-            //
-            this.ViewModel.View = view;
-            view.Bind(this.ViewModel);
-
-            //
-            // Dispose view model when form is disposed.
-            //
-            view.Disposed += (_, __) => this.ViewModel.Dispose();
-
-            //
-            // Show the form and leave it to the caller to decide when to close
-            // and dispose it.
-            //
+            var view = CreateForm();
             view.Show(parent);
             return view;
         }

@@ -350,6 +350,9 @@ namespace Google.Solutions.IapDesktop
                 windowLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
                 windowLayer.AddTransient<AboutView>();
                 windowLayer.AddTransient<AboutViewModel>();
+                windowLayer.AddTransient<DeviceFlyoutView>();
+                windowLayer.AddTransient<DeviceFlyoutViewModel>();
+
                 windowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
                 windowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
                 windowLayer.AddTransient<OptionsDialog>();

@@ -166,11 +166,11 @@
       <DependentUpon>NewProfileDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Authorization\NewProfileViewModel.cs" />
-    <Compile Include="Views\Authorization\DeviceFlyoutWindow.cs">
+    <Compile Include="Views\Authorization\DeviceFlyoutView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Authorization\DeviceFlyoutWindow.Designer.cs">
-      <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>
+    <Compile Include="Views\Authorization\DeviceFlyoutView.Designer.cs">
+      <DependentUpon>DeviceFlyoutView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Authorization\OAuthScopeNotGrantedView.cs">
       <SubType>Form</SubType>
@@ -359,8 +359,8 @@
     <EmbeddedResource Include="Views\About\AboutView.resx">
       <DependentUpon>AboutView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Authorization\DeviceFlyoutWindow.resx">
-      <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Authorization\DeviceFlyoutView.resx">
+      <DependentUpon>DeviceFlyoutView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Authorization\NewProfileDialog.resx">
       <DependentUpon>NewProfileDialog.cs</DependentUpon>
