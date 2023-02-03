@@ -99,6 +99,11 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenFormUsedAsDialog_ThenShowDialogAppliesTheme()
         {
+            if (!Environment.UserInteractive)
+            {
+                Assert.Inconclusive("Test can only be run in an interactive session");
+            }
+
             var serviceProvider = CreateServiceProvider(new SampleForm(), new SampleViewModel());
             var theme = new Mock<IControlTheme>();
 
@@ -115,6 +120,11 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenFormUsedAsDialog_ThenShowDialogBindsViewModel()
         {
+            if (!Environment.UserInteractive)
+            {
+                Assert.Inconclusive("Test can only be run in an interactive session");
+            }
+
             var form = new SampleForm();
             var serviceProvider = CreateServiceProvider(form, new SampleViewModel());
 
@@ -131,6 +141,11 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenFormUsedAsDialog_ThenShowDialogCanOnlyBeCalledOnce()
         {
+            if (!Environment.UserInteractive)
+            {
+                Assert.Inconclusive("Test can only be run in an interactive session");
+            }
+
             var serviceProvider = CreateServiceProvider(new SampleForm(), new SampleViewModel());
             var theme = new Mock<IControlTheme>();
 
@@ -146,6 +161,11 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenFormUsedAsDialog_ThenDialogDisposesViewModel()
         {
+            if (!Environment.UserInteractive)
+            {
+                Assert.Inconclusive("Test can only be run in an interactive session");
+            }
+
             var form = new SampleForm();
             var viewModel = new SampleViewModel();
             var serviceProvider = CreateServiceProvider(form, viewModel);
