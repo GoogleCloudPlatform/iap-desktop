@@ -344,12 +344,15 @@ namespace Google.Solutions.IapDesktop.Windows
                     //
                     // User did not grant 'cloud-platform' scope.
                     //
-                    if (this.serviceProvider
-                        .GetView<OAuthScopeNotGrantedView, OAuthScopeNotGrantedViewModel>(this.themeService.DialogTheme)
-                        .ShowDialog(this) == DialogResult.OK)
+                    using (var view = this.serviceProvider
+                        .GetDialog<OAuthScopeNotGrantedView, OAuthScopeNotGrantedViewModel>(
+                            this.themeService.DialogTheme))
                     {
-                        // Retry sign-in.
-                        continue;
+                        if (view.ShowDialog(this) == DialogResult.OK)
+                        {
+                            // Retry sign-in.
+                            continue;
+                        }
                     }
                 }
                 catch (AuthorizationFailedException e)
@@ -748,9 +751,10 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider
-                .GetView<AboutView, AboutViewModel>()
-                .ShowDialog(this);
+            using (var view = this.serviceProvider.GetDialog<AboutView, AboutViewModel>())
+            {
+                view.ShowDialog(this);
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs _)
@@ -920,8 +924,8 @@ namespace Google.Solutions.IapDesktop.Windows
                 button.Size);
 
             this.serviceProvider
-                .GetView<DeviceFlyoutView, DeviceFlyoutViewModel>(this.themeService.MainWindowTheme)
-                .CreateForm()
+                .GetWindow<DeviceFlyoutView, DeviceFlyoutViewModel>(this.themeService.MainWindowTheme)
+                .Form
                 .Show(this, screenPosition, ContentAlignment.TopLeft);
         }
 

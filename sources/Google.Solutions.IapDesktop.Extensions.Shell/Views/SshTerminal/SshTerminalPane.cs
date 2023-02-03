@@ -93,18 +93,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             Debug.Assert(!this.InvokeRequired);
 
-            var prompt = this.promptFactory.Create();
-            prompt.ViewModel.Title = "2-step verification";
-            prompt.ViewModel.Description = e.Prompt;
-            prompt.ViewModel.IsPasswordMasked = e.IsPasswordPrompt;
+            using (var prompt = this.promptFactory.CreateDialog())
+            {
+                prompt.ViewModel.Title = "2-step verification";
+                prompt.ViewModel.Description = e.Prompt;
+                prompt.ViewModel.IsPasswordMasked = e.IsPasswordPrompt;
 
-            if (prompt.ShowDialog(this) == DialogResult.OK)
-            {
-                e.Response = prompt.ViewModel.Input;
-            }
-            else
-            {
-                throw new OperationCanceledException();
+                if (prompt.ShowDialog(this) == DialogResult.OK)
+                {
+                    e.Response = prompt.ViewModel.Input;
+                }
+                else
+                {
+                    throw new OperationCanceledException();
+                }
             }
         }
 

@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Mvvm.Theme;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
@@ -56,36 +57,40 @@ namespace Google.Solutions.Mvvm.Binding
             return new ViewFactory<TView, TViewModel>(serviceProvider);
         }
 
+        //---------------------------------------------------------------------
+        // Dialogs.
+        //---------------------------------------------------------------------
+
         /// <summary>
-        /// Create an MVVM-enabled View and view model using the service provider.
+        /// Create an MVVM-enabled dialog and view model using the service provider.
         /// </summary>
-        public static View<TView, TViewModel> GetView<TView, TViewModel>(
+        public static Dialog<TView, TViewModel> GetDialog<TView, TViewModel>(
             this IServiceProvider serviceProvider)
             where TView : Form, IView<TViewModel>
             where TViewModel : ViewModelBase
         {
-            return GetViewFactory<TView, TViewModel>(serviceProvider).Create();
+            return GetViewFactory<TView, TViewModel>(serviceProvider).CreateDialog();
         }
 
         /// <summary>
-        /// Create an MVVM-enabled View and view model using the service provider.
+        /// Create an MVVM-enabled dialog and view model using the service provider.
         /// </summary>
-        public static View<TView, TViewModel> GetView<TView, TViewModel>(
+        public static Dialog<TView, TViewModel> GetDialog<TView, TViewModel>(
             this IServiceProvider serviceProvider,
             IControlTheme theme)
             where TView : Form, IView<TViewModel>
             where TViewModel : ViewModelBase
         {
-            var view = GetView<TView, TViewModel>(serviceProvider);
+            var view = GetDialog<TView, TViewModel>(serviceProvider);
             view.Theme = theme;
             return view;
         }
 
         /// <summary>
-        /// Create an MVVM-enabled View using the service provider, and bind
+        /// Create an MVVM-enabled dialog using the service provider, and bind
         /// a custom view model.
         /// </summary>
-        public static View<TView, TViewModel> GetView<TView, TViewModel>(
+        public static Dialog<TView, TViewModel> GetDialog<TView, TViewModel>(
             this IServiceProvider serviceProvider,
             TViewModel viewModel)
             where TView : Form, IView<TViewModel>
@@ -94,7 +99,52 @@ namespace Google.Solutions.Mvvm.Binding
             serviceProvider.ThrowIfNull(nameof(serviceProvider));
             viewModel.ThrowIfNull(nameof(viewModel));
 
-            return new View<TView, TViewModel>(serviceProvider, viewModel);
+            return new Dialog<TView, TViewModel>(serviceProvider, viewModel);
+        }
+
+        //---------------------------------------------------------------------
+        // Windows.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Create an MVVM-enabled window and view model using the service provider.
+        /// </summary>
+        public static Window<TView, TViewModel> GetWindow<TView, TViewModel>(
+            this IServiceProvider serviceProvider)
+            where TView : Form, IView<TViewModel>
+            where TViewModel : ViewModelBase
+        {
+            return GetViewFactory<TView, TViewModel>(serviceProvider).CreateWindow();
+        }
+
+        /// <summary>
+        /// Create an MVVM-enabled window and view model using the service provider.
+        /// </summary>
+        public static Window<TView, TViewModel> GetWindow<TView, TViewModel>(
+            this IServiceProvider serviceProvider,
+            IControlTheme theme)
+            where TView : Form, IView<TViewModel>
+            where TViewModel : ViewModelBase
+        {
+            var view = GetWindow<TView, TViewModel>(serviceProvider);
+            view.Theme = theme;
+            return view;
+        }
+
+        /// <summary>
+        /// Create an MVVM-enabled window using the service provider, and bind
+        /// a custom view model.
+        /// </summary>
+        public static Window<TView, TViewModel> GetWindow<TView, TViewModel>(
+            this IServiceProvider serviceProvider,
+            TViewModel viewModel)
+            where TView : Form, IView<TViewModel>
+            where TViewModel : ViewModelBase
+        {
+            serviceProvider.ThrowIfNull(nameof(serviceProvider));
+            viewModel.ThrowIfNull(nameof(viewModel));
+
+            return new Window<TView, TViewModel>(serviceProvider, viewModel);
         }
     }
 
@@ -115,9 +165,23 @@ namespace Google.Solutions.Mvvm.Binding
             this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
         }
 
-        public View<TView, TViewModel> Create()
+        public Dialog<TView, TViewModel> CreateDialog()
         {
-            var view = new View<TView, TViewModel>(
+            var view = new Dialog<TView, TViewModel>(
+                serviceProvider,
+                (TViewModel)serviceProvider.GetService(typeof(TViewModel)));
+
+            if (this.Theme != null)
+            {
+                view.Theme = this.Theme;
+            }
+
+            return view;
+        }
+
+        public Window<TView, TViewModel> CreateWindow()
+        {
+            var view = new Window<TView, TViewModel>(
                 serviceProvider,
                 (TViewModel)serviceProvider.GetService(typeof(TViewModel)));
 
@@ -131,66 +195,24 @@ namespace Google.Solutions.Mvvm.Binding
     }
 
     /// <summary>
-    /// View that has been "hydrated" with a view model and is ready to
-    /// be shown.
+    /// Hydrated view that can be shown as a dialog.
     /// </summary>
-    public class View<TView, TViewModel>
+    public sealed class Dialog<TView, TViewModel> : IDisposable
         where TView : Form, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
         private readonly IServiceProvider serviceProvider;
 
+        private bool shown;
+
         public TViewModel ViewModel { get; }
 
         public IControlTheme Theme { get; set; }
 
-        public bool Shown { get; private set; } = false;
-
-        internal View(IServiceProvider serviceProvider, TViewModel viewModel)
+        internal Dialog(IServiceProvider serviceProvider, TViewModel viewModel)
         {
             this.serviceProvider = serviceProvider;
             this.ViewModel = viewModel;
-        }
-
-        private void CheckNotShownBefore()
-        {
-            if (this.Shown)
-            {
-                throw new InvalidOperationException("View can only be shown once");
-            }
-
-            this.Shown = true;
-        }
-
-        /// <summary>
-        /// Create underlying form.
-        /// </summary>
-        public TView CreateForm()
-        {
-            CheckNotShownBefore();
-
-            //
-            // Create view.
-            //
-            var view = (TView)this.serviceProvider.GetService(typeof(TView));
-            this.Theme?.ApplyTo(view);
-
-            //
-            // Bind view <-> view model.
-            //
-            this.ViewModel.View = view;
-            view.Bind(this.ViewModel);
-
-            //
-            // Dispose view model when form is disposed.
-            //
-            view.Disposed += (_, __) => this.ViewModel.Dispose();
-
-            //
-            // Create the form and leave it to the caller to decide when to
-            // show, close, and dispose it.
-            //
-            return view;
         }
 
         /// <summary>
@@ -198,12 +220,20 @@ namespace Google.Solutions.Mvvm.Binding
         /// </summary>
         public DialogResult ShowDialog(IWin32Window parent)
         {
-            CheckNotShownBefore();
+            if (this.shown)
+            {
+                throw new InvalidOperationException(
+                    "ShowDialog must not be called more than once, or when the" +
+                    "form has been accessed before");
+            }
+            else
+            {
+                this.shown = true;
+            }
 
             //
-            // Create view.
+            // Create view, show, and dispose it.
             //
-            using (this.ViewModel) // TODO: Don't dispose here yet!
             using (var view = (TView)this.serviceProvider.GetService(typeof(TView)))
             {
                 this.Theme?.ApplyTo(view);
@@ -217,9 +247,7 @@ namespace Google.Solutions.Mvvm.Binding
                 var result = view.ShowDialog(parent);
 
                 //
-                // Retain view model so that the caller can extract
-                // results from it, but avoid it from keeping the view
-                // alive.
+                // Retain the view model, but prevent it from keeping the view alive.
                 //
                 this.ViewModel.View = null;
 
@@ -227,14 +255,61 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        /// <summary>
-        /// Show form.
-        /// </summary>
-        public TView Show(IWin32Window parent)
+        public void Dispose()
         {
-            var view = CreateForm();
-            view.Show(parent);
-            return view;
+            this.ViewModel.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Hydrated view that can be used as a standalone window.
+    /// </summary>
+    public sealed class Window<TView, TViewModel>
+        where TView : Form, IView<TViewModel>
+        where TViewModel : ViewModelBase
+    {
+        private readonly IServiceProvider serviceProvider;
+
+        private TView form;
+
+        public TViewModel ViewModel { get; }
+
+        public IControlTheme Theme { get; set; }
+
+        internal Window(IServiceProvider serviceProvider, TViewModel viewModel)
+        {
+            this.serviceProvider = serviceProvider;
+            this.ViewModel = viewModel;
+        }
+
+        public TView Form
+        {
+            get
+            {
+                if (this.form == null)
+                {
+                    //
+                    // Create view.
+                    //
+                    var view = (TView)this.serviceProvider.GetService(typeof(TView));
+                    this.Theme?.ApplyTo(view);
+
+                    //
+                    // Bind view <-> view model.
+                    //
+                    this.ViewModel.View = view;
+                    view.Bind(this.ViewModel);
+
+                    //
+                    // Tie lifetime of the view model to that of the view.
+                    //
+                    view.Disposed += (_, __) => this.ViewModel.Dispose();
+
+                    this.form = view;
+                }
+
+                return this.form;
+            }
         }
     }
 }

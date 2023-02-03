@@ -86,124 +86,127 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var factory = serviceProvider.GetViewFactory<SampleForm, SampleViewModel>();
             factory.Theme = theme;
 
-            var view = factory.Create();
-
-            Assert.AreSame(theme, view.Theme);
+            using (var view = factory.CreateDialog())
+            {
+                Assert.AreSame(theme, view.Theme);
+            }
         }
 
         //---------------------------------------------------------------------
-        // ShowDialog.
+        // Dialog.
         //---------------------------------------------------------------------
 
         [Test]
-        public void ShowDialogAppliesTheme()
+        public void WhenFormUsedAsDialog_ThenShowDialogAppliesTheme()
         {
             var serviceProvider = CreateServiceProvider(new SampleForm(), new SampleViewModel());
             var theme = new Mock<IControlTheme>();
 
-            var view = serviceProvider.GetView<SampleForm, SampleViewModel>();
-            view.Theme = theme.Object;
+            using (var dialog = serviceProvider.GetDialog<SampleForm, SampleViewModel>())
+            {
+                dialog.Theme = theme.Object;
 
-            view.ShowDialog(null);
+                dialog.ShowDialog(null);
+            }
 
             theme.Verify(t => t.ApplyTo(It.IsAny<Control>()), Times.Once);
         }
 
         [Test]
-        public void ShowDialogBindsViewModel()
+        public void WhenFormUsedAsDialog_ThenShowDialogBindsViewModel()
         {
             var form = new SampleForm();
             var serviceProvider = CreateServiceProvider(form, new SampleViewModel());
-            var view = serviceProvider.GetView<SampleForm, SampleViewModel>();
 
-            Assert.IsNull(form.ViewModel);
+            using (var dialog = serviceProvider.GetDialog<SampleForm, SampleViewModel>())
+            {
+                Assert.IsNull(form.ViewModel);
 
-            view.ShowDialog(null);
+                dialog.ShowDialog(null);
+            }
 
             Assert.IsNotNull(form.ViewModel);
         }
 
         [Test]
-        public void ShowDialogDisposesResources()
+        public void WhenFormUsedAsDialog_ThenShowDialogCanOnlyBeCalledOnce()
+        {
+            var serviceProvider = CreateServiceProvider(new SampleForm(), new SampleViewModel());
+            var theme = new Mock<IControlTheme>();
+
+            using (var dialog = serviceProvider.GetDialog<SampleForm, SampleViewModel>())
+            {
+                dialog.Theme = theme.Object;
+                dialog.ShowDialog(null);
+
+                Assert.Throws<InvalidOperationException>(() => dialog.ShowDialog(null));
+            }
+        }
+
+        [Test]
+        public void WhenFormUsedAsDialog_ThenDialogDisposesViewModel()
         {
             var form = new SampleForm();
             var viewModel = new SampleViewModel();
-
             var serviceProvider = CreateServiceProvider(form, viewModel);
-            var view = serviceProvider.GetView<SampleForm, SampleViewModel>();
 
-            Assert.IsFalse(form.IsDisposed);
-            Assert.IsFalse(viewModel.IsDisposed);
+            using (var dialog = serviceProvider.GetDialog<SampleForm, SampleViewModel>())
+            {
+                Assert.IsFalse(form.IsDisposed);
+                Assert.IsFalse(viewModel.IsDisposed);
 
-            view.ShowDialog(null);
+                dialog.ShowDialog(null);
+            }
 
             Assert.IsTrue(form.IsDisposed);
             Assert.IsTrue(viewModel.IsDisposed);
         }
 
+        //---------------------------------------------------------------------
+        // Windows.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenCalledBefore_ThenShowDialogThrowsException()
+        public void WhenFormUsedAsWindow_ThenFormAppliesTheme()
         {
             var serviceProvider = CreateServiceProvider(new SampleForm(), new SampleViewModel());
             var theme = new Mock<IControlTheme>();
 
-            var view = serviceProvider.GetView<SampleForm, SampleViewModel>();
-            view.Theme = theme.Object;
+            var f = serviceProvider.GetWindow<SampleForm, SampleViewModel>(theme.Object).Form;
 
-            view.ShowDialog(null);
-
-            Assert.Throws<InvalidOperationException>(() => view.ShowDialog(null));
-        }
-
-        //---------------------------------------------------------------------
-        // Show.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void ShowBindsViewModel()
-        {
-            var form = new SampleForm();
-            var serviceProvider = CreateServiceProvider(form, new SampleViewModel());
-            var view = serviceProvider.GetView<SampleForm, SampleViewModel>();
-
-            Assert.IsNull(form.ViewModel);
-
-            view.Show(null);
-
-            Assert.IsNotNull(form.ViewModel);
+            theme.Verify(t => t.ApplyTo(It.IsAny<Control>()), Times.Once);
         }
 
         [Test]
-        public void ShowDisposesResources()
+        public void WhenFormUsedAsWindow_ThenFormBindsViewModel()
         {
             var form = new SampleForm();
             var viewModel = new SampleViewModel();
-
             var serviceProvider = CreateServiceProvider(form, viewModel);
-            var view = serviceProvider.GetView<SampleForm, SampleViewModel>();
 
-            Assert.IsFalse(form.IsDisposed);
-            Assert.IsFalse(viewModel.IsDisposed);
-
-            using (view.Show(null))
-            { }
-
-            Assert.IsTrue(form.IsDisposed);
-            Assert.IsTrue(viewModel.IsDisposed);
+            var window = serviceProvider.GetWindow<SampleForm, SampleViewModel>();
+            
+            Assert.AreSame(form, window.Form);
+            Assert.AreSame(window.Form, viewModel.View);
+            Assert.AreSame(viewModel, window.Form.ViewModel);
         }
 
         [Test]
-        public void WhenCalledBefore_ThenShowThrowsException()
+        public void WhenFormUsedAsDialog_ThenCloseFormDisposesViewModel()
         {
-            var serviceProvider = CreateServiceProvider(new SampleForm(), new SampleViewModel());
-            var theme = new Mock<IControlTheme>();
+            var form = new SampleForm();
+            var viewModel = new SampleViewModel();
+            var serviceProvider = CreateServiceProvider(form, viewModel);
 
-            var view = serviceProvider.GetView<SampleForm, SampleViewModel>();
-            view.Theme = theme.Object;
+            var window = serviceProvider.GetWindow<SampleForm, SampleViewModel>();
+            Assert.IsFalse(form.IsDisposed);
+            Assert.IsFalse(viewModel.IsDisposed);
 
-            view.Show(null);
+            window.Form.Show();
+            window.Form.Close();
 
-            Assert.Throws<InvalidOperationException>(() => view.Show(null));
+            Assert.IsTrue(form.IsDisposed);
+            Assert.IsTrue(viewModel.IsDisposed);
         }
     }
 }
