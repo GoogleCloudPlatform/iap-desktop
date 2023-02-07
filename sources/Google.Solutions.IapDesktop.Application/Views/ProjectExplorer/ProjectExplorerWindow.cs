@@ -80,6 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // just hidden.
             //
             this.HideOnClose = true;
+            // TODO: Verify that <this> is a singleton
 
             var themeService = serviceProvider.GetService<IThemeService>();
             themeService.ToolWindowTheme.ApplyTo(this.toolStrip);

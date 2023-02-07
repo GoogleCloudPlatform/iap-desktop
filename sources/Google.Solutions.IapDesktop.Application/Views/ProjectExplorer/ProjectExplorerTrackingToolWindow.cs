@@ -63,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // just hidden.
             //
             this.HideOnClose = true;
+            // TODO: Verify that <this> is a singleton
 
             // Use currently selected node.
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();

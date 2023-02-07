@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             // This window is a singleton, so we never want it to be closed,
             // just hidden.
             //
-            this.HideOnClose = true;
+            this.HideOnClose = true; //TODO: Make non-HideOnClose?
 
             this.viewModel = new TunnelsViewModel(serviceProvider)
             {
