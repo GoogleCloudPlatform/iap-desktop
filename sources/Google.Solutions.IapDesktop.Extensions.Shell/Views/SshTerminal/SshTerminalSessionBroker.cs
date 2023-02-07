@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 authorizedKey,
                 language,
                 connectionTimeout);
-            pane.ShowWindow(true);
+            pane.ShowWindow();
 
             await pane.ConnectAsync()
                 .ConfigureAwait(false);

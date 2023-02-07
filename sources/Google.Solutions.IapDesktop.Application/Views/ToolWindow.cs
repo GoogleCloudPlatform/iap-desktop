@@ -168,49 +168,50 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        public virtual void ShowWindow(bool activate)
+        public virtual void ShowWindow()
         {
             Debug.Assert(this.panel != null);
 
             this.TabText = this.Text;
 
+            //
             // NB. IsHidden indicates that the window is not shown at all,
             // not even as auto-hide.
+            //
             if (this.IsHidden)
             {
                 // Show in default position.
                 Show(this.panel, this.restoreState);
             }
 
-            if (activate)
+            //
+            // If the window is in auto-hide mode, simply activating
+            // is not enough.
+            //
+            switch (this.VisibleState)
             {
-                // If the window is in auto-hide mode, simply activating
-                // is not enough.
-                switch (this.VisibleState)
-                {
-                    case DockState.DockTopAutoHide:
-                    case DockState.DockBottomAutoHide:
-                    case DockState.DockLeftAutoHide:
-                    case DockState.DockRightAutoHide:
-                        this.panel.ActiveAutoHideContent = this;
-                        break;
-                }
-
-                // Move focus to window.
-                Activate();
-
-                //
-                // If an auto-hide window loses focus and closes, we fail to 
-                // catch that event. 
-                // To force an update, disregard the cached state and re-raise
-                // the UserVisibilityChanged event.
-                //
-                OnUserVisibilityChanged(true);
-                this.wasUserVisible = true;
+                case DockState.DockTopAutoHide:
+                case DockState.DockBottomAutoHide:
+                case DockState.DockLeftAutoHide:
+                case DockState.DockRightAutoHide:
+                    this.panel.ActiveAutoHideContent = this;
+                    break;
             }
-        }
 
-        public virtual void ShowWindow() => ShowWindow(true);
+            //
+            // Move focus to window.
+            //
+            Activate();
+
+            //
+            // If an auto-hide window loses focus and closes, we fail to 
+            // catch that event. 
+            // To force an update, disregard the cached state and re-raise
+            // the UserVisibilityChanged event.
+            //
+            OnUserVisibilityChanged(true);
+            this.wasUserVisible = true;
+        }
 
         public bool IsAutoHide
         {
