@@ -178,6 +178,28 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             return (TService)CreateInstance(typeof(TService));
         }
 
+        public IDictionary<Type, ServiceLifetime> Registrations
+        {
+            get
+            {
+                var registrations = this.parent != null
+                    ? this.parent.Registrations
+                    : new Dictionary<Type, ServiceLifetime>();
+
+                foreach (var singleton in this.singletons)
+                {
+                    registrations[singleton.Key] = ServiceLifetime.Singleton;
+                }
+
+                foreach (var transient in this.transients)
+                {
+                    registrations[transient.Key] = ServiceLifetime.Transient;
+                }
+
+                return registrations;
+            }
+        }
+
         //---------------------------------------------------------------------
         // Singleton registration.
         //---------------------------------------------------------------------

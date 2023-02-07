@@ -36,6 +36,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -79,8 +80,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // This window is a singleton, so we never want it to be closed,
             // just hidden.
             //
+            Debug.Assert(
+                ((ServiceRegistry)serviceProvider).Registrations[typeof(IProjectExplorer)] == ServiceLifetime.Singleton,
+                "Service must be registered as singleton for HideOnClose to work");
             this.HideOnClose = true;
-            // TODO: Verify that <this> is a singleton
 
             var themeService = serviceProvider.GetService<IThemeService>();
             themeService.ToolWindowTheme.ApplyTo(this.toolStrip);

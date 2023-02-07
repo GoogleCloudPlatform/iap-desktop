@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,8 +63,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // This window is a singleton, so we never want it to be closed,
             // just hidden.
             //
+            Debug.Assert(
+                ((ServiceRegistry)serviceProvider).Registrations[GetType()] == ServiceLifetime.Singleton,
+                "Service must be registered as singleton for HideOnClose to work");
             this.HideOnClose = true;
-            // TODO: Verify that <this> is a singleton
 
             // Use currently selected node.
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
