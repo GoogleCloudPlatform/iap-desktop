@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
 {
-    partial class DownloadFileWindow
+    partial class DownloadFileView
     {
         /// <summary>
         /// Required designer variable.

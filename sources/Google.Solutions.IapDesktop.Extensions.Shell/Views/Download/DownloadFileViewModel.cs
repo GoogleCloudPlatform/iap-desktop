@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
@@ -27,6 +28,7 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
 {
+    [Service]
     internal class DownloadFileViewModel : ViewModelBase
     {
         //
@@ -38,8 +40,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             => item.Type.IsFile &&
                !item.Attributes.HasFlag(System.IO.FileAttributes.ReparsePoint);
 
-        public DownloadFileViewModel()
+        public DownloadFileViewModel(FileBrowser.IFileSystem fileSystem)
         {
+            this.FileSystem = fileSystem;
+
+            this.DialogText = ObservableProperty.Build(string.Empty);
             this.SelectedFiles = ObservableProperty.Build(Enumerable.Empty<FileBrowser.IFileItem>());
             this.TargetDirectory = ObservableProperty.Build(KnownFolders.Downloads);
             this.IsDownloadButtonEnabled = ObservableProperty.Build(
@@ -47,10 +52,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
                 files => files.Any() && files.All(IsDownloadable));
         }
 
+        public FileBrowser.IFileSystem FileSystem { get; }
+
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
+        public ObservableProperty<string> DialogText { get; }
         public ObservableProperty<IEnumerable<FileBrowser.IFileItem>> SelectedFiles { get; }
         public ObservableProperty<string> TargetDirectory { get; }
         public ObservableFunc<bool> IsDownloadButtonEnabled { get; }

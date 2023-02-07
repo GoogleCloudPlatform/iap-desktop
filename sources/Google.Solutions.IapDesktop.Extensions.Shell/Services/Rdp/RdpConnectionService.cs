@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         private readonly IJobService jobService;
         private readonly IRemoteDesktopSessionBroker sessionBroker;
         private readonly ITunnelBrokerService tunnelBroker;
-        private readonly ICredentialPrompt credentialPrompt;
+        private readonly ISelectCredentialsWorkflow credentialPrompt;
         private readonly IProjectModelService projectModelService;
         private readonly IConnectionSettingsService settingsService;
 
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             ITunnelBrokerService tunnelBroker,
             IJobService jobService,
             IConnectionSettingsService settingsService,
-            ICredentialPrompt credentialPrompt)
+            ISelectCredentialsWorkflow credentialPrompt)
         {
             this.window = window.ThrowIfNull(nameof(window)).Window;
             this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
 
             if (allowPersistentCredentials)
             {
-                await this.credentialPrompt.ShowCredentialsPromptAsync(
+                await this.credentialPrompt.SelectCredentialsAsync(
                         this.window,
                         vmNode.Instance,
                         settings.TypedCollection,
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                 settings = InstanceConnectionSettings.FromUrl(url);
             }
 
-            await this.credentialPrompt.ShowCredentialsPromptAsync(
+            await this.credentialPrompt.SelectCredentialsAsync(
                     this.window,
                     url.Instance,
                     settings,

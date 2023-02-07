@@ -150,8 +150,8 @@
     <Compile Include="ShellFixtureBase.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
     <Compile Include="Views\Credentials\TestAuthorizationExtensions.cs" />
-    <Compile Include="Views\Credentials\TestCredentialPrompt.cs" />
-    <Compile Include="Views\Credentials\TestCredentialsService.cs" />
+    <Compile Include="Views\Credentials\TestSelectCredentialsWorkflow.cs" />
+    <Compile Include="Views\Credentials\TestCreateCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\TestGenerateCredentialsViewModel.cs" />
     <Compile Include="Views\Download\TestDownloadFileDialog.cs" />
     <Compile Include="Views\Download\TestDownloadFileViewModel.cs" />

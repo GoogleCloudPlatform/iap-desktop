@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,61 +20,47 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.Mvvm.Binding;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Authorization
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
+    [Service]
     [SkipCodeCoverage("View code")]
-    public partial class NewProfileDialog : Form
+    public partial class NewCredentialsView : Form, IView<NewCredentialsViewModel>
     {
-        private readonly NewProfileViewModel viewModel
-            = new NewProfileViewModel();
-
-        public NewProfileDialog()
+        public NewCredentialsView(IThemeService themeService)
         {
             InitializeComponent();
+        }
 
-            this.profileNameTextBox.BindProperty(
+        public void Bind(NewCredentialsViewModel viewModel)
+        {
+            this.usernameText.BindProperty(
                 c => c.Text,
-                this.viewModel,
-                m => m.ProfileName,
+                viewModel,
+                m => m.Username,
                 this.components);
-            this.profileNameInvalidLabel.BindReadonlyProperty(
+            this.usernameReservedLabel.BindReadonlyProperty(
                 c => c.Visible,
-                this.viewModel,
-                m => m.IsProfileNameInvalid,
+                viewModel,
+                m => m.IsUsernameReserved,
                 this.components);
 
             // Bind buttons.
             this.okButton.BindReadonlyProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsOkButtonEnabled,
                 this.components);
-        }
 
-        public new NewProfileDialogResult ShowDialog(
-            IWin32Window owner)
-        {
-            var result = base.ShowDialog(owner);
-            return new NewProfileDialogResult(
-                result,
-                this.viewModel.ProfileName);
-        }
-    }
-
-    public struct NewProfileDialogResult
-    {
-        public DialogResult Result { get; }
-        public string ProfileName { get; }
-
-        public NewProfileDialogResult(
-            DialogResult result,
-            string profileName)
-        {
-            Result = result;
-            ProfileName = profileName;
+            this.usernameText.KeyPress += (_, e) =>
+            {
+                // Cancel any keypresses of disallowed characters.
+                e.Handled = !viewModel.IsAllowedCharacterForUsername(e.KeyChar);
+            };
         }
     }
 }

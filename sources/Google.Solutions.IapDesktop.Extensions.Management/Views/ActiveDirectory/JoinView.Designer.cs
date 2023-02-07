@@ -23,7 +23,7 @@ using Google.Solutions.Mvvm.Controls;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory
 {
-    partial class JoinDialog
+    partial class JoinView
     {
         /// <summary>
         /// Required designer variable.

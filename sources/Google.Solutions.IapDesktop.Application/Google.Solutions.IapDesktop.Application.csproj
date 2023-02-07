@@ -159,11 +159,11 @@
     <Compile Include="Util\WindowMessage.cs" />
     <Compile Include="Views\About\AboutViewModel.cs" />
     <Compile Include="Views\Authorization\DeviceFlyoutViewModel.cs" />
-    <Compile Include="Views\Authorization\NewProfileDialog.cs">
+    <Compile Include="Views\Authorization\NewProfileView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Authorization\NewProfileDialog.Designer.cs">
-      <DependentUpon>NewProfileDialog.cs</DependentUpon>
+    <Compile Include="Views\Authorization\NewProfileView.Designer.cs">
+      <DependentUpon>NewProfileView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Authorization\NewProfileViewModel.cs" />
     <Compile Include="Views\Authorization\DeviceFlyoutView.cs">
@@ -262,11 +262,11 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\ProjectPicker\ProjectPickerViewModel.cs" />
-    <Compile Include="Views\ProjectPicker\ProjectPickerWindow.cs">
+    <Compile Include="Views\ProjectPicker\ProjectPickerView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\ProjectPicker\ProjectPickerWindow.Designer.cs">
-      <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
+    <Compile Include="Views\ProjectPicker\ProjectPickerView.Designer.cs">
+      <DependentUpon>ProjectPickerView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Properties\IPropertiesSheet.cs" />
     <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
@@ -310,7 +310,6 @@
     <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
       <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\ThemeColors.cs" />
     <Compile Include="Views\ToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -362,8 +361,8 @@
     <EmbeddedResource Include="Views\Authorization\DeviceFlyoutView.resx">
       <DependentUpon>DeviceFlyoutView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Authorization\NewProfileDialog.resx">
-      <DependentUpon>NewProfileDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Authorization\NewProfileView.resx">
+      <DependentUpon>NewProfileView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Authorization\OAuthScopeNotGrantedView.resx">
       <DependentUpon>OAuthScopeNotGrantedView.cs</DependentUpon>
@@ -398,8 +397,8 @@
     <EmbeddedResource Include="Views\Options\NetworkOptionsSheet.resx">
       <DependentUpon>NetworkOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\ProjectPicker\ProjectPickerWindow.resx">
-      <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\ProjectPicker\ProjectPickerView.resx">
+      <DependentUpon>ProjectPickerView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Properties\PropertiesDialog.resx">
       <DependentUpon>PropertiesDialog.cs</DependentUpon>

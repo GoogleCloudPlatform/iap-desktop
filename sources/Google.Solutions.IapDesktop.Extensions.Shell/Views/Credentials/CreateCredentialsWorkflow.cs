@@ -31,9 +31,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
-    public interface ICredentialsService
+    public interface ICreateCredentialsWorkflow
     {
-        Task GenerateCredentialsAsync(
+        Task CreateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceRef,
             ConnectionSettingsBase settings,
@@ -43,17 +43,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             InstanceLocator instanceRef);
     }
 
-    [Service(typeof(ICredentialsService))]
-    public class CredentialsService : ICredentialsService
+    [Service(typeof(ICreateCredentialsWorkflow))]
+    public class CreateCredentialsWorkflow : ICreateCredentialsWorkflow
     {
         private readonly IServiceProvider serviceProvider;
 
-        public CredentialsService(IServiceProvider serviceProvider) // TODO: Inject Service<>
+        public CreateCredentialsWorkflow(IServiceProvider serviceProvider) // TODO: Inject Service<>
         {
             this.serviceProvider = serviceProvider;
         }
 
-        public async Task GenerateCredentialsAsync(
+        public async Task CreateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
             ConnectionSettingsBase settings,
@@ -73,9 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 //
 
                 var dialogResult = this.serviceProvider
-                    .GetService<IGenerateCredentialsDialog>()
-                    .ShowDialog(owner,
-                    username);
+                    .GetService<INewCredentialsDialog>()
+                    .ShowDialog(owner, username);
 
                 if (dialogResult.Result == DialogResult.OK)
                 {

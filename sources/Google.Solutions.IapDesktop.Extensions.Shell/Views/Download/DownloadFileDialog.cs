@@ -23,7 +23,9 @@ using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
@@ -47,15 +49,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
     [Service(typeof(IDownloadFileDialog))]
     public class DownloadFileDialog : IDownloadFileDialog
     {
-        private readonly IExceptionDialog exceptionDialog;
-        private readonly IThemeService theme;
+        private readonly ViewFactory<DownloadFileView, DownloadFileViewModel> dialogFactory;
 
-        public DownloadFileDialog(
-            IExceptionDialog exceptionDialog,
-            IThemeService theme)
+        public DownloadFileDialog(IServiceProvider serviceProvider)
         {
-            this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
-            this.theme = theme.ThrowIfNull(nameof(theme));
+            this.dialogFactory = serviceProvider.GetViewFactory<DownloadFileView, DownloadFileViewModel>();
+            this.dialogFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
         }
 
         public DialogResult SelectDownloadFiles(
@@ -68,19 +67,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             sourceItems = null;
             targetDirectory = null;
 
-            using (var window = new DownloadFileWindow(fileSystem, this.exceptionDialog)
+            using (var dialog = this.dialogFactory.CreateDialog(new DownloadFileViewModel(fileSystem)))
             {
-                Text = caption
-            })
-            {
-                this.theme.DialogTheme.ApplyTo(window);
+                dialog.ViewModel.DialogText.Value = caption;
 
-                var result = window.ShowDialog(owner);
+                var result = dialog.ShowDialog(owner);
 
                 if (result == DialogResult.OK)
                 {
-                    targetDirectory = new DirectoryInfo(window.TargetDirectory);
-                    sourceItems = window.SelectedFiles;
+                    targetDirectory = new DirectoryInfo(dialog.ViewModel.TargetDirectory.Value);
+                    sourceItems = dialog.ViewModel.SelectedFiles.Value;
                 }
 
                 return result;

@@ -19,13 +19,15 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
-    public class GenerateCredentialsViewModel : ViewModelBase
+    [Service]
+    public class NewCredentialsViewModel : ViewModelBase
     {
         // SAM usernames do not permit these characters, see
         // https://docs.microsoft.com/en-us/windows/desktop/adschema/a-samaccountname
@@ -38,7 +40,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             "defaultaccount",
             "wdagutilityaccount"
         };
-        static GenerateCredentialsViewModel()
+
+        static NewCredentialsViewModel()
         {
             Debug.Assert(ReservedUsernames.All(u => u == u.ToLower()));
         }
@@ -59,8 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             {
                 this.username = value;
                 RaisePropertyChange();
-                RaisePropertyChange((GenerateCredentialsViewModel m) => m.IsUsernameReserved);
-                RaisePropertyChange((GenerateCredentialsViewModel m) => m.IsOkButtonEnabled);
+                RaisePropertyChange((NewCredentialsViewModel m) => m.IsUsernameReserved);
+                RaisePropertyChange((NewCredentialsViewModel m) => m.IsOkButtonEnabled);
             }
         }
 

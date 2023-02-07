@@ -42,6 +42,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         {
             this.model = model;
 
+            this.ButtonText = ObservableProperty.Build(string.Empty);
+            this.DialogText = ObservableProperty.Build(string.Empty);
             this.FilteredProjects = new RangeObservableCollection<Project>();
             this.IsLoading = ObservableProperty.Build(false);
             this.LoadingError = ObservableProperty.Build<Exception>(null);
@@ -58,6 +60,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         //---------------------------------------------------------------------
         // Observable "output" properties.
         //---------------------------------------------------------------------
+
+        public ObservableProperty<string> ButtonText { get; }
+
+        public ObservableProperty<string> DialogText { get; }
 
         public RangeObservableCollection<Project> FilteredProjects { get; }
 

@@ -933,16 +933,14 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             try
             {
-                using (var dialog = new NewProfileDialog())
+                using (var dialog = this.serviceProvider
+                    .GetDialog<NewProfileView, NewProfileViewModel>(this.themeService.DialogTheme))
                 {
-                    this.themeService.DialogTheme.ApplyTo(dialog);
-
-                    var result = dialog.ShowDialog(this);
-                    if (result.Result == DialogResult.OK)
+                    if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
                         using (var profile = Profile.CreateProfile(
                             this.serviceProvider.GetService<Install>(),
-                            result.ProfileName))
+                            dialog.ViewModel.ProfileName))
                         {
                             this.viewModel.LaunchInstanceWithProfile(profile.Name);
                         }

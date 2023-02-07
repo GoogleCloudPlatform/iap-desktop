@@ -33,27 +33,27 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
-    public interface ICredentialPrompt
+    public interface ISelectCredentialsWorkflow
     {
-        Task ShowCredentialsPromptAsync(
+        Task SelectCredentialsAsync(
            IWin32Window owner,
            InstanceLocator instanceLocator,
            ConnectionSettingsBase settings,
            bool allowJumpToSettings);
     }
 
-    [Service(typeof(ICredentialPrompt))]
-    public class CredentialPrompt : ICredentialPrompt
+    [Service(typeof(ISelectCredentialsWorkflow))]
+    public class SelectCredentialsWorkflow : ISelectCredentialsWorkflow
     {
         private readonly IServiceProvider serviceProvider;
 
-        public CredentialPrompt(IServiceProvider serviceProvider)
+        public SelectCredentialsWorkflow(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
 
         private async Task<bool> IsGrantedPermissionToGenerateCredentials(
-            ICredentialsService credentialsService,
+            ICreateCredentialsWorkflow credentialsService,
             InstanceLocator instanceLocator)
         {
             //
@@ -75,13 +75,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             }
         }
 
-        public async Task ShowCredentialsPromptAsync(
+        public async Task SelectCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
             ConnectionSettingsBase settings,
             bool allowJumpToSettings)
         {
-            var credentialsService = this.serviceProvider.GetService<ICredentialsService>();
+            var credentialsService = this.serviceProvider.GetService<ICreateCredentialsWorkflow>();
 
             //
             // Determine which options to show in prompt.
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                         .ConfigureAwait(true))
             {
                 // Generate new credentials right away and skip the prompt.
-                await credentialsService.GenerateCredentialsAsync(
+                await credentialsService.CreateCredentialsAsync(
                         owner,
                         instanceLocator,
                         settings,
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                     {
                         Title = "Generate new credentials",
                         Apply = () => credentialsService
-                            .GenerateCredentialsAsync(
+                            .CreateCredentialsAsync(
                                 owner,
                                 instanceLocator,
                                 settings,

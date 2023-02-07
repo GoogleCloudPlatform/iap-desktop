@@ -19,11 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory
 {
+    [Service]
     public class JoinViewModel : ViewModelBase
     {
         public JoinViewModel()

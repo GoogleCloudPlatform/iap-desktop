@@ -23,10 +23,12 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Util;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,32 +56,45 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
     public class ProjectPickerDialog : IProjectPickerDialog
     {
         private readonly IExceptionDialog exceptionDialog;
-        private readonly IThemeService theme;
+        private readonly ViewFactory<ProjectPickerView, ProjectPickerViewModel> viewFactory;
 
-        public ProjectPickerDialog(
-            IExceptionDialog exceptionDialog,
-            IThemeService theme)
+        public ProjectPickerDialog(IServiceProvider serviceProvider)
         {
-            this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
-            this.theme = theme.ThrowIfNull(nameof(theme));
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
+            this.viewFactory = serviceProvider.GetViewFactory<ProjectPickerView, ProjectPickerViewModel>();
+            this.viewFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
         }
 
         private DialogResult SelectProjects(
             IWin32Window owner,
-            ProjectPickerWindow window,
             string caption,
+            IProjectPickerModel model,
             out IReadOnlyCollection<ProjectLocator> selectedProjects)
         {
-            window.DialogText = caption;
-            window.ButtonText = $"&{caption}";
+            var viewModel = new ProjectPickerViewModel(model);
+            viewModel.DialogText.Value = caption;
+            viewModel.ButtonText.Value = $"&{caption}";
 
-            var result = window.ShowDialog(owner);
+            using (var dialog = this.viewFactory.CreateDialog(viewModel))
+            {
+                var result = dialog.ShowDialog(owner);
 
-            selectedProjects = (result == DialogResult.OK)
-                ? window.SelectedProjects
-                : null;
+                if (result == DialogResult.OK)
+                {
+                    selectedProjects = viewModel
+                        .SelectedProjects
+                        .Value
+                        .EnsureNotNull()
+                        .Select(p => new ProjectLocator(p.ProjectId))
+                        .ToList();
+                }
+                else
+                {
+                    selectedProjects = null;
+                }
 
-            return result;
+                return result;
+            }
         }
 
         //---------------------------------------------------------------------
@@ -92,14 +107,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             IResourceManagerAdapter resourceManager,
             out IReadOnlyCollection<ProjectLocator> selectedProjects)
         {
-            var model = new CloudModel(resourceManager);
-
-            using (var window = new ProjectPickerWindow(model, this.exceptionDialog))
-            {
-                this.theme.DialogTheme.ApplyTo(window);
-
-                return SelectProjects(owner, window, caption, out selectedProjects);
-            }
+            return SelectProjects(
+                owner,
+                caption,
+                new CloudModel(resourceManager),
+                out selectedProjects);
         }
 
         public DialogResult SelectLocalProjects(
@@ -116,12 +128,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 })
                 .ToList());
 
-            using (var window = new ProjectPickerWindow(model, this.exceptionDialog))
-            {
-                this.theme.DialogTheme.ApplyTo(window);
 
-                return SelectProjects(owner, window, caption, out selectedProjects);
-            }
+            return SelectProjects(
+                owner,
+                caption,
+                model,
+                out selectedProjects);
         }
 
         //---------------------------------------------------------------------
