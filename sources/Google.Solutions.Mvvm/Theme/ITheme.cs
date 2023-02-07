@@ -29,7 +29,7 @@ namespace Google.Solutions.Mvvm.Theme
     /// Theme that can be applied to a control (and its
     /// children).
     /// </summary>
-    public interface IControlTheme // TODO: Rename to ITheme
+    public interface IControlTheme
     {
         void ApplyTo(Control control);
     }

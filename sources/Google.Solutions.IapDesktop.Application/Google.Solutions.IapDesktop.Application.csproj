@@ -193,6 +193,13 @@
     <Compile Include="Views\Diagnostics\DebugFocusWindow.Designer.cs">
       <DependentUpon>DebugFocusWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Diagnostics\DebugServiceRegistryView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugServiceRegistryView.Designer.cs">
+      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugServiceRegistryViewModel.cs" />
     <Compile Include="Views\Diagnostics\DebugThemeWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -381,6 +388,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugJobServiceWindow.resx">
       <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugServiceRegistryView.resx">
+      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugThemeWindow.resx">
       <DependentUpon>DebugThemeWindow.cs</DependentUpon>

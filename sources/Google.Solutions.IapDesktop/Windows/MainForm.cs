@@ -543,6 +543,10 @@ namespace Google.Solutions.IapDesktop.Windows
                 "Theme",
                 _ => CommandState.Enabled,
                 _ => this.serviceProvider.GetService<DebugThemeWindow>().ShowWindow()));
+            debugCommand.AddCommand(new Command<IMainForm>(
+                "Registered services",
+                _ => CommandState.Enabled,
+                _ => ToolWindow.Show<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)));
 
             var crashCommand = debugCommand.AddCommand(new Command<IMainForm>(
                 "Exceptions",

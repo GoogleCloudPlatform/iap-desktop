@@ -24,7 +24,9 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -82,14 +84,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     //
                     break;
             }
-        }
-
-        public bool IsClosed { get; private set; } = false;
-
-        public bool ShowCloseMenuItemInContextMenu
-        {
-            get => this.closeMenuItem.Visible;
-            set => this.closeMenuItem.Visible = false;
         }
 
         public ToolWindow()
@@ -153,8 +147,41 @@ namespace Google.Solutions.IapDesktop.Application.Views
         }
 
         //---------------------------------------------------------------------
+        // Factory.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Show a tool window.
+        /// 
+        /// This method binds the view model and ensures that the form and
+        /// view model are disposed properly.
+        /// </summary>
+        public static TToolWindowView Show<TToolWindowView, TToolWindowViewModel>(
+            IServiceProvider serviceProvider)
+            where TToolWindowView : ToolWindow, IView<TToolWindowViewModel>
+            where TToolWindowViewModel : ViewModelBase
+        {
+            var window = serviceProvider.GetWindow<TToolWindowView, TToolWindowViewModel>();
+
+            window.Theme = serviceProvider
+                .GetService<IThemeService>()
+                .ToolWindowTheme;
+            
+            window.Form.ShowWindow();
+            return window.Form;
+        }
+
+        //---------------------------------------------------------------------
         // Show/Hide.
         //---------------------------------------------------------------------
+
+        public bool IsClosed { get; private set; } = false;
+
+        public bool ShowCloseMenuItemInContextMenu
+        {
+            get => this.closeMenuItem.Visible;
+            set => this.closeMenuItem.Visible = false;
+        }
 
         public void CloseSafely()
         {
@@ -168,6 +195,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
+        // TODO: make protected  or private
         public virtual void ShowWindow()
         {
             Debug.Assert(this.panel != null);
