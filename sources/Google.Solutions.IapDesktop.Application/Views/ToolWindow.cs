@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -151,24 +152,48 @@ namespace Google.Solutions.IapDesktop.Application.Views
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// Show a tool window.
-        /// 
-        /// This method binds the view model and ensures that the form and
-        /// view model are disposed properly.
+        /// Gets or creates a MVVM-enabled tool window and prepares it for viewing. 
+        /// Callers have the opportunity to customize the view model before calling
+        /// .Show() on the returned object.
         /// </summary>
-        public static TToolWindowView Show<TToolWindowView, TToolWindowViewModel>(
+        public static BoundToolWindow<TToolWindowView, TToolWindowViewModel> GetWindow<TToolWindowView, TToolWindowViewModel>(
             IServiceProvider serviceProvider)
             where TToolWindowView : ToolWindow, IView<TToolWindowViewModel>
             where TToolWindowViewModel : ViewModelBase
         {
-            var window = serviceProvider.GetWindow<TToolWindowView, TToolWindowViewModel>();
+            var window = serviceProvider
+                .ThrowIfNull(nameof(serviceProvider))
+                .GetWindow<TToolWindowView, TToolWindowViewModel>();
 
             window.Theme = serviceProvider
                 .GetService<IThemeService>()
                 .ToolWindowTheme;
-            
-            window.Form.ShowWindow();
-            return window.Form;
+
+            //
+            // Return an intermediate object that lets the caller initialize the
+            // view model before calling ShowWindow().
+            //
+            return new BoundToolWindow<TToolWindowView, TToolWindowViewModel>(window);
+        }
+
+        public class BoundToolWindow<TToolWindowView, TToolWindowViewModel>
+            where TToolWindowView : ToolWindow, IView<TToolWindowViewModel>
+            where TToolWindowViewModel : ViewModelBase
+        {
+            private readonly Window<TToolWindowView, TToolWindowViewModel> window;
+
+            public BoundToolWindow(Window<TToolWindowView, TToolWindowViewModel> window)
+            {
+                this.window = window.ThrowIfNull(nameof(window));
+                Debug.Assert(window.ViewModel != null);
+            }
+
+            public TToolWindowViewModel ViewModel => this.window.ViewModel;
+
+            public void Show()
+            {
+                this.window.Form.ShowWindow();
+            }
         }
 
         //---------------------------------------------------------------------

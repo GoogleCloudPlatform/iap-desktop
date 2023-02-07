@@ -546,7 +546,9 @@ namespace Google.Solutions.IapDesktop.Windows
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Registered services",
                 _ => CommandState.Enabled,
-                _ => ToolWindow.Show<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)));
+                _ => ToolWindow
+                    .GetWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)
+                    .Show()));
 
             var crashCommand = debugCommand.AddCommand(new Command<IMainForm>(
                 "Exceptions",
