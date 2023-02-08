@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
-    partial class DebugFullScreenPane
+    partial class DebugFullScreenView
     {
         /// <summary>
         /// Required designer variable.
@@ -107,7 +107,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.Controls.Add(this.fullScreenToggleButton);
             this.Name = "DebugFullScreenPane";
             this.Text = "DebugFullScreenPane";
-            this.SizeChanged += new System.EventHandler(this.DebugFullScreenPane_SizeChanged);
             this.groupBox.ResumeLayout(false);
             this.groupBox.PerformLayout();
             this.ResumeLayout(false);

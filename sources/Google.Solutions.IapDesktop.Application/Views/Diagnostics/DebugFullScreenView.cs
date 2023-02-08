@@ -20,28 +20,42 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     [ComVisible(false)]
     [SkipCodeCoverage("For debug purposes only")]
-    public partial class DebugFullScreenPane : DocumentWindow
+    public partial class DebugFullScreenView : DocumentWindow, IView<DebugFullScreenViewModel>
     {
-        public DebugFullScreenPane()
-        {
-            // Constructor is for designer only.
-        }
-
-        public DebugFullScreenPane(IServiceProvider serviceProvider)
+        public DebugFullScreenView(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             InitializeComponent();
-            this.TabText = this.Text;
-
-            this.HideOnClose = true;
         }
+
+        public void Bind(DebugFullScreenViewModel viewModel)
+        {
+            this.sizeLabel.BindReadonlyObservableProperty(
+                c => c.Text,
+                viewModel,
+                v => v.SizeLabel,
+                this.Container);
+
+            //
+            // NB. Controls are re-parented, thus subscribe to the events
+            // of a control, not to those of the form.
+            //
+            this.groupBox.SizeChanged += (ctl, __) => viewModel.OnWindowSizeChanged(((Control)ctl).FindForm());
+            this.groupBox.ParentChanged += (ctl, __) => viewModel.OnWindowSizeChanged(((Control)ctl).FindForm());
+        }
+
+        //---------------------------------------------------------------------
+        // Window events.
+        //---------------------------------------------------------------------
 
         private void fullScreenToggleButton_Click(object sender, EventArgs e)
         {
@@ -53,11 +67,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             {
                 EnterFullscreen(this.allScreensCheckBox.Checked);
             }
-        }
-
-        private void DebugFullScreenPane_SizeChanged(object sender, EventArgs e)
-        {
-            this.sizeLabel.Text = $"Size: {this.Size}\nClientSize: {this.ClientSize}\nDisplayRectangle:{this.DisplayRectangle}";
         }
     }
 }

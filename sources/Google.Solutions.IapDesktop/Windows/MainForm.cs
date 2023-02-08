@@ -536,7 +536,9 @@ namespace Google.Solutions.IapDesktop.Windows
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Full screen pane",
                 _ => CommandState.Enabled,
-                _ => this.serviceProvider.GetService<DebugFullScreenPane>().ShowWindow()));
+                _ => ToolWindow
+                    .GetWindow<DebugFullScreenView, DebugFullScreenViewModel>(this.serviceProvider)
+                    .Show()));
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Theme",
                 _ => CommandState.Enabled,
