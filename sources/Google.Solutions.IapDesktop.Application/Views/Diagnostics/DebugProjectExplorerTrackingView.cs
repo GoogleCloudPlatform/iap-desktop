@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -30,13 +31,26 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     [ComVisible(false)]
     [SkipCodeCoverage("For debug purposes only")]
-    public partial class DebugProjectExplorerTrackingWindow
-        : ProjectExplorerTrackingToolWindow<DebugProjectExplorerTrackingViewModel>
+    public partial class DebugProjectExplorerTrackingView
+        : ProjectExplorerTrackingToolWindow<DebugProjectExplorerTrackingViewModel>,
+          IView<DebugProjectExplorerTrackingViewModel>
     {
-        public DebugProjectExplorerTrackingWindow(IServiceProvider serviceProvider)
+        private DebugProjectExplorerTrackingViewModel viewModel;
+
+        public DebugProjectExplorerTrackingView(IServiceProvider serviceProvider)
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
             InitializeComponent();
+        }
+
+        public void Bind(DebugProjectExplorerTrackingViewModel viewModel)
+        {
+            this.instanceNameLabel.BindReadonlyObservableProperty(
+                c => c.Text,
+                viewModel,
+                m => m.InstanceName,
+                this.Container);
+            this.viewModel = viewModel;
         }
 
         //---------------------------------------------------------------------
@@ -47,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         {
             if (node is IProjectModelInstanceNode vmNode)
             {
-                this.instanceNameLabel.Text = vmNode.Instance.Name;
+                this.viewModel.Node.Value = vmNode;
             }
             else
             {

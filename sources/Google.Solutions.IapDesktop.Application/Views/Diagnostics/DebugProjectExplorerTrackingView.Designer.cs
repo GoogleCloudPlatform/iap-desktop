@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
-    partial class DebugProjectExplorerTrackingWindow
+    partial class DebugProjectExplorerTrackingView
     {
         /// <summary>
         /// Required designer variable.

@@ -212,11 +212,11 @@
       <DependentUpon>DebugDockingView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
+    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.Designer.cs">
-      <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
+    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingView.Designer.cs">
+      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\IIapUrlHandler.cs" />
     <Compile Include="Views\Dialog\CredentialDialog.cs" />
@@ -378,8 +378,8 @@
     <EmbeddedResource Include="Views\Diagnostics\DebugFullScreenView.resx">
       <DependentUpon>DebugFullScreenView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.resx">
-      <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Diagnostics\DebugProjectExplorerTrackingView.resx">
+      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugJobServiceView.resx">
       <DependentUpon>DebugJobServiceView.cs</DependentUpon>

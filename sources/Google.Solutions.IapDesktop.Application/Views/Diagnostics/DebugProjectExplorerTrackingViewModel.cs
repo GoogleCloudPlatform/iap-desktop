@@ -26,17 +26,20 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     public class DebugProjectExplorerTrackingViewModel : ViewModelBase
     {
-        private readonly IProjectModelInstanceNode node;
-
-        public DebugProjectExplorerTrackingViewModel(IProjectModelInstanceNode node)
+        public DebugProjectExplorerTrackingViewModel()
         {
-            this.node = node;
+            this.Node = ObservableProperty.Build<IProjectModelInstanceNode>(null);
+            this.InstanceName = ObservableProperty.Build(
+                this.Node,
+                n => n?.DisplayName);
         }
 
-        public string InstanceName
-        {
-            get => this.node.Instance.Name;
-            set { }
-        }
+        //---------------------------------------------------------------------
+        // Observable properties.
+        //---------------------------------------------------------------------
+
+        public ObservableProperty<IProjectModelInstanceNode> Node { get; }
+
+        public ObservableFunc<string> InstanceName { get; }
     }
 }

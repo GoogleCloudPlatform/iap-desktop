@@ -534,7 +534,9 @@ namespace Google.Solutions.IapDesktop.Windows
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Project Explorer Tracking",
                 _ => CommandState.Enabled,
-                _ => this.serviceProvider.GetService<DebugProjectExplorerTrackingWindow>().ShowWindow()));
+                _ => ToolWindow
+                    .GetWindow<DebugProjectExplorerTrackingView, DebugProjectExplorerTrackingViewModel>(this.serviceProvider)
+                    .Show()));
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Full screen pane",
                 _ => CommandState.Enabled,
