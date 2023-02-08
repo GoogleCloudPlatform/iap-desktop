@@ -544,7 +544,9 @@ namespace Google.Solutions.IapDesktop.Windows
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Theme",
                 _ => CommandState.Enabled,
-                _ => this.serviceProvider.GetService<DebugThemeWindow>().ShowWindow()));
+                _ => ToolWindow
+                    .GetWindow<DebugThemeView, DebugThemeViewModel>(this.serviceProvider)
+                    .Show()));
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Registered services",
                 _ => CommandState.Enabled,

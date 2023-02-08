@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
-    partial class DebugThemeWindow
+    partial class DebugThemeView
     {
         /// <summary>
         /// Required designer variable.

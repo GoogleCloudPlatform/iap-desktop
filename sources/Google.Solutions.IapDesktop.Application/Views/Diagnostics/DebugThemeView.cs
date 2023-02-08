@@ -21,8 +21,8 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,9 +35,9 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     [SkipCodeCoverage("For development purposes only")]
-    public partial class DebugThemeWindow : ToolWindow
+    public partial class DebugThemeView : ToolWindow, IView<DebugThemeViewModel>
     {
-        public DebugThemeWindow(IServiceProvider serviceProvider)
+        public DebugThemeView(IServiceProvider serviceProvider)
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft)
         {
             InitializeComponent();
@@ -48,6 +48,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 .ColorPalette;
 
             this.propertyGrid.SelectedObject = new ColorPaletteInspector(palette);
+        }
+
+        public void Bind(DebugThemeViewModel viewModel)
+        {
         }
 
         private class ColorPaletteInspector : CustomTypeDescriptor

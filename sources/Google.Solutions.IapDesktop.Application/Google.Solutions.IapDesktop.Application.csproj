@@ -197,12 +197,13 @@
       <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Diagnostics\DebugServiceRegistryViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugThemeWindow.cs">
+    <Compile Include="Views\Diagnostics\DebugThemeView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugThemeWindow.Designer.cs">
-      <DependentUpon>DebugThemeWindow.cs</DependentUpon>
+    <Compile Include="Views\Diagnostics\DebugThemeView.Designer.cs">
+      <DependentUpon>DebugThemeView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Diagnostics\DebugThemeViewModel.cs" />
     <Compile Include="Views\Dialog\ConfirmationDialog.cs" />
     <Compile Include="Views\Diagnostics\DebugDockingView.cs">
       <SubType>Form</SubType>
@@ -386,8 +387,8 @@
     <EmbeddedResource Include="Views\Diagnostics\DebugServiceRegistryView.resx">
       <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugThemeWindow.resx">
-      <DependentUpon>DebugThemeWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Diagnostics\DebugThemeView.resx">
+      <DependentUpon>DebugThemeView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FlyoutWindow.resx">
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
