@@ -522,7 +522,9 @@ namespace Google.Solutions.IapDesktop.Windows
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Job Service",
                 _ => CommandState.Enabled,
-                _ => this.serviceProvider.GetService<DebugJobServiceWindow>().ShowWindow()));
+                _ => ToolWindow
+                    .GetWindow<DebugJobServiceView, DebugJobServiceViewModel>(this.serviceProvider)
+                    .Show()));
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Docking ",
                 _ => CommandState.Enabled,

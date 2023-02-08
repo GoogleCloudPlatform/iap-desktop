@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
-    partial class DebugJobServiceWindow
+    partial class DebugJobServiceView
     {
         /// <summary>
         /// Required designer variable.
@@ -67,7 +67,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.slowOpButton.TabIndex = 0;
             this.slowOpButton.Text = "Fire slow canellable event";
             this.slowOpButton.UseVisualStyleBackColor = true;
-            this.slowOpButton.Click += new System.EventHandler(this.slowOpButton_Click);
             // 
             // spinner
             // 
@@ -88,7 +87,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.slowNonCanelOpButton.TabIndex = 0;
             this.slowNonCanelOpButton.Text = "Fire slow non-canellable event";
             this.slowNonCanelOpButton.UseVisualStyleBackColor = true;
-            this.slowNonCanelOpButton.Click += new System.EventHandler(this.slowNonCanelOpButton_Click);
             // 
             // throwExceptionButton
             // 
@@ -98,7 +96,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.throwExceptionButton.TabIndex = 0;
             this.throwExceptionButton.Text = "Throw exception";
             this.throwExceptionButton.UseVisualStyleBackColor = true;
-            this.throwExceptionButton.Click += new System.EventHandler(this.throwExceptionButton_Click);
             // 
             // label
             // 
@@ -117,7 +114,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.reauthButton.TabIndex = 0;
             this.reauthButton.Text = "Trigger reauth";
             this.reauthButton.UseVisualStyleBackColor = true;
-            this.reauthButton.Click += new System.EventHandler(this.reauthButton_Click);
             // 
             // runInBackgroundCheckBox
             // 

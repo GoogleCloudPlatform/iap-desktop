@@ -363,10 +363,11 @@ namespace Google.Solutions.IapDesktop
                 windowLayer.AddTransient<OptionsDialog>();
 
 #if DEBUG
-                windowLayer.AddSingleton<DebugJobServiceWindow>();
                 windowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
                 windowLayer.AddTransient<DebugThemeWindow>();
 
+                windowLayer.AddSingleton<DebugJobServiceView>();
+                windowLayer.AddSingleton<DebugJobServiceViewModel>();
                 windowLayer.AddTransient<DebugFullScreenView>();
                 windowLayer.AddTransient<DebugFullScreenViewModel>();
                 windowLayer.AddTransient<DebugDockingView>();
