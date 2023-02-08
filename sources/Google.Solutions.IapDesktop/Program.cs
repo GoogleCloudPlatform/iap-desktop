@@ -366,7 +366,6 @@ namespace Google.Solutions.IapDesktop
                 windowLayer.AddSingleton<DebugJobServiceWindow>();
                 windowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
                 windowLayer.AddSingleton<DebugFullScreenPane>();
-                windowLayer.AddSingleton<DebugFocusWindow>();
                 windowLayer.AddTransient<DebugThemeWindow>();
 
                 windowLayer.AddSingleton<DebugDockingView>();

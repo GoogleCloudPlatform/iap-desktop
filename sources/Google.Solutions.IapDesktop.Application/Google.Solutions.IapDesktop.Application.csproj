@@ -188,12 +188,6 @@
     <Compile Include="Views\Diagnostics\DebugFullScreenPane.Designer.cs">
       <DependentUpon>DebugFullScreenPane.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugFocusWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Diagnostics\DebugFocusWindow.Designer.cs">
-      <DependentUpon>DebugFocusWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\Diagnostics\DebugServiceRegistryView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -377,9 +371,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugDockingView.resx">
       <DependentUpon>DebugDockingView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugFocusWindow.resx">
-      <DependentUpon>DebugFocusWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugFullScreenPane.resx">
       <DependentUpon>DebugFullScreenPane.cs</DependentUpon>

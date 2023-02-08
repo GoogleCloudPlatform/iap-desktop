@@ -538,10 +538,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 _ => CommandState.Enabled,
                 _ => this.serviceProvider.GetService<DebugFullScreenPane>().ShowWindow()));
             debugCommand.AddCommand(new Command<IMainForm>(
-                "Track window focus",
-                _ => CommandState.Enabled,
-                _ => this.serviceProvider.GetService<DebugFocusWindow>().ShowWindow()));
-            debugCommand.AddCommand(new Command<IMainForm>(
                 "Theme",
                 _ => CommandState.Enabled,
                 _ => this.serviceProvider.GetService<DebugThemeWindow>().ShowWindow()));
