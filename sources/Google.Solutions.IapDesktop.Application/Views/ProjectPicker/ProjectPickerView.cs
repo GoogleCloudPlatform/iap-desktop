@@ -51,17 +51,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                     this.exceptionDialog.Show(this, "Loading projects failed", e);
                 });
 
-            this.BindReadonlyProperty(
+            this.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.DialogText,
                 this.components);
-            this.headlineLabel.BindReadonlyProperty(
+            this.headlineLabel.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.DialogText,
                 this.components);
-            this.pickProjectButton.BindReadonlyProperty(
+            this.pickProjectButton.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.ButtonText,
@@ -77,23 +77,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 viewModel,
                 m => m.Filter,
                 this.components);
-            this.projectList.BindProperty(
+            this.projectList.BindObservableProperty(
                 c => c.Loading,
                 viewModel,
                 m => m.IsLoading,
                 this.components);
-            this.projectList.List.BindProperty(
+            this.projectList.List.BindObservableProperty(
                 c => c.SelectedModelItems,
                 viewModel,
                 m => m.SelectedProjects,
                 this.components);
 
-            this.statusLabel.BindReadonlyProperty(
+            this.statusLabel.BindReadonlyObservableProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsStatusTextVisible,
                 this.components);
-            this.statusLabel.BindReadonlyProperty(
+            this.statusLabel.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.StatusText,
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             //
             // Bind buttons.
             //
-            this.pickProjectButton.BindReadonlyProperty(
+            this.pickProjectButton.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsProjectSelected,

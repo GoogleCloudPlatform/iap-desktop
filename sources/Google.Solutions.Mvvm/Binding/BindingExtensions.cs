@@ -170,7 +170,7 @@ namespace Google.Solutions.Mvvm.Binding
         // Binding for ObservableProperties.
         //---------------------------------------------------------------------
 
-        public static void BindProperty<TControl, TProperty, TModel>(
+        public static void BindObservableProperty<TControl, TProperty, TModel>(
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
@@ -206,7 +206,7 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        public static void BindReadonlyProperty<TControl, TProperty, TModel>(
+        public static void BindReadonlyObservableProperty<TControl, TProperty, TModel>(
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,

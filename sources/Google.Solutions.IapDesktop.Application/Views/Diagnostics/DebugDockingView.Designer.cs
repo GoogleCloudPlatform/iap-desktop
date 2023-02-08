@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
-    partial class DebugDockingWindow
+    partial class DebugDockingView
     {
         /// <summary>
         /// Required designer variable.

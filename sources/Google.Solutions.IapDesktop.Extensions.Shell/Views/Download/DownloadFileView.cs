@@ -40,22 +40,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
 
         public void Bind(DownloadFileViewModel viewModel)
         {
-            this.BindReadonlyProperty(
+            this.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.DialogText,
                 this.Container);
-            this.targetDirectoryTextBox.BindProperty(
+            this.targetDirectoryTextBox.BindObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.TargetDirectory,
                 this.Container);
-            this.fileBrowser.BindProperty(
+            this.fileBrowser.BindObservableProperty(
                 c => c.SelectedFiles,
                 viewModel,
                 m => m.SelectedFiles,
                 this.Container);
-            this.downloadButton.BindReadonlyProperty(
+            this.downloadButton.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsDownloadButtonEnabled,

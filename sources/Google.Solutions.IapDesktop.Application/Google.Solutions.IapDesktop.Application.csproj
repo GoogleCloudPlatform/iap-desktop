@@ -181,6 +181,7 @@
     <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
     <Compile Include="Views\Authorization\OAuthScopeNotGrantedViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugDockingViewModel.cs" />
     <Compile Include="Views\Diagnostics\DebugFullScreenPane.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -207,11 +208,11 @@
       <DependentUpon>DebugThemeWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialog\ConfirmationDialog.cs" />
-    <Compile Include="Views\Diagnostics\DebugDockingWindow.cs">
+    <Compile Include="Views\Diagnostics\DebugDockingView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugDockingWindow.Designer.cs">
-      <DependentUpon>DebugDockingWindow.cs</DependentUpon>
+    <Compile Include="Views\Diagnostics\DebugDockingView.Designer.cs">
+      <DependentUpon>DebugDockingView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
     <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
@@ -374,8 +375,8 @@
     <EmbeddedResource Include="Views\Authorization\OAuthScopeNotGrantedView.resx">
       <DependentUpon>OAuthScopeNotGrantedView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugDockingWindow.resx">
-      <DependentUpon>DebugDockingWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Diagnostics\DebugDockingView.resx">
+      <DependentUpon>DebugDockingView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugFocusWindow.resx">
       <DependentUpon>DebugFocusWindow.cs</DependentUpon>

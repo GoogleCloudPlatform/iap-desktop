@@ -526,7 +526,9 @@ namespace Google.Solutions.IapDesktop.Windows
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Docking ",
                 _ => CommandState.Enabled,
-                _ => this.serviceProvider.GetService<DebugDockingWindow>().ShowWindow()));
+                _ => ToolWindow
+                    .GetWindow<DebugDockingView, DebugDockingViewModel>(this.serviceProvider)
+                    .Show()));
             debugCommand.AddCommand(new Command<IMainForm>(
                 "Project Explorer Tracking",
                 _ => CommandState.Enabled,

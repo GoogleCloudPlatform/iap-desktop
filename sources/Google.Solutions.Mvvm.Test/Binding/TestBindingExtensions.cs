@@ -306,7 +306,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var model = new ViewModelWithObservableProperties();
             model.One.Value = "text from model";
 
-            control.BindProperty(
+            control.BindObservableProperty(
                 t => t.Text,
                 model,
                 m => m.One);
@@ -320,7 +320,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
 
-            control.BindProperty(
+            control.BindObservableProperty(
                 t => t.Text,
                 model,
                 m => m.One);
@@ -336,7 +336,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
 
-            control.BindProperty(
+            control.BindObservableProperty(
                 t => t.Text,
                 model,
                 m => m.One);
@@ -357,7 +357,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var model = new ViewModelWithObservableProperties();
             model.One.Value = "text from model";
 
-            control.BindReadonlyProperty(
+            control.BindReadonlyObservableProperty(
                 t => t.Text,
                 model,
                 m => m.One);
@@ -371,7 +371,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
 
-            control.BindReadonlyProperty(
+            control.BindReadonlyObservableProperty(
                 t => t.Text,
                 model,
                 m => m.One);
@@ -387,7 +387,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
 
-            control.BindReadonlyProperty(
+            control.BindReadonlyObservableProperty(
                 t => t.Text,
                 model,
                 m => m.One);
