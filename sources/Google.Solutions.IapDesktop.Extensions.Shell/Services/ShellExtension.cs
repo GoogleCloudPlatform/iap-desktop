@@ -392,7 +392,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 new Command<IMainForm>(
                     "Active IAP &tunnels",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => serviceProvider.GetService<ITunnelsWindow>().ShowWindow())
+                    pseudoContext => ToolWindow
+                        .GetWindow<TunnelsView, TunnelsViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.Tunnel_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.T

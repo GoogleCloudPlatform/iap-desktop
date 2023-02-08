@@ -33,7 +33,8 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 {
-    internal class TunnelsViewModel : ViewModelBase
+    [Service]
+    public class TunnelsViewModel : ViewModelBase
     {
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly IConfirmationDialog confirmationDialog;

@@ -35,35 +35,24 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 {
-    [ComVisible(false)]
-    [Service(typeof(ITunnelsWindow), ServiceLifetime.Singleton)]
+    [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
-    public partial class TunnelsWindow : ToolWindow, ITunnelsWindow
+    public partial class TunnelsView : ToolWindow, IView<TunnelsViewModel>
     {
-        private readonly TunnelsViewModel viewModel;
-
-        public TunnelsWindow(IServiceProvider serviceProvider)
+        public TunnelsView(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockBottomAutoHide)
         {
             InitializeComponent();
-
-            this.TabText = this.Text;
-
-            var themeService = serviceProvider.GetService<IThemeService>();
-            themeService.ToolWindowTheme.ApplyTo(this.toolStrip);
-            themeService.ToolWindowTheme.ApplyTo(this.tunnelsList);
 
             //
             // This window is a singleton, so we never want it to be closed,
             // just hidden.
             //
-            this.HideOnClose = true; //TODO: Make non-HideOnClose?
+            this.HideOnClose = true;
+        }
 
-            this.viewModel = new TunnelsViewModel(serviceProvider)
-            {
-                View = this
-            };
-
+        public void Bind(TunnelsViewModel viewModel)
+        { 
             this.tunnelsList.BindCollection(viewModel.Tunnels);
             this.tunnelsList.BindColumn(0, t => t.Destination.Instance.Name);
             this.tunnelsList.BindColumn(1, t => t.Destination.Instance.ProjectId);
@@ -76,48 +65,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 
             this.tunnelsList.BindProperty(
                 v => this.tunnelsList.SelectedModelItem,
-                this.viewModel,
-                m => this.viewModel.SelectedTunnel,
+                viewModel,
+                m => viewModel.SelectedTunnel,
                 this.components);
-            this.refreshToolStripButton.BindProperty(
+            this.refreshToolStripButton.BindReadonlyProperty(
                 b => b.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsRefreshButtonEnabled,
                 this.components);
-            this.disconnectToolStripButton.BindProperty(
+            this.disconnectToolStripButton.BindReadonlyProperty(
                 b => b.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsDisconnectButtonEnabled,
                 this.components);
-            this.disconnectTunnelToolStripMenuItem.BindProperty(
+            this.disconnectTunnelToolStripMenuItem.BindReadonlyProperty(
                 b => b.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsDisconnectButtonEnabled,
                 this.components);
-        }
 
-        //---------------------------------------------------------------------
-        // ITunnelsList.
-        //---------------------------------------------------------------------
-
-        public override void ShowWindow()
-        {
-            base.ShowWindow();
-
-            this.viewModel.RefreshTunnels();
-        }
-
-        //---------------------------------------------------------------------
-        // Window event handlers.
-        //---------------------------------------------------------------------
-
-        private async void disconnectToolStripButton_Click(object sender, EventArgs _)
-            => await this.viewModel
+            this.disconnectToolStripButton.Click += async (_, __) => await viewModel
                 .DisconnectSelectedTunnelAsync()
                 .ConfigureAwait(true);
+            this.disconnectTunnelToolStripMenuItem.Click += async (_, __) => await viewModel
+                .DisconnectSelectedTunnelAsync()
+                .ConfigureAwait(true);
+            this.refreshToolStripButton.Click += (_, __) => viewModel.RefreshTunnels();
 
-        private void refreshToolStripButton_Click(object sender, EventArgs _)
-            => this.viewModel.RefreshTunnels();
+
+            viewModel.RefreshTunnels();
+        }
     }
 
     public class TunnelsListView : BindableListView<ITunnel>

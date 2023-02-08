@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.Controls;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 {
-    partial class TunnelsWindow
+    partial class TunnelsView
     {
         /// <summary>
         /// Required designer variable.
@@ -88,7 +88,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.refreshToolStripButton.Name = "refreshToolStripButton";
             this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.refreshToolStripButton.Text = "Refresh";
-            this.refreshToolStripButton.Click += new System.EventHandler(this.refreshToolStripButton_Click);
             // 
             // disconnectToolStripButton
             // 
@@ -98,7 +97,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.disconnectToolStripButton.Name = "disconnectToolStripButton";
             this.disconnectToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.disconnectToolStripButton.Text = "Disconnect tunnel";
-            this.disconnectToolStripButton.Click += new System.EventHandler(this.disconnectToolStripButton_Click);
             // 
             // tunnelsList
             // 
@@ -182,7 +180,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.disconnectTunnelToolStripMenuItem.Name = "disconnectTunnelToolStripMenuItem";
             this.disconnectTunnelToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.disconnectTunnelToolStripMenuItem.Text = "&Disconnect tunnel";
-            this.disconnectTunnelToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripButton_Click);
             // 
             // TunnelsWindow
             // 

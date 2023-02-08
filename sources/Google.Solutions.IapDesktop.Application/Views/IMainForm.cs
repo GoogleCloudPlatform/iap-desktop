@@ -27,7 +27,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
-    public interface IMainForm
+    public interface IMainForm // TODO: Rename to IMainWindow extends IWin32Window
     {
         /// <summary>
         /// Handle for the main window.

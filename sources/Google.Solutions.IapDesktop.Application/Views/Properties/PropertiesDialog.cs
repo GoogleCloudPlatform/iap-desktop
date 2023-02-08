@@ -34,7 +34,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views.Properties
 {
     [SkipCodeCoverage("UI code")]
-    public partial class PropertiesDialog : Form
+    public partial class PropertiesDialog : Form // TODO: Rename to PropertiesWindow
     {
         private readonly IExceptionDialog exceptionDialog;
 
