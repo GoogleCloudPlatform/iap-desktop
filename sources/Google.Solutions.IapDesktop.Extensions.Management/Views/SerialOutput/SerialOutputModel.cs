@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 {
-    internal class SerialOutputModel
+    public class SerialOutputModel
     {
         private readonly StringBuilder buffer = new StringBuilder();
         private readonly IAsyncReader<string> stream;

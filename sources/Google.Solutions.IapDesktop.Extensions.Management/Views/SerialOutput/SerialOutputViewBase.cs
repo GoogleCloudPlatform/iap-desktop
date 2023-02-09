@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
 using System;
@@ -33,26 +32,27 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 {
     [SkipCodeCoverage("All logic in view model")]
-    internal partial class SerialOutputWindow
-        : ProjectExplorerTrackingToolWindow<SerialOutputViewModel>
+    [Service(ServiceLifetime.Singleton)]
+    public partial class SerialOutputViewBase
+        : ProjectExplorerTrackingToolWindow<SerialOutputViewModel>, IView<SerialOutputViewModel>
     {
-        private readonly SerialOutputViewModel viewModel;
+        private SerialOutputViewModel viewModel;
+        private readonly ushort portNumber;
 
-        public SerialOutputWindow(
-            IServiceProvider serviceProvider,
-            ushort serialPortNumber)
+        public SerialOutputViewBase(
+            IServiceProvider serviceProvider, ushort portNumber)
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
+            this.portNumber = portNumber;
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
+        }
 
-            serviceProvider
-                .GetService<IThemeService>()
-                .ToolWindowTheme
-                .ApplyTo(this.toolStrip);
-
-            this.viewModel = new SerialOutputViewModel(serviceProvider, serialPortNumber);
+        public void Bind(SerialOutputViewModel viewModel)
+        {
+            this.viewModel = viewModel;
+            viewModel.SerialPortNumber = this.portNumber;
 
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
@@ -92,7 +92,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
                 this.BeginInvoke((Action)(() => this.output.AppendText(output)));
             };
         }
-
 
         //---------------------------------------------------------------------
         // ProjectExplorerTrackingToolWindow.

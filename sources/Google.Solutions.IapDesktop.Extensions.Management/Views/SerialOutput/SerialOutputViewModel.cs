@@ -35,7 +35,8 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 {
-    internal class SerialOutputViewModel
+    [Service]
+    public class SerialOutputViewModel
         : ModelCachingViewModelBase<IProjectModelNode, SerialOutputModel>
     {
         private const int ModelCacheCapacity = 10;
@@ -43,7 +44,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 
         internal CancellationTokenSource TailCancellationTokenSource = null;
 
-        private readonly ushort serialPortNumber;
         private readonly IJobService jobService;
         private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
 
@@ -55,15 +55,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 
         public event EventHandler<string> NewOutputAvailable;
 
-        public SerialOutputViewModel(
-            IServiceProvider serviceProvider,
-            ushort serialPortNumber)
+        public SerialOutputViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
-            this.serialPortNumber = serialPortNumber;
             this.jobService = serviceProvider.GetService<IJobService>();
             this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
         }
+
+        internal ushort SerialPortNumber { get; set; }
 
         //---------------------------------------------------------------------
         // Tailing.
@@ -209,6 +208,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             IProjectModelNode node,
             CancellationToken token)
         {
+            Debug.Assert(this.SerialPortNumber != 0);
+
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
             {
                 if (node is IProjectModelInstanceNode vmNode && vmNode.IsRunning)
@@ -227,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
                                     vmNode.Instance.Name,
                                     this.computeEngineAdapter.GetInstance(),
                                     vmNode.Instance,
-                                    this.serialPortNumber,
+                                    this.SerialPortNumber,
                                     combinedTokenSource.Token)
                                 .ConfigureAwait(false);
                             }
@@ -243,6 +244,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 
         protected override void ApplyModel(bool cached)
         {
+            Debug.Assert(this.SerialPortNumber != 0);
+
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.Model, cached))
             {
                 // Stop tailing the old model.
@@ -251,14 +254,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
                 if (this.Model == null)
                 {
                     // Unsupported node.
-                    this.WindowTitle = DefaultWindowTitle + $" (COM{this.serialPortNumber})";
+                    this.WindowTitle = DefaultWindowTitle + $" (COM{this.SerialPortNumber})";
                     this.IsEnableTailingButtonEnabled =
                         this.IsOutputBoxEnabled = false;
                 }
                 else
                 {
                     this.WindowTitle = DefaultWindowTitle +
-                        $": {this.Model.DisplayName} (COM{this.serialPortNumber})";
+                        $": {this.Model.DisplayName} (COM{this.SerialPortNumber})";
                     this.IsEnableTailingButtonEnabled =
                         this.IsOutputBoxEnabled = true;
                 }

@@ -312,7 +312,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "Show serial port &output (COM1)",
                     SerialOutputViewModel.GetCommandState,
-                    context => this.serviceProvider.GetService<SerialOutputWindowCom1>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<SerialOutputViewCom1, SerialOutputViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.Log_16
                 },
@@ -389,7 +391,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IMainForm>(
                     "COM&1 (log)",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom1>().ShowWindow())
+                    pseudoContext => ToolWindow
+                        .GetWindow<SerialOutputViewCom1, SerialOutputViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.Log_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.O
@@ -398,7 +402,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IMainForm>(
                     "COM&3 (setup log)",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom3>().ShowWindow())
+                    pseudoContext => ToolWindow
+                        .GetWindow<SerialOutputViewCom3, SerialOutputViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.Log_16,
                 });
@@ -406,7 +412,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IMainForm>(
                     "COM&4 (agent)",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom4>().ShowWindow())
+                    pseudoContext => ToolWindow
+                        .GetWindow<SerialOutputViewCom4, SerialOutputViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.Log_16,
                 });

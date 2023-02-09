@@ -79,8 +79,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
             serviceProvider.AddSingleton<IComputeEngineAdapter>(
                 new ComputeEngineAdapter(credential));
 
-            return new SerialOutputViewModel(serviceProvider, 1)
+            return new SerialOutputViewModel(serviceProvider)
             {
+                SerialPortNumber = 1,
                 IsTailEnabled = false
             };
         }

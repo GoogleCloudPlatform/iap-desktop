@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 {
-    partial class SerialOutputWindow
+    partial class SerialOutputViewBase
     {
         /// <summary>
         /// Required designer variable.
