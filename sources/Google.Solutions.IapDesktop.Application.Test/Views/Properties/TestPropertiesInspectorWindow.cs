@@ -31,6 +31,7 @@ using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -69,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
             };
         }
 
-        public class ViewModel<T> : ViewModelBase, IPropertiesInspectorViewModel
+        public class SampleViewModel<T> : ViewModelBase, IPropertiesInspectorViewModel
         {
             private object inspectedObject;
 
@@ -100,6 +101,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
             }
         }
 
+        public class SampleView : PropertiesInspectorWindowBase
+        {
+            public SampleView(IServiceProvider serviceProvider, IPropertiesInspectorViewModel viewModel) 
+                : base(serviceProvider, viewModel)
+            {
+            }
+        }
+
         [SetUp]
         public void SetUpServices()
         {
@@ -112,8 +121,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         [Test]
         public void WhenObjectIsPocoWithNoBrowsableProperties_ThenNoPropertiesShown()
         {
-            var viewModel = new ViewModel<PocoWithoutProperty>();
-            var window = new PropertiesInspectorWindow(this.ServiceProvider, viewModel);
+            var viewModel = new SampleViewModel<PocoWithoutProperty>();
+            var window = new SampleView(this.ServiceProvider, viewModel);
             viewModel.InspectedObject = new PocoWithoutProperty();
 
             window.ShowWindow();
@@ -129,8 +138,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         [Test]
         public void WhenObjectIsPocoWithBrowsableProperty_ThenPropertyIsShown()
         {
-            var viewModel = new ViewModel<PocoWithoutProperty>();
-            var window = new PropertiesInspectorWindow(this.ServiceProvider, viewModel);
+            var viewModel = new SampleViewModel<PocoWithoutProperty>();
+            var window = new SampleView(this.ServiceProvider, viewModel);
             viewModel.InspectedObject = new PocoWithProperty();
 
             window.ShowWindow();
@@ -146,8 +155,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         [Test]
         public void WhenObjectIsSettingsCollection_ThenSettingIsShown()
         {
-            var viewModel = new ViewModel<Settings>();
-            var window = new PropertiesInspectorWindow(this.ServiceProvider, viewModel);
+            var viewModel = new SampleViewModel<Settings>();
+            var window = new SampleView(this.ServiceProvider, viewModel);
             viewModel.InspectedObject = new Settings();
 
             window.ShowWindow();

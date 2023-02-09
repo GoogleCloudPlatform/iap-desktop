@@ -37,12 +37,12 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Application.Views.Properties
 {
     [SkipCodeCoverage("All logic in view model")]
-    public partial class PropertiesInspectorWindow
+    public abstract partial class PropertiesInspectorWindowBase
         : ProjectExplorerTrackingToolWindow<IPropertiesInspectorViewModel>
     {
         private readonly IPropertiesInspectorViewModel viewModel;
 
-        public PropertiesInspectorWindow(
+        public PropertiesInspectorWindowBase(
             IServiceProvider serviceProvider,
             IPropertiesInspectorViewModel viewModel)
             : base(
