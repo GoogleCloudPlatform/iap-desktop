@@ -323,7 +323,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "Show &event log",
                     EventLogViewModel.GetCommandState,
-                    context => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<EventLogView, EventLogViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.EventLog_16
                 },
@@ -377,7 +379,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IMainForm>(
                     "&Event log",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
+                    pseudoContext => ToolWindow
+                        .GetWindow<EventLogView, EventLogViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.EventLog_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.E

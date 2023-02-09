@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 {
-    internal class EventLogModel : IEventProcessor
+    public class EventLogModel : IEventProcessor
     {
         private readonly List<EventBase> events = new List<EventBase>();
         public IEnumerable<EventBase> Events => this.events;

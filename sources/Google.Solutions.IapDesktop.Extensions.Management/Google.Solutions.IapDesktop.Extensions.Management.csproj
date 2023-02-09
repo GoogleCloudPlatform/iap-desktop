@@ -162,11 +162,11 @@
     <Compile Include="Views\ActiveDirectory\JoinViewModel.cs" />
     <Compile Include="Views\EventLog\EventLogModel.cs" />
     <Compile Include="Views\EventLog\EventLogViewModel.cs" />
-    <Compile Include="Views\EventLog\EventLogWindow.cs">
+    <Compile Include="Views\EventLog\EventLogView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\EventLog\EventLogWindow.Designer.cs">
-      <DependentUpon>EventLogWindow.cs</DependentUpon>
+    <Compile Include="Views\EventLog\EventLogView.Designer.cs">
+      <DependentUpon>EventLogView.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Adapters\AuditLogAdapter.cs" />
     <Compile Include="Data\Logs\ListLogEntriesParser.cs" />
@@ -242,8 +242,8 @@
     <EmbeddedResource Include="Views\ActiveDirectory\JoinView.resx">
       <DependentUpon>JoinView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\EventLog\EventLogWindow.resx">
-      <DependentUpon>EventLogWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\EventLog\EventLogView.resx">
+      <DependentUpon>EventLogView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\PackageInventory\PackageInventoryViewBase.resx">
       <DependentUpon>PackageInventoryViewBase.cs</DependentUpon>

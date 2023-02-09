@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 {
-    partial class EventLogWindow
+    partial class EventLogView
     {
         /// <summary>
         /// Required designer variable.
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EventLogWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EventLogView));
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);

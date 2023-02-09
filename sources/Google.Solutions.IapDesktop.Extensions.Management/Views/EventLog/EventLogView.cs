@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.Mvvm.Binding;
@@ -38,21 +37,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
-    internal partial class EventLogWindow
-        : ProjectExplorerTrackingToolWindow<EventLogViewModel>
+    internal partial class EventLogView
+        : ProjectExplorerTrackingToolWindow<EventLogViewModel>, IView<EventLogViewModel>
     {
-        private readonly EventLogViewModel viewModel;
+        private EventLogViewModel viewModel;
 
-        public EventLogWindow(IServiceProvider serviceProvider)
+        public EventLogView(IServiceProvider serviceProvider)
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
             InitializeComponent();
+        }
 
-            var theme = serviceProvider.GetService<IThemeService>();
-            theme.ToolWindowTheme.ApplyTo(this.toolStrip);
-            theme.ToolWindowTheme.ApplyTo(this.list);
-
-            this.viewModel = new EventLogViewModel(this, serviceProvider);
+        public void Bind(EventLogViewModel viewModel)
+        {
+            this.viewModel = viewModel;
 
             this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AvailableTimeframes.ToArray());
 
