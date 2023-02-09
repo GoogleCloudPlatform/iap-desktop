@@ -181,7 +181,7 @@
     <Compile Include="Data\Logs\LogRecord.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorViewModel.cs" />
-    <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorWindow.cs">
+    <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\PackageInventory\AvailablePackageInventoryWindow.cs">

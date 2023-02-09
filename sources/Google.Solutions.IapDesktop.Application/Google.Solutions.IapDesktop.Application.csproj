@@ -281,11 +281,11 @@
     <Compile Include="Views\Properties\PropertiesDialog.Designer.cs">
       <DependentUpon>PropertiesDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Properties\PropertiesInspectorWindow.cs">
+    <Compile Include="Views\Properties\PropertiesInspectorViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Properties\PropertiesInspectorWindow.Designer.cs">
-      <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
+    <Compile Include="Views\Properties\PropertiesInspectorViewBase.Designer.cs">
+      <DependentUpon>PropertiesInspectorViewBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Properties\SettingsCollectionTypeDescriptor.cs" />
     <Compile Include="Views\Dialog\TaskDialog.cs" />
@@ -408,8 +408,8 @@
     <EmbeddedResource Include="Views\Properties\PropertiesDialog.resx">
       <DependentUpon>PropertiesDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Properties\PropertiesInspectorWindow.resx">
-      <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Properties\PropertiesInspectorViewBase.resx">
+      <DependentUpon>PropertiesInspectorViewBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerView.resx">
       <DependentUpon>ProjectExplorerView.cs</DependentUpon>

@@ -21,24 +21,25 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.Mvvm.Binding;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties
 {
+    [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
-    [Service(typeof(IConnectionSettingsWindow), ServiceLifetime.Singleton)]
-    public class ConnectionSettingsWindow : PropertiesInspectorWindowBase, IConnectionSettingsWindow
+    internal class InstancePropertiesInspectorView 
+        : PropertiesInspectorViewBase, IView<InstancePropertiesInspectorViewModel>
     {
-        public ConnectionSettingsWindow(IServiceProvider serviceProvider)
-            : base(
-                  serviceProvider,
-                  new ConnectionSettingsViewModel(
-                      serviceProvider.GetService<IConnectionSettingsService>(),
-                      serviceProvider.GetService<IGlobalSessionBroker>()))
+        public InstancePropertiesInspectorView(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
+        }
+
+        public void Bind(InstancePropertiesInspectorViewModel viewModel)
+        {
+            base.Bind(viewModel);
         }
     }
 }

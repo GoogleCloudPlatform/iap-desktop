@@ -20,10 +20,8 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
@@ -37,25 +35,22 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Application.Views.Properties
 {
     [SkipCodeCoverage("All logic in view model")]
-    public abstract partial class PropertiesInspectorWindowBase
+    public abstract partial class PropertiesInspectorViewBase
         : ProjectExplorerTrackingToolWindow<IPropertiesInspectorViewModel>
     {
-        private readonly IPropertiesInspectorViewModel viewModel;
+        private IPropertiesInspectorViewModel viewModel;
 
-        public PropertiesInspectorWindowBase(
-            IServiceProvider serviceProvider,
-            IPropertiesInspectorViewModel viewModel)
-            : base(
-                  serviceProvider,
-                  DockState.DockRightAutoHide)
+        public PropertiesInspectorViewBase(IServiceProvider serviceProvider)
+            : base(serviceProvider, DockState.DockRightAutoHide)
         {
             this.components = new System.ComponentModel.Container();
-            this.viewModel = viewModel;
 
             InitializeComponent();
+        }
 
-            serviceProvider.GetService<IThemeService>().ToolWindowTheme.ApplyTo(this.propertyGrid);
-
+        protected void Bind(IPropertiesInspectorViewModel viewModel)
+        {
+            this.viewModel = viewModel;
             this.propertyGrid.EnableRichTextDescriptions();
 
             this.infoLabel.BindProperty(
@@ -86,9 +81,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
 
         private void SetInspectedObject(object obj)
         {
+            Debug.Assert(this.viewModel != null, "Bind has been called");
+
+            //
             // NB. The PropertyGrid displays a snapshot, if any of the
             // properties of the object changes, the grid does not
             // update automatically. 
+            //
 
             if (this.propertyGrid.SelectedObject is INotifyPropertyChanged oldObj)
             {
@@ -127,6 +126,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
             Debug.Assert(!this.InvokeRequired, "running on UI thread");
+            Debug.Assert(this.viewModel != null, "Bind has been called");
+
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }

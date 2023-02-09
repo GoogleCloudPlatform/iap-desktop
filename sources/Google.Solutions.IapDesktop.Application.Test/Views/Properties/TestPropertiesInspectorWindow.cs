@@ -19,9 +19,12 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
@@ -101,34 +104,50 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
             }
         }
 
-        public class SampleView : PropertiesInspectorWindowBase
+        public class SampleView<T>
+            : PropertiesInspectorViewBase, IView<SampleViewModel<T>>
         {
-            public SampleView(IServiceProvider serviceProvider, IPropertiesInspectorViewModel viewModel) 
-                : base(serviceProvider, viewModel)
+            public SampleView(IServiceProvider serviceProvider) : base(serviceProvider)
             {
+            }
+
+            public void Bind(SampleViewModel<T> viewModel)
+            {
+                base.Bind(viewModel);
             }
         }
 
-        [SetUp]
-        public void SetUpServices()
+        private static ServiceRegistry CreateServiceRegistry()
         {
-            this.ServiceRegistry.AddMock<IProjectExplorer>();
-            this.ServiceRegistry.AddMock<IThemeService>()
+            var registry = new ServiceRegistry();
+            registry.AddMock<IMainForm>();
+            registry.AddMock<IExceptionDialog>();
+            registry.AddMock<IProjectExplorer>();
+            registry.AddMock<IThemeService>()
                 .SetupGet(t => t.ToolWindowTheme)
                 .Returns(new Mock<IControlTheme>().Object);
+            return registry;
         }
+
+        // TODO: Fix tests
 
         [Test]
         public void WhenObjectIsPocoWithNoBrowsableProperties_ThenNoPropertiesShown()
         {
-            var viewModel = new SampleViewModel<PocoWithoutProperty>();
-            var window = new SampleView(this.ServiceProvider, viewModel);
-            viewModel.InspectedObject = new PocoWithoutProperty();
+            var registry = new ServiceRegistry(CreateServiceRegistry());
+            registry.AddTransient<SampleViewModel<PocoWithoutProperty>>();
+            registry.AddTransient<SampleView<PocoWithoutProperty>>();
 
-            window.ShowWindow();
+            var window = ToolWindow.GetWindow<
+                SampleView<PocoWithoutProperty>,
+                SampleViewModel<PocoWithoutProperty>>(registry);
+            window.ViewModel.InspectedObject = new PocoWithoutProperty();
+
+            window.Show();
             PumpWindowMessages();
 
             var grid = window
+                .view
                 .GetAllControls()
                 .OfType<PropertyGrid>()
                 .First();
@@ -138,14 +157,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         [Test]
         public void WhenObjectIsPocoWithBrowsableProperty_ThenPropertyIsShown()
         {
-            var viewModel = new SampleViewModel<PocoWithoutProperty>();
-            var window = new SampleView(this.ServiceProvider, viewModel);
-            viewModel.InspectedObject = new PocoWithProperty();
+            var registry = new ServiceRegistry(CreateServiceRegistry());
+            registry.AddTransient<SampleViewModel<PocoWithProperty>>();
+            registry.AddTransient<SampleView<PocoWithProperty>>();
 
-            window.ShowWindow();
+            var window = ToolWindow.GetWindow<
+                SampleView<PocoWithProperty>,
+                SampleViewModel<PocoWithProperty>>(registry);
+            window.ViewModel.InspectedObject = new PocoWithoutProperty();
+
+            window.Show();
             PumpWindowMessages();
 
             var grid = window
+                .view
                 .GetAllControls()
                 .OfType<PropertyGrid>()
                 .First();
@@ -155,14 +180,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         [Test]
         public void WhenObjectIsSettingsCollection_ThenSettingIsShown()
         {
-            var viewModel = new SampleViewModel<Settings>();
-            var window = new SampleView(this.ServiceProvider, viewModel);
-            viewModel.InspectedObject = new Settings();
+            var registry = new ServiceRegistry(CreateServiceRegistry());
+            registry.AddTransient<SampleViewModel<Settings>>();
+            registry.AddTransient<SampleView<Settings>>();
 
-            window.ShowWindow();
+            var window = ToolWindow.GetWindow<
+                SampleView<Settings>,
+                SampleViewModel<Settings>>(registry);
+            window.ViewModel.InspectedObject = new Settings();
+
+            window.Show();
             PumpWindowMessages();
 
             var grid = window
+                .view
                 .GetAllControls()
                 .OfType<PropertyGrid>()
                 .First();

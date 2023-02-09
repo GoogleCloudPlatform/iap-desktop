@@ -186,7 +186,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "Properties",
                     InstancePropertiesInspectorViewModel.GetToolbarCommandState,
-                    context => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.ComputerDetails_16
                 },
@@ -352,7 +354,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "P&roperties",
                     InstancePropertiesInspectorViewModel.GetContextMenuCommandState,
-                    context => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.ComputerDetails_16,
                     ShortcutKeys = Keys.Alt | Keys.Enter
@@ -412,7 +416,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IMainForm>(
                     "&Instance properties",
                     _ => CommandState.Enabled,
-                    _ => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
+                    _ => ToolWindow
+                        .GetWindow<InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.ComputerDetails_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.I

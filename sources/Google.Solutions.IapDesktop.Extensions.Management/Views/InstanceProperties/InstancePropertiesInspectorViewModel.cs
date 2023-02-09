@@ -37,7 +37,8 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties
 {
-    internal class InstancePropertiesInspectorViewModel
+    [Service]
+    public class InstancePropertiesInspectorViewModel
         : ModelCachingViewModelBase<IProjectModelNode, InstancePropertiesInspectorModel>, IPropertiesInspectorViewModel
     {
         private const int ModelCacheCapacity = 5;

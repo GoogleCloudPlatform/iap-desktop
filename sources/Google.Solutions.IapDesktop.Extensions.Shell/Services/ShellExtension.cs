@@ -232,9 +232,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 
         private void OpenConnectionSettings()
         {
-            this.serviceProvider
-                .GetService<IConnectionSettingsWindow>()
-                .ShowWindow();
+            ToolWindow
+                .GetWindow<ConnectionSettingsView, ConnectionSettingsViewModel>(serviceProvider)
+                .Show();
         }
 
         //---------------------------------------------------------------------

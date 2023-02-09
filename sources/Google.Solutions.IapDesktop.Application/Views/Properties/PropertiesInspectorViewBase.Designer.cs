@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views.Properties
 {
-    partial class PropertiesInspectorWindowBase
+    partial class PropertiesInspectorViewBase
     {
         /// <summary>
         /// Required designer variable.
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PropertiesInspectorWindowBase));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PropertiesInspectorViewBase));
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.infoLabel = new System.Windows.Forms.Label();
             this.infoIcon = new System.Windows.Forms.PictureBox();

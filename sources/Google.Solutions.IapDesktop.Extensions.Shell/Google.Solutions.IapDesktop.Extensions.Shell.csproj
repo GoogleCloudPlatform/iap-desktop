@@ -149,12 +149,12 @@
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsViewModel.cs" />
-    <Compile Include="Views\ConnectionSettings\ConnectionSettingsWindow.cs">
+    <Compile Include="Views\ConnectionSettings\ConnectionSettingsView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ConnectionSettings\HtmlPageGenerator.cs" />
-    <Compile Include="Views\ConnectionSettings\IConnectionSettingsWindow.cs" />
     <Compile Include="Views\Credentials\AuthorizationExtensions.cs" />
+    <Compile Include="Views\Credentials\ConfigureCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\NewCredentialsDialog.cs" />
     <Compile Include="Views\Credentials\SelectCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\CreateCredentialsWorkflow.cs" />

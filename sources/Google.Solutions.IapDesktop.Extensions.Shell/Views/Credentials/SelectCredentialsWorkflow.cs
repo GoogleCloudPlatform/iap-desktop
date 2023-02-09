@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
@@ -137,9 +138,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                         Apply = () =>
                         {
                             // Configure credentials -> jump to settings.
-                            this.serviceProvider
-                                .GetService<IConnectionSettingsWindow>()
-                                .ShowWindow();
+                            ToolWindow
+                                .GetWindow<ConnectionSettingsView, ConnectionSettingsViewModel>(this.serviceProvider)
+                                .Show();
 
                             return Task.FromException(new OperationCanceledException());
                         }
