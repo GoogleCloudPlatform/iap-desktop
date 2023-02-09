@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory
 {
-    partial class PackageInventoryWindow
+    partial class PackageInventoryViewBase
     {
         /// <summary>
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PackageInventoryWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PackageInventoryViewBase));
             this.packageList = new Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory.PackageList();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.infoLabel = new System.Windows.Forms.Label();

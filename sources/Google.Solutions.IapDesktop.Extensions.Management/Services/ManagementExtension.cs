@@ -339,7 +339,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "Show &installed packages",
                     PackageInventoryViewModel.GetCommandState,
-                    context => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<InstalledPackageInventoryView, PackageInventoryViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.PackageInspect_16
                 });
@@ -347,7 +349,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "Show &available updates",
                     PackageInventoryViewModel.GetCommandState,
-                    context => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<AvailablePackageInventoryView, PackageInventoryViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.PackageUpdate_16
                 });
@@ -435,7 +439,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IMainForm>(
                     "I&nstalled packages",
                     _ => CommandState.Enabled,
-                    _ => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
+                    _ => ToolWindow
+                        .GetWindow<InstalledPackageInventoryView, PackageInventoryViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.PackageInspect_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
@@ -444,7 +450,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IMainForm>(
                     "&Available updates",
                     _ => CommandState.Enabled,
-                    _ => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
+                    _ => ToolWindow
+                        .GetWindow<AvailablePackageInventoryView, PackageInventoryViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.PackageUpdate_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.U

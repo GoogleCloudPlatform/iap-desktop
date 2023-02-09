@@ -149,7 +149,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
 
             registry.AddSingleton<IInventoryService>(inventoryService.Object);
 
-            return new PackageInventoryViewModel(registry, type);
+            return new PackageInventoryViewModel(registry)
+            {
+                InventoryType = type
+            };
         }
 
         //---------------------------------------------------------------------

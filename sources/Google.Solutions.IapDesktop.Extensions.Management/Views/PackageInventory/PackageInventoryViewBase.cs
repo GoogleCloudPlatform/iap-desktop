@@ -23,7 +23,6 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
@@ -35,28 +34,28 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory
 {
     [SkipCodeCoverage("All logic in view model")]
-    public partial class PackageInventoryWindow
-        : ProjectExplorerTrackingToolWindow<PackageInventoryViewModel>
+    [Service]
+    public partial class PackageInventoryViewBase
+        : ProjectExplorerTrackingToolWindow<PackageInventoryViewModel>, IView<PackageInventoryViewModel>
     {
-        private readonly PackageInventoryViewModel viewModel;
+        private readonly PackageInventoryType inventoryType;
+        private PackageInventoryViewModel viewModel;
 
-        public PackageInventoryWindow(
+        public PackageInventoryViewBase(
             PackageInventoryType inventoryType,
             IServiceProvider serviceProvider)
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
+            this.inventoryType = inventoryType;
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
+        }
 
-            serviceProvider
-                .GetService<IThemeService>()
-                .ToolWindowTheme
-                .ApplyTo(this.packageList);
-
-            this.viewModel = new PackageInventoryViewModel(
-                serviceProvider,
-                inventoryType);
+        public void Bind(PackageInventoryViewModel viewModel)
+        {
+            this.viewModel = viewModel;
+            viewModel.InventoryType = this.inventoryType;
 
             this.infoLabel.BindProperty(
                 c => c.Text,

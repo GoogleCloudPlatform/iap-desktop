@@ -27,9 +27,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
-    public class InstalledPackageInventoryWindow : PackageInventoryWindow
+    public class InstalledPackageInventoryView : PackageInventoryViewBase
     {
-        public InstalledPackageInventoryWindow(IServiceProvider serviceProvider)
+        public InstalledPackageInventoryView(IServiceProvider serviceProvider)
             : base(PackageInventoryType.InstalledPackages, serviceProvider)
         {
         }

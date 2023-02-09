@@ -184,20 +184,20 @@
     <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\PackageInventory\AvailablePackageInventoryWindow.cs">
+    <Compile Include="Views\PackageInventory\AvailablePackageInventoryView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\PackageInventory\InstalledPackageInventoryWindow.cs">
+    <Compile Include="Views\PackageInventory\InstalledPackageInventoryView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\PackageInventory\PackageInventoryModel.cs" />
     <Compile Include="Views\PackageInventory\PackageInventoryType.cs" />
     <Compile Include="Views\PackageInventory\PackageInventoryViewModel.cs" />
-    <Compile Include="Views\PackageInventory\PackageInventoryWindow.cs">
+    <Compile Include="Views\PackageInventory\PackageInventoryViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\PackageInventory\PackageInventoryWindow.Designer.cs">
-      <DependentUpon>PackageInventoryWindow.cs</DependentUpon>
+    <Compile Include="Views\PackageInventory\PackageInventoryViewBase.Designer.cs">
+      <DependentUpon>PackageInventoryViewBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\PackageInventory\PackageList.cs">
       <SubType>UserControl</SubType>
@@ -245,8 +245,8 @@
     <EmbeddedResource Include="Views\EventLog\EventLogWindow.resx">
       <DependentUpon>EventLogWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\PackageInventory\PackageInventoryWindow.resx">
-      <DependentUpon>PackageInventoryWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\PackageInventory\PackageInventoryViewBase.resx">
+      <DependentUpon>PackageInventoryViewBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SerialOutput\SerialOutputViewBase.resx">
       <DependentUpon>SerialOutputViewBase.cs</DependentUpon>
