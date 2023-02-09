@@ -359,16 +359,18 @@ namespace Google.Solutions.IapDesktop
                 windowLayer.AddTransient<ProjectPickerView>();
                 windowLayer.AddTransient<ProjectPickerViewModel>();
 
-                windowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
+                windowLayer.AddSingleton<IProjectExplorer, ProjectExplorer>();
+                windowLayer.AddSingleton<ProjectExplorerView>();
+                windowLayer.AddTransient<ProjectExplorerViewModel>();
                 windowLayer.AddTransient<OptionsDialog>();
 
 #if DEBUG
                 windowLayer.AddSingleton<DebugProjectExplorerTrackingView>();
-                windowLayer.AddSingleton<DebugProjectExplorerTrackingViewModel>();
+                windowLayer.AddTransient<DebugProjectExplorerTrackingViewModel>();
                 windowLayer.AddTransient<DebugThemeView>();
                 windowLayer.AddTransient<DebugThemeViewModel>();
                 windowLayer.AddSingleton<DebugJobServiceView>();
-                windowLayer.AddSingleton<DebugJobServiceViewModel>();
+                windowLayer.AddTransient<DebugJobServiceViewModel>();
                 windowLayer.AddTransient<DebugFullScreenView>();
                 windowLayer.AddTransient<DebugFullScreenViewModel>();
                 windowLayer.AddTransient<DebugDockingView>();

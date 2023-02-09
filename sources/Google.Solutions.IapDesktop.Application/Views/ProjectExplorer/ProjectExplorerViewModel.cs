@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
-    internal class ProjectExplorerViewModel : ViewModelBase, IDisposable
+    public class ProjectExplorerViewModel : ViewModelBase, IDisposable
     {
         private readonly IJobService jobService;
         private readonly IProjectModelService projectModelService;
@@ -78,8 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        public ProjectExplorerViewModel(
-            IWin32Window view,
+        internal ProjectExplorerViewModel(
             IProjectExplorerSettings settings,
             IJobService jobService,
             IEventService eventService,
@@ -87,7 +87,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             IProjectModelService projectModelService,
             ICloudConsoleAdapter cloudConsoleService)
         {
-            this.View = view;
             this.settings = settings;
             this.jobService = jobService;
             this.sessionBroker = sessionBroker;
@@ -115,6 +114,25 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         await RefreshAsync(node).ConfigureAwait(true);
                     }
                 });
+        }
+
+        public ProjectExplorerViewModel(
+            ApplicationSettingsRepository settingsRepository,
+            IJobService jobService,
+            IEventService eventService,
+            IGlobalSessionBroker sessionBroker,
+            IProjectModelService projectModelService,
+            ICloudConsoleAdapter cloudConsoleService)
+            : this(
+                new ProjectExplorerSettings(
+                    settingsRepository,
+                    true),
+                jobService,
+                eventService,
+                sessionBroker,
+                projectModelService,
+                cloudConsoleService)
+        {
         }
 
         private async Task UpdateInstanceAsync(
@@ -488,7 +506,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Nodes.
         //---------------------------------------------------------------------
 
-        internal abstract class ViewModelNode : ViewModelBase
+        public abstract class ViewModelNode : ViewModelBase
         {
             protected readonly ProjectExplorerViewModel viewModel;
 
@@ -539,7 +557,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             public async Task<ObservableCollection<ViewModelNode>> GetFilteredNodesAsync(
                 bool forceReload)
             {
-                Debug.Assert(!((Control)this.View).InvokeRequired);
+                Debug.Assert(!((Control)this.viewModel.View).InvokeRequired);
 
                 if (this.nodes == null)
                 {
@@ -656,7 +674,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 int defaultImageIndex)
             {
                 this.viewModel = viewModel;
-                this.View = viewModel.View;
                 this.Parent = parent;
                 this.Locator = locator;
                 this.Text = text;
@@ -665,7 +682,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        internal class CloudViewModelNode : ViewModelNode
+        public class CloudViewModelNode : ViewModelNode
         {
             private const int DefaultIconIndex = 0;
             private IProjectModelCloudNode cloudNode; // Loaded lazily.

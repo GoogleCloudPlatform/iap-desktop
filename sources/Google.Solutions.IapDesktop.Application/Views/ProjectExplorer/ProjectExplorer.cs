@@ -19,20 +19,47 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.Mvvm.Commands;
+using System;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     public interface IProjectExplorer
     {
-        void ShowWindow();
         Task ShowAddProjectDialogAsync();
 
         IProjectModelNode SelectedNode { get; }
 
         ICommandContainer<IProjectModelNode> ContextMenuCommands { get; }
         ICommandContainer<IProjectModelNode> ToolbarCommands { get; }
+    }
+
+    public class ProjectExplorer : IProjectExplorer
+    {
+        private readonly ProjectExplorerView view;
+
+        public ProjectExplorer(IServiceProvider serviceProvider)
+        {
+            serviceProvider.ThrowIfNull(nameof(serviceProvider));
+
+            this.view = ToolWindow
+                .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(serviceProvider)
+                .view;
+        }
+
+        public IProjectModelNode SelectedNode 
+            => this.view.SelectedNode;
+
+        public ICommandContainer<IProjectModelNode> ContextMenuCommands
+            => this.view.ContextMenuCommands;
+
+        public ICommandContainer<IProjectModelNode> ToolbarCommands
+            => this.view.ToolbarCommands;
+
+        public Task ShowAddProjectDialogAsync()
+            => this.view.ShowAddProjectDialogAsync();
     }
 }

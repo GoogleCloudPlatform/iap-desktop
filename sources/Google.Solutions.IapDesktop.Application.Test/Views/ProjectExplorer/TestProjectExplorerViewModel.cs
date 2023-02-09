@@ -144,7 +144,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 new Mock<IEventService>().Object);
 
             return new ProjectExplorerViewModel(
-                new Control(),
                 this.projectExplorerSettings,
                 new SynchrounousJobService(),
                 this.eventServiceMock.Object,

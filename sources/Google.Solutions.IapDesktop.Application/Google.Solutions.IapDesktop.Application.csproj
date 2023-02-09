@@ -307,13 +307,13 @@
     </Compile>
     <Compile Include="Views\Dialog\ExceptionDialog.cs" />
     <Compile Include="Views\IMainForm.cs" />
-    <Compile Include="Views\ProjectExplorer\IProjectExplorer.cs" />
+    <Compile Include="Views\ProjectExplorer\ProjectExplorer.cs" />
     <Compile Include="Services\ProjectModel\IProjectModelNode.cs" />
-    <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.cs">
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
-      <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerView.Designer.cs">
+      <DependentUpon>ProjectExplorerView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ToolWindow.cs">
       <SubType>Form</SubType>
@@ -411,8 +411,8 @@
     <EmbeddedResource Include="Views\Properties\PropertiesInspectorWindow.resx">
       <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerWindow.resx">
-      <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerView.resx">
+      <DependentUpon>ProjectExplorerView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ToolWindow.resx">
       <DependentUpon>ToolWindow.cs</DependentUpon>

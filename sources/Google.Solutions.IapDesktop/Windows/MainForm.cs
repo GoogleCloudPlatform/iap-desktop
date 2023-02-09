@@ -419,7 +419,9 @@ namespace Google.Solutions.IapDesktop.Windows
             else
             {
                 // No startup URL provided, just show project explorer then.
-                this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
+                ToolWindow
+                    .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(this.serviceProvider)
+                    .Show();
             }
 
             //
@@ -828,7 +830,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
+            ToolWindow
+                .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(this.serviceProvider)
+                .Show();
         }
 
         private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs _)

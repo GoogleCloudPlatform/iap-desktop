@@ -23,13 +23,10 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Properties;
-using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.Mvvm.Binding;
@@ -49,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     [ComVisible(false)]
     [SkipCodeCoverage("Logic is in view model")]
-    public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
+    public partial class ProjectExplorerView : ToolWindow, IProjectExplorer, IView<ProjectExplorerViewModel>
     {
         private readonly IMainForm mainForm;
         private readonly IJobService jobService;
@@ -59,9 +56,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
 
-        private readonly ProjectExplorerViewModel viewModel;
-        private readonly CommandContainer<IProjectModelNode> contextMenuCommands;
-        private readonly CommandContainer<IProjectModelNode> toolbarCommands;
+        private ProjectExplorerViewModel viewModel;
+        private CommandContainer<IProjectModelNode> contextMenuCommands;
+        private CommandContainer<IProjectModelNode> toolbarCommands;
 
         public ICommandContainer<IProjectModelNode> ContextMenuCommands
             => this.contextMenuCommands;
@@ -69,12 +66,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         public ICommandContainer<IProjectModelNode> ToolbarCommands
             => this.toolbarCommands;
 
-        public ProjectExplorerWindow(IServiceProvider serviceProvider)
+        public ProjectExplorerView(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockLeft)
         {
             InitializeComponent();
 
-            this.TabText = this.Text;
+            this.mainForm = serviceProvider.GetService<IMainForm>();
+            this.jobService = serviceProvider.GetService<IJobService>();
+            this.authService = serviceProvider.GetService<IAuthorizationSource>();
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
+            this.projectPickerDialog = serviceProvider.GetService<IProjectPickerDialog>();
+            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
 
             //
             // This window is a singleton, so we never want it to be closed,
@@ -84,33 +86,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 ((ServiceRegistry)serviceProvider).Registrations[typeof(IProjectExplorer)] == ServiceLifetime.Singleton,
                 "Service must be registered as singleton for HideOnClose to work");
             this.HideOnClose = true;
+        }
 
-            var themeService = serviceProvider.GetService<IThemeService>();
-            themeService.ToolWindowTheme.ApplyTo(this.toolStrip);
-            themeService.ToolWindowTheme.ApplyTo(this.treeView);
-
-            this.mainForm = serviceProvider.GetService<IMainForm>();
-            this.jobService = serviceProvider.GetService<IJobService>();
-            this.authService = serviceProvider.GetService<IAuthorizationSource>();
-            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.projectPickerDialog = serviceProvider.GetService<IProjectPickerDialog>();
-            this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
-
-            this.viewModel = new ProjectExplorerViewModel(
-                this,
-                new ProjectExplorerSettings(
-                    serviceProvider.GetService<ApplicationSettingsRepository>(),
-                    true),
-                this.jobService,
-                serviceProvider.GetService<IEventService>(),
-                serviceProvider.GetService<IGlobalSessionBroker>(),
-                serviceProvider.GetService<IProjectModelService>(),
-                serviceProvider.GetService<ICloudConsoleAdapter>());
-
-            this.Disposed += (sender, args) =>
-            {
-                this.viewModel.Dispose();
-            };
+        public void Bind(ProjectExplorerViewModel viewModel)
+        {
+            this.viewModel = viewModel;
 
             //
             // Bind tree view.
@@ -441,12 +421,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public async Task ShowAddProjectDialogAsync()
         {
+            //
             // NB. The project explorer might be hidden and no project
             // might have been loaded yet.
+            //
             if (await AddNewProjectAsync().ConfigureAwait(true))
             {
-                // Show the window. That might kick of an asynchronous
+                //
+                // Show the window. That might kick off an asynchronous
                 // Refresh if the window previously was not visible.
+                //
                 ShowWindow();
             }
         }

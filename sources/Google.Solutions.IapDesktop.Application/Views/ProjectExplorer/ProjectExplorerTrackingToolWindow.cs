@@ -63,9 +63,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // This window is a singleton, so we never want it to be closed,
             // just hidden.
             //
-            Debug.Assert(
-                ((ServiceRegistry)serviceProvider).Registrations[GetType()] == ServiceLifetime.Singleton,
-                "Service must be registered as singleton for HideOnClose to work");
             this.HideOnClose = true;
 
             // Use currently selected node.

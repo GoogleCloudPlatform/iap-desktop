@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.Controls;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
-    partial class ProjectExplorerWindow
+    partial class ProjectExplorerView
     {
         /// <summary>
         /// Required designer variable.
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectExplorerWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectExplorerView));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.addButton = new System.Windows.Forms.ToolStripButton();
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.windowsInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.linuxInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.treeView = new Google.Solutions.IapDesktop.Application.Views.ProjectExplorer.ProjectExplorerWindow.NodeTreeView();
+            this.treeView = new Google.Solutions.IapDesktop.Application.Views.ProjectExplorer.ProjectExplorerView.NodeTreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.searchTextBox = new System.Windows.Forms.TextBox();

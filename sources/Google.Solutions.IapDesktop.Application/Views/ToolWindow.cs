@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        // TODO: make protected  or private
+        // TODO: make protected
         public virtual void ShowWindow()
         {
             Debug.Assert(this.panel != null);
@@ -443,6 +443,14 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 //
                 var boundWindow = new BoundToolWindow<TToolWindowView, TToolWindowViewModel>(view, viewModel);
                 view.boundWindow = boundWindow;
+
+                if (view.HideOnClose)
+                {
+                    Debug.Assert(
+                        ((ServiceRegistry)serviceProvider).Registrations[typeof(TToolWindowView)] == ServiceLifetime.Singleton,
+                        "HideOnClose windows should be singletons");
+                }
+
                 return boundWindow;
             }
         }
