@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
 
             viewModel.InspectedObject = new PocoWithoutProperty();
 
-            window.ShowWindow();
+            window.Show();
             PumpWindowMessages();
 
             var grid = window
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
 
             viewModel.InspectedObject = new PocoWithProperty();
 
-            window.ShowWindow();
+            window.Show();
             PumpWindowMessages();
 
             var grid = window
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
 
             viewModel.InspectedObject = new Settings();
 
-            window.ShowWindow();
+            window.Show();
             PumpWindowMessages();
 
             var grid = window
