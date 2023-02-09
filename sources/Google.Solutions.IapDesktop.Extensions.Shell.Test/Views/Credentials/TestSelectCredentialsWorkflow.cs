@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
             Mock<ITaskDialog> taskDialogMock)
         {
             this.serviceRegistry.AddSingleton<ITaskDialog>(taskDialogMock.Object);
-            this.serviceRegistry.AddMock<ConnectionSettingsView>();
+            this.serviceRegistry.AddMock<IConfigureCredentialsWorkflow>();
             this.serviceRegistry.AddMock<IShowCredentialsDialog>();
 
             var credentialsService = this.serviceRegistry.AddMock<ICreateCredentialsWorkflow>();
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 out It.Ref<bool>.IsAny)).Returns(0);
 
             var credentialPrompt = CreateCredentialsWorkflow(false, false, taskDialog);
-            var window = this.serviceRegistry.AddMock<ConnectionSettingsView>();
+            var window = this.serviceRegistry.AddMock<IConfigureCredentialsWorkflow>();
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 settings,
                 true).Wait());
 
-            window.Verify(w => w.ShowWindow(), Times.Once);
+            window.Verify(w => w.ShowCredentialsDialog(), Times.Once);
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -337,7 +337,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 out It.Ref<bool>.IsAny)).Returns(0);
 
             var credentialPrompt = CreateCredentialsWorkflow(true, false, taskDialog);
-            var window = this.serviceRegistry.AddMock<ConnectionSettingsView>();
+            var window = this.serviceRegistry.AddMock<IConfigureCredentialsWorkflow>();
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
@@ -349,7 +349,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 settings,
                 true).Wait());
 
-            window.Verify(w => w.ShowWindow(), Times.Once);
+            window.Verify(w => w.ShowCredentialsDialog(), Times.Once);
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),
@@ -507,7 +507,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 out It.Ref<bool>.IsAny)).Returns(0);
 
             var credentialPrompt = CreateCredentialsWorkflow(false, false, taskDialog);
-            var window = this.serviceRegistry.AddMock<ConnectionSettingsView>();
+            var window = this.serviceRegistry.AddMock<IConfigureCredentialsWorkflow>();
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.RdpCredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Force;
@@ -519,7 +519,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                 settings,
                 true).Wait());
 
-            window.Verify(w => w.ShowWindow(), Times.Once);
+            window.Verify(w => w.ShowCredentialsDialog(), Times.Once);
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<IntPtr>(),

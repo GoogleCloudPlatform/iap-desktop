@@ -138,9 +138,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                         Apply = () =>
                         {
                             // Configure credentials -> jump to settings.
-                            ToolWindow
-                                .GetWindow<ConnectionSettingsView, ConnectionSettingsViewModel>(this.serviceProvider)
-                                .Show();
+                            this.serviceProvider
+                                .GetService<IConfigureCredentialsWorkflow>()
+                                .ShowCredentialsDialog();
 
                             return Task.FromException(new OperationCanceledException());
                         }
