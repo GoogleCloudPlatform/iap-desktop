@@ -39,6 +39,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 {
+    [Service]
     public class AuthorizedPublicKeysViewModel
         : ModelCachingViewModelBase<IProjectModelNode, AuthorizedPublicKeysModel>
     {

@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 {
-    partial class AuthorizedPublicKeysWindow
+    partial class AuthorizedPublicKeysView
     {
         /// <summary>
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizedPublicKeysWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizedPublicKeysView));
             this.keysList = new Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys.AuthorizedPublicKeysList();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.infoLabel = new System.Windows.Forms.Label();

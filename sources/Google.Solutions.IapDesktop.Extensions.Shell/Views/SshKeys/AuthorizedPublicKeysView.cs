@@ -36,27 +36,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
-    public partial class AuthorizedPublicKeysWindow
-        : ProjectExplorerTrackingToolWindow<AuthorizedPublicKeysViewModel>
+    public partial class AuthorizedPublicKeysView
+        : ProjectExplorerTrackingToolWindow<AuthorizedPublicKeysViewModel>, IView<AuthorizedPublicKeysViewModel>
     {
-        private readonly AuthorizedPublicKeysViewModel viewModel;
+        private AuthorizedPublicKeysViewModel viewModel;
 
-        public AuthorizedPublicKeysWindow(
+        public AuthorizedPublicKeysView(
             IServiceProvider serviceProvider)
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
+        }
 
-            var themeService = serviceProvider.GetService<IThemeService>();
-            themeService.ToolWindowTheme.ApplyTo(this.toolStrip);
-            themeService.ToolWindowTheme.ApplyTo(this.keysList);
-
-            this.viewModel = new AuthorizedPublicKeysViewModel(serviceProvider)
-            {
-                View = this
-            };
+        public void Bind(AuthorizedPublicKeysViewModel viewModel)
+        {
+            this.viewModel = viewModel;
 
             this.infoLabel.BindReadonlyProperty(
                 c => c.Text,
@@ -130,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
         protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
-            Debug.Assert(!InvokeRequired, "running on UI thread");
+            Debug.Assert(!this.InvokeRequired, "running on UI thread");
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }

@@ -156,6 +156,7 @@
     <Compile Include="Views\ProjectPicker\TestProjectPickerViewModel.cs" />
     <Compile Include="Views\Properties\TestPropertiesInspectorWindow.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
+    <Compile Include="Views\TestToolWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">

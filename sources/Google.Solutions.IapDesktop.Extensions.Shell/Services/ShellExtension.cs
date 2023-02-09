@@ -379,7 +379,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 new Command<IProjectModelNode>(
                     "Authorized SSH &keys",
                     node => AuthorizedPublicKeysViewModel.GetCommandState(node),
-                    _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
+                    _ => ToolWindow
+                        .GetWindow<AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.AuthorizedKey_16
                 },
@@ -404,7 +406,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 new Command<IMainForm>(
                     "Authorized SSH &keys",
                     _ => CommandState.Enabled,
-                    _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
+                    _ => ToolWindow
+                        .GetWindow<AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.AuthorizedKey_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.K

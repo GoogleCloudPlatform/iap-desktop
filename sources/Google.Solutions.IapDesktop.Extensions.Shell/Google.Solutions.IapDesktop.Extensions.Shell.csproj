@@ -204,11 +204,11 @@
     </Compile>
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysModel.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysViewModel.cs" />
-    <Compile Include="Views\SshKeys\AuthorizedPublicKeysWindow.cs">
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\SshKeys\AuthorizedPublicKeysWindow.Designer.cs">
-      <DependentUpon>AuthorizedPublicKeysWindow.cs</DependentUpon>
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysView.Designer.cs">
+      <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysList.cs">
       <SubType>UserControl</SubType>
@@ -318,8 +318,8 @@
     <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopPane.resx">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\SshKeys\AuthorizedPublicKeysWindow.resx">
-      <DependentUpon>AuthorizedPublicKeysWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\SshKeys\AuthorizedPublicKeysView.resx">
+      <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Download\DownloadFileView.resx">
       <DependentUpon>DownloadFileView.cs</DependentUpon>

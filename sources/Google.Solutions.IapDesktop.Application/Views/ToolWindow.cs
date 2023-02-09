@@ -401,6 +401,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // Factory and MVVM binding.
         //---------------------------------------------------------------------
 
+        private object boundWindow;
+
         /// <summary>
         /// Gets or creates a MVVM-enabled tool window and prepares it for viewing. 
         /// Callers have the opportunity to customize the view model before calling
@@ -411,38 +413,59 @@ namespace Google.Solutions.IapDesktop.Application.Views
             where TToolWindowView : ToolWindow, IView<TToolWindowViewModel>
             where TToolWindowViewModel : ViewModelBase
         {
-            var window = serviceProvider
-                .ThrowIfNull(nameof(serviceProvider))
-                .GetWindow<TToolWindowView, TToolWindowViewModel>();
-
-            window.Theme = serviceProvider
-                .GetService<IThemeService>()
-                .ToolWindowTheme;
-
             //
-            // Return an intermediate object that lets the caller initialize the
-            // view model before calling ShowWindow().
+            // NB. ToolWindows can be singletons, and we must not bind them
+            // multiple times.
             //
-            return new BoundToolWindow<TToolWindowView, TToolWindowViewModel>(window);
+            var view = serviceProvider.GetService<TToolWindowView>();
+            if (view.boundWindow != null)
+            {
+                //
+                // This is a singleton and it has been bound before.
+                //
+                return (BoundToolWindow<TToolWindowView, TToolWindowViewModel>)view.boundWindow;
+            }
+            else
+            {
+                //
+                // This is new object (transient or singleton), and it
+                // has not been bound yet.
+                //
+                var viewModel = serviceProvider.GetService<TToolWindowViewModel>();
+                Window<TToolWindowView, TToolWindowViewModel>.Bind(
+                    view,
+                    viewModel,
+                    serviceProvider.GetService<IThemeService>().ToolWindowTheme);
+
+                //
+                // Create an intermediate object that lets the caller initialize the
+                // view model before calling Show().
+                //
+                var boundWindow = new BoundToolWindow<TToolWindowView, TToolWindowViewModel>(view, viewModel);
+                view.boundWindow = boundWindow;
+                return boundWindow;
+            }
         }
 
         public class BoundToolWindow<TToolWindowView, TToolWindowViewModel>
             where TToolWindowView : ToolWindow, IView<TToolWindowViewModel>
             where TToolWindowViewModel : ViewModelBase
         {
-            private readonly Window<TToolWindowView, TToolWindowViewModel> window;
+            internal readonly TToolWindowView view;
 
-            public BoundToolWindow(Window<TToolWindowView, TToolWindowViewModel> window)
+            public BoundToolWindow(
+                TToolWindowView view,
+                TToolWindowViewModel viewModel)
             {
-                this.window = window.ThrowIfNull(nameof(window));
-                Debug.Assert(window.ViewModel != null);
+                this.view = view.ThrowIfNull(nameof(view));
+                this.ViewModel = viewModel.ThrowIfNull(nameof(viewModel));
             }
 
-            public TToolWindowViewModel ViewModel => this.window.ViewModel;
+            public TToolWindowViewModel ViewModel { get; }
 
             public void Show()
             {
-                this.window.Form.ShowWindow();
+                this.view.ShowWindow();
             }
         }
 

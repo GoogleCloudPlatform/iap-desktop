@@ -261,6 +261,31 @@ namespace Google.Solutions.Mvvm.Binding
             this.ViewModel = viewModel;
         }
 
+        /// <summary>
+        /// Helper method to bind and initialize a view.
+        /// </summary>
+        public static void Bind(
+            TView view,
+            TViewModel viewModel,
+            IControlTheme theme)
+        {
+            theme?.ApplyTo(view);
+
+            //
+            // Bind view <-> view model.
+            //
+            viewModel.View = view;
+
+            view.SuspendLayout();
+            view.Bind(viewModel);
+            view.ResumeLayout();
+
+            //
+            // Tie lifetime of the view model to that of the view.
+            //
+            view.Disposed += (_, __) => viewModel.Dispose();
+        }
+
         public TView Form
         {
             get
@@ -268,24 +293,11 @@ namespace Google.Solutions.Mvvm.Binding
                 if (this.form == null)
                 {
                     //
-                    // Create view.
+                    // Create view and bind it.
                     //
                     var view = (TView)this.serviceProvider.GetService(typeof(TView));
-                    this.Theme?.ApplyTo(view);
 
-                    //
-                    // Bind view <-> view model.
-                    //
-                    this.ViewModel.View = view;
-
-                    view.SuspendLayout();
-                    view.Bind(this.ViewModel);
-                    view.ResumeLayout();
-
-                    //
-                    // Tie lifetime of the view model to that of the view.
-                    //
-                    view.Disposed += (_, __) => this.ViewModel.Dispose();
+                    Bind(view, this.ViewModel, this.Theme);
 
                     this.form = view;
                 }
