@@ -26,8 +26,10 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
@@ -45,16 +47,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         // amount of memory.
         private const string MachineTypeForRdp = "n1-highmem-2";
 
+        private IServiceProvider CreateServiceProvider()
+        {
+            var registry = new ServiceRegistry(this.ServiceRegistry);
+            registry.AddTransient<RemoteDesktopView>();
+            registry.AddTransient<RemoteDesktopViewModel>();
+            registry.AddMock<IThemeService>();
+            return registry;
+        }
+
         //---------------------------------------------------------------------
         // TryActivate
         //---------------------------------------------------------------------
 
-
         [Test]
         public void WhenNotConnected_ThenTryActivateReturnsFalse()
         {
+            var serviceProvider = CreateServiceProvider();
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
-            var broker = new RemoteDesktopSessionBroker(this.ServiceProvider);
+            var broker = new RemoteDesktopSessionBroker(serviceProvider);
             Assert.IsFalse(broker.TryActivate(sampleLocator));
         }
 
@@ -63,6 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
+            var serviceProvider = CreateServiceProvider();
             var locator = await testInstance;
 
             using (var tunnel = IapTunnel.ForRdp(
@@ -70,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 await credential))
             {
                 var credentialAdapter = new WindowsCredentialService(
-                    new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>()));
+                    new ComputeEngineAdapter(serviceProvider.GetService<IAuthorizationSource>()));
                 var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                         locator,
                         CreateRandomUsername(),
@@ -86,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpPassword.Value = credentials.SecurePassword;
 
                 // Connect
-                var broker = new RemoteDesktopSessionBroker(this.ServiceProvider);
+                var broker = new RemoteDesktopSessionBroker(serviceProvider);
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
                         () => session = (RemoteDesktopView)broker.Connect(
@@ -116,8 +128,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         [Test]
         public void WhenNotConnected_ThenIsConnectedIsFalse()
         {
+            var serviceProvider = CreateServiceProvider();
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
-            var broker = new RemoteDesktopSessionBroker(this.ServiceProvider);
+            var broker = new RemoteDesktopSessionBroker(serviceProvider);
             Assert.IsFalse(broker.IsConnected(sampleLocator));
         }
 
@@ -128,7 +141,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         [Test]
         public void WhenNotConnected_ThenActiveSessionReturnsNull()
         {
-            var broker = new RemoteDesktopSessionBroker(this.ServiceProvider);
+            var serviceProvider = CreateServiceProvider();
+            var broker = new RemoteDesktopSessionBroker(serviceProvider);
             Assert.IsNull(broker.ActiveSession);
         }
     }

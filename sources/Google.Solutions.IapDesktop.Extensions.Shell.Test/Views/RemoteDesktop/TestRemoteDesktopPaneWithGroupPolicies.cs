@@ -26,8 +26,10 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
@@ -41,11 +43,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
     [UsesCloudResources]
     public class TestRemoteDesktopWithServerSideGroupPolicies : WindowTestFixtureBase
     {
+        private IServiceProvider CreateServiceProvider()
+        {
+            var registry = new ServiceRegistry(this.ServiceRegistry);
+            registry.AddTransient<RemoteDesktopView>();
+            registry.AddTransient<RemoteDesktopViewModel>();
+            registry.AddMock<IThemeService>();
+            return registry;
+        }
+
         private async Task<InstanceConnectionSettings> CreateSettingsAsync(
             InstanceLocator instanceLocator)
         {
+            var serviceProvider = CreateServiceProvider();
             var credentialAdapter = new WindowsCredentialService(
-                new ComputeEngineAdapter(this.ServiceProvider.GetService<IAuthorizationSource>()));
+                new ComputeEngineAdapter(serviceProvider.GetService<IAuthorizationSource>()));
             
             var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                 instanceLocator,
@@ -75,7 +87,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             IapTunnel tunnel,
             InstanceLocator instanceLocator)
         {
-            var rdpService = new RemoteDesktopSessionBroker(this.ServiceProvider);
+            var serviceProvider = CreateServiceProvider();
+            var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
             var settings = await CreateSettingsAsync(instanceLocator).ConfigureAwait(true);
 
             return rdpService.Connect(
@@ -113,6 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
+            var serviceProvider = CreateServiceProvider();
             var locator = await testInstance;
 
             using (var tunnel = IapTunnel.ForRdp(
@@ -122,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
                 settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
 
-                var rdpService = new RemoteDesktopSessionBroker(this.ServiceProvider);
+                var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
 
                 await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
                         locator,
@@ -144,6 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             ")] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
+            var serviceProvider = CreateServiceProvider();
             var locator = await testInstance;
 
             using (var tunnel = IapTunnel.ForRdp(
@@ -153,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
                 settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
 
-                var rdpService = new RemoteDesktopSessionBroker(this.ServiceProvider);
+                var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
                 var session = rdpService.Connect(
                     locator,
                     "localhost",
