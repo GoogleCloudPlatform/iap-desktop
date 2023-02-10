@@ -29,16 +29,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
     /// <summary>
     /// Base class for sessions.
     /// </summary>
-    public class SessionPaneBase : DocumentWindow
+    public class SessionViewBase : DocumentWindow
     {
         private ICommandContainer<ISession> contextCommands;
 
-        protected SessionPaneBase()
+        protected SessionViewBase()
         {
             // Constructor is for designer only.
         }
 
-        protected SessionPaneBase(IServiceProvider serviceProvider)
+        protected SessionViewBase(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
         }

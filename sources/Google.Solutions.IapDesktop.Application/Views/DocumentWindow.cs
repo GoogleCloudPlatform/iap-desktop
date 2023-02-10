@@ -319,5 +319,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         protected virtual void OnDockEnd()
         { }
+
+        /// <summary>
+        /// Switch focus to this document.
+        /// </summary>
+        public void SwitchToDocument()
+        {
+            base.ShowWindow();
+        }
     }
 }

@@ -200,7 +200,7 @@
       <DependentUpon>RemoteDesktopView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\RemoteDesktop\RemoteDesktopViewModel.cs" />
-    <Compile Include="Views\SessionPaneBase.cs">
+    <Compile Include="Views\SessionViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysModel.cs" />

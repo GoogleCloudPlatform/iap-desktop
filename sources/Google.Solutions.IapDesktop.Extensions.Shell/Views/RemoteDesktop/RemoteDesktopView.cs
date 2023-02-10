@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     [Service]
     public partial class RemoteDesktopView 
-        : SessionPaneBase, IRemoteDesktopSession, IView<RemoteDesktopViewModel>
+        : SessionViewBase, IRemoteDesktopSession, IView<RemoteDesktopViewModel>
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;

@@ -38,7 +38,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    public partial class TerminalViewBase : SessionPaneBase
+    public partial class TerminalViewBase : SessionViewBase
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly TerminalSettingsRepository terminalSettingsRepository;

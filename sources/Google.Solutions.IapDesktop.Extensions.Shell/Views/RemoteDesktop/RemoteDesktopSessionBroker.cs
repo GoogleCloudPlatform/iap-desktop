@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             if (rdpPane != null)
             {
                 // Pane found, activate.
-                rdpPane.ShowWindow();
+                rdpPane.SwitchToDocument();
                 return true;
             }
             else

@@ -172,11 +172,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        // TODO: make protected
-        public virtual void ShowWindow()
+        /// <summary>
+        /// Show or reactivate window.
+        /// </summary>
+        protected virtual void ShowWindow()
         {
             Debug.Assert(this.panel != null);
-            //TODO: Debug.Assert(this.boundWindow != null);
+            Debug.Assert(this.boundWindow != null, "Window has been bound");
 
             this.TabText = this.Text;
 

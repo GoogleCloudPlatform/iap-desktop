@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             if (pane != null)
             {
                 // Pane found, activate.
-                pane.ShowWindow();
+                pane.SwitchToDocument();
                 return true;
             }
             else

@@ -510,7 +510,7 @@ namespace Google.Solutions.IapDesktop.Windows
                          this.dockPanel.ActiveDocumentPane.Contents.EnsureNotNull().Any()
                         ? CommandState.Enabled
                         : CommandState.Disabled,
-                    window => (this.dockPanel.ActiveDocumentPane?.ActiveContent as ToolWindow)?.ShowWindow())
+                    window => (this.dockPanel.ActiveDocumentPane?.ActiveContent as DocumentWindow)?.SwitchToDocument())
                 {
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.Home
                 });
@@ -612,9 +612,9 @@ namespace Google.Solutions.IapDesktop.Windows
             var pane = this.dockPanel.ActiveDocumentPane;
             var windowIndex = pane.Contents.IndexOf(reference);
             var tabCount = pane.Contents.Count;
-            if (pane.Contents[(tabCount + windowIndex + delta) % tabCount] is ToolWindow sibling)
+            if (pane.Contents[(tabCount + windowIndex + delta) % tabCount] is DocumentWindow sibling)
             {
-                sibling.ShowWindow();
+                sibling.SwitchToDocument();
             }
         }
 
