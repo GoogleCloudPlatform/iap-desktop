@@ -36,7 +36,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.Testing.Application.Views
 {
-    public partial class TestMainForm : Form, IMainForm, IAuthorizationSource, IJobService
+    public partial class TestMainForm : Form, IMainWindow, IAuthorizationSource, IJobService
     {
         public TestMainForm()
         {
@@ -49,7 +49,7 @@ namespace Google.Solutions.Testing.Application.Views
 
         public IWin32Window Window => this;
         public DockPanel MainPanel => this.dockPanel;
-        public ICommandContainer<IMainForm> ViewMenu => null;
+        public ICommandContainer<IMainWindow> ViewMenu => null;
 
         public void SetUrlHandler(IIapUrlHandler handler)
         {

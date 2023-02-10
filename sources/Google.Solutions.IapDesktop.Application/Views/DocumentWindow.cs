@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         //
         private static Form fullScreenForm = null;
 
-        protected IMainForm MainForm { get; }
+        protected IMainWindow MainWindow { get; }
         private readonly ApplicationSettingsRepository settingsRepository;
 
         protected static void MoveControls(Form source, Form target)
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             : base(serviceProvider, DockState.Document)
         {
             this.settingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
-            this.MainForm = serviceProvider.GetService<IMainForm>();
+            this.MainWindow = serviceProvider.GetService<IMainWindow>();
 
             this.DockAreas = DockAreas.Document | DockAreas.Float;
 
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 // Make parent of main form so that when we minimize/
                 // restore, this window comes up front.
                 //
-                fullScreenForm.Show(this.MainForm.Window);
+                fullScreenForm.Show(this.MainWindow);
             }
         }
 
@@ -262,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             // Minimize the main form (which is still running in the 
             // back)
             //
-            this.MainForm.Minimize();
+            this.MainWindow.Minimize();
         }
 
         //---------------------------------------------------------------------

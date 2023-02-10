@@ -55,11 +55,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
     public class SshTerminalSessionBroker : ISshTerminalSessionBroker
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly IMainForm mainForm;
+        private readonly IMainWindow mainForm;
 
         public SshTerminalSessionBroker(IServiceProvider serviceProvider)
         {
-            this.mainForm = serviceProvider.GetService<IMainForm>();
+            this.mainForm = serviceProvider.GetService<IMainWindow>();
             this.serviceProvider = serviceProvider;
 
             // NB. The ServiceCategory attribute causes this class to be 

@@ -56,7 +56,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationSource
+    public partial class MainForm : Form, IJobHost, IMainWindow, IAuthorizationSource
     {
         //
         // Calculate minimum size so that it's a quarter of a 1080p screen,
@@ -73,14 +73,14 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IServiceProvider serviceProvider;
         private IIapUrlHandler urlHandler;
 
-        private readonly ObservableCommandContextSource<IMainForm> viewMenuContextSource;
+        private readonly ObservableCommandContextSource<IMainWindow> viewMenuContextSource;
         private readonly ObservableCommandContextSource<ToolWindow> windowMenuContextSource;
 
-        private readonly CommandContainer<IMainForm> viewMenuCommands;
+        private readonly CommandContainer<IMainWindow> viewMenuCommands;
         private readonly CommandContainer<ToolWindow> windowMenuCommands;
 
         public IapRdpUrl StartupUrl { get; set; }
-        public ICommandContainer<IMainForm> ViewMenu => this.viewMenuCommands;
+        public ICommandContainer<IMainWindow> ViewMenu => this.viewMenuCommands;
         public ICommandContainer<ToolWindow> WindowMenu => this.windowMenuCommands;
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
@@ -127,12 +127,12 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // View menu.
             //
-            this.viewMenuContextSource = new ObservableCommandContextSource<IMainForm>()
+            this.viewMenuContextSource = new ObservableCommandContextSource<IMainWindow>()
             {
                 Context = this // Pseudo-context, never changes
             };
 
-            this.viewMenuCommands = new CommandContainer<IMainForm>(
+            this.viewMenuCommands = new CommandContainer<IMainWindow>(
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.viewMenuContextSource);
             this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
@@ -517,63 +517,63 @@ namespace Google.Solutions.IapDesktop.Windows
 
 #if DEBUG
             var debugCommand = this.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "Debug",
                     _ => CommandState.Enabled,
                     context => { }));
-            debugCommand.AddCommand(new Command<IMainForm>(
+            debugCommand.AddCommand(new Command<IMainWindow>(
                 "Job Service",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugJobServiceView, DebugJobServiceViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainForm>(
+            debugCommand.AddCommand(new Command<IMainWindow>(
                 "Docking ",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugDockingView, DebugDockingViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainForm>(
+            debugCommand.AddCommand(new Command<IMainWindow>(
                 "Project Explorer Tracking",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugProjectExplorerTrackingView, DebugProjectExplorerTrackingViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainForm>(
+            debugCommand.AddCommand(new Command<IMainWindow>(
                 "Full screen pane",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugFullScreenView, DebugFullScreenViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainForm>(
+            debugCommand.AddCommand(new Command<IMainWindow>(
                 "Theme",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugThemeView, DebugThemeViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainForm>(
+            debugCommand.AddCommand(new Command<IMainWindow>(
                 "Registered services",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)
                     .Show()));
 
-            var crashCommand = debugCommand.AddCommand(new Command<IMainForm>(
+            var crashCommand = debugCommand.AddCommand(new Command<IMainWindow>(
                 "Exceptions",
                 _ => CommandState.Enabled,
                 _ => { }));
-            crashCommand.AddCommand(new Command<IMainForm>(
+            crashCommand.AddCommand(new Command<IMainWindow>(
                 "Command: Throw ExceptionWithHelp (sync)",
                 _ => CommandState.Enabled,
                 _ => throw new ResourceAccessDeniedException(
                         "DEBUG",
                         HelpTopics.General,
                         new ApplicationException("DEBUG"))));
-            crashCommand.AddCommand(new Command<IMainForm>(
+            crashCommand.AddCommand(new Command<IMainWindow>(
                 "Command: Throw ApplicationException (sync)",
                 _ => CommandState.Enabled,
                 _ => throw new ApplicationException("DEBUG")));
-            crashCommand.AddCommand(new Command<IMainForm>(
+            crashCommand.AddCommand(new Command<IMainWindow>(
                 "Command: Throw ApplicationException (async)",
                 _ => CommandState.Enabled,
                 async _ =>
@@ -581,11 +581,11 @@ namespace Google.Solutions.IapDesktop.Windows
                     await Task.Yield();
                     throw new ApplicationException("DEBUG");
                 }));
-            crashCommand.AddCommand(new Command<IMainForm>(
+            crashCommand.AddCommand(new Command<IMainWindow>(
                 "Command: Throw TaskCanceledException (sync)",
                 _ => CommandState.Enabled,
                 _ => throw new TaskCanceledException("DEBUG")));
-            crashCommand.AddCommand(new Command<IMainForm>(
+            crashCommand.AddCommand(new Command<IMainWindow>(
                 "Command: Throw TaskCanceledException (async)",
                 _ => CommandState.Enabled,
                 async _ =>
@@ -593,7 +593,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     await Task.Yield();
                     throw new TaskCanceledException("DEBUG");
                 }));
-            crashCommand.AddCommand(new Command<IMainForm>(
+            crashCommand.AddCommand(new Command<IMainWindow>(
                 "Window: Throw ApplicationException",
                 _ => CommandState.Enabled,
                 _ =>

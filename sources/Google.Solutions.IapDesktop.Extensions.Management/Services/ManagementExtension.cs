@@ -60,11 +60,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             string action,
             InstanceControlCommand command)
         {
-            var mainForm = this.serviceProvider.GetService<IMainForm>();
+            var mainWindow = this.serviceProvider.GetService<IMainWindow>();
 
             if (this.serviceProvider.GetService<IConfirmationDialog>()
                 .Confirm(
-                    mainForm.Window,
+                    mainWindow,
                     "Are you you sure you want to " +
                         $"{command.ToString().ToLower()} {instance.Name}?",
                     $"{command} {instance.Name}?",
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
         private async Task JoinDomainAsync(
             IProjectModelInstanceNode instance)
         {
-            var mainForm = this.serviceProvider.GetService<IMainForm>();
+            var mainWindow = this.serviceProvider.GetService<IMainWindow>();
 
             string domainName;
             string newComputerName;
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             {
                 dialog.ViewModel.ComputerName.Value = instance.DisplayName;
 
-                if (dialog.ShowDialog(mainForm.Window) != DialogResult.OK)
+                if (dialog.ShowDialog(mainWindow) != DialogResult.OK)
                 {
                     return;
                 }
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             //
             if (this.serviceProvider.GetService<ICredentialDialog>()
                 .PromptForWindowsCredentials(
-                    mainForm.Window,
+                    mainWindow,
                     $"Join {instance.DisplayName} to domain",
                     $"Enter Active Directory credentials for {domainName}.\n\n" +
                         "The credentials will be used to join the computer to the " +
@@ -374,9 +374,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             //
             // Add commands to main menu.
             //
-            var mainForm = serviceProvider.GetService<IMainForm>();
+            var mainForm = serviceProvider.GetService<IMainWindow>();
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "&Event log",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ToolWindow
@@ -388,7 +388,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 });
 
             var serialPortMenu = mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "Serial port &output",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => { })
@@ -396,7 +396,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     Image = Resources.Log_16,
                 });
             serialPortMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "COM&1 (log)",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ToolWindow
@@ -407,7 +407,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.O
                 });
             serialPortMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "COM&3 (setup log)",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ToolWindow
@@ -417,7 +417,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     Image = Resources.Log_16,
                 });
             serialPortMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "COM&4 (agent)",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ToolWindow
@@ -429,7 +429,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 
 
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "&Instance properties",
                     _ => CommandState.Enabled,
                     _ => ToolWindow
@@ -440,7 +440,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.I
                 });
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "I&nstalled packages",
                     _ => CommandState.Enabled,
                     _ => ToolWindow
@@ -451,7 +451,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
                 });
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "&Available updates",
                     _ => CommandState.Enabled,
                     _ => ToolWindow

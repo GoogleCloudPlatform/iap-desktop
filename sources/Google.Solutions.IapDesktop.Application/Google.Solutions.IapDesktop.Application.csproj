@@ -306,7 +306,7 @@
       <DependentUpon>DebugJobServiceView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialog\ExceptionDialog.cs" />
-    <Compile Include="Views\IMainForm.cs" />
+    <Compile Include="Views\IMainWindow.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorer.cs" />
     <Compile Include="Services\ProjectModel\IProjectModelNode.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorerView.cs">

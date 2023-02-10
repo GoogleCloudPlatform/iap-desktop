@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
             var service = new RdpConnectionService(
-                new Mock<IMainForm>().Object,
+                new Mock<IMainWindow>().Object,
                 modelService.Object,
                 sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
             var service = new RdpConnectionService(
-                new Mock<IMainForm>().Object,
+                new Mock<IMainWindow>().Object,
                 modelService.Object,
                 sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,
@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
             var service = new RdpConnectionService(
-                new Mock<IMainForm>().Object,
+                new Mock<IMainWindow>().Object,
                 modelService.Object,
                 sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,
@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
             var service = new RdpConnectionService(
-                new Mock<IMainForm>().Object,
+                new Mock<IMainWindow>().Object,
                 modelService.Object,
                 sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,
@@ -329,7 +329,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
             var service = new RdpConnectionService(
-                new Mock<IMainForm>().Object,
+                new Mock<IMainWindow>().Object,
                 modelService.Object,
                 sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,

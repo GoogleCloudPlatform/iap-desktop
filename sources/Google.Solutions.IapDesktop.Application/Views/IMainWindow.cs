@@ -27,13 +27,8 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
-    public interface IMainForm // TODO: Rename to IMainWindow extends IWin32Window
+    public interface IMainWindow : IWin32Window
     {
-        /// <summary>
-        /// Handle for the main window.
-        /// </summary>
-        IWin32Window Window { get; }
-
         /// <summary>
         /// Dock panel of main window.
         /// </summary>
@@ -49,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// </summary>
         void Minimize();
 
-        ICommandContainer<IMainForm> ViewMenu { get; }
+        ICommandContainer<IMainWindow> ViewMenu { get; }
 
         /// <summary>
         /// Add an item to the main menu.

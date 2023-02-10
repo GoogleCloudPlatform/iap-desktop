@@ -330,7 +330,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 // Release focus and move it to the panel, which ensures
                 // that any other shortcuts start applying again.
                 //
-                this.MainForm.MainPanel.Focus();
+                this.MainWindow.MainPanel.Focus();
                 e.Handled = true;
             }
         }

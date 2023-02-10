@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             DockState defaultDockState) : this()
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.panel = serviceProvider.GetService<IMainForm>().MainPanel;
+            this.panel = serviceProvider.GetService<IMainWindow>().MainPanel;
             var stateRepository = serviceProvider.GetService<ToolWindowStateRepository>();
 
             // Read persisted window state.

@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         {
             this.serviceProvider = serviceProvider;
 
-            var mainForm = serviceProvider.GetService<IMainForm>();
+            var mainForm = serviceProvider.GetService<IMainWindow>();
 
             //
             // Let this extension handle all URL activations.
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             mainForm.SetUrlHandler(new UrlHandler(serviceProvider));
 
-            this.window = mainForm.Window;
+            this.window = mainForm;
 
             //
             // Connect.
@@ -391,7 +391,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             // View menu.
             //
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "Active IAP &tunnels",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ToolWindow
@@ -403,7 +403,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 },
                 1);
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "Authorized SSH &keys",
                     _ => CommandState.Enabled,
                     _ => ToolWindow

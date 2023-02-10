@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     [SkipCodeCoverage("Logic is in view model")]
     public partial class ProjectExplorerView : ToolWindow, IProjectExplorer, IView<ProjectExplorerViewModel>
     {
-        private readonly IMainForm mainForm;
+        private readonly IMainWindow mainForm;
         private readonly IJobService jobService;
         private readonly IAuthorizationSource authService;
         private readonly IExceptionDialog exceptionDialog;
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             InitializeComponent();
 
-            this.mainForm = serviceProvider.GetService<IMainForm>();
+            this.mainForm = serviceProvider.GetService<IMainWindow>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.authService = serviceProvider.GetService<IAuthorizationSource>();
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();

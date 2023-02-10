@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         //---------------------------------------------------------------------
 
         public static RemoteDesktopView TryGetExistingPane(
-            IMainForm mainForm,
+            IMainWindow mainForm,
             InstanceLocator vmInstance)
         {
             return mainForm.MainPanel
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         }
 
         public static RemoteDesktopView TryGetActivePane(
-            IMainForm mainForm)
+            IMainWindow mainForm)
         {
             //
             // NB. The active content might be in a float window.
@@ -641,7 +641,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // If we don't do this, the next remaining pane won't invalidate/repaint
                 // properly.
                 // 
-                this.MainForm.MainPanel.Focus();
+                this.MainWindow.MainPanel.Focus();
 
                 if (!this.connecting && e.IsTimeout)
                 {
@@ -752,7 +752,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // Release focus and move it to the panel, which ensures
                 // that any other shortcuts start applying again.
                 //
-                this.MainForm.MainPanel.Focus();
+                this.MainWindow.MainPanel.Focus();
             }
         }
 

@@ -98,8 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
                 Assert.IsNull(this.ExceptionShown);
 
-                Assert.AreSame(session, RemoteDesktopView.TryGetActivePane(this.MainForm));
-                Assert.AreSame(session, RemoteDesktopView.TryGetExistingPane(this.MainForm, locator));
+                Assert.AreSame(session, RemoteDesktopView.TryGetActivePane(this.MainWindow));
+                Assert.AreSame(session, RemoteDesktopView.TryGetExistingPane(this.MainWindow, locator));
                 Assert.IsTrue(broker.IsConnected(locator));
                 Assert.IsTrue(broker.TryActivate(locator));
 

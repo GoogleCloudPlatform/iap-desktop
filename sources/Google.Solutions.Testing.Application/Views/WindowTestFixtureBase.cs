@@ -46,7 +46,7 @@ namespace Google.Solutions.Testing.Application.Views
 
         protected ServiceRegistry ServiceRegistry { get; private set; }
         protected IServiceProvider ServiceProvider { get; private set; }
-        protected IMainForm MainForm { get; private set; }
+        protected IMainWindow MainWindow { get; private set; }
         protected IEventService EventService { get; private set; }
 
         protected Exception ExceptionShown => this.exceptionDialog.ExceptionShown;
@@ -80,7 +80,7 @@ namespace Google.Solutions.Testing.Application.Views
                 null,
                 null));
 
-            registry.AddSingleton<IMainForm>(mainForm);
+            registry.AddSingleton<IMainWindow>(mainForm);
             registry.AddSingleton<IJobService>(mainForm);
             registry.AddSingleton<IAuthorizationSource>(mainForm);
             registry.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
@@ -90,7 +90,7 @@ namespace Google.Solutions.Testing.Application.Views
             this.exceptionDialog = new MockExceptionDialog();
             registry.AddSingleton<IExceptionDialog>(this.exceptionDialog);
 
-            this.MainForm = mainForm;
+            this.MainWindow = mainForm;
             this.ServiceRegistry = registry;
             this.ServiceProvider = registry;
 
@@ -103,7 +103,7 @@ namespace Google.Solutions.Testing.Application.Views
         public void TearDown()
         {
             PumpWindowMessages();
-            this.MainForm.Close();
+            this.MainWindow.Close();
         }
 
         protected static void PumpWindowMessages()

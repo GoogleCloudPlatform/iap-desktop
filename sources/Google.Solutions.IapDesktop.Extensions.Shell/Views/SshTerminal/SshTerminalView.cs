@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         //---------------------------------------------------------------------
 
         public static SshTerminalView TryGetExistingPane(
-            IMainForm mainForm,
+            IMainWindow mainForm,
             InstanceLocator vmInstance)
         {
             return mainForm.MainPanel
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         }
 
         public static SshTerminalView TryGetActivePane(
-            IMainForm mainForm)
+            IMainWindow mainForm)
         {
             //
             // NB. The active content might be in a float window.

@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Load window layer.
                 //
-                windowLayer.AddSingleton<IMainForm>(mainForm);
+                windowLayer.AddSingleton<IMainWindow>(mainForm);
                 windowLayer.AddTransient<OAuthScopeNotGrantedView>();
                 windowLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
                 windowLayer.AddTransient<AboutView>();

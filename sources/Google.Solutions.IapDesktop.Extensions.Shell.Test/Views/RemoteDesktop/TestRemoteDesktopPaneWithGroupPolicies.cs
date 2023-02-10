@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 ((RemoteDesktopView)session).AuthenticationWarningDisplayed += (sender, args) =>
                 {
                     serverAuthWarningIsDisplayed = true;
-                    MainForm.Close();
+                    MainWindow.Close();
                 };
 
                 var deadline = DateTime.Now.AddSeconds(45);

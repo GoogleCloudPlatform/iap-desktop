@@ -62,12 +62,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
     public class RemoteDesktopSessionBroker : IRemoteDesktopSessionBroker
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly IMainForm mainForm;
+        private readonly IMainWindow mainForm;
 
         public RemoteDesktopSessionBroker(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-            this.mainForm = serviceProvider.GetService<IMainForm>();
+            this.mainForm = serviceProvider.GetService<IMainWindow>();
 
             // NB. The ServiceCategory attribute causes this class to be 
             // announced to the session connection broker.
