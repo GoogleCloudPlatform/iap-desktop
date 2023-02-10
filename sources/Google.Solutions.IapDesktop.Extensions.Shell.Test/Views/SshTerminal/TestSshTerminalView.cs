@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestSshTerminalPane : WindowTestFixtureBase
+    public class TestSshTerminalView : WindowTestFixtureBase
     {
         private readonly IPEndPoint NonSshEndpoint =
             new IPEndPoint(IPAddress.Parse("127.0.0.1"), 443);
@@ -78,14 +78,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             }
         }
 
-        [SetUp]
-        public void SetUpServices()
+        private IServiceProvider CreateServiceProvider()
         {
-            this.ServiceRegistry.AddMock<IConfirmationDialog>();
-            this.ServiceRegistry.AddMock<IOperationProgressDialog>();
-            this.ServiceRegistry.AddMock<IDownloadFileDialog>();
-            this.ServiceRegistry.AddMock<IQuarantineAdapter>();
-            this.ServiceRegistry.AddMock<IThemeService>();
+            var registry = new ServiceRegistry(this.ServiceRegistry);
+            registry.AddTransient<SshTerminalView>();
+            registry.AddTransient<SshTerminalViewModel>();
+            registry.AddMock<IThemeService>();
+            registry.AddMock<IConfirmationDialog>();
+            registry.AddMock<IOperationProgressDialog>();
+            registry.AddMock<IDownloadFileDialog>();
+            registry.AddMock<IQuarantineAdapter>();
+            registry.AddMock<IThemeService>();
+            return registry;
         }
 
         private async Task<SshTerminalView> ConnectSshTerminalPane(
@@ -94,6 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             SshKeyType keyType,
             CultureInfo language = null)
         {
+            var serviceProvider = CreateServiceProvider();
             var authorization = new Mock<IAuthorization>();
             authorization
                 .SetupGet(a => a.Email)
@@ -119,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .ConfigureAwait(true);
 
             var broker = new SshTerminalSessionBroker(
-                this.ServiceProvider);
+                serviceProvider);
 
             var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
@@ -189,10 +194,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
+            var serviceProvider = CreateServiceProvider();
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
             var broker = new SshTerminalSessionBroker(
-                this.ServiceProvider);
+                serviceProvider);
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectAsync(
@@ -215,9 +221,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public async Task WhenWrongPort_ThenErrorIsShownAndWindowIsClosed(
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType)
         {
+            var serviceProvider = CreateServiceProvider();
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
-            var broker = new SshTerminalSessionBroker(
-                this.ServiceProvider);
+            var broker = new SshTerminalSessionBroker(serviceProvider);
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectAsync(
@@ -241,11 +247,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Values(SshKeyType.Rsa3072, SshKeyType.EcdsaNistp256)] SshKeyType keyType,
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
+            var serviceProvider = CreateServiceProvider();
             var instanceLocator = await instanceLocatorTask;
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
             var broker = new SshTerminalSessionBroker(
-                this.ServiceProvider);
+                serviceProvider);
 
             var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
@@ -602,7 +609,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             // Disable Ctrl+C/V.
-            var settingsRepository = this.ServiceProvider.GetService<TerminalSettingsRepository>();
+
+            var serviceProvider = CreateServiceProvider();
+            var settingsRepository = serviceProvider.GetService<TerminalSettingsRepository>();
             var settings = settingsRepository.GetSettings();
             settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = false;
             settingsRepository.SetSettings(settings);

@@ -34,9 +34,9 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
     [Service]
-    public class SshTerminalView : TerminalViewBase, ISshTerminalSession, IView<SshTerminaViewModel>
+    public class SshTerminalView : TerminalViewBase, ISshTerminalSession, IView<SshTerminalViewModel>
     {
-        private SshTerminaViewModel viewModel;
+        private SshTerminalViewModel viewModel;
         private readonly ViewFactory<SshAuthenticationPromptView, SshAuthenticationPromptViewModel> promptFactory;
 
         //---------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.promptFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
         }
 
-        public void Bind(SshTerminaViewModel viewModel)
+        public void Bind(SshTerminalViewModel viewModel)
         {
             base.Bind(viewModel);
 
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private void SshTerminalPane_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
-                SshTerminaViewModel
+                SshTerminalViewModel
                     .GetDroppableFiles(e.Data.GetData(DataFormats.FileDrop))
                     .Any())
             {
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             await InvokeActionAsync(
                     () =>
                     {
-                        var files = SshTerminaViewModel
+                        var files = SshTerminalViewModel
                             .GetDroppableFiles(e.Data.GetData(DataFormats.FileDrop));
 
                         return this.viewModel.UploadFilesAsync(files);

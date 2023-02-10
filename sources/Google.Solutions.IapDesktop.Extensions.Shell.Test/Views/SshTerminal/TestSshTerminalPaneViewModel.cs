@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .ConfigureAwait(true);
         }
 
-        private async Task<SshTerminaViewModel> CreateViewModelAsync(
+        private async Task<SshTerminalViewModel> CreateViewModelAsync(
             InstanceLocator instance,
             ICredential credential,
             SshKeyType keyType,
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     It.IsAny<ulong>()))
                 .Returns(progressOperation.Object);
 
-            return new SshTerminaViewModel(
+            return new SshTerminalViewModel(
                 this.eventService.Object,
                 new SynchronousJobService(),
                 this.confirmationDialog.Object,
@@ -331,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 var address = await PublicAddressFromLocator(instance)
                     .ConfigureAwait(true);
 
-                var viewModel = new SshTerminaViewModel(
+                var viewModel = new SshTerminalViewModel(
                     eventService.Object,
                     new SynchronousJobService(),
                     new Mock<IConfirmationDialog>().Object,
@@ -387,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 existingFile
             };
 
-            var droppableFiles = SshTerminaViewModel.GetDroppableFiles(dropData);
+            var droppableFiles = SshTerminalViewModel.GetDroppableFiles(dropData);
             Assert.AreEqual(1, droppableFiles.Count());
             Assert.AreEqual(existingFile, droppableFiles.First().FullName);
         }

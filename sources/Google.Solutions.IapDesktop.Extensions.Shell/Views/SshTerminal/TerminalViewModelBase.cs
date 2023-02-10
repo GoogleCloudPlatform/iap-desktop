@@ -100,9 +100,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     Debug.Assert(!this.ViewInvoker.InvokeRequired, "Accessed from UI thread");
 
                     RaisePropertyChange();
-                    RaisePropertyChange((SshTerminaViewModel m) => m.IsSpinnerVisible);
-                    RaisePropertyChange((SshTerminaViewModel m) => m.IsTerminalVisible);
-                    RaisePropertyChange((SshTerminaViewModel m) => m.IsReconnectPanelVisible);
+                    RaisePropertyChange((SshTerminalViewModel m) => m.IsSpinnerVisible);
+                    RaisePropertyChange((SshTerminalViewModel m) => m.IsTerminalVisible);
+                    RaisePropertyChange((SshTerminalViewModel m) => m.IsReconnectPanelVisible);
                 }
             }
         }

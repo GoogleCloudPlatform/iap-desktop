@@ -281,10 +281,15 @@ namespace Google.Solutions.Mvvm.Binding
             //
             // Tie lifetime of the view model to that of the view.
             //
+            bool disposed = false;
             view.Disposed += (_, __) =>
             {
-                viewModel.Unbind();
-                viewModel.Dispose();
+                if (!disposed)
+                {
+                    viewModel.Unbind();
+                    viewModel.Dispose();
+                    disposed = true;
+                }
             };
         }
 

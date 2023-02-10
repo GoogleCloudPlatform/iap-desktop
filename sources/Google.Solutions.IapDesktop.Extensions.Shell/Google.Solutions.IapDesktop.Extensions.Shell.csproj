@@ -239,7 +239,7 @@
     <Compile Include="Views\SshTerminal\TerminalPaneBase.Designer.cs">
       <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\SshTerminal\SshTerminaViewModel.cs" />
+    <Compile Include="Views\SshTerminal\SshTerminalViewModel.cs" />
     <Compile Include="Views\SshTerminal\SshTerminalSessionBroker.cs" />
     <Compile Include="Views\SshTerminal\TerminalViewModelBase.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsViewModel.cs" />

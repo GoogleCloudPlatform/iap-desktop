@@ -52,7 +52,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
     [Service]
-    public class SshTerminaViewModel : TerminalViewModelBase, ISshAuthenticator, ITextTerminal
+    public class SshTerminalViewModel : TerminalViewModelBase, ISshAuthenticator, ITextTerminal
     {
         private RemoteShellChannel sshChannel = null;
 
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Ctor.
         //---------------------------------------------------------------------
 
-        public SshTerminaViewModel(
+        public SshTerminalViewModel(
             IEventService eventService,
             IJobService jobService,
             IConfirmationDialog confirmationDialog,
@@ -103,7 +103,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             this.Endpoint.ThrowIfNull(nameof(this.Endpoint));
             this.AuthorizedKey.ThrowIfNull(nameof(this.AuthorizedKey));
-            this.Language.ThrowIfNull(nameof(this.Language));
             this.ConnectionTimeout.ThrowIfNull(nameof(this.ConnectionTimeout));
         }
 
