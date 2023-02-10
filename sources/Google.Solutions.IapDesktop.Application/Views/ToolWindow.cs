@@ -459,7 +459,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             private bool bound = false;
 
             private readonly IControlTheme theme;
-            internal readonly TToolWindowView view; // TODO: make private
+            private readonly TToolWindowView view;
 
             public BoundToolWindow(
                 TToolWindowView view,
@@ -468,12 +468,16 @@ namespace Google.Solutions.IapDesktop.Application.Views
             {
                 this.view = view.ThrowIfNull(nameof(view));
                 this.ViewModel = viewModel.ThrowIfNull(nameof(viewModel));
-                this.theme = theme.ThrowIfNull(nameof(theme));
+                this.theme = theme;
             }
 
             public TToolWindowViewModel ViewModel { get; }
 
-            internal void Bind()
+            /// <summary>
+            /// Explicitly perform a bind to access the view. Prefer
+            /// to call Show() instead.
+            /// </summary>
+            public TToolWindowView Bind()
             {
                 if (!this.bound)
                 {
@@ -488,14 +492,18 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
                     this.bound = true;
                 }
+
+                return this.view;
             }
 
-            public TToolWindowView Show()
+            /// <summary>
+            /// Bind and show the tool window.
+            /// </summary>
+            public void Show()
             {
                 Bind();
 
                 this.view.ShowWindow();
-                return this.view;
             }
         }
 

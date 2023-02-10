@@ -47,8 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             var window = ToolWindow
                 .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(serviceProvider);
-            window.Bind();
-            this.view = window.view;
+            this.view = window.Bind();
         }
 
         public IProjectModelNode SelectedNode 

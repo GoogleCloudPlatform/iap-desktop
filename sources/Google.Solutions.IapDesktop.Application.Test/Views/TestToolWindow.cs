@@ -63,8 +63,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             var window1 = ToolWindow.GetWindow<SampleView, SampleViewModel>(registry);
             var window2 = ToolWindow.GetWindow<SampleView, SampleViewModel>(registry);
 
+            var view1 = window1.Bind();
+            var view2 = window2.Bind();
+
             Assert.AreSame(window1, window2);
-            Assert.AreEqual(1, window1.view.BindCalls);
+            Assert.AreEqual(1, view1.BindCalls);
+            Assert.AreEqual(1, view2.BindCalls);
         }
 
         [Test]
@@ -78,9 +82,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             var window1 = ToolWindow.GetWindow<SampleView, SampleViewModel>(registry);
             var window2 = ToolWindow.GetWindow<SampleView, SampleViewModel>(registry);
 
+            var view1 = window1.Bind();
+            var view2 = window2.Bind();
+
             Assert.AreNotSame(window1, window2);
-            Assert.AreEqual(1, window1.view.BindCalls);
-            Assert.AreEqual(1, window2.view.BindCalls);
+            Assert.AreEqual(1, view1.BindCalls);
+            Assert.AreEqual(1, view2.BindCalls);
         }
     }
 }

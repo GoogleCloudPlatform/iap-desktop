@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 if (this.ViewInvoker != null)
                 {
                     //
-                    // It's (unlikely but( possible that the View has already been torn down.
+                    // It's (unlikely, but) possible that the View has already been torn down.
                     // In that case, do not deliver events since they are likely to
                     // cause trouble and touch disposed objects.
                     //
