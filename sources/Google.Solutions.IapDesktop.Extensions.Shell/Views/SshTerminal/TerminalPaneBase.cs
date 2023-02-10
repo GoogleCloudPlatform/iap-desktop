@@ -41,9 +41,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
     public partial class TerminalPaneBase : SessionPaneBase
     {
         private readonly IExceptionDialog exceptionDialog;
+        private readonly TerminalSettingsRepository terminalSettingsRepository;
 
 #pragma warning disable IDE0069 // Disposable fields should be disposed
-        protected TerminalPaneViewModelBase ViewModel { get; }
+        protected TerminalPaneViewModelBase ViewModel { get; private set; }
 #pragma warning restore IDE0069 // Disposable fields should be disposed
 
         //---------------------------------------------------------------------
@@ -66,23 +67,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Ctor.
         //---------------------------------------------------------------------
 
-        public TerminalPaneBase()
-        {
-            // Constructor is for designer only.
-        }
 
-        internal TerminalPaneBase(
-            IServiceProvider serviceProvider,
-            TerminalPaneViewModelBase viewModel)
+        internal TerminalPaneBase(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             InitializeComponent();
 
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.ViewModel = viewModel;
+            this.terminalSettingsRepository = serviceProvider.GetService<TerminalSettingsRepository>();
+        }
 
-            viewModel.View = this;
-            Debug.Assert(this.ViewModel.View != null);
+
+
+        public void Bind(TerminalPaneViewModelBase viewModel)
+        {
+            this.ViewModel = viewModel;
 
             //
             // Bind controls.
@@ -152,8 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             //
             // Automatically reapply when settings change.
             //
-            var terminalSettingsRepository = serviceProvider.GetService<TerminalSettingsRepository>();
-            var settings = terminalSettingsRepository.GetSettings();
+            var settings = this.terminalSettingsRepository.GetSettings();
             ApplyTerminalSettings(settings);
 
             void reapplyTerminalSettings(object s, EventArgs<TerminalSettings> e)
@@ -170,7 +168,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 {
                     this.ViewModel.ConnectionFailed -= OnErrorReceivedFromServerAsync;
                     this.ViewModel.DataReceived -= OnDataReceivedFromServerAsync;
-                    this.ViewModel.Dispose();
 
                     terminalSettingsRepository.SettingsChanged -= reapplyTerminalSettings;
                 }

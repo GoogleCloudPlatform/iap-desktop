@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -431,17 +432,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 // This is new object (transient or singleton), and it
                 // has not been bound yet.
                 //
-                var viewModel = serviceProvider.GetService<TToolWindowViewModel>();
-                Window<TToolWindowView, TToolWindowViewModel>.Bind(
-                    view,
-                    viewModel,
-                    serviceProvider.GetService<IThemeService>().ToolWindowTheme);
-
-                //
                 // Create an intermediate object that lets the caller initialize the
                 // view model before calling Show().
                 //
-                var boundWindow = new BoundToolWindow<TToolWindowView, TToolWindowViewModel>(view, viewModel);
+                var boundWindow = new BoundToolWindow<TToolWindowView, TToolWindowViewModel>(
+                    view,
+                    serviceProvider.GetService<TToolWindowViewModel>(),
+                    serviceProvider.GetService<IThemeService>().ToolWindowTheme);
                 view.boundWindow = boundWindow;
 
                 if (view.HideOnClose)
@@ -459,21 +456,46 @@ namespace Google.Solutions.IapDesktop.Application.Views
             where TToolWindowView : ToolWindow, IView<TToolWindowViewModel>
             where TToolWindowViewModel : ViewModelBase
         {
-            internal readonly TToolWindowView view;
+            private bool bound = false;
+
+            private readonly IControlTheme theme;
+            internal readonly TToolWindowView view; // TODO: make private
 
             public BoundToolWindow(
                 TToolWindowView view,
-                TToolWindowViewModel viewModel)
+                TToolWindowViewModel viewModel,
+                IControlTheme theme)
             {
                 this.view = view.ThrowIfNull(nameof(view));
                 this.ViewModel = viewModel.ThrowIfNull(nameof(viewModel));
+                this.theme = theme.ThrowIfNull(nameof(theme));
             }
 
             public TToolWindowViewModel ViewModel { get; }
 
-            public void Show()
+            internal void Bind()
             {
+                if (!this.bound)
+                {
+                    //
+                    // The caller had sufficient opportunity to initialize
+                    // the view mode, so we can now bind it to the view.
+                    //
+                    Window<TToolWindowView, TToolWindowViewModel>.Bind(
+                        this.view,
+                        this.ViewModel,
+                        this.theme);
+
+                    this.bound = true;
+                }
+            }
+
+            public TToolWindowView Show()
+            {
+                Bind();
+
                 this.view.ShowWindow();
+                return this.view;
             }
         }
 

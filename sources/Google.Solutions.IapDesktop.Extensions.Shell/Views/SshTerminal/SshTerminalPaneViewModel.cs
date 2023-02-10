@@ -19,11 +19,13 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Util;
@@ -50,13 +52,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-
+    [Service]
     public class SshTerminalPaneViewModel : TerminalPaneViewModelBase, ISshAuthenticator, ITextTerminal
     {
-        private readonly CultureInfo language;
-        private readonly IPEndPoint endpoint;
-        private readonly AuthorizedKeyPair authorizedKey;
-        private readonly TimeSpan connectionTimeout;
         private RemoteShellChannel sshChannel = null;
 
         private readonly IConfirmationDialog confirmationDialog;
@@ -64,7 +62,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly IDownloadFileDialog downloadFileDialog;
         private readonly IExceptionDialog exceptionDialog;
         private readonly IQuarantineAdapter quarantineAdapter;
-
         private readonly IJobService jobService;
 
         public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
@@ -80,13 +77,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             IOperationProgressDialog operationProgressDialog,
             IDownloadFileDialog downloadFileDialog,
             IExceptionDialog exceptionDialog,
-            IQuarantineAdapter quarantineAdapter,
-            InstanceLocator vmInstance,
-            IPEndPoint endpoint,
-            AuthorizedKeyPair authorizedKey,
-            CultureInfo language,
-            TimeSpan connectionTimeout)
-            : base(eventService, vmInstance)
+            IQuarantineAdapter quarantineAdapter)
+            : base(eventService)
         {
             this.jobService = jobService;
 
@@ -95,20 +87,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.downloadFileDialog = downloadFileDialog;
             this.exceptionDialog = exceptionDialog;
             this.quarantineAdapter = quarantineAdapter;
+        }
 
-            this.endpoint = endpoint;
-            this.authorizedKey = authorizedKey;
-            this.language = language;
-            this.connectionTimeout = connectionTimeout;
+        //---------------------------------------------------------------------
+        // Initialization properties.
+        //---------------------------------------------------------------------
+
+        internal CultureInfo Language { get; set; }
+        internal IPEndPoint Endpoint { get; set; }
+        internal AuthorizedKeyPair AuthorizedKey { get; set; }
+        internal TimeSpan ConnectionTimeout { get; set; }
+
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+
+            this.Endpoint.ThrowIfNull(nameof(this.Endpoint));
+            this.AuthorizedKey.ThrowIfNull(nameof(this.AuthorizedKey));
+            this.Language.ThrowIfNull(nameof(this.Language));
+            this.ConnectionTimeout.ThrowIfNull(nameof(this.ConnectionTimeout));
         }
 
         //---------------------------------------------------------------------
         // ISshAuthenticator.
         //---------------------------------------------------------------------
 
-        string ISshAuthenticator.Username => this.authorizedKey.Username;
+        string ISshAuthenticator.Username => this.AuthorizedKey.Username;
 
-        ISshKeyPair ISshAuthenticator.KeyPair => this.authorizedKey.KeyPair;
+        ISshKeyPair ISshAuthenticator.KeyPair => this.AuthorizedKey.KeyPair;
 
         string ISshAuthenticator.Prompt(
             string name,
@@ -148,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         string ITextTerminal.TerminalType => RemoteShellChannel.DefaultTerminal;
 
-        CultureInfo ITextTerminal.Locale => this.language;
+        CultureInfo ITextTerminal.Locale => this.Language;
 
         void ITextTerminal.OnDataReceived(string data)
         {
@@ -205,12 +211,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             try
             {
                 var connection = new RemoteConnection(
-                        this.endpoint,
+                        this.Endpoint,
                         (ISshAuthenticator)this,
                         SynchronizationContext.Current)
                 {
                     Banner = SshSession.BannerPrefix + Globals.UserAgent,
-                    ConnectionTimeout = this.connectionTimeout,
+                    ConnectionTimeout = this.ConnectionTimeout,
 
                     //
                     // NB. Do not join worker thread as this could block the
@@ -231,17 +237,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED)
             {
                 var keyPairWarning = string.Empty;
-                if (this.authorizedKey.KeyPair is RsaSshKeyPair)
+                if (this.AuthorizedKey.KeyPair is RsaSshKeyPair)
                 {
                     keyPairWarning =
                         "Some Linux distributions also no longer support the " +
-                        $"'{this.authorizedKey.KeyPair.Type}' algorithm that you're " +
+                        $"'{this.AuthorizedKey.KeyPair.Type}' algorithm that you're " +
                         "currently using for SSH authentication. To use a more modern " +
                         "algorithm, go to Tools > Options > SSH and " +
                         "configure IAP Desktop to use ECDSA instead of RSA.";
                 }
 
-                if (this.authorizedKey.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
+                if (this.AuthorizedKey.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
                 {
                     throw new OsLoginAuthenticationFailedException(
                         "You do not have sufficient permissions to access this VM instance.\n\n" +
@@ -593,7 +599,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             if (disposing)
             {
                 this.sshChannel?.Connection.Dispose();
-                this.authorizedKey.Dispose();
+                this.AuthorizedKey.Dispose();
             }
         }
     }

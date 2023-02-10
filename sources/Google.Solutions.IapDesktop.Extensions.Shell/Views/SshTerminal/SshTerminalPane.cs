@@ -22,67 +22,40 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    public class SshTerminalPane : TerminalPaneBase, ISshTerminalSession
+    [Service]
+    public class SshTerminalPane : TerminalPaneBase, ISshTerminalSession, IView<SshTerminalPaneViewModel>
     {
-        private readonly SshTerminalPaneViewModel viewModel;
+        private SshTerminalPaneViewModel viewModel;
         private readonly ViewFactory<SshAuthenticationPromptView, SshAuthenticationPromptViewModel> promptFactory;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        public SshTerminalPane()
+        public SshTerminalPane(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
-            // Constructor is for designer only.
-        }
-
-        internal SshTerminalPane(
-            IServiceProvider serviceProvider,
-            InstanceLocator vmInstance,
-            IPEndPoint endpoint,
-            AuthorizedKeyPair authorizedKey,
-            CultureInfo language,
-            TimeSpan connectionTimeout)
-            : base(
-                  serviceProvider,
-                  new SshTerminalPaneViewModel(
-                    serviceProvider.GetService<IEventService>(),
-                    serviceProvider.GetService<IJobService>(),
-                    serviceProvider.GetService<IConfirmationDialog>(),
-                    serviceProvider.GetService<IOperationProgressDialog>(),
-                    serviceProvider.GetService<IDownloadFileDialog>(),
-                    serviceProvider.GetService<IExceptionDialog>(),
-                    serviceProvider.GetService<IQuarantineAdapter>(),
-                    vmInstance,
-                    endpoint,
-                    authorizedKey,
-                    language,
-                    connectionTimeout))
-        {
-            this.viewModel = (SshTerminalPaneViewModel)this.ViewModel;
-            this.viewModel.View = this;
-            this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
-
             this.promptFactory = serviceProvider.GetViewFactory<SshAuthenticationPromptView, SshAuthenticationPromptViewModel>();
             this.promptFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
+        }
+
+        public void Bind(SshTerminalPaneViewModel viewModel)
+        {
+            base.Bind(viewModel);
+
+            this.viewModel = viewModel;
+            this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
 
             this.AllowDrop = true;
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.SshTerminalPane_DragDrop);

@@ -217,9 +217,8 @@ namespace Google.Solutions.Mvvm.Binding
                 //
                 // Bind view <-> view model.
                 //
-                this.ViewModel.View = view;
-
                 view.SuspendLayout();
+                this.ViewModel.Bind(view);
                 view.Bind(this.ViewModel);
                 view.ResumeLayout();
 
@@ -228,7 +227,7 @@ namespace Google.Solutions.Mvvm.Binding
                 //
                 // Retain the view model, but prevent it from keeping the view alive.
                 //
-                this.ViewModel.View = null;
+                this.ViewModel.Unbind();
 
                 return result;
             }
@@ -274,16 +273,19 @@ namespace Google.Solutions.Mvvm.Binding
             //
             // Bind view <-> view model.
             //
-            viewModel.View = view;
-
             view.SuspendLayout();
+            viewModel.Bind(view);
             view.Bind(viewModel);
             view.ResumeLayout();
 
             //
             // Tie lifetime of the view model to that of the view.
             //
-            view.Disposed += (_, __) => viewModel.Dispose();
+            view.Disposed += (_, __) =>
+            {
+                viewModel.Unbind();
+                viewModel.Dispose();
+            };
         }
 
         public TView Form

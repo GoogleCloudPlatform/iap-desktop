@@ -109,14 +109,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             CultureInfo language,
             TimeSpan connectionTimeout)
         {
-            var pane = new SshTerminalPane(
-                this.serviceProvider,
-                vmInstance,
-                endpoint,
-                authorizedKey,
-                language,
-                connectionTimeout);
-            pane.ShowWindow();
+            var window = ToolWindow.GetWindow<SshTerminalPane, SshTerminalPaneViewModel>(this.serviceProvider);
+            window.ViewModel.Instance = vmInstance;
+            window.ViewModel.Endpoint = endpoint;
+            window.ViewModel.AuthorizedKey = authorizedKey;
+            window.ViewModel.Language = language;
+            window.ViewModel.ConnectionTimeout = connectionTimeout;
+
+            var pane = window.Show();
 
             await pane.ConnectAsync()
                 .ConfigureAwait(false);

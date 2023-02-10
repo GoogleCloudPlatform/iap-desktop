@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -43,20 +44,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly StringBuilder receivedData = new StringBuilder();
         private readonly StringBuilder sentData = new StringBuilder();
 
-        public InstanceLocator Instance { get; }
-
         public event EventHandler<ConnectionErrorEventArgs> ConnectionFailed;
         public event EventHandler<ConnectionErrorEventArgs> ConnectionLost;
         public event EventHandler<DataEventArgs> DataReceived;
 
         protected ISynchronizeInvoke ViewInvoker => (ISynchronizeInvoke)this.View;
 
-        protected TerminalPaneViewModelBase(
-            IEventService eventService,
-            InstanceLocator vmInstance)
+        protected TerminalPaneViewModelBase(IEventService eventService)
         {
-            this.eventService = eventService;
-            this.Instance = vmInstance;
+            this.eventService = eventService.ThrowIfNull(nameof(eventService));
+        }
+
+        //---------------------------------------------------------------------
+        // Initialization properties.
+        //---------------------------------------------------------------------
+
+        public InstanceLocator Instance { get; set; }
+
+        protected override void OnValidate()
+        {
+            this.Instance.ThrowIfNull(nameof(this.Instance));
         }
 
         //---------------------------------------------------------------------
@@ -210,8 +217,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Dispose.
         //---------------------------------------------------------------------
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
+
             if (disposing)
             {
                 // 
@@ -221,16 +230,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 // That could cause InvokeAndForget to hang, causing a deadlock
                 // between the UI thread and the SSH worker thread.
                 //
-
-                this.View = null;
+                Debug.Assert(this.View == null);
             }
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 

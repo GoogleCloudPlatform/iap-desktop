@@ -159,12 +159,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 progressDialog.Object,
                 this.downloadFileDialog.Object,
                 this.exceptionDialog.Object,
-                this.quarantineAdapter.Object,
-                instance,
-                new IPEndPoint(address, 22),
-                authorizedKey,
-                language,
-                TimeSpan.FromSeconds(10));
+                this.quarantineAdapter.Object)
+            {
+                Instance = instance,
+                Endpoint = new IPEndPoint(address, 22),
+                AuthorizedKey = authorizedKey,
+                Language = language,
+                ConnectionTimeout = TimeSpan.FromSeconds(10)
+            };
         }
 
         //---------------------------------------------------------------------
@@ -336,14 +338,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     new Mock<IOperationProgressDialog>().Object,
                     new Mock<IDownloadFileDialog>().Object,
                     new Mock<IExceptionDialog>().Object,
-                    new Mock<IQuarantineAdapter>().Object,
-                    instance,
-                    new IPEndPoint(address, 22),
-                    nonAuthorizedKey,
-                    null,
-                    TimeSpan.FromSeconds(10))
+                    new Mock<IQuarantineAdapter>().Object)
                 {
-                    View = window
+                    View = window,
+                    Instance = instance,
+                    Endpoint = new IPEndPoint(address, 22),
+                    AuthorizedKey = nonAuthorizedKey,
+                    Language = null,
+                    ConnectionTimeout = TimeSpan.FromSeconds(10)
                 };
 
                 ConnectionErrorEventArgs argsReceived = null;
