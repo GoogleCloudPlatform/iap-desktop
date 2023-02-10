@@ -229,7 +229,7 @@
       <DependentUpon>SshAuthenticationPromptView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\SshTerminal\SshAuthenticationPromptViewModel.cs" />
-    <Compile Include="Views\SshTerminal\SshTerminalPane.cs">
+    <Compile Include="Views\SshTerminal\SshTerminalView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\SshTerminal\TerminalPaneBase.cs">
@@ -238,9 +238,9 @@
     <Compile Include="Views\SshTerminal\TerminalPaneBase.Designer.cs">
       <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\SshTerminal\SshTerminalPaneViewModel.cs" />
+    <Compile Include="Views\SshTerminal\SshTerminaViewModel.cs" />
     <Compile Include="Views\SshTerminal\SshTerminalSessionBroker.cs" />
-    <Compile Include="Views\SshTerminal\TerminalPaneViewModelBase.cs" />
+    <Compile Include="Views\SshTerminal\TerminalViewModelBase.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsViewModel.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsView.cs">
       <SubType>Form</SubType>

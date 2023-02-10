@@ -21,7 +21,6 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Data;
@@ -53,7 +52,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
     [Service]
-    public class SshTerminalPaneViewModel : TerminalPaneViewModelBase, ISshAuthenticator, ITextTerminal
+    public class SshTerminaViewModel : TerminalViewModelBase, ISshAuthenticator, ITextTerminal
     {
         private RemoteShellChannel sshChannel = null;
 
@@ -70,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Ctor.
         //---------------------------------------------------------------------
 
-        public SshTerminalPaneViewModel(
+        public SshTerminaViewModel(
             IEventService eventService,
             IJobService jobService,
             IConfirmationDialog confirmationDialog,

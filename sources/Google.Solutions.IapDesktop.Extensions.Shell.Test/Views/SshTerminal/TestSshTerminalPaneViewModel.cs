@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .ConfigureAwait(true);
         }
 
-        private async Task<SshTerminalPaneViewModel> CreateViewModelAsync(
+        private async Task<SshTerminaViewModel> CreateViewModelAsync(
             InstanceLocator instance,
             ICredential credential,
             SshKeyType keyType,
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     It.IsAny<ulong>()))
                 .Returns(progressOperation.Object);
 
-            return new SshTerminalPaneViewModel(
+            return new SshTerminaViewModel(
                 this.eventService.Object,
                 new SynchronousJobService(),
                 this.confirmationDialog.Object,
@@ -303,7 +303,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     It.IsAny<SessionStartedEvent>()), Times.Once());
 
                 Assert.AreEqual(
-                    TerminalPaneViewModelBase.Status.Connected,
+                    TerminalViewModelBase.Status.Connected,
                     viewModel.ConnectionStatus);
             }
 
@@ -331,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 var address = await PublicAddressFromLocator(instance)
                     .ConfigureAwait(true);
 
-                var viewModel = new SshTerminalPaneViewModel(
+                var viewModel = new SshTerminaViewModel(
                     eventService.Object,
                     new SynchronousJobService(),
                     new Mock<IConfirmationDialog>().Object,
@@ -363,7 +363,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
 
                 Assert.AreEqual(
-                    TerminalPaneViewModelBase.Status.ConnectionFailed,
+                    TerminalViewModelBase.Status.ConnectionFailed,
                     viewModel.ConnectionStatus);
             }
 
@@ -387,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 existingFile
             };
 
-            var droppableFiles = SshTerminalPaneViewModel.GetDroppableFiles(dropData);
+            var droppableFiles = SshTerminaViewModel.GetDroppableFiles(dropData);
             Assert.AreEqual(1, droppableFiles.Count());
             Assert.AreEqual(existingFile, droppableFiles.First().FullName);
         }

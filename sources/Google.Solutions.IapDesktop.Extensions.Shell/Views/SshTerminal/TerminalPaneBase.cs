@@ -38,13 +38,13 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
-    public partial class TerminalPaneBase : SessionPaneBase
+    public partial class TerminalViewBase : SessionPaneBase
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly TerminalSettingsRepository terminalSettingsRepository;
 
 #pragma warning disable IDE0069 // Disposable fields should be disposed
-        protected TerminalPaneViewModelBase ViewModel { get; private set; }
+        protected TerminalViewModelBase ViewModel { get; private set; }
 #pragma warning restore IDE0069 // Disposable fields should be disposed
 
         //---------------------------------------------------------------------
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         //---------------------------------------------------------------------
 
 
-        internal TerminalPaneBase(IServiceProvider serviceProvider)
+        internal TerminalViewBase(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             InitializeComponent();
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
 
 
-        public void Bind(TerminalPaneViewModelBase viewModel)
+        public void Bind(TerminalViewModelBase viewModel)
         {
             this.ViewModel = viewModel;
 
@@ -366,6 +366,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         //---------------------------------------------------------------------
 
         public bool IsConnected =>
-            this.ViewModel.ConnectionStatus == TerminalPaneViewModelBase.Status.Connected;
+            this.ViewModel.ConnectionStatus == TerminalViewModelBase.Status.Connected;
     }
 }

@@ -123,8 +123,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             Assert.IsNull(this.ExceptionShown);
 
-            Assert.AreSame(session, SshTerminalPane.TryGetActivePane(this.MainForm));
-            Assert.AreSame(session, SshTerminalPane.TryGetExistingPane(this.MainForm, locator));
+            Assert.AreSame(session, SshTerminalView.TryGetActivePane(this.MainForm));
+            Assert.AreSame(session, SshTerminalView.TryGetExistingPane(this.MainForm, locator));
             Assert.IsTrue(broker.IsConnected(locator));
             Assert.IsTrue(broker.TryActivate(locator));
 

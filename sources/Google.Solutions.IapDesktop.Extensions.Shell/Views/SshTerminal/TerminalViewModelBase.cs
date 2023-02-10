@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
 
-    public abstract class TerminalPaneViewModelBase : ViewModelBase, IDisposable
+    public abstract class TerminalViewModelBase : ViewModelBase, IDisposable
     {
         private readonly IEventService eventService;
 
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         protected ISynchronizeInvoke ViewInvoker => (ISynchronizeInvoke)this.View;
 
-        protected TerminalPaneViewModelBase(IEventService eventService)
+        protected TerminalViewModelBase(IEventService eventService)
         {
             this.eventService = eventService.ThrowIfNull(nameof(eventService));
         }
@@ -100,9 +100,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     Debug.Assert(!this.ViewInvoker.InvokeRequired, "Accessed from UI thread");
 
                     RaisePropertyChange();
-                    RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsSpinnerVisible);
-                    RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsTerminalVisible);
-                    RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsReconnectPanelVisible);
+                    RaisePropertyChange((SshTerminaViewModel m) => m.IsSpinnerVisible);
+                    RaisePropertyChange((SshTerminaViewModel m) => m.IsTerminalVisible);
+                    RaisePropertyChange((SshTerminaViewModel m) => m.IsReconnectPanelVisible);
                 }
             }
         }

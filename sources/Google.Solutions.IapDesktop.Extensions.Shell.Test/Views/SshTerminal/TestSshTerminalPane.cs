@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             this.ServiceRegistry.AddMock<IThemeService>();
         }
 
-        private async Task<SshTerminalPane> ConnectSshTerminalPane(
+        private async Task<SshTerminalView> ConnectSshTerminalPane(
             InstanceLocator instanceLocator,
             ICredential credential,
             SshKeyType keyType,
@@ -124,11 +124,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
 
-            SshTerminalPane pane = null;
+            SshTerminalView pane = null;
             await AssertRaisesEventAsync<SessionStartedEvent>(
                 async () =>
                 {
-                    pane = (SshTerminalPane)await broker.ConnectAsync(
+                    pane = (SshTerminalView)await broker.ConnectAsync(
                             instanceLocator,
                             new IPEndPoint(address, 22),
                             authorizedKey,
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             PumpWindowMessages();
 
-            return (SshTerminalPane)pane;
+            return (SshTerminalView)pane;
         }
 
         [SetUp]

@@ -34,23 +34,23 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
     [Service]
-    public class SshTerminalPane : TerminalPaneBase, ISshTerminalSession, IView<SshTerminalPaneViewModel>
+    public class SshTerminalView : TerminalViewBase, ISshTerminalSession, IView<SshTerminaViewModel>
     {
-        private SshTerminalPaneViewModel viewModel;
+        private SshTerminaViewModel viewModel;
         private readonly ViewFactory<SshAuthenticationPromptView, SshAuthenticationPromptViewModel> promptFactory;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        public SshTerminalPane(IServiceProvider serviceProvider)
+        public SshTerminalView(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             this.promptFactory = serviceProvider.GetViewFactory<SshAuthenticationPromptView, SshAuthenticationPromptViewModel>();
             this.promptFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
         }
 
-        public void Bind(SshTerminalPaneViewModel viewModel)
+        public void Bind(SshTerminaViewModel viewModel)
         {
             base.Bind(viewModel);
 
@@ -96,25 +96,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Statics.
         //---------------------------------------------------------------------
 
-        public static SshTerminalPane TryGetExistingPane(
+        public static SshTerminalView TryGetExistingPane(
             IMainForm mainForm,
             InstanceLocator vmInstance)
         {
             return mainForm.MainPanel
                 .Documents
                 .EnsureNotNull()
-                .OfType<SshTerminalPane>()
+                .OfType<SshTerminalView>()
                 .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
                 .FirstOrDefault();
         }
 
-        public static SshTerminalPane TryGetActivePane(
+        public static SshTerminalView TryGetActivePane(
             IMainForm mainForm)
         {
             //
             // NB. The active content might be in a float window.
             //
-            return mainForm.MainPanel.ActivePane?.ActiveContent as SshTerminalPane;
+            return mainForm.MainPanel.ActivePane?.ActiveContent as SshTerminalView;
         }
 
         //---------------------------------------------------------------------
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private void SshTerminalPane_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
-                SshTerminalPaneViewModel
+                SshTerminaViewModel
                     .GetDroppableFiles(e.Data.GetData(DataFormats.FileDrop))
                     .Any())
             {
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             await InvokeActionAsync(
                     () =>
                     {
-                        var files = SshTerminalPaneViewModel
+                        var files = SshTerminaViewModel
                             .GetDroppableFiles(e.Data.GetData(DataFormats.FileDrop));
 
                         return this.viewModel.UploadFilesAsync(files);
