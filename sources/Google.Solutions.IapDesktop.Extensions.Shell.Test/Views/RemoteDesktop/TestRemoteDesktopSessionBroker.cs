@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var broker = new RemoteDesktopSessionBroker(this.ServiceProvider);
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
-                        () => session = (RemoteDesktopPane)broker.Connect(
+                        () => session = (RemoteDesktopView)broker.Connect(
                             locator,
                             "localhost",
                             (ushort)tunnel.LocalPort,
@@ -98,8 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
                 Assert.IsNull(this.ExceptionShown);
 
-                Assert.AreSame(session, RemoteDesktopPane.TryGetActivePane(this.MainForm));
-                Assert.AreSame(session, RemoteDesktopPane.TryGetExistingPane(this.MainForm, locator));
+                Assert.AreSame(session, RemoteDesktopView.TryGetActivePane(this.MainForm));
+                Assert.AreSame(session, RemoteDesktopView.TryGetExistingPane(this.MainForm, locator));
                 Assert.IsTrue(broker.IsConnected(locator));
                 Assert.IsTrue(broker.TryActivate(locator));
 

@@ -176,6 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         public virtual void ShowWindow()
         {
             Debug.Assert(this.panel != null);
+            //TODO: Debug.Assert(this.boundWindow != null);
 
             this.TabText = this.Text;
 

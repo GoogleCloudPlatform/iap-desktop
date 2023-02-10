@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                     settings);
 
                 bool serverAuthWarningIsDisplayed = false;
-                ((RemoteDesktopPane)session).AuthenticationWarningDisplayed += (sender, args) =>
+                ((RemoteDesktopView)session).AuthenticationWarningDisplayed += (sender, args) =>
                 {
                     serverAuthWarningIsDisplayed = true;
                     MainForm.Close();

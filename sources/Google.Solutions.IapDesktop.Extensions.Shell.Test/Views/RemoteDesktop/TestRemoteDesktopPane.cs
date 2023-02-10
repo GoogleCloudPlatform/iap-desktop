@@ -258,10 +258,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var rdpService = new RemoteDesktopSessionBroker(this.ServiceProvider);
 
 
-                RemoteDesktopPane session = null;
+                RemoteDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(() =>
                     {
-                        session = (RemoteDesktopPane)rdpService.Connect(
+                        session = (RemoteDesktopView)rdpService.Connect(
                             locator,
                             "localhost",
                             (ushort)tunnel.LocalPort,
@@ -319,10 +319,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
                 var rdpService = new RemoteDesktopSessionBroker(this.ServiceProvider);
 
-                RemoteDesktopPane session = null;
+                RemoteDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(() =>
                     {
-                        session = (RemoteDesktopPane)rdpService.Connect(
+                        session = (RemoteDesktopView)rdpService.Connect(
                             locator,
                             "localhost",
                             (ushort)tunnel.LocalPort,

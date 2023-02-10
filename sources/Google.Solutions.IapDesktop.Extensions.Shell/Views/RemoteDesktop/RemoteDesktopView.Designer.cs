@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
-    partial class RemoteDesktopPane
+    partial class RemoteDesktopView
     {
         /// <summary>
         /// Required designer variable.
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoteDesktopPane));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoteDesktopView));
             this.rdpClient = new Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop.MsRdpClient();
             this.reconnectToResizeTimer = new System.Windows.Forms.Timer(this.components);
             this.reconnectPanel = new System.Windows.Forms.Panel();

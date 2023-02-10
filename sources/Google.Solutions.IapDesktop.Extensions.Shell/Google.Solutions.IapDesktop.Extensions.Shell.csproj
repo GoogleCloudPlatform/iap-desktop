@@ -193,12 +193,13 @@
     <Compile Include="Views\RemoteDesktop\RemoteDesktopSessionBroker.cs" />
     <Compile Include="Views\RemoteDesktop\RdpClientExtensions.cs" />
     <Compile Include="Views\RemoteDesktop\RdpExceptions.cs" />
-    <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.cs">
+    <Compile Include="Views\RemoteDesktop\RemoteDesktopView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.Designer.cs">
-      <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
+    <Compile Include="Views\RemoteDesktop\RemoteDesktopView.Designer.cs">
+      <DependentUpon>RemoteDesktopView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\RemoteDesktop\RemoteDesktopViewModel.cs" />
     <Compile Include="Views\SessionPaneBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -315,8 +316,8 @@
     <EmbeddedResource Include="Views\Options\TerminalOptionsSheet.resx">
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopPane.resx">
-      <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
+    <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopView.resx">
+      <DependentUpon>RemoteDesktopView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SshKeys\AuthorizedPublicKeysView.resx">
       <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
