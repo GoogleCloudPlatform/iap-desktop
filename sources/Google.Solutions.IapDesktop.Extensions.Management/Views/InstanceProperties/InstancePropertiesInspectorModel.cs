@@ -26,6 +26,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
@@ -38,7 +39,8 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties
 {
-    internal class InstancePropertiesInspectorModel
+    [Service]
+    public class InstancePropertiesInspectorModel
     {
         private const string InstanceCategory = "Instance details";
         private const string NetworkCategory = "Instance network";

@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Load window layer.
                 //
-                windowLayer.AddSingleton<IMainForm>(mainForm);
+                windowLayer.AddSingleton<IMainWindow>(mainForm);
                 windowLayer.AddTransient<OAuthScopeNotGrantedView>();
                 windowLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
                 windowLayer.AddTransient<AboutView>();
@@ -359,16 +359,24 @@ namespace Google.Solutions.IapDesktop
                 windowLayer.AddTransient<ProjectPickerView>();
                 windowLayer.AddTransient<ProjectPickerViewModel>();
 
-                windowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
+                windowLayer.AddSingleton<IProjectExplorer, ProjectExplorer>();
+                windowLayer.AddSingleton<ProjectExplorerView>();
+                windowLayer.AddTransient<ProjectExplorerViewModel>();
                 windowLayer.AddTransient<OptionsDialog>();
 
 #if DEBUG
-                windowLayer.AddSingleton<DebugJobServiceWindow>();
-                windowLayer.AddSingleton<DebugDockingWindow>();
-                windowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
-                windowLayer.AddSingleton<DebugFullScreenPane>();
-                windowLayer.AddSingleton<DebugFocusWindow>();
-                windowLayer.AddTransient<DebugThemeWindow>();
+                windowLayer.AddSingleton<DebugProjectExplorerTrackingView>();
+                windowLayer.AddTransient<DebugProjectExplorerTrackingViewModel>();
+                windowLayer.AddTransient<DebugThemeView>();
+                windowLayer.AddTransient<DebugThemeViewModel>();
+                windowLayer.AddSingleton<DebugJobServiceView>();
+                windowLayer.AddTransient<DebugJobServiceViewModel>();
+                windowLayer.AddTransient<DebugFullScreenView>();
+                windowLayer.AddTransient<DebugFullScreenViewModel>();
+                windowLayer.AddTransient<DebugDockingView>();
+                windowLayer.AddTransient<DebugDockingViewModel>();
+                windowLayer.AddTransient<DebugServiceRegistryView>();
+                windowLayer.AddTransient<DebugServiceRegistryViewModel>();
 #endif
                 //
                 // Load extensions.

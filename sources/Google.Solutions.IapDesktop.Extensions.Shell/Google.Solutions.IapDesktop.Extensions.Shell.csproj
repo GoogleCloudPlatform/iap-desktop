@@ -149,12 +149,12 @@
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsViewModel.cs" />
-    <Compile Include="Views\ConnectionSettings\ConnectionSettingsWindow.cs">
+    <Compile Include="Views\ConnectionSettings\ConnectionSettingsView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ConnectionSettings\HtmlPageGenerator.cs" />
-    <Compile Include="Views\ConnectionSettings\IConnectionSettingsWindow.cs" />
     <Compile Include="Views\Credentials\AuthorizationExtensions.cs" />
+    <Compile Include="Views\Credentials\ConfigureCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\NewCredentialsDialog.cs" />
     <Compile Include="Views\Credentials\SelectCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\CreateCredentialsWorkflow.cs" />
@@ -193,22 +193,23 @@
     <Compile Include="Views\RemoteDesktop\RemoteDesktopSessionBroker.cs" />
     <Compile Include="Views\RemoteDesktop\RdpClientExtensions.cs" />
     <Compile Include="Views\RemoteDesktop\RdpExceptions.cs" />
-    <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.cs">
+    <Compile Include="Views\RemoteDesktop\RemoteDesktopView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.Designer.cs">
-      <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
+    <Compile Include="Views\RemoteDesktop\RemoteDesktopView.Designer.cs">
+      <DependentUpon>RemoteDesktopView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\SessionPaneBase.cs">
+    <Compile Include="Views\RemoteDesktop\RemoteDesktopViewModel.cs" />
+    <Compile Include="Views\SessionViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysModel.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysViewModel.cs" />
-    <Compile Include="Views\SshKeys\AuthorizedPublicKeysWindow.cs">
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\SshKeys\AuthorizedPublicKeysWindow.Designer.cs">
-      <DependentUpon>AuthorizedPublicKeysWindow.cs</DependentUpon>
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysView.Designer.cs">
+      <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysList.cs">
       <SubType>UserControl</SubType>
@@ -229,7 +230,7 @@
       <DependentUpon>SshAuthenticationPromptView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\SshTerminal\SshAuthenticationPromptViewModel.cs" />
-    <Compile Include="Views\SshTerminal\SshTerminalPane.cs">
+    <Compile Include="Views\SshTerminal\SshTerminalView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\SshTerminal\TerminalPaneBase.cs">
@@ -238,16 +239,15 @@
     <Compile Include="Views\SshTerminal\TerminalPaneBase.Designer.cs">
       <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\SshTerminal\SshTerminalPaneViewModel.cs" />
+    <Compile Include="Views\SshTerminal\SshTerminalViewModel.cs" />
     <Compile Include="Views\SshTerminal\SshTerminalSessionBroker.cs" />
-    <Compile Include="Views\SshTerminal\TerminalPaneViewModelBase.cs" />
-    <Compile Include="Views\TunnelsViewer\ITunnelsWindow.cs" />
+    <Compile Include="Views\SshTerminal\TerminalViewModelBase.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsViewModel.cs" />
-    <Compile Include="Views\TunnelsViewer\TunnelsWindow.cs">
+    <Compile Include="Views\TunnelsViewer\TunnelsView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\TunnelsViewer\TunnelsWindow.designer.cs">
-      <DependentUpon>TunnelsWindow.cs</DependentUpon>
+    <Compile Include="Views\TunnelsViewer\TunnelsView.designer.cs">
+      <DependentUpon>TunnelsView.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Tunnel\Tunnel.cs" />
     <Compile Include="Services\Tunnel\TunnelBrokerService.cs" />
@@ -316,11 +316,11 @@
     <EmbeddedResource Include="Views\Options\TerminalOptionsSheet.resx">
       <DependentUpon>TerminalOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopPane.resx">
-      <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
+    <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopView.resx">
+      <DependentUpon>RemoteDesktopView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\SshKeys\AuthorizedPublicKeysWindow.resx">
-      <DependentUpon>AuthorizedPublicKeysWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\SshKeys\AuthorizedPublicKeysView.resx">
+      <DependentUpon>AuthorizedPublicKeysView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Download\DownloadFileView.resx">
       <DependentUpon>DownloadFileView.cs</DependentUpon>
@@ -331,8 +331,8 @@
     <EmbeddedResource Include="Views\SshTerminal\TerminalPaneBase.resx">
       <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\TunnelsViewer\TunnelsWindow.resx">
-      <DependentUpon>TunnelsWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\TunnelsViewer\TunnelsView.resx">
+      <DependentUpon>TunnelsView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

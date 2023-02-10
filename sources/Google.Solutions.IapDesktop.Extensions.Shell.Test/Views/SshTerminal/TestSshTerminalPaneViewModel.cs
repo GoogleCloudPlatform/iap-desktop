@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .ConfigureAwait(true);
         }
 
-        private async Task<SshTerminalPaneViewModel> CreateViewModelAsync(
+        private async Task<SshTerminalViewModel> CreateViewModelAsync(
             InstanceLocator instance,
             ICredential credential,
             SshKeyType keyType,
@@ -152,19 +152,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     It.IsAny<ulong>()))
                 .Returns(progressOperation.Object);
 
-            return new SshTerminalPaneViewModel(
+            return new SshTerminalViewModel(
                 this.eventService.Object,
                 new SynchronousJobService(),
                 this.confirmationDialog.Object,
                 progressDialog.Object,
                 this.downloadFileDialog.Object,
                 this.exceptionDialog.Object,
-                this.quarantineAdapter.Object,
-                instance,
-                new IPEndPoint(address, 22),
-                authorizedKey,
-                language,
-                TimeSpan.FromSeconds(10));
+                this.quarantineAdapter.Object)
+            {
+                Instance = instance,
+                Endpoint = new IPEndPoint(address, 22),
+                AuthorizedKey = authorizedKey,
+                Language = language,
+                ConnectionTimeout = TimeSpan.FromSeconds(10)
+            };
         }
 
         //---------------------------------------------------------------------
@@ -301,7 +303,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     It.IsAny<SessionStartedEvent>()), Times.Once());
 
                 Assert.AreEqual(
-                    TerminalPaneViewModelBase.Status.Connected,
+                    TerminalViewModelBase.Status.Connected,
                     viewModel.ConnectionStatus);
             }
 
@@ -329,21 +331,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 var address = await PublicAddressFromLocator(instance)
                     .ConfigureAwait(true);
 
-                var viewModel = new SshTerminalPaneViewModel(
+                var viewModel = new SshTerminalViewModel(
                     eventService.Object,
                     new SynchronousJobService(),
                     new Mock<IConfirmationDialog>().Object,
                     new Mock<IOperationProgressDialog>().Object,
                     new Mock<IDownloadFileDialog>().Object,
                     new Mock<IExceptionDialog>().Object,
-                    new Mock<IQuarantineAdapter>().Object,
-                    instance,
-                    new IPEndPoint(address, 22),
-                    nonAuthorizedKey,
-                    null,
-                    TimeSpan.FromSeconds(10))
+                    new Mock<IQuarantineAdapter>().Object)
                 {
-                    View = window
+                    View = window,
+                    Instance = instance,
+                    Endpoint = new IPEndPoint(address, 22),
+                    AuthorizedKey = nonAuthorizedKey,
+                    Language = null,
+                    ConnectionTimeout = TimeSpan.FromSeconds(10)
                 };
 
                 ConnectionErrorEventArgs argsReceived = null;
@@ -361,7 +363,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     It.IsAny<SessionAbortedEvent>()), Times.Once());
 
                 Assert.AreEqual(
-                    TerminalPaneViewModelBase.Status.ConnectionFailed,
+                    TerminalViewModelBase.Status.ConnectionFailed,
                     viewModel.ConnectionStatus);
             }
 
@@ -385,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 existingFile
             };
 
-            var droppableFiles = SshTerminalPaneViewModel.GetDroppableFiles(dropData);
+            var droppableFiles = SshTerminalViewModel.GetDroppableFiles(dropData);
             Assert.AreEqual(1, droppableFiles.Count());
             Assert.AreEqual(existingFile, droppableFiles.First().FullName);
         }

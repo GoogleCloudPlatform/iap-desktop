@@ -144,13 +144,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 new Mock<IEventService>().Object);
 
             return new ProjectExplorerViewModel(
-                new Control(),
                 this.projectExplorerSettings,
                 new SynchrounousJobService(),
                 this.eventServiceMock.Object,
                 this.sessionBrokerMock.Object,
                 modelService,
-                this.cloudConsoleServiceMock.Object);
+                this.cloudConsoleServiceMock.Object)
+            {
+                View = new Control()
+            };
         }
 
         private class SynchrounousJobService : IJobService

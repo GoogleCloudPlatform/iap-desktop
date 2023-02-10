@@ -19,12 +19,16 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -84,14 +88,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        public bool IsClosed { get; private set; } = false;
-
-        public bool ShowCloseMenuItemInContextMenu
-        {
-            get => this.closeMenuItem.Visible;
-            set => this.closeMenuItem.Visible = false;
-        }
-
         public ToolWindow()
         {
             this.InitializeComponent();
@@ -103,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             DockState defaultDockState) : this()
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.panel = serviceProvider.GetService<IMainForm>().MainPanel;
+            this.panel = serviceProvider.GetService<IMainWindow>().MainPanel;
             var stateRepository = serviceProvider.GetService<ToolWindowStateRepository>();
 
             // Read persisted window state.
@@ -156,6 +152,14 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // Show/Hide.
         //---------------------------------------------------------------------
 
+        public bool IsClosed { get; private set; } = false;
+
+        public bool ShowCloseMenuItemInContextMenu
+        {
+            get => this.closeMenuItem.Visible;
+            set => this.closeMenuItem.Visible = false;
+        }
+
         public void CloseSafely()
         {
             if (this.HideOnClose)
@@ -168,49 +172,54 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        public virtual void ShowWindow(bool activate)
+        /// <summary>
+        /// Show or reactivate window.
+        /// </summary>
+        protected virtual void ShowWindow()
         {
             Debug.Assert(this.panel != null);
+            Debug.Assert(this.boundWindow != null, "Window has been bound");
 
             this.TabText = this.Text;
 
+            //
             // NB. IsHidden indicates that the window is not shown at all,
             // not even as auto-hide.
+            //
             if (this.IsHidden)
             {
                 // Show in default position.
                 Show(this.panel, this.restoreState);
             }
 
-            if (activate)
+            //
+            // If the window is in auto-hide mode, simply activating
+            // is not enough.
+            //
+            switch (this.VisibleState)
             {
-                // If the window is in auto-hide mode, simply activating
-                // is not enough.
-                switch (this.VisibleState)
-                {
-                    case DockState.DockTopAutoHide:
-                    case DockState.DockBottomAutoHide:
-                    case DockState.DockLeftAutoHide:
-                    case DockState.DockRightAutoHide:
-                        this.panel.ActiveAutoHideContent = this;
-                        break;
-                }
-
-                // Move focus to window.
-                Activate();
-
-                //
-                // If an auto-hide window loses focus and closes, we fail to 
-                // catch that event. 
-                // To force an update, disregard the cached state and re-raise
-                // the UserVisibilityChanged event.
-                //
-                OnUserVisibilityChanged(true);
-                this.wasUserVisible = true;
+                case DockState.DockTopAutoHide:
+                case DockState.DockBottomAutoHide:
+                case DockState.DockLeftAutoHide:
+                case DockState.DockRightAutoHide:
+                    this.panel.ActiveAutoHideContent = this;
+                    break;
             }
-        }
 
-        public virtual void ShowWindow() => ShowWindow(true);
+            //
+            // Move focus to window.
+            //
+            Activate();
+
+            //
+            // If an auto-hide window loses focus and closes, we fail to 
+            // catch that event. 
+            // To force an update, disregard the cached state and re-raise
+            // the UserVisibilityChanged event.
+            //
+            OnUserVisibilityChanged(true);
+            this.wasUserVisible = true;
+        }
 
         public bool IsAutoHide
         {
@@ -390,6 +399,115 @@ namespace Google.Solutions.IapDesktop.Application.Views
         protected virtual void OnUserVisibilityChanged(bool visible)
         {
             // Can be overriden in derived class.
+        }
+
+        //---------------------------------------------------------------------
+        // Factory and MVVM binding.
+        //---------------------------------------------------------------------
+
+        private object boundWindow;
+
+        /// <summary>
+        /// Gets or creates a MVVM-enabled tool window and prepares it for viewing. 
+        /// Callers have the opportunity to customize the view model before calling
+        /// .Show() on the returned object.
+        /// </summary>
+        public static BoundToolWindow<TToolWindowView, TToolWindowViewModel> GetWindow<TToolWindowView, TToolWindowViewModel>(
+            IServiceProvider serviceProvider)
+            where TToolWindowView : ToolWindow, IView<TToolWindowViewModel>
+            where TToolWindowViewModel : ViewModelBase
+        {
+            //
+            // NB. ToolWindows can be singletons, and we must not bind them
+            // multiple times.
+            //
+            var view = serviceProvider.GetService<TToolWindowView>();
+            if (view.boundWindow != null)
+            {
+                //
+                // This is a singleton and it has been bound before.
+                //
+                return (BoundToolWindow<TToolWindowView, TToolWindowViewModel>)view.boundWindow;
+            }
+            else
+            {
+                //
+                // This is new object (transient or singleton), and it
+                // has not been bound yet.
+                //
+                // Create an intermediate object that lets the caller initialize the
+                // view model before calling Show().
+                //
+                var boundWindow = new BoundToolWindow<TToolWindowView, TToolWindowViewModel>(
+                    view,
+                    serviceProvider.GetService<TToolWindowViewModel>(),
+                    serviceProvider.GetService<IThemeService>().ToolWindowTheme);
+                view.boundWindow = boundWindow;
+
+                if (view.HideOnClose)
+                {
+                    Debug.Assert(
+                        ((ServiceRegistry)serviceProvider).Registrations[typeof(TToolWindowView)] == ServiceLifetime.Singleton,
+                        "HideOnClose windows should be singletons");
+                }
+
+                return boundWindow;
+            }
+        }
+
+        public class BoundToolWindow<TToolWindowView, TToolWindowViewModel>
+            where TToolWindowView : ToolWindow, IView<TToolWindowViewModel>
+            where TToolWindowViewModel : ViewModelBase
+        {
+            private bool bound = false;
+
+            private readonly IControlTheme theme;
+            private readonly TToolWindowView view;
+
+            public BoundToolWindow(
+                TToolWindowView view,
+                TToolWindowViewModel viewModel,
+                IControlTheme theme)
+            {
+                this.view = view.ThrowIfNull(nameof(view));
+                this.ViewModel = viewModel.ThrowIfNull(nameof(viewModel));
+                this.theme = theme;
+            }
+
+            public TToolWindowViewModel ViewModel { get; }
+
+            /// <summary>
+            /// Explicitly perform a bind to access the view. Prefer
+            /// to call Show() instead.
+            /// </summary>
+            public TToolWindowView Bind()
+            {
+                if (!this.bound)
+                {
+                    //
+                    // The caller had sufficient opportunity to initialize
+                    // the view mode, so we can now bind it to the view.
+                    //
+                    Window<TToolWindowView, TToolWindowViewModel>.Bind(
+                        this.view,
+                        this.ViewModel,
+                        this.theme);
+
+                    this.bound = true;
+                }
+
+                return this.view;
+            }
+
+            /// <summary>
+            /// Bind and show the tool window.
+            /// </summary>
+            public void Show()
+            {
+                Bind();
+
+                this.view.ShowWindow();
+            }
         }
 
         //---------------------------------------------------------------------

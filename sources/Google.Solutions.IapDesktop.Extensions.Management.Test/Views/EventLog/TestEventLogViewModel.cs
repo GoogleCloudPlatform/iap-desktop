@@ -176,9 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
             this.auditLogAdapter = new AuditLogAdapterMock();
             registry.AddSingleton<IAuditLogAdapter>(this.auditLogAdapter);
 
-            this.viewModel = new EventLogViewModel(
-                null,
-                registry);
+            this.viewModel = new EventLogViewModel(registry);
         }
 
         [Test]

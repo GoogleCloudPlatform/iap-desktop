@@ -25,27 +25,27 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 {
     [Service(ServiceLifetime.Singleton)]
-    internal class SerialOutputWindowCom1 : SerialOutputWindow
+    internal class SerialOutputViewCom1 : SerialOutputViewBase
     {
-        public SerialOutputWindowCom1(IServiceProvider serviceProvider)
+        public SerialOutputViewCom1(IServiceProvider serviceProvider)
             : base(serviceProvider, 1)
         {
         }
     }
 
     [Service(ServiceLifetime.Singleton)]
-    internal class SerialOutputWindowCom3 : SerialOutputWindow
+    internal class SerialOutputViewCom3 : SerialOutputViewBase
     {
-        public SerialOutputWindowCom3(IServiceProvider serviceProvider)
+        public SerialOutputViewCom3(IServiceProvider serviceProvider)
             : base(serviceProvider, 3)
         {
         }
     }
 
     [Service(ServiceLifetime.Singleton)]
-    internal class SerialOutputWindowCom4 : SerialOutputWindow
+    internal class SerialOutputViewCom4 : SerialOutputViewBase
     {
-        public SerialOutputWindowCom4(IServiceProvider serviceProvider)
+        public SerialOutputViewCom4(IServiceProvider serviceProvider)
             : base(serviceProvider, 4)
         {
         }

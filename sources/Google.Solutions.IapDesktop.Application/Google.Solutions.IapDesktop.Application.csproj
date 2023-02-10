@@ -181,37 +181,42 @@
     <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
     <Compile Include="Views\Authorization\OAuthScopeNotGrantedViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugFullScreenPane.cs">
+    <Compile Include="Views\Diagnostics\DebugDockingViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugFullScreenView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugFullScreenPane.Designer.cs">
-      <DependentUpon>DebugFullScreenPane.cs</DependentUpon>
+    <Compile Include="Views\Diagnostics\DebugFullScreenView.Designer.cs">
+      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugFocusWindow.cs">
+    <Compile Include="Views\Diagnostics\DebugFullScreenViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugJobServiceViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugServiceRegistryView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugFocusWindow.Designer.cs">
-      <DependentUpon>DebugFocusWindow.cs</DependentUpon>
+    <Compile Include="Views\Diagnostics\DebugServiceRegistryView.Designer.cs">
+      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugThemeWindow.cs">
+    <Compile Include="Views\Diagnostics\DebugServiceRegistryViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugThemeView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugThemeWindow.Designer.cs">
-      <DependentUpon>DebugThemeWindow.cs</DependentUpon>
+    <Compile Include="Views\Diagnostics\DebugThemeView.Designer.cs">
+      <DependentUpon>DebugThemeView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Diagnostics\DebugThemeViewModel.cs" />
     <Compile Include="Views\Dialog\ConfirmationDialog.cs" />
-    <Compile Include="Views\Diagnostics\DebugDockingWindow.cs">
+    <Compile Include="Views\Diagnostics\DebugDockingView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugDockingWindow.Designer.cs">
-      <DependentUpon>DebugDockingWindow.cs</DependentUpon>
+    <Compile Include="Views\Diagnostics\DebugDockingView.Designer.cs">
+      <DependentUpon>DebugDockingView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
-    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
+    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.Designer.cs">
-      <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
+    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingView.Designer.cs">
+      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\IIapUrlHandler.cs" />
     <Compile Include="Views\Dialog\CredentialDialog.cs" />
@@ -276,11 +281,11 @@
     <Compile Include="Views\Properties\PropertiesDialog.Designer.cs">
       <DependentUpon>PropertiesDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Properties\PropertiesInspectorWindow.cs">
+    <Compile Include="Views\Properties\PropertiesInspectorViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Properties\PropertiesInspectorWindow.Designer.cs">
-      <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
+    <Compile Include="Views\Properties\PropertiesInspectorViewBase.Designer.cs">
+      <DependentUpon>PropertiesInspectorViewBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Properties\SettingsCollectionTypeDescriptor.cs" />
     <Compile Include="Views\Dialog\TaskDialog.cs" />
@@ -294,21 +299,21 @@
     <Compile Include="Views\About\AboutView.Designer.cs">
       <DependentUpon>AboutView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugJobServiceWindow.cs">
+    <Compile Include="Views\Diagnostics\DebugJobServiceView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Diagnostics\DebugJobServiceWindow.Designer.cs">
-      <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
+    <Compile Include="Views\Diagnostics\DebugJobServiceView.Designer.cs">
+      <DependentUpon>DebugJobServiceView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Dialog\ExceptionDialog.cs" />
-    <Compile Include="Views\IMainForm.cs" />
-    <Compile Include="Views\ProjectExplorer\IProjectExplorer.cs" />
+    <Compile Include="Views\IMainWindow.cs" />
+    <Compile Include="Views\ProjectExplorer\ProjectExplorer.cs" />
     <Compile Include="Services\ProjectModel\IProjectModelNode.cs" />
-    <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.cs">
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
-      <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerView.Designer.cs">
+      <DependentUpon>ProjectExplorerView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ToolWindow.cs">
       <SubType>Form</SubType>
@@ -367,23 +372,23 @@
     <EmbeddedResource Include="Views\Authorization\OAuthScopeNotGrantedView.resx">
       <DependentUpon>OAuthScopeNotGrantedView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugDockingWindow.resx">
-      <DependentUpon>DebugDockingWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Diagnostics\DebugDockingView.resx">
+      <DependentUpon>DebugDockingView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugFocusWindow.resx">
-      <DependentUpon>DebugFocusWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Diagnostics\DebugFullScreenView.resx">
+      <DependentUpon>DebugFullScreenView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugFullScreenPane.resx">
-      <DependentUpon>DebugFullScreenPane.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Diagnostics\DebugProjectExplorerTrackingView.resx">
+      <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.resx">
-      <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Diagnostics\DebugJobServiceView.resx">
+      <DependentUpon>DebugJobServiceView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugJobServiceWindow.resx">
-      <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Diagnostics\DebugServiceRegistryView.resx">
+      <DependentUpon>DebugServiceRegistryView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Diagnostics\DebugThemeWindow.resx">
-      <DependentUpon>DebugThemeWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Diagnostics\DebugThemeView.resx">
+      <DependentUpon>DebugThemeView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FlyoutWindow.resx">
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
@@ -403,11 +408,11 @@
     <EmbeddedResource Include="Views\Properties\PropertiesDialog.resx">
       <DependentUpon>PropertiesDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Properties\PropertiesInspectorWindow.resx">
-      <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Properties\PropertiesInspectorViewBase.resx">
+      <DependentUpon>PropertiesInspectorViewBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerWindow.resx">
-      <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerView.resx">
+      <DependentUpon>ProjectExplorerView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ToolWindow.resx">
       <DependentUpon>ToolWindow.cs</DependentUpon>

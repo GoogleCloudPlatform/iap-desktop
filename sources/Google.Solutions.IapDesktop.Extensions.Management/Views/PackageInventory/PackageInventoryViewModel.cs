@@ -40,12 +40,12 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory
 {
+    [Service]
     public class PackageInventoryViewModel
         : ModelCachingViewModelBase<IProjectModelNode, PackageInventoryModel>
     {
         private const int ModelCacheCapacity = 5;
 
-        private readonly PackageInventoryType inventoryType;
         private readonly IJobService jobService;
         private readonly Service<IInventoryService> inventoryService;
 
@@ -56,18 +56,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         private bool isInformationBarVisible = true;
 
         private string WindowTitlePrefix =>
-                this.inventoryType == PackageInventoryType.AvailablePackages
+                this.InventoryType == PackageInventoryType.AvailablePackages
                     ? "Available updates"
                     : "Installed packages";
 
         public string InformationText => "OS inventory data not available";
+        internal PackageInventoryType InventoryType { get; set; }
 
-        public PackageInventoryViewModel(
-            IServiceProvider serviceProvider,
-            PackageInventoryType inventoryType)
+        public PackageInventoryViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
-            this.inventoryType = inventoryType;
             this.jobService = serviceProvider.GetService<IJobService>();
             this.inventoryService = serviceProvider.GetService<Service<IInventoryService>>();
         }
@@ -228,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                         {
                             return await PackageInventoryModel.LoadAsync(
                                     this.inventoryService.GetInstance(),
-                                    this.inventoryType,
+                                    this.InventoryType,
                                     node,
                                     jobToken)
                                 .ConfigureAwait(false);

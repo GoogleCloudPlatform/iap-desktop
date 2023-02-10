@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 Debug.Assert(session != null);
             }
 
-            if (session is SessionPaneBase sessionPane &&
+            if (session is SessionViewBase sessionPane &&
                 sessionPane.ContextCommands == null)
             {
                 //
@@ -232,9 +232,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 
         private void OpenConnectionSettings()
         {
-            this.serviceProvider
-                .GetService<IConnectionSettingsWindow>()
-                .ShowWindow();
+            ToolWindow
+                .GetWindow<ConnectionSettingsView, ConnectionSettingsViewModel>(serviceProvider)
+                .Show();
         }
 
         //---------------------------------------------------------------------
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         {
             this.serviceProvider = serviceProvider;
 
-            var mainForm = serviceProvider.GetService<IMainForm>();
+            var mainForm = serviceProvider.GetService<IMainWindow>();
 
             //
             // Let this extension handle all URL activations.
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             mainForm.SetUrlHandler(new UrlHandler(serviceProvider));
 
-            this.window = mainForm.Window;
+            this.window = mainForm;
 
             //
             // Connect.
@@ -379,7 +379,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 new Command<IProjectModelNode>(
                     "Authorized SSH &keys",
                     node => AuthorizedPublicKeysViewModel.GetCommandState(node),
-                    _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
+                    _ => ToolWindow
+                        .GetWindow<AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.AuthorizedKey_16
                 },
@@ -389,20 +391,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             // View menu.
             //
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "Active IAP &tunnels",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => serviceProvider.GetService<ITunnelsWindow>().ShowWindow())
+                    pseudoContext => ToolWindow
+                        .GetWindow<TunnelsView, TunnelsViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.Tunnel_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.T
                 },
                 1);
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "Authorized SSH &keys",
                     _ => CommandState.Enabled,
-                    _ => serviceProvider.GetService<AuthorizedPublicKeysWindow>().ShowWindow())
+                    _ => ToolWindow
+                        .GetWindow<AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.AuthorizedKey_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.K

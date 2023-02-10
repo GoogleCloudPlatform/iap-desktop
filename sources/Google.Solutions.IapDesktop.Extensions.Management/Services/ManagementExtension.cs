@@ -60,11 +60,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             string action,
             InstanceControlCommand command)
         {
-            var mainForm = this.serviceProvider.GetService<IMainForm>();
+            var mainWindow = this.serviceProvider.GetService<IMainWindow>();
 
             if (this.serviceProvider.GetService<IConfirmationDialog>()
                 .Confirm(
-                    mainForm.Window,
+                    mainWindow,
                     "Are you you sure you want to " +
                         $"{command.ToString().ToLower()} {instance.Name}?",
                     $"{command} {instance.Name}?",
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
         private async Task JoinDomainAsync(
             IProjectModelInstanceNode instance)
         {
-            var mainForm = this.serviceProvider.GetService<IMainForm>();
+            var mainWindow = this.serviceProvider.GetService<IMainWindow>();
 
             string domainName;
             string newComputerName;
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             {
                 dialog.ViewModel.ComputerName.Value = instance.DisplayName;
 
-                if (dialog.ShowDialog(mainForm.Window) != DialogResult.OK)
+                if (dialog.ShowDialog(mainWindow) != DialogResult.OK)
                 {
                     return;
                 }
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             //
             if (this.serviceProvider.GetService<ICredentialDialog>()
                 .PromptForWindowsCredentials(
-                    mainForm.Window,
+                    mainWindow,
                     $"Join {instance.DisplayName} to domain",
                     $"Enter Active Directory credentials for {domainName}.\n\n" +
                         "The credentials will be used to join the computer to the " +
@@ -186,7 +186,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "Properties",
                     InstancePropertiesInspectorViewModel.GetToolbarCommandState,
-                    context => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.ComputerDetails_16
                 },
@@ -310,7 +312,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "Show serial port &output (COM1)",
                     SerialOutputViewModel.GetCommandState,
-                    context => this.serviceProvider.GetService<SerialOutputWindowCom1>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<SerialOutputViewCom1, SerialOutputViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.Log_16
                 },
@@ -319,7 +323,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "Show &event log",
                     EventLogViewModel.GetCommandState,
-                    context => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<EventLogView, EventLogViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.EventLog_16
                 },
@@ -335,7 +341,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "Show &installed packages",
                     PackageInventoryViewModel.GetCommandState,
-                    context => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<InstalledPackageInventoryView, PackageInventoryViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.PackageInspect_16
                 });
@@ -343,7 +351,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "Show &available updates",
                     PackageInventoryViewModel.GetCommandState,
-                    context => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<AvailablePackageInventoryView, PackageInventoryViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.PackageUpdate_16
                 });
@@ -352,7 +362,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 new Command<IProjectModelNode>(
                     "P&roperties",
                     InstancePropertiesInspectorViewModel.GetContextMenuCommandState,
-                    context => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
+                    context => ToolWindow
+                        .GetWindow<InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.ComputerDetails_16,
                     ShortcutKeys = Keys.Alt | Keys.Enter
@@ -362,19 +374,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             //
             // Add commands to main menu.
             //
-            var mainForm = serviceProvider.GetService<IMainForm>();
+            var mainForm = serviceProvider.GetService<IMainWindow>();
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "&Event log",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
+                    pseudoContext => ToolWindow
+                        .GetWindow<EventLogView, EventLogViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.EventLog_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.E
                 });
 
             var serialPortMenu = mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "Serial port &output",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => { })
@@ -382,55 +396,67 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     Image = Resources.Log_16,
                 });
             serialPortMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "COM&1 (log)",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom1>().ShowWindow())
+                    pseudoContext => ToolWindow
+                        .GetWindow<SerialOutputViewCom1, SerialOutputViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.Log_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.O
                 });
             serialPortMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "COM&3 (setup log)",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom3>().ShowWindow())
+                    pseudoContext => ToolWindow
+                        .GetWindow<SerialOutputViewCom3, SerialOutputViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.Log_16,
                 });
             serialPortMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "COM&4 (agent)",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom4>().ShowWindow())
+                    pseudoContext => ToolWindow
+                        .GetWindow<SerialOutputViewCom4, SerialOutputViewModel>(this.serviceProvider)
+                        .Show())
                 {
                     Image = Resources.Log_16,
                 });
 
 
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "&Instance properties",
                     _ => CommandState.Enabled,
-                    _ => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
+                    _ => ToolWindow
+                        .GetWindow<InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.ComputerDetails_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.I
                 });
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "I&nstalled packages",
                     _ => CommandState.Enabled,
-                    _ => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
+                    _ => ToolWindow
+                        .GetWindow<InstalledPackageInventoryView, PackageInventoryViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.PackageInspect_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
                 });
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainForm>(
+                new Command<IMainWindow>(
                     "&Available updates",
                     _ => CommandState.Enabled,
-                    _ => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
+                    _ => ToolWindow
+                        .GetWindow<AvailablePackageInventoryView, PackageInventoryViewModel>(serviceProvider)
+                        .Show())
                 {
                     Image = Resources.PackageUpdate_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.U

@@ -35,10 +35,10 @@ namespace Google.Solutions.Mvvm.Binding
     public class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
-        /// Sets the view, enabling the view model to query the most
-        /// basic information such as the window handle.
+        /// View that the view model has been bound to. Null if
+        /// binding has not occured yet.
         /// </summary>
-        public IWin32Window View { get; set; }
+        public IWin32Window View { get; set; } // TODO: make private set
 
         //---------------------------------------------------------------------
         // INotifyPropertyChanged and helpers.
@@ -83,6 +83,29 @@ namespace Google.Solutions.Mvvm.Binding
         }
 
         public bool HasPropertyChangeListeners => this.PropertyChanged != null;
+
+        //---------------------------------------------------------------------
+        // Validation.
+        //---------------------------------------------------------------------
+
+        internal void Bind(IWin32Window view)
+        {
+            this.View = view;
+            OnValidate();
+        }
+
+        internal void Unbind()
+        {
+            Debug.Assert(this.View != null);
+            this.View = null;
+        }
+
+        /// <summary>
+        /// Check if the view model has been sufficiently initialized to be
+        /// bound to a view.
+        /// </summary>
+        protected virtual void OnValidate()
+        { }
 
         //---------------------------------------------------------------------
         // IDispose and helpers.

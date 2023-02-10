@@ -283,6 +283,28 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.AreSame(parent, grandChild.RootRegistry);
         }
 
+        [Test]
+        public void WhenRegistryHasParent_ThenRegistrationsReturnsAllServices()
+        {
+            var parent = new ServiceRegistry();
+            parent.AddSingleton<ServiceWithDefaultConstructor>();
+
+            var child = new ServiceRegistry(parent);
+            child.AddTransient<ServiceWithServiceProviderConstructor>();
+
+            Assert.AreEqual(1, parent.Registrations.Count());
+            Assert.AreEqual(2, child.Registrations.Count());
+
+            var registrations = child.Registrations;
+
+            Assert.AreEqual(
+                ServiceLifetime.Singleton, 
+                registrations[typeof(ServiceWithDefaultConstructor)]);
+            Assert.AreEqual(
+                ServiceLifetime.Transient,
+                registrations[typeof(ServiceWithServiceProviderConstructor)]);
+        }
+
         //---------------------------------------------------------------------
         // Categories.
         //---------------------------------------------------------------------

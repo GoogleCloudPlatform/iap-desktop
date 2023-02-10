@@ -36,6 +36,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
         private class SampleViewModel : ViewModelBase
         {
             public bool IsDisposed => this.Disposed;
+            public uint DisposeCount = 0;
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+
+                this.DisposeCount++;
+            }
         }
 
         private class SampleForm : Form, IView<SampleViewModel>
@@ -227,6 +235,21 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             Assert.IsTrue(form.IsDisposed);
             Assert.IsTrue(viewModel.IsDisposed);
+        }
+
+        [Test]
+        public void WhenFormDisposedTwice_ThenViewModelIsUnboundOnce()
+        {
+            var form = new SampleForm();
+            var viewModel = new SampleViewModel();
+            var serviceProvider = CreateServiceProvider(form, viewModel);
+
+            var window = serviceProvider.GetWindow<SampleForm, SampleViewModel>();
+            window.Form.Dispose();
+            window.Form.Dispose();
+
+            Assert.AreEqual(1, viewModel.DisposeCount);
+            Assert.IsNull(viewModel.View);
         }
     }
 }

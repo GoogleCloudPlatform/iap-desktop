@@ -1,0 +1,90 @@
+﻿//
+// Copyright 2022 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.Mvvm.Commands;
+using System;
+
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
+{
+    /// <summary>
+    /// Base class for sessions.
+    /// </summary>
+    public class SessionViewBase : DocumentWindow
+    {
+        private ICommandContainer<ISession> contextCommands;
+
+        protected SessionViewBase()
+        {
+            // Constructor is for designer only.
+        }
+
+        protected SessionViewBase(IServiceProvider serviceProvider)
+            : base(serviceProvider)
+        {
+        }
+
+        //---------------------------------------------------------------------
+        // Context menu.
+        //---------------------------------------------------------------------
+
+        public ICommandContainer<ISession> ContextCommands
+        {
+            get => this.contextCommands;
+            set
+            {
+                if (this.contextCommands != null)
+                {
+                    //
+                    // Don't allow binding multiple command containers to
+                    // the smae menu (or binding the same container multiple
+                    // times) as that leads to duplication.
+                    //
+                    throw new InvalidOperationException(
+                        "Context commands have already been set");
+                }
+
+                if (this.TabPageContextMenuStrip == null)
+                {
+                    //
+                    // There's a rare chance that the context menu is
+                    // null because the window is being closed. In that
+                    // case, do nothing.
+                    //
+                }
+                else
+                {
+                    this.contextCommands = value;
+                    this.contextCommands.BindTo(
+                        this.TabPageContextMenuStrip,
+                        this.Container);
+                }
+
+                //
+                // Hide the Close menu item since it's most
+                // likely redundant now.
+                //
+                this.ShowCloseMenuItemInContextMenu = false;
+            }
+        }
+    }
+}

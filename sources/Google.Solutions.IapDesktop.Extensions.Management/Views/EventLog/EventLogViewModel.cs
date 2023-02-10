@@ -38,11 +38,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 {
-    internal class EventLogViewModel
+    [Service]
+    public class EventLogViewModel
         : ModelCachingViewModelBase<IProjectModelNode, EventLogModel>
     {
         private const int ModelCacheCapacity = 5;
@@ -74,13 +74,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 
         private Timeframe SelectedTimeframe => AvailableTimeframes[this.selectedTimeframeIndex];
 
-        public EventLogViewModel(
-            IWin32Window view,
-            IServiceProvider serviceProvider)
+        public EventLogViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
-            this.View = view;
-
             this.cloudConsoleAdapter = serviceProvider.GetService<ICloudConsoleAdapter>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.auditLogAdapter = serviceProvider.GetService<Service<IAuditLogAdapter>>();

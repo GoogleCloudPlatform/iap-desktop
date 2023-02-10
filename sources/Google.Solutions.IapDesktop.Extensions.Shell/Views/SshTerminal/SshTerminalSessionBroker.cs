@@ -55,11 +55,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
     public class SshTerminalSessionBroker : ISshTerminalSessionBroker
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly IMainForm mainForm;
+        private readonly IMainWindow mainForm;
 
         public SshTerminalSessionBroker(IServiceProvider serviceProvider)
         {
-            this.mainForm = serviceProvider.GetService<IMainForm>();
+            this.mainForm = serviceProvider.GetService<IMainWindow>();
             this.serviceProvider = serviceProvider;
 
             // NB. The ServiceCategory attribute causes this class to be 
@@ -72,14 +72,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         public ISshTerminalSession ActiveSshTerminalSession
         {
-            get => SshTerminalPane.TryGetActivePane(this.mainForm);
+            get => SshTerminalView.TryGetActivePane(this.mainForm);
         }
 
         public ISession ActiveSession => this.ActiveSshTerminalSession;
 
         public bool IsConnected(InstanceLocator vmInstance)
         {
-            return SshTerminalPane.TryGetExistingPane(
+            return SshTerminalView.TryGetExistingPane(
                 this.mainForm,
                 vmInstance) != null;
         }
@@ -87,13 +87,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public bool TryActivate(InstanceLocator vmInstance)
         {
             // Check if there is an existing session/pane.
-            var pane = SshTerminalPane.TryGetExistingPane(
+            var pane = SshTerminalView.TryGetExistingPane(
                 this.mainForm,
                 vmInstance);
             if (pane != null)
             {
                 // Pane found, activate.
-                pane.ShowWindow();
+                pane.SwitchToDocument();
                 return true;
             }
             else
@@ -109,14 +109,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             CultureInfo language,
             TimeSpan connectionTimeout)
         {
-            var pane = new SshTerminalPane(
-                this.serviceProvider,
-                vmInstance,
-                endpoint,
-                authorizedKey,
-                language,
-                connectionTimeout);
-            pane.ShowWindow(true);
+            var window = ToolWindow.GetWindow<SshTerminalView, SshTerminalViewModel>(this.serviceProvider);
+            window.ViewModel.Instance = vmInstance;
+            window.ViewModel.Endpoint = endpoint;
+            window.ViewModel.AuthorizedKey = authorizedKey;
+            window.ViewModel.Language = language;
+            window.ViewModel.ConnectionTimeout = connectionTimeout;
+
+            var pane = window.Bind();
+            window.Show();
 
             await pane.ConnectAsync()
                 .ConfigureAwait(false);

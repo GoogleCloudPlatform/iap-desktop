@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         // Context menu.
         //---------------------------------------------------------------------
 
-        private class SessionPane : SessionPaneBase
+        private class SessionPane : SessionViewBase
         {
             public SessionPane()
             {

@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly IProjectModelService projectModelService;
 
         public SshConnectionService(
-            IMainForm window,
+            IMainWindow window,
             IAuthorizationSource authorizationSource,
             IProjectModelService projectModelService,
             ISshTerminalSessionBroker sessionBroker,
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             SshSettingsRepository sshSettingsRepository,
             IJobService jobService)
         {
-            this.window = window.ThrowIfNull(nameof(window)).Window;
+            this.window = window.ThrowIfNull(nameof(window));
             this.authorizationSource = authorizationSource.ThrowIfNull(nameof(authorizationSource));
             this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
             this.sessionBroker = sessionBroker.ThrowIfNull(nameof(sessionBroker));

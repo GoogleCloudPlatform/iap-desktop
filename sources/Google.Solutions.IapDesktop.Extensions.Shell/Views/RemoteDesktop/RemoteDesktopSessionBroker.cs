@@ -62,12 +62,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
     public class RemoteDesktopSessionBroker : IRemoteDesktopSessionBroker
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly IMainForm mainForm;
+        private readonly IMainWindow mainForm;
 
         public RemoteDesktopSessionBroker(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-            this.mainForm = serviceProvider.GetService<IMainForm>();
+            this.mainForm = serviceProvider.GetService<IMainWindow>();
 
             // NB. The ServiceCategory attribute causes this class to be 
             // announced to the session connection broker.
@@ -75,14 +75,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
         public IRemoteDesktopSession ActiveRemoteDesktopSession
         {
-            get => RemoteDesktopPane.TryGetActivePane(this.mainForm);
+            get => RemoteDesktopView.TryGetActivePane(this.mainForm);
         }
 
         public ISession ActiveSession => this.ActiveRemoteDesktopSession;
 
         public bool IsConnected(InstanceLocator vmInstance)
         {
-            return RemoteDesktopPane.TryGetExistingPane(
+            return RemoteDesktopView.TryGetExistingPane(
                 this.mainForm,
                 vmInstance) != null;
         }
@@ -90,13 +90,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         public bool TryActivate(InstanceLocator vmInstance)
         {
             // Check if there is an existing session/pane.
-            var rdpPane = RemoteDesktopPane.TryGetExistingPane(
+            var rdpPane = RemoteDesktopView.TryGetExistingPane(
                 this.mainForm,
                 vmInstance);
             if (rdpPane != null)
             {
                 // Pane found, activate.
-                rdpPane.ShowWindow();
+                rdpPane.SwitchToDocument();
                 return true;
             }
             else
@@ -111,13 +111,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             ushort port,
             InstanceConnectionSettings settings)
         {
-            var rdpPane = new RemoteDesktopPane(
-                this.serviceProvider,
-                vmInstance);
-            rdpPane.ShowWindow();
-            rdpPane.Connect(server, port, settings);
+            var window = ToolWindow.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(this.serviceProvider);
+            window.ViewModel.Instance = vmInstance;
+            window.ViewModel.Server = server;
+            window.ViewModel.Port = port;
+            window.ViewModel.Settings = settings;
 
-            return rdpPane;
+            var pane = window.Bind();
+            window.Show();
+
+            pane.Connect();
+
+            return pane;
         }
     }
 }
