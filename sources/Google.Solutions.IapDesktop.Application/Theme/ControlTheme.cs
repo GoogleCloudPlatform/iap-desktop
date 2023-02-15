@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
@@ -34,17 +35,23 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// <summary>
     /// VS-style theme for any windows.
     /// </summary>
-    public class ControlTheme : IControlTheme
+    internal class ControlTheme : IControlTheme
     {
+        private readonly WindowsTheme windowsTheme;
+
         protected Color ControlLightLight { get; set; } = SystemColors.ControlLightLight;
         protected Color Accent { get; set; } = Color.FromArgb(98, 136, 242);
+
+        public ControlTheme(WindowsTheme windowsTheme)
+        {
+            this.windowsTheme = windowsTheme.ThrowIfNull(nameof(windowsTheme));
+        }
 
         protected virtual void ApplyTo(TreeView treeView)
         {
             //
             // Apply post-Vista Explorer theme.
             //
-            // TODO: AllowDarkMode - https://stackoverflow.com/questions/53501268/win10-dark-theme-how-to-use-in-winapi
             treeView.BackColor = this.ControlLightLight;
             treeView.HotTracking = true;
 
@@ -59,7 +66,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             // Apply post-Vista Explorer theme.
             //
-            // TODO: AllowDarkMode - https://stackoverflow.com/questions/53501268/win10-dark-theme-how-to-use-in-winapi
             listView.BackColor = this.ControlLightLight;
             listView.HotTracking = false;
 
@@ -83,8 +89,16 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             headerLabel.ForeColor = this.Accent;
         }
 
+        protected virtual void ApplyTo(Form form)
+        {
+            this.windowsTheme.ApplyToWindowBar(form);
+        }
+
         public virtual void ApplyTo(Control control)
         {
+            // TODO: Unnecessary? Doesn't seem to have any effect.
+            this.windowsTheme.ApplyToCommonControl(control);
+
             if (control is TreeView treeView)
             {
                 ApplyTo(treeView);
@@ -104,6 +118,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             else if (control is HeaderLabel headerLabel)
             {
                 ApplyTo(headerLabel);
+            }
+            else if (control is Form form)
+            {
+                ApplyTo(form);
             }
 
             foreach (var child in control.Controls.OfType<Control>())
@@ -129,11 +147,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// <summary>
     /// VS-style theme for tool windows.
     /// </summary>
-    public class ToolWindowTheme : ControlTheme
+    internal class ToolWindowTheme : ControlTheme
     {
-        protected readonly ThemeBase dockPanelTheme;
+        protected readonly VSTheme dockPanelTheme;
 
-        public ToolWindowTheme(ThemeBase dockPanelTheme)
+        public ToolWindowTheme(
+            WindowsTheme windowsTheme,
+            VSTheme dockPanelTheme)
+            : base(windowsTheme)
         {
             this.dockPanelTheme = dockPanelTheme;
 
@@ -149,10 +170,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         }
     }
 
-    public class MainWindowTheme : ToolWindowTheme
+    internal class MainWindowTheme : ToolWindowTheme
     {
-        public MainWindowTheme(ThemeBase dockPanelTheme) 
-            : base(dockPanelTheme)
+        public MainWindowTheme(
+            WindowsTheme windowsTheme, 
+            VSTheme dockPanelTheme) 
+            : base(windowsTheme, dockPanelTheme)
         {
         }
 

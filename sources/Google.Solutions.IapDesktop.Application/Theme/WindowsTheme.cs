@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// <summary>
         /// Classic, light theme.
         /// </summary>
-        internal class ClassicTheme : WindowsTheme
+        private class ClassicTheme : WindowsTheme
         {
         }
 
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// https://github.com/microsoft/WindowsAppSDK/issues/41 for details
         /// on undocumented method calls.
         /// </summary>
-        internal class DarkTheme : WindowsTheme
+        private class DarkTheme : WindowsTheme
         {
             public DarkTheme()
             {

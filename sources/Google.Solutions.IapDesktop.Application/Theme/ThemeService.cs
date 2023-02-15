@@ -63,14 +63,18 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         public ThemeService()
         {
             // TODO: Strip DLL to not ship 2015 themes
-            this.DockPanelTheme = VSTheme.FromDefault();
+
+            var vsTheme = VSTheme.FromDefault();
+            var windowsTheme = WindowsTheme.GetDarkTheme(); // TODO: Make configurable
+
+            this.DockPanelTheme = vsTheme;
             this.DockPanelTheme.Extender.FloatWindowFactory = new FloatWindowFactory();
             this.DockPanelTheme.Extender.DockPaneFactory =
                 new DockPaneFactory(this.DockPanelTheme.Extender.DockPaneFactory);
 
-            this.DialogTheme = new ControlTheme();
-            this.ToolWindowTheme = new ToolWindowTheme(this.DockPanelTheme);
-            this.MainWindowTheme = new MainWindowTheme(this.DockPanelTheme);
+            this.DialogTheme = new ControlTheme(windowsTheme);
+            this.ToolWindowTheme = new ToolWindowTheme(windowsTheme, vsTheme);
+            this.MainWindowTheme = new MainWindowTheme(windowsTheme, vsTheme);
         }
 
         //---------------------------------------------------------------------
