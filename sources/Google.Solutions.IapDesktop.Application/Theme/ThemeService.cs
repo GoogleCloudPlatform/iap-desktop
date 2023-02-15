@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     {
         public ThemeService()
         {
-            this.DockPanelTheme = new VS2015LightTheme();
+            this.DockPanelTheme = VSTheme.FromResource("Light.vstheme.gz");
             this.DockPanelTheme.Extender.FloatWindowFactory = new FloatWindowFactory();
             this.DockPanelTheme.Extender.DockPaneFactory =
                 new DockPaneFactory(this.DockPanelTheme.Extender.DockPaneFactory);

@@ -78,6 +78,10 @@ POWERSHELL = powershell -NoProfile -ExecutionPolicy Unrestricted
 
 default: kokoro-continuous-integration
 
+themes: Google.Solutions.IapDesktop.Application\Theme\Resources\Dark.vstheme \
+        Google.Solutions.IapDesktop.Application\Theme\Resources\Light.vstheme
+    !$(POWERSHELL) $(MAKEDIR)\scripts\gzip.ps1 -File $**
+
 Google.Solutions.IapDesktop\OAuthClient.cs:
 	@echo "========================================================"
 	@echo "=== Patching OAuth credentials                      ==="
@@ -85,7 +89,7 @@ Google.Solutions.IapDesktop\OAuthClient.cs:
 
 	copy "$(KOKORO_GFILE_DIR)\OAuthClient.cs" $@
 
-$(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): Google.Solutions.IapDesktop\OAuthClient.cs
+$(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): themes Google.Solutions.IapDesktop\OAuthClient.cs
 	@echo "========================================================"
 	@echo "=== Building solution                                ==="
 	@echo "========================================================"

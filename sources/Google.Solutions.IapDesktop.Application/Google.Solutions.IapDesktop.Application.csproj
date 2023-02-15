@@ -146,6 +146,9 @@
     <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
     <Compile Include="Services\Settings\ToolWindowStateRepository.cs" />
     <Compile Include="Theme\ControlTheme.cs" />
+    <Compile Include="Theme\VSTheme.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Theme\ThemeService.cs" />
     <Compile Include="Settings\ISetting.cs" />
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
@@ -352,6 +355,11 @@
     <None Include="packages.config" />
     <None Include="Services\Adapters\README.md" />
     <None Include="Services\Integration\README.md" />
+    <EmbeddedResource Include="Theme\Resources\Dark.vstheme.gz" />
+    <EmbeddedResource Include="Theme\Resources\Light.vstheme.gz" />
+    <None Include="Theme\Resources\Dark.vstheme" />
+    <None Include="Theme\Resources\Light.vstheme" />
+    <None Include="Theme\Resources\README.md" />
     <None Include="Views\README.md" />
   </ItemGroup>
   <ItemGroup>
