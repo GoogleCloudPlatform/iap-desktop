@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Theme
         [Test]
         public void FromDefault()
         {
-            var theme = VSTheme.FromDefault();
+            var theme = VSTheme.GetLightTheme();
 
             Assert.IsNotNull(theme);
             Assert.IsNotNull(theme.ColorPalette);

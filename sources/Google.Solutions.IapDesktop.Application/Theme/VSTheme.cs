@@ -34,9 +34,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
         }
 
-        public static VSTheme FromDefault()
+        public static VSTheme GetLightTheme()
         {
             return FromResource("Light.vstheme.gz");
+        }
+
+        public static VSTheme GetDarkTheme()
+        {
+            return FromResource("Dark.vstheme.gz");
         }
 
         /// <summary>

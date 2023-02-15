@@ -50,13 +50,16 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
         }
 
+        /// <summary>
+        /// Get theme based on what's configured in Windows.
+        /// </summary>
+        /// <returns></returns>
         public static WindowsTheme GetSystemTheme()
         {
             return IsDarkModeEnabled
                 ? (WindowsTheme)new DarkTheme()
                 : new ClassicTheme();
         }
-
 
         /// <summary>
         /// Return the default theme, which works on all OS versions.
@@ -76,6 +79,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         public virtual void ApplyTo(Control control)
         { }
+
+        public virtual bool IsDark => false;
 
         //---------------------------------------------------------------------
         // Implementations.
@@ -103,6 +108,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 var ret = NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
                 Debug.Assert(ret == 0);
             }
+
+            public override bool IsDark => true;
 
             public override void ApplyTo(Control control)
             {

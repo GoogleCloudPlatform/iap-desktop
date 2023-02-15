@@ -60,19 +60,50 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
     public class ThemeService : IThemeService
     {
+        private enum ThemeSelection // TODO: Move to settings
+        {
+            Default,
+            System,
+            Dark
+        }
+
         public ThemeService()
         {
             // TODO: Strip DLL to not ship 2015 themes
 
-            //
-            // Determine the Windows theme to use (light/dark).
-            //
-            var windowsTheme = WindowsTheme.GetDefaultTheme(); // .GetDarkTheme(); // TODO: Make configurable
+            var selection = ThemeSelection.Default; // TODO: Read from setting
 
-            //
-            // Overlay the Windows theme with a Visual Studio theme.
-            //
-            var vsTheme = VSTheme.FromDefault();
+            WindowsTheme windowsTheme;
+            VSTheme vsTheme;
+            switch (selection)
+            {
+                case ThemeSelection.System:
+                    //
+                    // Use same mode as Windows.
+                    //
+                    windowsTheme = WindowsTheme.GetSystemTheme();
+                    vsTheme = windowsTheme.IsDark
+                        ? VSTheme.GetDarkTheme()
+                        : VSTheme.GetLightTheme();
+                    break;
+
+                case ThemeSelection.Dark:
+                    //
+                    // Use dark mode, even if Windows uses light mode.
+                    //
+                    windowsTheme = WindowsTheme.GetDarkTheme();
+                    vsTheme = VSTheme.GetDarkTheme();
+                    break;
+
+                default:
+                    //
+                    // Use safe defaults that also work on downlevel
+                    // versions of Windows.
+                    //
+                    windowsTheme = WindowsTheme.GetDefaultTheme();
+                    vsTheme = VSTheme.GetLightTheme();
+                    break;
+            }
 
             //
             // Apply the resulting theme to the different kinds of windows we have.
