@@ -1,18 +1,15 @@
 ﻿using Google.Apis.Util;
 using Google.Solutions.Common.Interop;
+using Google.Solutions.Mvvm.Theme;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    internal abstract class WindowsTheme
+    internal abstract class WindowsTheme : IControlTheme
     {
         /// <summary>
         /// Check if the Windows version supports dark mode.
@@ -76,10 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             return new DarkTheme();
         }
 
-        public virtual void ApplyToWindowBar(IWin32Window window)
-        { }
-
-        public virtual void ApplyToCommonControl(Control control)
+        public virtual void ApplyTo(Control control)
         { }
 
         //---------------------------------------------------------------------
@@ -109,31 +103,28 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 Debug.Assert(ret == 0);
             }
 
-            public override void ApplyToWindowBar(IWin32Window window)
+            public override void ApplyTo(Control control)
             {
-                //
-                // Use dark title bar, see
-                // https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes#enable-a-dark-mode-title-bar-for-win32-applications
-                //
-                int darkMode = 1;
-                var hr = NativeMethods.DwmSetWindowAttribute(
-                    window.Handle,
-                    NativeMethods.DWMWA_USE_IMMERSIVE_DARK_MODE,
-                    ref darkMode,
-                    sizeof(int));
-                if (hr != HRESULT.S_OK)
+                if (control is Form form)
                 {
-                    throw new Win32Exception(
-                        "Updating window attributes failed");
+                    //
+                    // Use dark title bar, see
+                    // https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes#enable-a-dark-mode-title-bar-for-win32-applications
+                    //
+                    int darkMode = 1;
+                    var hr = NativeMethods.DwmSetWindowAttribute(
+                        form.Handle,
+                        NativeMethods.DWMWA_USE_IMMERSIVE_DARK_MODE,
+                        ref darkMode,
+                        sizeof(int));
+                    if (hr != HRESULT.S_OK)
+                    {
+                        throw new Win32Exception(
+                            "Updating window attributes failed");
+                    }
                 }
-            }
-
-            public override void ApplyToCommonControl(Control control)
-            {
-                if (control?.Handle != IntPtr.Zero)
-                {
-                    NativeMethods.AllowDarkModeForWindow(control.Handle, true);
-                }
+                
+                NativeMethods.AllowDarkModeForWindow(control.Handle, true);
             }
         }
 

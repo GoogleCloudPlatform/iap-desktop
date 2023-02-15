@@ -37,14 +37,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// </summary>
     internal class ControlTheme : IControlTheme
     {
-        private readonly WindowsTheme windowsTheme;
+        private readonly IControlTheme baseTheme;
 
         protected Color ControlLightLight { get; set; } = SystemColors.ControlLightLight;
         protected Color Accent { get; set; } = Color.FromArgb(98, 136, 242);
 
-        public ControlTheme(WindowsTheme windowsTheme)
+        public ControlTheme(IControlTheme baseTheme)
         {
-            this.windowsTheme = windowsTheme.ThrowIfNull(nameof(windowsTheme));
+            this.baseTheme = baseTheme.ThrowIfNull(nameof(baseTheme));
         }
 
         protected virtual void ApplyTo(TreeView treeView)
@@ -89,15 +89,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             headerLabel.ForeColor = this.Accent;
         }
 
-        protected virtual void ApplyTo(Form form)
-        {
-            this.windowsTheme.ApplyToWindowBar(form);
-        }
-
         public virtual void ApplyTo(Control control)
         {
-            // TODO: Unnecessary? Doesn't seem to have any effect.
-            this.windowsTheme.ApplyToCommonControl(control);
+            this.baseTheme.ApplyTo(control);
 
             if (control is TreeView treeView)
             {
@@ -118,10 +112,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             else if (control is HeaderLabel headerLabel)
             {
                 ApplyTo(headerLabel);
-            }
-            else if (control is Form form)
-            {
-                ApplyTo(form);
             }
 
             foreach (var child in control.Controls.OfType<Control>())
@@ -152,9 +142,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         protected readonly VSTheme dockPanelTheme;
 
         public ToolWindowTheme(
-            WindowsTheme windowsTheme,
+            IControlTheme baseTheme,
             VSTheme dockPanelTheme)
-            : base(windowsTheme)
+            : base(baseTheme)
         {
             this.dockPanelTheme = dockPanelTheme;
 
@@ -173,9 +163,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     internal class MainWindowTheme : ToolWindowTheme
     {
         public MainWindowTheme(
-            WindowsTheme windowsTheme, 
+            IControlTheme baseTheme,
             VSTheme dockPanelTheme) 
-            : base(windowsTheme, dockPanelTheme)
+            : base(baseTheme, dockPanelTheme)
         {
         }
 

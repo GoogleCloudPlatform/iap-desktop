@@ -64,9 +64,19 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             // TODO: Strip DLL to not ship 2015 themes
 
-            var vsTheme = VSTheme.FromDefault();
+            //
+            // Determine the Windows theme to use (light/dark).
+            //
             var windowsTheme = WindowsTheme.GetDarkTheme(); // TODO: Make configurable
 
+            //
+            // Overlay the Windows theme with a Visual Studio theme.
+            //
+            var vsTheme = VSTheme.FromDefault();
+
+            //
+            // Apply the resulting theme to the different kinds of windows we have.
+            //
             this.DockPanelTheme = vsTheme;
             this.DockPanelTheme.Extender.FloatWindowFactory = new FloatWindowFactory();
             this.DockPanelTheme.Extender.DockPaneFactory =
