@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             // Determine the Windows theme to use (light/dark).
             //
-            var windowsTheme = WindowsTheme.GetDarkTheme(); // TODO: Make configurable
+            var windowsTheme = WindowsTheme.GetDefaultTheme(); // .GetDarkTheme(); // TODO: Make configurable
 
             //
             // Overlay the Windows theme with a Visual Studio theme.

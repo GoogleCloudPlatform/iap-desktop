@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Util;
 using Google.Solutions.Common.Interop;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.ComponentModel;
@@ -97,41 +98,68 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public DarkTheme()
             {
                 //
-                // Enable dark theme support for Win32 controls.
+                // Force Win32 controls to use dark mode.
                 //
-                var ret = NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE_ALLOWDARK);
+                var ret = NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
                 Debug.Assert(ret == 0);
             }
 
             public override void ApplyTo(Control control)
             {
-                if (control is Form form)
+                void ApplyWithHandleCreated()
                 {
-                    //
-                    // Use dark title bar, see
-                    // https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes#enable-a-dark-mode-title-bar-for-win32-applications
-                    //
-                    int darkMode = 1;
-                    var hr = NativeMethods.DwmSetWindowAttribute(
-                        form.Handle,
-                        NativeMethods.DWMWA_USE_IMMERSIVE_DARK_MODE,
-                        ref darkMode,
-                        sizeof(int));
-                    if (hr != HRESULT.S_OK)
+                    Debug.Assert(control.IsHandleCreated);
+                    if (control is Form form && !(control is ToolWindow))
                     {
-                        throw new Win32Exception(
-                            "Updating window attributes failed");
+                        //
+                        // Use dark title bar, see
+                        // https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes
+                        //
+                        int darkMode = 1;
+                        var hr = NativeMethods.DwmSetWindowAttribute(
+                            form.Handle,
+                            NativeMethods.DWMWA_USE_IMMERSIVE_DARK_MODE,
+                            ref darkMode,
+                            sizeof(int));
+                        if (hr != HRESULT.S_OK)
+                        {
+                            throw new Win32Exception(
+                                "Updating window attributes failed");
+                        }
                     }
+
+                    NativeMethods.AllowDarkModeForWindow(control.Handle, true);
                 }
-                
-                NativeMethods.AllowDarkModeForWindow(control.Handle, true);
+
+                //
+                // NB. The control handle may or may not be created yet.
+                //
+                if (control.IsHandleCreated)
+                {
+                    ApplyWithHandleCreated();
+                }
+                else
+                {
+                    control.HandleCreated += (_, __) =>
+                    {
+                        ApplyWithHandleCreated();
+                    };
+                }
             }
         }
 
         private static class NativeMethods
         {
-            public const int APPMODE_ALLOWDARK = 1;
             public const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+
+            public enum APPMODE : int
+            {
+                DEFAULT = 0,
+                ALLOWDARK = 1,
+                FORCEDARK = 2,
+                FORCELIGHT = 3,
+                MAX = 4
+            }
 
             [DllImport("UXTheme.dll", SetLastError = true, EntryPoint = "#132")]
             public static extern bool ShouldAppsUseDarkMode();
@@ -140,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public static extern bool AllowDarkModeForWindow(IntPtr hWnd, bool allow);
 
             [DllImport("uxtheme.dll", EntryPoint = "#135")]
-            public static extern int SetPreferredAppMode(int appMode);
+            public static extern int SetPreferredAppMode(APPMODE appMode);
 
             [DllImport("DwmApi")]
             public static extern HRESULT DwmSetWindowAttribute(
