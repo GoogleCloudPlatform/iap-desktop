@@ -431,7 +431,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                                 1,  // No desktop scaling
                                 1); // No device scaling
                         }
-                        catch (COMException e) when ((uint)e.HResult == Hresult.E_UNEXPECTED)
+                        catch (COMException e) when ((uint)e.HResult == (uint)HRESULT.E_UNEXPECTED)
                         {
                             ApplicationTraceSources.Default.TraceWarning("Adjusting desktop size (w/o) reconnect failed.");
 

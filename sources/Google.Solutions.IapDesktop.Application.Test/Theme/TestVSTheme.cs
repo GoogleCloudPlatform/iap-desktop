@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,11 +19,26 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.Interop
+using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.Testing.Application.Test;
+using NUnit.Framework;
+
+namespace Google.Solutions.IapDesktop.Application.Test.Theme
 {
-    public enum HRESULT : uint
+    [TestFixture]
+    public class TestVSTheme : ApplicationFixtureBase
     {
-        S_OK = 0,
-        E_UNEXPECTED = 0x8000ffff,
+        //---------------------------------------------------------------------
+        // Load.
+        //---------------------------------------------------------------------
+        
+        [Test]
+        public void FromDefault()
+        {
+            var theme = VSTheme.FromDefault();
+
+            Assert.IsNotNull(theme);
+            Assert.IsNotNull(theme.ColorPalette);
+        }
     }
 }

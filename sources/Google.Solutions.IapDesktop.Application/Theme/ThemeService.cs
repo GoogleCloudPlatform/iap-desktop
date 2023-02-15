@@ -62,7 +62,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     {
         public ThemeService()
         {
-            this.DockPanelTheme = VSTheme.FromResource("Light.vstheme.gz");
+            // TODO: Strip DLL to not ship 2015 themes
+            this.DockPanelTheme = VSTheme.FromDefault();
             this.DockPanelTheme.Extender.FloatWindowFactory = new FloatWindowFactory();
             this.DockPanelTheme.Extender.DockPaneFactory =
                 new DockPaneFactory(this.DockPanelTheme.Extender.DockPaneFactory);

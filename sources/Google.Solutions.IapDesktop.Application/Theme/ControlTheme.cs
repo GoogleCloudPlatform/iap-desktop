@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             // Apply post-Vista Explorer theme.
             //
-            // TODO: AllowDarmMode - https://stackoverflow.com/questions/53501268/win10-dark-theme-how-to-use-in-winapi
+            // TODO: AllowDarkMode - https://stackoverflow.com/questions/53501268/win10-dark-theme-how-to-use-in-winapi
             treeView.BackColor = this.ControlLightLight;
             treeView.HotTracking = true;
 
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             // Apply post-Vista Explorer theme.
             //
-            // TODO: AllowDarmMode - https://stackoverflow.com/questions/53501268/win10-dark-theme-how-to-use-in-winapi
+            // TODO: AllowDarkMode - https://stackoverflow.com/questions/53501268/win10-dark-theme-how-to-use-in-winapi
             listView.BackColor = this.ControlLightLight;
             listView.HotTracking = false;
 
