@@ -89,6 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 this.ToolWindowInnerTabInactive = new ToolWindowInnerTabPalette()
                 {
                     Background = GetColor(xml, "CommonControls", "InnerTabInactiveBackground", "Background"),
+                    Text = GetColor(xml, "CommonControls", "InnerTabInactiveText", "Background"),
                 };
             }
 
@@ -114,6 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         internal class ToolWindowInnerTabPalette
         {
             public Color Background { get; set; }
+            public Color Text { get; set; }
         }
     }
 }

@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
@@ -39,13 +38,16 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     internal class ControlTheme : IControlTheme
     {
         private readonly IControlTheme baseTheme;
+        protected readonly VSTheme vsTheme;
 
-        protected Color PanelBackground { get; set; } = SystemColors.ControlLightLight;
         protected Color Accent { get; set; } = Color.FromArgb(98, 136, 242);
 
-        public ControlTheme(IControlTheme baseTheme)
+        public ControlTheme(
+            IControlTheme baseTheme,
+            VSTheme vsTheme)
         {
             this.baseTheme = baseTheme.ThrowIfNull(nameof(baseTheme));
+            this.vsTheme = vsTheme.ThrowIfNull(nameof(vsTheme));
         }
 
         protected virtual void ApplyTo(TreeView treeView)
@@ -53,7 +55,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             // Apply post-Vista Explorer theme.
             //
-            treeView.BackColor = this.PanelBackground;
             treeView.HotTracking = true;
 
             treeView.HandleCreated += (_, __) =>
@@ -67,7 +68,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             // Apply post-Vista Explorer theme.
             //
-            listView.BackColor = this.PanelBackground;
             listView.HotTracking = false;
 
             listView.HandleCreated += (_, __) =>
@@ -78,7 +78,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         protected virtual void ApplyTo(PropertyGrid grid)
         {
-            grid.ViewBackColor = this.PanelBackground;
             grid.LineColor = SystemColors.Control;
         }
 
@@ -140,15 +139,31 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// </summary>
     internal class ToolWindowTheme : ControlTheme
     {
-        protected readonly VSTheme vsTheme;
+        private readonly VSTheme vsTheme;
 
         public ToolWindowTheme(
             IControlTheme baseTheme,
             VSTheme vsTheme)
-            : base(baseTheme)
+            : base(baseTheme, vsTheme)
         {
             this.vsTheme = vsTheme;
-            this.PanelBackground = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
+        }
+
+        protected override void ApplyTo(TreeView treeView)
+        {
+            treeView.BackColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
+            treeView.ForeColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Text;
+        }
+
+        protected override void ApplyTo(ListView listView)
+        {
+            listView.BackColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
+            listView.ForeColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Text;
+        }
+
+        protected override void ApplyTo(PropertyGrid grid)
+        {
+            grid.ViewBackColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
         }
 
         protected override void ApplyTo(ToolStrip toolStrip)
@@ -161,8 +176,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     {
         public MainWindowTheme(
             IControlTheme baseTheme,
-            VSTheme dockPanelTheme) 
-            : base(baseTheme, dockPanelTheme)
+            VSTheme vsTheme) 
+            : base(baseTheme, vsTheme)
         {
         }
 

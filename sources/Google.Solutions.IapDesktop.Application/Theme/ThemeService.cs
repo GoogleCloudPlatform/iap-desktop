@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             this.DockPanelTheme.Extender.DockPaneFactory =
                 new DockPaneFactory(this.DockPanelTheme.Extender.DockPaneFactory);
 
-            this.DialogTheme = new ControlTheme(windowsTheme);
+            this.DialogTheme = new ControlTheme(windowsTheme, vsTheme);
             this.ToolWindowTheme = new ToolWindowTheme(windowsTheme, vsTheme);
             this.MainWindowTheme = new MainWindowTheme(windowsTheme, vsTheme);
         }
