@@ -20,7 +20,10 @@
 //
 
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Xml.Linq;
+using WeifenLuo.WinFormsUI.Docking;
 using WeifenLuo.WinFormsUI.ThemeVS2015;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
@@ -30,8 +33,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// </summary>
     internal class VSTheme : VS2015ThemeBase
     {
-        private VSTheme(byte[] vsthemeXml) : base(vsthemeXml)
+        public VSColorPalette Palette { get; }
+
+        private VSTheme(VSColorPalette palette) : base(palette)
         {
+            this.Palette = palette;
         }
 
         public static VSTheme GetLightTheme()
@@ -60,26 +66,24 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     $"The theme {resourceName} does not exist");
 
             }
-            using (var stream = assembly.GetManifestResourceStream(qualifiedResourceName))
-            using (var buffer = new MemoryStream())
+
+            using (var gzipStream = assembly.GetManifestResourceStream(qualifiedResourceName))
+            using (var stream = new GZipStream(gzipStream, CompressionMode.Decompress))
+            using (var reader = new StreamReader(stream))
             {
-                stream.CopyTo(buffer);
-                return new VSTheme(Decompress(buffer.ToArray()));
+                return new VSTheme(new VSColorPalette(XDocument.Load(reader)));
             }
         }
 
-        /// <summary>
-        /// Read VSTheme XML file from a file.
-        /// </summary>
-        public static VSTheme FromFile(string filePath)
-        {
-            if (!File.Exists(filePath))
-            {
-                throw new IOException(
-                    $"The theme file {filePath} does not exist");
-            }
+        //---------------------------------------------------------------------
+        // Palette.
+        //---------------------------------------------------------------------
 
-            return new VSTheme(File.ReadAllBytes(filePath));
+        internal class VSColorPalette : DockPanelColorPalette
+        {
+            public VSColorPalette(XDocument xml) : base(xml)
+            {
+            }
         }
     }
 }
