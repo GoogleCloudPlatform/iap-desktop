@@ -33,9 +33,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Theme
         //---------------------------------------------------------------------
         
         [Test]
-        public void FromDefault()
+        public void GetLightTheme()
         {
             var theme = VSTheme.GetLightTheme();
+
+            Assert.IsNotNull(theme);
+            Assert.IsNotNull(theme.ColorPalette);
+        }
+
+        [Test]
+        public void GetDarkTheme()
+        {
+            var theme = VSTheme.GetDarkTheme();
 
             Assert.IsNotNull(theme);
             Assert.IsNotNull(theme.ColorPalette);
