@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
@@ -39,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     {
         private readonly IControlTheme baseTheme;
 
-        protected Color ControlLightLight { get; set; } = SystemColors.ControlLightLight;
+        protected Color PanelBackground { get; set; } = SystemColors.ControlLightLight;
         protected Color Accent { get; set; } = Color.FromArgb(98, 136, 242);
 
         public ControlTheme(IControlTheme baseTheme)
@@ -52,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             // Apply post-Vista Explorer theme.
             //
-            treeView.BackColor = this.ControlLightLight;
+            treeView.BackColor = this.PanelBackground;
             treeView.HotTracking = true;
 
             treeView.HandleCreated += (_, __) =>
@@ -66,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             // Apply post-Vista Explorer theme.
             //
-            listView.BackColor = this.ControlLightLight;
+            listView.BackColor = this.PanelBackground;
             listView.HotTracking = false;
 
             listView.HandleCreated += (_, __) =>
@@ -77,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         protected virtual void ApplyTo(PropertyGrid grid)
         {
-            grid.ViewBackColor = this.ControlLightLight;
+            grid.ViewBackColor = this.PanelBackground;
             grid.LineColor = SystemColors.Control;
         }
 
@@ -139,24 +140,20 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// </summary>
     internal class ToolWindowTheme : ControlTheme
     {
-        protected readonly VSTheme dockPanelTheme;
+        protected readonly VSTheme vsTheme;
 
         public ToolWindowTheme(
             IControlTheme baseTheme,
-            VSTheme dockPanelTheme)
+            VSTheme vsTheme)
             : base(baseTheme)
         {
-            this.dockPanelTheme = dockPanelTheme;
-
-            //
-            // Use a light gray instead of white.
-            //
-            this.ControlLightLight = Color.FromArgb(255, 245, 245, 245);
+            this.vsTheme = vsTheme;
+            this.PanelBackground = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
         }
 
         protected override void ApplyTo(ToolStrip toolStrip)
         {
-            this.dockPanelTheme.ApplyTo(toolStrip);
+            this.vsTheme.ApplyTo(toolStrip);
         }
     }
 
@@ -177,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
             else if (control is DockPanel dockPanel)
             {
-                dockPanel.Theme = this.dockPanelTheme;
+                dockPanel.Theme = this.vsTheme;
             }
             else
             {

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -81,9 +82,38 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         internal class VSColorPalette : DockPanelColorPalette
         {
+            public ToolWindowInnerTabPalette ToolWindowInnerTabInactive { get; }
+
             public VSColorPalette(XDocument xml) : base(xml)
             {
+                this.ToolWindowInnerTabInactive = new ToolWindowInnerTabPalette()
+                {
+                    Background = GetColor(xml, "CommonControls", "InnerTabInactiveBackground", "Background"),
+                };
             }
+
+            protected static Color GetColor(
+                XDocument xml, 
+                string category,
+                string name, 
+                string type)
+            {
+                var color = xml.Root.Element("Theme")
+                    .Elements("Category").FirstOrDefault(item => item.Attribute("Name").Value == category)?
+                    .Elements("Color").FirstOrDefault(item => item.Attribute("Name").Value == name)?
+                    .Element(type).Attribute("Source").Value;
+                if (color == null)
+                {
+                    return Color.Transparent;
+                }
+
+                return ColorTranslator.FromHtml($"#{color}");
+            }
+        }
+
+        internal class ToolWindowInnerTabPalette
+        {
+            public Color Background { get; set; }
         }
     }
 }
