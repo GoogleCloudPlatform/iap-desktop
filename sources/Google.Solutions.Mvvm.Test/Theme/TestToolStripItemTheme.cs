@@ -32,6 +32,13 @@ namespace Google.Solutions.Mvvm.Test.Theme
     public class TestToolStripItemTheme
     {
         [Test]
+        public void WhenToolStripIsNull_ThenApplyToReturns()
+        {
+            var theme = new ToolStripItemTheme(true);
+            theme.ApplyTo(null);
+        }
+
+        [Test]
         public void WhenToolStripEmpty_ThenApplyToReturns()
         {
             var theme = new ToolStripItemTheme(true);

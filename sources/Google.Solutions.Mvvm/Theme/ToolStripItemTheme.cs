@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,6 +127,11 @@ namespace Google.Solutions.Mvvm.Theme
 
         public void ApplyTo(ToolStrip toolStrip)
         {
+            if (toolStrip == null)
+            {
+                return;
+            }
+
             //
             // Apply theme to current items...
             //
@@ -144,6 +150,29 @@ namespace Google.Solutions.Mvvm.Theme
                     ApplyTo(args.Item);
                 };
             }
+        }
+    }
+
+    public static class ToolStripItemThemeExtensions
+    {
+        /// <summary>
+        /// Register rules so that menus and context menus
+        /// are themed.
+        /// </summary>
+        public static void AddToolStripItemTheme(
+            this ControlTheme controlTheme, 
+            ToolStripItemTheme toolStripItemTheme)
+        {
+            controlTheme.ThrowIfNull(nameof(controlTheme));
+            toolStripItemTheme.ThrowIfNull(nameof(toolStripItemTheme));
+
+            controlTheme.AddRule<ToolStrip>(c => toolStripItemTheme.ApplyTo(c));
+
+            //
+            // Also consider the context menu of common controls.
+            //
+            controlTheme.AddRule<TreeView>(c => toolStripItemTheme.ApplyTo(c.ContextMenuStrip));
+            controlTheme.AddRule<ListView>(c => toolStripItemTheme.ApplyTo(c.ContextMenuStrip));
         }
     }
 }
