@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -38,16 +39,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     internal class ControlTheme : IControlTheme
     {
         private readonly IControlTheme baseTheme;
-        protected readonly VSTheme vsTheme;
 
         protected Color Accent { get; set; } = Color.FromArgb(98, 136, 242);
 
-        public ControlTheme(
-            IControlTheme baseTheme,
-            VSTheme vsTheme)
+        public ControlTheme(IControlTheme baseTheme)
         {
             this.baseTheme = baseTheme.ThrowIfNull(nameof(baseTheme));
-            this.vsTheme = vsTheme.ThrowIfNull(nameof(vsTheme));
         }
 
         protected virtual void ApplyTo(TreeView treeView)
@@ -60,6 +57,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             {
                 NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
             };
+
+            if (treeView.ContextMenuStrip != null)
+            {
+                ApplyTo(treeView.ContextMenuStrip);
+            }
         }
 
         protected virtual void ApplyTo(ListView listView)
@@ -72,6 +74,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             {
                 NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
             };
+
+            if (listView.ContextMenuStrip != null)
+            {
+                ApplyTo(listView.ContextMenuStrip);
+            }
         }
 
         protected virtual void ApplyTo(PropertyGrid grid)
@@ -80,7 +87,65 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         }
 
         protected virtual void ApplyTo(ToolStrip toolStrip)
-        { }
+        {
+            //
+            // Apply theme to current items...
+            //
+            foreach (var item in toolStrip.Items.OfType<ToolStripItem>())
+            {
+                ApplyTo(item);
+            }
+
+            //
+            // ...and future items.
+            //
+            toolStrip.ItemAdded += (_, args) =>
+            {
+                ApplyTo(args.Item);
+            };
+        }
+
+        protected virtual void ApplyTo(ToolStripItem item)
+        {
+            if (item is ToolStripDropDownItem dropDownItem)
+            {
+                //
+                // Apply theme to current items...
+                //
+                var appliedItems = new List<WeakReference<ToolStripItem>>();
+                if (dropDownItem.DropDownItems != null)
+                {
+                    foreach (var subItem in dropDownItem.DropDownItems.OfType<ToolStripItem>())
+                    {
+                        ApplyTo(subItem);
+                        appliedItems.Add(new WeakReference<ToolStripItem>(subItem));
+                    }
+                }
+
+                //
+                // ...and future items.
+                //
+                // There's no ItemAdded event, so we have to check for new items
+                // every time the menu pops up.
+                //
+                dropDownItem.DropDownOpening += (_, args) =>
+                {
+                    if (dropDownItem.DropDownItems != null)
+                    {
+                        foreach (var subItem in dropDownItem.DropDownItems.OfType<ToolStripItem>())
+                        {
+                            if (!appliedItems.Any(i => 
+                                i.TryGetTarget(out var appliedItem) && appliedItem == subItem))
+                            {
+                                ApplyTo(subItem);
+                            }
+
+                            appliedItems.Add(new WeakReference<ToolStripItem>(subItem));
+                        }
+                    }
+                };
+            }
+        }
 
         protected virtual void ApplyTo(HeaderLabel headerLabel)
         {
@@ -138,12 +203,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     internal class ToolWindowTheme : ControlTheme
     {
         private const float IconGrayScaleFactor = .65f;
+        protected readonly VSTheme vsTheme;
 
         public ToolWindowTheme(
             IControlTheme baseTheme,
             VSTheme vsTheme)
-            : base(baseTheme, vsTheme)
+            : base(baseTheme)
         {
+            this.vsTheme = vsTheme.ThrowIfNull(nameof(vsTheme));
         }
 
         protected override void ApplyTo(TreeView treeView)
@@ -185,7 +252,22 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         protected override void ApplyTo(ToolStrip toolStrip)
         {
+            base.ApplyTo(toolStrip);
+
             this.vsTheme.ApplyTo(toolStrip);
+        }
+
+        protected override void ApplyTo(ToolStripItem item)
+        {
+            base.ApplyTo(item);
+
+            if (this.vsTheme.IsDark)
+            {
+                if (item.Image is Bitmap bitmap)
+                {
+                    IconTweaks.InvertAndScaleGrays(bitmap, IconGrayScaleFactor);
+                }
+            }
         }
     }
 
