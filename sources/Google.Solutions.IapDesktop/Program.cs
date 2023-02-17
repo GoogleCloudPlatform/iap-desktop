@@ -270,7 +270,6 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddSingleton<IResourceManagerAdapter, ResourceManagerAdapter>();
                 baseLayer.AddSingleton<IComputeEngineAdapter, ComputeEngineAdapter>();
 
-                baseLayer.AddSingleton<IThemeService, ThemeService>();
 
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
@@ -284,6 +283,10 @@ namespace Google.Solutions.IapDesktop
                     //
                     Globals.UserAgent.Extensions = "Enterprise";
                 }
+
+                baseLayer.AddSingleton(new ThemeSettingsRepository(
+                    profile.SettingsKey.CreateSubKey("Theme")));
+                baseLayer.AddSingleton<IThemeService, ThemeService>();
 
                 baseLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
                 baseLayer.AddSingleton(appSettingsRepository);

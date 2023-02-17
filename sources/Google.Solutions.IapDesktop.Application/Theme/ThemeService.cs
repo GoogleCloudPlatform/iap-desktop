@@ -59,22 +59,15 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
     public class ThemeService : IThemeService
     {
-        private enum ThemeSelection // TODO: Move to settings
+        public ThemeService(ThemeSettingsRepository themeSettingsRepository)
         {
-            Default,
-            System,
-            Dark
-        }
-
-        public ThemeService()
-        {
-            var selection = ThemeSelection.Default;
+            var settings = themeSettingsRepository.GetSettings();
 
             WindowsTheme windowsTheme;
             VSTheme vsTheme;
-            switch (selection)
+            switch (settings.Theme.EnumValue)
             {
-                case ThemeSelection.System:
+                case ThemeSettings.ApplicationTheme.System:
                     //
                     // Use same mode as Windows.
                     //
@@ -84,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                         : VSTheme.GetLightTheme();
                     break;
 
-                case ThemeSelection.Dark:
+                case ThemeSettings.ApplicationTheme.Dark:
                     //
                     // Use dark mode, even if Windows uses light mode.
                     //

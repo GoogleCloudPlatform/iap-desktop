@@ -139,6 +139,7 @@
     <Compile Include="Services\SecureConnect\TestSecureConnectEnrollment.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
+    <Compile Include="Theme\TestThemeSettingsRepository.cs" />
     <Compile Include="Theme\TestVSTheme.cs" />
     <Compile Include="Util\TestFilename.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
