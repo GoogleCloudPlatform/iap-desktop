@@ -264,7 +264,17 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             base.ApplyTo(grid);
 
+            grid.CategorySplitterColor = this.vsTheme.Palette.GridHeading.Background;
+            grid.LineColor = this.vsTheme.Palette.GridHeading.Background;
+            grid.CategoryForeColor = this.vsTheme.Palette.GridHeading.Text;
+
             grid.ViewBackColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
+            grid.ViewForeColor = this.vsTheme.Palette.GridHeading.Text;
+            grid.ViewBorderColor = this.vsTheme.Palette.GridHeading.Background;
+
+            grid.HelpBackColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
+            grid.HelpForeColor = this.vsTheme.Palette.GridHeading.Text;
+            grid.HelpBorderColor = this.vsTheme.Palette.GridHeading.Background;
         }
 
         protected override void ApplyTo(ToolStrip toolStrip)

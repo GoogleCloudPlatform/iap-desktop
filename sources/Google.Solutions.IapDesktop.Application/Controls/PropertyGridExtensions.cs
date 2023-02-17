@@ -35,7 +35,9 @@ namespace Google.Solutions.Mvvm.Controls
                 WordWrap = true,
                 ReadOnly = true,
                 BorderStyle = BorderStyle.None,
-                DetectUrls = true
+                DetectUrls = true,
+                BackColor = propertyGrid.HelpBackColor,
+                ForeColor = propertyGrid.HelpForeColor
             };
 
             rtfLabel.SetPadding(3);

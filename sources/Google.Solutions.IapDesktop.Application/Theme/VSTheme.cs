@@ -89,6 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         internal class VSColorPalette : DockPanelColorPalette
         {
             public ToolWindowInnerTabPalette ToolWindowInnerTabInactive { get; }
+            public GridHeadingPallette GridHeading { get; }
 
             public VSColorPalette(XDocument xml) : base(xml)
             {
@@ -96,6 +97,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 {
                     Background = GetColor(xml, "CommonControls", "InnerTabInactiveBackground", "Background"),
                     Text = GetColor(xml, "CommonControls", "InnerTabInactiveText", "Background"),
+                };
+                this.GridHeading = new GridHeadingPallette()
+                {
+                    Background = GetColor(xml, "Environment", "ToolWindowContentGrid", "Background"),
+                    Text = GetColor(xml, "Environment", "GridHeadingText", "Background")
                 };
             }
 
@@ -119,6 +125,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         }
 
         internal class ToolWindowInnerTabPalette
+        {
+            public Color Background { get; set; }
+            public Color Text { get; set; }
+        }
+
+        internal class GridHeadingPallette
         {
             public Color Background { get; set; }
             public Color Text { get; set; }
