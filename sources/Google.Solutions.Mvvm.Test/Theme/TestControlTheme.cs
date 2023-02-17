@@ -56,6 +56,9 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 theme.AddRule<Control>(c => appliedControls.Add(c));
                 
                 theme.ApplyTo(form);
+
+                form.Show();
+                form.Close();
                 
                 CollectionAssert.AreEquivalent(
                     new Control[] { form, panel, button },
@@ -66,19 +69,48 @@ namespace Google.Solutions.Mvvm.Test.Theme
         [Test]
         public void WhenRuleIsForSpecificType_ThenApplyToAppliesRuleToMatchingControls()
         {
-            var theme = new ControlTheme();
+            using (var form = new Form())
+            {
+                var theme = new ControlTheme();
 
-            int buttonsApplied = 0;
-            theme.AddRule<Button>(c => buttonsApplied++);
+                int buttonsApplied = 0;
+                theme.AddRule<Button>(c => buttonsApplied++);
 
-            int controlsApplied = 0;
-            theme.AddRule<Control>(c => controlsApplied++);
+                int controlsApplied = 0;
+                theme.AddRule<Control>(c => controlsApplied++);
 
-            theme.ApplyTo(new Button());
-            theme.ApplyTo(new Panel());
+                form.Controls.Add(new Button());
+                form.Controls.Add(new Panel());
+                
+                theme.ApplyTo(form);
 
-            Assert.AreEqual(1, buttonsApplied);
-            Assert.AreEqual(2, controlsApplied);
+                form.Show();
+                form.Close();
+
+                Assert.AreEqual(1, buttonsApplied);
+                Assert.AreEqual(3, controlsApplied);
+            }
+        }
+
+        [Test]
+        public void WhenHandleNotCreatedYet_ThenRuleIsAppliedDelayed()
+        {
+            using (var form = new Form())
+            {
+                var theme = new ControlTheme();
+
+                int appliedCalls = 0;
+                theme.AddRule<Form>(c => appliedCalls++);
+
+                theme.ApplyTo(form);
+
+                Assert.AreEqual(0, appliedCalls, "Call is delayed");
+
+                form.Show();
+                form.Close();
+
+                Assert.AreEqual(1, appliedCalls, "Call is delayed");
+            }
         }
     }
 }

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -84,19 +85,39 @@ namespace Google.Solutions.Mvvm.Theme
         private class Rule
         {
             private readonly Type controlType;
-            private readonly Action<Control> action;
+            private readonly Action<Control> apply;
 
-            public Rule(Type controlType, Action<Control> action)
+            public Rule(Type controlType, Action<Control> apply)
             {
                 this.controlType = controlType;
-                this.action = action;
+                this.apply = apply;
             }
 
             public void Apply(Control control)
             {
                 if (this.controlType.IsAssignableFrom(control.GetType()))
                 {
-                    this.action(control);
+                    if (control.IsHandleCreated)
+                    {
+                        //
+                        // Apply rule immediately.
+                        //
+                        this.apply(control);
+                    }
+                    else
+                    {
+                        //
+                        // Delay until the handle has been created.
+                        //
+                        control.HandleCreated += OnHandleCreated;
+                    }
+
+                    void OnHandleCreated(object _, EventArgs __)
+                    {
+                        Debug.Assert(control.IsHandleCreated);
+                        this.apply(control);
+                        control.HandleCreated -= OnHandleCreated;
+                    }
                 }
             }
         }
