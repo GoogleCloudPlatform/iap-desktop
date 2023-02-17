@@ -31,6 +31,9 @@ namespace Google.Solutions.Mvvm.Theme
     /// </summary>
     public interface IControlTheme
     {
+        /// <summary>
+        /// Apply theme to control and its children.
+        /// </summary>
         void ApplyTo(Control control);
     }
 

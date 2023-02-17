@@ -57,6 +57,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             treeView.HotTracking = true;
             treeView.HandleCreated += (_, __) =>
             {
+                //
+                // NB. When called after AllowDarkModeForWindow, this applies
+                // dark mode-style scrollbars, etc.
+                //
                 NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
             };
 
@@ -74,6 +78,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             listView.HotTracking = false;
             listView.HandleCreated += (_, __) =>
             {
+                //
+                // NB. When called after AllowDarkModeForWindow, this applies
+                // dark mode-style scrollbars, etc.
+                //
                 NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
             };
 
