@@ -159,7 +159,7 @@ namespace Google.Solutions.Mvvm.Theme
         /// Register rules so that menus and context menus
         /// are themed.
         /// </summary>
-        public static void AddToolStripItemTheme(
+        public static void AddRules(
             this ControlTheme controlTheme, 
             ToolStripItemTheme toolStripItemTheme)
         {

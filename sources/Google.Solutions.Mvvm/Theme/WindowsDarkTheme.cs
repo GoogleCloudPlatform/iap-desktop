@@ -19,18 +19,19 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Interop;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.Mvvm.Theme;
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Theme
+namespace Google.Solutions.Mvvm.Theme
 {
-    internal abstract class WindowsTheme : IControlTheme // TODO: Delete
+    /// <summary>
+    /// Theming rules for using dark mode.
+    /// </summary>
+    public static class WindowsDarkTheme
     {
         /// <summary>
         /// Check if the Windows version supports dark mode.
@@ -70,110 +71,77 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
         }
 
-        /// <summary>
-        /// Get theme based on what's configured in Windows.
-        /// </summary>
-        /// <returns></returns>
-        public static WindowsTheme GetSystemTheme()
-        {
-            return IsDarkModeEnabled
-                ? (WindowsTheme)new DarkTheme()
-                : new ClassicTheme();
-        }
-
-        /// <summary>
-        /// Return the default theme, which works on all OS versions.
-        /// </summary>
-        public static WindowsTheme GetDefaultTheme()
-        {
-            return new ClassicTheme();
-        }
-
-        /// <summary>
-        /// Return the default theme, which works on all OS versions.
-        /// </summary>
-        public static WindowsTheme GetDarkTheme()
-        {
-            return new DarkTheme();
-        }
-
-        public virtual void ApplyTo(Control control)
-        { }
-
-        public virtual bool IsDark => false;
-
         //---------------------------------------------------------------------
-        // Implementations.
+        // Theming rules.
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// Classic, light theme.
+        /// Use dark title bar for top-level windows, see
+        /// https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes
         /// </summary>
-        private class ClassicTheme : WindowsTheme
+        /// <param name="form"></param>
+        private static void UseDarkTitleBar(Form form)
         {
+            if (!form.TopLevel)
+            {
+                return;
+            }
+
+            //
+            // Use dark title bar, see
+            // https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes
+            //
+            int darkMode = 1;
+            var hr = NativeMethods.DwmSetWindowAttribute(
+                form.Handle,
+                NativeMethods.DWMWA_USE_IMMERSIVE_DARK_MODE,
+                ref darkMode,
+                sizeof(int));
+            if (hr != HRESULT.S_OK)
+            {
+                throw new Win32Exception(
+                    "Updating window attributes failed");
+            }
         }
 
         /// <summary>
-        /// Windows 10-style dark theme. See
-        /// https://github.com/microsoft/WindowsAppSDK/issues/41 for details
-        /// on undocumented method calls.
+        /// Opt-in window to use dark mode.
         /// </summary>
-        private class DarkTheme : WindowsTheme
+        private static void AllowDarkModeForWindow(Control control)
         {
-            public DarkTheme()
-            {
-                //
-                // Force Win32 controls to use dark mode.
-                //
-                var ret = NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
-                Debug.Assert(ret == 0);
-            }
-
-            public override bool IsDark => true;
-
-            public override void ApplyTo(Control control)
-            {
-                void ApplyWithHandleCreated()
-                {
-                    Debug.Assert(control.IsHandleCreated);
-                    if (control is Form form && form.TopLevel)
-                    {
-                        //
-                        // Use dark title bar, see
-                        // https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes
-                        //
-                        int darkMode = 1;
-                        var hr = NativeMethods.DwmSetWindowAttribute(
-                            form.Handle,
-                            NativeMethods.DWMWA_USE_IMMERSIVE_DARK_MODE,
-                            ref darkMode,
-                            sizeof(int));
-                        if (hr != HRESULT.S_OK)
-                        {
-                            throw new Win32Exception(
-                                "Updating window attributes failed");
-                        }
-                    }
-
-                    NativeMethods.AllowDarkModeForWindow(control.Handle, true);
-                }
-
-                //
-                // NB. The control handle may or may not be created yet.
-                //
-                if (control.IsHandleCreated)
-                {
-                    ApplyWithHandleCreated();
-                }
-                else
-                {
-                    control.HandleCreated += (_, __) =>
-                    {
-                        ApplyWithHandleCreated();
-                    };
-                }
-            }
+            NativeMethods.AllowDarkModeForWindow(control.Handle, true);
         }
+
+        //---------------------------------------------------------------------
+        // Extension methods.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Register rules.
+        /// </summary>
+        public static void AddRules(this ControlTheme controlTheme)
+        {
+            controlTheme.ThrowIfNull(nameof(controlTheme));
+            if (!IsDarkModeSupported)
+            {
+                return;
+            }
+
+            //
+            // Force Win32 controls to use dark mode.
+            //
+            var ret = NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
+
+            controlTheme.AddRule<Form>(UseDarkTitleBar);
+            controlTheme.AddRule<Control>(AllowDarkModeForWindow);
+        }
+
+        //---------------------------------------------------------------------
+        // P/Invoke.
+        //
+        // NB. Most APIs are undocumented. See
+        // https://github.com/microsoft/WindowsAppSDK/issues/41 for details.
+        //---------------------------------------------------------------------
 
         private static class NativeMethods
         {
@@ -199,9 +167,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             [DllImport("dwmapi.dll")]
             public static extern HRESULT DwmSetWindowAttribute(
-                IntPtr hwnd, 
-                int attr, 
-                ref int attrValue, 
+                IntPtr hwnd,
+                int attr,
+                ref int attrValue,
                 int attrSize);
         }
     }
