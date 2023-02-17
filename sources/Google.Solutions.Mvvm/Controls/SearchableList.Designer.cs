@@ -90,7 +90,6 @@ namespace Google.Solutions.Mvvm.Controls
             this.list.HideSelection = false;
             this.list.Location = new System.Drawing.Point(0, 25);
             this.list.Name = "list";
-            this.list.OwnerDraw = true;
             this.list.Size = new System.Drawing.Size(250, 175);
             this.list.TabIndex = 1;
             this.list.UseCompatibleStateImageBehavior = false;

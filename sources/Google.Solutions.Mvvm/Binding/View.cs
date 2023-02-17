@@ -268,12 +268,13 @@ namespace Google.Solutions.Mvvm.Binding
             TViewModel viewModel,
             IControlTheme theme)
         {
+            view.SuspendLayout();
+
             theme?.ApplyTo(view);
 
             //
             // Bind view <-> view model.
             //
-            view.SuspendLayout();
             viewModel.Bind(view);
             view.Bind(viewModel);
             view.ResumeLayout();

@@ -160,6 +160,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             headerLabel.ForeColor = this.Accent;
         }
 
+        protected virtual void ApplyTo(ToolWindow toolWindow)
+        {
+        }
+
         public virtual void ApplyTo(Control control)
         {
             this.baseTheme.ApplyTo(control);
@@ -183,6 +187,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             else if (control is HeaderLabel headerLabel)
             {
                 ApplyTo(headerLabel);
+            }
+            else if (control is ToolWindow toolWindow)
+            {
+                ApplyTo(toolWindow);
             }
 
             foreach (var child in control.Controls.OfType<Control>())
@@ -277,6 +285,13 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     IconTweaks.InvertAndScaleGrays(bitmap, IconGrayScaleFactor);
                 }
             }
+        }
+
+        protected override void ApplyTo(ToolWindow toolWindow)
+        {
+            base.ApplyTo(toolWindow);
+
+            toolWindow.BackColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
         }
     }
 
