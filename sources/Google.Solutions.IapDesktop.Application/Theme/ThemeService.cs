@@ -68,9 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         public ThemeService()
         {
-            // TODO: Strip DLL to not ship 2015 themes
-
-            var selection = ThemeSelection.Default; // TODO: Read from setting
+            var selection = ThemeSelection.Default;
 
             WindowsTheme windowsTheme;
             VSTheme vsTheme;

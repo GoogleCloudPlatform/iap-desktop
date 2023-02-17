@@ -34,27 +34,31 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// </summary>
     internal class VSTheme : VS2015ThemeBase
     {
+        public bool IsDark { get; }
         public VSColorPalette Palette { get; }
 
-        private VSTheme(VSColorPalette palette) : base(palette)
+        private VSTheme(
+            VSColorPalette palette,
+            bool isDark) : base(palette)
         {
             this.Palette = palette;
+            this.IsDark = isDark;
         }
 
         public static VSTheme GetLightTheme()
         {
-            return FromResource("Light.vstheme.gz");
+            return FromResource("Light.vstheme.gz", false);
         }
 
         public static VSTheme GetDarkTheme()
         {
-            return FromResource("Dark.vstheme.gz");
+            return FromResource("Dark.vstheme.gz", true);
         }
 
         /// <summary>
         /// Read gzip-compressed VSTheme XML file from embedded resource.
         /// </summary>
-        public static VSTheme FromResource(string resourceName)
+        public static VSTheme FromResource(string resourceName, bool isDark)
         {
             var assembly = typeof(VSTheme).Assembly;
             var qualifiedResourceName = assembly
@@ -72,7 +76,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             using (var stream = new GZipStream(gzipStream, CompressionMode.Decompress))
             using (var reader = new StreamReader(stream))
             {
-                return new VSTheme(new VSColorPalette(XDocument.Load(reader)));
+                return new VSTheme(
+                    new VSColorPalette(XDocument.Load(reader)),
+                    isDark);
             }
         }
 

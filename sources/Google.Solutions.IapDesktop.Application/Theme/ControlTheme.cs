@@ -56,7 +56,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             // Apply post-Vista Explorer theme.
             //
             treeView.HotTracking = true;
-
             treeView.HandleCreated += (_, __) =>
             {
                 NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
@@ -69,7 +68,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             // Apply post-Vista Explorer theme.
             //
             listView.HotTracking = false;
-
             listView.HandleCreated += (_, __) =>
             {
                 NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
@@ -139,30 +137,49 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// </summary>
     internal class ToolWindowTheme : ControlTheme
     {
-        private readonly VSTheme vsTheme;
+        private const float IconGrayScaleFactor = .65f;
 
         public ToolWindowTheme(
             IControlTheme baseTheme,
             VSTheme vsTheme)
             : base(baseTheme, vsTheme)
         {
-            this.vsTheme = vsTheme;
         }
 
         protected override void ApplyTo(TreeView treeView)
         {
+            base.ApplyTo(treeView);
+
             treeView.BackColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
             treeView.ForeColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Text;
+
+            if (this.vsTheme.IsDark)
+            {
+                IconTweaks.InvertAndScaleGrays(treeView.ImageList, IconGrayScaleFactor);
+                IconTweaks.InvertAndScaleGrays(treeView.StateImageList, IconGrayScaleFactor);
+            }
         }
 
         protected override void ApplyTo(ListView listView)
         {
+            base.ApplyTo(listView);
+
             listView.BackColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
             listView.ForeColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Text;
+
+            if (this.vsTheme.IsDark)
+            {
+                listView.GridLines = false;
+                listView.HotTracking = false;
+                IconTweaks.InvertAndScaleGrays(listView.SmallImageList, IconGrayScaleFactor);
+                IconTweaks.InvertAndScaleGrays(listView.LargeImageList, IconGrayScaleFactor);
+            }
         }
 
         protected override void ApplyTo(PropertyGrid grid)
         {
+            base.ApplyTo(grid);
+
             grid.ViewBackColor = this.vsTheme.Palette.ToolWindowInnerTabInactive.Background;
         }
 
