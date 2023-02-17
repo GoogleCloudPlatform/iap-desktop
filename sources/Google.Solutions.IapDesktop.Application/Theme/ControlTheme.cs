@@ -40,6 +40,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     {
         private readonly IControlTheme baseTheme;
 
+        protected bool ApplyThemeToNewMenuItems { get; set; } = false;
+
         protected Color Accent { get; set; } = Color.FromArgb(98, 136, 242);
 
         public ControlTheme(IControlTheme baseTheme)
@@ -99,10 +101,13 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             //
             // ...and future items.
             //
-            toolStrip.ItemAdded += (_, args) =>
+            if (this.ApplyThemeToNewMenuItems)
             {
-                ApplyTo(args.Item);
-            };
+                toolStrip.ItemAdded += (_, args) =>
+                {
+                    ApplyTo(args.Item);
+                };
+            }
         }
 
         protected virtual void ApplyTo(ToolStripItem item)
@@ -128,22 +133,25 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 // There's no ItemAdded event, so we have to check for new items
                 // every time the menu pops up.
                 //
-                dropDownItem.DropDownOpening += (_, args) =>
+                if (this.ApplyThemeToNewMenuItems)
                 {
-                    if (dropDownItem.DropDownItems != null)
+                    dropDownItem.DropDownOpening += (_, args) =>
                     {
-                        foreach (var subItem in dropDownItem.DropDownItems.OfType<ToolStripItem>())
+                        if (dropDownItem.DropDownItems != null)
                         {
-                            if (!appliedItems.Any(i => 
-                                i.TryGetTarget(out var appliedItem) && appliedItem == subItem))
+                            foreach (var subItem in dropDownItem.DropDownItems.OfType<ToolStripItem>())
                             {
-                                ApplyTo(subItem);
-                            }
+                                if (!appliedItems.Any(i =>
+                                    i.TryGetTarget(out var appliedItem) && appliedItem == subItem))
+                                {
+                                    ApplyTo(subItem);
+                                }
 
-                            appliedItems.Add(new WeakReference<ToolStripItem>(subItem));
+                                appliedItems.Add(new WeakReference<ToolStripItem>(subItem));
+                            }
                         }
-                    }
-                };
+                    };
+                }
             }
         }
 
@@ -211,6 +219,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             : base(baseTheme)
         {
             this.vsTheme = vsTheme.ThrowIfNull(nameof(vsTheme));
+            this.ApplyThemeToNewMenuItems = this.vsTheme.IsDark;
         }
 
         protected override void ApplyTo(TreeView treeView)
