@@ -30,7 +30,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    internal abstract class WindowsTheme : IControlTheme // TODO: Delete
+    internal abstract class OLD_WindowsTheme : IControlTheme // TODO: Delete
     {
         /// <summary>
         /// Check if the Windows version supports dark mode.
@@ -74,17 +74,17 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// Get theme based on what's configured in Windows.
         /// </summary>
         /// <returns></returns>
-        public static WindowsTheme GetSystemTheme()
+        public static OLD_WindowsTheme GetSystemTheme()
         {
             return IsDarkModeEnabled
-                ? (WindowsTheme)new DarkTheme()
+                ? (OLD_WindowsTheme)new DarkTheme()
                 : new ClassicTheme();
         }
 
         /// <summary>
         /// Return the default theme, which works on all OS versions.
         /// </summary>
-        public static WindowsTheme GetDefaultTheme()
+        public static OLD_WindowsTheme GetDefaultTheme()
         {
             return new ClassicTheme();
         }
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// <summary>
         /// Return the default theme, which works on all OS versions.
         /// </summary>
-        public static WindowsTheme GetDarkTheme()
+        public static OLD_WindowsTheme GetDarkTheme()
         {
             return new DarkTheme();
         }
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// <summary>
         /// Classic, light theme.
         /// </summary>
-        private class ClassicTheme : WindowsTheme
+        private class ClassicTheme : OLD_WindowsTheme
         {
         }
 
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// https://github.com/microsoft/WindowsAppSDK/issues/41 for details
         /// on undocumented method calls.
         /// </summary>
-        private class DarkTheme : WindowsTheme
+        private class DarkTheme : OLD_WindowsTheme
         {
             public DarkTheme()
             {

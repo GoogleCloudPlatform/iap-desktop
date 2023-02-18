@@ -63,26 +63,22 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             var settings = themeSettingsRepository.GetSettings();
 
-            WindowsTheme windowsTheme;
-            VSTheme vsTheme;
+            bool useDarkMode;
+
             switch (settings.Theme.EnumValue)
             {
                 case ThemeSettings.ApplicationTheme.System:
                     //
                     // Use same mode as Windows.
                     //
-                    windowsTheme = WindowsTheme.GetSystemTheme();
-                    vsTheme = windowsTheme.IsDark
-                        ? VSTheme.GetDarkTheme()
-                        : VSTheme.GetLightTheme();
+                    useDarkMode = WindowsDarkTheme.IsDarkModeEnabled;
                     break;
 
                 case ThemeSettings.ApplicationTheme.Dark:
                     //
                     // Use dark mode, even if Windows uses light mode.
                     //
-                    windowsTheme = WindowsTheme.GetDarkTheme();
-                    vsTheme = VSTheme.GetDarkTheme();
+                    useDarkMode = true;
                     break;
 
                 default:
@@ -90,10 +86,28 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     // Use safe defaults that also work on downlevel
                     // versions of Windows.
                     //
-                    windowsTheme = WindowsTheme.GetDefaultTheme();
-                    vsTheme = VSTheme.GetLightTheme();
+                    useDarkMode = false;
                     break;
             }
+
+            var mainWindowTheme = new ControlTheme();
+            var toolWindowTheme = new ControlTheme();
+
+            if (useDarkMode)
+            {
+                mainWindowTheme.AddWindowsDarkThemeRules();
+                toolWindowTheme.AddWindowsDarkThemeRules();
+            }
+
+            mainWindowTheme.AddWindowsVistaThemeRules();
+            toolWindowTheme.AddWindowsVistaThemeRules();
+
+            var vsTheme = useDarkMode
+                ? VSTheme.GetDarkTheme()
+                : VSTheme.GetLightTheme();
+
+            mainWindowTheme.AddDialogRules(vsTheme);
+            toolWindowTheme.AddToolWindowRules(vsTheme);
 
             //
             // Apply the resulting theme to the different kinds of windows we have.
@@ -103,9 +117,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             this.DockPanelTheme.Extender.DockPaneFactory =
                 new DockPaneFactory(this.DockPanelTheme.Extender.DockPaneFactory);
 
-            this.DialogTheme = new ControlTheme(windowsTheme);
-            this.ToolWindowTheme = new ToolWindowTheme(windowsTheme, vsTheme);
-            this.MainWindowTheme = new MainWindowTheme(windowsTheme, vsTheme);
+            this.DialogTheme = mainWindowTheme;
+            this.MainWindowTheme = mainWindowTheme;
+            this.ToolWindowTheme = toolWindowTheme;
         }
 
         //---------------------------------------------------------------------

@@ -35,7 +35,7 @@ namespace Google.Solutions.Mvvm.Theme
         // Theming rules.
         //---------------------------------------------------------------------
 
-        private static void UseExplorerThemeForTreeView(TreeView treeView)
+        private static void StyleTreeView(TreeView treeView)
         {
             treeView.HotTracking = true;
 
@@ -46,7 +46,7 @@ namespace Google.Solutions.Mvvm.Theme
             NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
         }
 
-        private static void UseExplorerThemeForListView(ListView listView)
+        private static void StyleListView(ListView listView)
         {
             listView.HotTracking = false;
 
@@ -67,12 +67,12 @@ namespace Google.Solutions.Mvvm.Theme
         /// NB. When combined with dark mode, the dark mode rules must be
         /// added first.
         /// </summary>
-        public static void AddRules(this ControlTheme controlTheme)
+        public static void AddWindowsVistaThemeRules(this ControlTheme controlTheme)
         {
             controlTheme.ThrowIfNull(nameof(controlTheme));
 
-            controlTheme.AddRule<TreeView>(UseExplorerThemeForTreeView);
-            controlTheme.AddRule<ListView>(UseExplorerThemeForListView);
+            controlTheme.AddRule<TreeView>(StyleTreeView);
+            controlTheme.AddRule<ListView>(StyleListView);
         }
 
         //---------------------------------------------------------------------

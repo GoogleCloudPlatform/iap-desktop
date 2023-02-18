@@ -119,7 +119,7 @@ namespace Google.Solutions.Mvvm.Theme
         /// <summary>
         /// Register rules.
         /// </summary>
-        public static void AddRules(this ControlTheme controlTheme)
+        public static void AddWindowsDarkThemeRules(this ControlTheme controlTheme)
         {
             controlTheme.ThrowIfNull(nameof(controlTheme));
             if (!IsDarkModeSupported)

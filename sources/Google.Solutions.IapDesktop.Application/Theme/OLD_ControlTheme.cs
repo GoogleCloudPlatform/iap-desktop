@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// <summary>
     /// VS-style theme for any windows.
     /// </summary>
-    internal class ControlTheme : IControlTheme
+    internal class OLD_ControlTheme : IControlTheme
     {
         private readonly IControlTheme baseTheme;
 
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         protected Color Accent { get; set; } = Color.FromArgb(98, 136, 242);
 
-        public ControlTheme(IControlTheme baseTheme)
+        public OLD_ControlTheme(IControlTheme baseTheme)
         {
             this.baseTheme = baseTheme.ThrowIfNull(nameof(baseTheme));
         }
@@ -224,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     /// <summary>
     /// VS-style theme for tool windows.
     /// </summary>
-    internal class ToolWindowTheme : ControlTheme
+    internal class ToolWindowTheme : OLD_ControlTheme
     {
         private const float IconGrayScaleFactor = .65f;
         protected readonly VSTheme vsTheme;
