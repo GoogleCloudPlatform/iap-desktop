@@ -22,9 +22,12 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Drawing;
+using Google.Solutions.Mvvm.Interop;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -162,7 +165,8 @@ namespace Google.Solutions.Mvvm.Theme
             //
             NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
 
-            if (this.IsDarkModeEnabled)
+            bool designMode = (LicenseManager.UsageMode == LicenseUsageMode.Designtime);
+            if (this.IsDarkModeEnabled && !designMode)
             {
                 //
                 // In dark mode, we also need to apply a theme to the header,
@@ -174,6 +178,52 @@ namespace Google.Solutions.Mvvm.Theme
 
                 NativeMethods.AllowDarkModeForWindow(headerHandle, true);
                 NativeMethods.SetWindowTheme(headerHandle, "ItemsView", null);
+
+                //
+                // Subclass the list view (not the header) to adjust the text color. Adapted
+                // from https://github.com/ysc3839/win32-darkmode/blob/master/win32-darkmode/ListViewUtil.h
+                //
+                var subclass = new SubclassCallback(listView.Handle, (ref Message m) =>
+                {
+                    switch (m.Msg)
+                    {
+                        case NativeMethods.WM_NOTIFY:
+                            var hdr = Marshal.PtrToStructure<NativeMethods.NMHDR>(m.LParam);
+                            if (hdr.code == NativeMethods.NM_CUSTOMDRAW)
+                            {
+                                var custDraw = Marshal.PtrToStructure<NativeMethods.NMCUSTOMDRAW>(m.LParam);
+
+                                switch (custDraw.dwDrawStage)
+                                {
+                                    case NativeMethods.CDDS_PREPAINT:
+                                        m.Result = new IntPtr(NativeMethods.CDRF_NOTIFYITEMDRAW);
+                                        break;
+
+                                    case NativeMethods.CDDS_ITEMPREPAINT:
+                                        NativeMethods.SetTextColor(
+                                            custDraw.hdc, 
+                                            Color.White.ToCOLORREF());
+                                        m.Result = new IntPtr(NativeMethods.CDRF_DODEFAULT);
+                                        break;
+                                }
+                            }
+                            else if (hdr.code == NativeMethods.HDN_ITEMCHANGEDW)
+                            {
+                                //
+                                // When resizing a column header, the list isn't redrawn
+                                // automatically. Thus, force a redraw.
+                                //
+                                listView.Invalidate();
+                            }
+                            break;
+
+                        default:
+                            SubclassCallback.DefaultWndProc(ref m);
+                            break;
+                    }
+                });
+
+                listView.Disposed += (_, __) => subclass.Dispose();
             }
         }
 
@@ -187,6 +237,44 @@ namespace Google.Solutions.Mvvm.Theme
         private static class NativeMethods
         {
             public const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+
+            public const int WM_NOTIFY = 0x004E;
+            public const int NM_CUSTOMDRAW = -12;
+            public const int CDDS_PREPAINT = 1;
+            public const int CDDS_ITEM = 0x10000;
+            public const int CDDS_ITEMPREPAINT = CDDS_ITEM | CDDS_PREPAINT;
+            public const int CDRF_NOTIFYITEMDRAW = 0x20;
+            public const int CDRF_DODEFAULT = 0x00000000;
+            public const int HDN_ITEMCHANGEDW = -321;
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct RECT
+            {
+                public int left;
+                public int top;
+                public int right;
+                public int bottom;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct NMHDR
+            {
+                public IntPtr hwndFrom;
+                public IntPtr idFrom;
+                public int code;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct NMCUSTOMDRAW
+            {
+                public NMHDR hdr;
+                public int dwDrawStage;
+                public IntPtr hdc;
+                public RECT rc;
+                public IntPtr dwItemSpec;
+                public int uItemState;
+                public IntPtr lItemlParam;
+            }
 
             public enum APPMODE : int
             {
@@ -218,6 +306,10 @@ namespace Google.Solutions.Mvvm.Theme
                 IntPtr hWnd,
                 string textSubAppName,
                 string textSubIdList);
+
+
+            [DllImport("gdi32.dll")]
+            public static extern uint SetTextColor(IntPtr hdc, uint color);
         }
     }
 
