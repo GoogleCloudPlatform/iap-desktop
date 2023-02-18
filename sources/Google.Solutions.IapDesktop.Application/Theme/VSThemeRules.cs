@@ -45,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private static void StyleFlyoutWindow(FlyoutWindow flyout, VSTheme theme)
         {
+            flyout.BackColor = theme.Palette.ToolWindowInnerTabInactive.Background;
             flyout.BorderColor = Color.FromArgb(0, 122, 204); // TODO: Use color from theme?
         }
 
@@ -128,7 +129,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             controlTheme.ThrowIfNull(nameof(controlTheme));
 
-            controlTheme.AddRule<Form>(c => StyleForm(c, theme));
             controlTheme.AddRule<HeaderLabel>(StyleHeaderLabel);
             controlTheme.AddRule<DockPanel>(c => StyleDockPanel(c, theme));
             controlTheme.AddRule<FlyoutWindow>(c => StyleFlyoutWindow(c, theme));
