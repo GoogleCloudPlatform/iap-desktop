@@ -380,6 +380,8 @@ namespace Google.Solutions.IapDesktop
                 windowLayer.AddTransient<DebugDockingViewModel>();
                 windowLayer.AddTransient<DebugServiceRegistryView>();
                 windowLayer.AddTransient<DebugServiceRegistryViewModel>();
+                windowLayer.AddTransient<DebugCommonControlsView>();
+                windowLayer.AddTransient<DebugCommonControlsViewModel>();
 #endif
                 //
                 // Load extensions.

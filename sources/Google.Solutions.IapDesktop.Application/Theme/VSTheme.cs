@@ -91,6 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public ToolWindowInnerTabPalette ToolWindowInnerTabInactive { get; }
             public GridHeadingPallette GridHeading { get; }
             public WindowPallette Window { get; }
+            public ButtonPallette Button { get; }
 
             public VSColorPalette(XDocument xml) : base(xml)
             {
@@ -109,6 +110,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     Background = GetColor(xml, "Environment", "Window", "Background"),
                     Frame = GetColor(xml, "Environment", "WindowFrame", "Background"),
                     Text = GetColor(xml, "Environment", "WindowText", "Background")
+                };
+                this.Button = new ButtonPallette()
+                {
+                    Background = GetColor(xml, "CommonControls", "Button", "Background"),
+                    Text = GetColor(xml, "CommonControls", "Button", "Foreground"),
+                    Border = GetColor(xml, "CommonControls", "ButtonBorder", "Background"),
+                    BackgroundHover = GetColor(xml, "CommonControls", "ButtonHover", "Background"),
+                    BackgroundPressed = GetColor(xml, "CommonControls", "ButtonPressed", "Background")
                 };
             }
 
@@ -149,5 +158,15 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public Color Frame { get; set; }
             public Color Text { get; set; }
         }
+
+        internal struct ButtonPallette
+        {
+            public Color Background { get; set; }
+            public Color Text { get; set; }
+            public Color Border { get; set; }
+            public Color BackgroundHover { get; set; }
+            public Color BackgroundPressed { get; set; }
+        }
+
     }
 }

@@ -557,6 +557,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 _ => ToolWindow
                     .GetWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)
                     .Show()));
+            debugCommand.AddCommand(new Command<IMainWindow>(
+                "Common controls",
+                _ => CommandState.Enabled,
+                _ => ToolWindow
+                    .GetWindow<DebugCommonControlsView, DebugCommonControlsViewModel>(this.serviceProvider)
+                    .Show()));
 
             var crashCommand = debugCommand.AddCommand(new Command<IMainWindow>(
                 "Exceptions",

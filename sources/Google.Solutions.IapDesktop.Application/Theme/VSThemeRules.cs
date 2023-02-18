@@ -121,6 +121,17 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
         }
 
+        private static void StyleButton(Button button, VSTheme theme)
+        {
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.BorderColor = theme.Palette.Button.Border;
+            button.FlatAppearance.MouseDownBackColor = theme.Palette.Button.BackgroundPressed;
+            button.FlatAppearance.MouseOverBackColor = theme.Palette.Button.BackgroundHover;
+            button.BackColor = theme.Palette.Button.Background;
+            button.ForeColor = theme.Palette.Button.Text;
+            button.UseVisualStyleBackColor = false;
+        }
+
         //---------------------------------------------------------------------
         // Extension methods.
         //---------------------------------------------------------------------
@@ -135,6 +146,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<ListView>(c => StyleListView(c, theme));
             controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c, theme));
             controlTheme.AddRule<ToolStrip>(c => StyleToolStrip(c, theme));
+            controlTheme.AddRule<Button>(c => StyleButton(c, theme));
 
             var menuTheme = new ToolStripItemTheme(true);
             menuTheme.AddRule(i => StyleToolStripItem(i, theme));

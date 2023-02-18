@@ -186,6 +186,13 @@
     <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
     <Compile Include="Views\Authorization\OAuthScopeNotGrantedViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugCommonControlsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugCommonControlsView.Designer.cs">
+      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugCommonControlsViewModel.cs" />
     <Compile Include="Views\Diagnostics\DebugDockingViewModel.cs" />
     <Compile Include="Views\Diagnostics\DebugFullScreenView.cs">
       <SubType>Form</SubType>
@@ -381,6 +388,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Authorization\OAuthScopeNotGrantedView.resx">
       <DependentUpon>OAuthScopeNotGrantedView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugCommonControlsView.resx">
+      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugDockingView.resx">
       <DependentUpon>DebugDockingView.cs</DependentUpon>
