@@ -169,10 +169,9 @@ namespace Google.Solutions.Mvvm.Theme
             controlTheme.AddRule<ToolStrip>(c => toolStripItemTheme.ApplyTo(c));
 
             //
-            // Also consider the context menu of common controls.
+            // Paas any context menus back to the control theme.
             //
-            controlTheme.AddRule<TreeView>(c => toolStripItemTheme.ApplyTo(c.ContextMenuStrip));
-            controlTheme.AddRule<ListView>(c => toolStripItemTheme.ApplyTo(c.ContextMenuStrip));
+            controlTheme.AddRule<Control>(c => controlTheme.ApplyTo(c.ContextMenuStrip));
         }
     }
 }
