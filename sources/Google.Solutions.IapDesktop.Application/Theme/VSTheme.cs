@@ -90,6 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             public ToolWindowInnerTabPalette ToolWindowInnerTabInactive { get; }
             public GridHeadingPallette GridHeading { get; }
+            public WindowPallette Window { get; }
 
             public VSColorPalette(XDocument xml) : base(xml)
             {
@@ -102,6 +103,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 {
                     Background = GetColor(xml, "Environment", "ToolWindowContentGrid", "Background"),
                     Text = GetColor(xml, "Environment", "GridHeadingText", "Background")
+                };
+                this.Window = new WindowPallette()
+                {
+                    Background = GetColor(xml, "Environment", "Window", "Background"),
+                    Frame = GetColor(xml, "Environment", "WindowFrame", "Background"),
+                    Text = GetColor(xml, "Environment", "WindowText", "Background")
                 };
             }
 
@@ -124,15 +131,22 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
         }
 
-        internal class ToolWindowInnerTabPalette
+        internal struct ToolWindowInnerTabPalette
         {
             public Color Background { get; set; }
             public Color Text { get; set; }
         }
 
-        internal class GridHeadingPallette
+        internal struct GridHeadingPallette
         {
             public Color Background { get; set; }
+            public Color Text { get; set; }
+        }
+
+        internal struct WindowPallette
+        {
+            public Color Background { get; set; }
+            public Color Frame { get; set; }
             public Color Text { get; set; }
         }
     }

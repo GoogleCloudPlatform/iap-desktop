@@ -95,15 +95,15 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 ? VSTheme.GetDarkTheme()
                 : VSTheme.GetLightTheme();
 
-            var mainWindowTheme = new ControlTheme()
+            var dialogTheme = new ControlTheme()
                 .AddRules(windowsTheme)
                 .AddCommonControlThemeRules()
                 .AddDialogRules(vsTheme);
 
-            var toolWindowTheme = new ControlTheme()
+            var dockWindowTheme = new ControlTheme()
                 .AddRules(windowsTheme)
                 .AddCommonControlThemeRules()
-                .AddToolWindowRules(vsTheme);
+                .AddDockWindowRules(vsTheme);
 
             //
             // Apply the resulting theme to the different kinds of windows we have.
@@ -113,9 +113,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             this.DockPanelTheme.Extender.DockPaneFactory =
                 new DockPaneFactory(this.DockPanelTheme.Extender.DockPaneFactory);
 
-            this.DialogTheme = mainWindowTheme;
-            this.MainWindowTheme = mainWindowTheme;
-            this.ToolWindowTheme = toolWindowTheme;
+            this.DialogTheme = dialogTheme;
+            this.MainWindowTheme = dockWindowTheme;
+            this.ToolWindowTheme = dockWindowTheme;
         }
 
         //---------------------------------------------------------------------

@@ -38,9 +38,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         // Theming rules.
         //---------------------------------------------------------------------
 
-        private static void StyleForm(Form form, VSTheme theme)
+        private static void StyleDockWindow(Form form, VSTheme theme)
         {
             form.BackColor = theme.Palette.ToolWindowInnerTabInactive.Background;
+        }
+
+        private static void StyleDialog(Form form, VSTheme theme)
+        {
+            form.BackColor = theme.Palette.Window.Background;
         }
 
         private static void StyleFlyoutWindow(FlyoutWindow flyout, VSTheme theme)
@@ -120,37 +125,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         // Extension methods.
         //---------------------------------------------------------------------
 
-        /// <summary>
-        /// Register rules for dialogs and top-level windows.
-        /// </summary>
-        public static ControlTheme AddDialogRules(
-            this ControlTheme controlTheme,
+        private static ControlTheme AddCommonRules(
+            ControlTheme controlTheme,
             VSTheme theme)
         {
-            controlTheme.ThrowIfNull(nameof(controlTheme));
-
-            controlTheme.AddRule<HeaderLabel>(StyleHeaderLabel);
-            controlTheme.AddRule<DockPanel>(c => StyleDockPanel(c, theme));
-            controlTheme.AddRule<FlyoutWindow>(c => StyleFlyoutWindow(c, theme));
-            controlTheme.AddRule<ToolStrip>(c => StyleToolStrip(c, theme));
-
-            var menuTheme = new ToolStripItemTheme(true);
-            menuTheme.AddRule(i => StyleToolStripItem(i, theme));
-            controlTheme.AddRules(menuTheme);
-
-            return controlTheme;
-        }
-
-        /// <summary>
-        /// Register basic set of rules that apply to all types of windows.
-        /// </summary>
-        public static ControlTheme AddToolWindowRules(
-            this ControlTheme controlTheme,
-            VSTheme theme)
-        {
-            controlTheme.ThrowIfNull(nameof(controlTheme));
-
-            controlTheme.AddRule<Form>(c => StyleForm(c, theme));
             controlTheme.AddRule<HeaderLabel>(StyleHeaderLabel);
             controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c, theme));//TODO: Apply before handle created
             controlTheme.AddRule<TreeView>(c => StyleTreeView(c, theme));
@@ -163,6 +141,37 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRules(menuTheme);
 
             return controlTheme;
+        }
+
+        /// <summary>
+        /// Register rules for main window and dialogs.
+        /// </summary>
+        public static ControlTheme AddDialogRules(
+            this ControlTheme controlTheme,
+            VSTheme theme)
+        {
+            controlTheme.ThrowIfNull(nameof(controlTheme));
+
+            controlTheme.AddRule<Form>(c => StyleDialog(c, theme));
+
+            return AddCommonRules(controlTheme, theme);
+        }
+
+        /// <summary>
+        /// Register basic set of rules that apply to dock windows (main
+        /// window and tool windows).
+        /// </summary>
+        public static ControlTheme AddDockWindowRules(
+            this ControlTheme controlTheme,
+            VSTheme theme)
+        {
+            controlTheme.ThrowIfNull(nameof(controlTheme));
+
+            controlTheme.AddRule<Form>(c => StyleDockWindow(c, theme));
+            controlTheme.AddRule<DockPanel>(c => StyleDockPanel(c, theme));
+            controlTheme.AddRule<FlyoutWindow>(c => StyleFlyoutWindow(c, theme));
+
+            return AddCommonRules(controlTheme, theme);
         }
     }
 }
