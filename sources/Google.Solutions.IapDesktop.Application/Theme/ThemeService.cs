@@ -102,6 +102,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             mainWindowTheme.AddWindowsVistaThemeRules();
             toolWindowTheme.AddWindowsVistaThemeRules();
 
+            mainWindowTheme.AddCommonControlThemeRules();
+            toolWindowTheme.AddCommonControlThemeRules();
+
             var vsTheme = useDarkMode
                 ? VSTheme.GetDarkTheme()
                 : VSTheme.GetLightTheme();

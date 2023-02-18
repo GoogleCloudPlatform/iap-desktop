@@ -20,7 +20,6 @@
 //
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Controls
@@ -30,41 +29,41 @@ namespace Google.Solutions.Mvvm.Controls
     /// </summary>
     public class AutosizeListView : ListView
     {
-        private void ResizeLastColumnToFit()
-        {
-            if (this.Columns.Count == 0)
-            {
-                return;
-            }
+        //private void ResizeLastColumnToFit()
+        //{
+        //    if (this.Columns.Count == 0)
+        //    {
+        //        return;
+        //    }
 
-            int widthsOfAllButLastColumns = 0;
-            for (int i = 0; i < this.Columns.Count - 1; i++)
-            {
-                widthsOfAllButLastColumns += this.Columns[i].Width;
-            }
+        //    int widthsOfAllButLastColumns = 0;
+        //    for (int i = 0; i < this.Columns.Count - 1; i++)
+        //    {
+        //        widthsOfAllButLastColumns += this.Columns[i].Width;
+        //    }
 
-            this.Columns[this.Columns.Count - 1].Width =
-                this.ClientSize.Width - widthsOfAllButLastColumns - 4;
-        }
+        //    this.Columns[this.Columns.Count - 1].Width =
+        //        this.ClientSize.Width - widthsOfAllButLastColumns - 4;
+        //}
 
-        //---------------------------------------------------------------------
-        // Event overrides.
-        //---------------------------------------------------------------------
+        ////---------------------------------------------------------------------
+        //// Event overrides.
+        ////---------------------------------------------------------------------
 
-        protected override void OnColumnWidthChanged(ColumnWidthChangedEventArgs e)
-        {
-            if (e.ColumnIndex != this.Columns.Count - 1)
-            {
-                ResizeLastColumnToFit();
-            }
+        //protected override void OnColumnWidthChanged(ColumnWidthChangedEventArgs e)
+        //{
+        //    if (e.ColumnIndex != this.Columns.Count - 1)
+        //    {
+        //        ResizeLastColumnToFit();
+        //    }
 
-            base.OnColumnWidthChanged(e);
-        }
+        //    base.OnColumnWidthChanged(e);
+        //}
 
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            ResizeLastColumnToFit();
-            base.OnSizeChanged(e);
-        }
+        //protected override void OnSizeChanged(EventArgs e)
+        //{
+        //    ResizeLastColumnToFit();
+        //    base.OnSizeChanged(e);
+        //}
     }
 }
