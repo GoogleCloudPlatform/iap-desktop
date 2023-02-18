@@ -76,9 +76,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
                 case ThemeSettings.ApplicationTheme.Dark:
                     //
-                    // Use dark mode, even if Windows uses light mode.
+                    // Use dark mode if possible.
                     //
-                    windowsTheme = new WindowsTheme(true);
+                    windowsTheme = new WindowsTheme(WindowsTheme.IsDarkModeSupported);
                     break;
 
                 default:
