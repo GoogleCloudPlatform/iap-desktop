@@ -180,8 +180,9 @@ namespace Google.Solutions.Mvvm.Theme
                 NativeMethods.SetWindowTheme(headerHandle, "ItemsView", null);
 
                 //
-                // Subclass the list view (not the header) to adjust the text color. Adapted
-                // from https://github.com/ysc3839/win32-darkmode/blob/master/win32-darkmode/ListViewUtil.h
+                // Subclass the list view (not the header) to adjust the text color
+                // in the column header. Adapted from
+                // https://github.com/ysc3839/win32-darkmode/blob/master/win32-darkmode/ListViewUtil.h
                 //
                 var subclass = new SubclassCallback(listView.Handle, (ref Message m) =>
                 {
@@ -200,7 +201,7 @@ namespace Google.Solutions.Mvvm.Theme
                                         break;
 
                                     case NativeMethods.CDDS_ITEMPREPAINT:
-                                        NativeMethods.SetTextColor(
+                                        NativeMethods.SetTextColor( // TODO: Use theme color
                                             custDraw.hdc, 
                                             Color.White.ToCOLORREF());
                                         m.Result = new IntPtr(NativeMethods.CDRF_DODEFAULT);

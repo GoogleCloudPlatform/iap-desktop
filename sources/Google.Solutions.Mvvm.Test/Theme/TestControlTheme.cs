@@ -67,6 +67,29 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
+        public void WhenControlHasContextMenu_ThenApplyToAppliesRulesToContextMenu()
+        {
+            using (var form = new Form()
+            {
+                ContextMenuStrip = new ContextMenuStrip()
+            })
+            {
+                var theme = new ControlTheme();
+                var appliedControls = new List<Control>();
+                theme.AddRule<Control>(c => appliedControls.Add(c));
+
+                theme.ApplyTo(form);
+
+                form.Show();
+                form.Close();
+
+                CollectionAssert.AreEquivalent(
+                    new Control[] { form, form.ContextMenuStrip },
+                    appliedControls);
+            }
+        }
+
+        [Test]
         public void WhenRuleIsForSpecificType_ThenApplyToAppliesRuleToMatchingControls()
         {
             using (var form = new Form())

@@ -167,11 +167,6 @@ namespace Google.Solutions.Mvvm.Theme
             toolStripItemTheme.ThrowIfNull(nameof(toolStripItemTheme));
 
             controlTheme.AddRule<ToolStrip>(c => toolStripItemTheme.ApplyTo(c));
-
-            //
-            // Paas any context menus back to the control theme.
-            //
-            controlTheme.AddRule<Control>(c => controlTheme.ApplyTo(c.ContextMenuStrip));
         }
     }
 }

@@ -79,6 +79,12 @@ namespace Google.Solutions.Mvvm.Theme
             {
                 ApplyTo(child);
             }
+
+            //
+            // Apply to context menu strip. Context menu strips are
+            // Controls too, but they're not included in the Controls list.
+            //
+            ApplyTo(control.ContextMenuStrip);
         }
 
         //---------------------------------------------------------------------
