@@ -92,6 +92,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public GridHeadingPallette GridHeading { get; }
             public WindowPallette Window { get; }
             public ButtonPallette Button { get; }
+            public LabelPalette Label { get; }
+            public LabelPalette LinkLabel { get; }
 
             public VSColorPalette(XDocument xml) : base(xml)
             {
@@ -118,6 +120,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     Border = GetColor(xml, "CommonControls", "ButtonBorder", "Background"),
                     BackgroundHover = GetColor(xml, "CommonControls", "ButtonHover", "Background"),
                     BackgroundPressed = GetColor(xml, "CommonControls", "ButtonPressed", "Background")
+                };
+                this.Label = new LabelPalette()
+                {
+                    Text = GetColor(xml, "Environment", "CaptionText", "Background"),
+                };
+                this.LinkLabel = new LabelPalette()
+                {
+                    Text = GetColor(xml, "Environment", "ControlLinkText", "Background"),
                 };
             }
 
@@ -168,5 +178,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public Color BackgroundPressed { get; set; }
         }
 
+        internal struct LabelPalette
+        {
+            public Color Text { get; set; }
+        }
     }
 }

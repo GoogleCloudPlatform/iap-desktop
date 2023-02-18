@@ -32,6 +32,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.regularButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.label = new System.Windows.Forms.Label();
+            this.linkLabel = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // regularButton
@@ -63,17 +65,39 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
+            // label
+            // 
+            this.label.AutoSize = true;
+            this.label.Location = new System.Drawing.Point(12, 42);
+            this.label.Name = "label";
+            this.label.Size = new System.Drawing.Size(33, 13);
+            this.label.TabIndex = 3;
+            this.label.Text = "Label";
+            // 
+            // linkLabel
+            // 
+            this.linkLabel.AutoSize = true;
+            this.linkLabel.Location = new System.Drawing.Point(12, 63);
+            this.linkLabel.Name = "linkLabel";
+            this.linkLabel.Size = new System.Drawing.Size(27, 13);
+            this.linkLabel.TabIndex = 4;
+            this.linkLabel.TabStop = true;
+            this.linkLabel.Text = "Link";
+            // 
             // DebugCommonControlsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.linkLabel);
+            this.Controls.Add(this.label);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.regularButton);
             this.Name = "DebugCommonControlsView";
             this.Text = "DebugCommonControlsView";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -82,5 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.Button regularButton;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.Label label;
+        private System.Windows.Forms.LinkLabel linkLabel;
     }
 }

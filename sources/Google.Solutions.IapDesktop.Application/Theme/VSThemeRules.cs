@@ -132,6 +132,20 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             button.UseVisualStyleBackColor = false;
         }
 
+        private static void StyleLabel(Label label, VSTheme theme)
+        {
+            if (!(label is HeaderLabel))
+            {
+                label.ForeColor = theme.Palette.Label.Text;
+            }
+        }
+
+        private static void StyleLinkLabel(LinkLabel link, VSTheme theme)
+        {
+            link.LinkColor = theme.Palette.LinkLabel.Text;
+            link.ActiveLinkColor = theme.Palette.LinkLabel.Text;
+        }
+
         //---------------------------------------------------------------------
         // Extension methods.
         //---------------------------------------------------------------------
@@ -147,6 +161,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c, theme));
             controlTheme.AddRule<ToolStrip>(c => StyleToolStrip(c, theme));
             controlTheme.AddRule<Button>(c => StyleButton(c, theme));
+            controlTheme.AddRule<Label>(c => StyleLabel(c, theme));
+            controlTheme.AddRule<LinkLabel>(c => StyleLinkLabel(c, theme));
 
             var menuTheme = new ToolStripItemTheme(true);
             menuTheme.AddRule(i => StyleToolStripItem(i, theme));

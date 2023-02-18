@@ -2441,7 +2441,7 @@
         <Background Type="CT_RAW" Source="FFF1CA5D" />
       </Color>
       <Color Name="ControlLinkText">
-        <Background Type="CT_RAW" Source="FF007ACC" />
+        <Background Type="CT_RAW" Source="FF55AAFF" />
       </Color>
       <Color Name="ControlLinkTextHover">
         <Background Type="CT_RAW" Source="FF007ACC" />
