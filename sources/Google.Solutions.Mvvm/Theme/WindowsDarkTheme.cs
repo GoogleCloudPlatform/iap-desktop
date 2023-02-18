@@ -21,8 +21,10 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Interop;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -80,7 +82,7 @@ namespace Google.Solutions.Mvvm.Theme
         /// https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes
         /// </summary>
         /// <param name="form"></param>
-        private static void UseDarkTitleBar(Form form)
+        private static void StyleTitleBar(Form form)
         {
             if (!form.TopLevel)
             {
@@ -112,6 +114,13 @@ namespace Google.Solutions.Mvvm.Theme
             NativeMethods.AllowDarkModeForWindow(control.Handle, true);
         }
 
+        private static void AllowDarkModeForListViewHeader(ListView listView)
+        {
+            var headerHandle = listView.GetHeaderHandle();
+            Debug.Assert(headerHandle != IntPtr.Zero);
+            NativeMethods.AllowDarkModeForWindow(headerHandle, true);
+        }
+
         //---------------------------------------------------------------------
         // Extension methods.
         //---------------------------------------------------------------------
@@ -133,10 +142,13 @@ namespace Google.Solutions.Mvvm.Theme
             var ret = NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
 
             controlTheme.AddRule<Form>(
-                UseDarkTitleBar, 
+                StyleTitleBar, 
                 ControlTheme.Options.ApplyWhenHandleCreated);
             controlTheme.AddRule<Control>(
                 AllowDarkModeForWindow,
+                ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<ListView>(
+                AllowDarkModeForListViewHeader,
                 ControlTheme.Options.ApplyWhenHandleCreated);
         }
 

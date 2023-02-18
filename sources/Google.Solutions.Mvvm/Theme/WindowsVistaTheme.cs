@@ -20,7 +20,9 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Mvvm.Controls;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -46,7 +48,7 @@ namespace Google.Solutions.Mvvm.Theme
             NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
         }
 
-        private static void StyleListView(ListView listView)
+        private static void StyleListView(ListView listView, bool darkMode)
         {
             listView.HotTracking = false;
 
@@ -55,6 +57,19 @@ namespace Google.Solutions.Mvvm.Theme
             // dark mode-style scrollbars, etc.
             //
             NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
+
+            if (darkMode)
+            {
+                //
+                // In dark mode, we also need to apply a theme to the header,
+                // otherwise it stays in light mode. Note that this doesn't
+                // set the header text color correctly yet.
+                //
+                var headerHandle = listView.GetHeaderHandle();
+                Debug.Assert(headerHandle != IntPtr.Zero);
+
+                NativeMethods.SetWindowTheme(headerHandle, "ItemsView", null);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -67,7 +82,9 @@ namespace Google.Solutions.Mvvm.Theme
         /// NB. When combined with dark mode, the dark mode rules must be
         /// added first.
         /// </summary>
-        public static void AddWindowsVistaThemeRules(this ControlTheme controlTheme)
+        public static void AddWindowsVistaThemeRules(
+            this ControlTheme controlTheme,
+            bool darkMode)
         {
             controlTheme.ThrowIfNull(nameof(controlTheme));
 
@@ -75,7 +92,7 @@ namespace Google.Solutions.Mvvm.Theme
                 StyleTreeView,
                 ControlTheme.Options.ApplyWhenHandleCreated);
             controlTheme.AddRule<ListView>(
-                StyleListView,
+                c => StyleListView(c, darkMode),
                 ControlTheme.Options.ApplyWhenHandleCreated);
         }
 

@@ -71,6 +71,48 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
+        public void WhenColumnResized_ThenLastColumnIsResizedToFit()
+        {
+            using (var form = new Form()
+            {
+                Width = 400,
+                Height = 400
+            })
+            {
+                var listView = new ListView()
+                {
+                    Dock = DockStyle.Fill,
+                    View = View.Details
+                };
+                var column1 = new ColumnHeader()
+                {
+                    Text = "Col-1",
+                    Width = 200
+                };
+                var column2 = new ColumnHeader()
+                {
+                    Text = "Col-2",
+                    Width = 200
+                };
+
+                listView.Columns.Add(column1);
+                listView.Columns.Add(column2);
+
+                form.Controls.Add(listView);
+
+                CommonControlTheme.AutoSizeListViewColumns(listView);
+                form.Show();
+
+                column1.Width = 50;
+
+                Assert.AreEqual(50, column1.Width);
+                Assert.AreNotEqual(200, column2.Width);
+
+                form.Close();
+            }
+        }
+
+        [Test]
         public void WhenListNarrowerThanColumns_ThenLastColumnIsShrunk()
         {
             using (var form = new Form()

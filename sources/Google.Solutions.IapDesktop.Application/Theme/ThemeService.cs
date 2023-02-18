@@ -99,8 +99,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 toolWindowTheme.AddWindowsDarkThemeRules();
             }
 
-            mainWindowTheme.AddWindowsVistaThemeRules();
-            toolWindowTheme.AddWindowsVistaThemeRules();
+            mainWindowTheme.AddWindowsVistaThemeRules(useDarkMode);
+            toolWindowTheme.AddWindowsVistaThemeRules(useDarkMode);
 
             mainWindowTheme.AddCommonControlThemeRules();
             toolWindowTheme.AddCommonControlThemeRules();

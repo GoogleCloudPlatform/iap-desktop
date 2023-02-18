@@ -20,7 +20,9 @@
 //
 
 using Google.Solutions.Mvvm.Properties;
+using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Web;
 using System.Windows.Forms;
@@ -136,6 +138,32 @@ namespace Google.Solutions.Mvvm.Controls
                 copy.Enabled = listView.SelectedIndices.Count > 0;
                 copyAll.Enabled = listView.Items.Count > 0;
             };
+        }
+
+        public static IntPtr GetHeaderHandle(this ListView listView)
+        {
+            return NativeMethods.SendMessage(
+                listView.Handle,
+                NativeMethods.LVM_GETHEADER,
+                IntPtr.Zero,
+                IntPtr.Zero);
+        }
+
+        //---------------------------------------------------------------------
+        // P/Invoke.
+        //---------------------------------------------------------------------
+
+        private static class NativeMethods
+        {
+            public const int LVM_FIRST = 0x1000;
+            public const int LVM_GETHEADER = (LVM_FIRST + 31);
+
+            [DllImport("user32.dll")]
+            public static extern IntPtr SendMessage(
+                IntPtr hWnd,
+                int msg,
+                IntPtr wparam,
+                IntPtr lparam);
         }
     }
 }
