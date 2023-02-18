@@ -106,10 +106,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private static void StyleToolStripItem(ToolStripItem item, VSTheme theme)
         {
-#if DEBUG
-            item.Text = item.Text?.ToUpper();
-#endif
-
             if (theme.IsDark)
             {
                 if (item.Image is Bitmap bitmap)
@@ -154,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             controlTheme.AddRule<Form>(c => StyleForm(c, theme));
             controlTheme.AddRule<HeaderLabel>(StyleHeaderLabel);
-            controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c, theme));
+            controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c, theme));//TODO: Apply before handle created
             controlTheme.AddRule<TreeView>(c => StyleTreeView(c, theme));
             controlTheme.AddRule<ListView>(c => StyleListView(c, theme));
             controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c, theme));

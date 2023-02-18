@@ -71,8 +71,12 @@ namespace Google.Solutions.Mvvm.Theme
         {
             controlTheme.ThrowIfNull(nameof(controlTheme));
 
-            controlTheme.AddRule<TreeView>(StyleTreeView);
-            controlTheme.AddRule<ListView>(StyleListView);
+            controlTheme.AddRule<TreeView>(
+                StyleTreeView,
+                ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<ListView>(
+                StyleListView,
+                ControlTheme.Options.ApplyWhenHandleCreated);
         }
 
         //---------------------------------------------------------------------

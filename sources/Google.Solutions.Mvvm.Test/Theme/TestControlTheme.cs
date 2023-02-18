@@ -93,7 +93,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         }
 
         [Test]
-        public void WhenHandleNotCreatedYet_ThenRuleIsAppliedDelayed()
+        public void WhenNoOptionSetAndHandleNotCreatedYet_ThenRuleIsAppliedImmediately()
         {
             using (var form = new Form())
             {
@@ -101,6 +101,22 @@ namespace Google.Solutions.Mvvm.Test.Theme
 
                 int appliedCalls = 0;
                 theme.AddRule<Form>(c => appliedCalls++);
+
+                theme.ApplyTo(form);
+
+                Assert.AreEqual(1, appliedCalls, "Call is delayed");
+            }
+        }
+
+        [Test]
+        public void WhenDelayOptionSetAndHandleNotCreatedYet_ThenRuleIsAppliedDelayed()
+        {
+            using (var form = new Form())
+            {
+                var theme = new ControlTheme();
+
+                int appliedCalls = 0;
+                theme.AddRule<Form>(c => appliedCalls++, ControlTheme.Options.ApplyWhenHandleCreated);
 
                 theme.ApplyTo(form);
 

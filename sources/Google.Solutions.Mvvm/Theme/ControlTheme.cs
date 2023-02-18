@@ -42,12 +42,15 @@ namespace Google.Solutions.Mvvm.Theme
         /// Add a rule to apply to every control of type TControl.
         /// Rules are applied in the order they're added.
         /// </summary>
-        public void AddRule<TControl>(Action<TControl> apply)
+        public void AddRule<TControl>(
+            Action<TControl> apply,
+            Options options = Options.None)
             where TControl : Control
         {
             this.rules.AddLast(new Rule(
                 typeof(TControl),
-                c => apply((TControl)c)));
+                c => apply((TControl)c),
+                options));
         }
 
         //---------------------------------------------------------------------
@@ -82,34 +85,47 @@ namespace Google.Solutions.Mvvm.Theme
         // Inner classes.
         //---------------------------------------------------------------------
 
+        [Flags]
+        public enum Options
+        {
+            None,
+            ApplyWhenHandleCreated
+        }
+
         private class Rule
         {
             private readonly Type controlType;
             private readonly Action<Control> apply;
+            private readonly Options options;
 
-            public Rule(Type controlType, Action<Control> apply)
+            public Rule(
+                Type controlType, 
+                Action<Control> apply,
+                Options options)
             {
                 this.controlType = controlType;
                 this.apply = apply;
+                this.options = options;
             }
 
             public void Apply(Control control)
             {
                 if (this.controlType.IsAssignableFrom(control.GetType()))
                 {
-                    if (control.IsHandleCreated)
-                    {
-                        //
-                        // Apply rule immediately.
-                        //
-                        this.apply(control);
-                    }
-                    else
+                    if (!control.IsHandleCreated && 
+                        this.options.HasFlag(Options.ApplyWhenHandleCreated))
                     {
                         //
                         // Delay until the handle has been created.
                         //
                         control.HandleCreated += OnHandleCreated;
+                    }
+                    else
+                    {
+                        //
+                        // Apply rule immediately.
+                        //
+                        this.apply(control);
                     }
 
                     void OnHandleCreated(object _, EventArgs __)

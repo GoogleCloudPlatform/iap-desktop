@@ -132,8 +132,12 @@ namespace Google.Solutions.Mvvm.Theme
             //
             var ret = NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
 
-            controlTheme.AddRule<Form>(UseDarkTitleBar);
-            controlTheme.AddRule<Control>(AllowDarkModeForWindow);
+            controlTheme.AddRule<Form>(
+                UseDarkTitleBar, 
+                ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<Control>(
+                AllowDarkModeForWindow,
+                ControlTheme.Options.ApplyWhenHandleCreated);
         }
 
         //---------------------------------------------------------------------
