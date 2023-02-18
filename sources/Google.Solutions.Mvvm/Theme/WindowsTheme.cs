@@ -33,8 +33,31 @@ namespace Google.Solutions.Mvvm.Theme
     /// <summary>
     /// Theming rules for using dark mode.
     /// </summary>
-    public static class WindowsDarkTheme
+    public class WindowsTheme
     {
+        /// <summary>
+        /// Check if this application uses dark mode.
+        /// </summary>
+        public bool IsDarkModeEnabled { get; }
+
+        public WindowsTheme(bool darkMode)
+        {
+            Debug.Assert(!darkMode || IsDarkModeSupported);
+
+            this.IsDarkModeEnabled = darkMode;
+            if (darkMode)
+            {
+                //
+                // Force Win32 controls to use dark mode.
+                //
+                NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Statics.
+        //---------------------------------------------------------------------
+
         /// <summary>
         /// Check if the Windows version supports dark mode.
         /// </summary>
@@ -56,7 +79,7 @@ namespace Google.Solutions.Mvvm.Theme
         /// <summary>
         /// Check if Windows apps should use dark mode.
         /// </summary>
-        public static bool IsDarkModeEnabled
+        public static bool ShouldAppsUseDarkMode
         {
             get
             {
@@ -82,9 +105,9 @@ namespace Google.Solutions.Mvvm.Theme
         /// https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes
         /// </summary>
         /// <param name="form"></param>
-        private static void StyleTitleBar(Form form)
+        internal void StyleTitleBar(Form form)
         {
-            if (!form.TopLevel)
+            if (!this.IsDarkModeEnabled || !form.TopLevel)
             {
                 return;
             }
@@ -109,47 +132,49 @@ namespace Google.Solutions.Mvvm.Theme
         /// <summary>
         /// Opt-in window to use dark mode.
         /// </summary>
-        private static void AllowDarkModeForWindow(Control control)
+        internal void StyleControl(Control control)
         {
-            NativeMethods.AllowDarkModeForWindow(control.Handle, true);
-        }
-
-        private static void AllowDarkModeForListViewHeader(ListView listView)
-        {
-            var headerHandle = listView.GetHeaderHandle();
-            Debug.Assert(headerHandle != IntPtr.Zero);
-            NativeMethods.AllowDarkModeForWindow(headerHandle, true);
-        }
-
-        //---------------------------------------------------------------------
-        // Extension methods.
-        //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Register rules.
-        /// </summary>
-        public static void AddWindowsDarkThemeRules(this ControlTheme controlTheme)
-        {
-            controlTheme.ThrowIfNull(nameof(controlTheme));
-            if (!IsDarkModeSupported)
+            if (this.IsDarkModeEnabled)
             {
-                return;
+                NativeMethods.AllowDarkModeForWindow(control.Handle, true);
             }
+        }
+
+
+        internal void StyleTreeView(TreeView treeView)
+        {
+            treeView.HotTracking = true;
 
             //
-            // Force Win32 controls to use dark mode.
+            // NB. When called after AllowDarkModeForWindow, this also applies
+            // dark mode-style scrollbars, etc.
             //
-            var ret = NativeMethods.SetPreferredAppMode(NativeMethods.APPMODE.FORCEDARK);
+            NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
+        }
 
-            controlTheme.AddRule<Form>(
-                StyleTitleBar, 
-                ControlTheme.Options.ApplyWhenHandleCreated);
-            controlTheme.AddRule<Control>(
-                AllowDarkModeForWindow,
-                ControlTheme.Options.ApplyWhenHandleCreated);
-            controlTheme.AddRule<ListView>(
-                AllowDarkModeForListViewHeader,
-                ControlTheme.Options.ApplyWhenHandleCreated);
+        internal void StyleListView(ListView listView)
+        {
+            listView.HotTracking = false;
+
+            //
+            // NB. When called after AllowDarkModeForWindow, this also applies
+            // dark mode-style scrollbars, etc.
+            //
+            NativeMethods.SetWindowTheme(listView.Handle, "Explorer", null);
+
+            if (this.IsDarkModeEnabled)
+            {
+                //
+                // In dark mode, we also need to apply a theme to the header,
+                // otherwise it stays in light mode. Note that this doesn't
+                // set the header text color correctly yet.
+                //
+                var headerHandle = listView.GetHeaderHandle();
+                Debug.Assert(headerHandle != IntPtr.Zero);
+
+                NativeMethods.AllowDarkModeForWindow(headerHandle, true);
+                NativeMethods.SetWindowTheme(headerHandle, "ItemsView", null);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -187,6 +212,39 @@ namespace Google.Solutions.Mvvm.Theme
                 int attr,
                 ref int attrValue,
                 int attrSize);
+
+            [DllImport("uxtheme", ExactSpelling = true, CharSet = CharSet.Unicode)]
+            public static extern int SetWindowTheme(
+                IntPtr hWnd,
+                string textSubAppName,
+                string textSubIdList);
+        }
+    }
+
+    public static class WindowsThemeExtensions
+    {
+        /// <summary>
+        /// Register rules.
+        /// </summary>
+        public static ControlTheme AddRules(this ControlTheme controlTheme, WindowsTheme theme)
+        {
+            controlTheme.ThrowIfNull(nameof(controlTheme));
+            theme.ThrowIfNull(nameof(theme));
+
+            controlTheme.AddRule<Form>(
+                c => theme.StyleTitleBar(c),
+                ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<Control>(
+                c => theme.StyleControl(c),
+                ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<TreeView>(
+                c => theme.StyleTreeView(c),
+                ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<ListView>(
+                c => theme.StyleListView(c),
+                ControlTheme.Options.ApplyWhenHandleCreated);
+
+            return controlTheme;
         }
     }
 }

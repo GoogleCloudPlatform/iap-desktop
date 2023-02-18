@@ -83,11 +83,13 @@ namespace Google.Solutions.Mvvm.Theme
         /// <summary>
         /// Register rules.
         /// </summary>
-        public static void AddCommonControlThemeRules(this ControlTheme controlTheme)
+        public static ControlTheme AddCommonControlThemeRules(this ControlTheme controlTheme)
         {
             controlTheme.ThrowIfNull(nameof(controlTheme));
 
             controlTheme.AddRule<ListView>(AutoSizeListViewColumns);
+
+            return controlTheme;
         }
     }
 }

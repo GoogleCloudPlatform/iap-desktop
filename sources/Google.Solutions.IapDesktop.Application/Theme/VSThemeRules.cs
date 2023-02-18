@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// <summary>
         /// Register rules for dialogs and top-level windows.
         /// </summary>
-        public static void AddDialogRules(
+        public static ControlTheme AddDialogRules(
             this ControlTheme controlTheme,
             VSTheme theme)
         {
@@ -137,12 +137,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             var menuTheme = new ToolStripItemTheme(true);
             menuTheme.AddRule(i => StyleToolStripItem(i, theme));
             controlTheme.AddRules(menuTheme);
+
+            return controlTheme;
         }
 
         /// <summary>
         /// Register basic set of rules that apply to all types of windows.
         /// </summary>
-        public static void AddToolWindowRules(
+        public static ControlTheme AddToolWindowRules(
             this ControlTheme controlTheme,
             VSTheme theme)
         {
@@ -159,6 +161,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             var menuTheme = new ToolStripItemTheme(true);
             menuTheme.AddRule(i => StyleToolStripItem(i, theme));
             controlTheme.AddRules(menuTheme);
+
+            return controlTheme;
         }
     }
 }
