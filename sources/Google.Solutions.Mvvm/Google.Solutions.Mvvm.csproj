@@ -81,7 +81,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Shell\FileTypeCache.cs" />
-    <Compile Include="Controls\FlatListView.cs">
+    <Compile Include="Controls\AutosizeListView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\HtmlClipboardFormat.cs" />

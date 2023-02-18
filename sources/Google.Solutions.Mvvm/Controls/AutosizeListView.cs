@@ -26,15 +26,10 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Controls
 {
     /// <summary>
-    /// Listview with flat, non-clickable headers.
+    /// List view that automatically sizes columns to fit.
     /// </summary>
-    public class FlatListView : ListView
+    public class AutosizeListView : ListView
     {
-        public FlatListView()
-        {
-            this.OwnerDraw = true;
-        }
-
         private void ResizeLastColumnToFit()
         {
             if (this.Columns.Count == 0)
@@ -70,29 +65,6 @@ namespace Google.Solutions.Mvvm.Controls
         {
             ResizeLastColumnToFit();
             base.OnSizeChanged(e);
-        }
-
-        protected override void OnDrawColumnHeader(DrawListViewColumnHeaderEventArgs e)
-        {
-            e.Graphics.FillRectangle(SystemBrushes.Control, e.Bounds);
-            e.Graphics.DrawLine(
-                SystemPens.ControlDark,
-                new Point(e.Bounds.X + e.Bounds.Width - 1, 0),
-                new Point(e.Bounds.X + e.Bounds.Width - 1, e.Bounds.Height));
-            e.Graphics.DrawLine(
-                SystemPens.ControlDark,
-                new Point(e.Bounds.X, e.Bounds.Y + e.Bounds.Height - 1),
-                new Point(e.Bounds.X + e.Bounds.Width, e.Bounds.Y + e.Bounds.Height - 1));
-
-            e.DrawText(TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
-
-            base.OnDrawColumnHeader(e);
-        }
-
-        protected override void OnDrawItem(DrawListViewItemEventArgs e)
-        {
-            e.DrawDefault = true;
-            base.OnDrawItem(e);
         }
     }
 }

@@ -150,7 +150,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             this.list.Location = new System.Drawing.Point(0, 25);
             this.list.MultiSelect = false;
             this.list.Name = "list";
-            this.list.OwnerDraw = true;
             this.list.SelectedModelItem = null;
             this.list.Size = new System.Drawing.Size(800, 425);
             this.list.SmallImageList = this.imageList;

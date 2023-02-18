@@ -33,7 +33,7 @@ namespace Google.Solutions.Mvvm.Controls
     /// Listview that support simple data binding.
     /// </summary>
     /// <typeparam name="TModelItem"></typeparam>
-    public class BindableListView<TModelItem> : FlatListView
+    public class BindableListView<TModelItem> : AutosizeListView
     {
         private ICollection<TModelItem> model;
 
