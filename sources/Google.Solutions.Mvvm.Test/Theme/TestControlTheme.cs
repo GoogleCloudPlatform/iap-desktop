@@ -37,6 +37,10 @@ namespace Google.Solutions.Mvvm.Test.Theme
             new ControlTheme().ApplyTo(null);
         }
 
+        //---------------------------------------------------------------------
+        // Control nesting.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenControlContainsChildren_ThenApplyToAppliesRulesToAllChildren()
         {
@@ -89,8 +93,12 @@ namespace Google.Solutions.Mvvm.Test.Theme
             }
         }
 
+        //---------------------------------------------------------------------
+        // Rule matching.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenRuleIsForSpecificType_ThenApplyToAppliesRuleToMatchingControls()
+        public void WhenNoOptionSet_ThenRuleAppliesToDerivedControls()
         {
             using (var form = new Form())
             {
@@ -114,6 +122,40 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 Assert.AreEqual(3, controlsApplied);
             }
         }
+
+        [Test]
+        public void WhenIgnoreDerivedTypesOptionSet_ThenRuleIgnoresDerivedControls()
+        {
+            using (var form = new Form())
+            {
+                var theme = new ControlTheme();
+
+                int buttonsApplied = 0;
+                theme.AddRule<Button>(
+                    c => buttonsApplied++,
+                    ControlTheme.Options.IgnoreDerivedTypes);
+
+                int controlsApplied = 0;
+                theme.AddRule<Control>(
+                    c => controlsApplied++,
+                    ControlTheme.Options.IgnoreDerivedTypes);
+
+                form.Controls.Add(new Button());
+                form.Controls.Add(new Panel());
+
+                theme.ApplyTo(form);
+
+                form.Show();
+                form.Close();
+
+                Assert.AreEqual(1, buttonsApplied);
+                Assert.AreEqual(0, controlsApplied);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Defer till handle created.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenNoOptionSetAndHandleNotCreatedYet_ThenRuleIsAppliedImmediately()

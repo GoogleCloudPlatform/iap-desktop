@@ -95,7 +95,8 @@ namespace Google.Solutions.Mvvm.Theme
         public enum Options
         {
             None,
-            ApplyWhenHandleCreated
+            ApplyWhenHandleCreated,
+            IgnoreDerivedTypes
         }
 
         private class Rule
@@ -114,9 +115,21 @@ namespace Google.Solutions.Mvvm.Theme
                 this.options = options;
             }
 
+            private bool Matches(Control control)
+            {
+                if (this.options.HasFlag(Options.IgnoreDerivedTypes))
+                {
+                    return this.controlType == control.GetType();
+                }
+                else
+                {
+                    return this.controlType.IsAssignableFrom(control.GetType());
+                }
+            }
+
             public void Apply(Control control)
             {
-                if (this.controlType.IsAssignableFrom(control.GetType()))
+                if (Matches(control))
                 {
                     if (!control.IsHandleCreated && 
                         this.options.HasFlag(Options.ApplyWhenHandleCreated))
