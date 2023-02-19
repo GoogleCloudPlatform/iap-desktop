@@ -38,6 +38,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
         public void Bind(DebugCommonControlsViewModel viewModel)
         {
+            this.textBoxEnabled.BindObservableProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.TextBoxEnabled,
+                this.components);
+            this.textBox.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.TextBoxEnabled,
+                this.components);
         }
     }
 }

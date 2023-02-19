@@ -1286,7 +1286,7 @@
         <Background Type="CT_RAW" Source="FFF1F1F1" />
       </Color>
       <Color Name="TextBoxBackground">
-        <Background Type="CT_RAW" Source="FF3C3F41" />
+        <Background Type="CT_RAW" Source="FF555555" />
       </Color>
       <Color Name="TextBoxBackgroundDisabled">
         <Background Type="CT_RAW" Source="FF3C3F41" />

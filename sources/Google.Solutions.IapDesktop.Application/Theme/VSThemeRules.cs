@@ -23,6 +23,7 @@ using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -143,6 +144,48 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             link.ActiveLinkColor = theme.Palette.LinkLabel.Text;
         }
 
+        private static void StyleCheckBox(CheckBox checkbox, VSTheme theme)
+        {
+            checkbox.ForeColor = theme.Palette.Label.Text;
+        }
+
+        private static void StyleRadioButton(RadioButton adio, VSTheme theme)
+        {
+            adio.ForeColor = theme.Palette.Label.Text;
+        }
+
+        private static void StyleTextBox(TextBox text, VSTheme theme)
+        {
+            text.BorderStyle = BorderStyle.FixedSingle;
+            text.ForeColor = theme.Palette.TextBox.Text;
+            SetBackColor();
+
+            // TODO: Scrollbars
+
+            //
+            // Update colors when enabled/readonly status changes.
+            //
+            text.ReadOnlyChanged += OnEnabledOrReadonyChanged;
+            text.EnabledChanged += OnEnabledOrReadonyChanged;
+            text.Disposed += (_, __) =>
+            {
+                text.ReadOnlyChanged -= OnEnabledOrReadonyChanged;
+                text.EnabledChanged -= OnEnabledOrReadonyChanged;
+            };
+
+            void OnEnabledOrReadonyChanged(object _, EventArgs __)
+            {
+                SetBackColor();
+            }
+
+            void SetBackColor()
+            {
+                text.BackColor = text.ReadOnly || text.ReadOnly
+                    ? theme.Palette.TextBox.BackgroundDisabled
+                    : theme.Palette.TextBox.Background;
+            }
+        }
+
         //---------------------------------------------------------------------
         // Extension methods.
         //---------------------------------------------------------------------
@@ -160,6 +203,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<Button>(c => StyleButton(c, theme));
             controlTheme.AddRule<Label>(c => StyleLabel(c, theme), ControlTheme.Options.IgnoreDerivedTypes);
             controlTheme.AddRule<LinkLabel>(c => StyleLinkLabel(c, theme));
+            controlTheme.AddRule<CheckBox>(c => StyleCheckBox(c, theme));
+            controlTheme.AddRule<RadioButton>(c => StyleRadioButton(c, theme));
+            controlTheme.AddRule<TextBox>(c => StyleTextBox(c, theme));
 
             var menuTheme = new ToolStripItemTheme(true);
             menuTheme.AddRule(i => StyleToolStripItem(i, theme));

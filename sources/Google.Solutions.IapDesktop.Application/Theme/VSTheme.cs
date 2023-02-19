@@ -94,6 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public ButtonPallette Button { get; }
             public LabelPalette Label { get; }
             public LabelPalette LinkLabel { get; }
+            public TextBoxPalette TextBox { get; }
 
             public VSColorPalette(XDocument xml) : base(xml)
             {
@@ -128,6 +129,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 this.LinkLabel = new LabelPalette()
                 {
                     Text = GetColor(xml, "Environment", "ControlLinkText", "Background"),
+                };
+                this.TextBox = new TextBoxPalette()
+                {
+                    Text = GetColor(xml, "CommonControls", "TextBoxText", "Background"),
+                    Background = GetColor(xml, "CommonControls", "TextBoxBackground", "Background"),
+                    BackgroundDisabled = GetColor(xml, "CommonControls", "TextBoxBackgroundDisabled", "Background"),
                 };
             }
 
@@ -181,6 +188,13 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         internal struct LabelPalette
         {
             public Color Text { get; set; }
+        }
+
+        internal struct TextBoxPalette
+        {
+            public Color Text { get; set; }
+            public Color Background { get; set; }
+            public Color BackgroundDisabled { get; set; }
         }
     }
 }
