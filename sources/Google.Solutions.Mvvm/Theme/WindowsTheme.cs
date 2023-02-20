@@ -241,6 +241,14 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
+        internal void StyleScrollbar(ScrollBar bar)
+        {
+            if (this.IsDarkModeEnabled)
+            {
+                NativeMethods.SetWindowTheme(bar.Handle, "Explorer", null);
+            }
+        }
+
         public static void ResetWindowTheme(Control control)
         {
             NativeMethods.SetWindowTheme(control.Handle, string.Empty, string.Empty);
@@ -356,6 +364,7 @@ namespace Google.Solutions.Mvvm.Theme
                 ControlTheme.Options.ApplyWhenHandleCreated);
             controlTheme.AddRule<TextBox>(c => theme.StyleTextBox(c));
             controlTheme.AddRule<ComboBox>(c => theme.StyleComboBox(c));
+            controlTheme.AddRule<ScrollBar>(c => theme.StyleScrollbar(c));
 
             return controlTheme;
         }

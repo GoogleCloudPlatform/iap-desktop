@@ -47,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.tabControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.SuspendLayout();
@@ -223,15 +224,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.progressBar.Location = new System.Drawing.Point(19, 514);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(226, 23);
-            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar.TabIndex = 14;
             this.progressBar.Value = 30;
+            // 
+            // vScrollBar1
+            // 
+            this.vScrollBar1.Location = new System.Drawing.Point(228, 552);
+            this.vScrollBar1.Name = "vScrollBar1";
+            this.vScrollBar1.Size = new System.Drawing.Size(17, 68);
+            this.vScrollBar1.TabIndex = 15;
             // 
             // DebugCommonControlsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 716);
+            this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.numericUpDown);
             this.Controls.Add(this.tabControl1);
@@ -277,5 +286,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.NumericUpDown numericUpDown;
         private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.VScrollBar vScrollBar1;
     }
 }
