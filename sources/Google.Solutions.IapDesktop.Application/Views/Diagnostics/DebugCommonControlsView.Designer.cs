@@ -48,6 +48,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
+            this.listView = new System.Windows.Forms.ListView();
+            this.nameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.valueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.SuspendLayout();
@@ -175,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // groupBox
             // 
-            this.groupBox.Location = new System.Drawing.Point(15, 340);
+            this.groupBox.Location = new System.Drawing.Point(15, 432);
             this.groupBox.Name = "groupBox";
             this.groupBox.Size = new System.Drawing.Size(234, 45);
             this.groupBox.TabIndex = 11;
@@ -186,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(15, 391);
+            this.tabControl1.Location = new System.Drawing.Point(15, 483);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(234, 116);
@@ -221,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(19, 514);
+            this.progressBar.Location = new System.Drawing.Point(19, 606);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(226, 23);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
@@ -230,16 +233,38 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // vScrollBar1
             // 
-            this.vScrollBar1.Location = new System.Drawing.Point(228, 552);
+            this.vScrollBar1.Location = new System.Drawing.Point(228, 42);
             this.vScrollBar1.Name = "vScrollBar1";
             this.vScrollBar1.Size = new System.Drawing.Size(17, 68);
             this.vScrollBar1.TabIndex = 15;
+            // 
+            // listView
+            // 
+            this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.nameColumn,
+            this.valueColumn});
+            this.listView.HideSelection = false;
+            this.listView.Location = new System.Drawing.Point(15, 340);
+            this.listView.Name = "listView";
+            this.listView.Size = new System.Drawing.Size(153, 86);
+            this.listView.TabIndex = 16;
+            this.listView.UseCompatibleStateImageBehavior = false;
+            this.listView.View = System.Windows.Forms.View.Details;
+            // 
+            // nameColumn
+            // 
+            this.nameColumn.Text = "Name";
+            // 
+            // valueColumn
+            // 
+            this.valueColumn.Text = "Value";
             // 
             // DebugCommonControlsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 716);
+            this.Controls.Add(this.listView);
             this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.numericUpDown);
@@ -287,5 +312,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.NumericUpDown numericUpDown;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.VScrollBar vScrollBar1;
+        private System.Windows.Forms.ListView listView;
+        private System.Windows.Forms.ColumnHeader nameColumn;
+        private System.Windows.Forms.ColumnHeader valueColumn;
     }
 }

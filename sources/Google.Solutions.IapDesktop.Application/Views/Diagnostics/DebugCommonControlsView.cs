@@ -34,6 +34,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft)
         {
             InitializeComponent();
+
+            for (int i = 0; i < 10; i++)
+            {
+                var item = new ListViewItem()
+                {
+                    Text = $"Name {i}"
+                };
+                item.SubItems.AddRange(new[] { $"Value {i}" });
+                this.listView.Items.Add(item);
+            }
         }
 
         public void Bind(DebugCommonControlsViewModel viewModel)
@@ -65,6 +75,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 m => m.TextBoxEnabled,
                 this.components);
             this.numericUpDown.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.TextBoxEnabled,
+                this.components);
+            this.listView.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.TextBoxEnabled,

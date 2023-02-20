@@ -212,12 +212,13 @@ namespace Google.Solutions.Mvvm.Binding
             //
             using (var view = (TView)this.serviceProvider.GetService(typeof(TView)))
             {
+                view.SuspendLayout();
+
                 this.Theme?.ApplyTo(view);
 
                 //
                 // Bind view <-> view model.
                 //
-                view.SuspendLayout();
                 this.ViewModel.Bind(view);
                 view.Bind(this.ViewModel);
                 view.ResumeLayout();
