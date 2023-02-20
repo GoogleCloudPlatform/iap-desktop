@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 Size = new Size(16, 16)
             };
-            searchButton.Location = new Point(textBox.ClientSize.Width - searchButton.Width - 4, 2);
+            searchButton.Location = new Point(textBox.ClientSize.Width - searchButton.Width - 4, 1);
             searchButton.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             searchButton.FlatStyle = FlatStyle.Flat;
             searchButton.FlatAppearance.BorderSize = 0;
