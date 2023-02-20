@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     internal static class VSThemeRules
     {
         private const float IconGrayScaleFactor = .65f;
-        private static Color AccentColor { get; set; } = Color.FromArgb(98, 136, 242); // TODO: Use color from theme?
+        private static Color AccentColor { get; set; } = Color.FromArgb(98, 136, 242);
 
         //---------------------------------------------------------------------
         // Theming rules.
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         private static void StyleFlyoutWindow(FlyoutWindow flyout, VSTheme theme)
         {
             flyout.BackColor = theme.Palette.ToolWindowInnerTabInactive.Background;
-            flyout.BorderColor = Color.FromArgb(0, 122, 204); // TODO: Use color from theme?
+            flyout.BorderColor = AccentColor;
         }
 
         private static void StyleDockPanel(DockPanel dockPanel, VSTheme theme)
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private static void StyleToolStripItem(ToolStripItem item, VSTheme theme)
         {
-            if (theme.IsDark)
+            if (theme.IsDark && !(item.Owner is StatusStrip))
             {
                 if (item.Image is Bitmap bitmap)
                 {
@@ -242,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             VSTheme theme)
         {
             controlTheme.AddRule<HeaderLabel>(StyleHeaderLabel);
-            controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c, theme));//TODO: Apply before handle created
+            controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c, theme));
             controlTheme.AddRule<TreeView>(c => StyleTreeView(c, theme));
             controlTheme.AddRule<ListView>(c => StyleListView(c, theme));
             controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c, theme));
