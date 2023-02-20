@@ -201,9 +201,9 @@ namespace Google.Solutions.Mvvm.Theme
                                         break;
 
                                     case NativeMethods.CDDS_ITEMPREPAINT:
-                                        NativeMethods.SetTextColor( // TODO: Use list view fore color
+                                        NativeMethods.SetTextColor(
                                             custDraw.hdc, 
-                                            Color.White.ToCOLORREF());
+                                            listView.ForeColor.ToCOLORREF());
                                         m.Result = new IntPtr(NativeMethods.CDRF_DODEFAULT);
                                         break;
                                 }
