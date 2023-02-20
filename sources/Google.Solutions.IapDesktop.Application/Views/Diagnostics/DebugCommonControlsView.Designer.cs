@@ -39,6 +39,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.textBox = new System.Windows.Forms.TextBox();
             this.multilineTextBox = new System.Windows.Forms.TextBox();
             this.textBoxEnabled = new System.Windows.Forms.CheckBox();
+            this.richTextBox = new System.Windows.Forms.RichTextBox();
+            this.comboBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // regularButton
@@ -125,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.multilineTextBox.Name = "multilineTextBox";
             this.multilineTextBox.ReadOnly = true;
             this.multilineTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.multilineTextBox.Size = new System.Drawing.Size(234, 55);
+            this.multilineTextBox.Size = new System.Drawing.Size(153, 55);
             this.multilineTextBox.TabIndex = 7;
             this.multilineTextBox.Text = "Text 1\r\nText 2\r\nText 3\r\nText 4\r\nText 5\r\nText 6\r\nText 7";
             // 
@@ -139,11 +141,36 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.textBoxEnabled.Text = "Enabled";
             this.textBoxEnabled.UseVisualStyleBackColor = true;
             // 
+            // richTextBox
+            // 
+            this.richTextBox.Location = new System.Drawing.Point(15, 234);
+            this.richTextBox.Name = "richTextBox";
+            this.richTextBox.Size = new System.Drawing.Size(153, 44);
+            this.richTextBox.TabIndex = 9;
+            this.richTextBox.Text = "Rich text 1\nRich text 2\nRich text 3\nRich text 4\nRich text 5";
+            // 
+            // comboBox
+            // 
+            this.comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox.FormattingEnabled = true;
+            this.comboBox.Items.AddRange(new object[] {
+            "Option 1",
+            "Option 2",
+            "Option 3",
+            "Option 4",
+            "Option 5"});
+            this.comboBox.Location = new System.Drawing.Point(15, 285);
+            this.comboBox.Name = "comboBox";
+            this.comboBox.Size = new System.Drawing.Size(153, 21);
+            this.comboBox.TabIndex = 10;
+            // 
             // DebugCommonControlsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.comboBox);
+            this.Controls.Add(this.richTextBox);
             this.Controls.Add(this.textBoxEnabled);
             this.Controls.Add(this.multilineTextBox);
             this.Controls.Add(this.textBox);
@@ -173,5 +200,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.TextBox textBox;
         private System.Windows.Forms.TextBox multilineTextBox;
         private System.Windows.Forms.CheckBox textBoxEnabled;
+        private System.Windows.Forms.RichTextBox richTextBox;
+        private System.Windows.Forms.ComboBox comboBox;
     }
 }

@@ -228,6 +228,19 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
+        internal void StyleTextBox(TextBox text)
+        {
+            NativeMethods.SetWindowTheme(text.Handle, "Explorer", null);
+        }
+
+        internal void StyleComboBox(ComboBox combo)
+        {
+            if (this.IsDarkModeEnabled)
+            {
+                NativeMethods.SetWindowTheme(combo.Handle, "CFD", null);
+            }
+        }
+
         //---------------------------------------------------------------------
         // P/Invoke.
         //
@@ -336,6 +349,8 @@ namespace Google.Solutions.Mvvm.Theme
             controlTheme.AddRule<ListView>(
                 c => theme.StyleListView(c),
                 ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<TextBox>(c => theme.StyleTextBox(c));
+            controlTheme.AddRule<ComboBox>(c => theme.StyleComboBox(c));
 
             return controlTheme;
         }

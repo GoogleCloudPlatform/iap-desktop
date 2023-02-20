@@ -43,7 +43,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 viewModel,
                 m => m.TextBoxEnabled,
                 this.components);
+
             this.textBox.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.TextBoxEnabled,
+                this.components);
+            this.multilineTextBox.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.TextBoxEnabled,
+                this.components);
+            this.richTextBox.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.TextBoxEnabled,
+                this.components);
+            this.comboBox.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.TextBoxEnabled,

@@ -149,18 +149,23 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             checkbox.ForeColor = theme.Palette.Label.Text;
         }
 
-        private static void StyleRadioButton(RadioButton adio, VSTheme theme)
+        private static void StyleRadioButton(RadioButton radio, VSTheme theme)
         {
-            adio.ForeColor = theme.Palette.Label.Text;
+            radio.ForeColor = theme.Palette.Label.Text;
         }
 
-        private static void StyleTextBox(TextBox text, VSTheme theme)
+        private static void StyleTextBox(TextBoxBase text, VSTheme theme)
         {
             text.BorderStyle = BorderStyle.FixedSingle;
             text.ForeColor = theme.Palette.TextBox.Text;
             SetBackColor();
 
-            // TODO: Scrollbars
+            //
+            // NB. If the textbox has a scrollbar, it'll remain light gray.
+            // There's no good way to apply a dark theme (or any custom colors)
+            // to child scroll bar controls as they don't generate a
+            // WM_CTLCOLORSCROLLBAR message.
+            //
 
             //
             // Update colors when enabled/readonly status changes.
@@ -186,6 +191,17 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
         }
 
+        private static void StyleComboBox(ComboBox combo, VSTheme theme)
+        {
+            combo.ForeColor = theme.Palette.ComboBox.Text;
+            combo.BackColor = theme.Palette.ComboBox.Background;
+        }
+
+        // TODO: ProgressBar
+        // TODO: TabControl
+        // TODO: GroupBox
+        // TODO: NumericUpDown
+
         //---------------------------------------------------------------------
         // Extension methods.
         //---------------------------------------------------------------------
@@ -205,7 +221,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<LinkLabel>(c => StyleLinkLabel(c, theme));
             controlTheme.AddRule<CheckBox>(c => StyleCheckBox(c, theme));
             controlTheme.AddRule<RadioButton>(c => StyleRadioButton(c, theme));
-            controlTheme.AddRule<TextBox>(c => StyleTextBox(c, theme));
+            controlTheme.AddRule<TextBoxBase>(c => StyleTextBox(c, theme));
+            controlTheme.AddRule<ComboBox>(c => StyleComboBox(c, theme));
 
             var menuTheme = new ToolStripItemTheme(true);
             menuTheme.AddRule(i => StyleToolStripItem(i, theme));
