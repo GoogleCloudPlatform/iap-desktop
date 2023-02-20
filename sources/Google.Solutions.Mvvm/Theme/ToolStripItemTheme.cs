@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -85,11 +86,12 @@ namespace Google.Solutions.Mvvm.Theme
                     dropDownItem.DropDownOpening += OnDropDownOpening;
                 }
 
-                void OnDropDownOpening(object _, EventArgs __)
+                void OnDropDownOpening(object sender, EventArgs __)
                 {
-                    if (dropDownItem.DropDownItems != null)
+                    var openingItem = (ToolStripDropDownItem)sender;
+                    if (openingItem.DropDownItems != null)
                     {
-                        foreach (var subItem in dropDownItem.DropDownItems.OfType<ToolStripItem>())
+                        foreach (var subItem in openingItem.DropDownItems.OfType<ToolStripItem>())
                         {
                             if (!appliedItems.Any(i =>
                                 i.TryGetTarget(out var appliedItem) && appliedItem == subItem))
@@ -98,13 +100,24 @@ namespace Google.Solutions.Mvvm.Theme
                             }
 
                             appliedItems.Add(new WeakReference<ToolStripItem>(subItem));
+                            
+                            Debug.Assert(
+                                appliedItems.Count < 256,
+                                "Cache should not grow excessively large");
 
                             if (subItem is ToolStripDropDownItem dropDownSubItem)
                             {
                                 dropDownSubItem.DropDownOpening += OnDropDownOpening;
                             }
                         }
+
                     }
+                        
+                    //
+                    // Only allow each event to be fired once, otherwise
+                    // the appliedItem list will grow too large.
+                    //
+                    openingItem.DropDownOpening -= OnDropDownOpening;
                 }
             }
         }

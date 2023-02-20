@@ -68,7 +68,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.list.HideSelection = false;
             this.list.Location = new System.Drawing.Point(0, 0);
             this.list.Name = "list";
-            this.list.OwnerDraw = true;
             this.list.SelectedModelItem = null;
             this.list.Size = new System.Drawing.Size(800, 450);
             this.list.TabIndex = 0;

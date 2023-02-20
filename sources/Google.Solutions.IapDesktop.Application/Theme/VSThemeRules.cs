@@ -114,6 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private static void StyleToolStripItem(ToolStripItem item, VSTheme theme)
         {
+            item.Text = item.Text?.ToUpper();
             if (theme.IsDark)
             {
                 if (item.Image is Bitmap bitmap)
@@ -230,6 +231,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 bar.ForeColor = theme.Palette.ProgressBar.Indicator;
             }
         }
+
+        // TODO: InfoBar
 
         //---------------------------------------------------------------------
         // Extension methods.
