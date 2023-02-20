@@ -773,6 +773,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             using (var view = this.serviceProvider.GetDialog<AboutView, AboutViewModel>())
             {
+                view.Theme = this.themeService.DialogTheme;
                 view.ShowDialog(this);
             }
         }

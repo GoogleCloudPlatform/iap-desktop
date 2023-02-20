@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.listView = new System.Windows.Forms.ListView();
             this.nameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.valueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.readOnlyCheckBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.SuspendLayout();
@@ -159,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.richTextBox.Name = "richTextBox";
             this.richTextBox.Size = new System.Drawing.Size(153, 44);
             this.richTextBox.TabIndex = 9;
-            this.richTextBox.Text = "Rich text 1\nRich text 2\nRich text 3\nRich text 4\nRich text 5";
+            this.richTextBox.Text = "";
             // 
             // comboBox
             // 
@@ -259,11 +260,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             this.valueColumn.Text = "Value";
             // 
+            // readOnlyCheckBox
+            // 
+            this.readOnlyCheckBox.AutoSize = true;
+            this.readOnlyCheckBox.Location = new System.Drawing.Point(174, 172);
+            this.readOnlyCheckBox.Name = "readOnlyCheckBox";
+            this.readOnlyCheckBox.Size = new System.Drawing.Size(71, 17);
+            this.readOnlyCheckBox.TabIndex = 17;
+            this.readOnlyCheckBox.Text = "Readonly";
+            this.readOnlyCheckBox.UseVisualStyleBackColor = true;
+            // 
             // DebugCommonControlsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 716);
+            this.Controls.Add(this.readOnlyCheckBox);
             this.Controls.Add(this.listView);
             this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.progressBar);
@@ -315,5 +327,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.ListView listView;
         private System.Windows.Forms.ColumnHeader nameColumn;
         private System.Windows.Forms.ColumnHeader valueColumn;
+        private System.Windows.Forms.CheckBox readOnlyCheckBox;
     }
 }

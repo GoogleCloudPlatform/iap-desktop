@@ -27,8 +27,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
     {
         public DebugCommonControlsViewModel()
         {
-            this.TextBoxEnabled = ObservableProperty.Build(true);
+            this.ControlEnabled = ObservableProperty.Build(true);
+            this.ControlReadonly = ObservableProperty.Build(false);
         }
-        public ObservableProperty<bool> TextBoxEnabled { get; }
+
+        public ObservableProperty<bool> ControlEnabled { get; }
+        public ObservableProperty<bool> ControlReadonly { get; }
     }
 }

@@ -48,42 +48,59 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
         public void Bind(DebugCommonControlsViewModel viewModel)
         {
+            this.richTextBox.Rtf =
+                @"{\rtf1\ansi{\fonttbl\f0\fswiss Helvetica;}\f0\pard
+                 This is some {\b bold} text.\par
+                 This is some {\b bold} text.\par
+                 This is some {\b bold} text.\par
+                 This is some {\b bold} text.\par
+                 This is some {\b bold} text.\par
+                 This is some {\b bold} text.\par
+                 }";
+
             this.textBoxEnabled.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
-                m => m.TextBoxEnabled,
+                m => m.ControlEnabled,
                 this.components);
 
-            this.textBox.BindReadonlyObservableProperty(
-                c => c.Enabled,
+            foreach (var control in new Control[]
+            {
+                this.textBox,
+                this.multilineTextBox,
+                this.richTextBox,
+                this.comboBox,
+                this.numericUpDown,
+                this.listView
+            })
+            {
+                control.BindReadonlyObservableProperty(
+                    c => c.Enabled,
+                    viewModel,
+                    m => m.ControlEnabled,
+                    this.components);
+            }
+
+            this.readOnlyCheckBox.BindObservableProperty(
+                c => c.Checked,
                 viewModel,
-                m => m.TextBoxEnabled,
+                m => m.ControlReadonly,
                 this.components);
-            this.multilineTextBox.BindReadonlyObservableProperty(
-                c => c.Enabled,
-                viewModel,
-                m => m.TextBoxEnabled,
-                this.components);
-            this.richTextBox.BindReadonlyObservableProperty(
-                c => c.Enabled,
-                viewModel,
-                m => m.TextBoxEnabled,
-                this.components);
-            this.comboBox.BindReadonlyObservableProperty(
-                c => c.Enabled,
-                viewModel,
-                m => m.TextBoxEnabled,
-                this.components);
-            this.numericUpDown.BindReadonlyObservableProperty(
-                c => c.Enabled,
-                viewModel,
-                m => m.TextBoxEnabled,
-                this.components);
-            this.listView.BindReadonlyObservableProperty(
-                c => c.Enabled,
-                viewModel,
-                m => m.TextBoxEnabled,
-                this.components);
+
+            foreach (var textBoxIsh in new TextBoxBase[]
+            {
+                this.textBox,
+                this.multilineTextBox,
+                this.richTextBox,
+            })
+            {
+                textBoxIsh.BindReadonlyObservableProperty(
+                    c => c.ReadOnly,
+                    viewModel,
+                    m => m.ControlReadonly,
+                    this.components);
+
+            }
         }
     }
 }
