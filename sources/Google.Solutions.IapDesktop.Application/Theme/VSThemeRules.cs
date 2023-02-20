@@ -25,6 +25,7 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -197,10 +198,38 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             combo.BackColor = theme.Palette.ComboBox.Background;
         }
 
-        // TODO: ProgressBar
-        // TODO: TabControl
-        // TODO: GroupBox
-        // TODO: NumericUpDown
+        private static void StyleGroupBox(GroupBox group, VSTheme theme)
+        {
+            group.ForeColor = theme.Palette.Label.Text;
+
+            // TODO: Draw  gray border, https://stackoverflow.com/questions/76455/how-do-you-change-the-color-of-the-border-on-a-group-box
+        }
+
+        private static void StyleTabControl(TabControl tab, VSTheme theme)
+        {
+            foreach (var page in tab.TabPages.Cast<TabPage>())
+            {
+                page.BackColor = theme.Palette.ToolWindowInnerTabInactive.Background;
+            }
+
+            // TODO: Owner-draw the header, border
+            // - https://dotnetrix.co.uk/tabcontrol.htm#tip2
+            // - http://www.glennslayden.com/code/win32/tab-control-background-brush
+        }
+
+        private static void StyleProgressBar(ProgressBar bar, VSTheme theme)
+        {
+            //
+            // The normal visual styles look better unless we need dark mode.
+            //
+            if (theme.IsDark)
+            {
+                WindowsTheme.ResetWindowTheme(bar);
+
+                bar.BackColor = theme.Palette.ProgressBar.Background;
+                bar.ForeColor = theme.Palette.ProgressBar.Indicator;
+            }
+        }
 
         //---------------------------------------------------------------------
         // Extension methods.
@@ -223,6 +252,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<RadioButton>(c => StyleRadioButton(c, theme));
             controlTheme.AddRule<TextBoxBase>(c => StyleTextBox(c, theme));
             controlTheme.AddRule<ComboBox>(c => StyleComboBox(c, theme));
+            controlTheme.AddRule<GroupBox>(c => StyleGroupBox(c, theme));
+            controlTheme.AddRule<TabControl>(c => StyleTabControl(c, theme));
+            controlTheme.AddRule<ProgressBar>(c => StyleProgressBar(c, theme));
 
             var menuTheme = new ToolStripItemTheme(true);
             menuTheme.AddRule(i => StyleToolStripItem(i, theme));

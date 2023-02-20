@@ -64,6 +64,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 viewModel,
                 m => m.TextBoxEnabled,
                 this.components);
+            this.numericUpDown.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.TextBoxEnabled,
+                this.components);
         }
     }
 }

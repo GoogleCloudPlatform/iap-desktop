@@ -41,6 +41,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.textBoxEnabled = new System.Windows.Forms.CheckBox();
             this.richTextBox = new System.Windows.Forms.RichTextBox();
             this.comboBox = new System.Windows.Forms.ComboBox();
+            this.groupBox = new System.Windows.Forms.GroupBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.numericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.tabControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // regularButton
@@ -164,11 +172,70 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.comboBox.Size = new System.Drawing.Size(153, 21);
             this.comboBox.TabIndex = 10;
             // 
+            // groupBox
+            // 
+            this.groupBox.Location = new System.Drawing.Point(15, 340);
+            this.groupBox.Name = "groupBox";
+            this.groupBox.Size = new System.Drawing.Size(234, 45);
+            this.groupBox.TabIndex = 11;
+            this.groupBox.TabStop = false;
+            this.groupBox.Text = "Group:";
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(15, 391);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(234, 116);
+            this.tabControl1.TabIndex = 12;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(226, 90);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(226, 90);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // numericUpDown
+            // 
+            this.numericUpDown.Location = new System.Drawing.Point(15, 314);
+            this.numericUpDown.Name = "numericUpDown";
+            this.numericUpDown.Size = new System.Drawing.Size(153, 20);
+            this.numericUpDown.TabIndex = 13;
+            // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(19, 514);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(226, 23);
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar.TabIndex = 14;
+            this.progressBar.Value = 30;
+            // 
             // DebugCommonControlsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(454, 716);
+            this.Controls.Add(this.progressBar);
+            this.Controls.Add(this.numericUpDown);
+            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.groupBox);
             this.Controls.Add(this.comboBox);
             this.Controls.Add(this.richTextBox);
             this.Controls.Add(this.textBoxEnabled);
@@ -183,6 +250,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.Controls.Add(this.regularButton);
             this.Name = "DebugCommonControlsView";
             this.Text = "Common Controls";
+            this.tabControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -202,5 +271,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.CheckBox textBoxEnabled;
         private System.Windows.Forms.RichTextBox richTextBox;
         private System.Windows.Forms.ComboBox comboBox;
+        private System.Windows.Forms.GroupBox groupBox;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.NumericUpDown numericUpDown;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }

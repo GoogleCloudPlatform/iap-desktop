@@ -201,7 +201,7 @@ namespace Google.Solutions.Mvvm.Theme
                                         break;
 
                                     case NativeMethods.CDDS_ITEMPREPAINT:
-                                        NativeMethods.SetTextColor( // TODO: Use theme color
+                                        NativeMethods.SetTextColor( // TODO: Use list view fore color
                                             custDraw.hdc, 
                                             Color.White.ToCOLORREF());
                                         m.Result = new IntPtr(NativeMethods.CDRF_DODEFAULT);
@@ -239,6 +239,11 @@ namespace Google.Solutions.Mvvm.Theme
             {
                 NativeMethods.SetWindowTheme(combo.Handle, "CFD", null);
             }
+        }
+
+        public static void ResetWindowTheme(Control control)
+        {
+            NativeMethods.SetWindowTheme(control.Handle, string.Empty, string.Empty);
         }
 
         //---------------------------------------------------------------------

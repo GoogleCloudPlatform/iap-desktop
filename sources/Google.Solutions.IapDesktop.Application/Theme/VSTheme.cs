@@ -96,6 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public LabelPalette LinkLabel { get; }
             public TextBoxPalette TextBox { get; }
             public ComboBoxPalette ComboBox { get; }
+            public ProgressBarPalette ProgressBar { get; }
 
             public VSColorPalette(XDocument xml) : base(xml)
             {
@@ -141,6 +142,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 {
                     Text = GetColor(xml, "CommonControls", "TextBoxText", "Background"),
                     Background = GetColor(xml, "CommonControls", "ComboBoxBackground", "Background"),
+                };
+                this.ProgressBar = new ProgressBarPalette()
+                {
+                    Background = GetColor(xml, "ProgressBar", "Background", "Background"),
+                    Indicator = GetColor(xml, "ProgressBar", "IndicatorFill", "Background"),
                 };
             }
 
@@ -202,9 +208,16 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public Color Background { get; set; }
             public Color BackgroundDisabled { get; set; }
         }
+
         internal struct ComboBoxPalette
         {
             public Color Text { get; set; }
+            public Color Background { get; set; }
+        }
+
+        internal struct ProgressBarPalette
+        {
+            public Color Indicator { get; set; }
             public Color Background { get; set; }
         }
     }
