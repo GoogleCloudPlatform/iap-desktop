@@ -157,7 +157,21 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private static void StyleTextBox(TextBoxBase text, VSTheme theme)
         {
-            text.BorderStyle = BorderStyle.FixedSingle;
+            if (text is RichTextBox rtfBox)
+            {
+                //
+                // RichTextBoxes don't support FixedSingle. Fixed3D looks
+                // okay in light mode, but awful in Dark mode.
+                //
+                rtfBox.BorderStyle = theme.IsDark 
+                    ? BorderStyle.None 
+                    : BorderStyle.Fixed3D;
+            }
+            else
+            {
+                text.BorderStyle = BorderStyle.FixedSingle;
+            }
+
             text.ForeColor = theme.Palette.TextBox.Text;
             SetBackColor();
 
