@@ -23,6 +23,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.IO;
@@ -33,7 +34,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
     [Service]
     public class AboutViewModel : ViewModelBase
     {
-        public AboutViewModel(IUpdateService updateService)
+        public AboutViewModel(
+            IUpdateService updateService,
+            IThemeService themeService)
         {
             this.Information = $"IAP Desktop\n" +
                 $"Version {updateService.InstalledVersion}\n" +
@@ -45,8 +48,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             using (var reader = new StreamReader(stream))
             {
-                string result = reader.ReadToEnd();
-                this.LicenseText = result;
+                string rtf = reader.ReadToEnd();
+
+                if (themeService.DockPanelTheme is VSTheme theme && theme.IsDark)
+                {
+                    //
+                    // Replace the RTF text's color table.
+                    //
+                    // NB. \cf0 is the default color and refers to the first
+                    // item in the color table. This item is typically missing.
+                    //
+                    var textColor = theme.Palette.TextBox.Text;
+                    var linkColor = theme.Palette.LinkLabel.Text;
+                    rtf = rtf.Replace(
+                        @"{\colortbl ;\red0\green0\blue255;}",
+                        "{\\colortbl" +
+                            $"\\red{textColor.R}\\green{textColor.G}\\blue{textColor.B};" +
+                            $"\\red{linkColor.R}\\green{linkColor.G}\\blue{linkColor.B};" +
+                            "}\\cf0");
+                }
+
+                this.LicenseText = rtf;
             }
         }
 
