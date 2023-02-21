@@ -21,10 +21,8 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,25 +34,27 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views.Properties
 {
     [SkipCodeCoverage("UI code")]
-    public partial class PropertiesDialog : Form
+    public partial class PropertiesViewBase : Form, IView<PropertiesViewModelBase>
     {
         private readonly IExceptionDialog exceptionDialog;
-        private readonly IControlTheme theme;
+        private IList<IPropertiesSheet> sheets;
 
-        protected PropertiesDialog(IServiceProvider serviceProvider)
+        protected PropertiesViewBase(IExceptionDialog exceptionDialog)
         {
-            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.theme = serviceProvider
-                .GetService<IThemeService>()
-                .DialogTheme;
-
-            SuspendLayout();
+            this.exceptionDialog = exceptionDialog;
 
             InitializeComponent();
-            this.theme.ApplyTo(this);
-            
-            ResumeLayout();
         }
+
+
+        public void Bind(PropertiesViewModelBase viewModel)
+        {
+            this.Text = viewModel.Title;
+            this.sheets = viewModel.Sheets.ToList();
+
+
+        }
+
 
         private DialogResult ApplyChanges()
         {
@@ -93,13 +93,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             .Select(tab => tab.Tag)
             .Cast<IPropertiesSheet>();
 
-        internal void AddSheet(UserControl sheet, IPropertiesSheet sheetInterface)
+        private  void AddSheet(UserControl sheet, IPropertiesSheet sheetInterface)
         {
             Debug.Assert(sheet == sheetInterface);
-
-            SuspendLayout();
-            this.theme.ApplyTo(sheet);
-            ResumeLayout();
 
             //
             // Create control and add it to tabs.

@@ -80,6 +80,9 @@
     <Compile Include="Controls\HeaderLabel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\VerticalTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Drawing\ColorExtensions.cs" />
     <Compile Include="Interop\SubclassCallback.cs" />
     <Compile Include="Shell\FileTypeCache.cs" />
