@@ -41,6 +41,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         private readonly IExceptionDialog exceptionDialog;
         private readonly IControlTheme theme;
 
+        public Color SheetBackColor { get; set; } = Color.White;
+
         protected PropertiesDialog(IServiceProvider serviceProvider)
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
@@ -98,18 +100,24 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             Debug.Assert(sheet == sheetInterface);
 
             SuspendLayout();
-            this.theme.ApplyTo(sheet);
-            ResumeLayout();
 
             //
             // Create control and add it to tabs.
             //
-            var tab = new TabPage();
+
             sheet.Location = new Point(0, 0);
             sheet.Dock = DockStyle.Fill;
-            sheet.BackColor = Color.White;
+            sheet.BackColor = this.SheetBackColor;
+            this.theme.ApplyTo(sheet);
+
+            var tab = new TabPage()
+            {
+                BackColor = this.SheetBackColor
+            };
             tab.Controls.Add(sheet);
             this.tabs.TabPages.Add(tab);
+
+            ResumeLayout();
 
             tab.BindReadonlyProperty(
                 t => t.Text,

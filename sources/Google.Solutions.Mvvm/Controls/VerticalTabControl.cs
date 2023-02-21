@@ -42,6 +42,7 @@ namespace Google.Solutions.Mvvm.Controls
         public Color InactiveTabForeColor { get; set; } = SystemColors.ControlText;
         public Color HoverTabBackColor { get; set; } = SystemColors.ControlLight;
         public Color HoverTabForeColor { get; set; } = SystemColors.ControlText;
+
         public int TextMargin
         {
             get => this.textMargin;
@@ -73,15 +74,22 @@ namespace Google.Solutions.Mvvm.Controls
         // Paining.
         //---------------------------------------------------------------------
 
+        //
+        // NB. Because we're using a vertical layout,
+        // ItemSize width and height are transposed.
+        //
+        protected int TabWidth => this.ItemSize.Height;
+
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            Invalidate(new Rectangle(0, 0, this.ItemSize.Height + 4, this.Height));
+            Invalidate(new Rectangle(0, 0, this.TabWidth + 4, this.Height));
             base.OnMouseMove(e);
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            Invalidate(new Rectangle(0, 0, this.ItemSize.Height + 4, this.Height));
+            Invalidate(new Rectangle(0, 0, this.TabWidth + 4, this.Height));
             base.OnMouseLeave(e);
         }
 
@@ -89,11 +97,7 @@ namespace Google.Solutions.Mvvm.Controls
         {
             var g = e.Graphics;
 
-            //
-            // NB. Because we're using a vertical layout,
-            // ItemSize width and height are transposed.
-            //
-
+            //using (var backgroundBrush = new SolidBrush(this.BackColor))
             using (var activeBackgroundBrush = new SolidBrush(this.ActiveTabBackColor))
             using (var activeBackgroundPen = new Pen(this.ActiveTabBackColor))
             using (var activeTextBrush = new SolidBrush(this.ActiveTabForeColor))
@@ -114,7 +118,12 @@ namespace Google.Solutions.Mvvm.Controls
                 //
                 g.FillRectangle(
                     inactiveBackgroundBrush,
-                    new Rectangle(0, 0, this.ItemSize.Height + 4, this.Height));
+                    new Rectangle(0, 0, this.TabWidth + 4, this.Height));
+
+                // TODO: Fill background?
+                //g.FillRectangle(
+                //    backgroundBrush,
+                //    new Rectangle(this.TabWidth + 4, 0, this.Width - this.TabWidth - 4, this.Height));
 
                 for (int i = 0; i <= this.TabCount - 1; i++)
                 {
@@ -145,9 +154,9 @@ namespace Google.Solutions.Mvvm.Controls
                         g.SmoothingMode = SmoothingMode.HighQuality;
                         Point[] arrowPoints =
                         {
-                            new Point(this.ItemSize.Height + 3, GetTabRect(i).Location.Y + boxRect.Height / 2), // 20),
-                            new Point(this.ItemSize.Height - 4, GetTabRect(i).Location.Y + boxRect.Height / 2 - 7), // 14),
-                            new Point(this.ItemSize.Height - 4, GetTabRect(i).Location.Y + boxRect.Height / 2 + 7), // 27)
+                            new Point(this.TabWidth + 3, GetTabRect(i).Location.Y + boxRect.Height / 2), // 20),
+                            new Point(this.TabWidth - 4, GetTabRect(i).Location.Y + boxRect.Height / 2 - 7), // 14),
+                            new Point(this.TabWidth - 4, GetTabRect(i).Location.Y + boxRect.Height / 2 + 7), // 27)
                         };
 
                         g.FillPolygon(activeBackgroundBrush, arrowPoints);

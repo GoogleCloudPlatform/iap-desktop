@@ -101,6 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public TextBoxPalette TextBox { get; }
             public ComboBoxPalette ComboBox { get; }
             public ProgressBarPalette ProgressBar { get; }
+            public TabControlPalette TabControl { get; }
 
             public VSColorPalette(XDocument xml) : base(xml)
             {
@@ -151,6 +152,15 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 {
                     Background = GetColor(xml, "ProgressBar", "Background", "Background"),
                     Indicator = GetColor(xml, "ProgressBar", "IndicatorFill", "Background"),
+                };
+                this.TabControl = new TabControlPalette()
+                {
+                    TabBackground = GetColor(xml, "ProjectDesigner", "CategoryTab", "Background"),
+                    TabText = GetColor(xml, "ProjectDesigner", "CategoryTab", "Foreground"),
+                    SelectedTabBackground = GetColor(xml, "ProjectDesigner", "SelectedCategoryTab", "Background"),
+                    SelectedTabText = GetColor(xml, "ProjectDesigner", "SelectedCategoryTab", "Foreground"),
+                    MouseOverTabBackground = GetColor(xml, "ProjectDesigner", "MouseOverCategoryTab", "Background"),
+                    MouseOverTabText = GetColor(xml, "ProjectDesigner", "MouseOverCategoryTab", "Foreground"),
                 };
             }
 
@@ -223,6 +233,16 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             public Color Indicator { get; set; }
             public Color Background { get; set; }
+        }
+
+        internal struct TabControlPalette
+        {
+            public Color TabBackground { get; set; }
+            public Color TabText { get; set; }
+            public Color MouseOverTabBackground { get; set; }
+            public Color MouseOverTabText { get; set; }
+            public Color SelectedTabBackground { get; set; }
+            public Color SelectedTabText { get; set; }
         }
     }
 }

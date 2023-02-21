@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
 using System;
@@ -219,16 +220,20 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             // TODO: Draw  gray border, https://stackoverflow.com/questions/76455/how-do-you-change-the-color-of-the-border-on-a-group-box
         }
 
-        private static void StyleTabControl(TabControl tab, VSTheme theme)
+        private static void StyleTabControl(VerticalTabControl tab, VSTheme theme)
         {
-            foreach (var page in tab.TabPages.Cast<TabPage>())
-            {
-                page.BackColor = theme.Palette.ToolWindowInnerTabInactive.Background;
-            }
+            tab.BackColor = theme.Palette.ToolWindowInnerTabInactive.Background;
+            tab.InactiveTabBackColor = theme.Palette.TabControl.TabBackground;
+            tab.InactiveTabForeColor = theme.Palette.TabControl.TabText;
+            tab.ActiveTabBackColor = theme.Palette.TabControl.SelectedTabBackground;
+            tab.ActiveTabForeColor = theme.Palette.TabControl.SelectedTabText;
+            tab.HoverTabBackColor = theme.Palette.TabControl.MouseOverTabBackground;
+            tab.HoverTabForeColor = theme.Palette.TabControl.MouseOverTabText;
+        }
 
-            // TODO: Owner-draw the header, border
-            // - https://dotnetrix.co.uk/tabcontrol.htm#tip2
-            // - http://www.glennslayden.com/code/win32/tab-control-background-brush
+        private static void StylePropertiesDialog(PropertiesDialog dialog, VSTheme theme)
+        {
+            dialog.SheetBackColor = theme.Palette.ToolWindowInnerTabInactive.Background;
         }
 
         private static void StyleProgressBar(ProgressBar bar, VSTheme theme)
@@ -269,7 +274,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<TextBoxBase>(c => StyleTextBox(c, theme));
             controlTheme.AddRule<ComboBox>(c => StyleComboBox(c, theme));
             controlTheme.AddRule<GroupBox>(c => StyleGroupBox(c, theme));
-            controlTheme.AddRule<TabControl>(c => StyleTabControl(c, theme));
+            controlTheme.AddRule<VerticalTabControl>(c => StyleTabControl(c, theme));
+            controlTheme.AddRule<PropertiesDialog>(c => StylePropertiesDialog(c, theme));
             controlTheme.AddRule<ProgressBar>(c => StyleProgressBar(c, theme));
 
             var menuTheme = new ToolStripItemTheme(true);

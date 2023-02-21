@@ -29,9 +29,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestFlatVerticalTabControl
+    public class TestVerticalTabControl
     {
-        [Ignore("For manual testing only")]
+        // [Ignore("For manual testing only")]
         [Test]
         public void TestUI()
         {
@@ -43,6 +43,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             {
                 var tabControl = new VerticalTabControl()
                 {
+                    //BackColor = Color.Yellow,
                     Dock = DockStyle.Fill,
                     ActiveTabForeColor = Color.Yellow,
                     ActiveTabBackColor = Color.Red,
