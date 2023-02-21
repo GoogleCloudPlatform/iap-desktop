@@ -43,6 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             this.Palette = palette;
             this.IsDark = isDark;
+            this.ToolStripRenderer = new VSThemeExtensions.ToolStripRenderer(palette);
         }
 
         public static VSTheme GetLightTheme()

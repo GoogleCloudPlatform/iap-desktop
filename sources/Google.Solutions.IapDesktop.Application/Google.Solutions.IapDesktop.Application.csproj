@@ -155,6 +155,7 @@
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
+    <Compile Include="Theme\VSThemeExtensions.cs" />
     <Compile Include="Theme\VSThemeRules.cs" />
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Data\IHelpTopic.cs" />
