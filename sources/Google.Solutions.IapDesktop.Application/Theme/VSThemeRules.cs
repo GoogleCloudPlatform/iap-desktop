@@ -137,7 +137,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private static void StyleLabel(Label label, VSTheme theme)
         {
-            label.ForeColor = theme.Palette.Label.Text;
+            if (label.ForeColor == Control.DefaultForeColor)
+            {
+                label.ForeColor = theme.Palette.Label.Text;
+            }
         }
 
         private static void StyleLinkLabel(LinkLabel link, VSTheme theme)

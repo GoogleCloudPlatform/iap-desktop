@@ -121,7 +121,6 @@ namespace Google.Solutions.Mvvm.Controls
                     inactiveBackgroundBrush,
                     new Rectangle(0, 0, this.TabWidth + 4, this.Height));
 
-                // TODO: Fill background?
                 g.FillRectangle(
                     sheetBackgroundBrush,
                     new Rectangle(this.TabWidth + 4, 0, this.Width - this.TabWidth - 4, this.Height));
