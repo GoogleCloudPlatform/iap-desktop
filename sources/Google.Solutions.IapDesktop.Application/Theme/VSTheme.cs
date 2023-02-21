@@ -44,6 +44,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             this.Palette = palette;
             this.IsDark = isDark;
             this.ToolStripRenderer = new VSThemeExtensions.ToolStripRenderer(palette);
+            this.Extender.FloatWindowFactory = new VSThemeExtensions.FloatWindowFactory();
+            this.Extender.DockPaneFactory =
+                new VSThemeExtensions.DockPaneFactory(this.Extender.DockPaneFactory);
         }
 
         public static VSTheme GetLightTheme()
