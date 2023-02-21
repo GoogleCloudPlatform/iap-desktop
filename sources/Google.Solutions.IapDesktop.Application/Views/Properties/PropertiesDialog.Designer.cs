@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Application.Views.Properties
 {
     partial class PropertiesDialog
@@ -49,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabs = new System.Windows.Forms.TabControl();
+            this.tabs = new Google.Solutions.Mvvm.Controls.VerticalTabControl();
             this.applyButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
@@ -57,19 +59,31 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             // 
             // tabs
             // 
+            this.tabs.ActiveTabBackColor = System.Drawing.SystemColors.Highlight;
+            this.tabs.ActiveTabForeColor = System.Drawing.SystemColors.HighlightText;
+            this.tabs.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabs.HoverTabBackColor = System.Drawing.SystemColors.ControlLight;
+            this.tabs.HoverTabForeColor = System.Drawing.SystemColors.ControlText;
+            this.tabs.InactiveTabBackColor = System.Drawing.SystemColors.Control;
+            this.tabs.InactiveTabForeColor = System.Drawing.SystemColors.ControlText;
+            this.tabs.ItemSize = new System.Drawing.Size(30, 120);
             this.tabs.Location = new System.Drawing.Point(5, 5);
+            this.tabs.Multiline = true;
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
-            this.tabs.Size = new System.Drawing.Size(355, 444);
+            this.tabs.Size = new System.Drawing.Size(475, 444);
+            this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabs.TabIndex = 0;
+            this.tabs.TextMargin = 10;
             // 
             // applyButton
             // 
+            this.applyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.applyButton.Enabled = false;
-            this.applyButton.Location = new System.Drawing.Point(282, 452);
+            this.applyButton.Location = new System.Drawing.Point(399, 452);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(75, 23);
             this.applyButton.TabIndex = 2;
@@ -79,8 +93,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             // 
             // cancelButton
             // 
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(201, 452);
+            this.cancelButton.Location = new System.Drawing.Point(318, 452);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
@@ -90,7 +105,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(120, 452);
+            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.okButton.Location = new System.Drawing.Point(237, 452);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 0;
@@ -104,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(364, 481);
+            this.ClientSize = new System.Drawing.Size(484, 481);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.applyButton);
@@ -122,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabs;
+        private VerticalTabControl tabs;
         private System.Windows.Forms.Button applyButton;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button okButton;
