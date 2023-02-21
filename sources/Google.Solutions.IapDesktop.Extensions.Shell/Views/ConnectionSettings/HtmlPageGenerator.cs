@@ -40,7 +40,7 @@ using System.Web;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 {
     [SkipCodeCoverage("For testing only")]
-    [Service(ServiceLifetime.Singleton)]
+    [Service(ServiceLifetime.Singleton, DelayCreation = false)]
     public class HtmlPageGenerator
     {
         private readonly IConnectionSettingsService settingsService;

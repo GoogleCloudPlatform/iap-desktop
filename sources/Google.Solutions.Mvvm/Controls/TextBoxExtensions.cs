@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -36,7 +37,13 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 Size = new Size(16, 16)
             };
-            searchButton.Location = new Point(textBox.ClientSize.Width - searchButton.Width - 4, 1);
+
+            Debug.Assert(textBox.Height > searchButton.Height);
+            Debug.Assert(textBox.Width > searchButton.Width);
+
+            searchButton.Location = new Point(
+                textBox.ClientSize.Width - searchButton.Width - 4, 
+                (textBox.Height - searchButton.Height) / 2 - 1);
             searchButton.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             searchButton.FlatStyle = FlatStyle.Flat;
             searchButton.FlatAppearance.BorderSize = 0;
