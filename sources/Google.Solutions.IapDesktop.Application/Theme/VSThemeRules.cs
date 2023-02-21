@@ -222,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private static void StyleTabControl(VerticalTabControl tab, VSTheme theme)
         {
-            tab.BackColor = theme.Palette.ToolWindowInnerTabInactive.Background;
+            tab.SheetBackColor = theme.Palette.ToolWindowInnerTabInactive.Background;
             tab.InactiveTabBackColor = theme.Palette.TabControl.TabBackground;
             tab.InactiveTabForeColor = theme.Palette.TabControl.TabText;
             tab.ActiveTabBackColor = theme.Palette.TabControl.SelectedTabBackground;

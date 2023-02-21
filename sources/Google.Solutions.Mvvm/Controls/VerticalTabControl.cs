@@ -42,6 +42,7 @@ namespace Google.Solutions.Mvvm.Controls
         public Color InactiveTabForeColor { get; set; } = SystemColors.ControlText;
         public Color HoverTabBackColor { get; set; } = SystemColors.ControlLight;
         public Color HoverTabForeColor { get; set; } = SystemColors.ControlText;
+        public Color SheetBackColor { get; set; } = SystemColors.Control;
 
         public int TextMargin
         {
@@ -97,7 +98,7 @@ namespace Google.Solutions.Mvvm.Controls
         {
             var g = e.Graphics;
 
-            //using (var backgroundBrush = new SolidBrush(this.BackColor))
+            using (var sheetBackgroundBrush = new SolidBrush(this.SheetBackColor))
             using (var activeBackgroundBrush = new SolidBrush(this.ActiveTabBackColor))
             using (var activeBackgroundPen = new Pen(this.ActiveTabBackColor))
             using (var activeTextBrush = new SolidBrush(this.ActiveTabForeColor))
@@ -121,9 +122,9 @@ namespace Google.Solutions.Mvvm.Controls
                     new Rectangle(0, 0, this.TabWidth + 4, this.Height));
 
                 // TODO: Fill background?
-                //g.FillRectangle(
-                //    backgroundBrush,
-                //    new Rectangle(this.TabWidth + 4, 0, this.Width - this.TabWidth - 4, this.Height));
+                g.FillRectangle(
+                    sheetBackgroundBrush,
+                    new Rectangle(this.TabWidth + 4, 0, this.Width - this.TabWidth - 4, this.Height));
 
                 for (int i = 0; i <= this.TabCount - 1; i++)
                 {

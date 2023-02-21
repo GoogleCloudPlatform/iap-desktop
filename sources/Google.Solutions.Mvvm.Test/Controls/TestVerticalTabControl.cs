@@ -43,7 +43,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             {
                 var tabControl = new VerticalTabControl()
                 {
-                    //BackColor = Color.Yellow,
+                    BackColor = Color.Yellow,
                     Dock = DockStyle.Fill,
                     ActiveTabForeColor = Color.Yellow,
                     ActiveTabBackColor = Color.Red,
