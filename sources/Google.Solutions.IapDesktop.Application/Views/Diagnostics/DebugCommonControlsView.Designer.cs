@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // textBoxEnabled
             // 
             this.textBoxEnabled.AutoSize = true;
-            this.textBoxEnabled.Location = new System.Drawing.Point(175, 149);
+            this.textBoxEnabled.Location = new System.Drawing.Point(175, 42);
             this.textBoxEnabled.Name = "textBoxEnabled";
             this.textBoxEnabled.Size = new System.Drawing.Size(65, 17);
             this.textBoxEnabled.TabIndex = 8;
@@ -259,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // vScrollBar
             // 
-            this.vScrollBar.Location = new System.Drawing.Point(228, 42);
+            this.vScrollBar.Location = new System.Drawing.Point(223, 602);
             this.vScrollBar.Name = "vScrollBar";
             this.vScrollBar.Size = new System.Drawing.Size(17, 68);
             this.vScrollBar.TabIndex = 15;
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // readOnlyCheckBox
             // 
             this.readOnlyCheckBox.AutoSize = true;
-            this.readOnlyCheckBox.Location = new System.Drawing.Point(174, 172);
+            this.readOnlyCheckBox.Location = new System.Drawing.Point(174, 65);
             this.readOnlyCheckBox.Name = "readOnlyCheckBox";
             this.readOnlyCheckBox.Size = new System.Drawing.Size(71, 17);
             this.readOnlyCheckBox.TabIndex = 17;

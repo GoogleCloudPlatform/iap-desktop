@@ -65,6 +65,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
             foreach (var control in new Control[]
             {
+                this.label,
+                this.linkLabel,
+                this.checkBox,
+                this.radioButton,
                 this.textBox,
                 this.multilineTextBox,
                 this.richTextBox,
