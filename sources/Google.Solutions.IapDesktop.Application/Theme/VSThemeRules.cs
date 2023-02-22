@@ -135,6 +135,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             button.UseVisualStyleBackColor = false;
         }
 
+        private static void StyleDropDownButton(DropDownButton button, VSTheme theme)
+        {
+            StyleToolStrip(button.Menu, theme);
+        }
+
         private static void StyleLabel(Label label, VSTheme theme)
         {
             //
@@ -266,6 +271,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<PropertyGrid>(c => StylePropertyGrid(c, theme));
             controlTheme.AddRule<ToolStrip>(c => StyleToolStrip(c, theme));
             controlTheme.AddRule<Button>(c => StyleButton(c, theme));
+            controlTheme.AddRule<DropDownButton>(c => StyleDropDownButton(c, theme));
             controlTheme.AddRule<Label>(c => StyleLabel(c, theme), ControlTheme.Options.IgnoreDerivedTypes);
             controlTheme.AddRule<LinkLabel>(c => StyleLinkLabel(c, theme));
             controlTheme.AddRule<CheckBox>(c => StyleCheckBox(c, theme));

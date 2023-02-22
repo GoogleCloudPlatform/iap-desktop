@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -200,13 +201,15 @@ namespace Google.Solutions.IapDesktop.Windows
             ClientSecrets clientSecrets,
             IEnumerable<string> scopes,
             IDeviceEnrollment deviceEnrollment,
-            AuthSettingsRepository authSettingsRepository)
+            AuthSettingsRepository authSettingsRepository,
+            IControlTheme theme)
         {
             var dialog = new AuthorizeDialog(
                 clientSecrets,
                 scopes,
                 deviceEnrollment,
                 authSettingsRepository);
+            theme.ApplyTo(dialog);
             if (dialog.ShowDialog(parent) == DialogResult.OK)
             {
                 Debug.Assert(dialog.AuthorizationResult != null);

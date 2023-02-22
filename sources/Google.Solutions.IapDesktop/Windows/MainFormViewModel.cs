@@ -250,7 +250,8 @@ namespace Google.Solutions.IapDesktop.Windows
                 OAuthClient.Secrets,
                 new[] { IapTunnelingEndpoint.RequiredScope },
                 deviceEnrollment,
-                this.authSettings);
+                this.authSettings,
+                this.themeService.DialogTheme);
             if (this.Authorization == null)
             {
                 // Aborted.
