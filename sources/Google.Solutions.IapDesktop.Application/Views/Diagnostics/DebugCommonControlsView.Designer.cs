@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     partial class DebugCommonControlsView
@@ -66,12 +68,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.numericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
+            this.progressBar = new Google.Solutions.Mvvm.Controls.LinearProgressBar();
+            this.vScrollBar = new System.Windows.Forms.VScrollBar();
             this.listView = new System.Windows.Forms.ListView();
             this.nameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.valueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.readOnlyCheckBox = new System.Windows.Forms.CheckBox();
+            this.circularProgressBar1 = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
             this.tabControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.SuspendLayout();
@@ -245,19 +248,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // progressBar
             // 
+            this.progressBar.Indeterminate = false;
             this.progressBar.Location = new System.Drawing.Point(19, 606);
+            this.progressBar.Maximum = 100;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(226, 23);
-            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar.Speed = 1;
             this.progressBar.TabIndex = 14;
-            this.progressBar.Value = 30;
+            this.progressBar.Value = 17;
             // 
-            // vScrollBar1
+            // vScrollBar
             // 
-            this.vScrollBar1.Location = new System.Drawing.Point(228, 42);
-            this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 68);
-            this.vScrollBar1.TabIndex = 15;
+            this.vScrollBar.Location = new System.Drawing.Point(228, 42);
+            this.vScrollBar.Name = "vScrollBar";
+            this.vScrollBar.Size = new System.Drawing.Size(17, 68);
+            this.vScrollBar.TabIndex = 15;
             // 
             // listView
             // 
@@ -290,14 +295,29 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.readOnlyCheckBox.Text = "Readonly";
             this.readOnlyCheckBox.UseVisualStyleBackColor = true;
             // 
+            // circularProgressBar1
+            // 
+            this.circularProgressBar1.Indeterminate = false;
+            this.circularProgressBar1.LineWidth = 5;
+            this.circularProgressBar1.Location = new System.Drawing.Point(19, 636);
+            this.circularProgressBar1.Maximum = 100;
+            this.circularProgressBar1.MinimumSize = new System.Drawing.Size(10, 10);
+            this.circularProgressBar1.Name = "circularProgressBar1";
+            this.circularProgressBar1.Size = new System.Drawing.Size(51, 51);
+            this.circularProgressBar1.Speed = 1;
+            this.circularProgressBar1.TabIndex = 18;
+            this.circularProgressBar1.Text = "circularProgressBar";
+            this.circularProgressBar1.Value = 88;
+            // 
             // DebugCommonControlsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 716);
+            this.Controls.Add(this.circularProgressBar1);
             this.Controls.Add(this.readOnlyCheckBox);
             this.Controls.Add(this.listView);
-            this.Controls.Add(this.vScrollBar1);
+            this.Controls.Add(this.vScrollBar);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.numericUpDown);
             this.Controls.Add(this.tabControl1);
@@ -342,11 +362,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.NumericUpDown numericUpDown;
-        private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.VScrollBar vScrollBar1;
+        private LinearProgressBar progressBar;
+        private System.Windows.Forms.VScrollBar vScrollBar;
         private System.Windows.Forms.ListView listView;
         private System.Windows.Forms.ColumnHeader nameColumn;
         private System.Windows.Forms.ColumnHeader valueColumn;
         private System.Windows.Forms.CheckBox readOnlyCheckBox;
+        private CircularProgressBar circularProgressBar1;
     }
 }

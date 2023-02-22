@@ -80,18 +80,27 @@ namespace Google.Solutions.Mvvm.Controls
             get => this.timer != null;
             set
             {
-                //
-                // Create a timer that advances the progress bar, but don't
-                // start it until the control is shown.
-                //
-                this.timer = new Timer()
+                if (value && this.timer == null)
                 {
-                    Interval = 50
-                };
-                this.timer.Tick += (_, __) =>
+                    //
+                    // Create a timer that advances the progress bar, but don't
+                    // start it until the control is shown.
+                    //
+                    this.timer = new Timer()
+                    {
+                        Interval = 50
+                    };
+                    this.timer.Tick += (_, __) =>
+                    {
+                        this.Value = (this.Value + this.Speed) % (this.Maximum + 1);
+                    };
+                }
+                else if (!value && this.timer != null)
                 {
-                    this.Value = (this.Value + this.Speed) % (this.Maximum + 1);
-                };
+                    this.timer.Stop();
+                    this.timer.Dispose();
+                    this.timer = null;
+                }
             }
         }
 
@@ -102,7 +111,11 @@ namespace Google.Solutions.Mvvm.Controls
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
-            this.timer?.Start();
+
+            if (!this.DesignMode)
+            {
+                this.timer?.Start();
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -128,7 +141,7 @@ namespace Google.Solutions.Mvvm.Controls
         {
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 
-            this.MinimumSize = new Size(10, 10);
+            this.MinimumSize = new Size(3 * this.barWidth, 3 * this.barWidth);
             this.DoubleBuffered = true;
         }
 
@@ -216,7 +229,8 @@ namespace Google.Solutions.Mvvm.Controls
 
                     graphics.DrawArc(
                         pen,
-                        this.LineWidth, this.LineWidth,
+                        this.LineWidth,
+                        this.LineWidth,
                         (this.Width) - 2 * this.LineWidth,
                         (this.Height) - 2 * this.LineWidth,
                         startAngle - 90.0f, // Start at the top, not at the left.

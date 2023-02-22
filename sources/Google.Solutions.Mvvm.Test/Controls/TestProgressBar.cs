@@ -32,6 +32,28 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestProgressBar
     {
+
+        //---------------------------------------------------------------------
+        // Indeterminate.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Indeterminate()
+        {
+            using (var progressBar = new LinearProgressBar())
+            {
+                Assert.IsFalse(progressBar.Indeterminate);
+
+                progressBar.Indeterminate = true;
+                progressBar.Indeterminate = true;
+                Assert.IsTrue(progressBar.Indeterminate);
+                
+                progressBar.Indeterminate = false;
+                progressBar.Indeterminate = false;
+                Assert.IsFalse(progressBar.Indeterminate);
+            }
+        }
+
         //---------------------------------------------------------------------
         // CircularProgressBar.
         //---------------------------------------------------------------------

@@ -239,18 +239,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             dialog.SheetBackColor = theme.Palette.ToolWindowInnerTabInactive.Background;
         }
 
-        private static void StyleProgressBar(System.Windows.Forms.ProgressBar bar, VSTheme theme)
+        private static void StyleProgressBar(ProgressBarBase bar, VSTheme theme)
         {
-            //
-            // The normal visual styles look better unless we need dark mode.
-            //
-            if (theme.IsDark)
-            {
-                WindowsTheme.ResetWindowTheme(bar);
-
-                bar.BackColor = theme.Palette.ProgressBar.Background;
-                bar.ForeColor = theme.Palette.ProgressBar.Indicator;
-            }
+            bar.BackColor = theme.Palette.ProgressBar.Background;
+            bar.ForeColor = theme.Palette.ProgressBar.Indicator;
         }
 
         // TODO: InfoBar
@@ -279,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<GroupBox>(c => StyleGroupBox(c, theme));
             controlTheme.AddRule<VerticalTabControl>(c => StyleTabControl(c, theme));
             controlTheme.AddRule<PropertiesDialog>(c => StylePropertiesDialog(c, theme));
-            controlTheme.AddRule<System.Windows.Forms.ProgressBar>(c => StyleProgressBar(c, theme));
+            controlTheme.AddRule<ProgressBarBase>(c => StyleProgressBar(c, theme));
 
             var menuTheme = new ToolStripItemTheme(true);
             menuTheme.AddRule(i => StyleToolStripItem(i, theme));
