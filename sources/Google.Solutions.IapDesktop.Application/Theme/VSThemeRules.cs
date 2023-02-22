@@ -137,6 +137,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private static void StyleLabel(Label label, VSTheme theme)
         {
+            //
+            // Don't change the color if it was set to something
+            // custom (for example, as done in info bars).
+            //
             if (label.ForeColor == Control.DefaultForeColor)
             {
                 label.ForeColor = theme.Palette.Label.Text;

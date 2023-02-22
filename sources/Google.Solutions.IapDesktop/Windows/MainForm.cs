@@ -993,8 +993,12 @@ namespace Google.Solutions.IapDesktop.Windows
             switch (jobDescription.Feedback)
             {
                 case JobUserFeedbackType.ForegroundFeedback:
+                    //
                     // Show WaitDialog, blocking all user intraction.
-                    return new WaitDialog(this, jobDescription.StatusMessage, cancellationSource);
+                    //
+                    var waitDialog = new WaitDialog(this, jobDescription.StatusMessage, cancellationSource);
+                    this.themeService.DialogTheme.ApplyTo(waitDialog);
+                    return waitDialog;
 
                 default:
                     return this.viewModel.CreateBackgroundJob(jobDescription, cancellationSource);
