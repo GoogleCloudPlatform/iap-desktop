@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System.Drawing;
 using System.Threading;
@@ -31,7 +32,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestVerticalTabControl
     {
-        // [Ignore("For manual testing only")]
+        [InteractiveTest]
         [Test]
         public void TestUI()
         {
