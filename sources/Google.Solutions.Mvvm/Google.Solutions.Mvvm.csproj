@@ -68,6 +68,9 @@
     <Compile Include="Controls\BindableTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\CircularProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ClipboardUtil.cs" />
     <Compile Include="Controls\ControlExtensions.cs" />
     <Compile Include="Controls\ExceptionEventArgs.cs" />

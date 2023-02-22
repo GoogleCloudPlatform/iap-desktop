@@ -75,6 +75,7 @@
     <Compile Include="Commands\TestCommandContainer.cs" />
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
+    <Compile Include="Controls\TestCircularProgressBar.cs" />
     <Compile Include="Controls\TestFileBrowser.cs" />
     <Compile Include="Controls\TestFileBrowserUi.cs" />
     <Compile Include="Controls\TestVerticalTabControl.cs" />
