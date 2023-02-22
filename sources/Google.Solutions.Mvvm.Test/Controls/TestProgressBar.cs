@@ -32,9 +32,13 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestProgressBar
     {
+        //---------------------------------------------------------------------
+        // CircularProgressBar.
+        //---------------------------------------------------------------------
+
         [InteractiveTest]
         [Test]
-        public void IndefiniteCircularProgressBar()
+        public void DefiniteCircularProgressBar()
         {
             using (var form = new Form()
             {
@@ -42,10 +46,87 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Height = 200,
                 BackColor = Color.DarkGray
             })
-            using (var progressBar = new IndeterminateCircularProgressBar()
+            using (var progressBar = new CircularProgressBar()
             {
                 ForeColor = Color.Yellow,
-                Increment = 1,
+                Value = 1,
+                Maximum = 10,
+                Dock = DockStyle.Fill
+            })
+            {
+                progressBar.Click += (_, __) 
+                    => progressBar.Value = (progressBar.Value + 1) % progressBar.Maximum;
+                form.Controls.Add(progressBar);
+                form.ShowDialog();
+            }
+        }
+
+        [InteractiveTest]
+        [Test]
+        public void IndeterminateCircularProgressBar()
+        {
+            using (var form = new Form()
+            {
+                Width = 200,
+                Height = 200,
+                BackColor = Color.DarkGray
+            })
+            using (var progressBar = new CircularProgressBar()
+            {
+                ForeColor = Color.Yellow,
+                Indeterminate = true,
+                Speed = 1,
+                Dock = DockStyle.Fill
+            })
+            {
+                form.Controls.Add(progressBar);
+                form.ShowDialog();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // LinearProgressBar.
+        //---------------------------------------------------------------------
+
+        [InteractiveTest]
+        [Test]
+        public void DefiniteLinearProgressBar()
+        {
+            using (var form = new Form()
+            {
+                Width = 300,
+                Height = 80,
+                BackColor = Color.DarkGray
+            })
+            using (var progressBar = new LinearProgressBar()
+            {
+                ForeColor = Color.Yellow,
+                Value = 7,
+                Maximum = 10,
+                Dock = DockStyle.Fill
+            })
+            {
+                progressBar.Click += (_, __)
+                    => progressBar.Value = (progressBar.Value + 1) % (progressBar.Maximum + 1);
+                form.Controls.Add(progressBar);
+                form.ShowDialog();
+            }
+        }
+
+        [InteractiveTest]
+        [Test]
+        public void IndeterminateLinearProgressBar()
+        {
+            using (var form = new Form()
+            {
+                Width = 300,
+                Height = 80,
+                BackColor = Color.DarkGray
+            })
+            using (var progressBar = new LinearProgressBar()
+            {
+                ForeColor = Color.Yellow,
+                Indeterminate = true,
                 Dock = DockStyle.Fill
             })
             {

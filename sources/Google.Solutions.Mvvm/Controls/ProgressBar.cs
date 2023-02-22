@@ -34,6 +34,8 @@ namespace Google.Solutions.Mvvm.Controls
     {
         private int value;
         private int maximum = 100;
+        private Timer timer;
+        private int speed = 1;
 
         [Category("Behavior")]
         public int Value
@@ -56,19 +58,75 @@ namespace Google.Solutions.Mvvm.Controls
                 Invalidate();
             }
         }
+
+        [Category("Behavior")]
+        public int Speed
+        {
+            get => this.speed;
+            set
+            {
+                if (value < 1)
+                {
+                    throw new ArgumentException("Increment must be positive");
+                }
+
+                this.speed = Math.Min(this.Maximum, value);
+            }
+        }
+
+        [Category("Behavior")]
+        public bool Indeterminate
+        {
+            get => this.timer != null;
+            set
+            {
+                //
+                // Create a timer that advances the progress bar, but don't
+                // start it until the control is shown.
+                //
+                this.timer = new Timer()
+                {
+                    Interval = 50
+                };
+                this.timer.Tick += (_, __) =>
+                {
+                    this.Value = (this.Value + this.Speed) % (this.Maximum + 1);
+                };
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
+            this.timer?.Start();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (disposing)
+            {
+                this.timer?.Stop();
+                this.timer?.Dispose();
+            }
+        }
     }
 
     /// <summary>
     /// Circular progress indicator/spinner.
     /// </summary>
-    public class ProgressBar : ProgressBarBase
+    public class CircularProgressBar : ProgressBarBase
     {
         private int barWidth = 5;
 
-        public ProgressBar()
+        public CircularProgressBar()
         {
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            SetStyle(ControlStyles.Opaque, true);
 
             this.MinimumSize = new Size(10, 10);
             this.DoubleBuffered = true;
@@ -170,50 +228,78 @@ namespace Google.Solutions.Mvvm.Controls
         }
     }
 
-    /// <summary>
-    /// Circular progress bar that automatically advances indefinitely.
-    /// </summary>
-    public class IndeterminateCircularProgressBar : ProgressBar
-    {
-        private readonly Timer timer;
-        private int increment = 3;
 
-        public IndeterminateCircularProgressBar()
+    /// <summary>
+    /// Linear progress indicator/spinner.
+    /// </summary>
+    public class LinearProgressBar : ProgressBarBase
+    {
+        public LinearProgressBar()
         {
-            this.timer = new Timer()
-            {
-                Interval = 50
-            };
-            this.timer.Tick += (_, __) =>
-            {
-                this.Value = (this.Value + this.Increment) % this.Maximum;
-            };
-            this.timer.Start();
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            this.DoubleBuffered = true;
         }
 
-        [Category("Behavior")]
-        public int Increment
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        protected override void OnPaint(PaintEventArgs e)
         {
-            get => this.increment;
-            set
+            base.OnPaint(e);
+
+            using (var brush = new SolidBrush(this.ForeColor))
             {
-                if (value < 1)
+                int start;
+                int size;
+                
+                if (!this.Indeterminate)
                 {
-                    throw new ArgumentException("Increment must be positive");
+                    //
+                    // Grow the bar to the right.
+                    //
+                    start = 0;
+                    size = (int)Math.Ceiling(this.Width * ((float)this.Value / this.Maximum));
+                }
+                else
+                {
+                    var maxThirds = this.Maximum / 3;
+                    if (this.Value < maxThirds)
+                    {
+                        //
+                        // First third: Keep start fixed and grow the bar.
+                        //
+                        start = 0;
+                        size = this.Width / 2 * this.Value / maxThirds;
+                    }
+                    else if (this.Value < maxThirds * 2)
+                    {
+                        //
+                        // Second third: Move the bar while keeping it fixed in size.
+                        //
+                        start = this.Width / 2 * (this.Value - maxThirds) / maxThirds;
+                        size = this.Width / 2;
+                    }
+                    else
+                    {
+                        //
+                        // Last third: Shrink the bar.
+                        //
+                        start = this.Width / 2 + this.Width / 2 * (this.Value - 2 * maxThirds) / maxThirds;
+                        size = this.Width - start;
+                    }
                 }
 
-                this.increment = Math.Min(this.Maximum, value);
-            }
-        }
+                var rect = new Rectangle()
+                {
+                    X = start,
+                    Y = 0,
+                    Width = size,
+                    Height = this.Height
+                };
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-
-            if (disposing)
-            {
-                this.timer.Stop();
-                this.timer.Dispose();
+                ButtonRenderer.DrawParentBackground(e.Graphics, this.ClientRectangle, this);
+                e.Graphics.FillRectangle(brush, rect);
             }
         }
     }
