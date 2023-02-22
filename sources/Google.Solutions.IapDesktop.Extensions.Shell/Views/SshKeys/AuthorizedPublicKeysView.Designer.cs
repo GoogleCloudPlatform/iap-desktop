@@ -53,16 +53,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.keysList = new Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys.AuthorizedPublicKeysList();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.infoLabel = new System.Windows.Forms.Label();
-            this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.infoIcon = new System.Windows.Forms.PictureBox();
+            this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.deleteToolStripButton = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
-            this.toolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).BeginInit();
+            this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // keysList
@@ -104,11 +104,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             // infoLabel
             // 
             this.infoLabel.AutoSize = true;
+            this.infoLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.infoLabel.Location = new System.Drawing.Point(22, 4);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(86, 13);
             this.infoLabel.TabIndex = 2;
             this.infoLabel.Text = "This is a warning";
+            // 
+            // infoIcon
+            // 
+            this.infoIcon.Image = ((System.Drawing.Image)(resources.GetObject("infoIcon.Image")));
+            this.infoIcon.Location = new System.Drawing.Point(6, 3);
+            this.infoIcon.Name = "infoIcon";
+            this.infoIcon.Size = new System.Drawing.Size(16, 16);
+            this.infoIcon.TabIndex = 1;
+            this.infoIcon.TabStop = false;
             // 
             // toolStrip
             // 
@@ -120,15 +130,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "toolStrip1";
-            // 
-            // infoIcon
-            // 
-            this.infoIcon.Image = ((System.Drawing.Image)(resources.GetObject("infoIcon.Image")));
-            this.infoIcon.Location = new System.Drawing.Point(6, 3);
-            this.infoIcon.Name = "infoIcon";
-            this.infoIcon.Size = new System.Drawing.Size(16, 16);
-            this.infoIcon.TabIndex = 1;
-            this.infoIcon.TabStop = false;
             // 
             // refreshToolStripButton
             // 
@@ -148,14 +149,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.deleteToolStripButton.Text = "Delete key";
             this.deleteToolStripButton.Click += new System.EventHandler(this.deleteToolStripButton_Click);
             // 
-            // AuthorizedPublicKeysWindow
+            // AuthorizedPublicKeysView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.toolStrip);
-            this.Name = "AuthorizedPublicKeysWindow";
+            this.Name = "AuthorizedPublicKeysView";
             this.Text = "Authorized Keys";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PackageInventoryWindow_KeyDown);
             this.splitContainer.Panel1.ResumeLayout(false);
@@ -163,9 +164,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).EndInit();
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

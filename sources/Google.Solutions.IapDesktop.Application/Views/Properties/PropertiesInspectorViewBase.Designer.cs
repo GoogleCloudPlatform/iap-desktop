@@ -92,6 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             // infoLabel
             // 
             this.infoLabel.AutoSize = true;
+            this.infoLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.infoLabel.Location = new System.Drawing.Point(22, 4);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(86, 13);
@@ -132,13 +133,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.resetToolStripMenuItem.Text = "&Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
-            // PropertiesWindow
+            // PropertiesInspectorViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.splitContainer);
-            this.Name = "PropertiesWindow";
+            this.Name = "PropertiesInspectorViewBase";
             this.Text = "Properties";
             this.SizeChanged += new System.EventHandler(this.PropertiesWindow_SizeChanged);
             this.splitContainer.Panel1.ResumeLayout(false);
