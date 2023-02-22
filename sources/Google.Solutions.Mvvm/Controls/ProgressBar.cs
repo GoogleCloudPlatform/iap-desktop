@@ -28,13 +28,13 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Controls
 {
     /// <summary>
-    /// Base class for progress bar.
+    /// Base class for progress bars.
     /// </summary>
     public abstract class ProgressBarBase : Control
     {
+        internal Timer timer;
         private int value;
         private int maximum = 100;
-        private Timer timer;
         private int speed = 1;
 
         [Category("Behavior")]

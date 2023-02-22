@@ -22,6 +22,7 @@
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
+using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -43,14 +44,58 @@ namespace Google.Solutions.Mvvm.Test.Controls
             using (var progressBar = new LinearProgressBar())
             {
                 Assert.IsFalse(progressBar.Indeterminate);
+                Assert.IsNull(progressBar.timer);
 
                 progressBar.Indeterminate = true;
                 progressBar.Indeterminate = true;
                 Assert.IsTrue(progressBar.Indeterminate);
-                
+                Assert.IsNotNull(progressBar.timer);
+
                 progressBar.Indeterminate = false;
                 progressBar.Indeterminate = false;
                 Assert.IsFalse(progressBar.Indeterminate);
+                Assert.IsNull(progressBar.timer);
+            }
+        }
+
+        [Test]
+        public void Value()
+        {
+            using (var progressBar = new LinearProgressBar())
+            {
+                Assert.AreEqual(0, progressBar.Value);
+
+                progressBar.Value = progressBar.Maximum;
+                Assert.AreEqual(progressBar.Maximum, progressBar.Maximum);
+
+                progressBar.Maximum = progressBar.Maximum + 1;
+                Assert.AreEqual(progressBar.Maximum, progressBar.Maximum);
+            }
+        }
+
+        [Test]
+        public void Maximum()
+        {
+            using (var progressBar = new LinearProgressBar())
+            {
+                progressBar.Maximum = 0;
+                Assert.AreEqual(1, progressBar.Maximum);
+
+                progressBar.Maximum = -10;
+                Assert.AreEqual(1, progressBar.Maximum);
+            }
+        }
+
+        [Test]
+        public void Speed()
+        {
+            using (var progressBar = new LinearProgressBar())
+            {
+                Assert.Throws<ArgumentException>(() => progressBar.Speed = 0);
+                Assert.Throws<ArgumentException>(() => progressBar.Speed = -1);
+
+                progressBar.Speed = progressBar.Maximum + 1;
+                Assert.AreEqual(progressBar.Maximum, progressBar.Maximum);
             }
         }
 
