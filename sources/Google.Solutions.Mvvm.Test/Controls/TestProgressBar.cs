@@ -30,11 +30,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestCircularProgressBar
+    public class TestProgressBar
     {
         [InteractiveTest]
         [Test]
-        public void Indefinite()
+        public void IndefiniteCircularProgressBar()
         {
             using (var form = new Form()
             {

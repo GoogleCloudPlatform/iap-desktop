@@ -28,22 +28,12 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Controls
 {
     /// <summary>
-    /// Circular progress indicator/spinner.
+    /// Base class for progress bar.
     /// </summary>
-    public class CircularProgressBar : Control
+    public abstract class ProgressBarBase : Control
     {
         private int value;
         private int maximum = 100;
-        private int barWidth = 5;
-
-        public CircularProgressBar()
-        {
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            SetStyle(ControlStyles.Opaque, true);
-
-            this.MinimumSize = new Size(10, 10);
-            this.DoubleBuffered = true;
-        }
 
         [Category("Behavior")]
         public int Value
@@ -65,6 +55,23 @@ namespace Google.Solutions.Mvvm.Controls
                 this.maximum = Math.Max(1, value);
                 Invalidate();
             }
+        }
+    }
+
+    /// <summary>
+    /// Circular progress indicator/spinner.
+    /// </summary>
+    public class ProgressBar : ProgressBarBase
+    {
+        private int barWidth = 5;
+
+        public ProgressBar()
+        {
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            SetStyle(ControlStyles.Opaque, true);
+
+            this.MinimumSize = new Size(10, 10);
+            this.DoubleBuffered = true;
         }
 
         [Category("Appearance")]
@@ -166,7 +173,7 @@ namespace Google.Solutions.Mvvm.Controls
     /// <summary>
     /// Circular progress bar that automatically advances indefinitely.
     /// </summary>
-    public class IndeterminateCircularProgressBar : CircularProgressBar
+    public class IndeterminateCircularProgressBar : ProgressBar
     {
         private readonly Timer timer;
         private int increment = 3;
