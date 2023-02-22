@@ -443,9 +443,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Spinner.gif" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Copy_16x.png" />
   </ItemGroup>
   <ItemGroup>
