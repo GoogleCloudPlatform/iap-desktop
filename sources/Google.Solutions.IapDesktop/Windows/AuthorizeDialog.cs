@@ -163,6 +163,9 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Try to authorize using saved credentials.
             //
+            // NB. Wait until handle has been created so that BeginInvoke
+            // calls work properly.
+            //
             this.HandleCreated += (_, __) => viewModel
                 .TryLoadExistingAuthorizationAsync(CancellationToken.None)
                 .ContinueWith(
