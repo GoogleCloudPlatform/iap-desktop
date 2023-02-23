@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(213, 144);
+            this.label2.Location = new System.Drawing.Point(241, 144);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(10, 13);
             this.label2.TabIndex = 3;
@@ -166,9 +166,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // 
             // proxyPortTextBox
             // 
-            this.proxyPortTextBox.Location = new System.Drawing.Point(223, 141);
+            this.proxyPortTextBox.Location = new System.Drawing.Point(251, 141);
             this.proxyPortTextBox.Name = "proxyPortTextBox";
-            this.proxyPortTextBox.Size = new System.Drawing.Size(46, 20);
+            this.proxyPortTextBox.Size = new System.Drawing.Size(49, 20);
             this.proxyPortTextBox.TabIndex = 4;
             this.proxyPortTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.proxyPortTextBox_KeyPress);
             // 
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.proxyAuthPasswordTextBox.MaxLength = 64;
             this.proxyAuthPasswordTextBox.Name = "proxyAuthPasswordTextBox";
             this.proxyAuthPasswordTextBox.PasswordChar = '●';
-            this.proxyAuthPasswordTextBox.Size = new System.Drawing.Size(169, 20);
+            this.proxyAuthPasswordTextBox.Size = new System.Drawing.Size(200, 20);
             this.proxyAuthPasswordTextBox.TabIndex = 9;
             // 
             // proxyAuthUsernameTextBox
@@ -186,23 +186,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.proxyAuthUsernameTextBox.Location = new System.Drawing.Point(100, 267);
             this.proxyAuthUsernameTextBox.MaxLength = 64;
             this.proxyAuthUsernameTextBox.Name = "proxyAuthUsernameTextBox";
-            this.proxyAuthUsernameTextBox.Size = new System.Drawing.Size(169, 20);
+            this.proxyAuthUsernameTextBox.Size = new System.Drawing.Size(200, 20);
             this.proxyAuthUsernameTextBox.TabIndex = 8;
             // 
             // proxyPacTextBox
             // 
-            this.proxyPacTextBox.Location = new System.Drawing.Point(87, 207);
+            this.proxyPacTextBox.Location = new System.Drawing.Point(100, 207);
             this.proxyPacTextBox.MaxLength = 256;
             this.proxyPacTextBox.Name = "proxyPacTextBox";
-            this.proxyPacTextBox.Size = new System.Drawing.Size(182, 20);
+            this.proxyPacTextBox.Size = new System.Drawing.Size(200, 20);
             this.proxyPacTextBox.TabIndex = 6;
             // 
             // proxyServerTextBox
             // 
-            this.proxyServerTextBox.Location = new System.Drawing.Point(86, 141);
+            this.proxyServerTextBox.Location = new System.Drawing.Point(100, 141);
             this.proxyServerTextBox.MaxLength = 64;
             this.proxyServerTextBox.Name = "proxyServerTextBox";
-            this.proxyServerTextBox.Size = new System.Drawing.Size(127, 20);
+            this.proxyServerTextBox.Size = new System.Drawing.Size(140, 20);
             this.proxyServerTextBox.TabIndex = 3;
             // 
             // openProxyControlPanelAppletButton
@@ -280,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // 
             // connectionLimitUpDown
             // 
-            this.connectionLimitUpDown.Location = new System.Drawing.Point(192, 22);
+            this.connectionLimitUpDown.Location = new System.Drawing.Point(178, 22);
             this.connectionLimitUpDown.Maximum = new decimal(new int[] {
             32,
             0,
