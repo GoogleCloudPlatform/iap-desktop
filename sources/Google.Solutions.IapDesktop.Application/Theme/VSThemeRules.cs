@@ -225,11 +225,58 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             combo.BackColor = theme.Palette.ComboBox.Background;
         }
 
-        private static void StyleGroupBox(GroupBox group, VSTheme theme)
+        private static void StyleGroupBox(GroupBox groupBox, VSTheme theme)
         {
-            group.ForeColor = theme.Palette.Label.Text;
+            groupBox.ForeColor = theme.Palette.Label.Text;
 
-            // TODO: Draw  gray border, https://stackoverflow.com/questions/76455/how-do-you-change-the-color-of-the-border-on-a-group-box
+            if (theme.IsDark)
+            {
+                //
+                // In dark mode, the border is drawn in black by default,
+                // which doesn't look good. Draw a custom border instead
+                // that uses the button border color.
+                //
+                groupBox.Paint += (sender, e) =>
+                {
+                    var box = (GroupBox)sender;
+
+                    using (var textBrush = new SolidBrush(box.ForeColor))
+                    using (var borderBrush = new SolidBrush(theme.Palette.Button.Border))
+                    using (var borderPen = new Pen(borderBrush))
+                    {
+                        var headerTextSize = e.Graphics.MeasureString(box.Text, box.Font);
+                        var boxRect = new Rectangle(
+                            box.ClientRectangle.X,
+                            box.ClientRectangle.Y + (int)(headerTextSize.Height / 2),
+                            box.ClientRectangle.Width - 1,
+                            box.ClientRectangle.Height - (int)(headerTextSize.Height / 2) - 1);
+
+                        //
+                        // Clear text and border.
+                        //
+                        e.Graphics.Clear(box.BackColor);
+
+                        //
+                        // Draw header.
+                        //
+                        e.Graphics.DrawString(box.Text, box.Font, textBrush, box.Padding.Left, 0);
+
+                        //
+                        // Draw Border, starting from the header in clockwise direction.
+                        //
+                        e.Graphics.DrawLines(
+                            borderPen,
+                            new Point[] {
+                                new Point(boxRect.X + box.Padding.Left + (int)(headerTextSize.Width), boxRect.Y),
+                                new Point(boxRect.X + boxRect.Width, boxRect.Y),
+                                new Point(boxRect.X + boxRect.Width, boxRect.Y + boxRect.Height),
+                                new Point(boxRect.X, boxRect.Y + boxRect.Height),
+                                boxRect.Location,
+                                new Point(boxRect.X + box.Padding.Left, boxRect.Y)
+                            });
+                    }
+                };
+            }
         }
 
         private static void StyleTabControl(VerticalTabControl tab, VSTheme theme)
@@ -253,8 +300,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             bar.BackColor = theme.Palette.ProgressBar.Background;
             bar.ForeColor = theme.Palette.ProgressBar.Indicator;
         }
-
-        // TODO: InfoBar
 
         //---------------------------------------------------------------------
         // Extension methods.
