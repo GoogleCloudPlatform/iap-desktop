@@ -223,6 +223,7 @@ namespace Google.Solutions.Mvvm.Theme
                             break;
                     }
                 });
+                // TODO: XXX Add subclass to component, otherwise it might be GC'd!
 
                 listView.Disposed += (_, __) => subclass.Dispose();
             }

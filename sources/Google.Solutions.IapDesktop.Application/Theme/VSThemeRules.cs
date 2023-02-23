@@ -34,6 +34,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 {
     internal static class VSThemeRules
     {
+        private static Bitmap listBackgroundImage;
+
         private const float IconGrayScaleFactor = .65f;
         private static Color AccentColor { get; set; } = Color.FromArgb(98, 136, 242);
 
@@ -90,6 +92,28 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 listView.HotTracking = false;
                 IconTweaks.InvertAndScaleGrays(listView.SmallImageList, IconGrayScaleFactor);
                 IconTweaks.InvertAndScaleGrays(listView.LargeImageList, IconGrayScaleFactor);
+
+                //
+                // When disabled, the list view's background turns gray by default.
+                // That's fine in light mode, but looks bad in dark mode. It doesn't
+                // seem to be possible to override this behavior by using subclassing,
+                // but we can disable it by using a background image.
+                //
+                // Create a 1x1 image with the intended background color, and
+                // set that as a tiled background image.
+                //
+                if (listBackgroundImage == null)
+                {
+                    listBackgroundImage = new Bitmap(1, 1);
+                    using (var g = Graphics.FromImage(listBackgroundImage))
+                    using (var brush = new SolidBrush(listView.BackColor))
+                    {
+                        g.FillRectangle(brush, new Rectangle(Point.Empty, listBackgroundImage.Size));
+                    }
+                }
+
+                listView.BackgroundImageTiled = true;
+                listView.BackgroundImage = listBackgroundImage;
             }
         }
 
