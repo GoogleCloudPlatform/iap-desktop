@@ -221,6 +221,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         private static void StyleComboBox(ComboBox combo, VSTheme theme)
         {
+            //
+            // NB. Use FlatStyle.System to prevent a white border
+            // around the control when used as a ToolStripDropDown.
+            //
+            combo.FlatStyle = FlatStyle.System;
             combo.ForeColor = theme.Palette.ComboBox.Text;
             combo.BackColor = theme.Palette.ComboBox.Background;
         }

@@ -89,17 +89,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                     m => m.ControlEnabled,
                     this.components);
             }
-            this.toolStripButton.BindReadonlyObservableProperty(
-                c => c.Enabled,
-                viewModel,
-                m => m.ControlEnabled,
-                this.components);
-
-            this.toolStripDropDownButton.BindReadonlyObservableProperty(
-                c => c.Enabled,
-                viewModel,
-                m => m.ControlEnabled,
-                this.components);
+            foreach (var item in new ToolStripItem[]
+            {
+                this.toolStripButton,
+                this.toolStripDropDownButton,
+                this.toolStripComboBox
+            })
+            {
+                item.BindReadonlyObservableProperty(
+                    c => c.Enabled,
+                    viewModel,
+                    m => m.ControlEnabled,
+                    this.components);
+            }
 
             //
             // Readonly.

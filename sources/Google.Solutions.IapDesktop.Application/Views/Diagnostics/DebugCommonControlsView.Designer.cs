@@ -81,6 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.toolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.oneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.twoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.tabControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -195,6 +196,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // comboBox
             // 
             this.comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.comboBox.FormattingEnabled = true;
             this.comboBox.Items.AddRange(new object[] {
             "Option 1",
@@ -320,7 +322,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton,
-            this.toolStripDropDownButton});
+            this.toolStripDropDownButton,
+            this.toolStripComboBox});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(454, 25);
@@ -351,14 +354,24 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // oneToolStripMenuItem
             // 
             this.oneToolStripMenuItem.Name = "oneToolStripMenuItem";
-            this.oneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.oneToolStripMenuItem.Size = new System.Drawing.Size(96, 22);
             this.oneToolStripMenuItem.Text = "One";
             // 
             // twoToolStripMenuItem
             // 
             this.twoToolStripMenuItem.Name = "twoToolStripMenuItem";
-            this.twoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.twoToolStripMenuItem.Size = new System.Drawing.Size(96, 22);
             this.twoToolStripMenuItem.Text = "Two";
+            // 
+            // toolStripComboBox
+            // 
+            this.toolStripComboBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.toolStripComboBox.Items.AddRange(new object[] {
+            "One",
+            "Two",
+            "Three"});
+            this.toolStripComboBox.Name = "toolStripComboBox";
+            this.toolStripComboBox.Size = new System.Drawing.Size(121, 25);
             // 
             // DebugCommonControlsView
             // 
@@ -428,5 +441,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton;
         private System.Windows.Forms.ToolStripMenuItem oneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem twoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBox;
     }
 }
