@@ -47,16 +47,35 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
             {
+                //
+                // The base class doesn't adjust the arrow color.
+                // That's okay in light mode, but makes arrows almost invisible
+                // in dark mode.
+                //
                 if (e.Item is ToolStripMenuItem item && item != null)
                 {
                     //
-                    // The base class doesn't adjust the arrow color. That's
-                    // okay in light mode, but makes arrows almost invisible
-                    // in dark mode.
-                    //
-                    // Apply color from theme.
+                    // Sub-menu.
                     //
                     e.ArrowColor = this.palette.CommandBarMenuPopupDefault.Arrow;
+                }
+                else if (e.Item is ToolStripDropDownButton dropDown && 
+                         e.Item.Owner is ToolStrip toolStrip)
+                {
+                    if (toolStrip is StatusStrip)
+                    {
+                        //
+                        // DropDownButton main window status strip.
+                        //
+                        e.ArrowColor = this.palette.MainWindowStatusBarDefault.Text;
+                    }
+                    else
+                    {
+                        //
+                        // DropDownButton in tool strip.
+                        //
+                        e.ArrowColor = this.palette.CommandBarToolbarButtonDefault.Arrow;
+                    }
                 }
 
                 base.OnRenderArrow(e);

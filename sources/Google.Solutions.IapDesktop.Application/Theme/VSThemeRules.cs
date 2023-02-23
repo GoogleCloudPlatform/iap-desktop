@@ -26,12 +26,14 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
+    /// <summary>
+    /// Theming rules for applying a VS Theme (i.e., Visual Studio theme file).
+    /// </summary>
     internal static class VSThemeRules
     {
         private static Bitmap listBackgroundImage;
