@@ -163,9 +163,10 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Try to authorize using saved credentials.
             //
-            viewModel.TryLoadExistingAuthorizationAsync(CancellationToken.None)
+            this.HandleCreated += (_, __) => viewModel
+                .TryLoadExistingAuthorizationAsync(CancellationToken.None)
                 .ContinueWith(
-                    _ => Debug.Assert(false, "Should never throw an exception"),
+                    t => Debug.Assert(false, "Should never throw an exception"),
                     TaskContinuationOptions.OnlyOnFaulted);
         }
 
