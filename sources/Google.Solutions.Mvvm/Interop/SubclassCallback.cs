@@ -30,7 +30,7 @@ namespace Google.Solutions.Mvvm.Interop
     /// <summary>
     /// Callback for subclassing external windows. 
     /// </summary>
-    internal sealed class SubclassCallback : IComponent
+    internal sealed class SubclassCallback : IDisposable
     {
         private readonly NativeMethods.SubclassProcedure hookProc;
 
@@ -79,19 +79,19 @@ namespace Google.Solutions.Mvvm.Interop
         public bool IsDisposed { get; private set; }
 
         public SubclassCallback(
-            IntPtr hwnd,
+            Control control,
             WndProc wndProc)
         {
-            if (hwnd == IntPtr.Zero)
+            if (control.Handle == IntPtr.Zero)
             {
-                throw new ArgumentException(nameof(hwnd));
+                throw new ArgumentException("Control has no handle");
             }
             else if (wndProc == null)
             {
                 throw new ArgumentException(nameof(wndProc));
             }
 
-            this.WindowHandle = hwnd;
+            this.WindowHandle = control.Handle;
             this.wndProc = wndProc;
 
             //
@@ -100,8 +100,16 @@ namespace Google.Solutions.Mvvm.Interop
             this.hookProc = new NativeMethods.SubclassProcedure(Callback);
             this.hookProcPtr = Marshal.GetFunctionPointerForDelegate(this.hookProc);
 
+            //
+            // Tie the lifetime to the control. This ensures that:
+            // - this object (and crucially, the delegate callback) is
+            //   being prevented from GC collecting
+            // - our own resources are being cleaned up.
+            //
+            control.Disposed += (_, __) => Dispose();
+
             if (!NativeMethods.SetWindowSubclass(
-                hwnd,
+                control.Handle,
                 this.hookProcPtr,
                 UIntPtr.Zero,
                 UIntPtr.Zero))
@@ -111,11 +119,8 @@ namespace Google.Solutions.Mvvm.Interop
         }
 
         //---------------------------------------------------------------------
-        // IComponent.
+        // IDisposable.
         //---------------------------------------------------------------------
-
-        public event EventHandler Disposed;
-        public ISite Site { get; set; }
 
         public void Dispose()
         {
@@ -128,7 +133,6 @@ namespace Google.Solutions.Mvvm.Interop
                 Debug.Assert(hookRemoved);
 
                 this.IsDisposed = true;
-                this.Disposed?.Invoke(this, EventArgs.Empty);
             }
         }
 

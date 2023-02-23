@@ -184,7 +184,7 @@ namespace Google.Solutions.Mvvm.Theme
                 // in the column header. Adapted from
                 // https://github.com/ysc3839/win32-darkmode/blob/master/win32-darkmode/ListViewUtil.h
                 //
-                var subclass = new SubclassCallback(listView.Handle, (ref Message m) =>
+                var subclass = new SubclassCallback(listView, (ref Message m) =>
                 {
                     switch (m.Msg)
                     {
@@ -223,9 +223,7 @@ namespace Google.Solutions.Mvvm.Theme
                             break;
                     }
                 });
-                // TODO: XXX Add subclass to component, otherwise it might be GC'd!
-
-                listView.Disposed += (_, __) => subclass.Dispose();
+                // TODO: Add unhandled exception listener
             }
         }
 
