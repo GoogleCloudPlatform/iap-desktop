@@ -57,6 +57,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                  This is some {\b bold} text.\par
                  }";
 
+            //
+            // Enable
+            //
             this.textBoxEnabled.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
@@ -65,6 +68,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
             foreach (var control in new Control[]
             {
+                this.regularButton,
+                this.okButton,
+                this.cancelButton,
                 this.label,
                 this.linkLabel,
                 this.checkBox,
@@ -83,7 +89,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                     m => m.ControlEnabled,
                     this.components);
             }
+            this.toolStripButton.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.ControlEnabled,
+                this.components);
 
+            this.toolStripDropDownButton.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.ControlEnabled,
+                this.components);
+
+            //
+            // Readonly.
+            //
             this.readOnlyCheckBox.BindObservableProperty(
                 c => c.Checked,
                 viewModel,

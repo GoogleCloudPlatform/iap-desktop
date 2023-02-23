@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebugCommonControlsView));
             this.regularButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
@@ -75,13 +76,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.valueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.readOnlyCheckBox = new System.Windows.Forms.CheckBox();
             this.circularProgressBar1 = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.oneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.twoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // regularButton
             // 
-            this.regularButton.Location = new System.Drawing.Point(12, 12);
+            this.regularButton.Location = new System.Drawing.Point(11, 62);
             this.regularButton.Name = "regularButton";
             this.regularButton.Size = new System.Drawing.Size(75, 23);
             this.regularButton.TabIndex = 0;
@@ -91,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(93, 12);
+            this.okButton.Location = new System.Drawing.Point(92, 62);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 1;
@@ -101,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(174, 12);
+            this.cancelButton.Location = new System.Drawing.Point(173, 62);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 2;
@@ -111,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // label
             // 
             this.label.AutoSize = true;
-            this.label.Location = new System.Drawing.Point(12, 42);
+            this.label.Location = new System.Drawing.Point(11, 92);
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size(33, 13);
             this.label.TabIndex = 3;
@@ -120,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // linkLabel
             // 
             this.linkLabel.AutoSize = true;
-            this.linkLabel.Location = new System.Drawing.Point(12, 63);
+            this.linkLabel.Location = new System.Drawing.Point(11, 113);
             this.linkLabel.Name = "linkLabel";
             this.linkLabel.Size = new System.Drawing.Size(27, 13);
             this.linkLabel.TabIndex = 4;
@@ -130,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // checkBox
             // 
             this.checkBox.AutoSize = true;
-            this.checkBox.Location = new System.Drawing.Point(15, 89);
+            this.checkBox.Location = new System.Drawing.Point(14, 139);
             this.checkBox.Name = "checkBox";
             this.checkBox.Size = new System.Drawing.Size(74, 17);
             this.checkBox.TabIndex = 5;
@@ -140,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // radioButton
             // 
             this.radioButton.AutoSize = true;
-            this.radioButton.Location = new System.Drawing.Point(15, 112);
+            this.radioButton.Location = new System.Drawing.Point(14, 162);
             this.radioButton.Name = "radioButton";
             this.radioButton.Size = new System.Drawing.Size(86, 17);
             this.radioButton.TabIndex = 6;
@@ -150,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // textBox
             // 
-            this.textBox.Location = new System.Drawing.Point(15, 146);
+            this.textBox.Location = new System.Drawing.Point(14, 196);
             this.textBox.Name = "textBox";
             this.textBox.Size = new System.Drawing.Size(153, 20);
             this.textBox.TabIndex = 7;
@@ -158,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // multilineTextBox
             // 
-            this.multilineTextBox.Location = new System.Drawing.Point(15, 172);
+            this.multilineTextBox.Location = new System.Drawing.Point(14, 222);
             this.multilineTextBox.Multiline = true;
             this.multilineTextBox.Name = "multilineTextBox";
             this.multilineTextBox.ReadOnly = true;
@@ -170,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // textBoxEnabled
             // 
             this.textBoxEnabled.AutoSize = true;
-            this.textBoxEnabled.Location = new System.Drawing.Point(175, 42);
+            this.textBoxEnabled.Location = new System.Drawing.Point(11, 28);
             this.textBoxEnabled.Name = "textBoxEnabled";
             this.textBoxEnabled.Size = new System.Drawing.Size(65, 17);
             this.textBoxEnabled.TabIndex = 8;
@@ -179,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // richTextBox
             // 
-            this.richTextBox.Location = new System.Drawing.Point(15, 234);
+            this.richTextBox.Location = new System.Drawing.Point(14, 284);
             this.richTextBox.Name = "richTextBox";
             this.richTextBox.Size = new System.Drawing.Size(153, 44);
             this.richTextBox.TabIndex = 9;
@@ -195,14 +202,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             "Option 3",
             "Option 4",
             "Option 5"});
-            this.comboBox.Location = new System.Drawing.Point(15, 285);
+            this.comboBox.Location = new System.Drawing.Point(14, 335);
             this.comboBox.Name = "comboBox";
             this.comboBox.Size = new System.Drawing.Size(153, 21);
             this.comboBox.TabIndex = 10;
             // 
             // groupBox
             // 
-            this.groupBox.Location = new System.Drawing.Point(15, 432);
+            this.groupBox.Location = new System.Drawing.Point(14, 482);
             this.groupBox.Name = "groupBox";
             this.groupBox.Size = new System.Drawing.Size(234, 45);
             this.groupBox.TabIndex = 11;
@@ -213,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(15, 483);
+            this.tabControl1.Location = new System.Drawing.Point(14, 533);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(234, 116);
@@ -241,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // numericUpDown
             // 
-            this.numericUpDown.Location = new System.Drawing.Point(15, 314);
+            this.numericUpDown.Location = new System.Drawing.Point(14, 364);
             this.numericUpDown.Name = "numericUpDown";
             this.numericUpDown.Size = new System.Drawing.Size(153, 20);
             this.numericUpDown.TabIndex = 13;
@@ -249,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // progressBar
             // 
             this.progressBar.Indeterminate = false;
-            this.progressBar.Location = new System.Drawing.Point(19, 606);
+            this.progressBar.Location = new System.Drawing.Point(18, 656);
             this.progressBar.Maximum = 100;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(226, 23);
@@ -259,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // vScrollBar
             // 
-            this.vScrollBar.Location = new System.Drawing.Point(223, 602);
+            this.vScrollBar.Location = new System.Drawing.Point(222, 652);
             this.vScrollBar.Name = "vScrollBar";
             this.vScrollBar.Size = new System.Drawing.Size(17, 68);
             this.vScrollBar.TabIndex = 15;
@@ -270,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.nameColumn,
             this.valueColumn});
             this.listView.HideSelection = false;
-            this.listView.Location = new System.Drawing.Point(15, 340);
+            this.listView.Location = new System.Drawing.Point(14, 390);
             this.listView.Name = "listView";
             this.listView.Size = new System.Drawing.Size(153, 86);
             this.listView.TabIndex = 16;
@@ -288,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // readOnlyCheckBox
             // 
             this.readOnlyCheckBox.AutoSize = true;
-            this.readOnlyCheckBox.Location = new System.Drawing.Point(174, 65);
+            this.readOnlyCheckBox.Location = new System.Drawing.Point(82, 28);
             this.readOnlyCheckBox.Name = "readOnlyCheckBox";
             this.readOnlyCheckBox.Size = new System.Drawing.Size(71, 17);
             this.readOnlyCheckBox.TabIndex = 17;
@@ -299,7 +306,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             this.circularProgressBar1.Indeterminate = false;
             this.circularProgressBar1.LineWidth = 5;
-            this.circularProgressBar1.Location = new System.Drawing.Point(19, 636);
+            this.circularProgressBar1.Location = new System.Drawing.Point(18, 686);
             this.circularProgressBar1.Maximum = 100;
             this.circularProgressBar1.MinimumSize = new System.Drawing.Size(10, 10);
             this.circularProgressBar1.Name = "circularProgressBar1";
@@ -309,11 +316,56 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.circularProgressBar1.Text = "circularProgressBar";
             this.circularProgressBar1.Value = 88;
             // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton,
+            this.toolStripDropDownButton});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(454, 25);
+            this.toolStrip1.TabIndex = 19;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripButton
+            // 
+            this.toolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton.Image")));
+            this.toolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton.Name = "toolStripButton";
+            this.toolStripButton.Size = new System.Drawing.Size(47, 22);
+            this.toolStripButton.Text = "Button";
+            // 
+            // toolStripDropDownButton
+            // 
+            this.toolStripDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.oneToolStripMenuItem,
+            this.twoToolStripMenuItem});
+            this.toolStripDropDownButton.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton.Image")));
+            this.toolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton.Name = "toolStripDropDownButton";
+            this.toolStripDropDownButton.Size = new System.Drawing.Size(80, 22);
+            this.toolStripDropDownButton.Text = "Drop Down";
+            // 
+            // oneToolStripMenuItem
+            // 
+            this.oneToolStripMenuItem.Name = "oneToolStripMenuItem";
+            this.oneToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.oneToolStripMenuItem.Text = "One";
+            // 
+            // twoToolStripMenuItem
+            // 
+            this.twoToolStripMenuItem.Name = "twoToolStripMenuItem";
+            this.twoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.twoToolStripMenuItem.Text = "Two";
+            // 
             // DebugCommonControlsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(454, 716);
+            this.ClientSize = new System.Drawing.Size(454, 777);
+            this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.circularProgressBar1);
             this.Controls.Add(this.readOnlyCheckBox);
             this.Controls.Add(this.listView);
@@ -338,6 +390,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.Text = "Common Controls";
             this.tabControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).EndInit();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -369,5 +423,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.ColumnHeader valueColumn;
         private System.Windows.Forms.CheckBox readOnlyCheckBox;
         private CircularProgressBar circularProgressBar1;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton toolStripButton;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton;
+        private System.Windows.Forms.ToolStripMenuItem oneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem twoToolStripMenuItem;
     }
 }
