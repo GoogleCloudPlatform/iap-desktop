@@ -56,22 +56,24 @@ namespace Google.Solutions.IapDesktop.Windows
             this.cancelSignInLink = new System.Windows.Forms.LinkLabel();
             this.cancelSignInLabel = new System.Windows.Forms.Label();
             this.signInMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.signInWithChromeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signInWithChromeGuestMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signInWithDefaultBrowserMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.introLabel = new System.Windows.Forms.Label();
-            this.gradient = new System.Windows.Forms.PictureBox();
             this.spinner = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
-            this.signInButton = new Google.Solutions.Mvvm.Controls.DropDownButton();
             this.headerLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
+            this.watermarkPictureBox = new System.Windows.Forms.PictureBox();
+            this.gradient = new System.Windows.Forms.PictureBox();
+            this.signInButton = new Google.Solutions.Mvvm.Controls.DropDownButton();
+            this.signInWithChromeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signInMenuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.watermarkPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gradient)).BeginInit();
             this.SuspendLayout();
             // 
             // cancelSignInLink
             // 
             this.cancelSignInLink.BackColor = System.Drawing.Color.Transparent;
-            this.cancelSignInLink.Location = new System.Drawing.Point(100, 378);
+            this.cancelSignInLink.Location = new System.Drawing.Point(100, 281);
             this.cancelSignInLink.Name = "cancelSignInLink";
             this.cancelSignInLink.Size = new System.Drawing.Size(134, 23);
             this.cancelSignInLink.TabIndex = 3;
@@ -82,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // cancelSignInLabel
             // 
             this.cancelSignInLabel.BackColor = System.Drawing.Color.Transparent;
-            this.cancelSignInLabel.Location = new System.Drawing.Point(6, 343);
+            this.cancelSignInLabel.Location = new System.Drawing.Point(6, 246);
             this.cancelSignInLabel.Name = "cancelSignInLabel";
             this.cancelSignInLabel.Size = new System.Drawing.Size(322, 33);
             this.cancelSignInLabel.TabIndex = 4;
@@ -98,13 +100,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.signInMenuStrip.Name = "signInMenuStrip";
             this.signInMenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.signInMenuStrip.Size = new System.Drawing.Size(258, 70);
-            // 
-            // signInWithChromeMenuItem
-            // 
-            this.signInWithChromeMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("signInWithChromeMenuItem.Image")));
-            this.signInWithChromeMenuItem.Name = "signInWithChromeMenuItem";
-            this.signInWithChromeMenuItem.Size = new System.Drawing.Size(257, 22);
-            this.signInWithChromeMenuItem.Text = "Sign in with &Chrome";
             // 
             // signInWithChromeGuestMenuItem
             // 
@@ -130,20 +125,11 @@ namespace Google.Solutions.IapDesktop.Windows
             this.introLabel.Text = "Sign in and start using IAP Desktop \r\nto securely connect to your Linux and \r\nWin" +
     "dows VMs";
             // 
-            // gradient
-            // 
-            this.gradient.Image = global::Google.Solutions.IapDesktop.Properties.Resources.AccentGradient_450;
-            this.gradient.Location = new System.Drawing.Point(0, 442);
-            this.gradient.Name = "gradient";
-            this.gradient.Size = new System.Drawing.Size(450, 10);
-            this.gradient.TabIndex = 6;
-            this.gradient.TabStop = false;
-            // 
             // spinner
             // 
             this.spinner.Indeterminate = true;
             this.spinner.LineWidth = 5;
-            this.spinner.Location = new System.Drawing.Point(145, 296);
+            this.spinner.Location = new System.Drawing.Point(145, 199);
             this.spinner.Maximum = 100;
             this.spinner.MinimumSize = new System.Drawing.Size(15, 15);
             this.spinner.Name = "spinner";
@@ -152,20 +138,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.spinner.TabIndex = 2;
             this.spinner.TabStop = false;
             this.spinner.Value = 0;
-            // 
-            // signInButton
-            // 
-            this.signInButton.BackColor = System.Drawing.Color.White;
-            this.signInButton.Image = global::Google.Solutions.IapDesktop.Properties.Resources.GoogleSignIn_24;
-            this.signInButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.signInButton.Location = new System.Drawing.Point(99, 304);
-            this.signInButton.Menu = this.signInMenuStrip;
-            this.signInButton.Name = "signInButton";
-            this.signInButton.Size = new System.Drawing.Size(137, 36);
-            this.signInButton.TabIndex = 0;
-            this.signInButton.Text = "Sign in";
-            this.signInButton.UseVisualStyleBackColor = false;
-            this.signInButton.Visible = false;
             // 
             // headerLabel
             // 
@@ -176,6 +148,46 @@ namespace Google.Solutions.IapDesktop.Windows
             this.headerLabel.Size = new System.Drawing.Size(195, 45);
             this.headerLabel.TabIndex = 7;
             this.headerLabel.Text = "IAP Desktop";
+            // 
+            // watermarkPictureBox
+            // 
+            this.watermarkPictureBox.Image = global::Google.Solutions.IapDesktop.Properties.Resources.LogoWatermark_180;
+            this.watermarkPictureBox.Location = new System.Drawing.Point(0, 305);
+            this.watermarkPictureBox.Name = "watermarkPictureBox";
+            this.watermarkPictureBox.Size = new System.Drawing.Size(180, 145);
+            this.watermarkPictureBox.TabIndex = 8;
+            this.watermarkPictureBox.TabStop = false;
+            // 
+            // gradient
+            // 
+            this.gradient.Image = global::Google.Solutions.IapDesktop.Properties.Resources.AccentGradient_450;
+            this.gradient.Location = new System.Drawing.Point(0, 442);
+            this.gradient.Name = "gradient";
+            this.gradient.Size = new System.Drawing.Size(450, 10);
+            this.gradient.TabIndex = 6;
+            this.gradient.TabStop = false;
+            // 
+            // signInButton
+            // 
+            this.signInButton.BackColor = System.Drawing.Color.White;
+            this.signInButton.Image = global::Google.Solutions.IapDesktop.Properties.Resources.GoogleSignIn_24;
+            this.signInButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.signInButton.Location = new System.Drawing.Point(99, 264);
+            this.signInButton.Menu = this.signInMenuStrip;
+            this.signInButton.Name = "signInButton";
+            this.signInButton.Size = new System.Drawing.Size(137, 36);
+            this.signInButton.TabIndex = 0;
+            this.signInButton.TabStop = false;
+            this.signInButton.Text = "Sign in";
+            this.signInButton.UseVisualStyleBackColor = false;
+            this.signInButton.Visible = false;
+            // 
+            // signInWithChromeMenuItem
+            // 
+            this.signInWithChromeMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("signInWithChromeMenuItem.Image")));
+            this.signInWithChromeMenuItem.Name = "signInWithChromeMenuItem";
+            this.signInWithChromeMenuItem.Size = new System.Drawing.Size(257, 22);
+            this.signInWithChromeMenuItem.Text = "Sign in with &Chrome";
             // 
             // AuthorizeDialog
             // 
@@ -189,6 +201,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.Controls.Add(this.cancelSignInLink);
             this.Controls.Add(this.spinner);
             this.Controls.Add(this.signInButton);
+            this.Controls.Add(this.watermarkPictureBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "AuthorizeDialog";
             this.ShowIcon = false;
@@ -197,6 +210,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sign in";
             this.signInMenuStrip.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.watermarkPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gradient)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -216,5 +230,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem signInWithChromeGuestMenuItem;
         private System.Windows.Forms.PictureBox gradient;
         private Mvvm.Controls.HeaderLabel headerLabel;
+        private System.Windows.Forms.PictureBox watermarkPictureBox;
     }
 }

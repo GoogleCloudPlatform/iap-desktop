@@ -161,6 +161,11 @@ namespace Google.Solutions.IapDesktop.Windows
             };
 
             //
+            // Hide focus rectangle.
+            //
+            this.signInButton.NotifyDefault(false);
+
+            //
             // Try to authorize using saved credentials.
             //
             // NB. Wait until handle has been created so that BeginInvoke
