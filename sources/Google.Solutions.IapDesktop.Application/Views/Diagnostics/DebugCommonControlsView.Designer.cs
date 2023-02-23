@@ -196,7 +196,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // comboBox
             // 
             this.comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.comboBox.FormattingEnabled = true;
             this.comboBox.Items.AddRange(new object[] {
             "Option 1",
@@ -365,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             // 
             // toolStripComboBox
             // 
-            this.toolStripComboBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.toolStripComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBox.Items.AddRange(new object[] {
             "One",
             "Two",
