@@ -22,20 +22,23 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Google.Solutions.Mvvm.Binding
 {
-    public interface IObservableProperty : INotifyPropertyChanged
+    public interface IObservableProperty
     {
         void RaisePropertyChange();
     }
 
-    public interface IObservableProperty<T> : IObservableProperty
+    public interface IObservableProperty<T> : IObservableProperty, INotifyPropertyChanged
     {
         T Value { get; }
     }
 
-    public interface IObservableWritableProperty<T> : IObservableProperty
+    public interface IObservableWritableProperty<T> : IObservableProperty, INotifyPropertyChanged
     {
         T Value { get; set; }
     }
@@ -62,19 +65,6 @@ namespace Google.Solutions.Mvvm.Binding
         }
 
         /// <summary>
-        /// True if the property has been modified.
-        /// </summary>
-        public bool IsModified { get; private set; } = false;
-
-        /// <summary>
-        /// Reset IsModified to false.
-        /// </summary>
-        public void SetUnmodified()
-        {
-            this.IsModified = false;
-        }
-
-        /// <summary>
         /// Get or set the value, raises a change event.
         /// </summary>
         public T Value
@@ -83,7 +73,6 @@ namespace Google.Solutions.Mvvm.Binding
             set
             {
                 this.value = value;
-                this.IsModified = true;
                 RaisePropertyChange();
             }
         }
@@ -111,6 +100,26 @@ namespace Google.Solutions.Mvvm.Binding
             }
 
             this.dependents.AddLast(property);
+        }
+
+        public void AddDependentProperty(Action onPropertyChange) // TODO: Add tests 
+        {
+            AddDependentProperty(new ModelProperty(onPropertyChange));
+        }
+
+        private class ModelProperty : IObservableProperty
+        {
+            private readonly Action onPropertyChange;
+
+            public ModelProperty(Action onPropertyChange)
+            {
+                this.onPropertyChange = onPropertyChange;
+            }
+
+            public void RaisePropertyChange()
+            {
+                this.onPropertyChange.Invoke();
+            }
         }
     }
 

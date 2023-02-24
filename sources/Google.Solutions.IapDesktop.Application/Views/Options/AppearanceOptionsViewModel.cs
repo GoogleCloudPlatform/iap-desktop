@@ -20,24 +20,24 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
-using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    internal class AppearanceOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel // TODO: Add tests for view model
+    internal class AppearanceOptionsViewModel : OptionsViewModelBase<ThemeSettings> // TODO: Add tests 
     {
-        private readonly ThemeSettingsRepository settingsRepository;
-
         public AppearanceOptionsViewModel(ThemeSettingsRepository settingsRepository)
+            : base("Appearance", settingsRepository)
         {
-            this.settingsRepository = settingsRepository;
+        }
 
-            var settings = settingsRepository.GetSettings();
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
+        protected override void Load(ThemeSettings settings)
+        {
             //
             // If Windows doesn't support dark mode, none other than
             // the default scheme are guaranteed to work.
@@ -46,42 +46,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.ThemeInfoText = this.IsThemeEditable
                 ? "Changes take effect after relaunch"
                 : "Themes are not supported on this version of Windows";
-            this.SelectedTheme = ObservableProperty.Build<ThemeSettings.ApplicationTheme>(settings.Theme.EnumValue);
+            this.SelectedTheme = ObservableProperty.Build(settings.Theme.EnumValue);
+
+            //
+            // Mark as dirty when one property changes.
+            //
+            this.SelectedTheme.AddDependentProperty(() => this.IsDirty = true);
         }
 
-        //---------------------------------------------------------------------
-        // IPropertiesSheetViewModel.
-        //---------------------------------------------------------------------
-
-        public string Title => "Appearance";
-
-        public bool IsDirty => this.SelectedTheme.IsModified; // TODO: Notify on change
-
-        public DialogResult ApplyChanges()
+        protected override void Save(ThemeSettings settings)
         {
-            Debug.Assert(this.IsDirty);
-
-            //
-            // Save settings.
-            //
-            var settings = this.settingsRepository.GetSettings();
-            settings.Theme.EnumValue = (ThemeSettings.ApplicationTheme)this.SelectedTheme.Value;
-            this.settingsRepository.SetSettings(settings);
-
-            this.SelectedTheme.SetUnmodified();
-            Debug.Assert(!this.IsDirty);
-
-            return DialogResult.OK;
+            settings.Theme.EnumValue = this.SelectedTheme.Value;
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public bool IsThemeEditable { get; }
+        public bool IsThemeEditable { get; private set; }
 
-        public string ThemeInfoText { get; }
+        public string ThemeInfoText { get; private set; }
 
-        public ObservableProperty<ThemeSettings.ApplicationTheme> SelectedTheme { get; }
+        public ObservableProperty<ThemeSettings.ApplicationTheme> SelectedTheme { get; private set; }
     }
 }

@@ -54,7 +54,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 this.components);
         }
 
-
         //---------------------------------------------------------------------
         // IPropertiesSheet.
         //---------------------------------------------------------------------

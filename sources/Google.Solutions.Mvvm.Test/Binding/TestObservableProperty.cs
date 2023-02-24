@@ -123,41 +123,5 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
             Assert.AreEqual("OneTwo", dependent1.Value);
         }
-
-        //---------------------------------------------------------------------
-        // IsDirty
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenValueNotChanged_ThenIsModifiedReturnsFalse()
-        {
-            var prop = ObservableProperty.Build("One");
-            Assert.IsFalse(prop.IsModified);
-        }
-
-        [Test]
-        public void WhenValueNotChangedToSameValue_ThenIsModifiedReturnsTrue()
-        {
-            var prop = ObservableProperty.Build("One");
-            prop.Value = prop.Value;
-            Assert.IsTrue(prop.IsModified);
-        }
-
-        [Test]
-        public void WhenValueNotChangedToDifferentValue_TheIsModifiedReturnsTrue()
-        {
-            var prop = ObservableProperty.Build("One");
-            prop.Value = null; ;
-            Assert.IsTrue(prop.IsModified);
-        }
-
-        [Test]
-        public void WhenSetUnmodified_TheIsModifiedReturnsFalse()
-        {
-            var prop = ObservableProperty.Build("One");
-            prop.Value = null;
-            prop.SetUnmodified();
-            Assert.IsFalse(prop.IsModified);
-        }
     }
 }

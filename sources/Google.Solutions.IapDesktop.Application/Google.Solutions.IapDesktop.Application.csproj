@@ -251,6 +251,7 @@
       <DependentUpon>AppearanceOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Options\AppearanceOptionsViewModel.cs" />
+    <Compile Include="Views\Options\OptionsViewModelBase.cs" />
     <Compile Include="Views\Options\ScreenOptionsViewModel.cs" />
     <Compile Include="Views\Options\ScreenOptionsSheet.cs">
       <SubType>UserControl</SubType>
