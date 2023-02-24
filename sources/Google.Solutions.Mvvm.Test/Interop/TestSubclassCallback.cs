@@ -36,6 +36,15 @@ namespace Google.Solutions.Mvvm.Test.Interop
         //---------------------------------------------------------------------
 
         [Test]
+        public void WhenArgumentInvalid_ThenConstructorThrowsException()
+        {
+            Assert.Throws<ArgumentException>(
+                () => new SubclassCallback(null, SubclassCallback.DefaultWndProc));
+            Assert.Throws<ArgumentException>(
+                () => new SubclassCallback(new Control(), null));
+        }
+
+        [Test]
         public void WhenHandleCreated_ThenHandleIsSet()
         {
             using (var form = new Form())

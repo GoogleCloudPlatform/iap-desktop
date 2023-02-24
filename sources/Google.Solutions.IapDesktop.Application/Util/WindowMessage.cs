@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Util
 {
-    public enum WindowMessage
+    public enum WindowMessage // TODO: Move to MVVM project
     {
         WM_NULL = 0x0000,
         WM_CREATE = 0x0001,

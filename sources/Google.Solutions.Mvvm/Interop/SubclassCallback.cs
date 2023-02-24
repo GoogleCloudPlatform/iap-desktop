@@ -82,7 +82,7 @@ namespace Google.Solutions.Mvvm.Interop
             Control control,
             WndProc wndProc)
         {
-            if (control.Handle == IntPtr.Zero)
+            if (control == null || control.Handle == IntPtr.Zero)
             {
                 throw new ArgumentException("Control has no handle");
             }
