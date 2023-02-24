@@ -54,6 +54,11 @@ namespace Google.Solutions.Mvvm.Binding
         private T value;
         private LinkedList<IObservableProperty> dependents;
 
+        /// <summary>
+        /// True if the property has been modified.
+        /// </summary>
+        public bool IsModified { get; private set; } = false;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         internal ObservableProperty(T initialValue)
@@ -67,6 +72,7 @@ namespace Google.Solutions.Mvvm.Binding
             set
             {
                 this.value = value;
+                this.IsModified = true;
                 RaisePropertyChange();
             }
         }
