@@ -25,7 +25,7 @@ using Google.Solutions.Mvvm.Theme;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    internal class AppearanceOptionsViewModel : OptionsViewModelBase<ThemeSettings> // TODO: Add tests 
+    internal class AppearanceOptionsViewModel : OptionsViewModelBase<ThemeSettings>
     {
         public AppearanceOptionsViewModel(ThemeSettingsRepository settingsRepository)
             : base("Appearance", settingsRepository)
@@ -48,10 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 : "Themes are not supported on this version of Windows";
             this.SelectedTheme = ObservableProperty.Build(settings.Theme.EnumValue);
 
-            //
-            // Mark as dirty when one property changes.
-            //
-            this.SelectedTheme.AddDependentProperty(() => this.IsDirty = true);
+            MarkDirtyWhenPropertyChanges(this.SelectedTheme);
         }
 
         protected override void Save(ThemeSettings settings)

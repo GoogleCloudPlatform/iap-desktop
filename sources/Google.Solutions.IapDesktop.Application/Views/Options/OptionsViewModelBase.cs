@@ -29,7 +29,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    internal abstract class OptionsViewModelBase<TSettings> // TODO: Add tests 
+    internal abstract class OptionsViewModelBase<TSettings>
         : ViewModelBase, IPropertiesSheetViewModel
         where TSettings : IRegistrySettingsCollection
     {
@@ -47,6 +47,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.settingsRepository = settingsRepository;
 
             Load(settingsRepository.GetSettings());
+        }
+
+        protected void MarkDirtyWhenPropertyChanges<T>(ObservableProperty<T> property)
+        {
+            //
+            // Mark view model as dirty until changes are applied.
+            //
+            property.PropertyChanged += (_, __ ) => this.IsDirty = true;
         }
 
         //---------------------------------------------------------------------

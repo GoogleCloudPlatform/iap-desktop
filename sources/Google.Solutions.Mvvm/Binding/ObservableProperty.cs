@@ -101,26 +101,6 @@ namespace Google.Solutions.Mvvm.Binding
 
             this.dependents.AddLast(property);
         }
-
-        public void AddDependentProperty(Action onPropertyChange) // TODO: Add tests 
-        {
-            AddDependentProperty(new ModelProperty(onPropertyChange));
-        }
-
-        private class ModelProperty : IObservableProperty
-        {
-            private readonly Action onPropertyChange;
-
-            public ModelProperty(Action onPropertyChange)
-            {
-                this.onPropertyChange = onPropertyChange;
-            }
-
-            public void RaisePropertyChange()
-            {
-                this.onPropertyChange.Invoke();
-            }
-        }
     }
 
     /// <summary>
