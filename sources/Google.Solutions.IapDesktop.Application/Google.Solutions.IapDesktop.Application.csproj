@@ -145,7 +145,6 @@
     <Compile Include="Services\Settings\ProjectRepository.cs" />
     <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
     <Compile Include="Services\Settings\ToolWindowStateRepository.cs" />
-    <Compile Include="Theme\IconTweaks.cs" />
     <Compile Include="Theme\ThemeSettingsRepository.cs" />
     <Compile Include="Theme\VSTheme.cs">
       <SubType>Component</SubType>

@@ -30,5 +30,22 @@ namespace Google.Solutions.Mvvm.Drawing
         {
             return (((uint)color.R) | (((uint)color.G) << 8) | (((uint)color.B) << 16));
         }
+
+        public static Color FromCOLORREF(uint color)
+        {
+            //
+            // COLORREF uses 0x00bbggrr encoding, which is
+            // different from ARGB.
+            //
+            return Color.FromArgb(
+                (int)(color & 0xFF),
+                (int)((color & 0xFF00) >> 8),
+                (int)((color & 0xFF0000) >> 16));
+        }
+
+        public static HslColor ToHsl(this Color color)
+        {
+            return HslColor.FromColor(color);
+        }
     }
 }

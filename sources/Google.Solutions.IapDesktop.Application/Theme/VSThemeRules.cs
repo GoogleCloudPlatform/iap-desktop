@@ -38,7 +38,16 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     {
         private static Bitmap listBackgroundImage;
 
-        private const float IconGrayScaleFactor = .65f;
+        private static readonly IconInverter darkModeIconInverter = new IconInverter()
+        {
+            //
+            // NB. These factors are chosen based on what looked good, there's
+            // no science behind them.
+            //
+            GrayFactor = .65f,
+            ColorFactor = .9f
+        };
+        
         private static Color AccentColor { get; set; } = Color.FromArgb(98, 136, 242);
 
         //---------------------------------------------------------------------
@@ -78,8 +87,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             if (theme.IsDark)
             {
-                IconTweaks.InvertAndScaleGrays(treeView.ImageList, IconGrayScaleFactor);
-                IconTweaks.InvertAndScaleGrays(treeView.StateImageList, IconGrayScaleFactor);
+                darkModeIconInverter.Invert(treeView.ImageList);
+                darkModeIconInverter.Invert(treeView.StateImageList);
             }
         }
 
@@ -93,8 +102,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             {
                 listView.GridLines = false;
                 listView.HotTracking = false;
-                IconTweaks.InvertAndScaleGrays(listView.SmallImageList, IconGrayScaleFactor);
-                IconTweaks.InvertAndScaleGrays(listView.LargeImageList, IconGrayScaleFactor);
+                darkModeIconInverter.Invert(listView.SmallImageList);
+                darkModeIconInverter.Invert(listView.LargeImageList);
 
                 //
                 // When disabled, the list view's background turns gray by default.
@@ -146,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             {
                 if (item.Image is Bitmap bitmap)
                 {
-                    IconTweaks.InvertAndScaleGrays(bitmap, IconGrayScaleFactor);
+                    darkModeIconInverter.Invert(bitmap);
                 }
             }
         }

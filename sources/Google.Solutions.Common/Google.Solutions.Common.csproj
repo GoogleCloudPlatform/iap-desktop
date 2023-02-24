@@ -115,6 +115,7 @@
     <Compile Include="Util\ExceptionExtensions.cs" />
     <Compile Include="Util\LinqExtensions.cs" />
     <Compile Include="Util\Parallel.cs" />
+    <Compile Include="Util\Precondition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

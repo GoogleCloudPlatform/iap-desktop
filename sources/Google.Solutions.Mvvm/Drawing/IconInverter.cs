@@ -19,7 +19,8 @@
 // under the License.
 //
 
-using System.Diagnostics;
+using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Drawing;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -28,21 +29,46 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
-    internal class IconTweaks
+    /// <summary>
+    /// Invert and adjusts icon colors to optimize them for different
+    /// lightness modes (dark mode/light mode).
+    /// </summary>
+    public class IconInverter
     {
-        /// <summary>
-        /// Invert and adjust all grays in an image. For images that are mostly gray,
-        /// combined with an accent color, this results in an image that works well
-        /// on dark backgrounds.
-        /// 
-        /// Adapted and extended from:
-        /// https://stackoverflow.com/questions/36778989/vs2015-icon-guide-color-inversion
-        /// </summary>
-        public static void InvertAndScaleGrays(Bitmap bitmapImage, float scaleFactor)
-        {
-            Debug.Assert(scaleFactor >= 0);
-            Debug.Assert(scaleFactor <= 1);
+        private float grayFactor = 1;
+        private float colorFactor = 1;
 
+        /// <summary>
+        /// Factor to apply to grays.
+        /// </summary>
+        public float GrayFactor
+        {
+            get => this.grayFactor;
+            set
+            {
+                this.grayFactor = value.ThrowIfOutOfRange(0.0f, 1.0f, nameof(GrayFactor));
+            }
+        }
+
+        /// <summary>
+        /// Factor to apply to the luminosity of (non-gray) colors.
+        /// </summary>
+        public float ColorFactor
+        {
+            get => this.colorFactor;
+            set
+            {
+                this.colorFactor = value.ThrowIfOutOfRange(0.0f, 1.0f, nameof(ColorFactor));
+            }
+        }
+
+        /// <summary>
+        /// Invert and adjust colors:
+        /// - Grays are inverted and adjusted using the GrayFactor.
+        /// - Colors have their luminosity adjusted using the Color factor.
+        /// </summary>
+        public void Invert(Bitmap bitmapImage)
+        {
             var dimensions = new Rectangle(
                 0,
                 0,
@@ -61,8 +87,11 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             for (int i = 0; i < bitmapLength; i += 4)
             {
-                if (bitmapBGRA[i] == bitmapBGRA[i + 1] &&
-                    bitmapBGRA[i] == bitmapBGRA[i + 2])
+                var red = bitmapBGRA[i + 2];
+                var green = bitmapBGRA[i + 1];
+                var blue = bitmapBGRA[i];
+
+                if (red == green && green == blue)
                 {
                     //
                     // This is gray.
@@ -86,18 +115,25 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     // |
                     // +---------------
                     //
-                    var scaledGray = ((1 - scaleFactor) * 255 + (invertedGray * scaleFactor));
+                    var scaledGray = ((1 - this.grayFactor) * 255 + (invertedGray * this.grayFactor));
 
-                    bitmapBGRA[i] =     (byte)scaledGray;
+                    bitmapBGRA[i] = (byte)scaledGray;
                     bitmapBGRA[i + 1] = (byte)scaledGray;
                     bitmapBGRA[i + 2] = (byte)scaledGray;
                 }
                 else
                 {
                     //
-                    // Non-gray. Assume this is an accent color, and keep
-                    // it unchanged.
+                    // This is some non-gray color. Adjust luminosity.
                     //
+                    var hsl = HslColor.FromRgb(red, green, blue);
+
+                    hsl.L = ((1 - this.colorFactor) + (hsl.L * this.colorFactor));
+
+                    var rgb = hsl.ToColor();
+                    bitmapBGRA[i + 0] = rgb.B;
+                    bitmapBGRA[i + 1] = rgb.G;
+                    bitmapBGRA[i + 2] = rgb.R;
                 }
             }
 
@@ -110,7 +146,10 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             bitmapImage.UnlockBits(bitmapWrite);
         }
 
-        public static void InvertAndScaleGrays(ImageList imageList, float scaleFactor)
+        /// <summary>
+        /// Invert and adjust colors of all images in an image list.
+        /// </summary>
+        public void Invert(ImageList imageList)
         {
             if (imageList == null)
             {
@@ -122,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             
             foreach (var image in images)
             {
-                InvertAndScaleGrays((Bitmap)image, scaleFactor);
+                Invert((Bitmap)image);
                 imageList.Images.Add(image);
             }
         }
