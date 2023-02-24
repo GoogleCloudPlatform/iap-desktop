@@ -23,6 +23,7 @@ using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Drawing;

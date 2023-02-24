@@ -40,7 +40,7 @@ namespace Google.Solutions.Common.Util
             return value;
         }
 
-        public static float ThrowIfOutOfRange( // TODO: Test, add other types
+        public static float ThrowIfOutOfRange(
             this float value,
             float min,
             float max,

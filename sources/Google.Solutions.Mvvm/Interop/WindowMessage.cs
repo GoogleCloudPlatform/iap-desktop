@@ -21,9 +21,9 @@
 
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Mvvm.Interop
 {
-    public enum WindowMessage // TODO: Move to MVVM project
+    public enum WindowMessage
     {
         WM_NULL = 0x0000,
         WM_CREATE = 0x0001,

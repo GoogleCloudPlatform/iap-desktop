@@ -20,14 +20,13 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Mvvm.Drawing;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Theme
+namespace Google.Solutions.Mvvm.Drawing
 {
     /// <summary>
     /// Invert and adjusts icon colors to optimize them for different

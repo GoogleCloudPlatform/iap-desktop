@@ -93,6 +93,7 @@
     <Compile Include="Drawing\HslColor.cs" />
     <Compile Include="Drawing\IconInverter.cs" />
     <Compile Include="Interop\SubclassCallback.cs" />
+    <Compile Include="Interop\WindowMessage.cs" />
     <Compile Include="Shell\FileTypeCache.cs" />
     <Compile Include="Controls\HtmlClipboardFormat.cs" />
     <Compile Include="Controls\ListViewExtensions.cs" />

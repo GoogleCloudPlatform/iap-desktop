@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Interop;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Drawing;
 using Google.Solutions.Mvvm.Interop;
@@ -223,7 +224,9 @@ namespace Google.Solutions.Mvvm.Theme
                             break;
                     }
                 });
-                // TODO: Add unhandled exception listener
+
+                subclass.UnhandledException += (_, args) =>
+                    Debug.Fail(args.FullMessage());
             }
         }
 

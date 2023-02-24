@@ -20,6 +20,7 @@
 
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.Mvvm.Interop;
 using System;
 using System.Diagnostics;
 using System.Drawing;
