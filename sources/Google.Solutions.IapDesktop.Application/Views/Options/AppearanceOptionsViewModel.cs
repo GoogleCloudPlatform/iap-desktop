@@ -1,0 +1,97 @@
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Theme;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace Google.Solutions.IapDesktop.Application.Views.Options
+{
+    internal class AppearanceOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
+    {
+        private readonly ThemeSettingsRepository settingsRepository;
+
+        public AppearanceOptionsViewModel(ThemeSettingsRepository settingsRepository)
+        {
+            this.settingsRepository = settingsRepository;
+
+            var settings = settingsRepository.GetSettings();
+
+            //
+            // If Windows doesn't support dark mode, none other than
+            // the default scheme are guaranteed to work.
+            //
+            this.IsThemeEditable = WindowsTheme.IsDarkModeSupported;
+            this.ThemeInfoText = this.IsThemeEditable
+                ? "Changes take effect after relaunch"
+                : "Themes are not supported on this version of Windows";
+            this.SelectedTheme = ObservableProperty.Build<object>(settings.Theme.Value);
+            this.AvailableThemes = Enum
+                .GetValues(typeof(ThemeSettings.ApplicationTheme))
+                .Cast<ThemeSettings.ApplicationTheme>()
+                .ToArray();
+        }
+
+        //---------------------------------------------------------------------
+        // IPropertiesSheetViewModel.
+        //---------------------------------------------------------------------
+
+        public string Title => "Appearance";
+
+        public bool IsDirty => this.SelectedTheme.IsModified;
+
+        public DialogResult ApplyChanges()
+        {
+            Debug.Assert(this.IsDirty);
+
+            //
+            // Save settings.
+            //
+            var settings = this.settingsRepository.GetSettings();
+            settings.Theme.EnumValue = (ThemeSettings.ApplicationTheme)this.SelectedTheme.Value;
+            this.settingsRepository.SetSettings(settings);
+
+            this.SelectedTheme.SetUnmodified();
+            Debug.Assert(!this.IsDirty);
+
+            return DialogResult.OK;
+        }
+
+
+        //---------------------------------------------------------------------
+        // Observable properties.
+        //---------------------------------------------------------------------
+
+        public bool IsThemeEditable { get; }
+
+        public string ThemeInfoText { get; }
+
+        public ObservableProperty</* ThemeSettings.ApplicationTheme */ object> SelectedTheme { get; }
+
+        public IList<ThemeSettings.ApplicationTheme> AvailableThemes { get; }
+    }
+}

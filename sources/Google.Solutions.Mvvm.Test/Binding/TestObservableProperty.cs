@@ -150,5 +150,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
             prop.Value = null; ;
             Assert.IsTrue(prop.IsModified);
         }
+
+        [Test]
+        public void WhenSetUnmodified_TheIsModifiedReturnsFalse()
+        {
+            var prop = ObservableProperty.Build("One");
+            prop.Value = null;
+            prop.SetUnmodified();
+            Assert.IsFalse(prop.IsModified);
+        }
     }
 }

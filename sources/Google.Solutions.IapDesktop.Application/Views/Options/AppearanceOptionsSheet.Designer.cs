@@ -1,0 +1,98 @@
+﻿
+namespace Google.Solutions.IapDesktop.Application.Views.Options
+{
+    partial class AppearanceOptionsSheet
+    {
+        /// <summary> 
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Component Designer generated code
+
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.themeBox = new System.Windows.Forms.GroupBox();
+            this.themeLabel = new System.Windows.Forms.Label();
+            this.theme = new System.Windows.Forms.ComboBox();
+            this.themeInfoLabel = new System.Windows.Forms.Label();
+            this.themeBox.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // themeBox
+            // 
+            this.themeBox.Controls.Add(this.themeInfoLabel);
+            this.themeBox.Controls.Add(this.themeLabel);
+            this.themeBox.Controls.Add(this.theme);
+            this.themeBox.Location = new System.Drawing.Point(4, 3);
+            this.themeBox.Name = "themeBox";
+            this.themeBox.Size = new System.Drawing.Size(336, 79);
+            this.themeBox.TabIndex = 0;
+            this.themeBox.TabStop = false;
+            this.themeBox.Text = "Theme:";
+            // 
+            // themeLabel
+            // 
+            this.themeLabel.AutoSize = true;
+            this.themeLabel.Location = new System.Drawing.Point(18, 24);
+            this.themeLabel.Name = "themeLabel";
+            this.themeLabel.Size = new System.Drawing.Size(43, 13);
+            this.themeLabel.TabIndex = 2;
+            this.themeLabel.Text = "Theme:";
+            // 
+            // theme
+            // 
+            this.theme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.theme.FormattingEnabled = true;
+            this.theme.Location = new System.Drawing.Point(86, 21);
+            this.theme.Name = "theme";
+            this.theme.Size = new System.Drawing.Size(154, 21);
+            this.theme.TabIndex = 3;
+            // 
+            // themeInfoLabel
+            // 
+            this.themeInfoLabel.AutoSize = true;
+            this.themeInfoLabel.Location = new System.Drawing.Point(86, 49);
+            this.themeInfoLabel.Name = "themeInfoLabel";
+            this.themeInfoLabel.Size = new System.Drawing.Size(16, 13);
+            this.themeInfoLabel.TabIndex = 4;
+            this.themeInfoLabel.Text = "...";
+            // 
+            // AppearanceOptionsSheet
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.themeBox);
+            this.Name = "AppearanceOptionsSheet";
+            this.Size = new System.Drawing.Size(343, 322);
+            this.themeBox.ResumeLayout(false);
+            this.themeBox.PerformLayout();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.GroupBox themeBox;
+        private System.Windows.Forms.Label themeLabel;
+        private System.Windows.Forms.ComboBox theme;
+        private System.Windows.Forms.Label themeInfoLabel;
+    }
+}

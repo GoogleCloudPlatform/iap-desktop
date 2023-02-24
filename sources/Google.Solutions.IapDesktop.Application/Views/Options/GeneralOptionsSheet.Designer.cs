@@ -167,9 +167,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(34, 124);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(236, 13);
+            this.label1.Size = new System.Drawing.Size(171, 13);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Changes take effect after restarting IAP Desktop";
+            this.label1.Text = "Changes take effect after relaunch";
             // 
             // secureConnectLink
             // 
