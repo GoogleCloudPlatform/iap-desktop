@@ -123,6 +123,7 @@
     <Compile Include="Util\TestEnumExtensions.cs" />
     <Compile Include="Util\TestExceptionExtensions.cs" />
     <Compile Include="Util\TestLinqExtensions.cs" />
+    <Compile Include="Util\TestPrecondition.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Controls;
+using Google.Solutions.Mvvm.Controls;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
@@ -64,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.searchTextBox = new System.Windows.Forms.TextBox();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.progressBar = new LinearProgressBar();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -186,10 +187,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.Location = new System.Drawing.Point(0, 48);
             this.progressBar.Margin = new System.Windows.Forms.Padding(0);
-            this.progressBar.MarqueeAnimationSpeed = 50;
+            this.progressBar.Indeterminate = true;
+            this.progressBar.Speed = 3;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(800, 5);
-            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBar.TabIndex = 3;
             // 
             // ProjectExplorerWindow
@@ -225,6 +226,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private System.Windows.Forms.ToolStripMenuItem windowsInstancesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem linuxInstancesToolStripMenuItem;
         private System.Windows.Forms.TextBox searchTextBox;
-        private System.Windows.Forms.ProgressBar progressBar;
+        private LinearProgressBar progressBar;
     }
 }

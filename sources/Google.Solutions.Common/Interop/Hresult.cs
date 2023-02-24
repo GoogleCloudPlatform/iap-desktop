@@ -21,8 +21,9 @@
 
 namespace Google.Solutions.Common.Interop
 {
-    public static class Hresult
+    public enum HRESULT : uint
     {
-        public const uint E_UNEXPECTED = 0x8000ffff;
+        S_OK = 0,
+        E_UNEXPECTED = 0x8000ffff,
     }
 }

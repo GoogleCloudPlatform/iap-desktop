@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
@@ -38,7 +39,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.About
             updateService
                 .SetupGet(s => s.InstalledVersion)
                 .Returns(new Version(1, 2, 3, 4));
-            var viewModel = new AboutViewModel(updateService.Object);
+            var viewModel = new AboutViewModel(
+                updateService.Object,
+                new Mock<IThemeService>().Object);
 
             StringAssert.Contains("Version 1.2.3.4", viewModel.Information);
         }
@@ -46,8 +49,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.About
         [Test]
         public void LicenseText()
         {
-            var updateService = new Mock<IUpdateService>();
-            var viewModel = new AboutViewModel(updateService.Object);
+            var viewModel = new AboutViewModel(
+                new Mock<IUpdateService>().Object,
+                new Mock<IThemeService>().Object);
 
             Assert.IsNotNull(viewModel.LicenseText);
             StringAssert.Contains("rtf", viewModel.LicenseText);

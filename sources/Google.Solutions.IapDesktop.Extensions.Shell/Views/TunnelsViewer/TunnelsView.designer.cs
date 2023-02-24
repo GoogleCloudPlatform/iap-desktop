@@ -120,7 +120,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.tunnelsList.Location = new System.Drawing.Point(0, 25);
             this.tunnelsList.MultiSelect = false;
             this.tunnelsList.Name = "tunnelsList";
-            this.tunnelsList.OwnerDraw = true;
             this.tunnelsList.SelectedModelItem = null;
             this.tunnelsList.Size = new System.Drawing.Size(862, 339);
             this.tunnelsList.TabIndex = 6;

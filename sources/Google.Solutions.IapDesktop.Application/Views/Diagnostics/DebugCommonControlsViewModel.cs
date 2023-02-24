@@ -19,19 +19,19 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Binding;
 
-using System.Windows.Forms;
-
-namespace Google.Solutions.Mvvm.Theme
+namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
-
-    /// <summary>
-    /// Theme that can be applied to a control (and its
-    /// children).
-    /// </summary>
-    public interface IControlTheme
+    public class DebugCommonControlsViewModel : ViewModelBase
     {
-        void ApplyTo(Control control);
-    }
+        public DebugCommonControlsViewModel()
+        {
+            this.ControlEnabled = ObservableProperty.Build(true);
+            this.ControlReadonly = ObservableProperty.Build(false);
+        }
 
+        public ObservableProperty<bool> ControlEnabled { get; }
+        public ObservableProperty<bool> ControlReadonly { get; }
+    }
 }

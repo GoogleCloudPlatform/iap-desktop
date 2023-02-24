@@ -76,10 +76,10 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>..\packages\DockPanelSuite.3.0.6.3\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+      <HintPath>..\packages\DockPanelSuite.3.0.6.4\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
     <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>..\packages\DockPanelSuite.3.0.6.3\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+      <HintPath>..\packages\DockPanelSuite.3.0.6.4\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -145,18 +145,22 @@
     <Compile Include="Services\Settings\ProjectRepository.cs" />
     <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
     <Compile Include="Services\Settings\ToolWindowStateRepository.cs" />
-    <Compile Include="Theme\ControlTheme.cs" />
+    <Compile Include="Theme\ThemeSettingsRepository.cs" />
+    <Compile Include="Theme\VSTheme.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Theme\ThemeService.cs" />
     <Compile Include="Settings\ISetting.cs" />
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
+    <Compile Include="Theme\VSThemeExtensions.cs" />
+    <Compile Include="Theme\VSThemeRules.cs" />
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Data\IHelpTopic.cs" />
     <Compile Include="Util\StringExtensions.cs" />
     <Compile Include="Util\TypographicQuotes.cs" />
     <Compile Include="Util\Filename.cs" />
-    <Compile Include="Util\WindowMessage.cs" />
     <Compile Include="Views\About\AboutViewModel.cs" />
     <Compile Include="Views\Authorization\DeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authorization\NewProfileView.cs">
@@ -181,6 +185,13 @@
     <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
     <Compile Include="Views\Authorization\OAuthScopeNotGrantedViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugCommonControlsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugCommonControlsView.Designer.cs">
+      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugCommonControlsViewModel.cs" />
     <Compile Include="Views\Diagnostics\DebugDockingViewModel.cs" />
     <Compile Include="Views\Diagnostics\DebugFullScreenView.cs">
       <SubType>Form</SubType>
@@ -352,6 +363,11 @@
     <None Include="packages.config" />
     <None Include="Services\Adapters\README.md" />
     <None Include="Services\Integration\README.md" />
+    <EmbeddedResource Include="Theme\Resources\Dark.vstheme.gz" />
+    <EmbeddedResource Include="Theme\Resources\Light.vstheme.gz" />
+    <None Include="Theme\Resources\Dark.vstheme" />
+    <None Include="Theme\Resources\Light.vstheme" />
+    <None Include="Theme\Resources\README.md" />
     <None Include="Views\README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -371,6 +387,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Authorization\OAuthScopeNotGrantedView.resx">
       <DependentUpon>OAuthScopeNotGrantedView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugCommonControlsView.resx">
+      <DependentUpon>DebugCommonControlsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugDockingView.resx">
       <DependentUpon>DebugDockingView.cs</DependentUpon>
@@ -422,9 +441,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Spinner.gif" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Copy_16x.png" />
   </ItemGroup>
   <ItemGroup>
@@ -432,9 +448,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Settings_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Search_16.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ComputerTerminal_161.png" />
@@ -453,6 +466,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Search_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AccentGradient_450.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" />

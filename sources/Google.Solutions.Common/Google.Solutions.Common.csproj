@@ -80,7 +80,7 @@
     <Compile Include="Interop\ComReference.cs" />
     <Compile Include="Interop\CoTaskMemAllocSafeHandle.cs" />
     <Compile Include="Interop\GlobalAllocSafeHandle.cs" />
-    <Compile Include="Interop\Hresult.cs" />
+    <Compile Include="Interop\HRESULT.cs" />
     <Compile Include="Interop\LocalAllocSafeHandle.cs" />
     <Compile Include="Locator\AccessLevelLocator.cs" />
     <Compile Include="Locator\GlobalResourceLocator.cs">
@@ -115,6 +115,7 @@
     <Compile Include="Util\ExceptionExtensions.cs" />
     <Compile Include="Util\LinqExtensions.cs" />
     <Compile Include="Util\Parallel.cs" />
+    <Compile Include="Util\Precondition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

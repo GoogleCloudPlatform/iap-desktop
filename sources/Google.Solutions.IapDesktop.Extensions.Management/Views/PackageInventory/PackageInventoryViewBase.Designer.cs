@@ -100,6 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             // infoLabel
             // 
             this.infoLabel.AutoSize = true;
+            this.infoLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.infoLabel.Location = new System.Drawing.Point(22, 4);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(86, 13);
@@ -115,13 +116,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             this.infoIcon.TabIndex = 1;
             this.infoIcon.TabStop = false;
             // 
-            // PackageInventoryWindow
+            // PackageInventoryViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.splitContainer);
-            this.Name = "PackageInventoryWindow";
+            this.Name = "PackageInventoryViewBase";
             this.Text = "PackageInventoryWindow";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PackageInventoryWindow_KeyDown);
             this.splitContainer.Panel1.ResumeLayout(false);

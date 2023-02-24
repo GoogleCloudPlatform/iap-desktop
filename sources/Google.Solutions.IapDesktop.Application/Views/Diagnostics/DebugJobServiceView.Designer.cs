@@ -50,13 +50,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private void InitializeComponent()
         {
             this.slowOpButton = new System.Windows.Forms.Button();
-            this.spinner = new System.Windows.Forms.PictureBox();
             this.slowNonCanelOpButton = new System.Windows.Forms.Button();
             this.throwExceptionButton = new System.Windows.Forms.Button();
             this.label = new System.Windows.Forms.Label();
             this.reauthButton = new System.Windows.Forms.Button();
             this.runInBackgroundCheckBox = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
+            this.spinner = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
             this.SuspendLayout();
             // 
             // slowOpButton
@@ -67,17 +66,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.slowOpButton.TabIndex = 0;
             this.slowOpButton.Text = "Fire slow canellable event";
             this.slowOpButton.UseVisualStyleBackColor = true;
-            // 
-            // spinner
-            // 
-            this.spinner.BackColor = System.Drawing.Color.White;
-            this.spinner.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Spinner;
-            this.spinner.Location = new System.Drawing.Point(209, 24);
-            this.spinner.Name = "spinner";
-            this.spinner.Size = new System.Drawing.Size(44, 44);
-            this.spinner.TabIndex = 3;
-            this.spinner.TabStop = false;
-            this.spinner.Visible = false;
             // 
             // slowNonCanelOpButton
             // 
@@ -125,21 +113,34 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.runInBackgroundCheckBox.Text = "Run in background";
             this.runInBackgroundCheckBox.UseVisualStyleBackColor = true;
             // 
-            // DebugJobServiceWindow
+            // circularProgressBar1
+            // 
+            this.spinner.Indeterminate = true;
+            this.spinner.LineWidth = 5;
+            this.spinner.Location = new System.Drawing.Point(200, 24);
+            this.spinner.Maximum = 100;
+            this.spinner.MinimumSize = new System.Drawing.Size(15, 15);
+            this.spinner.Name = "circularProgressBar1";
+            this.spinner.Size = new System.Drawing.Size(44, 44);
+            this.spinner.Speed = 1;
+            this.spinner.TabIndex = 7;
+            this.spinner.Text = "circularProgressBar";
+            this.spinner.Value = 0;
+            // 
+            // DebugJobServiceView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(541, 451);
+            this.Controls.Add(this.spinner);
             this.Controls.Add(this.runInBackgroundCheckBox);
             this.Controls.Add(this.label);
-            this.Controls.Add(this.spinner);
             this.Controls.Add(this.reauthButton);
             this.Controls.Add(this.throwExceptionButton);
             this.Controls.Add(this.slowNonCanelOpButton);
             this.Controls.Add(this.slowOpButton);
-            this.Name = "DebugJobServiceWindow";
+            this.Name = "DebugJobServiceView";
             this.Text = "Debug JobService";
-            ((System.ComponentModel.ISupportInitialize)(this.spinner)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -148,11 +149,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         #endregion
 
         private System.Windows.Forms.Button slowOpButton;
-        private System.Windows.Forms.PictureBox spinner;
         private System.Windows.Forms.Button slowNonCanelOpButton;
         private System.Windows.Forms.Button throwExceptionButton;
         private System.Windows.Forms.Label label;
         private System.Windows.Forms.Button reauthButton;
         private System.Windows.Forms.CheckBox runInBackgroundCheckBox;
+        private Mvvm.Controls.CircularProgressBar spinner;
     }
 }

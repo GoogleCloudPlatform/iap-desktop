@@ -63,6 +63,16 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AccentGradient_450 {
+            get {
+                object obj = ResourceManager.GetObject("AccentGradient_450", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Computer_16 {
             get {
                 object obj = ResourceManager.GetObject("Computer_16", resourceCulture);
@@ -126,16 +136,6 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         internal static System.Drawing.Bitmap Search_16 {
             get {
                 object obj = ResourceManager.GetObject("Search_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Spinner {
-            get {
-                object obj = ResourceManager.GetObject("Spinner", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

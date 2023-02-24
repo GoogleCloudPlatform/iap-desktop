@@ -557,6 +557,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 _ => ToolWindow
                     .GetWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)
                     .Show()));
+            debugCommand.AddCommand(new Command<IMainWindow>(
+                "Common controls",
+                _ => CommandState.Enabled,
+                _ => ToolWindow
+                    .GetWindow<DebugCommonControlsView, DebugCommonControlsViewModel>(this.serviceProvider)
+                    .Show()));
 
             var crashCommand = debugCommand.AddCommand(new Command<IMainWindow>(
                 "Exceptions",
@@ -767,6 +773,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             using (var view = this.serviceProvider.GetDialog<AboutView, AboutViewModel>())
             {
+                view.Theme = this.themeService.DialogTheme;
                 view.ShowDialog(this);
             }
         }
@@ -986,8 +993,12 @@ namespace Google.Solutions.IapDesktop.Windows
             switch (jobDescription.Feedback)
             {
                 case JobUserFeedbackType.ForegroundFeedback:
+                    //
                     // Show WaitDialog, blocking all user intraction.
-                    return new WaitDialog(this, jobDescription.StatusMessage, cancellationSource);
+                    //
+                    var waitDialog = new WaitDialog(this, jobDescription.StatusMessage, cancellationSource);
+                    this.themeService.DialogTheme.ApplyTo(waitDialog);
+                    return waitDialog;
 
                 default:
                     return this.viewModel.CreateBackgroundJob(jobDescription, cancellationSource);

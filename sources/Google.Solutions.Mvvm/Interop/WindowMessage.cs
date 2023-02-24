@@ -21,7 +21,7 @@
 
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Mvvm.Interop
 {
     public enum WindowMessage
     {

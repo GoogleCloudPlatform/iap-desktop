@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Testing.Application.ObjectModel;
+using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -59,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Download
             return file;
         }
 
-        [Ignore("For manual testing only")]
+        [InteractiveTest]
         [Test]
         public void TestUI()
         {

@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // savePwdNote
             // 
             this.savePwdNote.AutoSize = true;
-            this.savePwdNote.Location = new System.Drawing.Point(37, 185);
+            this.savePwdNote.Location = new System.Drawing.Point(41, 185);
             this.savePwdNote.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.savePwdNote.Name = "savePwdNote";
             this.savePwdNote.Size = new System.Drawing.Size(224, 13);

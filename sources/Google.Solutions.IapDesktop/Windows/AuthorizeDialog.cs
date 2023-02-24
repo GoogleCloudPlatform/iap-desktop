@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -160,11 +161,20 @@ namespace Google.Solutions.IapDesktop.Windows
             };
 
             //
+            // Hide focus rectangle.
+            //
+            this.signInButton.NotifyDefault(false);
+
+            //
             // Try to authorize using saved credentials.
             //
-            viewModel.TryLoadExistingAuthorizationAsync(CancellationToken.None)
+            // NB. Wait until handle has been created so that BeginInvoke
+            // calls work properly.
+            //
+            this.HandleCreated += (_, __) => viewModel
+                .TryLoadExistingAuthorizationAsync(CancellationToken.None)
                 .ContinueWith(
-                    _ => Debug.Assert(false, "Should never throw an exception"),
+                    t => Debug.Assert(false, "Should never throw an exception"),
                     TaskContinuationOptions.OnlyOnFaulted);
         }
 
@@ -200,13 +210,15 @@ namespace Google.Solutions.IapDesktop.Windows
             ClientSecrets clientSecrets,
             IEnumerable<string> scopes,
             IDeviceEnrollment deviceEnrollment,
-            AuthSettingsRepository authSettingsRepository)
+            AuthSettingsRepository authSettingsRepository,
+            IControlTheme theme)
         {
             var dialog = new AuthorizeDialog(
                 clientSecrets,
                 scopes,
                 deviceEnrollment,
                 authSettingsRepository);
+            theme.ApplyTo(dialog);
             if (dialog.ShowDialog(parent) == DialogResult.OK)
             {
                 Debug.Assert(dialog.AuthorizationResult != null);

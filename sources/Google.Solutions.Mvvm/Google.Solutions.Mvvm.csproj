@@ -68,6 +68,12 @@
     <Compile Include="Controls\BindableTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\DropDownButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ClipboardUtil.cs" />
     <Compile Include="Controls\ControlExtensions.cs" />
     <Compile Include="Controls\ExceptionEventArgs.cs" />
@@ -80,10 +86,15 @@
     <Compile Include="Controls\HeaderLabel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Shell\FileTypeCache.cs" />
-    <Compile Include="Controls\FlatListView.cs">
+    <Compile Include="Controls\VerticalTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Drawing\ColorExtensions.cs" />
+    <Compile Include="Drawing\HslColor.cs" />
+    <Compile Include="Drawing\IconInverter.cs" />
+    <Compile Include="Interop\SubclassCallback.cs" />
+    <Compile Include="Interop\WindowMessage.cs" />
+    <Compile Include="Shell\FileTypeCache.cs" />
     <Compile Include="Controls\HtmlClipboardFormat.cs" />
     <Compile Include="Controls\ListViewExtensions.cs" />
     <Compile Include="Controls\RichTextBoxExtensions.cs" />
@@ -104,7 +115,11 @@
     <Compile Include="Shell\KnownFolders.cs" />
     <Compile Include="Shell\Quarantine.cs" />
     <Compile Include="Shell\StockIcons.cs" />
-    <Compile Include="Theme\ITheme.cs" />
+    <Compile Include="Theme\CommonControlTheme.cs" />
+    <Compile Include="Theme\ControlTheme.cs" />
+    <Compile Include="Theme\IControlTheme.cs" />
+    <Compile Include="Theme\ToolStripItemTheme.cs" />
+    <Compile Include="Theme\WindowsTheme.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\StaTask.cs" />
   </ItemGroup>

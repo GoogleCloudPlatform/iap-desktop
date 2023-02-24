@@ -92,3 +92,5 @@ source/sponge_log.xml
 opencovertests.xml
 sponge_log.xml
 NuGet.config
+
+.vstheme.gz

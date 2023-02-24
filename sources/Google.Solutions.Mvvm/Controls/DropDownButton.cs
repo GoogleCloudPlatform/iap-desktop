@@ -24,7 +24,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Controls
+namespace Google.Solutions.Mvvm.Controls
 {
     /// <summary>
     /// Button with an optional drop-down menu.

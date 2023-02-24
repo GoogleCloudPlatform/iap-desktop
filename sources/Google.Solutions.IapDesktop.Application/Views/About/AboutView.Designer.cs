@@ -49,19 +49,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutView));
             this.okButton = new System.Windows.Forms.Button();
             this.infoLabel = new System.Windows.Forms.Label();
             this.authorLabel = new System.Windows.Forms.Label();
             this.licenseText = new System.Windows.Forms.RichTextBox();
             this.authorLink = new System.Windows.Forms.LinkLabel();
             this.copyrightLabel = new System.Windows.Forms.Label();
+            this.headerLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
+            this.gradientPictureBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.gradientPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(351, 287);
+            this.okButton.Location = new System.Drawing.Point(341, 295);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 0;
@@ -71,8 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // infoLabel
             // 
             this.infoLabel.AutoSize = true;
-            this.infoLabel.BackColor = System.Drawing.Color.White;
-            this.infoLabel.Location = new System.Drawing.Point(26, 70);
+            this.infoLabel.Location = new System.Drawing.Point(15, 70);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(10, 13);
             this.infoLabel.TabIndex = 1;
@@ -81,7 +82,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // authorLabel
             // 
             this.authorLabel.AutoSize = true;
-            this.authorLabel.BackColor = System.Drawing.Color.White;
             this.authorLabel.Location = new System.Drawing.Point(288, 70);
             this.authorLabel.Name = "authorLabel";
             this.authorLabel.Size = new System.Drawing.Size(41, 13);
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // licenseText
             // 
             this.licenseText.BackColor = System.Drawing.Color.White;
-            this.licenseText.Location = new System.Drawing.Point(26, 125);
+            this.licenseText.Location = new System.Drawing.Point(16, 130);
             this.licenseText.Name = "licenseText";
             this.licenseText.ReadOnly = true;
             this.licenseText.Size = new System.Drawing.Size(400, 151);
@@ -104,8 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // 
             this.authorLink.ActiveLinkColor = System.Drawing.Color.Blue;
             this.authorLink.AutoSize = true;
-            this.authorLink.BackColor = System.Drawing.Color.White;
-            this.authorLink.Location = new System.Drawing.Point(335, 70);
+            this.authorLink.Location = new System.Drawing.Point(328, 70);
             this.authorLink.Name = "authorLink";
             this.authorLink.Size = new System.Drawing.Size(10, 13);
             this.authorLink.TabIndex = 3;
@@ -115,7 +114,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // copyrightLabel
             // 
             this.copyrightLabel.AutoSize = true;
-            this.copyrightLabel.BackColor = System.Drawing.Color.White;
             this.copyrightLabel.Location = new System.Drawing.Point(288, 85);
             this.copyrightLabel.Name = "copyrightLabel";
             this.copyrightLabel.Size = new System.Drawing.Size(51, 13);
@@ -123,15 +121,35 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             this.copyrightLabel.Text = "Copyright";
             this.copyrightLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // AboutWindow
+            // headerLabel
+            // 
+            this.headerLabel.AutoSize = true;
+            this.headerLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.headerLabel.Location = new System.Drawing.Point(11, 15);
+            this.headerLabel.Name = "headerLabel";
+            this.headerLabel.Size = new System.Drawing.Size(131, 30);
+            this.headerLabel.TabIndex = 4;
+            this.headerLabel.Text = "IAP Desktop";
+            // 
+            // gradientPictureBox
+            // 
+            this.gradientPictureBox.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.AccentGradient_450;
+            this.gradientPictureBox.Location = new System.Drawing.Point(0, 332);
+            this.gradientPictureBox.Name = "gradientPictureBox";
+            this.gradientPictureBox.Size = new System.Drawing.Size(450, 10);
+            this.gradientPictureBox.TabIndex = 5;
+            this.gradientPictureBox.TabStop = false;
+            // 
+            // AboutView
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.CancelButton = this.okButton;
-            this.ClientSize = new System.Drawing.Size(449, 330);
+            this.ClientSize = new System.Drawing.Size(434, 341);
+            this.Controls.Add(this.gradientPictureBox);
+            this.Controls.Add(this.headerLabel);
             this.Controls.Add(this.authorLink);
             this.Controls.Add(this.licenseText);
             this.Controls.Add(this.copyrightLabel);
@@ -141,12 +159,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "AboutWindow";
+            this.Name = "AboutView";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "About";
+            ((System.ComponentModel.ISupportInitialize)(this.gradientPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -160,5 +179,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
         private System.Windows.Forms.RichTextBox licenseText;
         private System.Windows.Forms.LinkLabel authorLink;
         private System.Windows.Forms.Label copyrightLabel;
+        private Mvvm.Controls.HeaderLabel headerLabel;
+        private System.Windows.Forms.PictureBox gradientPictureBox;
     }
 }

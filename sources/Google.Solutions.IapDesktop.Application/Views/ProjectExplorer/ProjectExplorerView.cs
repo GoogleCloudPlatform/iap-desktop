@@ -379,7 +379,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             catch (Exception e)
             {
                 this.exceptionDialog.Show(
-                    this,
+                    this.mainForm,
                     "Loading projects failed", e);
 
                 // Do not close the application, otherwise the user has no 

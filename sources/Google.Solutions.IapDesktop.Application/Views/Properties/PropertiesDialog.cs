@@ -21,8 +21,10 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -37,15 +39,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
     public partial class PropertiesDialog : Form
     {
         private readonly IExceptionDialog exceptionDialog;
+        private readonly IControlTheme theme;
 
-        protected PropertiesDialog()
-        {
-            InitializeComponent();
-        }
+        public Color SheetBackColor { get; set; } = Color.White;
 
-        public PropertiesDialog(IServiceProvider serviceProvider) : this()
+        protected PropertiesDialog(IServiceProvider serviceProvider)
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
+            this.theme = serviceProvider
+                .GetService<IThemeService>()
+                .DialogTheme;
+
+            SuspendLayout();
+
+            InitializeComponent();
+            this.theme.ApplyTo(this);
+            
+            ResumeLayout();
         }
 
         private DialogResult ApplyChanges()
@@ -89,15 +99,25 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         {
             Debug.Assert(sheet == sheetInterface);
 
+            SuspendLayout();
+
             //
             // Create control and add it to tabs.
             //
-            var tab = new TabPage();
+
             sheet.Location = new Point(0, 0);
             sheet.Dock = DockStyle.Fill;
-            sheet.BackColor = Color.White;
+            sheet.BackColor = this.SheetBackColor;
+            this.theme.ApplyTo(sheet);
+
+            var tab = new TabPage()
+            {
+                BackColor = this.SheetBackColor
+            };
             tab.Controls.Add(sheet);
             this.tabs.TabPages.Add(tab);
+
+            ResumeLayout();
 
             tab.BindReadonlyProperty(
                 t => t.Text,

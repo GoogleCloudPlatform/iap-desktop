@@ -51,7 +51,7 @@ namespace Google.Solutions.Mvvm.Controls
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SearchableList<TModelItem>));
-            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.progressBar = new LinearProgressBar();
             this.searchTextBox = new System.Windows.Forms.TextBox();
             this.list = new BindableListView<TModelItem>();
             this.SuspendLayout();
@@ -61,10 +61,10 @@ namespace Google.Solutions.Mvvm.Controls
             this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.Location = new System.Drawing.Point(0, 21);
-            this.progressBar.MarqueeAnimationSpeed = 50;
+            this.progressBar.Speed = 3;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(250, 5);
-            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar.Indeterminate = true;
             this.progressBar.TabIndex = 0;
             // 
             // searchTextBox
@@ -90,7 +90,6 @@ namespace Google.Solutions.Mvvm.Controls
             this.list.HideSelection = false;
             this.list.Location = new System.Drawing.Point(0, 25);
             this.list.Name = "list";
-            this.list.OwnerDraw = true;
             this.list.Size = new System.Drawing.Size(250, 175);
             this.list.TabIndex = 1;
             this.list.UseCompatibleStateImageBehavior = false;
@@ -114,7 +113,7 @@ namespace Google.Solutions.Mvvm.Controls
 
         #endregion
 
-        private System.Windows.Forms.ProgressBar progressBar;
+        private LinearProgressBar progressBar;
         private BindableListView<TModelItem> list;
         private System.Windows.Forms.TextBox searchTextBox;
     }

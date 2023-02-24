@@ -78,6 +78,10 @@ POWERSHELL = powershell -NoProfile -ExecutionPolicy Unrestricted
 
 default: kokoro-continuous-integration
 
+themes: Google.Solutions.IapDesktop.Application\Theme\Resources\Dark.vstheme \
+        Google.Solutions.IapDesktop.Application\Theme\Resources\Light.vstheme
+    !$(POWERSHELL) $(MAKEDIR)\scripts\gzip.ps1 -File $**
+
 Google.Solutions.IapDesktop\OAuthClient.cs:
 	@echo "========================================================"
 	@echo "=== Patching OAuth credentials                      ==="
@@ -85,7 +89,7 @@ Google.Solutions.IapDesktop\OAuthClient.cs:
 
 	copy "$(KOKORO_GFILE_DIR)\OAuthClient.cs" $@
 
-$(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): Google.Solutions.IapDesktop\OAuthClient.cs
+$(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): themes Google.Solutions.IapDesktop\OAuthClient.cs
 	@echo "========================================================"
 	@echo "=== Building solution                                ==="
 	@echo "========================================================"
@@ -247,7 +251,7 @@ test: $(NUNIT_ASSEMBLIES)
 		-register:user \
 		-returntargetcode \
 		-target:nunit3-console.exe \
-		"-targetargs:$(NUNIT_ASSEMBLIES) --result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl --agents=1" \
+		"-targetargs:$(NUNIT_ASSEMBLIES) --result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl --agents=1 --where "cat!=InteractiveTest"" \
 		-filter:"$(NUNIT_COVERAGE_FILTER)" \
 		"-excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated*" \
 		-output:opencovertests.xml

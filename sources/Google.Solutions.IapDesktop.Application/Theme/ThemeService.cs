@@ -19,15 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
-using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
@@ -60,16 +52,59 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
     public class ThemeService : IThemeService
     {
-        public ThemeService()
+        public ThemeService(ThemeSettingsRepository themeSettingsRepository)
         {
-            this.DockPanelTheme = new VS2015LightTheme();
-            this.DockPanelTheme.Extender.FloatWindowFactory = new FloatWindowFactory();
-            this.DockPanelTheme.Extender.DockPaneFactory =
-                new DockPaneFactory(this.DockPanelTheme.Extender.DockPaneFactory);
+            var settings = themeSettingsRepository.GetSettings();
 
-            this.DialogTheme = new ControlTheme();
-            this.ToolWindowTheme = new ToolWindowTheme(this.DockPanelTheme);
-            this.MainWindowTheme = new MainWindowTheme(this.DockPanelTheme);
+            WindowsTheme windowsTheme;
+
+            switch (settings.Theme.EnumValue)
+            {
+                case ThemeSettings.ApplicationTheme.System:
+                    //
+                    // Use same mode as Windows.
+                    //
+                    windowsTheme = new WindowsTheme(WindowsTheme.ShouldAppsUseDarkMode);
+                    break;
+
+                case ThemeSettings.ApplicationTheme.Dark:
+                    //
+                    // Use dark mode if possible.
+                    //
+                    windowsTheme = new WindowsTheme(WindowsTheme.IsDarkModeSupported);
+                    break;
+
+                default:
+                    //
+                    // Use safe defaults that also work on downlevel
+                    // versions of Windows.
+                    //
+                    windowsTheme = new WindowsTheme(false);
+                    break;
+            }
+
+
+            var vsTheme = windowsTheme.IsDarkModeEnabled
+                ? VSTheme.GetDarkTheme()
+                : VSTheme.GetLightTheme();
+
+            var dialogTheme = new ControlTheme()
+                .AddRules(windowsTheme)
+                .AddCommonControlThemeRules()
+                .AddDialogRules(vsTheme);
+
+            var dockWindowTheme = new ControlTheme()
+                .AddRules(windowsTheme)
+                .AddCommonControlThemeRules()
+                .AddDockWindowRules(vsTheme);
+
+            //
+            // Apply the resulting theme to the different kinds of windows we have.
+            //
+            this.DockPanelTheme = vsTheme;
+            this.DialogTheme = dialogTheme;
+            this.MainWindowTheme = dockWindowTheme;
+            this.ToolWindowTheme = dockWindowTheme;
         }
 
         //---------------------------------------------------------------------
@@ -81,193 +116,5 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         public IControlTheme ToolWindowTheme { get; }
         public IControlTheme MainWindowTheme { get; }
 
-        //---------------------------------------------------------------------
-        // DockPaneFactory.
-        //---------------------------------------------------------------------
-
-        private class MinimizableFloatWindow : FloatWindow
-        {
-            public MinimizableFloatWindow(DockPanel dockPanel, DockPane pane)
-                : base(dockPanel, pane)
-            {
-            }
-
-            public MinimizableFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
-                : base(dockPanel, pane, bounds)
-            {
-            }
-
-            protected override void WndProc(ref Message m)
-            {
-                if (base.IsDisposed)
-                {
-                    return;
-                }
-
-                //
-                // The base classes implementation doesn't handle clicks on the
-                // minimize button properly, see 
-                // https://github.com/dockpanelsuite/dockpanelsuite/issues/526..
-                //
-                if (m.Msg == (int)WindowMessage.WM_NCLBUTTONDOWN &&
-                    m.WParam.ToInt32() == NativeMethods.HTREDUCE)
-                {
-                    //
-                    // Eat this message so that the base class can't misinterpret it
-                    // as a click on the title bar.
-                    //
-                }
-                else if (m.Msg == (int)WindowMessage.WM_NCLBUTTONUP &&
-                    m.WParam.ToInt32() == NativeMethods.HTREDUCE)
-                {
-                    //
-                    // Minimize window.
-                    //
-                    NativeMethods.SendMessage(
-                        this.Handle,
-                        (int)WindowMessage.WM_SYSCOMMAND,
-                        new IntPtr(NativeMethods.SC_MINIMIZE),
-                        IntPtr.Zero);
-                }
-                else
-                {
-                    base.WndProc(ref m);
-                }
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                try
-                {
-                    base.Dispose(disposing);
-                }
-                catch (InvalidOperationException)
-                {
-                    //
-                    // b/262842025: When the parent window is closed, it requests float 
-                    // windows to dispose by sending it a WM_USER+1 message (see FloátWindow 
-                    // in DockPanelSuite).
-                    //
-                    // This WM_USER+1 message is handled asynchronously. Thus, the parent 
-                    // window's handle might have already been destroyed when this window is
-                    // dispatching the message. However, the base class, under some
-                    // circumstances, touches the main window handle, triggering
-                    // an exception. The exception is benign as we're disposing anyway,
-                    // so ignore it.
-                    // 
-                    Debug.Assert(false, "Disposing float window failed");
-                }
-            }
-        }
-
-        private class FloatWindowFactory : DockPanelExtender.IFloatWindowFactory
-        {
-            public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
-            {
-                return new MinimizableFloatWindow(dockPanel, pane, bounds);
-            }
-
-            public FloatWindow CreateFloatWindow(DockPanel dockPanel, DockPane pane)
-            {
-                return new MinimizableFloatWindow(dockPanel, pane);
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // DockPaneFactory.
-        //---------------------------------------------------------------------
-
-        private class DockPaneFactory : DockPanelExtender.IDockPaneFactory
-        {
-            private readonly DockPanelExtender.IDockPaneFactory factory;
-
-            public DockPaneFactory(DockPanelExtender.IDockPaneFactory factory)
-            {
-                Debug.Assert(factory != null);
-                this.factory = factory;
-            }
-
-            public DockPane CreateDockPane(
-                IDockContent content,
-                DockState visibleState,
-                bool show)
-            {
-                return this.factory.CreateDockPane(content, visibleState, show);
-            }
-
-            public DockPane CreateDockPane(
-                IDockContent content,
-                FloatWindow floatWindow,
-                bool show)
-            {
-                return this.factory.CreateDockPane(content, floatWindow, show);
-            }
-
-            public DockPane CreateDockPane(
-                IDockContent content,
-                DockPane prevPane,
-                DockAlignment alignment,
-                double proportion,
-                bool show)
-            {
-                return this.factory.CreateDockPane(content, prevPane, alignment, proportion, show);
-            }
-
-            public DockPane CreateDockPane(
-                IDockContent content,
-                Rectangle floatWindowBounds,
-                bool show)
-            {
-                if (content is DocumentWindow docWindow)
-                {
-                    //
-                    // Maintain the original client size. That's particularly
-                    // important for RDP window as resizing is slow and expensive.
-                    //
-                    var form = docWindow.DockHandler.DockPanel.FindForm();
-                    var nonClientOverhead = new Size
-                    {
-                        Width = form.Width - form.ClientRectangle.Width,
-                        Height = form.Height - form.ClientRectangle.Height
-                    };
-
-                    var pane = this.factory.CreateDockPane(
-                        content,
-                        new Rectangle(
-                            docWindow.Bounds.Location,
-                            docWindow.Bounds.Size + nonClientOverhead),
-                        show);
-
-                    Debug.Assert(pane.FloatWindow != null);
-
-                    //
-                    // Make this a first-class window.
-                    //
-                    pane.FloatWindow.FormBorderStyle = FormBorderStyle.Sizable;
-                    pane.FloatWindow.ShowInTaskbar = true;
-                    pane.FloatWindow.Owner = null;
-
-                    return pane;
-                }
-                else
-                {
-                    return this.factory.CreateDockPane(content, floatWindowBounds, show);
-                }
-            }
-        }
-
-
-        //---------------------------------------------------------------------
-        // P/Invoke.
-        //---------------------------------------------------------------------
-
-        private static class NativeMethods
-        {
-            internal const int HTREDUCE = 8;
-            internal const int SC_MINIMIZE = 0xF020;
-
-            [DllImport("user32.dll")]
-            internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-        }
     }
 }

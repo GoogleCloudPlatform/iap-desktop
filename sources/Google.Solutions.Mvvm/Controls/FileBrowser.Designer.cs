@@ -132,7 +132,6 @@ namespace Google.Solutions.Mvvm.Controls
             this.fileList.HideSelection = false;
             this.fileList.Location = new System.Drawing.Point(0, 0);
             this.fileList.Name = "fileList";
-            this.fileList.OwnerDraw = true;
             this.fileList.SelectedModelItem = null;
             this.fileList.Size = new System.Drawing.Size(390, 256);
             this.fileList.SmallImageList = this.fileIconsList;
