@@ -19,8 +19,12 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -62,6 +66,39 @@ namespace Google.Solutions.Mvvm.Controls
             Action action)
         {
             control.BeginInvoke(action, null);
+        }
+
+        /// <summary>
+        /// List all controls, including any nested controls.
+        /// </summary>
+        public static IEnumerable<Control> AllControls(this Control control)
+        {
+            return Enumerable
+                .Repeat(control, 1)
+                .Concat(control.Controls
+                    .Cast<Control>()
+                    .EnsureNotNull()
+                    .SelectMany(child => child.AllControls()));
+        }
+
+
+        /// <summary>
+        /// Check that tab indexes have been properly assigned.
+        /// </summary>
+        [Conditional("DEBUG")]
+        public static void ValidateTabIndexes(this ContainerControl control)
+        {
+            var duplicateTabIndexes = control
+                .AllControls()
+                .Where(c => c != control && c.TabStop)
+                .GroupBy(c => c.TabIndex)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .ToList();
+
+            Debug.Assert(
+                !duplicateTabIndexes.Any(),
+                $"{control} has duplicate tab indexes: {string.Join(", ", duplicateTabIndexes)}");
         }
     }
 }
