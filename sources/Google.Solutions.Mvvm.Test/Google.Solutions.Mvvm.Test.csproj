@@ -45,6 +45,7 @@
       <HintPath>..\packages\NUnit.3.13.3\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -73,6 +74,7 @@
     <Compile Include="Cache\TestModelCachingViewModelBase.cs" />
     <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="Commands\TestCommandContainer.cs" />
+    <Compile Include="Controls\TestBindableComboBox.cs" />
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
     <Compile Include="Controls\TestProgressBar.cs" />

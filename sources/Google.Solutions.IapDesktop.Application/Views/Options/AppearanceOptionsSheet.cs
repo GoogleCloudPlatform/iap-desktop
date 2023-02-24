@@ -23,13 +23,12 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    public partial class AppearanceOptionsSheet : UserControl, IPropertiesSheet
+    internal partial class AppearanceOptionsSheet : UserControl, IPropertiesSheet
     {
         private AppearanceOptionsViewModel viewModel;
 
@@ -50,14 +49,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 this.viewModel,
                 m => m.IsThemeEditable,
                 this.components);
-            this.theme.Items.AddRange(this.viewModel
-                .AvailableThemes
-                .Cast<object>()
-                .ToArray());
             this.theme.BindObservableProperty(
-                c => c.SelectedItem,
-                this.viewModel,
-                m => m.SelectedTheme,
+                viewModel.SelectedTheme,
                 this.components);
         }
 

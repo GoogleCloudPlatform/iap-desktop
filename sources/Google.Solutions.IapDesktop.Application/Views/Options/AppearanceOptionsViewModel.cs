@@ -23,15 +23,12 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    internal class AppearanceOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
+    internal class AppearanceOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel // TODO: Add tests for view model
     {
         private readonly ThemeSettingsRepository settingsRepository;
 
@@ -49,11 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.ThemeInfoText = this.IsThemeEditable
                 ? "Changes take effect after relaunch"
                 : "Themes are not supported on this version of Windows";
-            this.SelectedTheme = ObservableProperty.Build<object>(settings.Theme.Value);
-            this.AvailableThemes = Enum
-                .GetValues(typeof(ThemeSettings.ApplicationTheme))
-                .Cast<ThemeSettings.ApplicationTheme>()
-                .ToArray();
+            this.SelectedTheme = ObservableProperty.Build<ThemeSettings.ApplicationTheme>(settings.Theme.EnumValue);
         }
 
         //---------------------------------------------------------------------
@@ -62,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         public string Title => "Appearance";
 
-        public bool IsDirty => this.SelectedTheme.IsModified;
+        public bool IsDirty => this.SelectedTheme.IsModified; // TODO: Notify on change
 
         public DialogResult ApplyChanges()
         {
@@ -81,7 +74,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             return DialogResult.OK;
         }
 
-
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
@@ -90,8 +82,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         public string ThemeInfoText { get; }
 
-        public ObservableProperty</* ThemeSettings.ApplicationTheme */ object> SelectedTheme { get; }
-
-        public IList<ThemeSettings.ApplicationTheme> AvailableThemes { get; }
+        public ObservableProperty<ThemeSettings.ApplicationTheme> SelectedTheme { get; }
     }
 }

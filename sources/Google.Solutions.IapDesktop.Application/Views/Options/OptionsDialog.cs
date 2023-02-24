@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using System.Linq;
 using System.Windows.Forms;
@@ -39,11 +40,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             var appSettingsRepository =
                 serviceProvider.GetService<ApplicationSettingsRepository>();
+            var themeSettingsRepository =
+                serviceProvider.GetService<ThemeSettingsRepository>();
 
             AddSheet(new GeneralOptionsSheet(
                 appSettingsRepository,
                 serviceProvider.GetService<IAppProtocolRegistry>(),
                 serviceProvider.GetService<HelpAdapter>()));
+            AddSheet(new AppearanceOptionsSheet(themeSettingsRepository));
             AddSheet(new NetworkOptionsSheet(
                 appSettingsRepository,
                 serviceProvider.GetService<IHttpProxyAdapter>()));

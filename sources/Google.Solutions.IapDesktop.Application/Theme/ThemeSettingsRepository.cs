@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Google.Solutions.IapDesktop.Application.Theme
 {
@@ -45,8 +46,13 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     {
         public enum ApplicationTheme
         {
+            [Display(Name = "Light theme")]
             Light = 0,
+
+            [Display(Name = "Current Windows theme")]
             System = 1,
+            
+            [Display(Name = "Dark theme")]
             Dark = 2,
             _Default = Light
         }

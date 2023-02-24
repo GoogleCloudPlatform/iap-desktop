@@ -1,4 +1,6 @@
 ﻿
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     partial class AppearanceOptionsSheet
@@ -31,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         {
             this.themeBox = new System.Windows.Forms.GroupBox();
             this.themeLabel = new System.Windows.Forms.Label();
-            this.theme = new System.Windows.Forms.ComboBox();
+            this.theme = new BindableComboBox();
             this.themeInfoLabel = new System.Windows.Forms.Label();
             this.themeBox.SuspendLayout();
             this.SuspendLayout();
@@ -92,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         private System.Windows.Forms.GroupBox themeBox;
         private System.Windows.Forms.Label themeLabel;
-        private System.Windows.Forms.ComboBox theme;
+        private BindableComboBox theme;
         private System.Windows.Forms.Label themeInfoLabel;
     }
 }
