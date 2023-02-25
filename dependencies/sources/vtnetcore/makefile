@@ -85,7 +85,7 @@ clean:
     -rd /S /Q $(MAKEDIR)\obj\VtNetCore\bin
     -del $(MAKEDIR)\obj\vtnetcore.nupkg
     
-force-clean:
+distclean:
     -rd /S /Q $(MAKEDIR)\obj
 
 debug: clean package

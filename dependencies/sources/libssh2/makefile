@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 30
+TAG = 31
 
 #
 # NB. We're using custom ports for libssh2 and openssl:
@@ -36,7 +36,7 @@ TAG = 30
 #  portfile.cmake: Update version/tag, file hash
 #
 #
-VCPKG_TAG = 2022.09.27
+VCPKG_TAG = 2023.02.24
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
 LIBSSH2_VERSION = 1.10.0.$(TAG)
 
@@ -145,5 +145,5 @@ clean: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
     -rd /S /Q $(LOCALAPPDATA)\vcpkg
     -del $(MAKEDIR)\obj\libssh2.nupkg
 
-force-clean: clean
+distclean: clean
     -rd /S /Q $(MAKEDIR)\obj
