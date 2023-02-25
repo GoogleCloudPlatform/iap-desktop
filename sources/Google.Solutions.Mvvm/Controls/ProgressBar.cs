@@ -111,11 +111,6 @@ namespace Google.Solutions.Mvvm.Controls
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
-
-            if (!this.DesignMode)
-            {
-                this.timer?.Start();
-            }
         }
 
         protected override void Dispose(bool disposing)
@@ -126,6 +121,20 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 this.timer?.Stop();
                 this.timer?.Dispose();
+            }
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+
+            if (this.Indeterminate)
+            {
+                //
+                // Only run the timer when the control is
+                // visible.
+                //
+                this.timer.Enabled = this.Visible;
             }
         }
     }

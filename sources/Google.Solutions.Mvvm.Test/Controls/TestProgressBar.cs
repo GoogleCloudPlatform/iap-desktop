@@ -33,7 +33,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestProgressBar
     {
-
         //---------------------------------------------------------------------
         // Indeterminate.
         //---------------------------------------------------------------------
@@ -96,6 +95,30 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 progressBar.Speed = progressBar.Maximum + 1;
                 Assert.AreEqual(progressBar.Maximum, progressBar.Maximum);
+            }
+        }
+
+        [Test]
+        public void WhenVisibilityChanged_ThenTimerIsStoppedOrStarted()
+        {
+            using (var form = new Form())
+            using (var progressBar = new LinearProgressBar()
+            {
+                Indeterminate = true
+            })
+            {
+                form.Controls.Add(progressBar);
+
+                Assert.IsFalse(progressBar.timer.Enabled);
+
+                form.Show();
+                progressBar.Visible = true;
+                Assert.IsTrue(progressBar.timer.Enabled);
+
+                progressBar.Visible = false;
+                Assert.IsFalse(progressBar.timer.Enabled);
+
+                form.Close();
             }
         }
 
