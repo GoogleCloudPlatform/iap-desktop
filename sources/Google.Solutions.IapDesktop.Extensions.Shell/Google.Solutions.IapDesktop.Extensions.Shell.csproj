@@ -355,12 +355,6 @@
     <None Include="Resources\SshKey_32.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\TextColor_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\BackgroundColor_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Password_16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -398,6 +392,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Disconnected_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TextColor_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BackgroundColor_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
