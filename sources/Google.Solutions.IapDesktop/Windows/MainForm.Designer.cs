@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // projectExplorerToolStripMenuItem
             // 
-            this.projectExplorerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("projectExplorerToolStripMenuItem.Image")));
+            this.projectExplorerToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.ProjectExplorer_16;
             this.projectExplorerToolStripMenuItem.Name = "projectExplorerToolStripMenuItem";
             this.projectExplorerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.L)));
@@ -363,7 +363,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // addProfileToolStripMenuItem
             // 
-            this.addProfileToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Properties.Resources.AddUser_16;
+            this.addProfileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addProfileToolStripMenuItem.Image")));
             this.addProfileToolStripMenuItem.Name = "addProfileToolStripMenuItem";
             this.addProfileToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.addProfileToolStripMenuItem.Text = "&Add profile...";

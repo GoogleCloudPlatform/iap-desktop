@@ -364,19 +364,10 @@
     <None Include="Resources\Password_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Tunnel_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\AuthorizedKey_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Disconnect_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\DownloadFile_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Disconnected_32.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Duplicate.png" />
@@ -398,6 +389,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Refresh_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Tunnel_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Disconnect_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Disconnected_32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

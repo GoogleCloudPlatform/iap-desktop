@@ -239,6 +239,7 @@
     <Content Include="icon.ico" />
     <Content Include="logo.ico" />
     <Content Include="ProductIcon.ico" />
+    <None Include="Resources\ProjectExplorer_16.png" />
     <None Include="Resources\AddProject_16.png" />
     <None Include="Resources\LogoWatermark_180.png" />
     <None Include="Resources\GoogleSignIn_24.png" />
