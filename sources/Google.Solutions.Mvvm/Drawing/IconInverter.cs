@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace Google.Solutions.Mvvm.Drawing
         private float colorFactor = 1;
 
         /// <summary>
-        /// Factor to apply to grays.
+        /// Luminosity factor to apply to grays.
         /// </summary>
         public float GrayFactor
         {
@@ -50,7 +51,7 @@ namespace Google.Solutions.Mvvm.Drawing
         }
 
         /// <summary>
-        /// Factor to apply to the luminosity of (non-gray) colors.
+        /// Luminosity factor to apply to (non-gray) colors.
         /// </summary>
         public float ColorFactor
         {
@@ -60,6 +61,8 @@ namespace Google.Solutions.Mvvm.Drawing
                 this.colorFactor = value.ThrowIfOutOfRange(0.0f, 1.0f, nameof(ColorFactor));
             }
         }
+
+        public bool InvertGray { get; set; } = true;
 
         /// <summary>
         /// Invert and adjust colors:
@@ -84,11 +87,22 @@ namespace Google.Solutions.Mvvm.Drawing
             Marshal.Copy(bitmapRead.Scan0, bitmapBGRA, 0, bitmapLength);
             bitmapImage.UnlockBits(bitmapRead);
 
+#if DEBUG
+            Debug.Assert(!(
+                bitmapBGRA[0] == 0xFF &&
+                bitmapBGRA[1] == 0x00 &&
+                bitmapBGRA[2] == 0xFF &&
+                bitmapBGRA[3] == 0xFF),
+                "Icon has been inverted already");
+#endif
+
             for (int i = 0; i < bitmapLength; i += 4)
             {
                 var red = bitmapBGRA[i + 2];
                 var green = bitmapBGRA[i + 1];
                 var blue = bitmapBGRA[i];
+
+                HslColor hsl;
 
                 if (red == green && green == blue)
                 {
@@ -100,41 +114,46 @@ namespace Google.Solutions.Mvvm.Drawing
                     //
                     // Invert.
                     //
-                    var invertedGray = 255 - gray;
+                    var invertedGray = this.InvertGray
+                        ? 255 - gray
+                        : gray;
+
 
                     //
-                    // Adjust the intensity based on a linear function to make
-                    // the grays brighter:
+                    // Adjust luminosity.
                     //
-                    // |            --- 
-                    // |        ----    
-                    // |    ----
-                    // |----
-                    // |
-                    // |
-                    // +---------------
-                    //
-                    var scaledGray = ((1 - this.grayFactor) * 255 + (invertedGray * this.grayFactor));
-
-                    bitmapBGRA[i] = (byte)scaledGray;
-                    bitmapBGRA[i + 1] = (byte)scaledGray;
-                    bitmapBGRA[i + 2] = (byte)scaledGray;
+                    hsl = HslColor.FromRgb(invertedGray, invertedGray, invertedGray);
+                    hsl.L = ((1 - this.grayFactor) + (hsl.L * this.grayFactor));
                 }
                 else
                 {
                     //
-                    // This is some non-gray color. Adjust luminosity.
+                    // Non-Gray color.
                     //
-                    var hsl = HslColor.FromRgb(red, green, blue);
-
+                    // Adjust luminosity.
+                    //
+                    hsl = HslColor.FromRgb(red, green, blue);
                     hsl.L = ((1 - this.colorFactor) + (hsl.L * this.colorFactor));
-
-                    var rgb = hsl.ToColor();
-                    bitmapBGRA[i + 0] = rgb.B;
-                    bitmapBGRA[i + 1] = rgb.G;
-                    bitmapBGRA[i + 2] = rgb.R;
                 }
+
+                var rgb = hsl.ToColor();
+                bitmapBGRA[i + 0] = rgb.B;
+                bitmapBGRA[i + 1] = rgb.G;
+                bitmapBGRA[i + 2] = rgb.R;
             }
+
+#if DEBUG
+            //
+            // Add magenta pixel to make as indicator that this icon was inverted.
+            //
+            for (int i = 0; i < 8; i += 4)
+            {
+                bitmapBGRA[i + 0] = 0xFF;
+                bitmapBGRA[i + 1] = 0x00;
+                bitmapBGRA[i + 2] = 0xFF;
+                bitmapBGRA[i + 3] = 0xFF;
+            }
+#endif
 
             var bitmapWrite = bitmapImage.LockBits(
                 dimensions, 

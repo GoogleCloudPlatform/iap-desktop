@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.searchTextBox = new System.Windows.Forms.TextBox();
-            this.progressBar = new LinearProgressBar();
+            this.progressBar = new Google.Solutions.Mvvm.Controls.LinearProgressBar();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // 
             this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
             this.imageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList.Images.SetKeyName(0, "Cloud.ico");
+            this.imageList.Images.SetKeyName(0, "Cloud_16.png");
             this.imageList.Images.SetKeyName(1, "Project_16.png");
             this.imageList.Images.SetKeyName(2, "Region.ico");
             this.imageList.Images.SetKeyName(3, "Zone_16.png");
@@ -185,15 +185,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // 
             this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar.Indeterminate = true;
             this.progressBar.Location = new System.Drawing.Point(0, 48);
             this.progressBar.Margin = new System.Windows.Forms.Padding(0);
-            this.progressBar.Indeterminate = true;
-            this.progressBar.Speed = 3;
+            this.progressBar.Maximum = 100;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(800, 5);
+            this.progressBar.Speed = 3;
             this.progressBar.TabIndex = 3;
+            this.progressBar.Value = 0;
             // 
-            // ProjectExplorerWindow
+            // ProjectExplorerView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -202,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.treeView);
             this.Controls.Add(this.toolStrip);
-            this.Name = "ProjectExplorerWindow";
+            this.Name = "ProjectExplorerView";
             this.Text = "Project Explorer";
             this.Shown += new System.EventHandler(this.ProjectExplorerWindow_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ProjectExplorerWindow_KeyDown);

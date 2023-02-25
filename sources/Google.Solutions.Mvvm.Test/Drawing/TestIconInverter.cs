@@ -32,9 +32,14 @@ namespace Google.Solutions.Mvvm.Test.Drawing
     [Apartment(ApartmentState.STA)]
     public partial class TestIconInverter : Form
     {
+        private string fileName;
         public TestIconInverter()
         {
             InitializeComponent();
+
+            this.colorFactorScale.ValueChanged += (_, __) => Apply();
+            this.grayFactorScale.ValueChanged += (_, __) => Apply();
+            this.invertGraysCheckBox.CheckStateChanged += (_, __) => Apply();
         }
 
         [InteractiveTest]
@@ -54,28 +59,43 @@ namespace Google.Solutions.Mvvm.Test.Drawing
                 Title = "Select icon"
             })
             {
-                if (dialog.ShowDialog() != DialogResult.OK)
+                if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    return;
+                    this.fileName = dialog.FileName;
                 }
-
-                var lightImage = (Bitmap)Image.FromFile(dialog.FileName);
-                var darkImage = (Bitmap)lightImage.Clone();
-                var inverter = new IconInverter()
-                {
-                    ColorFactor = .9f,
-                    GrayFactor = .65f
-                };
-                inverter.Invert(darkImage);
-
-                this.smallLightIcon.Image = lightImage;
-                this.mediumLightIcon.Image = lightImage;
-                this.largeLightIcon.Image = lightImage;
-
-                this.smallDarkIcon.Image = darkImage;
-                this.mediumDarkIcon.Image = darkImage;
-                this.largeDarkIcon.Image = darkImage;
             }
+
+            Apply();
+        }
+
+        private void Apply()
+        {
+            if (this.fileName == null)
+            {
+                return;
+            }
+
+            var lightImage = (Bitmap)Image.FromFile(this.fileName);
+            var darkImage = (Bitmap)lightImage.Clone();
+            var inverter = new IconInverter()
+            {
+                ColorFactor = ((float)this.colorFactorScale.Value) / 100, 
+                GrayFactor = ((float)this.grayFactorScale.Value) / 100,
+                InvertGray = this.invertGraysCheckBox.Checked
+            };
+
+            this.grayFactorValue.Text = inverter.GrayFactor.ToString();
+            this.colorFactorValue.Text = inverter.ColorFactor.ToString();
+
+            inverter.Invert(darkImage);
+
+            this.smallLightIcon.Image = lightImage;
+            this.mediumLightIcon.Image = lightImage;
+            this.largeLightIcon.Image = lightImage;
+
+            this.smallDarkIcon.Image = darkImage;
+            this.mediumDarkIcon.Image = darkImage;
+            this.largeDarkIcon.Image = darkImage;
         }
     }
 }
