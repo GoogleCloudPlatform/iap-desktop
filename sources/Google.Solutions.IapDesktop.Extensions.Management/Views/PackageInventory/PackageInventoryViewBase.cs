@@ -50,6 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
+
+            this.packageList.List.AddCopyCommands();
         }
 
         public void Bind(PackageInventoryViewModel viewModel)
@@ -89,7 +91,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 this.components);
 
             this.packageList.List.BindCollection(this.viewModel.FilteredPackages);
-            this.packageList.List.AddCopyCommands();
             this.packageList.BindProperty(
                 c => c.SearchTerm,
                 this.viewModel,

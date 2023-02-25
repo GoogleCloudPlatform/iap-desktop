@@ -46,6 +46,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
             InitializeComponent();
+
+            this.list.AddCopyCommands();
         }
 
         public void Bind(EventLogViewModel viewModel)
@@ -129,8 +131,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 
             this.list.BindImageIndex(e => GetImageIndex(e));
             this.list.BindCollection(this.viewModel.Events);
-
-            this.list.AddCopyCommands();
         }
 
         private static int GetImageIndex(EventBase e)
