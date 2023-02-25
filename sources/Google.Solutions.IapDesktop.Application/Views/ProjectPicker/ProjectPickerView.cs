@@ -40,6 +40,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
         {
             this.exceptionDialog = exceptionDialog;
             InitializeComponent();
+
+            this.projectList.List.AddCopyCommands();
         }
 
         public void Bind(ProjectPickerViewModel viewModel)
@@ -71,7 +73,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             // Bind list.
             //
             this.projectList.List.BindCollection(viewModel.FilteredProjects);
-            this.projectList.List.AddCopyCommands();
             this.projectList.BindProperty(
                 c => c.SearchTerm,
                 viewModel,

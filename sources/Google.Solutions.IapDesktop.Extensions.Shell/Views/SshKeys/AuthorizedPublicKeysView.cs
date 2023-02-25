@@ -48,6 +48,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
+
+            this.keysList.List.AddCopyCommands();
         }
 
         public void Bind(AuthorizedPublicKeysViewModel viewModel)
@@ -99,7 +101,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 this.components);
 
             this.keysList.List.BindCollection(this.viewModel.FilteredKeys);
-            this.keysList.List.AddCopyCommands();
             this.keysList.List.BindProperty(
                 l => l.SelectedModelItem,
                 this.viewModel,
