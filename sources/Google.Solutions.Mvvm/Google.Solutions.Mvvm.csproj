@@ -75,6 +75,7 @@
     <Compile Include="Controls\DropDownButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Drawing\FontExtensions.cs" />
     <Compile Include="Controls\ProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -90,6 +91,7 @@
     <Compile Include="Controls\HeaderLabel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\PropertyGridExtensions.cs" />
     <Compile Include="Controls\VerticalTabControl.cs">
       <SubType>Component</SubType>
     </Compile>

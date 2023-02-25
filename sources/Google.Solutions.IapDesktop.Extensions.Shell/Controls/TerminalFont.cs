@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Controls;
+using Google.Solutions.Mvvm.Drawing;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
