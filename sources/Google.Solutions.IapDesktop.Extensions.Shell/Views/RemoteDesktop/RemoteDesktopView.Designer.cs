@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
+using Google.Solutions.Mvvm.Controls;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
@@ -59,11 +60,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.reconnectLabel = new System.Windows.Forms.Label();
             this.reconnectButton = new System.Windows.Forms.LinkLabel();
             this.timeoutIcon = new System.Windows.Forms.PictureBox();
-            this.spinner = new System.Windows.Forms.PictureBox();
+            this.spinner = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
+            this.waitPanel = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.rdpClient)).BeginInit();
             this.reconnectPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
+            this.waitPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // rdpClient
@@ -142,25 +144,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             // 
             // spinner
             // 
-            this.spinner.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.spinner.BackColor = System.Drawing.Color.White;
-            this.spinner.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.Spinner;
-            this.spinner.Location = new System.Drawing.Point(107, 101);
+            this.spinner.Indeterminate = true;
+            this.spinner.LineWidth = 5;
+            this.spinner.Location = new System.Drawing.Point(80, 30);
+            this.spinner.Maximum = 100;
+            this.spinner.MinimumSize = new System.Drawing.Size(15, 15);
             this.spinner.Name = "spinner";
-            this.spinner.Size = new System.Drawing.Size(44, 44);
+            this.spinner.Size = new System.Drawing.Size(40, 40);
+            this.spinner.Speed = 3;
             this.spinner.TabIndex = 3;
             this.spinner.TabStop = false;
+            this.spinner.Value = 0;
             // 
-            // RemoteDesktopPane
+            // waitPanel
+            // 
+            this.waitPanel.Controls.Add(this.spinner);
+            this.waitPanel.Location = new System.Drawing.Point(414, 83);
+            this.waitPanel.Name = "waitPanel";
+            this.waitPanel.Size = new System.Drawing.Size(200, 100);
+            this.waitPanel.TabIndex = 8;
+            // 
+            // RemoteDesktopView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(763, 431);
+            this.Controls.Add(this.waitPanel);
             this.Controls.Add(this.reconnectPanel);
-            this.Controls.Add(this.spinner);
             this.Controls.Add(this.rdpClient);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "RemoteDesktopPane";
+            this.Name = "RemoteDesktopView";
             this.Text = "RemoteDesktopPane";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RemoteDesktopPane_FormClosing);
             this.SizeChanged += new System.EventHandler(this.RemoteDesktopPane_SizeChanged);
@@ -168,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.reconnectPanel.ResumeLayout(false);
             this.reconnectPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.spinner)).EndInit();
+            this.waitPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -176,11 +189,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         #endregion
 
         private MsRdpClient rdpClient;
-        private System.Windows.Forms.PictureBox spinner;
+        private CircularProgressBar spinner;
         private System.Windows.Forms.Timer reconnectToResizeTimer;
         private System.Windows.Forms.Panel reconnectPanel;
         private System.Windows.Forms.Label reconnectLabel;
         private System.Windows.Forms.LinkLabel reconnectButton;
         private System.Windows.Forms.PictureBox timeoutIcon;
+        private System.Windows.Forms.Panel waitPanel;
     }
 }

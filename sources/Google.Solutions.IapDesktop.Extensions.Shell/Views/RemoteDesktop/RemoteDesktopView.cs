@@ -27,10 +27,12 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Theme;
 using MSTSCLib;
 using System;
 using System.Data;
@@ -52,6 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
+        private readonly IControlTheme theme;
 
         private RemoteDesktopViewModel viewModel;
         private bool useAllScreensForFullScreen = false;
@@ -78,6 +81,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             // It would be nice to update the desktop size as well, but that's not
             // supported by the control.
 
+            this.waitPanel.Location = new Point(0,0);
+            this.waitPanel.Size = this.Size;
             this.spinner.Location = new Point(
                 (this.Size.Width - this.spinner.Width) / 2,
                 (this.Size.Height - this.spinner.Height) / 2);
@@ -136,6 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.eventService = serviceProvider.GetService<IEventService>();
+            this.theme = serviceProvider.GetService<IThemeService>().ToolWindowTheme;
         }
 
         //---------------------------------------------------------------------
@@ -169,7 +175,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // an error happens indicating that the control does not have a Window handle.
                 //
                 InitializeComponent();
+
+                //
+                // Because we're not initializing controls in the constructor, the
+                // theme isn't applied by default.
+                //
+                Debug.Assert(this.theme != null);
+
+                SuspendLayout();
+                this.theme?.ApplyTo(this);
                 UpdateLayout();
+                ResumeLayout();
 
                 var advancedSettings = this.rdpClient.AdvancedSettings7;
                 var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
@@ -388,7 +404,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
                 // Reset visibility to default values.
                 this.reconnectPanel.Visible = false;
-                this.spinner.Visible = true;
+                this.waitPanel.Visible = true;
 
                 this.connecting = true;
                 this.rdpClient.Connect();
@@ -673,7 +689,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             {
                 Debug.Assert(this.connecting, "Connecting flag must have been set");
 
-                this.spinner.Visible = false;
+                this.waitPanel.Visible = false;
 
                 // Notify our listeners.
                 await this.eventService.FireAsync(new SessionStartedEvent(this.Instance))
