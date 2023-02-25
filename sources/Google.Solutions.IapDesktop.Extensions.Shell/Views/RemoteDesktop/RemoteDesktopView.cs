@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 Debug.Assert(this.theme != null);
 
                 SuspendLayout();
-                this.theme.ApplyTo(this);
+                this.theme?.ApplyTo(this);
                 UpdateLayout();
                 ResumeLayout();
 
