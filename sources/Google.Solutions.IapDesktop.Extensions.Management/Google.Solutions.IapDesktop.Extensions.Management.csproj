@@ -275,15 +275,6 @@
     <None Include="Resources\PackageLight_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ComputerDetails_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Log_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\EventLog_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\PackageInspect_16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -300,6 +291,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Refresh_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Log_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EventLog_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ComputerDetails_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

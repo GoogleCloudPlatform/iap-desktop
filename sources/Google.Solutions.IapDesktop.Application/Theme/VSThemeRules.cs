@@ -45,8 +45,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             // NB. These factors are chosen based on what looked good, there's
             // no science behind them.
             //
-            GrayFactor = .65f,
-            ColorFactor = .9f
+            InvertGray = true,
+            GrayFactor = .63f,
+            ColorFactor = .95f
         };
         
         private static Color AccentColor { get; set; } = Color.FromArgb(98, 136, 242);
