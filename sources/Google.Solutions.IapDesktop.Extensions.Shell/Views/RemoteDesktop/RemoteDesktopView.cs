@@ -27,10 +27,12 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Theme;
 using MSTSCLib;
 using System;
 using System.Data;
@@ -52,6 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
+        private readonly IControlTheme theme;
 
         private RemoteDesktopViewModel viewModel;
         private bool useAllScreensForFullScreen = false;
@@ -136,6 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.eventService = serviceProvider.GetService<IEventService>();
+            this.theme = serviceProvider.GetService<IThemeService>().ToolWindowTheme;
         }
 
         //---------------------------------------------------------------------
@@ -169,7 +173,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // an error happens indicating that the control does not have a Window handle.
                 //
                 InitializeComponent();
+
+                //
+                // Because we're not initializing controls in the constructor, the
+                // theme isn't applied by default.
+                //
+                Debug.Assert(this.theme != null);
+
+                SuspendLayout();
+                this.theme.ApplyTo(this);
                 UpdateLayout();
+                ResumeLayout();
 
                 var advancedSettings = this.rdpClient.AdvancedSettings7;
                 var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();

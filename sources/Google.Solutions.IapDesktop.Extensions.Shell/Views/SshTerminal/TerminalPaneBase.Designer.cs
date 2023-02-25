@@ -109,7 +109,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             // 
             this.spinner.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.spinner.Indeterminate = true;
-            this.spinner.LineWidth = 5;
             this.spinner.Location = new System.Drawing.Point(218, 81);
             this.spinner.Maximum = 100;
             this.spinner.MinimumSize = new System.Drawing.Size(15, 15);
