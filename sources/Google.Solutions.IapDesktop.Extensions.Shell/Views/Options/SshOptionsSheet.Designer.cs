@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.keyTypeLabel.Location = new System.Drawing.Point(18, 24);
             this.keyTypeLabel.Name = "keyTypeLabel";
             this.keyTypeLabel.Size = new System.Drawing.Size(51, 13);
-            this.keyTypeLabel.TabIndex = 6;
+            this.keyTypeLabel.TabIndex = 0;
             this.keyTypeLabel.Text = "Key type:";
             // 
             // publicKeyType
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.publicKeyType.Location = new System.Drawing.Point(75, 21);
             this.publicKeyType.Name = "publicKeyType";
             this.publicKeyType.Size = new System.Drawing.Size(154, 21);
-            this.publicKeyType.TabIndex = 5;
+            this.publicKeyType.TabIndex = 1;
             // 
             // daysLabel
             // 
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.validityNoteLabel.Location = new System.Drawing.Point(18, 79);
             this.validityNoteLabel.Name = "validityNoteLabel";
             this.validityNoteLabel.Size = new System.Drawing.Size(274, 13);
-            this.validityNoteLabel.TabIndex = 4;
+            this.validityNoteLabel.TabIndex = 5;
             this.validityNoteLabel.Text = "IAP Desktop automatically re-publishes keys if necessary";
             // 
             // publicKeyValidityLabel
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.publicKeyValidityLabel.Location = new System.Drawing.Point(18, 57);
             this.publicKeyValidityLabel.Name = "publicKeyValidityLabel";
             this.publicKeyValidityLabel.Size = new System.Drawing.Size(154, 13);
-            this.publicKeyValidityLabel.TabIndex = 4;
+            this.publicKeyValidityLabel.TabIndex = 2;
             this.publicKeyValidityLabel.Text = "Let authorized keys expire after";
             // 
             // publicKeyValidityUpDown
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             0});
             this.publicKeyValidityUpDown.Name = "publicKeyValidityUpDown";
             this.publicKeyValidityUpDown.Size = new System.Drawing.Size(57, 20);
-            this.publicKeyValidityUpDown.TabIndex = 2;
+            this.publicKeyValidityUpDown.TabIndex = 3;
             this.publicKeyValidityUpDown.Value = new decimal(new int[] {
             1,
             0,
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.propagateLocaleCheckBox.Location = new System.Drawing.Point(18, 24);
             this.propagateLocaleCheckBox.Name = "propagateLocaleCheckBox";
             this.propagateLocaleCheckBox.Size = new System.Drawing.Size(266, 17);
-            this.propagateLocaleCheckBox.TabIndex = 2;
+            this.propagateLocaleCheckBox.TabIndex = 0;
             this.propagateLocaleCheckBox.Text = "Use Windows display &language as locale (LC_ALL)";
             this.propagateLocaleCheckBox.UseVisualStyleBackColor = true;
             // 

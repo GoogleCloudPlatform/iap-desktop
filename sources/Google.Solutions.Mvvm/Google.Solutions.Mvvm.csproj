@@ -38,6 +38,7 @@
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -62,6 +63,9 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandContainer.cs" />
     <Compile Include="Commands\ObservableCommandContextSource.cs" />
+    <Compile Include="Controls\BindableComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\BindableListView.cs">
       <SubType>Component</SubType>
     </Compile>

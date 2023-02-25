@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.updateBox.Location = new System.Drawing.Point(4, 261);
             this.updateBox.Name = "updateBox";
             this.updateBox.Size = new System.Drawing.Size(336, 83);
-            this.updateBox.TabIndex = 1;
+            this.updateBox.TabIndex = 2;
             this.updateBox.TabStop = false;
             this.updateBox.Text = "Updates:";
             // 
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.lastCheckLabel.Location = new System.Drawing.Point(103, 49);
             this.lastCheckLabel.Name = "lastCheckLabel";
             this.lastCheckLabel.Size = new System.Drawing.Size(10, 13);
-            this.lastCheckLabel.TabIndex = 2;
+            this.lastCheckLabel.TabIndex = 9;
             this.lastCheckLabel.Text = "-";
             // 
             // lastCheckHeaderLabel
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.lastCheckHeaderLabel.Location = new System.Drawing.Point(34, 49);
             this.lastCheckHeaderLabel.Name = "lastCheckHeaderLabel";
             this.lastCheckHeaderLabel.Size = new System.Drawing.Size(63, 13);
-            this.lastCheckHeaderLabel.TabIndex = 2;
+            this.lastCheckHeaderLabel.TabIndex = 8;
             this.lastCheckHeaderLabel.Text = "Last check:";
             // 
             // enableUpdateCheckBox
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.enableUpdateCheckBox.Location = new System.Drawing.Point(18, 24);
             this.enableUpdateCheckBox.Name = "enableUpdateCheckBox";
             this.enableUpdateCheckBox.Size = new System.Drawing.Size(252, 22);
-            this.enableUpdateCheckBox.TabIndex = 1;
+            this.enableUpdateCheckBox.TabIndex = 7;
             this.enableUpdateCheckBox.Text = "Periodically check for updates on exit";
             this.enableUpdateCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.browserIntegrationBox.Location = new System.Drawing.Point(4, 3);
             this.browserIntegrationBox.Name = "browserIntegrationBox";
             this.browserIntegrationBox.Size = new System.Drawing.Size(336, 92);
-            this.browserIntegrationBox.TabIndex = 1;
+            this.browserIntegrationBox.TabIndex = 0;
             this.browserIntegrationBox.TabStop = false;
             this.browserIntegrationBox.Text = "Browser integration:";
             // 
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.browserIntegrationLink.Location = new System.Drawing.Point(34, 62);
             this.browserIntegrationLink.Name = "browserIntegrationLink";
             this.browserIntegrationLink.Size = new System.Drawing.Size(85, 13);
-            this.browserIntegrationLink.TabIndex = 3;
+            this.browserIntegrationLink.TabIndex = 2;
             this.browserIntegrationLink.TabStop = true;
             this.browserIntegrationLink.Text = "More information";
             this.browserIntegrationLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.browserIntegrationLink_LinkClicked);
@@ -167,9 +167,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(34, 124);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(236, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Changes take effect after restarting IAP Desktop";
+            this.label1.Size = new System.Drawing.Size(171, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Changes take effect after relaunch";
             // 
             // secureConnectLink
             // 
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.secureConnectLink.Location = new System.Drawing.Point(33, 99);
             this.secureConnectLink.Name = "secureConnectLink";
             this.secureConnectLink.Size = new System.Drawing.Size(85, 13);
-            this.secureConnectLink.TabIndex = 3;
+            this.secureConnectLink.TabIndex = 5;
             this.secureConnectLink.TabStop = true;
             this.secureConnectLink.Text = "More information";
             this.secureConnectLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.secureConnectLink_LinkClicked);
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.enableDcaCheckBox.Location = new System.Drawing.Point(18, 24);
             this.enableDcaCheckBox.Name = "enableDcaCheckBox";
             this.enableDcaCheckBox.Size = new System.Drawing.Size(242, 30);
-            this.enableDcaCheckBox.TabIndex = 1;
+            this.enableDcaCheckBox.TabIndex = 3;
             this.enableDcaCheckBox.Text = "Secure connections to Google Cloud by using\r\ncertificate-based access if possible" +
     "";
             this.enableDcaCheckBox.UseVisualStyleBackColor = true;

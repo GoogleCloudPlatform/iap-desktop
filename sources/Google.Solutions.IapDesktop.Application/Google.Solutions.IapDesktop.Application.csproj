@@ -62,6 +62,7 @@
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -243,6 +244,14 @@
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Adapters\HelpAdapter.cs" />
+    <Compile Include="Views\Options\AppearanceOptionsSheet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Options\AppearanceOptionsSheet.Designer.cs">
+      <DependentUpon>AppearanceOptionsSheet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Options\AppearanceOptionsViewModel.cs" />
+    <Compile Include="Views\Options\OptionsViewModelBase.cs" />
     <Compile Include="Views\Options\ScreenOptionsViewModel.cs" />
     <Compile Include="Views\Options\ScreenOptionsSheet.cs">
       <SubType>UserControl</SubType>
@@ -411,6 +420,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FlyoutWindow.resx">
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Options\AppearanceOptionsSheet.resx">
+      <DependentUpon>AppearanceOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Options\ScreenOptionsSheet.resx">
       <DependentUpon>ScreenOptionsSheet.cs</DependentUpon>

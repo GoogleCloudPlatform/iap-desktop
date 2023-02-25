@@ -22,20 +22,23 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Google.Solutions.Mvvm.Binding
 {
-    public interface IObservableProperty : INotifyPropertyChanged
+    public interface IObservableProperty
     {
         void RaisePropertyChange();
     }
 
-    public interface IObservableProperty<T> : IObservableProperty
+    public interface IObservableProperty<T> : IObservableProperty, INotifyPropertyChanged
     {
         T Value { get; }
     }
 
-    public interface IObservableWritableProperty<T> : IObservableProperty
+    public interface IObservableWritableProperty<T> : IObservableProperty, INotifyPropertyChanged
     {
         T Value { get; set; }
     }
@@ -61,6 +64,9 @@ namespace Google.Solutions.Mvvm.Binding
             this.value = initialValue;
         }
 
+        /// <summary>
+        /// Get or set the value, raises a change event.
+        /// </summary>
         public T Value
         {
             get => this.value;
