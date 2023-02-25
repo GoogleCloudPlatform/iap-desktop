@@ -84,6 +84,7 @@
     <Compile Include="Controls\TestHtmlClipboardFormat.cs" />
     <Compile Include="Controls\TestListViewExtensions.cs" />
     <Compile Include="Drawing\TestColorExtensions.cs" />
+    <Compile Include="Drawing\TestFontExtensions.cs" />
     <Compile Include="Drawing\TestHslColor.cs" />
     <Compile Include="Drawing\TestIconInverter.cs">
       <SubType>Form</SubType>

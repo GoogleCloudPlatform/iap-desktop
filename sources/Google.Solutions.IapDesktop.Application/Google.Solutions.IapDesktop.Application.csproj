@@ -85,8 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\BadgeIcon.cs" />
-    <Compile Include="Controls\FontExtensions.cs" />
-    <Compile Include="Controls\PropertyGridExtensions.cs" />
     <Compile Include="Controls\ScreenPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -19,33 +19,24 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.Testing.Application.Test;
-using NUnit.Framework;
 using System.Drawing;
-using System.Threading;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Controls
+namespace Google.Solutions.Mvvm.Drawing
 {
-    [TestFixture]
-    [Apartment(ApartmentState.STA)]
-    public class TestFontExtensions : ApplicationFixtureBase
+    public static class FontExtensions
     {
-        [Test]
-        public void WhenFontIsVariableSpaced_ThenIsMonospacedIsFalce()
+        public static bool IsMonospaced(this Font font)
         {
-            using (var font = new Font(FontFamily.GenericSansSerif, 10))
+            using (var scratchBitmap = new Bitmap(100, 100))
+            using (var scratchGraphics = Graphics.FromImage(scratchBitmap))
             {
-                Assert.IsFalse(font.IsMonospaced());
-            }
-        }
-
-        [Test]
-        public void WhenFontIsMonospaced_ThenIsMonospacedIsFalce()
-        {
-            using (var font = new Font(FontFamily.GenericMonospace, 10))
-            {
-                Assert.IsTrue(font.IsMonospaced());
+                //
+                // Somewhat hacky, but Winforms/GDI+ does not provide
+                // a straightforward way to check of a font is monospaced
+                // or not.
+                //
+                return scratchGraphics.MeasureString("iii", font).Width
+                    == scratchGraphics.MeasureString("WWW", font).Width;
             }
         }
     }
