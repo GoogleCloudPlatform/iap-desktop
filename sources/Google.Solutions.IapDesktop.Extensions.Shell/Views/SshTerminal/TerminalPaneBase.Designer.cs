@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
     partial class TerminalViewBase
@@ -54,11 +56,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.reconnectLabel = new System.Windows.Forms.Label();
             this.reconnectButton = new System.Windows.Forms.LinkLabel();
             this.timeoutIcon = new System.Windows.Forms.PictureBox();
-            this.spinner = new System.Windows.Forms.PictureBox();
+            this.spinner = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
             this.terminal = new Google.Solutions.IapDesktop.Extensions.Shell.Controls.VirtualTerminal();
             this.reconnectPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
             this.SuspendLayout();
             // 
             // reconnectPanel
@@ -107,12 +108,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             // spinner
             // 
             this.spinner.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.spinner.Image = ((System.Drawing.Image)(resources.GetObject("spinner.Image")));
+            this.spinner.Indeterminate = true;
+            this.spinner.LineWidth = 5;
             this.spinner.Location = new System.Drawing.Point(218, 81);
+            this.spinner.Maximum = 100;
+            this.spinner.MinimumSize = new System.Drawing.Size(15, 15);
             this.spinner.Name = "spinner";
-            this.spinner.Size = new System.Drawing.Size(44, 44);
+            this.spinner.Size = new System.Drawing.Size(40, 40);
+            this.spinner.Speed = 3;
             this.spinner.TabIndex = 9;
             this.spinner.TabStop = false;
+            this.spinner.Value = 0;
             // 
             // terminal
             // 
@@ -136,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.terminal.TabIndex = 0;
             this.terminal.WindowTitle = null;
             // 
-            // TerminalPaneBase
+            // TerminalViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -145,13 +151,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.Controls.Add(this.reconnectPanel);
             this.Controls.Add(this.terminal);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "TerminalPaneBase";
+            this.Name = "TerminalViewBase";
             this.Text = "TerminalPaneBase";
             this.Layout += new System.Windows.Forms.LayoutEventHandler(this.OnLayout);
             this.reconnectPanel.ResumeLayout(false);
             this.reconnectPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.spinner)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -163,6 +168,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private System.Windows.Forms.Label reconnectLabel;
         private System.Windows.Forms.LinkLabel reconnectButton;
         private System.Windows.Forms.PictureBox timeoutIcon;
-        private System.Windows.Forms.PictureBox spinner;
+        private CircularProgressBar spinner;
     }
 }
