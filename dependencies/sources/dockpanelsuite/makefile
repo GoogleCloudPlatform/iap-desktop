@@ -109,5 +109,5 @@ clean:
     -rd /S /Q $(MAKEDIR)\obj\WinFormsUI\bin
     -del $(MAKEDIR)\obj\dockpanelsuite.nupkg
     
-force-clean:
+distclean:
     -rd /S /Q $(MAKEDIR)\obj
