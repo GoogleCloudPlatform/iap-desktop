@@ -81,6 +81,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             // It would be nice to update the desktop size as well, but that's not
             // supported by the control.
 
+            this.waitPanel.Location = new Point(0,0);
+            this.waitPanel.Size = this.Size;
             this.spinner.Location = new Point(
                 (this.Size.Width - this.spinner.Width) / 2,
                 (this.Size.Height - this.spinner.Height) / 2);
@@ -402,7 +404,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
                 // Reset visibility to default values.
                 this.reconnectPanel.Visible = false;
-                this.spinner.Visible = true;
+                this.waitPanel.Visible = true;
 
                 this.connecting = true;
                 this.rdpClient.Connect();
@@ -687,7 +689,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             {
                 Debug.Assert(this.connecting, "Connecting flag must have been set");
 
-                this.spinner.Visible = false;
+                this.waitPanel.Visible = false;
 
                 // Notify our listeners.
                 await this.eventService.FireAsync(new SessionStartedEvent(this.Instance))
