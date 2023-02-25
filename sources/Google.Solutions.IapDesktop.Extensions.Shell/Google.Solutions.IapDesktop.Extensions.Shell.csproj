@@ -361,12 +361,6 @@
     <None Include="Resources\BackgroundColor_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Connect_16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Settings_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Password_16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -388,16 +382,22 @@
     <None Include="Resources\Duplicate.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\AddCredentials_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Delete_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Refresh_16.png" />
+    <None Include="Resources\DeleteKey_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\DeleteKey_16.png" />
+    <None Include="Resources\Connect_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AddCredentials_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

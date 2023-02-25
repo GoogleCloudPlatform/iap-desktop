@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -37,6 +38,12 @@ namespace Google.Solutions.Mvvm.Drawing
     {
         private float grayFactor = 1;
         private float colorFactor = 1;
+
+        private bool IsGrayish(byte red, byte green, byte blue)
+        {
+            var rgb = new[] { red, green, blue };
+            return rgb.Max() - rgb.Min() < 10;
+        }
 
         /// <summary>
         /// Luminosity factor to apply to grays.
@@ -104,7 +111,7 @@ namespace Google.Solutions.Mvvm.Drawing
 
                 HslColor hsl;
 
-                if (red == green && green == blue)
+                if (IsGrayish(red, green, blue))
                 {
                     //
                     // This is gray.

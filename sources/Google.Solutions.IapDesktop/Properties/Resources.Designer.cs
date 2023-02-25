@@ -63,9 +63,9 @@ namespace Google.Solutions.IapDesktop.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap About {
+        internal static System.Drawing.Bitmap AccentGradient_450 {
             get {
-                object obj = ResourceManager.GetObject("About", resourceCulture);
+                object obj = ResourceManager.GetObject("AccentGradient_450", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace Google.Solutions.IapDesktop.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap AccentGradient_450 {
+        internal static System.Drawing.Bitmap AddProject_16 {
             get {
-                object obj = ResourceManager.GetObject("AccentGradient_450", resourceCulture);
+                object obj = ResourceManager.GetObject("AddProject_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -52,7 +52,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectExplorerView));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
@@ -62,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.linuxInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.treeView = new Google.Solutions.IapDesktop.Application.Views.ProjectExplorer.ProjectExplorerView.NodeTreeView();
-            this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.contextMenu = new System.Windows.Forms.ContextMenuStrip();
+            this.imageList = new System.Windows.Forms.ImageList();
             this.searchTextBox = new System.Windows.Forms.TextBox();
             this.progressBar = new Google.Solutions.Mvvm.Controls.LinearProgressBar();
             this.toolStrip.SuspendLayout();
@@ -85,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // refreshButton
             // 
             this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshButton.Image")));
+            this.refreshButton.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Refresh_16;
             this.refreshButton.ImageTransparentColor = System.Drawing.Color.White;
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(23, 22);
@@ -95,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // addButton
             // 
             this.addButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.addButton.Image = ((System.Drawing.Image)(resources.GetObject("addButton.Image")));
+            this.addButton.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.AddProject_16;
             this.addButton.ImageTransparentColor = System.Drawing.Color.White;
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(23, 22);
