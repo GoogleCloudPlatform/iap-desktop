@@ -75,6 +75,12 @@
     <Compile Include="Controls\DropDownButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\MarkdownView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MarkdownView.Designer.cs">
+      <DependentUpon>MarkdownView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Drawing\FontExtensions.cs" />
     <Compile Include="Controls\ProgressBar.cs">
       <SubType>Component</SubType>
@@ -98,6 +104,7 @@
     <Compile Include="Drawing\ColorExtensions.cs" />
     <Compile Include="Drawing\HslColor.cs" />
     <Compile Include="Drawing\IconInverter.cs" />
+    <Compile Include="Format\Markdown.cs" />
     <Compile Include="Interop\SubclassCallback.cs" />
     <Compile Include="Interop\WindowMessage.cs" />
     <Compile Include="Shell\FileTypeCache.cs" />
@@ -144,6 +151,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\FileBrowser.resx">
       <DependentUpon>FileBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MarkdownView.resx">
+      <DependentUpon>MarkdownView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SearchableList.resx">
       <DependentUpon>SearchableList.cs</DependentUpon>

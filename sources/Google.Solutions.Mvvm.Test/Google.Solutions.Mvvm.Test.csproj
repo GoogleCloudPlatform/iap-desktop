@@ -92,6 +92,8 @@
     <Compile Include="Drawing\TestIconInverter.Designer.cs">
       <DependentUpon>TestIconInverter.cs</DependentUpon>
     </Compile>
+    <Compile Include="Format\TestMarkdownLexer.cs" />
+    <Compile Include="Format\TestMarkdownReader.cs" />
     <Compile Include="Interop\TestSubclassCallback.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shell\TestFileType.cs" />
