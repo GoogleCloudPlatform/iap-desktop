@@ -93,6 +93,7 @@
       <DependentUpon>TestIconInverter.cs</DependentUpon>
     </Compile>
     <Compile Include="Format\TestMarkdownLexer.cs" />
+    <Compile Include="Format\TestMarkdownBlock.cs" />
     <Compile Include="Format\TestMarkdownReader.cs" />
     <Compile Include="Format\TestRtfWriter.cs" />
     <Compile Include="Interop\TestSubclassCallback.cs" />
