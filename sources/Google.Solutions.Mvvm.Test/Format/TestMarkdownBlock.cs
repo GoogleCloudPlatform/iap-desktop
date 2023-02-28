@@ -158,9 +158,9 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.IsNotNull(doc);
             Assert.AreEqual(
                 "[Document]\n" +
-                " [UnorderedListItem bullet=*]\n" +
+                " [UnorderedListItem bullet=* indent=2]\n" +
                 "  [Text] item1a item1b\n" +
-                " [UnorderedListItem bullet=*]\n" +
+                " [UnorderedListItem bullet=* indent=2]\n" +
                 "  [Text] item2a  item2b\n",
                 doc.ToString());
         }
@@ -176,11 +176,37 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.IsNotNull(doc);
             Assert.AreEqual(
                 "[Document]\n" +
-                " [UnorderedListItem bullet=*]\n" +
+                " [UnorderedListItem bullet=* indent=2]\n" +
                 "  [Text] item1a\n" +
-                " [ParagraphBreak]\n" +
-                " [UnorderedListItem bullet=-]\n" +
+                "  [ParagraphBreak]\n" +
+                " [UnorderedListItem bullet=- indent=2]\n" +
                 "  [Text] item2a item2b\n",
+                doc.ToString());
+        }
+
+        [Test]
+        public void NestedUnorderedListItemBlock()
+        {
+            var doc = MarkdownBlock.Parse(
+                 "- item1a\n" +
+                 "  \n" +
+                 "  +   item2a\n" +
+                 "  +   item2b\n" +
+                 "  \n" +
+                 "1. item3");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [UnorderedListItem bullet=- indent=2]\n" +
+                "  [Text] item1a\n" +
+                "  [ParagraphBreak]\n" +
+                "  [UnorderedListItem bullet=+ indent=4]\n" +
+                "   [Text] item2a\n" +
+                "  [UnorderedListItem bullet=+ indent=4]\n" +
+                "   [Text] item2b\n" +
+                "  [ParagraphBreak]\n" +
+                " [OrderedListItem indent=3]\n" +
+                "  [Text] item3\n",
                 doc.ToString());
         }
 
@@ -210,9 +236,9 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.IsNotNull(doc);
             Assert.AreEqual(
                 "[Document]\n" +
-                " [OrderedListItem]\n" +
+                " [OrderedListItem indent=3]\n" +
                 "  [Text] item1a item1b\n" +
-                " [OrderedListItem]\n" +
+                " [OrderedListItem indent=3]\n" +
                 "  [Text] item2a item2b\n",
                 doc.ToString());
         }
@@ -229,12 +255,34 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.IsNotNull(doc);
             Assert.AreEqual(
                 "[Document]\n" +
-                " [OrderedListItem]\n" +
+                " [OrderedListItem indent=3]\n" +
                 "  [Text] item1a\n" +
                 " [ParagraphBreak]\n" +
-                " [OrderedListItem]\n" +
+                " [OrderedListItem indent=3]\n" +
                 "  [Text] item2a item2b\n" +
                 " [Text] notanitem\n",
+                doc.ToString());
+        }
+
+        [Test]
+        public void NestedOrderedListItemBlock()
+        {
+            var doc = MarkdownBlock.Parse(
+                 "1. item1a\n" +
+                 "\n" +
+                 "   1. item2a\n" +
+                 "      item2b\n" +
+                 "1. item3");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [OrderedListItem indent=3]\n" +
+                "  [Text] item1a\n" +
+                "  [ParagraphBreak]\n" +
+                "  [OrderedListItem indent=3]\n" +
+                "   [Text] item2a item2b\n" +
+                " [OrderedListItem indent=3]\n" +
+                "  [Text] item3\n",
                 doc.ToString());
         }
     }

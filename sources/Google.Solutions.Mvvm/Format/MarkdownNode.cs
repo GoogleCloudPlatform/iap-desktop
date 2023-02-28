@@ -70,7 +70,14 @@ namespace Google.Solutions.Mvvm.Format
 
             internal virtual bool TryConsume(string line)
             {
-                if (string.IsNullOrWhiteSpace(line))
+                if (this.lastChild != null && this.lastChild.TryConsume(line))
+                {
+                    //
+                    // Continuation of last block.
+                    //
+                    return true;
+                }
+                else if (string.IsNullOrWhiteSpace(line))
                 {
                     //
                     // An empty line always ends a block, but does
@@ -78,13 +85,6 @@ namespace Google.Solutions.Mvvm.Format
                     //
                     AppendBlock(new ParagraphBreak());
                     return false;
-                }
-                else if (this.lastChild != null && this.lastChild.TryConsume(line))
-                {
-                    //
-                    // Continuation of last block.
-                    //
-                    return true;
                 }
                 else
                 {
@@ -189,9 +189,15 @@ namespace Google.Solutions.Mvvm.Format
 
             internal override bool TryConsume(string line)
             {
-                Debug.Assert(!string.IsNullOrWhiteSpace(line));
-                this.Text += " " + line;
-                return true;
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    return false;
+                }
+                else
+                {
+                    this.Text += " " + line;
+                    return true;
+                }
             }
 
             public override string Value => "[Text] " + this.Text;
@@ -228,7 +234,12 @@ namespace Google.Solutions.Mvvm.Format
 
             internal override bool TryConsume(string line)
             {
-                if (!line.StartsWith(this.Indent))
+                if (string.IsNullOrEmpty(line))
+                {
+                    AppendBlock(new ParagraphBreak());
+                    return true;
+                }
+                else if (!line.StartsWith(this.Indent))
                 {
                     //
                     // Line doesn't have the minimum amount of indentation,
@@ -244,7 +255,8 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            public override string Value => $"[OrderedListItem]";
+            public override string Value 
+                => $"[OrderedListItem indent={this.Indent.Length}]";
         }
 
         internal class UnorderedListItemBlock : Block
@@ -279,7 +291,12 @@ namespace Google.Solutions.Mvvm.Format
 
             internal override bool TryConsume(string line)
             {
-                if (!line.StartsWith(this.Indent))
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    AppendBlock(new ParagraphBreak());
+                    return true;
+                }
+                else if (!line.StartsWith(this.Indent))
                 {
                     //
                     // Line doesn't have the minimum amount of indentation,
@@ -295,7 +312,8 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            public override string Value => $"[UnorderedListItem bullet={this.Bullet}]";
+            public override string Value
+                => $"[UnorderedListItem bullet={this.Bullet} indent={this.Indent.Length}]";
         }
 
         public static DocumentBlock Parse(TextReader reader)
