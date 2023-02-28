@@ -44,7 +44,23 @@ namespace Google.Solutions.Mvvm.Test.Format
         //---------------------------------------------------------------------
 
         [Test]
-        public void Headings()
+        public void IsHeadingBlock()
+        {
+            Assert.IsTrue(MarkdownBlock.HeadingBlock.IsHeadingBlock("# H1"));
+            Assert.IsTrue(MarkdownBlock.HeadingBlock.IsHeadingBlock("## H12 "));
+            Assert.IsTrue(MarkdownBlock.HeadingBlock.IsHeadingBlock("### H3"));
+            Assert.IsTrue(MarkdownBlock.HeadingBlock.IsHeadingBlock("#### H4  "));
+            Assert.IsTrue(MarkdownBlock.HeadingBlock.IsHeadingBlock("###### H5"));
+            Assert.IsTrue(MarkdownBlock.HeadingBlock.IsHeadingBlock("####### H6"));
+
+            Assert.IsFalse(MarkdownBlock.HeadingBlock.IsHeadingBlock(" # "));
+            Assert.IsFalse(MarkdownBlock.HeadingBlock.IsHeadingBlock("#"));
+            Assert.IsFalse(MarkdownBlock.HeadingBlock.IsHeadingBlock("#H1"));
+            Assert.IsFalse(MarkdownBlock.HeadingBlock.IsHeadingBlock(" # H1"));
+        }
+
+        [Test]
+        public void Heading()
         {
             var doc = MarkdownBlock.Parse(
                 "\n" +
@@ -117,6 +133,21 @@ namespace Google.Solutions.Mvvm.Test.Format
         //---------------------------------------------------------------------
 
         [Test]
+        public void IsUnorderedListItemBlock()
+        {
+            Assert.IsTrue(MarkdownBlock.UnorderedListItemBlock.IsUnorderedListItemBlock("* i"));
+            Assert.IsTrue(MarkdownBlock.UnorderedListItemBlock.IsUnorderedListItemBlock("*   i"));
+            Assert.IsTrue(MarkdownBlock.UnorderedListItemBlock.IsUnorderedListItemBlock("*\ti"));
+            Assert.IsTrue(MarkdownBlock.UnorderedListItemBlock.IsUnorderedListItemBlock("- i"));
+            Assert.IsTrue(MarkdownBlock.UnorderedListItemBlock.IsUnorderedListItemBlock("+ i"));
+            Assert.IsTrue(MarkdownBlock.UnorderedListItemBlock.IsUnorderedListItemBlock("* i"));
+
+            Assert.IsFalse(MarkdownBlock.UnorderedListItemBlock.IsUnorderedListItemBlock(" * i"));
+            Assert.IsFalse(MarkdownBlock.UnorderedListItemBlock.IsUnorderedListItemBlock(" *i"));
+            Assert.IsFalse(MarkdownBlock.UnorderedListItemBlock.IsUnorderedListItemBlock("** i"));
+        }
+
+        [Test]
         public void UnorderedListItemBlock()
         {
             var doc = MarkdownBlock.Parse(
@@ -135,20 +166,75 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void MultipleUnorderedListItemBlock()
+        public void MultipleUnorderedListItemBlocks()
         {
             var doc = MarkdownBlock.Parse(
                  "* item1a\n" +
                  "  \n" +
-                 "* item2a" +
+                 "- item2a\n" +
                  "  item2b");
             Assert.IsNotNull(doc);
             Assert.AreEqual(
                 "[Document]\n" +
                 " [UnorderedListItem bullet=*]\n" +
+                "  [Text] item1a\n" +
+                " [ParagraphBreak]\n" +
+                " [UnorderedListItem bullet=-]\n" +
+                "  [Text] item2a item2b\n",
+                doc.ToString());
+        }
+
+        //---------------------------------------------------------------------
+        // OrderedListItemBlock.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void IsOrderedListItemBlock()
+        {
+            Assert.IsTrue(MarkdownBlock.OrderedListItemBlock.IsOrderedListItemBlock("1. i"));
+            Assert.IsTrue(MarkdownBlock.OrderedListItemBlock.IsOrderedListItemBlock("123345.        \ti"));
+            Assert.IsTrue(MarkdownBlock.OrderedListItemBlock.IsOrderedListItemBlock("0. i"));
+            
+            Assert.IsFalse(MarkdownBlock.OrderedListItemBlock.IsOrderedListItemBlock("-1. i"));
+            Assert.IsFalse(MarkdownBlock.OrderedListItemBlock.IsOrderedListItemBlock("1 i"));
+        }
+
+        [Test]
+        public void OrderedListItemBlock()
+        {
+            var doc = MarkdownBlock.Parse(
+                 "1. item1a\n" +
+                 "   item1b\n" +
+                 "1. item2a\n" +
+                 "   item2b");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [OrderedListItem]\n" +
                 "  [Text] item1a item1b\n" +
-                " [UnorderedListItem bullet=*]\n" +
-                "  [Text] item2a  item2b\n",
+                " [OrderedListItem]\n" +
+                "  [Text] item2a item2b\n",
+                doc.ToString());
+        }
+
+        [Test]
+        public void MultipleOrderedListItemBlocks()
+        {
+            var doc = MarkdownBlock.Parse(
+                 "1. item1a\n" +
+                 "  \n" +
+                 "1. item2a\n" +
+                 "   item2b\n" +
+                 "notanitem");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [OrderedListItem]\n" +
+                "  [Text] item1a\n" +
+                " [ParagraphBreak]\n" +
+                " [OrderedListItem]\n" +
+                "  [Text] item2a item2b\n" +
+                " [Text] notanitem\n",
                 doc.ToString());
         }
     }

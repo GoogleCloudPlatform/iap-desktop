@@ -10,7 +10,7 @@ namespace Google.Solutions.Mvvm.Format
 {
     internal static class MarkdownBlock
     {
-        private static readonly char[] NonBreakingWhitespace = new char[] { ' ', '\t' };
+        private static readonly char[] NonLineBreakingWhitespace = new char[] { ' ', '\t' };
         private static readonly char[] UnorderedListBullets = new char[] { '*', '-', '+' };
 
         internal abstract class Block
@@ -57,6 +57,10 @@ namespace Google.Solutions.Mvvm.Format
                 if (UnorderedListItemBlock.IsUnorderedListItemBlock(line))
                 {
                     return new UnorderedListItemBlock(line);
+                }
+                else if (OrderedListItemBlock.IsOrderedListItemBlock(line))
+                {
+                    return new OrderedListItemBlock(line);
                 }
                 else
                 {
@@ -150,7 +154,7 @@ namespace Google.Solutions.Mvvm.Format
 
             public static bool IsHeadingBlock(string line)
             {
-                var index = line.IndexOfAny(NonBreakingWhitespace);
+                var index = line.IndexOfAny(NonLineBreakingWhitespace);
                 return index > 0 && line.Substring(0, index).All(c => c == '#');
             }
 
@@ -158,9 +162,9 @@ namespace Google.Solutions.Mvvm.Format
             {
                 Debug.Assert(IsHeadingBlock(line));
 
-                var index = line.IndexOfAny(NonBreakingWhitespace);
-                this.Level = line.Substring(0, index).Count();
-                this.Text = line.Substring(index).Trim();
+                var whitespaceIndex = line.IndexOfAny(NonLineBreakingWhitespace);
+                this.Level = line.Substring(0, whitespaceIndex).Count();
+                this.Text = line.Substring(whitespaceIndex).Trim();
             }
 
             internal override bool TryConsume(string line)
@@ -193,6 +197,56 @@ namespace Google.Solutions.Mvvm.Format
             public override string Value => "[Text] " + this.Text;
         }
 
+        internal class OrderedListItemBlock : Block
+        {
+            public string Indent { get; }
+
+            public static bool IsOrderedListItemBlock(string line)
+            {
+                var dotIndex = line.IndexOf('.');
+
+                return dotIndex > 0 &&
+                    dotIndex < line.Length - 1 &&
+                    line[dotIndex + 1] == ' ' &&
+                    line.Substring(0, dotIndex).All(char.IsDigit);
+            }
+
+            public OrderedListItemBlock(string line)
+            {
+                Debug.Assert(IsOrderedListItemBlock(line));
+
+                var indent = line.IndexOf(' ');
+                while (line[indent] == ' ')
+                {
+                    indent++;
+                }
+
+                this.Indent = new string(' ', indent);
+
+                AppendBlock(new TextBlock(line.Substring(indent)));
+            }
+
+            internal override bool TryConsume(string line)
+            {
+                if (!line.StartsWith(this.Indent))
+                {
+                    //
+                    // Line doesn't have the minimum amount of indentation,
+                    // so it can't be a continuation.
+                    //
+                    // NB. We don't support lazy continations.
+                    //
+                    return false;
+                }
+                else
+                {
+                    return base.TryConsume(line.Substring(this.Indent.Length));
+                }
+            }
+
+            public override string Value => $"[OrderedListItem]";
+        }
+
         internal class UnorderedListItemBlock : Block
         {
             public char Bullet { get;}
@@ -200,9 +254,9 @@ namespace Google.Solutions.Mvvm.Format
 
             public static bool IsUnorderedListItemBlock(string line)
             {
-                return line.Length > 3 && 
+                return line.Length >= 3 && 
                     UnorderedListBullets.Contains(line[0]) && 
-                    NonBreakingWhitespace.Contains(line[1]);
+                    NonLineBreakingWhitespace.Contains(line[1]);
             }
 
 
