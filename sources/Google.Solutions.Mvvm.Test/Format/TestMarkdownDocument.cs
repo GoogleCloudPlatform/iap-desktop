@@ -34,7 +34,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void EmptyDocument()
         {
-            var doc = new MarkdownDocument("");
+            var doc = MarkdownDocument.Parse("");
             Assert.IsNotNull(doc);
         }
 
@@ -61,7 +61,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void Heading()
         {
-            var doc = new MarkdownDocument(
+            var doc = MarkdownDocument.Parse(
                 "\n" +
                 "# heading1    \n" +
                 "##      \theading 2\n" +
@@ -91,7 +91,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void SingleLineTextBlocks()
         {
-            var doc = new MarkdownDocument(
+            var doc = MarkdownDocument.Parse(
                 "\n" +
                 "block one\n" +
                 "\n" +
@@ -110,7 +110,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void MultiLineTextBlocks()
         {
-            var doc = new MarkdownDocument(
+            var doc = MarkdownDocument.Parse(
                 "\n" +
                 "block one, line 1\n" +
                 "block one, line 2\n" +
@@ -149,7 +149,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void UnorderedListItemBlock()
         {
-            var doc = new MarkdownDocument(
+            var doc = MarkdownDocument.Parse(
                  "* item1a\n" +
                  "  item1b\n" +
                  "* item2a" +
@@ -167,7 +167,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void MultipleUnorderedListItemBlocks()
         {
-            var doc = new MarkdownDocument(
+            var doc = MarkdownDocument.Parse(
                  "* item1a\n" +
                  "  \n" +
                  "- item2a\n" +
@@ -186,7 +186,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void NestedUnorderedListItemBlock()
         {
-            var doc = new MarkdownDocument(
+            var doc = MarkdownDocument.Parse(
                  "- item1a\n" +
                  "  \n" +
                  "  +   item2a\n" +
@@ -227,7 +227,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void OrderedListItemBlock()
         {
-            var doc = new MarkdownDocument(
+            var doc = MarkdownDocument.Parse(
                  "1. item1a\n" +
                  "   item1b\n" +
                  "1. item2a\n" +
@@ -245,7 +245,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void MultipleOrderedListItemBlocks()
         {
-            var doc = new MarkdownDocument(
+            var doc = MarkdownDocument.Parse(
                  "1. item1a\n" +
                  "  \n" +
                  "1. item2a\n" +
@@ -266,7 +266,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         [Test]
         public void NestedOrderedListItemBlock()
         {
-            var doc = new MarkdownDocument(
+            var doc = MarkdownDocument.Parse(
                  "1. item1a\n" +
                  "\n" +
                  "   1. item2a\n" +

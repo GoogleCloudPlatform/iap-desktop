@@ -27,6 +27,9 @@ using System.Text;
 
 namespace Google.Solutions.Mvvm.Format
 {
+    /// <summary>
+    /// A Markdown document.
+    /// </summary>
     internal class MarkdownDocument
     {
         public DocumentBlock Root { get; }
@@ -34,14 +37,39 @@ namespace Google.Solutions.Mvvm.Format
         private static readonly char[] NonLineBreakingWhitespace = new char[] { ' ', '\t' };
         private static readonly char[] UnorderedListBullets = new char[] { '*', '-', '+' };
 
-        public MarkdownDocument(string markdown)
+        public static MarkdownDocument Parse(TextReader reader)
         {
-            this.Root = DocumentBlock.Parse(markdown);
+            //
+            // There's no proper grammar for Markdown, so we can't use a classic
+            // lexer/parser architecture to read Markdown.
+            //
+            // CommonMark suggests a 2-phase parsing approach [1], which is what
+            // we're using here.
+            //
+            // - In the first stage, we dissect the document into blocks (headings,
+            //   paragraphs, list items, etc)
+            // - In the second stage, we parse text blocks to resolve emphases,
+            //   links, etc.
+            //
+            // Note that we're only supporting a subset of Markdown syntax
+            // features here.
+            //
+            // [1] https://spec.commonmark.org/0.30/#appendix-a-parsing-strategy
+            //
+            return new MarkdownDocument(DocumentBlock.Parse(reader));
         }
 
-        public MarkdownDocument(TextReader reader)
+        public static MarkdownDocument Parse(string markdown)
         {
-            this.Root = DocumentBlock.Parse(reader);
+            using (var reader = new StringReader(markdown))
+            {
+                return Parse(reader);
+            }
+        }
+
+        private MarkdownDocument(DocumentBlock root)
+        {
+            this.Root = root;
         }
 
         public override string ToString()
@@ -51,6 +79,7 @@ namespace Google.Solutions.Mvvm.Format
 
         //---------------------------------------------------------------------
         // Inner classes for blocks.
+        //
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -395,14 +424,6 @@ namespace Google.Solutions.Mvvm.Format
                 }
 
                 return document;
-            }
-
-            public static DocumentBlock Parse(string markdown)
-            {
-                using (var reader = new StringReader(markdown))
-                {
-                    return Parse(reader);
-                }
             }
         }
     }
