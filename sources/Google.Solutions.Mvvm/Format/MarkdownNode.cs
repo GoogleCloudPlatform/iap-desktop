@@ -37,7 +37,7 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            private void AppendBlock(Block block)
+            protected void AppendBlock(Block block)
             {
                 if (this.firstChild == null)
                 {
@@ -72,10 +72,10 @@ namespace Google.Solutions.Mvvm.Format
                     // An empty line always ends a block, but does
                     // not start a new one yet.
                     //
+                    AppendBlock(new ParagraphBreak());
                     return false;
                 }
-                else if (this.lastChild != null &&
-                    this.lastChild.TryConsume(line))
+                else if (this.lastChild != null && this.lastChild.TryConsume(line))
                 {
                     //
                     // Continuation of last block.
@@ -133,6 +133,16 @@ namespace Google.Solutions.Mvvm.Format
             public override string Value => "[Document]";
         }
 
+        internal class ParagraphBreak : Block
+        {
+            public override string Value => "[ParagraphBreak]";
+
+            internal override bool TryConsume(string line)
+            {
+                return false;
+            }
+        }
+
         internal class HeadingBlock : Block
         {
             public int Level { get; }
@@ -176,7 +186,7 @@ namespace Google.Solutions.Mvvm.Format
             internal override bool TryConsume(string line)
             {
                 Debug.Assert(!string.IsNullOrWhiteSpace(line));
-                this.Text += line;
+                this.Text += " " + line;
                 return true;
             }
 
@@ -209,6 +219,8 @@ namespace Google.Solutions.Mvvm.Format
                 }
 
                 this.Indent = new string(' ', indent);
+
+                AppendBlock(new TextBlock(line.Substring(indent)));
             }
 
             internal override bool TryConsume(string line)
@@ -229,13 +241,12 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            public override string Value => $"[UnorderedList bullet={this.Bullet}]";
+            public override string Value => $"[UnorderedListItem bullet={this.Bullet}]";
         }
 
         public static DocumentBlock Parse(TextReader reader)
         {
             var document = new DocumentBlock();
-            bool allWhitespace = true;
             while (true)
             {
                 var line = reader.ReadLine();
@@ -243,13 +254,8 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     break;
                 }
-                else if (allWhitespace && string.IsNullOrWhiteSpace(line))
-                {
-                    // Ignore leading blank lines.
-                }
                 else
                 {
-                    allWhitespace = false;
                     document.TryConsume(line);
                 }
             }
