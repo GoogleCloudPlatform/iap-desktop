@@ -1,19 +1,62 @@
-﻿using System;
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Mvvm.Format
 {
-    internal static class MarkdownBlock
+    internal class MarkdownDocument
     {
+        public DocumentBlock Root { get; }
+
         private static readonly char[] NonLineBreakingWhitespace = new char[] { ' ', '\t' };
         private static readonly char[] UnorderedListBullets = new char[] { '*', '-', '+' };
 
-        internal abstract class Block
+        public MarkdownDocument(string markdown)
+        {
+            this.Root = DocumentBlock.Parse(markdown);
+        }
+
+        public MarkdownDocument(TextReader reader)
+        {
+            this.Root = DocumentBlock.Parse(reader);
+        }
+
+        public override string ToString()
+        {
+            return this.Root.ToString();
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes for blocks.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// A block in a Markdown document.
+        /// </summary>
+        public abstract class Block
         {
             private Block next;
             private Block firstChild;
@@ -52,7 +95,7 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            internal virtual Block CreateBlock(string line)
+            protected virtual Block CreateBlock(string line)
             {
                 if (UnorderedListItemBlock.IsUnorderedListItemBlock(line))
                 {
@@ -68,7 +111,7 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            internal virtual bool TryConsume(string line)
+            protected virtual bool TryConsume(string line)
             {
                 if (this.lastChild != null && this.lastChild.TryConsume(line))
                 {
@@ -120,34 +163,24 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
-        internal class DocumentBlock : Block
-        {
-            internal override Block CreateBlock(string line)
-            {
-                if (HeadingBlock.IsHeadingBlock(line))
-                {
-                    return new HeadingBlock(line);
-                }
-                else
-                {
-                    return base.CreateBlock(line);
-                }
-            }
-
-            public override string Value => "[Document]";
-        }
-
-        internal class ParagraphBreak : Block
+        /// <summary>
+        /// A break between two pararaphs, typically created by an
+        /// empty line.
+        /// </summary>
+        public class ParagraphBreak : Block
         {
             public override string Value => "[ParagraphBreak]";
 
-            internal override bool TryConsume(string line)
+            protected override bool TryConsume(string line)
             {
                 return false;
             }
         }
 
-        internal class HeadingBlock : Block
+        /// <summary>
+        /// A heading.
+        /// </summary>
+        public class HeadingBlock : Block
         {
             public int Level { get; }
             public string Text { get; }
@@ -167,7 +200,7 @@ namespace Google.Solutions.Mvvm.Format
                 this.Text = line.Substring(whitespaceIndex).Trim();
             }
 
-            internal override bool TryConsume(string line)
+            protected override bool TryConsume(string line)
             {
                 //
                 // Headings are always single-line.
@@ -178,7 +211,11 @@ namespace Google.Solutions.Mvvm.Format
             public override string Value => $"[Heading level={this.Level}] {this.Text}";
         }
 
-        internal class TextBlock : Block
+        /// <summary>
+        /// Inline text block. The text might contain links and emphasis,
+        /// but we don't parse these at this stage.
+        /// </summary>
+        public class TextBlock : Block
         {
             public string Text { get; private set; }
 
@@ -187,7 +224,7 @@ namespace Google.Solutions.Mvvm.Format
                 this.Text = text;
             }
 
-            internal override bool TryConsume(string line)
+            protected override bool TryConsume(string line)
             {
                 if (string.IsNullOrWhiteSpace(line))
                 {
@@ -203,7 +240,10 @@ namespace Google.Solutions.Mvvm.Format
             public override string Value => "[Text] " + this.Text;
         }
 
-        internal class OrderedListItemBlock : Block
+        /// <summary>
+        /// Ordered list item.
+        /// </summary>
+        public class OrderedListItemBlock : Block
         {
             public string Indent { get; }
 
@@ -232,7 +272,7 @@ namespace Google.Solutions.Mvvm.Format
                 AppendBlock(new TextBlock(line.Substring(indent)));
             }
 
-            internal override bool TryConsume(string line)
+            protected override bool TryConsume(string line)
             {
                 if (string.IsNullOrEmpty(line))
                 {
@@ -259,7 +299,10 @@ namespace Google.Solutions.Mvvm.Format
                 => $"[OrderedListItem indent={this.Indent.Length}]";
         }
 
-        internal class UnorderedListItemBlock : Block
+        /// <summary>
+        /// Unodered list item.
+        /// </summary>
+        public class UnorderedListItemBlock : Block
         {
             public char Bullet { get;}
             public string Indent { get; }
@@ -289,7 +332,7 @@ namespace Google.Solutions.Mvvm.Format
                 AppendBlock(new TextBlock(line.Substring(indent)));
             }
 
-            internal override bool TryConsume(string line)
+            protected override bool TryConsume(string line)
             {
                 if (string.IsNullOrWhiteSpace(line))
                 {
@@ -316,30 +359,50 @@ namespace Google.Solutions.Mvvm.Format
                 => $"[UnorderedListItem bullet={this.Bullet} indent={this.Indent.Length}]";
         }
 
-        public static DocumentBlock Parse(TextReader reader)
+        /// <summary>
+        /// Document, this forms the root of the tree.
+        /// </summary>
+        public class DocumentBlock : Block
         {
-            var document = new DocumentBlock();
-            while (true)
+            protected override Block CreateBlock(string line)
             {
-                var line = reader.ReadLine();
-                if (line == null)
+                if (HeadingBlock.IsHeadingBlock(line))
                 {
-                    break;
+                    return new HeadingBlock(line);
                 }
                 else
                 {
-                    document.TryConsume(line);
+                    return base.CreateBlock(line);
                 }
             }
 
-            return document;
-        }
+            public override string Value => "[Document]";
 
-        public static DocumentBlock Parse(string markdown)
-        {
-            using (var reader = new StringReader(markdown))
+            public static DocumentBlock Parse(TextReader reader)
             {
-                return Parse(reader);
+                var document = new DocumentBlock();
+                while (true)
+                {
+                    var line = reader.ReadLine();
+                    if (line == null)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        document.TryConsume(line);
+                    }
+                }
+
+                return document;
+            }
+
+            public static DocumentBlock Parse(string markdown)
+            {
+                using (var reader = new StringReader(markdown))
+                {
+                    return Parse(reader);
+                }
             }
         }
     }
