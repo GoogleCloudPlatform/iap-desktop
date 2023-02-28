@@ -72,7 +72,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
-        public void WhenAtEnd_ThenPeekThrowsException()
+        public void WhenAtEnd_ThenPeekAheadThrowsException()
         {
             var reader = new Markdown.Reader("abc");
             reader.Consume();
@@ -80,6 +80,16 @@ namespace Google.Solutions.Mvvm.Test.Format
             reader.Consume();
 
             Assert.Throws<InvalidOperationException>(() => reader.PeekAhead());
+        }
+
+        [Test]
+        public void WhenPeekingPastEnd_ThenPeekBehindThrowsException()
+        {
+            var reader = new Markdown.Reader("abc");
+            Assert.AreEqual('a', reader.PeekAhead(1));
+            Assert.AreEqual('b', reader.PeekAhead(2));
+            Assert.AreEqual('c', reader.PeekAhead(3));
+            Assert.Throws<InvalidOperationException>(() => reader.PeekAhead(4));
         }
 
         //---------------------------------------------------------------------

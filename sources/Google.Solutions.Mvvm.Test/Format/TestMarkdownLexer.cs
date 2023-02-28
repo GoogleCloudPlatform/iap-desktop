@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void WhenLineStartsWithOneHash_ThenLexerCreatesAtxHeading1()
         {
             var md = "# header1  ";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -50,7 +50,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void WhenLineStartsWithOneHashButHasNoText_ThenLexerCreatesAtxHeading1()
         {
             var md = "#";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -64,7 +64,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void WhenLineStartsWithSixHashes_ThenLexerCreatesAtxHeading6()
         {
             var md = "######   header6  ";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -78,7 +78,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void WhenLineStartsWithSevenHashes_ThenLexerCreatesAtxHeading6()
         {
             var md = "#######   header7  ";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -102,7 +102,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "\n" +
                 "p3\n" +
                 "\n";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -130,7 +130,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "    indent2\n" +
                 "  indent1\n" +
                 "indent0";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -156,7 +156,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void WhenLineHasBraces_ThenLexerCreatesBrace()
         {
             var md = "a[b[c]]";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -180,7 +180,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void WhenLineHasParanetheses_ThenLexerCreatesParanetheses()
         {
             var md = "a(b(c))";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -208,13 +208,12 @@ namespace Google.Solutions.Mvvm.Test.Format
                 $"{bullet}   item1\n" +
                 $"  {bullet}\titem2\n" +
                 $"{bullet}notanitem";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
                 {
                     new Markdown.Token(Markdown.TokenType.ListItem, bullet),
-                    new Markdown.Token(Markdown.TokenType.Indent),
                     new Markdown.Token(Markdown.TokenType.Text, "item1"),
                     new Markdown.Token(Markdown.TokenType.Indent),
                     new Markdown.Token(Markdown.TokenType.ListItem, bullet),
@@ -231,7 +230,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 $"*\titem1\n" +
                 $"  * item2\n" +
                 $"*notanitem";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -258,7 +257,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 " .\n" +
                 "a\n" +
                 ". ";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -274,7 +273,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void WhenLineContainsLeftBraces_ThenLexerCreatesText()
         {
             var md = "text[brace]";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -291,7 +290,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void WhenLineContainsAsterisks_ThenLexerCreatesText()
         {
             var md = "text **bold**";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -312,7 +311,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void WhenLineContainsAsterisks_ThenLexerCreatesAsterisks()
         {
             var md = "* **bold** *";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]
@@ -335,7 +334,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         public void WhenLineContainsUnderscores_ThenLexerCreatesUnderscores()
         {
             var md = "_ _italics_ _";
-            var lexer = new Markdown.MarkdownLexer(new Markdown.Reader(md));
+            var lexer = new Markdown.Lexer(new Markdown.Reader(md));
 
             CollectionAssert.AreEqual(
                 new[]

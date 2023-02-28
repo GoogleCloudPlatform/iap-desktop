@@ -105,6 +105,7 @@
     <Compile Include="Drawing\HslColor.cs" />
     <Compile Include="Drawing\IconInverter.cs" />
     <Compile Include="Format\Markdown.cs" />
+    <Compile Include="Format\RtfWriter.cs" />
     <Compile Include="Interop\SubclassCallback.cs" />
     <Compile Include="Interop\WindowMessage.cs" />
     <Compile Include="Shell\FileTypeCache.cs" />
