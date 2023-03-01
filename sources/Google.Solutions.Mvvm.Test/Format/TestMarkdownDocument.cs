@@ -293,16 +293,20 @@ namespace Google.Solutions.Mvvm.Test.Format
         //---------------------------------------------------------------------
 
         [Test]
-        public void EmphasisSpan()
+        public void EmphasisSpanWithUnderscores()
         {
-            var span = MarkdownDocument.TextSpanNode.Parse("one *two* three *four* *");
-            Assert.IsNotNull(span);
+            var doc = MarkdownDocument.Parse(
+                 "one _two_ three _four_");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Documem3\n",
+                doc.ToString());
         }
 
         [Test]
         public void __()
         {
-            var span = MarkdownDocument.TextSpanNode.Parse("this is [a link](href) to *nowhere*");
+            var span = MarkdownDocument.TextNode.Parse("this is [a link](href) to *nowhere*");
             Assert.IsNotNull(span);
         }
 

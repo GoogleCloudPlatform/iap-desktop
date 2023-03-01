@@ -240,36 +240,36 @@ namespace Google.Solutions.Mvvm.Format
             public override string Value => $"[Heading level={this.Level}] {this.Text}";
         }
 
-        /// <summary>
-        /// Inline text block. The text might contain links and emphasis,
-        /// but we don't parse these at this stage.
-        /// </summary>
-        public class TextNode : Node
-        {
-            public string Text { get; private set; }
+        ///// <summary>
+        ///// Inline text block. The text might contain links and emphasis,
+        ///// but we don't parse these at this stage.
+        ///// </summary>
+        //public class TextNode : Node
+        //{
+        //    public string Text { get; private set; }
 
-            public TextNode(string text)
-            {
-                this.Text = text;
-            }
+        //    public TextNode(string text)
+        //    {
+        //        this.Text = text;
+        //    }
 
-            // TODO: Override Children, parse text
+        //    // TODO: Override Children, parse text
 
-            protected override bool TryConsume(string line)
-            {
-                if (string.IsNullOrWhiteSpace(line))
-                {
-                    return false;
-                }
-                else
-                {
-                    this.Text += " " + line;
-                    return true;
-                }
-            }
+        //    protected override bool TryConsume(string line)
+        //    {
+        //        if (string.IsNullOrWhiteSpace(line))
+        //        {
+        //            return false;
+        //        }
+        //        else
+        //        {
+        //            this.Text += " " + line;
+        //            return true;
+        //        }
+        //    }
 
-            public override string Value => "[Text] " + this.Text;
-        }
+        //    public override string Value => "[Text] " + this.Text;
+        //}
 
         /// <summary>
         /// Ordered list item.
@@ -533,30 +533,34 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
-        public class TextSpanNode : Node
+        public class TextNode : Node
         {
             public string Text { get; protected set;  }
 
             public override string Value => $"[TextSpan] {this.Text}";
 
-            protected TextSpanNode(string text)
+            internal TextNode(string text)
             {
-                this.Text = text;
+                TryConsume(text);
             }
 
-            protected TextSpanNode() : this(string.Empty)
+            protected TextNode()
             {
+                this.Text = string.Empty;
             }
 
-            protected TextSpanNode CreateSpanNode(Token token, IEnumerable<Token> remainder)
+            protected TextNode CreateSpanNode(Token token, IEnumerable<Token> remainder)
             {
                 if (token.Type == TokenType.Text)
                 {
-                    return new TextSpanNode(token.Value);
+                    return new TextSpanNode()
+                    {
+                        Text = token.Value // This is tokenized already.
+                    };
                 }
                 else if (token.Value == "_")
                 {
-                    return new EmphasisSpanNode();
+                    return new EmphasisSpanNode("_");
                 }
                 else if (token.Value == "*")
                 {
@@ -566,7 +570,7 @@ namespace Google.Solutions.Mvvm.Format
                     }
                     else
                     {
-                        return new EmphasisSpanNode();
+                        return new EmphasisSpanNode("*");
                     }
                 }
                 else if (token.Value == "[" &&
@@ -579,7 +583,7 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else
                 {
-                    return new TextSpanNode(token.Value);
+                    return new TextNode(token.Value);
                 }
             }
 
@@ -600,7 +604,7 @@ namespace Google.Solutions.Mvvm.Format
             protected virtual bool TryConsume(Token token, IEnumerable<Token> remainder)
             {
                 if (this.lastChild != null && 
-                    ((TextSpanNode)this.lastChild).TryConsume(token, remainder))
+                    ((TextNode)this.lastChild).TryConsume(token, remainder))
                 {
                     //
                     // Continuation of last span.
@@ -617,21 +621,55 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            public static TextSpanNode Parse(string markdown)
+            public static TextNode Parse(string markdown)
             {
-                var node = new TextSpanNode();
+                var node = new TextNode();
                 node.TryConsume(markdown);
                 return node;
             }
         }
 
-        public class EmphasisSpanNode : TextSpanNode
+        public class TextSpanNode : TextNode
         {
+            public override string Value => $"[TextSpanNode] {this.Text}";
+
+            protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
+            {
+                if (token.Type == TokenType.Delimiter)
+                {
+                    return false;
+                }
+                else
+                {
+                    return base.TryConsume(token, remainder);
+                }
+            }
+        }
+
+        public class EmphasisSpanNode : TextNode
+        {
+            private readonly string delimiter;
+            private bool bodyCompleted = false;
+
+            public EmphasisSpanNode(string delimiter)
+            {
+                this.delimiter = delimiter;
+            }
+
             public override string Value => $"[EmphasisSpan] {this.Text}";
 
             protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
             {
-                if (token.Type == TokenType.Text)
+                if (this.bodyCompleted)
+                {
+                    return false;
+                }
+                else if (token.Type == TokenType.Delimiter && token.Value == this.delimiter)
+                {
+                    this.bodyCompleted = true;
+                    return true;
+                }
+                else if (token.Type == TokenType.Text)
                 {
                     this.Text += token.Value;
                     return true;
@@ -645,10 +683,14 @@ namespace Google.Solutions.Mvvm.Format
 
         public class StrongEmphasisSpanNode : EmphasisSpanNode
         {
+            public StrongEmphasisSpanNode() : base("**")
+            {
+            }
+
             public override string Value => $"[StrongEmphasisSpan] {this.Text}";
         }
 
-        public class LinkSpanNode : TextSpanNode
+        public class LinkSpanNode : TextNode
         {
             private bool linkBodyCompleted = false;
             private bool linkHrefCompleted = false;
