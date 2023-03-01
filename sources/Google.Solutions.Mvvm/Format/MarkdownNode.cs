@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -32,7 +33,7 @@ namespace Google.Solutions.Mvvm.Format
     /// </summary>
     internal class MarkdownDocument
     {
-        public DocumentBlock Root { get; }
+        public DocumentNode Root { get; }
 
         private static readonly char[] NonLineBreakingWhitespace = new char[] { ' ', '\t' };
         private static readonly char[] UnorderedListBullets = new char[] { '*', '-', '+' };
@@ -56,7 +57,7 @@ namespace Google.Solutions.Mvvm.Format
             //
             // [1] https://spec.commonmark.org/0.30/#appendix-a-parsing-strategy
             //
-            return new MarkdownDocument(DocumentBlock.Parse(reader));
+            return new MarkdownDocument(DocumentNode.Parse(reader));
         }
 
         public static MarkdownDocument Parse(string markdown)
@@ -67,7 +68,7 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
-        private MarkdownDocument(DocumentBlock root)
+        private MarkdownDocument(DocumentNode root)
         {
             this.Root = root;
         }
@@ -79,19 +80,18 @@ namespace Google.Solutions.Mvvm.Format
 
         //---------------------------------------------------------------------
         // Inner classes for blocks.
-        //
         //---------------------------------------------------------------------
 
         /// <summary>
-        /// A block in a Markdown document.
+        /// A node in a Markdown document tree.
         /// </summary>
-        public abstract class Block
+        public abstract class Node
         {
-            private Block next;
-            private Block firstChild;
-            private Block lastChild;
+            private Node next;
+            private Node firstChild;
+            private Node lastChild;
 
-            public IEnumerable<Block> Children
+            public virtual IEnumerable<Node> Children
             {
                 get
                 {
@@ -109,7 +109,7 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            protected void AppendBlock(Block block)
+            protected void AppendNode(Node block)
             {
                 if (this.firstChild == null)
                 {
@@ -124,19 +124,19 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            protected virtual Block CreateBlock(string line)
+            protected virtual Node CreateNode(string line)
             {
-                if (UnorderedListItemBlock.IsUnorderedListItemBlock(line))
+                if (UnorderedListItemNode.IsUnorderedListItemNode(line))
                 {
-                    return new UnorderedListItemBlock(line);
+                    return new UnorderedListItemNode(line);
                 }
-                else if (OrderedListItemBlock.IsOrderedListItemBlock(line))
+                else if (OrderedListItemNode.IsOrderedListItemNode(line))
                 {
-                    return new OrderedListItemBlock(line);
+                    return new OrderedListItemNode(line);
                 }
                 else
                 {
-                    return new TextBlock(line);
+                    return new TextNode(line);
                 }
             }
 
@@ -155,7 +155,7 @@ namespace Google.Solutions.Mvvm.Format
                     // An empty line always ends a block, but does
                     // not start a new one yet.
                     //
-                    AppendBlock(new ParagraphBreak());
+                    AppendNode(new ParagraphBreak());
                     return false;
                 }
                 else
@@ -163,7 +163,7 @@ namespace Google.Solutions.Mvvm.Format
                     //
                     // Last block is closed, append a new block.
                     //
-                    AppendBlock(CreateBlock(line));
+                    AppendNode(CreateNode(line));
                     return true;
                 }
             }
@@ -174,7 +174,7 @@ namespace Google.Solutions.Mvvm.Format
             {
                 var buffer = new StringBuilder();
                 
-                void Visit(Block block, int level)
+                void Visit(Node block, int level)
                 {
                     buffer.Append(new string(' ', level));
                     buffer.Append(block.Value);
@@ -196,7 +196,7 @@ namespace Google.Solutions.Mvvm.Format
         /// A break between two pararaphs, typically created by an
         /// empty line.
         /// </summary>
-        public class ParagraphBreak : Block
+        public class ParagraphBreak : Node
         {
             public override string Value => "[ParagraphBreak]";
 
@@ -209,20 +209,20 @@ namespace Google.Solutions.Mvvm.Format
         /// <summary>
         /// A heading.
         /// </summary>
-        public class HeadingBlock : Block
+        public class HeadingNode : Node
         {
             public int Level { get; }
             public string Text { get; }
 
-            public static bool IsHeadingBlock(string line)
+            public static bool IsHeadingNode(string line)
             {
                 var index = line.IndexOfAny(NonLineBreakingWhitespace);
                 return index > 0 && line.Substring(0, index).All(c => c == '#');
             }
 
-            public HeadingBlock(string line)
+            public HeadingNode(string line)
             {
-                Debug.Assert(IsHeadingBlock(line));
+                Debug.Assert(IsHeadingNode(line));
 
                 var whitespaceIndex = line.IndexOfAny(NonLineBreakingWhitespace);
                 this.Level = line.Substring(0, whitespaceIndex).Count();
@@ -244,14 +244,16 @@ namespace Google.Solutions.Mvvm.Format
         /// Inline text block. The text might contain links and emphasis,
         /// but we don't parse these at this stage.
         /// </summary>
-        public class TextBlock : Block
+        public class TextNode : Node
         {
             public string Text { get; private set; }
 
-            public TextBlock(string text)
+            public TextNode(string text)
             {
                 this.Text = text;
             }
+
+            // TODO: Override Children, parse text
 
             protected override bool TryConsume(string line)
             {
@@ -272,11 +274,11 @@ namespace Google.Solutions.Mvvm.Format
         /// <summary>
         /// Ordered list item.
         /// </summary>
-        public class OrderedListItemBlock : Block
+        public class OrderedListItemNode : Node
         {
             public string Indent { get; }
 
-            public static bool IsOrderedListItemBlock(string line)
+            public static bool IsOrderedListItemNode(string line)
             {
                 var dotIndex = line.IndexOf('.');
 
@@ -286,9 +288,9 @@ namespace Google.Solutions.Mvvm.Format
                     line.Substring(0, dotIndex).All(char.IsDigit);
             }
 
-            public OrderedListItemBlock(string line)
+            public OrderedListItemNode(string line)
             {
-                Debug.Assert(IsOrderedListItemBlock(line));
+                Debug.Assert(IsOrderedListItemNode(line));
 
                 var indent = line.IndexOf(' ');
                 while (line[indent] == ' ')
@@ -298,14 +300,14 @@ namespace Google.Solutions.Mvvm.Format
 
                 this.Indent = new string(' ', indent);
 
-                AppendBlock(new TextBlock(line.Substring(indent)));
+                AppendNode(new TextNode(line.Substring(indent)));
             }
 
             protected override bool TryConsume(string line)
             {
                 if (string.IsNullOrEmpty(line))
                 {
-                    AppendBlock(new ParagraphBreak());
+                    AppendNode(new ParagraphBreak());
                     return true;
                 }
                 else if (!line.StartsWith(this.Indent))
@@ -331,12 +333,12 @@ namespace Google.Solutions.Mvvm.Format
         /// <summary>
         /// Unodered list item.
         /// </summary>
-        public class UnorderedListItemBlock : Block
+        public class UnorderedListItemNode : Node
         {
             public char Bullet { get;}
             public string Indent { get; }
 
-            public static bool IsUnorderedListItemBlock(string line)
+            public static bool IsUnorderedListItemNode(string line)
             {
                 return line.Length >= 3 && 
                     UnorderedListBullets.Contains(line[0]) && 
@@ -344,9 +346,9 @@ namespace Google.Solutions.Mvvm.Format
             }
 
 
-            public UnorderedListItemBlock(string line)
+            public UnorderedListItemNode(string line)
             {
-                Debug.Assert(IsUnorderedListItemBlock(line));
+                Debug.Assert(IsUnorderedListItemNode(line));
 
                 this.Bullet = line[0];
 
@@ -358,14 +360,14 @@ namespace Google.Solutions.Mvvm.Format
 
                 this.Indent = new string(' ', indent);
 
-                AppendBlock(new TextBlock(line.Substring(indent)));
+                AppendNode(new TextNode(line.Substring(indent)));
             }
 
             protected override bool TryConsume(string line)
             {
                 if (string.IsNullOrWhiteSpace(line))
                 {
-                    AppendBlock(new ParagraphBreak());
+                    AppendNode(new ParagraphBreak());
                     return true;
                 }
                 else if (!line.StartsWith(this.Indent))
@@ -391,25 +393,25 @@ namespace Google.Solutions.Mvvm.Format
         /// <summary>
         /// Document, this forms the root of the tree.
         /// </summary>
-        public class DocumentBlock : Block
+        public class DocumentNode : Node
         {
-            protected override Block CreateBlock(string line)
+            protected override Node CreateNode(string line)
             {
-                if (HeadingBlock.IsHeadingBlock(line))
+                if (HeadingNode.IsHeadingNode(line))
                 {
-                    return new HeadingBlock(line);
+                    return new HeadingNode(line);
                 }
                 else
                 {
-                    return base.CreateBlock(line);
+                    return base.CreateNode(line);
                 }
             }
 
             public override string Value => "[Document]";
 
-            public static DocumentBlock Parse(TextReader reader)
+            public static DocumentNode Parse(TextReader reader)
             {
-                var document = new DocumentBlock();
+                var document = new DocumentNode();
                 while (true)
                 {
                     var line = reader.ReadLine();
@@ -424,6 +426,160 @@ namespace Google.Solutions.Mvvm.Format
                 }
 
                 return document;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes for spans.
+        //---------------------------------------------------------------------
+
+        internal enum TokenType
+        {
+            Text,
+            Delimiter
+        }
+
+        internal class Token
+        {
+            public TokenType Type { get; }
+            public string Value { get; }
+
+            internal Token(TokenType type, string value)
+            {
+                Debug.Assert(type != TokenType.Delimiter || value.Length == 1);
+
+                this.Type = type;
+                this.Value = value;
+            }
+
+            public static IEnumerable<Token> Tokenize(string text)
+            {
+                var textStart = -1;
+                for (int i = 0; i < text.Length; i++)
+                {
+                    switch (text[i])
+                    {
+                        case '*':
+                        case '_':
+                        case '[':
+                        case ']':
+                        case '(':
+                        case ')':
+                            //
+                            // Delimeter.
+                            //
+                            if (textStart >= 0 && i - textStart > 0 )
+                            {
+                                //
+                                // Flush previous text token, if non-empty.
+                                //
+                                yield return new Token(TokenType.Text, text.Substring(textStart, i - textStart));
+                                textStart = -1;
+                            }
+
+                            yield return new Token(TokenType.Delimiter, text[i].ToString());
+                            break;
+
+                        default:
+                            //
+                            // Text.
+                            //
+                            if (textStart == -1)
+                            {
+                                textStart = i;
+                            }
+                            break;
+                    }
+                }
+
+                if (textStart >= 0)
+                {
+                    yield return new Token(TokenType.Text, text.Substring(textStart));
+                }
+            }
+
+            public override string ToString()
+            {
+                return $"{this.Type}: {this.Value}";
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is Token token &&
+                    token.Type == this.Type &&
+                    token.Value == this.Value;
+            }
+
+            public override int GetHashCode()
+            {
+                return this.Value.GetHashCode();
+            }
+        }
+
+        internal class Lexer { 
+        
+        }
+
+        public class TextSpanNode : Node
+        {
+            public string Text { get; }
+
+            public override string Value => $"[TextSpan] {this.Text}";
+
+            protected override sealed bool TryConsume(string line)
+            {
+                Lexer lexer = null; // parse
+                return TryConsume(lexer);
+            }
+
+            protected virtual bool TryConsume(Lexer leyer)
+            {
+                // Use same TryConsume/Create node approach
+                return false;
+            }
+        }
+
+        public class EmphasisSpanNode : TextSpanNode
+        {
+            public override string Value => $"[EmphasisSpan] {this.Text}";
+
+            public EmphasisSpanNode(Lexer lexer)
+            {
+            }
+
+            public static bool IsEmphasis(Lexer lexer)
+            {
+                return false;
+            }
+        }
+
+        public class StrongEmphasisSpanNode : TextSpanNode
+        {
+            public override string Value => $"[StrongEmphasisSpan] {this.Text}";
+
+            public StrongEmphasisSpanNode(Lexer lexer)
+            {
+            }
+
+            public static bool IsStrongEmphasis(Lexer lexer)
+            {
+                return false;
+            }
+        }
+
+        public class LinkSpanNode : TextSpanNode
+        {
+            public string Href { get; }
+
+            public override string Value => $"[LinkSpan href={this.Href}] {this.Text}";
+
+            public LinkSpanNode(Lexer lexer)
+            {
+            }
+
+            public static bool IsLink(Lexer lexer)
+            {
+                return false;
             }
         }
     }
