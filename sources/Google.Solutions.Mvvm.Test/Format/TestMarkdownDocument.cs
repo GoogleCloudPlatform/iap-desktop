@@ -21,7 +21,6 @@
 
 using Google.Solutions.Mvvm.Format;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Google.Solutions.Mvvm.Test.Format
 {
@@ -221,8 +220,6 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "   [Text] item3\n",
                 doc.ToString());
         }
-
-        // TODO: Test invalid lists
 
         //---------------------------------------------------------------------
         // OrderedListItemNode.

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -45,12 +44,14 @@ namespace Google.Solutions.Mvvm.Format
             // lexer/parser architecture to read Markdown.
             //
             // CommonMark suggests a 2-phase parsing approach [1], which is what
-            // we're using here.
+            // we're using here:
             //
-            // - In the first stage, we dissect the document into blocks (headings,
-            //   paragraphs, list items, etc)
-            // - In the second stage, we parse text blocks to resolve emphases,
-            //   links, etc.
+            // 1. Block-level parsing: We break a document into its major
+            //    blocks: Headings, List items, Spans. Spans are blocks
+            //    that contain formatted text, and these need additional
+            //    processing.
+            // 2. Span-level-parsing: Each span is parsed to identify links,
+            //    emphasized text, etc.
             //
             // Note that we're only supporting a subset of Markdown syntax
             // features here.
@@ -79,7 +80,9 @@ namespace Google.Solutions.Mvvm.Format
         }
 
         //---------------------------------------------------------------------
-        // Inner classes for blocks.
+        //
+        // Block-level parsing
+        //
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -89,8 +92,11 @@ namespace Google.Solutions.Mvvm.Format
         {
             private Node next;
             private Node firstChild;
-            protected Node lastChild; // TODO: make property
+            protected Node lastChild;
 
+            /// <summary>
+            /// List direct children of this node.
+            /// </summary>
             public virtual IEnumerable<Node> Children
             {
                 get
@@ -109,6 +115,10 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
+            /// <summary>
+            /// Append a child to this node.
+            /// </summary>
+            /// <param name="block"></param>
             protected void AppendNode(Node block)
             {
                 if (this.firstChild == null)
@@ -124,6 +134,9 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
+            /// <summary>
+            /// Create a new node for a given line. Only nodes that
+            /// are allowed as children are considered.
             protected virtual Node CreateNode(string line)
             {
                 if (UnorderedListItemNode.IsUnorderedListItemNode(line))
@@ -140,6 +153,9 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
+            /// <summary>
+            /// Try to extend the node by consuming an additional line.
+            /// <returns>true if line was consumed, false otherwise.</returns>
             protected virtual bool TryConsume(string line)
             {
                 if (this.lastChild != null && this.lastChild.TryConsume(line))
@@ -168,8 +184,15 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            public abstract string Value { get; }
+            /// <summary>
+            /// Summary string describing this node.
+            /// </summary>
+            protected abstract string Summary { get; }
 
+            /// <summary>
+            /// Create string representation of this node and its
+            /// children.
+            /// </summary>
             public override string ToString()
             {
                 var buffer = new StringBuilder();
@@ -177,7 +200,7 @@ namespace Google.Solutions.Mvvm.Format
                 void Visit(Node block, int level)
                 {
                     buffer.Append(new string(' ', level));
-                    buffer.Append(block.Value);
+                    buffer.Append(block.Summary);
                     buffer.Append('\n');
 
                     foreach (var child in block.Children)
@@ -198,7 +221,7 @@ namespace Google.Solutions.Mvvm.Format
         /// </summary>
         public class ParagraphBreak : Node
         {
-            public override string Value => "[ParagraphBreak]";
+            protected override string Summary => "[ParagraphBreak]";
 
             protected override bool TryConsume(string line)
             {
@@ -207,7 +230,7 @@ namespace Google.Solutions.Mvvm.Format
         }
 
         /// <summary>
-        /// A heading.
+        /// Heading.
         /// </summary>
         public class HeadingNode : Node
         {
@@ -237,46 +260,15 @@ namespace Google.Solutions.Mvvm.Format
                 return false;
             }
 
-            public override string Value => $"[Heading level={this.Level}] {this.Text}";
+            protected override string Summary => $"[Heading level={this.Level}] {this.Text}";
         }
-
-        ///// <summary>
-        ///// Inline text block. The text might contain links and emphasis,
-        ///// but we don't parse these at this stage.
-        ///// </summary>
-        //public class TextNode : Node
-        //{
-        //    public string Text { get; private set; }
-
-        //    public TextNode(string text)
-        //    {
-        //        this.Text = text;
-        //    }
-
-        //    // TODO: Override Children, parse text
-
-        //    protected override bool TryConsume(string line)
-        //    {
-        //        if (string.IsNullOrWhiteSpace(line))
-        //        {
-        //            return false;
-        //        }
-        //        else
-        //        {
-        //            this.Text += " " + line;
-        //            return true;
-        //        }
-        //    }
-
-        //    public override string Value => "[Text] " + this.Text;
-        //}
 
         /// <summary>
         /// Ordered list item.
         /// </summary>
         public class OrderedListItemNode : Node
         {
-            public string Indent { get; }
+            private readonly string indent;
 
             public static bool IsOrderedListItemNode(string line)
             {
@@ -292,13 +284,17 @@ namespace Google.Solutions.Mvvm.Format
             {
                 Debug.Assert(IsOrderedListItemNode(line));
 
+                //
+                // Determine the necessary indent for subsequent
+                // lines.
+                //
                 var indent = line.IndexOf(' ');
                 while (line[indent] == ' ')
                 {
                     indent++;
                 }
 
-                this.Indent = new string(' ', indent);
+                this.indent = new string(' ', indent);
 
                 AppendNode(new SpanNode(line.Substring(indent)));
             }
@@ -310,7 +306,7 @@ namespace Google.Solutions.Mvvm.Format
                     AppendNode(new ParagraphBreak());
                     return true;
                 }
-                else if (!line.StartsWith(this.Indent))
+                else if (!line.StartsWith(this.indent))
                 {
                     //
                     // Line doesn't have the minimum amount of indentation,
@@ -322,12 +318,12 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else
                 {
-                    return base.TryConsume(line.Substring(this.Indent.Length));
+                    return base.TryConsume(line.Substring(this.indent.Length));
                 }
             }
 
-            public override string Value 
-                => $"[OrderedListItem indent={this.Indent.Length}]";
+            protected override string Summary 
+                => $"[OrderedListItem indent={this.indent.Length}]";
         }
 
         /// <summary>
@@ -335,8 +331,8 @@ namespace Google.Solutions.Mvvm.Format
         /// </summary>
         public class UnorderedListItemNode : Node
         {
-            public char Bullet { get;}
-            public string Indent { get; }
+            private readonly string indent;
+            private readonly char bullet;
 
             public static bool IsUnorderedListItemNode(string line)
             {
@@ -350,15 +346,19 @@ namespace Google.Solutions.Mvvm.Format
             {
                 Debug.Assert(IsUnorderedListItemNode(line));
 
-                this.Bullet = line[0];
+                this.bullet = line[0];
 
+                //
+                // Determine the necessary indent for subsequent
+                // lines.
+                //
                 var indent = 1;
                 while (line[indent] == ' ')
                 {
                     indent++;
                 }
 
-                this.Indent = new string(' ', indent);
+                this.indent = new string(' ', indent);
 
                 AppendNode(new SpanNode(line.Substring(indent)));
             }
@@ -370,7 +370,7 @@ namespace Google.Solutions.Mvvm.Format
                     AppendNode(new ParagraphBreak());
                     return true;
                 }
-                else if (!line.StartsWith(this.Indent))
+                else if (!line.StartsWith(this.indent))
                 {
                     //
                     // Line doesn't have the minimum amount of indentation,
@@ -382,12 +382,12 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else
                 {
-                    return base.TryConsume(line.Substring(this.Indent.Length));
+                    return base.TryConsume(line.Substring(this.indent.Length));
                 }
             }
 
-            public override string Value
-                => $"[UnorderedListItem bullet={this.Bullet} indent={this.Indent.Length}]";
+            protected override string Summary
+                => $"[UnorderedListItem bullet={this.bullet} indent={this.indent.Length}]";
         }
 
         /// <summary>
@@ -407,7 +407,7 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            public override string Value => "[Document]";
+            protected override string Summary => "[Document]";
 
             public static DocumentNode Parse(TextReader reader)
             {
@@ -430,7 +430,9 @@ namespace Google.Solutions.Mvvm.Format
         }
 
         //---------------------------------------------------------------------
-        // Inner classes for spans.
+        //
+        // Span-level parsing
+        //
         //---------------------------------------------------------------------
 
         internal enum TokenType
@@ -440,7 +442,10 @@ namespace Google.Solutions.Mvvm.Format
         }
 
         /// <summary>
-        /// A token withing a text span.
+        /// A token withing a text span. Tokens are separated by delimiters.
+        /// Delimiters may indicate a new kind of span, but sometimes they
+        /// can just be text (for ex, a * in the middle of a sentence doesn't
+        /// begin an emphasis).
         /// </summary>
         internal class Token
         {
@@ -484,6 +489,7 @@ namespace Google.Solutions.Mvvm.Format
                                 }
                                 break;
                             }
+
                         case '_':
                         case '[':
                         case ']':
@@ -554,9 +560,12 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
+        /// <summary>
+        /// Container for formatted text.
+        /// </summary>
         public class SpanNode : Node
         {
-            public override string Value => $"[Span]";
+            protected override string Summary => $"[Span]";
 
             internal SpanNode(string text)
             {
@@ -601,10 +610,17 @@ namespace Google.Solutions.Mvvm.Format
             {
                 if (this.lastChild != null && string.IsNullOrWhiteSpace(line))
                 {
-                    // Spans must not extend beyond one paragraph.
+                    //
+                    // A blank line indicates a new paragraph, so we must
+                    // not consume this.
+                    //
                     return false;
                 }
 
+                //
+                // Break the line into tokens and build a tree
+                // that represents the formatting.
+                //
                 var tokens = Token.Tokenize(line);
                 while (tokens.Any())
                 {
@@ -636,21 +652,17 @@ namespace Google.Solutions.Mvvm.Format
                     return true;
                 }
             }
-
-            public static SpanNode Parse(string markdown)
-            {
-                var node = new SpanNode();
-                node.TryConsume(markdown);
-                return node;
-            }
         }
 
+        /// <summary>
+        /// Unformatted text.
+        /// </summary>
         public class TextNode : SpanNode
         {
             private readonly bool space;
             public string Text { get; protected set; }
 
-            public override string Value => $"[Text] {this.Text}";
+            protected override string Summary => $"[Text] {this.Text}";
 
             public TextNode(string text, bool space)
             {
@@ -679,19 +691,24 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
+        /// <summary>
+        /// Strong or normal emphasis
+        /// </summary>
         public class EmphasisNode : SpanNode
         {
+            private readonly string delimiter;
             private bool bodyCompleted = false;
 
             public string Text { get; protected set; }
-            public string Delimiter { get; }
+            
+            public bool IsStrong => delimiter == "**";
 
             public EmphasisNode(string delimiter)
             {
-                this.Delimiter = delimiter;
+                this.delimiter = delimiter;
             }
 
-            public override string Value => $"[Emphasis delimiter={this.Delimiter}] {this.Text}";
+            protected override string Summary => $"[Emphasis delimiter={this.delimiter}] {this.Text}";
 
             protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
             {
@@ -699,7 +716,7 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     return false;
                 }
-                else if (token.Type == TokenType.Delimiter && token.Value == this.Delimiter)
+                else if (token.Type == TokenType.Delimiter && token.Value == this.delimiter)
                 {
                     this.bodyCompleted = true;
                     return true;
@@ -716,11 +733,14 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
+        /// <summary>
+        /// Link. Links can contain formatted text.
+        /// </summary>
         public class LinkSpanNode : SpanNode
         {
             private bool linkBodyCompleted = false;
             private bool linkHrefCompleted = false;
-            public override string Value => $"[Link href={this.Href}]";
+            protected override string Summary => $"[Link href={this.Href}]";
             public string Href { get; protected set; }
 
             protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
