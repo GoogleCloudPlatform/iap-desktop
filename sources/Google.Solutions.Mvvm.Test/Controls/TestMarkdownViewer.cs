@@ -36,12 +36,14 @@ namespace Google.Solutions.Mvvm.Test.Controls
             InitializeComponent();
 
             this.markdown.Markdown = this.sourceText.Text;
-            this.rtf.Text = MarkdownDocument.Parse(this.sourceText.Text).ToRtf();
+            this.rtf.Text = new MarkdownRtfConverter().ConvertToString(
+                MarkdownDocument.Parse(this.sourceText.Text));
 
             this.sourceText.TextChanged += (_, __) =>
             {
                 this.markdown.Markdown = this.sourceText.Text;
-                this.rtf.Text = MarkdownDocument.Parse(this.sourceText.Text).ToRtf();
+                this.rtf.Text = new MarkdownRtfConverter().ConvertToString(
+                    MarkdownDocument.Parse(this.sourceText.Text));
             };
         }
 

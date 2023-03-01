@@ -1,25 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 
 namespace Google.Solutions.Mvvm.Format
 {
-    internal static class MarkdownToRtf
+    /// <summary>
+    /// Converts Markdown to RTF.
+    /// </summary>
+    internal class MarkdownRtfConverter
     {
-        private class DocumentVisitor : IDisposable
+        public ColorTable Colors { get; } = new ColorTable();
+        public FontTable Fonts { get; } = new FontTable();
+
+        public void Convert(
+            MarkdownDocument document,
+            RtfWriter writer)
+        {
+            using (var visitor = new NodeVisitor(this, writer))
+            {
+                visitor.Visit(document.Root);
+            }
+        }
+
+        public string ConvertToString(MarkdownDocument document)
+        {
+            using (var buffer = new StringWriter())
+            using (var writer = new RtfWriter(buffer))
+            {
+                Convert(document, writer);
+                return buffer.ToString();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
+        public class ColorTable
+        {
+            public Color Background { get; set; } = Color.White;
+            public Color Font { get; set; } = Color.Black;
+            public Color Link { get; set; } = Color.Blue;
+
+            public uint BackgroundIndex = 0;
+            public uint FontIndex = 1;
+            public uint LinkIndex = 2;
+
+            public Color[] GetTable()
+            {
+                return new[]
+                {
+                    this.Background,
+                    this.Font,
+                    this.Link
+                };
+            }
+        }
+
+        public class FontTable
+        {
+            public FontFamily Text { get; set; } = FontFamily.GenericSansSerif;
+        }
+
+        /// <summary>
+        /// Visitor class.
+        /// </summary>
+        private class NodeVisitor : IDisposable
         {
             private const int FirstLineIndent = -270;
             private const int BlockIndent = 360;
 
+            private readonly MarkdownRtfConverter converter;
             protected readonly RtfWriter writer;
-            private bool inParagraph = false;
             private readonly uint indentationLevel;
+
+            private bool inParagraph = false;
             private int nextListItemNumber = 1;
 
-            public DocumentVisitor(
+            public NodeVisitor(
+                MarkdownRtfConverter converter,
                 RtfWriter writer,
                 uint indentationLevel = 0)
             {
+                this.converter = converter;
                 this.writer = writer;
                 this.indentationLevel = indentationLevel;
             }
@@ -85,8 +149,10 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     ContinueParagraph();
                     this.writer.WriteHyperlinkStart(link.Href);
-                    this.writer.SetUnderline(true);
+                    this.writer.SetUnderline(true); // TODO: Set link color
+                    this.writer.SetFontColor(this.converter.Colors.LinkIndex);
                     Visit(link.Children);
+                    this.writer.SetFontColor(this.converter.Colors.FontIndex);
                     this.writer.SetUnderline(false);
                     this.writer.WriteHyperlinkEnd();
                 }
@@ -112,7 +178,8 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else if (node is MarkdownDocument.UnorderedListItemNode ul)
                 {
-                    using (var block = new DocumentVisitor(
+                    using (var block = new NodeVisitor(
+                        this.converter,
                         this.writer, 
                         this.indentationLevel + 1))
                     {
@@ -124,7 +191,8 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else if (node is MarkdownDocument.OrderedListItemNode ol)
                 {
-                    using (var block = new DocumentVisitor(
+                    using (var block = new NodeVisitor(
+                        this.converter,
                         this.writer,
                         this.indentationLevel + 1))
                     {
@@ -135,6 +203,12 @@ namespace Google.Solutions.Mvvm.Format
                         block.Visit(ol.Children);
                     }
                 }
+                else if (node is MarkdownDocument.DocumentNode)
+                {
+                    this.writer.WriteHeader(this.converter.Fonts.Text);
+                    this.writer.WriteColorTable(this.converter.Colors.GetTable());
+                    Visit(node.Children);
+                }
                 else
                 {
                     if (!(node is MarkdownDocument.OrderedListItemNode))
@@ -144,31 +218,6 @@ namespace Google.Solutions.Mvvm.Format
 
                     Visit(node.Children);
                 }
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Extension methods.
-        //---------------------------------------------------------------------
-
-        public static void WriteTo(
-            this MarkdownDocument document,
-            RtfWriter writer)
-        {
-            using (var visitor = new DocumentVisitor(writer))
-            {
-                visitor.Visit(document.Root);
-            }
-        }
-
-        public static string ToRtf(this MarkdownDocument document)
-        {
-            using (var buffer = new StringWriter())
-            using (var writer = new RtfWriter(buffer))
-            {
-                writer.WriteHeader(System.Drawing.FontFamily.GenericSansSerif);
-                WriteTo(document, writer);
-                return buffer.ToString();
             }
         }
     }

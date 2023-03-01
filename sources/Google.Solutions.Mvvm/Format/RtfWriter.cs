@@ -92,6 +92,21 @@ namespace Google.Solutions.Mvvm.Format
             this.writer.WriteLine("\\par}\n");
         }
 
+        public void SetFontColor(uint index)
+        {
+            this.writer.WriteLine("\\cf");
+            this.writer.WriteLine(index.ToString());
+            this.writer.WriteLine(" ");
+
+        }
+        public void SetBackgroundColor(uint index)
+        {
+            this.writer.WriteLine("\\cb");
+            this.writer.WriteLine(index.ToString());
+            this.writer.WriteLine(" ");
+
+        }
+
         public void SetBold(bool bold)
         {
             this.writer.WriteLine(bold ? "\\b " : "\\b0 ");

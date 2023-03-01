@@ -9,6 +9,7 @@ namespace Google.Solutions.Mvvm.Controls
     /// </summary>
     public partial class MarkdownViewer : UserControl
     {
+        private readonly MarkdownRtfConverter converter = new MarkdownRtfConverter();
         private string markdown = string.Empty;
 
         public MarkdownViewer()
@@ -28,7 +29,8 @@ namespace Google.Solutions.Mvvm.Controls
                     throw new ArgumentNullException(nameof(Markdown));
                 }
 
-                this.richTextBox.Rtf = MarkdownDocument.Parse(value).ToRtf();
+                var document = MarkdownDocument.Parse(value);
+                this.richTextBox.Rtf = this.converter.ConvertToString(document);
                 this.markdown = value;
             }
         }
