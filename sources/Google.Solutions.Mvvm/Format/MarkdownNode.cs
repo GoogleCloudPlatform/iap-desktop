@@ -89,7 +89,7 @@ namespace Google.Solutions.Mvvm.Format
         {
             private Node next;
             private Node firstChild;
-            private Node lastChild;
+            protected Node lastChild; // TODO: make property
 
             public virtual IEnumerable<Node> Children
             {
@@ -439,6 +439,9 @@ namespace Google.Solutions.Mvvm.Format
             Delimiter
         }
 
+        /// <summary>
+        /// A token withing a text span.
+        /// </summary>
         internal class Token
         {
             public TokenType Type { get; }
@@ -510,32 +513,115 @@ namespace Google.Solutions.Mvvm.Format
                     token.Value == this.Value;
             }
 
+            public static bool operator==(Token lhs, Token rhs)
+            {
+                if (lhs is null)
+                {
+                    return rhs is null;
+                }
+                else
+                {
+                    return lhs.Equals(rhs);
+                }
+            }
+
+            public static bool operator !=(Token lhs, Token rhs) => !(lhs == rhs);
+
             public override int GetHashCode()
             {
                 return this.Value.GetHashCode();
             }
         }
 
-        internal class Lexer { 
-        
-        }
-
         public class TextSpanNode : Node
         {
-            public string Text { get; }
+            public string Text { get; protected set;  }
 
             public override string Value => $"[TextSpan] {this.Text}";
 
-            protected override sealed bool TryConsume(string line)
+            protected TextSpanNode(string text)
             {
-                Lexer lexer = null; // parse
-                return TryConsume(lexer);
+                this.Text = text;
             }
 
-            protected virtual bool TryConsume(Lexer leyer)
+            protected TextSpanNode() : this(string.Empty)
             {
-                // Use same TryConsume/Create node approach
-                return false;
+            }
+
+            protected TextSpanNode CreateSpanNode(Token token, IEnumerable<Token> remainder)
+            {
+                if (token.Type == TokenType.Text)
+                {
+                    return new TextSpanNode(token.Value);
+                }
+                else if (token.Value == "_")
+                {
+                    return new EmphasisSpanNode();
+                }
+                else if (token.Value == "*")
+                {
+                    if (remainder.FirstOrDefault() == new Token(TokenType.Delimiter, "*"))
+                    {
+                        return new StrongEmphasisSpanNode();
+                    }
+                    else
+                    {
+                        return new EmphasisSpanNode();
+                    }
+                }
+                else if (token.Value == "[" &&
+                    remainder
+                        .SkipWhile(t => t != new Token(TokenType.Delimiter, "]"))
+                        .Skip(1)
+                        .FirstOrDefault() == new Token(TokenType.Delimiter, "("))
+                {
+                    return new LinkSpanNode();
+                }
+                else
+                {
+                    return new TextSpanNode(token.Value);
+                }
+            }
+
+            protected override sealed bool TryConsume(string line)
+            {
+                var tokens = Token.Tokenize(line);
+                while (tokens.Any())
+                {
+                    var token = tokens.First();
+                    var remainder = tokens.Skip(1);
+                    TryConsume(token, remainder);
+                    tokens = remainder;
+                }
+
+                return true;
+            }
+
+            protected virtual bool TryConsume(Token token, IEnumerable<Token> remainder)
+            {
+                if (this.lastChild != null && 
+                    ((TextSpanNode)this.lastChild).TryConsume(token, remainder))
+                {
+                    //
+                    // Continuation of last span.
+                    //
+                    return true;
+                }
+                else
+                {
+                    //
+                    // Last block is closed, append a new block.
+                    //
+                    AppendNode(CreateSpanNode(token, remainder));
+                    return true;
+                }
+            }
+
+            public static TextSpanNode Parse(string markdown)
+            {
+                var node = new TextSpanNode();
+                node.TryConsume(markdown);
+                return node;
             }
         }
 
@@ -543,43 +629,75 @@ namespace Google.Solutions.Mvvm.Format
         {
             public override string Value => $"[EmphasisSpan] {this.Text}";
 
-            public EmphasisSpanNode(Lexer lexer)
+            protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
             {
-            }
-
-            public static bool IsEmphasis(Lexer lexer)
-            {
-                return false;
+                if (token.Type == TokenType.Text)
+                {
+                    this.Text += token.Value;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
-        public class StrongEmphasisSpanNode : TextSpanNode
+        public class StrongEmphasisSpanNode : EmphasisSpanNode
         {
             public override string Value => $"[StrongEmphasisSpan] {this.Text}";
-
-            public StrongEmphasisSpanNode(Lexer lexer)
-            {
-            }
-
-            public static bool IsStrongEmphasis(Lexer lexer)
-            {
-                return false;
-            }
         }
 
         public class LinkSpanNode : TextSpanNode
         {
-            public string Href { get; }
+            private bool linkBodyCompleted = false;
+            private bool linkHrefCompleted = false;
+            public override string Value => $"[LinkSpan href={this.Text}]";
 
-            public override string Value => $"[LinkSpan href={this.Href}] {this.Text}";
-
-            public LinkSpanNode(Lexer lexer)
+            protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
             {
-            }
-
-            public static bool IsLink(Lexer lexer)
-            {
-                return false;
+                if (this.linkHrefCompleted)
+                {
+                    //
+                    // Link completed.
+                    //
+                    return false;
+                }
+                else if (this.linkBodyCompleted)
+                {
+                    //
+                    // Building the link href.
+                    //
+                    if (this.Text == string.Empty && token == new Token(TokenType.Delimiter, "("))
+                    {
+                        return true;
+                    }
+                    else if (token == new Token(TokenType.Delimiter, ")"))
+                    {
+                        this.linkHrefCompleted = true;
+                        return true;
+                    }
+                    else
+                    {
+                        this.Text += token.Value;
+                        return true;
+                    }
+                }
+                else
+                {
+                    //
+                    // Building the link body/text.
+                    //
+                    if (token == new Token(TokenType.Delimiter, "]"))
+                    {
+                        this.linkBodyCompleted = true;
+                        return true;
+                    }
+                    else
+                    {
+                        return base.TryConsume(token, remainder);
+                    }
+                }
             }
         }
     }

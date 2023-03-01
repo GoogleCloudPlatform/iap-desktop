@@ -289,6 +289,24 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         //---------------------------------------------------------------------
+        // EmphasisSpan.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void EmphasisSpan()
+        {
+            var span = MarkdownDocument.TextSpanNode.Parse("one *two* three *four* *");
+            Assert.IsNotNull(span);
+        }
+
+        [Test]
+        public void __()
+        {
+            var span = MarkdownDocument.TextSpanNode.Parse("this is [a link](href) to *nowhere*");
+            Assert.IsNotNull(span);
+        }
+
+        //---------------------------------------------------------------------
         // Token.
         //---------------------------------------------------------------------
 
@@ -331,6 +349,29 @@ namespace Google.Solutions.Mvvm.Test.Format
                     new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, " text"),
                 },
                 tokens);
+        }
+
+        [Test]
+        public void WhenTokensEquivalent_ThenEqualsReturnsTrue()
+        {
+            var token1 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
+            var token2 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
+
+            Assert.IsTrue(token1.Equals(token2));
+            Assert.IsTrue(token1 == token2);
+        }
+
+        [Test]
+        public void WhenTokensNotEquivalent_ThenEqualsReturnsFalse()
+        {
+            var token1 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "text");
+            var token2 = new MarkdownDocument.Token(MarkdownDocument.TokenType.Delimiter, ")");
+
+            Assert.IsFalse(token1.Equals(token2));
+            Assert.IsFalse(token1.Equals(null));
+            Assert.IsFalse(token1 == token2);
+            Assert.IsFalse(token1 == null);
+            Assert.IsTrue(token1 != token2);
         }
     }
 }
