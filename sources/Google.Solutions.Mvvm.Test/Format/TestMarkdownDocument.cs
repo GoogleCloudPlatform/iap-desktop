@@ -102,9 +102,11 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.AreEqual(
                 "[Document]\n" +
                 " [ParagraphBreak]\n" +
-                " [Text] block one\n" +
+                " [Span]\n" +
+                "  [Text] block one\n" +
                 " [ParagraphBreak]\n" +
-                " [Text] block two\n",
+                " [Span]\n" +
+                "  [Text] block two\n",
                 doc.ToString());
         }
 
@@ -122,9 +124,11 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.AreEqual(
                 "[Document]\n" +
                 " [ParagraphBreak]\n" +
-                " [Text] block one, line 1 block one, line 2\n" +
+                " [Span]\n" +
+                "  [Text] block one, line 1 block one, line 2\n" +
                 " [ParagraphBreak]\n" +
-                " [Text] block two, line 1 block two, line 2\n",
+                " [Span]\n" +
+                "  [Text] block two, line 1 block two, line 2\n",
                 doc.ToString());
         }
 
@@ -159,9 +163,11 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.AreEqual(
                 "[Document]\n" +
                 " [UnorderedListItem bullet=* indent=2]\n" +
-                "  [Text] item1a item1b\n" +
+                "  [Span]\n" +
+                "   [Text] item1a item1b\n" +
                 " [UnorderedListItem bullet=* indent=2]\n" +
-                "  [Text] item2a  item2b\n",
+                "  [Span]\n" +
+                "   [Text] item2a  item2b\n",
                 doc.ToString());
         }
 
@@ -177,10 +183,12 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.AreEqual(
                 "[Document]\n" +
                 " [UnorderedListItem bullet=* indent=2]\n" +
-                "  [Text] item1a\n" +
+                "  [Span]\n" +
+                "   [Text] item1a\n" +
                 "  [ParagraphBreak]\n" +
                 " [UnorderedListItem bullet=- indent=2]\n" +
-                "  [Text] item2a item2b\n",
+                "  [Span]\n" +
+                "   [Text] item2a item2b\n",
                 doc.ToString());
         }
 
@@ -198,15 +206,19 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.AreEqual(
                 "[Document]\n" +
                 " [UnorderedListItem bullet=- indent=2]\n" +
-                "  [Text] item1a\n" +
+                "  [Span]\n" +
+                "   [Text] item1a\n" +
                 "  [ParagraphBreak]\n" +
                 "  [UnorderedListItem bullet=+ indent=4]\n" +
-                "   [Text] item2a\n" +
+                "   [Span]\n" +
+                "    [Text] item2a\n" +
                 "  [UnorderedListItem bullet=+ indent=4]\n" +
-                "   [Text] item2b\n" +
+                "   [Span]\n" +
+                "    [Text] item2b\n" +
                 "  [ParagraphBreak]\n" +
                 " [OrderedListItem indent=3]\n" +
-                "  [Text] item3\n",
+                "  [Span]\n" +
+                "   [Text] item3\n",
                 doc.ToString());
         }
 
@@ -239,9 +251,11 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.AreEqual(
                 "[Document]\n" +
                 " [OrderedListItem indent=3]\n" +
-                "  [Text] item1a item1b\n" +
+                "  [Span]\n" +
+                "   [Text] item1a item1b\n" +
                 " [OrderedListItem indent=3]\n" +
-                "  [Text] item2a item2b\n",
+                "  [Span]\n" +
+                "   [Text] item2a item2b\n",
                 doc.ToString());
         }
 
@@ -258,11 +272,14 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.AreEqual(
                 "[Document]\n" +
                 " [OrderedListItem indent=3]\n" +
-                "  [Text] item1a\n" +
+                "  [Span]\n" +
+                "   [Text] item1a\n" +
                 " [ParagraphBreak]\n" +
                 " [OrderedListItem indent=3]\n" +
-                "  [Text] item2a item2b\n" +
-                " [Text] notanitem\n",
+                "  [Span]\n" +
+                "   [Text] item2a item2b\n" +
+                " [Span]\n" +
+                "  [Text] notanitem\n",
                 doc.ToString());
         }
 
@@ -279,34 +296,58 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.AreEqual(
                 "[Document]\n" +
                 " [OrderedListItem indent=3]\n" +
-                "  [Text] item1a\n" +
+                "  [Span]\n" +
+                "   [Text] item1a\n" +
                 "  [ParagraphBreak]\n" +
                 "  [OrderedListItem indent=3]\n" +
-                "   [Text] item2a item2b\n" +
+                "   [Span]\n" +
+                "    [Text] item2a item2b\n" +
                 " [OrderedListItem indent=3]\n" +
-                "  [Text] item3\n",
+                "  [Span]\n" +
+                "   [Text] item3\n",
                 doc.ToString());
         }
 
         //---------------------------------------------------------------------
-        // EmphasisSpan.
+        // Emphasis.
         //---------------------------------------------------------------------
 
         [Test]
-        public void EmphasisSpanWithUnderscores()
+        public void EmphasisWithUnderscores()
         {
             var doc = MarkdownDocument.Parse(
                  "one _two_ three _four_");
             Assert.IsNotNull(doc);
             Assert.AreEqual(
-                "[Documem3\n",
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] one \n" +
+                "  [Emphasis] two\n" +
+                "  [Text]  three \n" +
+                "  [Emphasis] four\n",
+                doc.ToString());
+        }
+
+        [Test]
+        public void SpuriousUnderscore()
+        {
+            var doc = MarkdownDocument.Parse(
+                 "one _two_ _ three");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] one \n" +
+                "  [Emphasis] two\n" +
+                "  [Text]  \n" +
+                "  [Text] _ three\n",
                 doc.ToString());
         }
 
         [Test]
         public void __()
         {
-            var span = MarkdownDocument.TextNode.Parse("this is [a link](href) to *nowhere*");
+            var span = MarkdownDocument.SpanNode.Parse("this is [a link](href) to *nowhere*");
             Assert.IsNotNull(span);
         }
 

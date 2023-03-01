@@ -136,7 +136,7 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else
                 {
-                    return new TextNode(line);
+                    return new SpanNode(line);
                 }
             }
 
@@ -300,7 +300,7 @@ namespace Google.Solutions.Mvvm.Format
 
                 this.Indent = new string(' ', indent);
 
-                AppendNode(new TextNode(line.Substring(indent)));
+                AppendNode(new SpanNode(line.Substring(indent)));
             }
 
             protected override bool TryConsume(string line)
@@ -360,7 +360,7 @@ namespace Google.Solutions.Mvvm.Format
 
                 this.Indent = new string(' ', indent);
 
-                AppendNode(new TextNode(line.Substring(indent)));
+                AppendNode(new SpanNode(line.Substring(indent)));
             }
 
             protected override bool TryConsume(string line)
@@ -533,44 +533,43 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
-        public class TextNode : Node
+        public class SpanNode : Node
         {
-            public string Text { get; protected set;  }
+            public override string Value => $"[Span]";
 
-            public override string Value => $"[TextSpan] {this.Text}";
-
-            internal TextNode(string text)
+            internal SpanNode(string text)
             {
                 TryConsume(text);
             }
 
-            protected TextNode()
+            protected SpanNode()
             {
-                this.Text = string.Empty;
             }
 
-            protected TextNode CreateSpanNode(Token token, IEnumerable<Token> remainder)
+            protected SpanNode CreateSpanNode(Token token, IEnumerable<Token> remainder)
             {
                 if (token.Type == TokenType.Text)
                 {
-                    return new TextSpanNode()
-                    {
-                        Text = token.Value // This is tokenized already.
-                    };
+                    return new TextNode(token.Value, true);
                 }
-                else if (token.Value == "_")
+                else if (token.Value == "_" &&
+                    remainder.FirstOrDefault() is Token next &&
+                    next != null &&
+                    next.Type == TokenType.Text &&
+                    next.Value.Length > 1 &&
+                    !NonLineBreakingWhitespace.Contains(next.Value[0]))
                 {
-                    return new EmphasisSpanNode("_");
+                    return new EmphasisNode("_");
                 }
                 else if (token.Value == "*")
                 {
                     if (remainder.FirstOrDefault() == new Token(TokenType.Delimiter, "*"))
                     {
-                        return new StrongEmphasisSpanNode();
+                        return new StrongEmphasisNode();
                     }
                     else
                     {
-                        return new EmphasisSpanNode("*");
+                        return new EmphasisNode("*");
                     }
                 }
                 else if (token.Value == "[" &&
@@ -583,12 +582,18 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else
                 {
-                    return new TextNode(token.Value);
+                    return new TextNode(token.Value, false);
                 }
             }
 
             protected override sealed bool TryConsume(string line)
             {
+                if (this.lastChild != null && string.IsNullOrWhiteSpace(line))
+                {
+                    // Spans must not extend beyond one paragraph.
+                    return false;
+                }
+
                 var tokens = Token.Tokenize(line);
                 while (tokens.Any())
                 {
@@ -604,7 +609,7 @@ namespace Google.Solutions.Mvvm.Format
             protected virtual bool TryConsume(Token token, IEnumerable<Token> remainder)
             {
                 if (this.lastChild != null && 
-                    ((TextNode)this.lastChild).TryConsume(token, remainder))
+                    ((SpanNode)this.lastChild).TryConsume(token, remainder))
                 {
                     //
                     // Continuation of last span.
@@ -621,17 +626,26 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            public static TextNode Parse(string markdown)
+            public static SpanNode Parse(string markdown)
             {
-                var node = new TextNode();
+                var node = new SpanNode();
                 node.TryConsume(markdown);
                 return node;
             }
         }
 
-        public class TextSpanNode : TextNode
+        public class TextNode : SpanNode
         {
-            public override string Value => $"[TextSpanNode] {this.Text}";
+            private readonly bool space;
+            public string Text { get; protected set; }
+
+            public override string Value => $"[Text] {this.Text}";
+
+            public TextNode(string text, bool space)
+            {
+                this.Text = text;
+                this.space = space;
+            }
 
             protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
             {
@@ -641,22 +655,32 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else
                 {
-                    return base.TryConsume(token, remainder);
+                    if (this.space)
+                    {
+                        this.Text = this.Text + " " + token.Value;
+                    }
+                    else
+                    {
+                        this.Text += token.Value;
+                    }
+                    return true;
                 }
             }
         }
 
-        public class EmphasisSpanNode : TextNode
+        public class EmphasisNode : SpanNode
         {
             private readonly string delimiter;
             private bool bodyCompleted = false;
 
-            public EmphasisSpanNode(string delimiter)
+            public string Text { get; protected set; }
+
+            public EmphasisNode(string delimiter)
             {
                 this.delimiter = delimiter;
             }
 
-            public override string Value => $"[EmphasisSpan] {this.Text}";
+            public override string Value => $"[Emphasis] {this.Text}";
 
             protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
             {
@@ -681,20 +705,21 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
-        public class StrongEmphasisSpanNode : EmphasisSpanNode
+        public class StrongEmphasisNode : EmphasisNode
         {
-            public StrongEmphasisSpanNode() : base("**")
+            public StrongEmphasisNode() : base("**")
             {
             }
 
-            public override string Value => $"[StrongEmphasisSpan] {this.Text}";
+            public override string Value => $"[StrongEmphasis] {this.Text}";
         }
 
-        public class LinkSpanNode : TextNode
+        public class LinkSpanNode : SpanNode
         {
             private bool linkBodyCompleted = false;
             private bool linkHrefCompleted = false;
-            public override string Value => $"[LinkSpan href={this.Text}]";
+            public override string Value => $"[LinkSpan href={this.Href}]";
+            public string Href { get; protected set; }
 
             protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
             {
@@ -710,7 +735,7 @@ namespace Google.Solutions.Mvvm.Format
                     //
                     // Building the link href.
                     //
-                    if (this.Text == string.Empty && token == new Token(TokenType.Delimiter, "("))
+                    if (this.Href == string.Empty && token == new Token(TokenType.Delimiter, "("))
                     {
                         return true;
                     }
@@ -721,7 +746,7 @@ namespace Google.Solutions.Mvvm.Format
                     }
                     else
                     {
-                        this.Text += token.Value;
+                        this.Href += token.Value;
                         return true;
                     }
                 }
