@@ -1,7 +1,7 @@
 ﻿
 namespace Google.Solutions.Mvvm.Controls
 {
-    partial class MarkdownView
+    partial class MarkdownViewer
     {
         /// <summary> 
         /// Required designer variable.
@@ -38,16 +38,17 @@ namespace Google.Solutions.Mvvm.Controls
             this.richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBox.Location = new System.Drawing.Point(0, 0);
             this.richTextBox.Name = "richTextBox";
+            this.richTextBox.ReadOnly = true;
             this.richTextBox.Size = new System.Drawing.Size(150, 150);
             this.richTextBox.TabIndex = 0;
             this.richTextBox.Text = "";
             // 
-            // MarkdownView
+            // MarkdownViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.richTextBox);
-            this.Name = "MarkdownView";
+            this.Name = "MarkdownViewer";
             this.ResumeLayout(false);
 
         }

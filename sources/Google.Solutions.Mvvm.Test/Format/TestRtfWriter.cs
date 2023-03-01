@@ -72,12 +72,12 @@ namespace Google.Solutions.Mvvm.Test.Format
 
 
                 writer.WriteParagraphStart();
-                writer.WriteListItem(-270, 360);
+                writer.WriteUnorderedListItem(-270, 360);
                 writer.WriteText("first\nlevel");
                 writer.WriteParagraphEnd();
 
                 writer.WriteParagraphStart();
-                writer.WriteListItem(-270, 720);
+                writer.WriteUnorderedListItem(-270, 720);
                 writer.WriteText("second\nlevel");
                 writer.WriteParagraphEnd();
 

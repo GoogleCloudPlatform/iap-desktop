@@ -289,7 +289,7 @@ namespace Google.Solutions.Mvvm.Format
                 // lines.
                 //
                 var indent = line.IndexOf(' ');
-                while (line[indent] == ' ')
+                while (indent < line.Length && line[indent] == ' ')
                 {
                     indent++;
                 }
@@ -353,7 +353,7 @@ namespace Google.Solutions.Mvvm.Format
                 // lines.
                 //
                 var indent = 1;
-                while (line[indent] == ' ')
+                while (indent < line.Length && line[indent] == ' ')
                 {
                     indent++;
                 }
@@ -393,7 +393,7 @@ namespace Google.Solutions.Mvvm.Format
         /// <summary>
         /// Document, this forms the root of the tree.
         /// </summary>
-        public class DocumentNode : Node
+        public class DocumentNode : Node // TODO: remove "Node" suffix
         {
             protected override Node CreateNode(string line)
             {
@@ -598,7 +598,7 @@ namespace Google.Solutions.Mvvm.Format
                         .Skip(1)
                         .FirstOrDefault() == new Token(TokenType.Delimiter, "("))
                 {
-                    return new LinkSpanNode();
+                    return new LinkNode();
                 }
                 else
                 {
@@ -736,7 +736,7 @@ namespace Google.Solutions.Mvvm.Format
         /// <summary>
         /// Link. Links can contain formatted text.
         /// </summary>
-        public class LinkSpanNode : SpanNode
+        public class LinkNode : SpanNode
         {
             private bool linkBodyCompleted = false;
             private bool linkHrefCompleted = false;
@@ -757,7 +757,7 @@ namespace Google.Solutions.Mvvm.Format
                     //
                     // Building the link href.
                     //
-                    if (this.Href == string.Empty && token == new Token(TokenType.Delimiter, "("))
+                    if (this.Href == null && token == new Token(TokenType.Delimiter, "("))
                     {
                         return true;
                     }

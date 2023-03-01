@@ -75,11 +75,11 @@
     <Compile Include="Controls\DropDownButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\MarkdownView.cs">
+    <Compile Include="Controls\MarkdownViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\MarkdownView.Designer.cs">
-      <DependentUpon>MarkdownView.cs</DependentUpon>
+    <Compile Include="Controls\MarkdownViewer.Designer.cs">
+      <DependentUpon>MarkdownViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="Drawing\FontExtensions.cs" />
     <Compile Include="Controls\ProgressBar.cs">
@@ -105,6 +105,7 @@
     <Compile Include="Drawing\HslColor.cs" />
     <Compile Include="Drawing\IconInverter.cs" />
     <Compile Include="Format\MarkdownDocument.cs" />
+    <Compile Include="Format\MarkdownToRtf.cs" />
     <Compile Include="Format\RtfWriter.cs" />
     <Compile Include="Interop\SubclassCallback.cs" />
     <Compile Include="Interop\WindowMessage.cs" />
@@ -153,8 +154,8 @@
     <EmbeddedResource Include="Controls\FileBrowser.resx">
       <DependentUpon>FileBrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\MarkdownView.resx">
-      <DependentUpon>MarkdownView.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\MarkdownViewer.resx">
+      <DependentUpon>MarkdownViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SearchableList.resx">
       <DependentUpon>SearchableList.cs</DependentUpon>

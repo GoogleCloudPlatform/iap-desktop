@@ -425,7 +425,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "[Document]\n" +
                 " [Span]\n" +
                 "  [Text] a \n" +
-                "  [Link href=(href]\n" +
+                "  [Link href=href]\n" +
                 "   [Text] link\n" +
                 "  [Text] .\n",
                 doc.ToString());
@@ -441,7 +441,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "[Document]\n" +
                 " [Span]\n" +
                 "  [Text] a \n" +
-                "  [Link href=(href]\n" +
+                "  [Link href=href]\n" +
                 "   [Text] link \n" +
                 "   [Emphasis delimiter=**] emph\n" +
                 "   [Text]  \n   [Emphasis delimiter=*] and\n" +

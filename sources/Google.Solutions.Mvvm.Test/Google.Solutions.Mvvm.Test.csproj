@@ -77,6 +77,12 @@
     <Compile Include="Controls\TestBindableComboBox.cs" />
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
+    <Compile Include="Controls\TestMarkdownViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\TestMarkdownViewer.Designer.cs">
+      <DependentUpon>TestMarkdownViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TestProgressBar.cs" />
     <Compile Include="Controls\TestFileBrowser.cs" />
     <Compile Include="Controls\TestFileBrowserUi.cs" />
@@ -125,6 +131,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\TestMarkdownViewer.resx">
+      <DependentUpon>TestMarkdownViewer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Drawing\TestIconInverter.resx">
       <DependentUpon>TestIconInverter.cs</DependentUpon>
     </EmbeddedResource>

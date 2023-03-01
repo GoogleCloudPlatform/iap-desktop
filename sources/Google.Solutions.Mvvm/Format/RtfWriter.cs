@@ -1,11 +1,7 @@
 ﻿using Google.Solutions.Common.Util;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Mvvm.Format
 {
@@ -19,7 +15,6 @@ namespace Google.Solutions.Mvvm.Format
         // https://metacpan.org/dist/RTF-Writer/view/lib/RTF/Cookbook.pod.
         //
         private readonly TextWriter writer;
-        private readonly Encoding encoding;
 
         public RtfWriter(TextWriter writer)
         {
@@ -48,16 +43,11 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     this.writer.Write("\\line ");
                 }
-                else if (c >= 0x80 && c <= 0xFF)
+                else if (c >= 0x80)
                 {
-                    var b = this.encoding.GetBytes(new[] { c });
-                    this.writer.Write("\'");
-                    this.writer.Write(b[0].ToString("X2"));
-                }
-                else if (c > 0xFF)
-                {
-                    // TODO: Unicode?
-                    throw new FormatException("The text contains a non-ASCII character");
+                    this.writer.Write("\\u");
+                    this.writer.Write(Convert.ToUInt32(c));
+                    this.writer.Write("?");
                 }
                 else
                 {
@@ -126,17 +116,37 @@ namespace Google.Solutions.Mvvm.Format
 
         public void WriteHyperlink(string text, string href)
         {
-            this.writer.Write("{\\field{\\*\\fldinst{HYPERLINK \"");
+            WriteHyperlinkStart(href);
+            WriteText(text);
+            WriteHyperlinkEnd();
+        }
+
+        public void WriteHyperlinkStart(string href)
+        {
+            this.writer.Write("{\\field{\\*\\fldinst{HYPERLINK ");
             this.writer.Write(href);
-            this.writer.Write("\"}}{\\fldrslt{\\ul");
-            this.writer.Write(text);
+            this.writer.Write("}}{\\fldrslt{");
+        }
+
+        public void WriteHyperlinkEnd()
+        { 
             this.writer.Write("}}}\n");
         }
 
-        public void WriteListItem(int firstLineIndent, int blockIndent)
+        public void WriteUnorderedListItem(int firstLineIndent, int blockIndent)
         {
             this.writer.Write("{\\pntext\\bullet\\tab}");
             this.writer.Write("{\\*\\pn\\pnlvlblt\\pnf2\\pnindent0{\\pntxtb\\bullet}}");
+            this.writer.Write("\\fi");
+            this.writer.Write(firstLineIndent.ToString());
+            this.writer.Write("\\li");
+            this.writer.Write(blockIndent.ToString());
+        }
+
+        public void WriteOrderedListItem(int firstLineIndent, int blockIndent, int number)
+        {
+            this.writer.Write("{\\pntext\\" + number + "\\tab}");
+            this.writer.Write("{\\*\\pn\\pnlvlbody\\pnf0\\pnindent0\\pnstart1\\pndec{\\pntxta.}}");
             this.writer.Write("\\fi");
             this.writer.Write(firstLineIndent.ToString());
             this.writer.Write("\\li");
