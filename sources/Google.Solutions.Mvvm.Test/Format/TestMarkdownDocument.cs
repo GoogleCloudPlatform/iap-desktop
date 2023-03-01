@@ -309,7 +309,7 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         //---------------------------------------------------------------------
-        // Emphasis.
+        // Emphasis (Underscore).
         //---------------------------------------------------------------------
 
         [Test]
@@ -322,9 +322,9 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "[Document]\n" +
                 " [Span]\n" +
                 "  [Text] one \n" +
-                "  [Emphasis] two\n" +
+                "  [Emphasis delimiter=_] two\n" +
                 "  [Text]  three \n" +
-                "  [Emphasis] four\n",
+                "  [Emphasis delimiter=_] four\n",
                 doc.ToString());
         }
 
@@ -338,17 +338,119 @@ namespace Google.Solutions.Mvvm.Test.Format
                 "[Document]\n" +
                 " [Span]\n" +
                 "  [Text] one \n" +
-                "  [Emphasis] two\n" +
+                "  [Emphasis delimiter=_] two\n" +
                 "  [Text]  \n" +
                 "  [Text] _ three\n",
                 doc.ToString());
         }
 
+        //---------------------------------------------------------------------
+        // Emphasis (Asterisk).
+        //---------------------------------------------------------------------
+
         [Test]
-        public void __()
+        public void EmphasisWithAsterisks()
         {
-            var span = MarkdownDocument.SpanNode.Parse("this is [a link](href) to *nowhere*");
-            Assert.IsNotNull(span);
+            var doc = MarkdownDocument.Parse(
+                 "one *two* three *four*");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] one \n" +
+                "  [Emphasis delimiter=*] two\n" +
+                "  [Text]  three \n" +
+                "  [Emphasis delimiter=*] four\n",
+                doc.ToString());
+        }
+
+        [Test]
+        public void SpuriousAsterisk()
+        {
+            var doc = MarkdownDocument.Parse(
+                 "one *two* * three");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] one \n" +
+                "  [Emphasis delimiter=*] two\n" +
+                "  [Text]  \n" +
+                "  [Text] * three\n",
+                doc.ToString());
+        }
+
+        //---------------------------------------------------------------------
+        // StrongEmphasis.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void StrongEmphasis()
+        {
+            var doc = MarkdownDocument.Parse(
+                 "one **two** three **four**");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] one \n" +
+                "  [Emphasis delimiter=**] two\n" +
+                "  [Text]  three \n" +
+                "  [Emphasis delimiter=**] four\n",
+                doc.ToString());
+        }
+
+        [Test]
+        public void SpuriousDoubleAsterisk()
+        {
+            var doc = MarkdownDocument.Parse(
+                 "one ** three");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] one \n" +
+                "  [Text] ** three\n",
+                doc.ToString());
+        }
+
+        //---------------------------------------------------------------------
+        // Link.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Link()
+        {
+            var doc = MarkdownDocument.Parse(
+                 "a [link](href).");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] a \n" +
+                "  [Link href=(href]\n" +
+                "   [Text] link\n" +
+                "  [Text] .\n",
+                doc.ToString());
+        }
+
+        [Test]
+        public void LinkWithEmphasis()
+        {
+            var doc = MarkdownDocument.Parse(
+                 "a [link **emph** *and* _more_](href).");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] a \n" +
+                "  [Link href=(href]\n" +
+                "   [Text] link \n" +
+                "   [Emphasis delimiter=**] emph\n" +
+                "   [Text]  \n   [Emphasis delimiter=*] and\n" +
+                "   [Text]  \n   [Emphasis delimiter=_] more\n" +
+                "  [Text] .\n",
+                doc.ToString());
         }
 
         //---------------------------------------------------------------------

@@ -449,7 +449,7 @@ namespace Google.Solutions.Mvvm.Format
 
             internal Token(TokenType type, string value)
             {
-                Debug.Assert(type != TokenType.Delimiter || value.Length == 1);
+                Debug.Assert(type != TokenType.Delimiter || value.Length <= 2);
 
                 this.Type = type;
                 this.Value = value;
@@ -463,6 +463,27 @@ namespace Google.Solutions.Mvvm.Format
                     switch (text[i])
                     {
                         case '*':
+                            {
+                                if (textStart >= 0 && i - textStart > 0)
+                                {
+                                    //
+                                    // Flush previous text token, if non-empty.
+                                    //
+                                    yield return new Token(TokenType.Text, text.Substring(textStart, i - textStart));
+                                    textStart = -1;
+                                }
+
+                                if (i + 1 < text.Length && text[i + 1] == '*')
+                                {
+                                    i++;
+                                    yield return new Token(TokenType.Delimiter, "**");
+                                }
+                                else
+                                {
+                                    yield return new Token(TokenType.Delimiter, "*");
+                                }
+                                break;
+                            }
                         case '_':
                         case '[':
                         case ']':
@@ -552,25 +573,15 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     return new TextNode(token.Value, true);
                 }
-                else if (token.Value == "_" &&
+                
+                if ((token.Value == "_" || token.Value == "*" || token.Value == "**") &&
                     remainder.FirstOrDefault() is Token next &&
                     next != null &&
                     next.Type == TokenType.Text &&
                     next.Value.Length > 1 &&
                     !NonLineBreakingWhitespace.Contains(next.Value[0]))
                 {
-                    return new EmphasisNode("_");
-                }
-                else if (token.Value == "*")
-                {
-                    if (remainder.FirstOrDefault() == new Token(TokenType.Delimiter, "*"))
-                    {
-                        return new StrongEmphasisNode();
-                    }
-                    else
-                    {
-                        return new EmphasisNode("*");
-                    }
+                    return new EmphasisNode(token.Value);
                 }
                 else if (token.Value == "[" &&
                     remainder
@@ -670,17 +681,17 @@ namespace Google.Solutions.Mvvm.Format
 
         public class EmphasisNode : SpanNode
         {
-            private readonly string delimiter;
             private bool bodyCompleted = false;
 
             public string Text { get; protected set; }
+            public string Delimiter { get; }
 
             public EmphasisNode(string delimiter)
             {
-                this.delimiter = delimiter;
+                this.Delimiter = delimiter;
             }
 
-            public override string Value => $"[Emphasis] {this.Text}";
+            public override string Value => $"[Emphasis delimiter={this.Delimiter}] {this.Text}";
 
             protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
             {
@@ -688,7 +699,7 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     return false;
                 }
-                else if (token.Type == TokenType.Delimiter && token.Value == this.delimiter)
+                else if (token.Type == TokenType.Delimiter && token.Value == this.Delimiter)
                 {
                     this.bodyCompleted = true;
                     return true;
@@ -705,20 +716,11 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
-        public class StrongEmphasisNode : EmphasisNode
-        {
-            public StrongEmphasisNode() : base("**")
-            {
-            }
-
-            public override string Value => $"[StrongEmphasis] {this.Text}";
-        }
-
         public class LinkSpanNode : SpanNode
         {
             private bool linkBodyCompleted = false;
             private bool linkHrefCompleted = false;
-            public override string Value => $"[LinkSpan href={this.Href}]";
+            public override string Value => $"[Link href={this.Href}]";
             public string Href { get; protected set; }
 
             protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
