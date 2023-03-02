@@ -132,17 +132,17 @@
                 font-size: 14px;
                 color: #5f6368;
                 text-align: center;
+                
+                
+                background-color: #F5F5F5;
+                color: black;
             }
             
             h1 {
                 font-size: 24px;
                 font-weight: normal;
-                color: #202124;
+                color: #6288F2;
                 font-weight: 400;
-            }
-            
-            .product {
-                color: #1a73e8;
             }
             
             .container-outer {
@@ -164,8 +164,21 @@
                 margin-right: auto;
                 width: 420px;
                 padding: 30px;
-                border-radius: 10px;
                 border: 1px solid lightgray;
+                background-color: white;
+            }
+            
+            /* Dark mode */
+            @media (prefers-color-scheme: dark) {
+                body {
+                    background-color: #555555;
+                    color: #F1F1F1;
+                }
+                
+                .container-content {
+                    background-color: #2D3031;
+                    border: 0px;
+                }
             }
         &lt;/style&gt;
     &lt;/head&gt;
