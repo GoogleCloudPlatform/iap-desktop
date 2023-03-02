@@ -52,9 +52,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private void InitializeComponent()
         {
             this.themeBox = new System.Windows.Forms.GroupBox();
-            this.themeLabel = new System.Windows.Forms.Label();
-            this.theme = new BindableComboBox();
             this.themeInfoLabel = new System.Windows.Forms.Label();
+            this.themeLabel = new System.Windows.Forms.Label();
+            this.theme = new Google.Solutions.Mvvm.Controls.BindableComboBox();
             this.themeBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,10 +65,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.themeBox.Controls.Add(this.theme);
             this.themeBox.Location = new System.Drawing.Point(4, 3);
             this.themeBox.Name = "themeBox";
-            this.themeBox.Size = new System.Drawing.Size(336, 79);
+            this.themeBox.Size = new System.Drawing.Size(336, 85);
             this.themeBox.TabIndex = 0;
             this.themeBox.TabStop = false;
             this.themeBox.Text = "Theme:";
+            // 
+            // themeInfoLabel
+            // 
+            this.themeInfoLabel.AutoSize = true;
+            this.themeInfoLabel.Location = new System.Drawing.Point(83, 49);
+            this.themeInfoLabel.Name = "themeInfoLabel";
+            this.themeInfoLabel.Size = new System.Drawing.Size(16, 13);
+            this.themeInfoLabel.TabIndex = 4;
+            this.themeInfoLabel.Text = "...";
             // 
             // themeLabel
             // 
@@ -87,15 +96,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.theme.Name = "theme";
             this.theme.Size = new System.Drawing.Size(154, 21);
             this.theme.TabIndex = 3;
-            // 
-            // themeInfoLabel
-            // 
-            this.themeInfoLabel.AutoSize = true;
-            this.themeInfoLabel.Location = new System.Drawing.Point(86, 49);
-            this.themeInfoLabel.Name = "themeInfoLabel";
-            this.themeInfoLabel.Size = new System.Drawing.Size(16, 13);
-            this.themeInfoLabel.TabIndex = 4;
-            this.themeInfoLabel.Text = "...";
             // 
             // AppearanceOptionsSheet
             // 
