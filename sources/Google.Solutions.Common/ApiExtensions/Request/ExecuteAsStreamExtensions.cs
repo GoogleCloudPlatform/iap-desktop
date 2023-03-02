@@ -40,14 +40,17 @@ namespace Google.Solutions.Common.ApiExtensions.Request
         {
             using (var httpRequest = request.CreateRequest())
             {
-                var httpResponse = await request.Service.HttpClient.SendAsync(
-                    httpRequest,
-                    cancellationToken).ConfigureAwait(false);
+                var httpResponse = await request.Service.HttpClient
+                    .SendAsync(httpRequest, cancellationToken)
+                    .ConfigureAwait(false);
 
                 // NB. ExecuteAsStream does not do this check.
                 if (!httpResponse.IsSuccessStatusCode)
                 {
-                    var error = await request.Service.DeserializeError(httpResponse).ConfigureAwait(false);
+                    var error = await request.Service
+                        .DeserializeError(httpResponse)
+                        .ConfigureAwait(false);
+
                     throw new GoogleApiException(request.Service.Name, error.ToString())
                     {
                         Error = error,
@@ -56,7 +59,9 @@ namespace Google.Solutions.Common.ApiExtensions.Request
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
-                return await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                return await httpResponse.Content
+                    .ReadAsStreamAsync()
+                    .ConfigureAwait(false);
             }
         }
 
@@ -72,11 +77,13 @@ namespace Google.Solutions.Common.ApiExtensions.Request
                 {
                     return await request
                         .ExecuteAsStreamOrThrowAsync(cancellationToken)
-                        .ConfigureAwait(false); ;
+                        .ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 429)
                 {
+                    //
                     // Too many requests.
+                    //
                     if (retries < backOff.MaxNumOfRetries)
                     {
                         CommonTraceSources.Default.TraceWarning(
@@ -89,7 +96,9 @@ namespace Google.Solutions.Common.ApiExtensions.Request
                     }
                     else
                     {
+                        //
                         // Retried too often already.
+                        //
                         CommonTraceSources.Default.TraceWarning("Giving up after {0} retries", retries);
                         throw;
                     }
