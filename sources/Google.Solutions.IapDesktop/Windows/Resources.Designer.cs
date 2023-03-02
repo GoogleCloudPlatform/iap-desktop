@@ -71,15 +71,15 @@ namespace Google.Solutions.IapDesktop.Windows {
         ///                font-size: 14px;
         ///                color: #5f6368;
         ///                text-align: center;
+        ///                
+        ///                
+        ///                background-color: #F5F5F5;
+        ///                color: black;
         ///            }
         ///            
         ///            h1 {
         ///                font-size: 24px;
-        ///                font-weight: normal;
-        ///                color: #202124;
-        ///                font-weight: 400;
-        ///            }
-        ///          [rest of string was truncated]&quot;;.
+        ///                fon [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AuthorizationSuccessful {
             get {
