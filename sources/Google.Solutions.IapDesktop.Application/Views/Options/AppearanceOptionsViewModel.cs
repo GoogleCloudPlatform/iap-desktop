@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.IsThemeEditable = WindowsTheme.IsDarkModeSupported;
             this.ThemeInfoText = this.IsThemeEditable
                 ? "Changes take effect after relaunch"
-                : "Themes are not supported on this version of Windows";
+                : "Themes are not supported on this version\nof Windows";
             this.SelectedTheme = ObservableProperty.Build(settings.Theme.EnumValue);
 
             MarkDirtyWhenPropertyChanges(this.SelectedTheme);
