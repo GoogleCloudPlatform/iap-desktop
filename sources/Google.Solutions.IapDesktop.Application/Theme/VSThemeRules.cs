@@ -77,6 +77,17 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             dockPanel.Theme = theme;
         }
 
+        private static void StyleToolWindow(ToolWindow window, ControlTheme controlTheme)
+        {
+            if (window.TabPageContextMenuStrip != null)
+            {
+                //
+                // Apply the entire control theme.
+                //
+                controlTheme.ApplyTo(window.TabPageContextMenuStrip);
+            }
+        }
+
         private static void StyleHeaderLabel(HeaderLabel headerLabel)
         {
             headerLabel.ForeColor = AccentColor;
@@ -404,6 +415,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             controlTheme.AddRule<Form>(c => StyleDockWindow(c, theme));
             controlTheme.AddRule<DockPanel>(c => StyleDockPanel(c, theme));
+            controlTheme.AddRule<ToolWindow>(c => StyleToolWindow(c, controlTheme));
             controlTheme.AddRule<FlyoutWindow>(c => StyleFlyoutWindow(c, theme));
 
             return AddCommonRules(controlTheme, theme);

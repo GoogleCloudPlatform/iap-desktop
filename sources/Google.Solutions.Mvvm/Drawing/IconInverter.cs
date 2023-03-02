@@ -20,8 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -36,6 +34,15 @@ namespace Google.Solutions.Mvvm.Drawing
     /// </summary>
     public class IconInverter
     {
+        private static readonly byte[] GuardPixelBGRA = new byte[]
+        {
+#if DEBUG
+            0xFF, 0x00 , 0xFF, 0xFF // Magenta, easy to see
+#else
+            0xFF, 0x00 , 0xFF, 0x00 // Transparent magenta, shouldn't be visible
+#endif
+        };
+
         private float grayFactor = 1;
         private float colorFactor = 1;
 
@@ -76,7 +83,8 @@ namespace Google.Solutions.Mvvm.Drawing
         /// - Grays are inverted and adjusted using the GrayFactor.
         /// - Colors have their luminosity adjusted using the Color factor.
         /// </summary>
-        public void Invert(Bitmap bitmapImage)
+        /// <returns>true if inverted, false if it was inverted before.</returns>
+        public bool Invert(Bitmap bitmapImage)
         {
             var dimensions = new Rectangle(
                 0,
@@ -94,14 +102,17 @@ namespace Google.Solutions.Mvvm.Drawing
             Marshal.Copy(bitmapRead.Scan0, bitmapBGRA, 0, bitmapLength);
             bitmapImage.UnlockBits(bitmapRead);
 
-#if DEBUG
-            Debug.Assert(!(
-                bitmapBGRA[0] == 0xFF &&
-                bitmapBGRA[1] == 0x00 &&
-                bitmapBGRA[2] == 0xFF &&
-                bitmapBGRA[3] == 0xFF),
-                "Icon has been inverted already");
-#endif
+            if (
+                bitmapBGRA[0] == GuardPixelBGRA[0] &&
+                bitmapBGRA[1] == GuardPixelBGRA[1] &&
+                bitmapBGRA[2] == GuardPixelBGRA[2] &&
+                bitmapBGRA[3] == GuardPixelBGRA[3])
+            {
+                //
+                // Icon has been inverted already.
+                //
+                return false;
+            }
 
             for (int i = 0; i < bitmapLength; i += 4)
             {
@@ -149,18 +160,13 @@ namespace Google.Solutions.Mvvm.Drawing
                 bitmapBGRA[i + 2] = rgb.R;
             }
 
-#if DEBUG
             //
-            // Add magenta pixel to make as indicator that this icon was inverted.
+            // Add guard pixel as indicator that this icon was inverted.
             //
-            for (int i = 0; i < 8; i += 4)
-            {
-                bitmapBGRA[i + 0] = 0xFF;
-                bitmapBGRA[i + 1] = 0x00;
-                bitmapBGRA[i + 2] = 0xFF;
-                bitmapBGRA[i + 3] = 0xFF;
-            }
-#endif
+            bitmapBGRA[0] = GuardPixelBGRA[0];
+            bitmapBGRA[1] = GuardPixelBGRA[1];
+            bitmapBGRA[2] = GuardPixelBGRA[2];
+            bitmapBGRA[3] = GuardPixelBGRA[3];
 
             var bitmapWrite = bitmapImage.LockBits(
                 dimensions, 
@@ -169,6 +175,8 @@ namespace Google.Solutions.Mvvm.Drawing
             
             Marshal.Copy(bitmapBGRA, 0, bitmapWrite.Scan0, bitmapLength);
             bitmapImage.UnlockBits(bitmapWrite);
+
+            return true;
         }
 
         /// <summary>
