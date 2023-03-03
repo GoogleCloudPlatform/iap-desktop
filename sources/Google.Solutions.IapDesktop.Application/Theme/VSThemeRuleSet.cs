@@ -39,16 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     {
         private static Bitmap listBackgroundImage;
 
-        private static readonly IconInverter darkModeIconInverter = new IconInverter()
-        {
-            //
-            // NB. These factors are chosen based on what looked good, there's
-            // no science behind them.
-            //
-            InvertGray = true,
-            GrayFactor = .63f,
-            ColorFactor = .95f
-        };
+        private readonly IconInverter darkModeIconInverter;
 
         protected static Color AccentColor { get; set; } = Color.FromArgb(98, 136, 242);
 
@@ -57,6 +48,25 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         protected VSThemeRuleSetBase(VSTheme theme)
         {
             this.theme = theme.ThrowIfNull(nameof(theme));
+            this.darkModeIconInverter = new IconInverter()
+            {
+                //
+                // NB. These factors are chosen based on what looked good, there's
+                // no science behind them.
+                //
+                InvertGray = true,
+                GrayFactor = .63f,
+                ColorFactor = .95f,
+#if DEBUG
+                GuardPixelColor = Color.Magenta // Visible color
+#else
+                GuardPixelColor = Color.FromArgb( // Quasi-invisible color
+                    0x01,
+                    this.theme.ColorPalette.CommandBarMenuDefault.Background.R,
+                    this.theme.ColorPalette.CommandBarMenuDefault.Background.G,
+                    this.theme.ColorPalette.CommandBarMenuDefault.Background.B)
+#endif
+                };
         }
 
         //---------------------------------------------------------------------
@@ -143,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             {
                 if (item.Image is Bitmap bitmap)
                 {
-                    darkModeIconInverter.Invert(bitmap);
+                    this.darkModeIconInverter.Invert(bitmap);
                 }
             }
         }

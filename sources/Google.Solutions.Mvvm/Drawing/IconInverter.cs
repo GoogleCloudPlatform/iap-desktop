@@ -34,15 +34,6 @@ namespace Google.Solutions.Mvvm.Drawing
     /// </summary>
     public class IconInverter
     {
-        private static readonly byte[] GuardPixelBGRA = new byte[]
-        {
-#if DEBUG
-            0xFF, 0x00 , 0xFF, 0xFF // Magenta, easy to see
-#else
-            0xFF, 0x00 , 0xFF, 0x00 // Transparent magenta, shouldn't be visible
-#endif
-        };
-
         private float grayFactor = 1;
         private float colorFactor = 1;
 
@@ -76,6 +67,17 @@ namespace Google.Solutions.Mvvm.Drawing
             }
         }
 
+        /// <summary>
+        /// Color to use for the guard pixel (top left). The guard pixel
+        /// is used to track whether an image has been inverted before,
+        /// and to prevent double-inversion. Set to the color of the
+        /// background so that it's effectively invisible.
+        /// </summary>
+        public Color GuardPixelColor { get; set; } = Color.Cyan;
+
+        /// <summary>
+        /// Invert gray-ish colors.
+        /// </summary>
         public bool InvertGray { get; set; } = true;
 
         /// <summary>
@@ -102,14 +104,13 @@ namespace Google.Solutions.Mvvm.Drawing
             Marshal.Copy(bitmapRead.Scan0, bitmapBGRA, 0, bitmapLength);
             bitmapImage.UnlockBits(bitmapRead);
 
-            if (
-                bitmapBGRA[0] == GuardPixelBGRA[0] &&
-                bitmapBGRA[1] == GuardPixelBGRA[1] &&
-                bitmapBGRA[2] == GuardPixelBGRA[2] &&
-                bitmapBGRA[3] == GuardPixelBGRA[3])
+            if (bitmapBGRA[3] == this.GuardPixelColor.A)
             {
                 //
                 // Icon has been inverted already.
+                //
+                // NB. We only check the Alpha value as the other
+                // values might not be preserved reliably.
                 //
                 return false;
             }
@@ -163,10 +164,10 @@ namespace Google.Solutions.Mvvm.Drawing
             //
             // Add guard pixel as indicator that this icon was inverted.
             //
-            bitmapBGRA[0] = GuardPixelBGRA[0];
-            bitmapBGRA[1] = GuardPixelBGRA[1];
-            bitmapBGRA[2] = GuardPixelBGRA[2];
-            bitmapBGRA[3] = GuardPixelBGRA[3];
+            bitmapBGRA[0] = this.GuardPixelColor.B;
+            bitmapBGRA[1] = this.GuardPixelColor.G;
+            bitmapBGRA[2] = this.GuardPixelColor.R;
+            bitmapBGRA[3] = this.GuardPixelColor.A;
 
             var bitmapWrite = bitmapImage.LockBits(
                 dimensions, 
