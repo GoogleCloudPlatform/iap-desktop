@@ -36,50 +36,50 @@ namespace Google.Solutions.Mvvm.Test.Format
             using (var buffer = new StringWriter())
             using (var writer = new RtfWriter(buffer))
             {
-                writer.WriteHeader(FontFamily.GenericSansSerif);
+                writer.StartDocument(FontFamily.GenericSansSerif);
 
-                writer.WriteParagraphStart();
+                writer.StartParagraph();
                 writer.SetFontSize(36);
                 writer.SetBold(true);
                 writer.WriteText("Headline");
                 writer.SetBold(false);
                 writer.SetFontSize(12);
-                writer.WriteParagraphEnd();
+                writer.EndParagraph();
 
-                writer.WriteParagraphStart();
+                writer.StartParagraph();
                 writer.SetBold(true);
                 writer.WriteText("Hello world");
                 writer.SetBold(false);
-                writer.WriteParagraphEnd();
+                writer.EndParagraph();
 
-                writer.WriteParagraphStart();
+                writer.StartParagraph();
                 writer.SetItalic(true);
                 writer.WriteText("Hello world");
                 writer.SetItalic(false);
-                writer.WriteParagraphEnd();
+                writer.EndParagraph();
 
-                writer.WriteParagraphStart();
+                writer.StartParagraph();
                 writer.SetUnderline(true);
                 writer.WriteText("Hello world");
                 writer.SetUnderline(false);
-                writer.WriteParagraphEnd();
+                writer.EndParagraph();
 
-                writer.WriteParagraphStart();
+                writer.StartParagraph();
                 writer.SetUnderline(true);
-                writer.WriteHyperlink("Google", "https://Google.com/");
+                writer.Hyperlink("Google", "https://Google.com/");
                 writer.SetUnderline(false);
-                writer.WriteParagraphEnd();
+                writer.EndParagraph();
 
 
-                writer.WriteParagraphStart();
-                writer.WriteUnorderedListItem(-270, 360);
+                writer.StartParagraph();
+                writer.UnorderedListItem(-270, 360);
                 writer.WriteText("first\nlevel");
-                writer.WriteParagraphEnd();
+                writer.EndParagraph();
 
-                writer.WriteParagraphStart();
-                writer.WriteUnorderedListItem(-270, 720);
+                writer.StartParagraph();
+                writer.UnorderedListItem(-270, 720);
                 writer.WriteText("second\nlevel");
-                writer.WriteParagraphEnd();
+                writer.EndParagraph();
 
 
                 var s = buffer.ToString();

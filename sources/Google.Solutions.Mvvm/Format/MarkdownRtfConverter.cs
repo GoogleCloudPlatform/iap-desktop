@@ -13,12 +13,17 @@ namespace Google.Solutions.Mvvm.Format
     {
         public ColorTable Colors { get; } = new ColorTable();
         public FontTable Fonts { get; } = new FontTable();
+        public LayoutTable Layout { get; } = new LayoutTable();
 
         public void Convert(
             MarkdownDocument document,
             RtfWriter writer)
         {
-            using (var visitor = new NodeVisitor(this.Fonts, this.Colors, writer))
+            using (var visitor = new NodeVisitor(
+                this.Layout,
+                this.Fonts, 
+                this.Colors,
+                writer))
             {
                 visitor.Visit(document.Root);
             }
@@ -71,6 +76,12 @@ namespace Google.Solutions.Mvvm.Format
             public uint FontSize = 10;
         }
 
+        public class LayoutTable
+        {
+            public uint SpaceBeforeParagraph { get; set; } = 300;
+            public uint SpaceAfterParagraph { get; set; } = 300;
+        }
+
         /// <summary>
         /// Visitor class.
         /// </summary>
@@ -80,6 +91,8 @@ namespace Google.Solutions.Mvvm.Format
             private const int BlockIndent = 360;
 
             protected readonly RtfWriter writer;
+
+            private readonly LayoutTable layoutTable;
             private readonly FontTable fontTable;
             private readonly ColorTable colorTable;
 
@@ -106,11 +119,13 @@ namespace Google.Solutions.Mvvm.Format
             }
 
             public NodeVisitor(
+                LayoutTable layoutTable,
                 FontTable fontTable,
                 ColorTable colorTable,
                 RtfWriter writer,
                 uint indentationLevel = 0)
             {
+                this.layoutTable = layoutTable;
                 this.fontTable = fontTable;
                 this.colorTable = colorTable;
                 this.writer = writer;
@@ -121,30 +136,35 @@ namespace Google.Solutions.Mvvm.Format
             // Paragraph management.
             //-----------------------------------------------------------------
 
-            private void ContinueParagraph()
-            {
-                if (!this.inParagraph)
-                {
-                    this.inParagraph = true;
-                    this.writer.WriteParagraphStart();
-                }
-            }
-
             private void EndParagraph()
             {
                 if (this.inParagraph)
                 {
                     this.inParagraph = false;
-                    this.writer.WriteParagraphEnd();
+                    this.writer.EndParagraph();
                 }
             }
-            private void StartParagraph(uint fontSize)
+
+            private void StartParagraph(uint fontSize, uint spaceBefore, uint spaceAfter)
             {
                 EndParagraph();
 
                 this.inParagraph = true;
-                this.writer.WriteParagraphStart();
+                this.writer.StartParagraph();
+                this.writer.SetSpaceBefore(spaceBefore);
+                this.writer.SetSpaceAfter(spaceAfter);
                 this.writer.SetFontSize(fontSize);
+            }
+
+            private void ContinueParagraph()
+            {
+                if (!this.inParagraph)
+                {
+                    StartParagraph(
+                        this.fontTable.FontSize,
+                        this.layoutTable.SpaceBeforeParagraph,
+                        this.layoutTable.SpaceAfterParagraph);
+                }
             }
 
             public virtual void Dispose()
@@ -168,7 +188,10 @@ namespace Google.Solutions.Mvvm.Format
             {
                 if (node is MarkdownDocument.HeadingNode heading)
                 {
-                    StartParagraph(FontSizeForHeading(heading));
+                    StartParagraph(
+                        FontSizeForHeading(heading),
+                        this.layoutTable.SpaceBeforeParagraph,
+                        this.layoutTable.SpaceAfterParagraph);
                     this.writer.SetBold(true);
                     this.writer.WriteText(heading.Text);
                     this.writer.SetBold(false);
@@ -183,13 +206,13 @@ namespace Google.Solutions.Mvvm.Format
                 else if (node is MarkdownDocument.LinkNode link)
                 {
                     ContinueParagraph();
-                    this.writer.WriteHyperlinkStart(link.Href);
+                    this.writer.StartHyperlink(link.Href);
                     this.writer.SetUnderline(true); // TODO: Set link color
                     this.writer.SetFontColor(this.colorTable.LinkIndex);
                     Visit(link.Children);
                     this.writer.SetFontColor(this.colorTable.FontIndex);
                     this.writer.SetUnderline(false);
-                    this.writer.WriteHyperlinkEnd();
+                    this.writer.EndHyperlink();
                 }
                 else if (node is MarkdownDocument.EmphasisNode emph)
                 {
@@ -214,12 +237,13 @@ namespace Google.Solutions.Mvvm.Format
                 else if (node is MarkdownDocument.UnorderedListItemNode ul)
                 {
                     using (var block = new NodeVisitor(
+                        this.layoutTable,
                         this.fontTable,
                         this.colorTable,
                         this.writer, 
                         this.indentationLevel + 1))
                     {
-                        this.writer.WriteUnorderedListItem(
+                        this.writer.UnorderedListItem(
                             FirstLineIndent,
                             (int)block.indentationLevel * BlockIndent);
                         block.Visit(ul.Children);
@@ -228,12 +252,13 @@ namespace Google.Solutions.Mvvm.Format
                 else if (node is MarkdownDocument.OrderedListItemNode ol)
                 {
                     using (var block = new NodeVisitor(
+                        this.layoutTable,
                         this.fontTable,
                         this.colorTable,
                         this.writer,
                         this.indentationLevel + 1))
                     {
-                        this.writer.WriteOrderedListItem(
+                        this.writer.OrderedListItem(
                             FirstLineIndent,
                             (int)block.indentationLevel * BlockIndent,
                             this.nextListItemNumber++);
@@ -242,10 +267,11 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else if (node is MarkdownDocument.DocumentNode)
                 {
-                    this.writer.WriteHeader(this.fontTable.Text);
-                    this.writer.WriteColorTable(this.colorTable.GetTable());
+                    this.writer.StartDocument(this.fontTable.Text);
+                    this.writer.ColorTable(this.colorTable.GetTable());
                     this.writer.SetBackgroundColor(this.colorTable.BackgroundIndex);
                     Visit(node.Children);
+                    this.writer.EndDocument();
                 }
                 else
                 {

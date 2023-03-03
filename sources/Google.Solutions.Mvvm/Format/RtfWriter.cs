@@ -56,16 +56,18 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
-        public void WriteHeader(FontFamily font)
+        public void StartDocument(FontFamily font)
         {
-            this.writer.WriteLine();
             this.writer.Write(@"{\rtf1\ansi\deff0\deflang1033\widowctrl{\fonttbl{\f0 ");
             this.writer.Write(font.Name);
-            this.writer.WriteLine(";}}");
+            this.writer.Write(";}}");
             this.writer.WriteLine();
         }
 
-        public void WriteColorTable(Color[] colors)
+        public void EndDocument()
+        { }
+
+        public void ColorTable(Color[] colors)
         {
             if (colors == null || colors.Length == 0)
             {
@@ -86,16 +88,30 @@ namespace Google.Solutions.Mvvm.Format
             this.writer.WriteLine();
         }
 
-        public void WriteParagraphStart()
+        public void StartParagraph()
         {
             this.writer.WriteLine();
-            this.writer.WriteLine("{\\pard");
+            this.writer.Write("{\\pard");
         }
 
-        public void WriteParagraphEnd()
+        public void EndParagraph()
         {
             this.writer.WriteLine("\\par}");
             this.writer.WriteLine();
+        }
+
+        public void SetSpaceBefore(uint sb)
+        {
+            //this.writer.Write("\\sb");
+            //this.writer.Write(sb.ToString());
+            //this.writer.WriteLine();
+        }
+
+        public void SetSpaceAfter(uint sa)
+        {
+            //this.writer.Write("\\sa");
+            //this.writer.Write(sa.ToString());
+            //this.writer.WriteLine();
         }
 
         public void SetFontColor(uint index)
@@ -135,27 +151,27 @@ namespace Google.Solutions.Mvvm.Format
             this.writer.Write(" ");
         }
 
-        public void WriteHyperlink(string text, string href)
+        public void Hyperlink(string text, string href)
         {
-            WriteHyperlinkStart(href);
+            StartHyperlink(href);
             WriteText(text);
-            WriteHyperlinkEnd();
+            EndHyperlink();
         }
 
-        public void WriteHyperlinkStart(string href)
+        public void StartHyperlink(string href)
         {
             this.writer.Write("{\\field{\\*\\fldinst{HYPERLINK ");
             this.writer.Write(href);
             this.writer.Write("}}{\\fldrslt{");
         }
 
-        public void WriteHyperlinkEnd()
+        public void EndHyperlink()
         { 
             this.writer.Write("}}}");
             this.writer.WriteLine();
         }
 
-        public void WriteUnorderedListItem(int firstLineIndent, int blockIndent)
+        public void UnorderedListItem(int firstLineIndent, int blockIndent)
         {
             this.writer.Write("{\\pntext\\bullet\\tab}");
             this.writer.Write("{\\*\\pn\\pnlvlblt\\pnf2\\pnindent0{\\pntxtb\\bullet}}");
@@ -165,7 +181,7 @@ namespace Google.Solutions.Mvvm.Format
             this.writer.Write(blockIndent.ToString());
         }
 
-        public void WriteOrderedListItem(int firstLineIndent, int blockIndent, int number)
+        public void OrderedListItem(int firstLineIndent, int blockIndent, int number)
         {
             this.writer.Write("{\\pntext\\" + number + "\\tab}");
             this.writer.Write("{\\*\\pn\\pnlvlbody\\pnf0\\pnindent0\\pnstart1\\pndec{\\pntxta.}}");
