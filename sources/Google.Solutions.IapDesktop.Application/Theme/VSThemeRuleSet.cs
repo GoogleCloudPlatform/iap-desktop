@@ -58,15 +58,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 GrayFactor = .63f,
                 ColorFactor = .95f,
 #if DEBUG
-                GuardPixelColor = Color.Magenta // Visible color
-#else
-                GuardPixelColor = Color.FromArgb( // Quasi-invisible color
-                    0x01,
-                    this.theme.ColorPalette.CommandBarMenuDefault.Background.R,
-                    this.theme.ColorPalette.CommandBarMenuDefault.Background.G,
-                    this.theme.ColorPalette.CommandBarMenuDefault.Background.B)
+                MarkerPixel = true
 #endif
-                };
+            };
         }
 
         //---------------------------------------------------------------------

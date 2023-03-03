@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace Google.Solutions.Mvvm.Drawing
     /// </summary>
     public class IconInverter
     {
+        private static object invertedTag = new object();
         private float grayFactor = 1;
         private float colorFactor = 1;
 
@@ -68,12 +70,10 @@ namespace Google.Solutions.Mvvm.Drawing
         }
 
         /// <summary>
-        /// Color to use for the guard pixel (top left). The guard pixel
-        /// is used to track whether an image has been inverted before,
-        /// and to prevent double-inversion. Set to the color of the
-        /// background so that it's effectively invisible.
+        /// Add a marker pixel at (0, 0) to indicate that this icon was inverted.
+        /// For testing only.
         /// </summary>
-        public Color GuardPixelColor { get; set; } = Color.Cyan;
+        public bool MarkerPixel { get; set; } = false;
 
         /// <summary>
         /// Invert gray-ish colors.
@@ -88,6 +88,10 @@ namespace Google.Solutions.Mvvm.Drawing
         /// <returns>true if inverted, false if it was inverted before.</returns>
         public bool Invert(Bitmap bitmapImage)
         {
+            Debug.Assert(
+                bitmapImage.Tag == null || bitmapImage.Tag == invertedTag,
+                "Images has existing tag");
+
             var dimensions = new Rectangle(
                 0,
                 0,
@@ -104,13 +108,10 @@ namespace Google.Solutions.Mvvm.Drawing
             Marshal.Copy(bitmapRead.Scan0, bitmapBGRA, 0, bitmapLength);
             bitmapImage.UnlockBits(bitmapRead);
 
-            if (bitmapBGRA[3] == this.GuardPixelColor.A)
+            if (bitmapImage.Tag == invertedTag)
             {
                 //
                 // Icon has been inverted already.
-                //
-                // NB. We only check the Alpha value as the other
-                // values might not be preserved reliably.
                 //
                 return false;
             }
@@ -162,12 +163,17 @@ namespace Google.Solutions.Mvvm.Drawing
             }
 
             //
-            // Add guard pixel as indicator that this icon was inverted.
+            // Add guard tag as indicator that this icon was inverted.
             //
-            bitmapBGRA[0] = this.GuardPixelColor.B;
-            bitmapBGRA[1] = this.GuardPixelColor.G;
-            bitmapBGRA[2] = this.GuardPixelColor.R;
-            bitmapBGRA[3] = this.GuardPixelColor.A;
+            bitmapImage.Tag = invertedTag;
+
+            if (this.MarkerPixel)
+            {
+                bitmapBGRA[0] = Color.Magenta.B;
+                bitmapBGRA[1] = Color.Magenta.G;
+                bitmapBGRA[2] = Color.Magenta.R;
+                bitmapBGRA[3] = Color.Magenta.A;
+            }
 
             var bitmapWrite = bitmapImage.LockBits(
                 dimensions, 
