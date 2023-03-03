@@ -88,7 +88,8 @@ namespace Google.Solutions.Mvvm.Controls
                     //
                     this.timer = new Timer()
                     {
-                        Interval = 50
+                        Interval = 50,
+                        Enabled = this.Visible
                     };
                     this.timer.Tick += (_, __) =>
                     {
@@ -107,11 +108,6 @@ namespace Google.Solutions.Mvvm.Controls
         //---------------------------------------------------------------------
         // Overrides.
         //---------------------------------------------------------------------
-
-        protected override void OnCreateControl()
-        {
-            base.OnCreateControl();
-        }
 
         protected override void Dispose(bool disposing)
         {
