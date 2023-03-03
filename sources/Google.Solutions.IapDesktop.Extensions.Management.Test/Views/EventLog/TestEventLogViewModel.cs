@@ -271,6 +271,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
             Assert.AreEqual(2, this.viewModel.Events.Count);
         }
 
+        [Test]
+        public async Task WhenSwitchingNodes_ThenSelectionIsCleared()
+        {
+            var node1 = new Mock<IProjectModelInstanceNode>();
+            node1
+                .SetupGet(n => n.Instance)
+                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+
+            var node2 = new Mock<IProjectModelInstanceNode>();
+            node2
+                .SetupGet(n => n.Instance)
+                .Returns(new InstanceLocator("project-1", "zone-1", "instance-2"));
+
+            await this.viewModel
+                .SwitchToModelAsync(node1.Object)
+                .ConfigureAwait(true);
+
+            Assert.AreEqual(2, this.viewModel.Events.Count);
+            this.viewModel.SelectedEvent = this.viewModel.Events.First();
+
+            // Switch to different node.
+            await this.viewModel
+                .SwitchToModelAsync(node2.Object)
+                .ConfigureAwait(true);
+            Assert.IsNull(this.viewModel.SelectedEvent);
+            Assert.IsFalse(this.viewModel.IsOpenSelectedEventInCloudConsoleButtonEnabled);
+        }
+
         //---------------------------------------------------------------------
         // Filtering.
         //---------------------------------------------------------------------

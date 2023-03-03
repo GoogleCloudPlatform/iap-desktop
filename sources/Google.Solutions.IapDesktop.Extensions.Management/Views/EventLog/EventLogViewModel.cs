@@ -319,6 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
         protected override void ApplyModel(bool cached)
         {
             this.Events.Clear();
+            this.SelectedEvent = null;
 
             if (this.Model == null)
             {
