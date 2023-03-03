@@ -33,6 +33,8 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.sourceText = new System.Windows.Forms.TextBox();
             this.markdown = new Google.Solutions.Mvvm.Controls.MarkdownViewer();
             this.rtf = new System.Windows.Forms.TextBox();
+            this.layoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.layoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // sourceText
@@ -43,11 +45,11 @@ namespace Google.Solutions.Mvvm.Test.Controls
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.sourceText.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sourceText.Location = new System.Drawing.Point(1, 0);
+            this.sourceText.Location = new System.Drawing.Point(3, 3);
             this.sourceText.Multiline = true;
             this.sourceText.Name = "sourceText";
             this.sourceText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.sourceText.Size = new System.Drawing.Size(395, 645);
+            this.sourceText.Size = new System.Drawing.Size(391, 835);
             this.sourceText.TabIndex = 0;
             this.sourceText.Text = resources.GetString("sourceText.Text");
             // 
@@ -56,10 +58,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.markdown.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.markdown.Location = new System.Drawing.Point(808, 0);
+            this.markdown.Location = new System.Drawing.Point(797, 3);
             this.markdown.Markdown = "";
             this.markdown.Name = "markdown";
-            this.markdown.Size = new System.Drawing.Size(384, 645);
+            this.markdown.Size = new System.Drawing.Size(404, 835);
             this.markdown.TabIndex = 1;
             // 
             // rtf
@@ -68,29 +70,42 @@ namespace Google.Solutions.Mvvm.Test.Controls
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.rtf.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtf.Location = new System.Drawing.Point(402, 0);
+            this.rtf.Location = new System.Drawing.Point(400, 3);
             this.rtf.Multiline = true;
             this.rtf.Name = "rtf";
             this.rtf.ReadOnly = true;
             this.rtf.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.rtf.Size = new System.Drawing.Size(400, 645);
+            this.rtf.Size = new System.Drawing.Size(391, 835);
             this.rtf.TabIndex = 2;
+            // 
+            // layoutPanel
+            // 
+            this.layoutPanel.ColumnCount = 3;
+            this.layoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33F));
+            this.layoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33F));
+            this.layoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34F));
+            this.layoutPanel.Controls.Add(this.sourceText, 0, 0);
+            this.layoutPanel.Controls.Add(this.markdown, 2, 0);
+            this.layoutPanel.Controls.Add(this.rtf, 1, 0);
+            this.layoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.layoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.layoutPanel.Name = "layoutPanel";
+            this.layoutPanel.RowCount = 1;
+            this.layoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.layoutPanel.Size = new System.Drawing.Size(1204, 841);
+            this.layoutPanel.TabIndex = 3;
             // 
             // TestMarkdownViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1204, 645);
-            this.Controls.Add(this.rtf);
-            this.Controls.Add(this.markdown);
-            this.Controls.Add(this.sourceText);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            this.ClientSize = new System.Drawing.Size(1204, 841);
+            this.Controls.Add(this.layoutPanel);
             this.Name = "TestMarkdownViewer";
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "TestMarkdownViewer";
+            this.layoutPanel.ResumeLayout(false);
+            this.layoutPanel.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -99,5 +114,6 @@ namespace Google.Solutions.Mvvm.Test.Controls
         private System.Windows.Forms.TextBox sourceText;
         private Mvvm.Controls.MarkdownViewer markdown;
         private System.Windows.Forms.TextBox rtf;
+        private System.Windows.Forms.TableLayoutPanel layoutPanel;
     }
 }
