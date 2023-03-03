@@ -100,7 +100,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                 m => m.IsIncludeAccessEventsButtonChecked,
                 this.components);
 
-            this.openInCloudConsoleToolStripMenuItem.BindProperty(
+            this.openInCloudConsoleToolStripMenuItem.BindReadonlyProperty(
+                b => b.Enabled,
+                this.viewModel,
+                m => m.IsOpenSelectedEventInCloudConsoleButtonEnabled,
+                this.components);
+            this.openLogsButton.BindReadonlyProperty(
                 b => b.Enabled,
                 this.viewModel,
                 m => m.IsOpenSelectedEventInCloudConsoleButtonEnabled,
@@ -118,8 +123,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                 m => m.SelectedEvent,
                 this.components);
             
-            // TODO: En/disable logs button
-
             this.list.BindColumn(0, e => e.Timestamp.ToString());
             this.list.BindColumn(1, e => GetInstanceName(e));
             this.list.BindColumn(2, e => e.Severity);
