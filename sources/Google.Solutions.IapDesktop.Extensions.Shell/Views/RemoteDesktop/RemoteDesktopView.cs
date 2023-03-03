@@ -72,24 +72,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
         public bool IsFormClosing { get; private set; } = false;
 
-        private void UpdateLayout()
+        internal enum LayoutMode
         {
+            Normal,
+            Reconnect,
+            Wait
+        }
+
+        internal LayoutMode Mode { get; private set; }
+
+        private void UpdateLayout(LayoutMode mode)
+        {
+            if (this.rdpClient == null)
+            {
+                return;
+            }
+
+            //
             // NB. Docking does not work reliably with the OCX, so keep the size
             // in sync programmatically.
+            //
             this.rdpClient.Size = this.Size;
 
-            // It would be nice to update the desktop size as well, but that's not
-            // supported by the control.
-
-            this.waitPanel.Location = new Point(0,0);
-            this.waitPanel.Size = this.Size;
-            this.spinner.Location = new Point(
-                (this.Size.Width - this.spinner.Width) / 2,
-                (this.Size.Height - this.spinner.Height) / 2);
+            //
+            // Resize the overlay pane to cover the OCX.
+            //
+            this.overlayPanel.Location = Point.Empty;
+            this.overlayPanel.Size = this.Size;
+                
+            //
+            // Center the other panels.
+            //
+            this.waitPanel.Location = new Point(
+                (this.Size.Width - this.waitPanel.Width) / 2,
+                (this.Size.Height - this.waitPanel.Height) / 2);
 
             this.reconnectPanel.Location = new Point(
                 (this.Size.Width - this.reconnectPanel.Width) / 2,
                 (this.Size.Height - this.reconnectPanel.Height) / 2);
+
+            this.overlayPanel.Visible = mode == LayoutMode.Reconnect || mode == LayoutMode.Wait;
+            this.waitPanel.Visible = mode == LayoutMode.Wait;
+            this.reconnectPanel.Visible = mode == LayoutMode.Reconnect;
+
+            this.Mode = mode;
         }
 
         private async Task ShowErrorAndClose(string caption, Exception e)
@@ -163,7 +189,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
         public void Connect()
         {
-            Debug.Assert(this.viewModel != null);
+            Debug.Assert(this.rdpClient == null, "Not initialized yet");
+            Debug.Assert(this.viewModel != null, "View bound");
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
                 this.viewModel.Server,
@@ -175,6 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // an error happens indicating that the control does not have a Window handle.
                 //
                 InitializeComponent();
+                Debug.Assert(this.rdpClient != null);
 
                 //
                 // Because we're not initializing controls in the constructor, the
@@ -184,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
                 SuspendLayout();
                 this.theme?.ApplyTo(this);
-                UpdateLayout();
+                UpdateLayout(LayoutMode.Wait);
                 ResumeLayout();
 
                 var advancedSettings = this.rdpClient.AdvancedSettings7;
@@ -400,11 +428,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                UpdateLayout();
-
-                // Reset visibility to default values.
-                this.reconnectPanel.Visible = false;
-                this.waitPanel.Visible = true;
+                UpdateLayout(LayoutMode.Wait);
 
                 this.connecting = true;
                 this.rdpClient.Connect();
@@ -510,6 +534,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         // Window events.
         //---------------------------------------------------------------------
 
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+
+            UpdateLayout(this.Mode);
+        }
+
         private void RemoteDesktopPane_SizeChanged(object sender, EventArgs e)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
@@ -533,8 +564,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                     // to normal size. We must ignore that.
                     return;
                 }
-
-                UpdateLayout();
 
                 if (this.autoResize)
                 {
@@ -668,8 +697,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                     // NB. The same error code can occur during the initial connection,
                     // but then it should be treated as an error.
                     //
-
-                    this.reconnectPanel.Visible = true;
+                    UpdateLayout(LayoutMode.Reconnect);
                 }
                 else if (e.IsIgnorable)
                 {
@@ -689,7 +717,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             {
                 Debug.Assert(this.connecting, "Connecting flag must have been set");
 
-                this.waitPanel.Visible = false;
+                UpdateLayout(LayoutMode.Normal);
 
                 // Notify our listeners.
                 await this.eventService.FireAsync(new SessionStartedEvent(this.Instance))
