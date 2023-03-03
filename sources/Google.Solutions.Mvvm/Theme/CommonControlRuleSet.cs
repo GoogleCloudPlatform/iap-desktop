@@ -28,13 +28,13 @@ namespace Google.Solutions.Mvvm.Theme
     /// <summary>
     /// Theming rules for common controls.
     /// </summary>
-    public static class CommonControlTheme
+    public class CommonControlRuleSet : ControlTheme.IRuleSet
     {
         //---------------------------------------------------------------------
         // Theming rules.
         //---------------------------------------------------------------------
 
-        internal static void AutoSizeListViewColumns(ListView listView)
+        internal void AutoSizeListViewColumns(ListView listView)
         {
             void ResizeLastColumnToFit()
             {
@@ -77,19 +77,16 @@ namespace Google.Solutions.Mvvm.Theme
         }
 
         //---------------------------------------------------------------------
-        // Extension methods.
+        // IRuleSet
         //---------------------------------------------------------------------
 
         /// <summary>
         /// Register rules.
         /// </summary>
-        public static ControlTheme AddCommonControlThemeRules(this ControlTheme controlTheme)
+        public void AddRules(ControlTheme controlTheme)
         {
             controlTheme.ThrowIfNull(nameof(controlTheme));
-
             controlTheme.AddRule<ListView>(AutoSizeListViewColumns);
-
-            return controlTheme;
         }
     }
 }
