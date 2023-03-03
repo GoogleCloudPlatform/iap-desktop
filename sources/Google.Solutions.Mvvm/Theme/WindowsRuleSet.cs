@@ -28,7 +28,6 @@ using Google.Solutions.Mvvm.Interop;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -37,14 +36,14 @@ namespace Google.Solutions.Mvvm.Theme
     /// <summary>
     /// Theming rules for using dark mode.
     /// </summary>
-    public class WindowsTheme
+    public class WindowsRuleSet : ControlTheme.IRuleSet
     {
         /// <summary>
         /// Check if this application uses dark mode.
         /// </summary>
         public bool IsDarkModeEnabled { get; }
 
-        public WindowsTheme(bool darkMode)
+        public WindowsRuleSet(bool darkMode)
         {
             Debug.Assert(!darkMode || IsDarkModeSupported);
 
@@ -109,7 +108,7 @@ namespace Google.Solutions.Mvvm.Theme
         /// https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes
         /// </summary>
         /// <param name="form"></param>
-        internal void StyleTitleBar(Form form)
+        private void StyleTitleBar(Form form)
         {
             if (!this.IsDarkModeEnabled || !form.TopLevel)
             {
@@ -136,7 +135,7 @@ namespace Google.Solutions.Mvvm.Theme
         /// <summary>
         /// Opt-in window to use dark mode.
         /// </summary>
-        internal void StyleControl(Control control)
+        private void StyleControl(Control control)
         {
             if (this.IsDarkModeEnabled)
             {
@@ -145,7 +144,7 @@ namespace Google.Solutions.Mvvm.Theme
         }
 
 
-        internal void StyleTreeView(TreeView treeView)
+        private void StyleTreeView(TreeView treeView)
         {
             treeView.HotTracking = true;
 
@@ -156,7 +155,7 @@ namespace Google.Solutions.Mvvm.Theme
             NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
         }
 
-        internal void StyleListView(ListView listView)
+        private void StyleListView(ListView listView)
         {
             listView.HotTracking = false;
 
@@ -230,12 +229,12 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
-        internal void StyleTextBox(TextBox text)
+        private void StyleTextBox(TextBox text)
         {
             NativeMethods.SetWindowTheme(text.Handle, "Explorer", null);
         }
 
-        internal void StyleComboBox(ComboBox combo)
+        private void StyleComboBox(ComboBox combo)
         {
             if (this.IsDarkModeEnabled)
             {
@@ -243,7 +242,7 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
-        internal void StyleScrollbar(ScrollBar bar)
+        private void StyleScrollbar(ScrollBar bar)
         {
             if (this.IsDarkModeEnabled)
             {
@@ -251,9 +250,37 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
-        public static void ResetWindowTheme(Control control)
+        private static void ResetWindowTheme(Control control)
         {
             NativeMethods.SetWindowTheme(control.Handle, string.Empty, string.Empty);
+        }
+
+        //---------------------------------------------------------------------
+        // IRuleSet
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Register rules.
+        /// </summary>
+        public void AddRules(ControlTheme controlTheme)
+        {
+            controlTheme.ThrowIfNull(nameof(controlTheme));
+
+            controlTheme.AddRule<Form>(
+                c => StyleTitleBar(c),
+                ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<Control>(
+                c => StyleControl(c),
+                ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<TreeView>(
+                c => StyleTreeView(c),
+                ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<ListView>(
+                c => StyleListView(c),
+                ControlTheme.Options.ApplyWhenHandleCreated);
+            controlTheme.AddRule<TextBox>(c => StyleTextBox(c));
+            controlTheme.AddRule<ComboBox>(c => StyleComboBox(c));
+            controlTheme.AddRule<ScrollBar>(c => StyleScrollbar(c));
         }
 
         //---------------------------------------------------------------------
@@ -339,36 +366,6 @@ namespace Google.Solutions.Mvvm.Theme
 
             [DllImport("gdi32.dll")]
             public static extern uint SetTextColor(IntPtr hdc, uint color);
-        }
-    }
-
-    public static class WindowsThemeExtensions
-    {
-        /// <summary>
-        /// Register rules.
-        /// </summary>
-        public static ControlTheme AddRules(this ControlTheme controlTheme, WindowsTheme theme)
-        {
-            controlTheme.ThrowIfNull(nameof(controlTheme));
-            theme.ThrowIfNull(nameof(theme));
-
-            controlTheme.AddRule<Form>(
-                c => theme.StyleTitleBar(c),
-                ControlTheme.Options.ApplyWhenHandleCreated);
-            controlTheme.AddRule<Control>(
-                c => theme.StyleControl(c),
-                ControlTheme.Options.ApplyWhenHandleCreated);
-            controlTheme.AddRule<TreeView>(
-                c => theme.StyleTreeView(c),
-                ControlTheme.Options.ApplyWhenHandleCreated);
-            controlTheme.AddRule<ListView>(
-                c => theme.StyleListView(c),
-                ControlTheme.Options.ApplyWhenHandleCreated);
-            controlTheme.AddRule<TextBox>(c => theme.StyleTextBox(c));
-            controlTheme.AddRule<ComboBox>(c => theme.StyleComboBox(c));
-            controlTheme.AddRule<ScrollBar>(c => theme.StyleScrollbar(c));
-
-            return controlTheme;
         }
     }
 }

@@ -121,11 +121,11 @@
     <Compile Include="Shell\KnownFolders.cs" />
     <Compile Include="Shell\Quarantine.cs" />
     <Compile Include="Shell\StockIcons.cs" />
-    <Compile Include="Theme\CommonControlTheme.cs" />
+    <Compile Include="Theme\CommonControlRuleSet.cs" />
     <Compile Include="Theme\ControlTheme.cs" />
     <Compile Include="Theme\IControlTheme.cs" />
     <Compile Include="Theme\ToolStripItemTheme.cs" />
-    <Compile Include="Theme\WindowsTheme.cs" />
+    <Compile Include="Theme\WindowsRuleSet.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\StaTask.cs" />
   </ItemGroup>

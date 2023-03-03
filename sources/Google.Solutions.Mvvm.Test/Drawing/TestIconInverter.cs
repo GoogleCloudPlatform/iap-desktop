@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Drawing;
+using Google.Solutions.Mvvm.Properties;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System.Drawing;
@@ -31,7 +32,11 @@ namespace Google.Solutions.Mvvm.Test.Drawing
     [TestFixture]
     [Apartment(ApartmentState.STA)]
     public partial class TestIconInverter : Form
-    {
+    {        
+        //---------------------------------------------------------------------
+        // UI tests.
+        //---------------------------------------------------------------------
+
         private string fileName;
         public TestIconInverter()
         {
@@ -96,6 +101,24 @@ namespace Google.Solutions.Mvvm.Test.Drawing
             this.smallDarkIcon.Image = darkImage;
             this.mediumDarkIcon.Image = darkImage;
             this.largeDarkIcon.Image = darkImage;
+        }
+
+        //---------------------------------------------------------------------
+        // Unit tests.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenInvertedBefore_ThenInvertReturnsFalse()
+        {
+            var icon = Resources.Copy_16x;
+            var inverter = new IconInverter()
+            {
+                GrayFactor = .8f,
+                ColorFactor = .8f
+            };
+
+            Assert.IsTrue(inverter.Invert(icon));
+            Assert.IsFalse(inverter.Invert(icon));
         }
     }
 }

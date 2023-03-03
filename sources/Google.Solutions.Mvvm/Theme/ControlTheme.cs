@@ -35,7 +35,7 @@ namespace Google.Solutions.Mvvm.Theme
         private readonly LinkedList<Rule> rules = new LinkedList<Rule>();
 
         //---------------------------------------------------------------------
-        // Pubics.
+        // Publics.
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -51,6 +51,14 @@ namespace Google.Solutions.Mvvm.Theme
                 typeof(TControl),
                 c => apply((TControl)c),
                 options));
+        }
+
+        /// <summary>
+        /// Add a set of rules.
+        public ControlTheme AddRuleSet(IRuleSet ruleSet)
+        {
+            ruleSet.AddRules(this);
+            return this;
         }
 
         //---------------------------------------------------------------------
@@ -97,6 +105,11 @@ namespace Google.Solutions.Mvvm.Theme
             None,
             ApplyWhenHandleCreated,
             IgnoreDerivedTypes
+        }
+
+        public interface IRuleSet
+        {
+            void AddRules(ControlTheme controlTheme);
         }
 
         private class Rule

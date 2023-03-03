@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         {
             var settings = themeSettingsRepository.GetSettings();
 
-            WindowsTheme windowsTheme;
+            WindowsRuleSet windowsTheme;
 
             switch (settings.Theme.EnumValue)
             {
@@ -64,14 +64,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     //
                     // Use same mode as Windows.
                     //
-                    windowsTheme = new WindowsTheme(WindowsTheme.ShouldAppsUseDarkMode);
+                    windowsTheme = new WindowsRuleSet(WindowsRuleSet.ShouldAppsUseDarkMode);
                     break;
 
                 case ThemeSettings.ApplicationTheme.Dark:
                     //
                     // Use dark mode if possible.
                     //
-                    windowsTheme = new WindowsTheme(WindowsTheme.IsDarkModeSupported);
+                    windowsTheme = new WindowsRuleSet(WindowsRuleSet.IsDarkModeSupported);
                     break;
 
                 default:
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     // Use safe defaults that also work on downlevel
                     // versions of Windows.
                     //
-                    windowsTheme = new WindowsTheme(false);
+                    windowsTheme = new WindowsRuleSet(false);
                     break;
             }
 
@@ -89,14 +89,14 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 : VSTheme.GetLightTheme();
 
             var dialogTheme = new ControlTheme()
-                .AddRules(windowsTheme)
-                .AddCommonControlThemeRules()
-                .AddDialogRules(vsTheme);
+                .AddRuleSet(windowsTheme)
+                .AddRuleSet(new CommonControlRuleSet())
+                .AddRuleSet(new VSThemeDialogRuleSet(vsTheme));
 
             var dockWindowTheme = new ControlTheme()
-                .AddRules(windowsTheme)
-                .AddCommonControlThemeRules()
-                .AddDockWindowRules(vsTheme);
+                .AddRuleSet(windowsTheme)
+                .AddRuleSet(new CommonControlRuleSet())
+                .AddRuleSet(new VSThemeDockWindowRuleSet(vsTheme));
 
             //
             // Apply the resulting theme to the different kinds of windows we have.
