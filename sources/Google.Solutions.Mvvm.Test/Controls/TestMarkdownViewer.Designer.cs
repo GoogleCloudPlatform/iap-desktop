@@ -58,10 +58,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
             this.markdown.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.markdown.Location = new System.Drawing.Point(797, 3);
+            this.markdown.Font = new System.Drawing.Font("Times New Roman", 15.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.markdown.Location = new System.Drawing.Point(800, 5);
+            this.markdown.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.markdown.Markdown = "";
             this.markdown.Name = "markdown";
-            this.markdown.Size = new System.Drawing.Size(404, 835);
+            this.markdown.Size = new System.Drawing.Size(398, 831);
             this.markdown.TabIndex = 1;
             // 
             // rtf

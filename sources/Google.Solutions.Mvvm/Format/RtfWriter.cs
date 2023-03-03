@@ -58,9 +58,11 @@ namespace Google.Solutions.Mvvm.Format
 
         public void WriteHeader(FontFamily font)
         {
+            this.writer.WriteLine();
             this.writer.Write(@"{\rtf1\ansi\deff0\deflang1033\widowctrl{\fonttbl{\f0 ");
             this.writer.Write(font.Name);
             this.writer.WriteLine(";}}");
+            this.writer.WriteLine();
         }
 
         public void WriteColorTable(Color[] colors)
@@ -70,59 +72,63 @@ namespace Google.Solutions.Mvvm.Format
                 return;
             }
 
-            this.writer.WriteLine("\n{\\colortbl");
+            this.writer.WriteLine();
+            this.writer.Write("{\\colortbl");
 
             foreach (var c in colors)
             {
-                this.writer.WriteLine("\\red" + c.R);
-                this.writer.WriteLine("\\green" + c.G);
-                this.writer.WriteLine("\\blue" + c.B);
+                this.writer.Write("\\red" + c.R);
+                this.writer.Write("\\green" + c.G);
+                this.writer.Write("\\blue" + c.B);
             }
 
-            this.writer.WriteLine("}\n");
+            this.writer.Write("}");
+            this.writer.WriteLine();
         }
 
         public void WriteParagraphStart()
         {
-            this.writer.WriteLine("\n{\\pard");
+            this.writer.WriteLine();
+            this.writer.WriteLine("{\\pard");
         }
 
         public void WriteParagraphEnd()
         {
-            this.writer.WriteLine("\\par}\n");
+            this.writer.WriteLine("\\par}");
+            this.writer.WriteLine();
         }
 
         public void SetFontColor(uint index)
         {
-            this.writer.WriteLine("\\cf");
-            this.writer.WriteLine(index.ToString());
-            this.writer.WriteLine(" ");
+            this.writer.Write("\\cf");
+            this.writer.Write(index.ToString());
+            this.writer.Write(" ");
 
         }
         public void SetBackgroundColor(uint index)
         {
-            this.writer.WriteLine("\\cb");
-            this.writer.WriteLine(index.ToString());
-            this.writer.WriteLine(" ");
+            this.writer.Write("\\cb");
+            this.writer.Write(index.ToString());
+            this.writer.Write(" ");
 
         }
 
         public void SetBold(bool bold)
         {
-            this.writer.WriteLine(bold ? "\\b " : "\\b0 ");
+            this.writer.Write(bold ? "\\b " : "\\b0 ");
         }
 
         public void SetUnderline(bool bold)
         {
-            this.writer.WriteLine(bold ? "\\ul " : "\\ul0 ");
+            this.writer.Write(bold ? "\\ul " : "\\ul0 ");
         }
 
         public void SetItalic(bool bold)
         {
-            this.writer.WriteLine(bold ? "\\i " : "\\i0 ");
+            this.writer.Write(bold ? "\\i " : "\\i0 ");
         }
 
-        public void SetFontSize(int size)
+        public void SetFontSize(uint size)
         {
             this.writer.Write("\\fs");
             this.writer.Write((size * 2).ToString());
@@ -145,7 +151,8 @@ namespace Google.Solutions.Mvvm.Format
 
         public void WriteHyperlinkEnd()
         { 
-            this.writer.Write("}}}\n");
+            this.writer.Write("}}}");
+            this.writer.WriteLine();
         }
 
         public void WriteUnorderedListItem(int firstLineIndent, int blockIndent)

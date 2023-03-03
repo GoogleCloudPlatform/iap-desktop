@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
@@ -17,7 +18,7 @@ namespace Google.Solutions.Mvvm.Format
             MarkdownDocument document,
             RtfWriter writer)
         {
-            using (var visitor = new NodeVisitor(this, writer))
+            using (var visitor = new NodeVisitor(this.Fonts, this.Colors, writer))
             {
                 visitor.Visit(document.Root);
             }
@@ -61,6 +62,13 @@ namespace Google.Solutions.Mvvm.Format
         public class FontTable
         {
             public FontFamily Text { get; set; } = FontFamily.GenericSansSerif;
+            public uint FontSizeHeading1 = 16;
+            public uint FontSizeHeading2 = 14;
+            public uint FontSizeHeading3 = 13;
+            public uint FontSizeHeading4 = 12;
+            public uint FontSizeHeading5 = 11;
+            public uint FontSizeHeading6 = 10;
+            public uint FontSize = 10;
         }
 
         /// <summary>
@@ -71,19 +79,40 @@ namespace Google.Solutions.Mvvm.Format
             private const int FirstLineIndent = -270;
             private const int BlockIndent = 360;
 
-            private readonly MarkdownRtfConverter converter;
             protected readonly RtfWriter writer;
+            private readonly FontTable fontTable;
+            private readonly ColorTable colorTable;
+
             private readonly uint indentationLevel;
 
             private bool inParagraph = false;
             private int nextListItemNumber = 1;
 
+            private uint FontSizeForHeading(MarkdownDocument.HeadingNode heading)
+            {
+                Debug.Assert(heading.Level >= 1);
+
+                var fontSizes = new uint[]
+                {
+                    this.fontTable.FontSizeHeading1,
+                    this.fontTable.FontSizeHeading2,
+                    this.fontTable.FontSizeHeading3,
+                    this.fontTable.FontSizeHeading4,
+                    this.fontTable.FontSizeHeading5,
+                    this.fontTable.FontSizeHeading6,
+                };
+
+                return fontSizes[Math.Min(heading.Level, fontSizes.Length) - 1];
+            }
+
             public NodeVisitor(
-                MarkdownRtfConverter converter,
+                FontTable fontTable,
+                ColorTable colorTable,
                 RtfWriter writer,
                 uint indentationLevel = 0)
             {
-                this.converter = converter;
+                this.fontTable = fontTable;
+                this.colorTable = colorTable;
                 this.writer = writer;
                 this.indentationLevel = indentationLevel;
             }
@@ -109,6 +138,14 @@ namespace Google.Solutions.Mvvm.Format
                     this.writer.WriteParagraphEnd();
                 }
             }
+            private void StartParagraph(uint fontSize)
+            {
+                EndParagraph();
+
+                this.inParagraph = true;
+                this.writer.WriteParagraphStart();
+                this.writer.SetFontSize(fontSize);
+            }
 
             public virtual void Dispose()
             {
@@ -131,13 +168,11 @@ namespace Google.Solutions.Mvvm.Format
             {
                 if (node is MarkdownDocument.HeadingNode heading)
                 {
-                    this.writer.WriteParagraphStart();
+                    StartParagraph(FontSizeForHeading(heading));
                     this.writer.SetBold(true);
-                    
-                    // TODO: Set font size
                     this.writer.WriteText(heading.Text);
                     this.writer.SetBold(false);
-                    this.writer.WriteParagraphEnd();
+                    EndParagraph();
                 }
                 else if (node is MarkdownDocument.TextNode text)
                 {
@@ -150,9 +185,9 @@ namespace Google.Solutions.Mvvm.Format
                     ContinueParagraph();
                     this.writer.WriteHyperlinkStart(link.Href);
                     this.writer.SetUnderline(true); // TODO: Set link color
-                    this.writer.SetFontColor(this.converter.Colors.LinkIndex);
+                    this.writer.SetFontColor(this.colorTable.LinkIndex);
                     Visit(link.Children);
-                    this.writer.SetFontColor(this.converter.Colors.FontIndex);
+                    this.writer.SetFontColor(this.colorTable.FontIndex);
                     this.writer.SetUnderline(false);
                     this.writer.WriteHyperlinkEnd();
                 }
@@ -179,7 +214,8 @@ namespace Google.Solutions.Mvvm.Format
                 else if (node is MarkdownDocument.UnorderedListItemNode ul)
                 {
                     using (var block = new NodeVisitor(
-                        this.converter,
+                        this.fontTable,
+                        this.colorTable,
                         this.writer, 
                         this.indentationLevel + 1))
                     {
@@ -192,7 +228,8 @@ namespace Google.Solutions.Mvvm.Format
                 else if (node is MarkdownDocument.OrderedListItemNode ol)
                 {
                     using (var block = new NodeVisitor(
-                        this.converter,
+                        this.fontTable,
+                        this.colorTable,
                         this.writer,
                         this.indentationLevel + 1))
                     {
@@ -205,8 +242,9 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else if (node is MarkdownDocument.DocumentNode)
                 {
-                    this.writer.WriteHeader(this.converter.Fonts.Text);
-                    this.writer.WriteColorTable(this.converter.Colors.GetTable());
+                    this.writer.WriteHeader(this.fontTable.Text);
+                    this.writer.WriteColorTable(this.colorTable.GetTable());
+                    this.writer.SetBackgroundColor(this.colorTable.BackgroundIndex);
                     Visit(node.Children);
                 }
                 else
