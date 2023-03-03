@@ -616,6 +616,13 @@ namespace Google.Solutions.Mvvm.Format
                     //
                     return false;
                 }
+                else if (this.lastChild != null)
+                {
+                    //
+                    // Inject a space to compensate for the line break.
+                    //
+                    line = " " + line;
+                }
 
                 //
                 // Break the line into tokens and build a tree
@@ -626,17 +633,17 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     var token = tokens.First();
                     var remainder = tokens.Skip(1);
-                    TryConsume(token, remainder);
+                    TryConsumeToken(token, remainder);
                     tokens = remainder;
                 }
 
                 return true;
             }
 
-            protected virtual bool TryConsume(Token token, IEnumerable<Token> remainder)
+            protected virtual bool TryConsumeToken(Token token, IEnumerable<Token> remainder)
             {
                 if (this.lastChild != null && 
-                    ((SpanNode)this.lastChild).TryConsume(token, remainder))
+                    ((SpanNode)this.lastChild).TryConsumeToken(token, remainder))
                 {
                     //
                     // Continuation of last span.
@@ -670,7 +677,7 @@ namespace Google.Solutions.Mvvm.Format
                 this.space = space;
             }
 
-            protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
+            protected override bool TryConsumeToken(Token token, IEnumerable<Token> remainder)
             {
                 if (token.Type == TokenType.Delimiter)
                 {
@@ -680,7 +687,7 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     if (this.space)
                     {
-                        this.Text = this.Text + " " + token.Value;
+                        this.Text = this.Text + token.Value;
                     }
                     else
                     {
@@ -710,7 +717,7 @@ namespace Google.Solutions.Mvvm.Format
 
             protected override string Summary => $"[Emphasis delimiter={this.delimiter}] {this.Text}";
 
-            protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
+            protected override bool TryConsumeToken(Token token, IEnumerable<Token> remainder)
             {
                 if (this.bodyCompleted)
                 {
@@ -718,6 +725,9 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else if (token.Type == TokenType.Delimiter && token.Value == this.delimiter)
                 {
+                    //
+                    // Eat the delimiter.
+                    //
                     this.bodyCompleted = true;
                     return true;
                 }
@@ -743,7 +753,7 @@ namespace Google.Solutions.Mvvm.Format
             protected override string Summary => $"[Link href={this.Href}]";
             public string Href { get; protected set; }
 
-            protected override bool TryConsume(Token token, IEnumerable<Token> remainder)
+            protected override bool TryConsumeToken(Token token, IEnumerable<Token> remainder)
             {
                 if (this.linkHrefCompleted)
                 {
@@ -784,7 +794,7 @@ namespace Google.Solutions.Mvvm.Format
                     }
                     else
                     {
-                        return base.TryConsume(token, remainder);
+                        return base.TryConsumeToken(token, remainder);
                     }
                 }
             }

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -34,17 +34,15 @@ namespace Google.Solutions.Mvvm.Test.Controls
         public TestMarkdownViewer()
         {
             InitializeComponent();
-
-            this.markdown.Markdown = this.sourceText.Text;
-            this.rtf.Text = new MarkdownRtfConverter().ConvertToString(
-                MarkdownDocument.Parse(this.sourceText.Text));
-
             this.sourceText.TextChanged += (_, __) =>
             {
                 this.markdown.Markdown = this.sourceText.Text;
-                this.rtf.Text = new MarkdownRtfConverter().ConvertToString(
-                    MarkdownDocument.Parse(this.sourceText.Text));
+                var markdownDoc = MarkdownDocument.Parse(this.sourceText.Text);
+                this.parsedMarkdown.Text = markdownDoc.ToString().Replace("\n", "\r\n");
+                this.rtf.Text = new MarkdownRtfConverter().ConvertToString(markdownDoc);
             };
+
+            this.sourceText.Text += " ";
         }
 
         [InteractiveTest]

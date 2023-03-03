@@ -377,6 +377,23 @@ namespace Google.Solutions.Mvvm.Test.Format
                 doc.ToString());
         }
 
+        [Test]
+        public void EmphasisAtStartOfLine()
+        {
+            var doc = MarkdownDocument.Parse(
+                "This is\n" +
+                "*emphasized*\n" +
+                "text");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] This is \n" +
+                "  [Emphasis delimiter=*] emphasized\n" +
+                "  [Text]  text\n",
+                doc.ToString());
+        }
+
         //---------------------------------------------------------------------
         // StrongEmphasis.
         //---------------------------------------------------------------------

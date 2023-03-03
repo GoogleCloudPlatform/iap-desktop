@@ -184,7 +184,7 @@ namespace Google.Solutions.Mvvm.Format
 
         public void OrderedListItem(int firstLineIndent, int blockIndent, int number)
         {
-            this.writer.Write("{\\pntext\\" + number + "\\tab}");
+            this.writer.Write("{\\pntext\\" + number + ".\\tab}");
             this.writer.Write("{\\*\\pn\\pnlvlbody\\pnf0\\pnindent0\\pnstart1\\pndec{\\pntxta.}}");
             this.writer.Write("\\fi");
             this.writer.Write(firstLineIndent.ToString());
