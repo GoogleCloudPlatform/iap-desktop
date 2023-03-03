@@ -30,6 +30,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
     [Service]
     public class RemoteDesktopViewModel : ViewModelBase
     {
+        public enum ConnectionState
+        {
+            Uninitialized,
+            Connecting,
+            Connected,
+            LoggedOn,
+            ConnectionLost
+        }
+
+        public RemoteDesktopViewModel()
+        {
+            this.State = ObservableProperty.Build(ConnectionState.Uninitialized);
+            this.StatusText = ObservableProperty.Build(this.State, s => s.ToString());
+        }
 
         //---------------------------------------------------------------------
         // Initialization properties.
@@ -46,5 +60,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.Server.ThrowIfNull(nameof(this.Server));
             this.Settings.ThrowIfNull(nameof(this.Settings));
         }
+
+        //---------------------------------------------------------------------
+        // Observable properties.
+        //---------------------------------------------------------------------
+
+        public ObservableProperty<ConnectionState> State { get; }
+        public ObservableFunc<string> StatusText { get; }
     }
 }
