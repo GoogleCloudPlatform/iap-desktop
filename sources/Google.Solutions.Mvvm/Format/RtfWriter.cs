@@ -82,6 +82,7 @@ namespace Google.Solutions.Mvvm.Format
                 this.writer.Write("\\red" + c.R);
                 this.writer.Write("\\green" + c.G);
                 this.writer.Write("\\blue" + c.B);
+                this.writer.Write(";");
             }
 
             this.writer.Write("}");
@@ -102,16 +103,16 @@ namespace Google.Solutions.Mvvm.Format
 
         public void SetSpaceBefore(uint sb)
         {
-            //this.writer.Write("\\sb");
-            //this.writer.Write(sb.ToString());
-            //this.writer.WriteLine();
+            this.writer.Write("\\sb");
+            this.writer.Write(sb.ToString());
+            this.writer.WriteLine();
         }
 
         public void SetSpaceAfter(uint sa)
         {
-            //this.writer.Write("\\sa");
-            //this.writer.Write(sa.ToString());
-            //this.writer.WriteLine();
+            this.writer.Write("\\sa");
+            this.writer.Write(sa.ToString());
+            this.writer.WriteLine();
         }
 
         public void SetFontColor(uint index)

@@ -46,11 +46,11 @@ namespace Google.Solutions.Mvvm.Format
         public class ColorTable
         {
             public Color Background { get; set; } = Color.White;
-            public Color Font { get; set; } = Color.Black;
-            public Color Link { get; set; } = Color.Blue;
+            public Color Text { get; set; } = Color.DarkSlateGray;
+            public Color Link { get; set; } = Color.DarkBlue;
 
             public uint BackgroundIndex = 0;
-            public uint FontIndex = 1;
+            public uint TextIndex = 1;
             public uint LinkIndex = 2;
 
             public Color[] GetTable()
@@ -58,7 +58,7 @@ namespace Google.Solutions.Mvvm.Format
                 return new[]
                 {
                     this.Background,
-                    this.Font,
+                    this.Text,
                     this.Link
                 };
             }
@@ -78,8 +78,15 @@ namespace Google.Solutions.Mvvm.Format
 
         public class LayoutTable
         {
-            public uint SpaceBeforeParagraph { get; set; } = 300;
-            public uint SpaceAfterParagraph { get; set; } = 300;
+            /// <summary>
+            /// Space before paragraph, in twips.
+            /// </summary>
+            public uint SpaceBeforeParagraph { get; set; } = 100;
+
+            /// <summary>
+            /// Space after paragraph, in twips.
+            /// </summary>
+            public uint SpaceAfterParagraph { get; set; } = 100;
         }
 
         /// <summary>
@@ -145,7 +152,11 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            private void StartParagraph(uint fontSize, uint spaceBefore, uint spaceAfter)
+            private void StartParagraph(
+                uint fontSize, 
+                uint fontColorIndex,
+                uint spaceBefore, 
+                uint spaceAfter)
             {
                 EndParagraph();
 
@@ -154,6 +165,7 @@ namespace Google.Solutions.Mvvm.Format
                 this.writer.SetSpaceBefore(spaceBefore);
                 this.writer.SetSpaceAfter(spaceAfter);
                 this.writer.SetFontSize(fontSize);
+                this.writer.SetFontColor(fontColorIndex);
             }
 
             private void ContinueParagraph()
@@ -162,6 +174,7 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     StartParagraph(
                         this.fontTable.FontSize,
+                        this.colorTable.TextIndex,
                         this.layoutTable.SpaceBeforeParagraph,
                         this.layoutTable.SpaceAfterParagraph);
                 }
@@ -190,6 +203,7 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     StartParagraph(
                         FontSizeForHeading(heading),
+                        this.colorTable.TextIndex,
                         this.layoutTable.SpaceBeforeParagraph,
                         this.layoutTable.SpaceAfterParagraph);
                     this.writer.SetBold(true);
@@ -210,7 +224,7 @@ namespace Google.Solutions.Mvvm.Format
                     this.writer.SetUnderline(true); // TODO: Set link color
                     this.writer.SetFontColor(this.colorTable.LinkIndex);
                     Visit(link.Children);
-                    this.writer.SetFontColor(this.colorTable.FontIndex);
+                    this.writer.SetFontColor(this.colorTable.TextIndex);
                     this.writer.SetUnderline(false);
                     this.writer.EndHyperlink();
                 }
