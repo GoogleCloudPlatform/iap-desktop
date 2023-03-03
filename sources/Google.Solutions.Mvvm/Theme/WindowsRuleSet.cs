@@ -108,7 +108,7 @@ namespace Google.Solutions.Mvvm.Theme
         /// https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/apply-windows-themes
         /// </summary>
         /// <param name="form"></param>
-        internal void StyleTitleBar(Form form)
+        private void StyleTitleBar(Form form)
         {
             if (!this.IsDarkModeEnabled || !form.TopLevel)
             {
@@ -135,7 +135,7 @@ namespace Google.Solutions.Mvvm.Theme
         /// <summary>
         /// Opt-in window to use dark mode.
         /// </summary>
-        internal void StyleControl(Control control)
+        private void StyleControl(Control control)
         {
             if (this.IsDarkModeEnabled)
             {
@@ -144,7 +144,7 @@ namespace Google.Solutions.Mvvm.Theme
         }
 
 
-        internal void StyleTreeView(TreeView treeView)
+        private void StyleTreeView(TreeView treeView)
         {
             treeView.HotTracking = true;
 
@@ -155,7 +155,7 @@ namespace Google.Solutions.Mvvm.Theme
             NativeMethods.SetWindowTheme(treeView.Handle, "Explorer", null);
         }
 
-        internal void StyleListView(ListView listView)
+        private void StyleListView(ListView listView)
         {
             listView.HotTracking = false;
 
@@ -229,12 +229,12 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
-        internal void StyleTextBox(TextBox text)
+        private void StyleTextBox(TextBox text)
         {
             NativeMethods.SetWindowTheme(text.Handle, "Explorer", null);
         }
 
-        internal void StyleComboBox(ComboBox combo)
+        private void StyleComboBox(ComboBox combo)
         {
             if (this.IsDarkModeEnabled)
             {
@@ -242,7 +242,7 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
-        internal void StyleScrollbar(ScrollBar bar)
+        private void StyleScrollbar(ScrollBar bar)
         {
             if (this.IsDarkModeEnabled)
             {
@@ -250,7 +250,7 @@ namespace Google.Solutions.Mvvm.Theme
             }
         }
 
-        public static void ResetWindowTheme(Control control)
+        private static void ResetWindowTheme(Control control)
         {
             NativeMethods.SetWindowTheme(control.Handle, string.Empty, string.Empty);
         }

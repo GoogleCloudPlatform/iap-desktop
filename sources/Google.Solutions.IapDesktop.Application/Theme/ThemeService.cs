@@ -91,12 +91,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             var dialogTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new CommonControlRuleSet())
-                .AddDialogRules(vsTheme);
+                .AddRuleSet(new VSThemeDialogRuleSet(vsTheme));
 
             var dockWindowTheme = new ControlTheme()
                 .AddRuleSet(windowsTheme)
                 .AddRuleSet(new CommonControlRuleSet())
-                .AddDockWindowRules(vsTheme);
+                .AddRuleSet(new VSThemeDockWindowRuleSet(vsTheme));
 
             //
             // Apply the resulting theme to the different kinds of windows we have.
