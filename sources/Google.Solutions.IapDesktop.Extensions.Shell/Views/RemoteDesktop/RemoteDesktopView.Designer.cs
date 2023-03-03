@@ -57,11 +57,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.reconnectToResizeTimer = new System.Windows.Forms.Timer(this.components);
             this.overlayPanel = new System.Windows.Forms.Panel();
             this.waitPanel = new System.Windows.Forms.Panel();
+            this.spinner = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
             this.reconnectPanel = new System.Windows.Forms.Panel();
             this.reconnectLabel = new System.Windows.Forms.Label();
             this.reconnectButton = new System.Windows.Forms.LinkLabel();
             this.timeoutIcon = new System.Windows.Forms.PictureBox();
-            this.spinner = new Google.Solutions.Mvvm.Controls.CircularProgressBar();
             this.rdpClient = new Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop.MsRdpClient();
             this.overlayPanel.SuspendLayout();
             this.waitPanel.SuspendLayout();
@@ -91,6 +91,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.waitPanel.Name = "waitPanel";
             this.waitPanel.Size = new System.Drawing.Size(200, 100);
             this.waitPanel.TabIndex = 8;
+            // 
+            // spinner
+            // 
+            this.spinner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.spinner.Indeterminate = true;
+            this.spinner.LineWidth = 5;
+            this.spinner.Location = new System.Drawing.Point(80, 30);
+            this.spinner.Maximum = 100;
+            this.spinner.MinimumSize = new System.Drawing.Size(15, 15);
+            this.spinner.Name = "spinner";
+            this.spinner.Size = new System.Drawing.Size(40, 40);
+            this.spinner.Speed = 3;
+            this.spinner.TabIndex = 3;
+            this.spinner.TabStop = false;
+            this.spinner.Value = 52;
             // 
             // reconnectPanel
             // 
@@ -133,23 +150,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.timeoutIcon.TabIndex = 5;
             this.timeoutIcon.TabStop = false;
             // 
-            // spinner
-            // 
-            this.spinner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.spinner.Indeterminate = true;
-            this.spinner.LineWidth = 5;
-            this.spinner.Location = new System.Drawing.Point(80, 30);
-            this.spinner.Maximum = 100;
-            this.spinner.MinimumSize = new System.Drawing.Size(15, 15);
-            this.spinner.Name = "spinner";
-            this.spinner.Size = new System.Drawing.Size(40, 40);
-            this.spinner.Speed = 3;
-            this.spinner.TabIndex = 3;
-            this.spinner.TabStop = false;
-            this.spinner.Value = 6;
-            // 
             // rdpClient
             // 
             this.rdpClient.Enabled = true;
@@ -160,6 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.rdpClient.TabIndex = 0;
             this.rdpClient.OnConnecting += new System.EventHandler(this.rdpClient_OnConnecting);
             this.rdpClient.OnConnected += new System.EventHandler(this.rdpClient_OnConnected);
+            this.rdpClient.OnLoginComplete += new System.EventHandler(this.rdpClient_OnLoginComplete);
             this.rdpClient.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(this.rdpClient_OnDisconnected);
             this.rdpClient.OnRequestGoFullScreen += new System.EventHandler(this.rdpClient_OnRequestGoFullScreen);
             this.rdpClient.OnRequestLeaveFullScreen += new System.EventHandler(this.rdpClient_OnRequestLeaveFullScreen);
