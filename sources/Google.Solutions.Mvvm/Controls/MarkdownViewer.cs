@@ -40,6 +40,19 @@ namespace Google.Solutions.Mvvm.Controls
         public MarkdownViewer()
         {
             InitializeComponent();
+
+            this.richTextBox.LinkClicked += (_, args) => OnLinkClicked(args);
+        }
+
+        //---------------------------------------------------------------------
+        // Events.
+        //---------------------------------------------------------------------
+
+        public LinkClickedEventHandler LinkClicked;
+
+        protected void OnLinkClicked(LinkClickedEventArgs args)
+        {
+            this.LinkClicked?.Invoke(this, args);
         }
 
         //---------------------------------------------------------------------

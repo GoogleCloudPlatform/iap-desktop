@@ -290,7 +290,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 writer.Hyperlink("text", "href");
 
                 Assert.AreEqual(
-                    "{\\field{\\*\\fldinst{HYPERLINK href}}{\\fldrslt{text}}}\r\n",
+                    "{\\field{\\*\\fldinst{HYPERLINK \"href\"}}{\\fldrslt{text}}}\r\n",
                     buffer.ToString());
             }
         }

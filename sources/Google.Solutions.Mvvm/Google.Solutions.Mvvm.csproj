@@ -81,6 +81,9 @@
     <Compile Include="Controls\MarkdownViewer.Designer.cs">
       <DependentUpon>MarkdownViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RichTextBox50.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Drawing\FontExtensions.cs" />
     <Compile Include="Controls\ProgressBar.cs">
       <SubType>Component</SubType>

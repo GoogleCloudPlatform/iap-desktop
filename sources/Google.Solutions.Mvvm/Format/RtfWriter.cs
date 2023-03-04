@@ -182,9 +182,9 @@ namespace Google.Solutions.Mvvm.Format
 
         public void StartHyperlink(string href)
         {
-            this.writer.Write("{\\field{\\*\\fldinst{HYPERLINK ");
+            this.writer.Write("{\\field{\\*\\fldinst{HYPERLINK \"");
             this.writer.Write(href);
-            this.writer.Write("}}{\\fldrslt{");
+            this.writer.Write("\"}}{\\fldrslt{");
         }
 
         public void EndHyperlink()

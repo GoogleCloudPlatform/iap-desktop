@@ -34,6 +34,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
         public TestMarkdownViewer()
         {
             InitializeComponent();
+
             this.sourceText.TextChanged += (_, __) =>
             {
                 this.markdown.Markdown = this.sourceText.Text;
@@ -43,6 +44,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
             };
 
             this.sourceText.Text += " ";
+
+            this.markdown.LinkClicked += (_, args)
+                => MessageBox.Show(this, args.LinkText);
         }
 
         [InteractiveTest]

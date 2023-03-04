@@ -49,7 +49,7 @@ namespace Google.Solutions.Mvvm.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            this.richTextBox = new System.Windows.Forms.RichTextBox();
+            this.richTextBox = new RichTextBox50();
             this.SuspendLayout();
             // 
             // richTextBox
@@ -75,6 +75,6 @@ namespace Google.Solutions.Mvvm.Controls
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox richTextBox;
+        private RichTextBox50 richTextBox;
     }
 }
