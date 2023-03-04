@@ -149,5 +149,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             first.Quit();
             second.Quit();
         }
+
+        [Test]
+        public void MutexNameIsLocal()
+        {
+            var app = new Singleton("test");
+            StringAssert.StartsWith("Local\\test_", app.MutexName);
+            StringAssert.StartsWith("test_", app.PipeName);
+        }
+
+        [Test]
+        public void ObjectNamesIncludeSessionId()
+        {
+            var app = new Singleton("test");
+            StringAssert.Contains($"_{app.SessionId:X}_", app.MutexName);
+            StringAssert.Contains($"_{app.SessionId:X}_", app.PipeName);
+        }
+
+        [Test]
+        public void ObjectNamesIncludeUsername()
+        {
+            var app = new Singleton("test");
+            StringAssert.Contains(Environment.UserName.ToLower(), app.MutexName);
+            StringAssert.Contains(Environment.UserName.ToLower(), app.PipeName);
+        }
     }
 }

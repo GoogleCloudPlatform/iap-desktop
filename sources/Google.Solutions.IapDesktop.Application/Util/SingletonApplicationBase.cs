@@ -37,22 +37,47 @@ namespace Google.Solutions.IapDesktop.Application.Util
 {
     public abstract class SingletonApplicationBase
     {
+        internal uint SessionId { get; }
         public string Name { get; }
 
-        //
-        // NB. Mutex names are case-sensitive, but pipes aren't.
-        // Normalize casing to prevent a situation where a second
-        // instance can claim the mutex (because it uses a different
-        // casing) but then can't open another pipe server because
-        // the pipe name is taken (with a different casing).
-        //
-
-        protected string MutexName => $"Local\\{Name.ToLower()}_{Environment.UserName.ToLower()}";
-        protected string PipeName => $"{Name.ToLower()}_{Environment.UserName.ToLower()}";
+        internal string MutexName { get; }
+        internal string PipeName { get; }
 
         protected SingletonApplicationBase(string name)
         {
             this.Name = name;
+
+            var processId = (uint)Process.GetCurrentProcess().Id;
+            if (UnsafeNativeMethods.ProcessIdToSessionId(
+                processId,
+                out var sessionId))
+            {
+                this.SessionId = sessionId;
+            }
+            else
+            {
+                //
+                // Use a fake session ID that's high enough to be unlikely
+                // to ever conflict with real session IDs.
+                //
+                this.SessionId = 0xF0000000 | (uint)processId;
+            }
+
+            //
+            // NB. Mutex names are case-sensitive, but pipes aren't.
+            // Normalize casing to prevent a situation where a second
+            // instance can claim the mutex (because it uses a different
+            // casing) but then can't open another pipe server because
+            // the pipe name is taken (with a different casing).
+            //
+            // Named pipes are always global, and there's no equivalent
+            // for Local\. We therefore incorporate the session ID into
+            // the name.
+            //
+
+            var uniqueName = $"{this.Name.ToLower()}_{this.SessionId:X}_{Environment.UserName.ToLower()}";
+            this.MutexName = $"Local\\{uniqueName}";
+            this.PipeName = uniqueName;
         }
 
         protected abstract int HandleFirstInvocation(string[] args);
@@ -224,7 +249,9 @@ namespace Google.Solutions.IapDesktop.Application.Util
                         0,
                         pipeSecurity))
                     {
-                        await pipe.WaitForConnectionAsync(token).ConfigureAwait(false);
+                        await pipe
+                            .WaitForConnectionAsync(token)
+                            .ConfigureAwait(false);
 
                         //
                         // The server expects:
@@ -286,6 +313,11 @@ namespace Google.Solutions.IapDesktop.Application.Util
             public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
             public const int SW_RESTORE = 9;
+
+            [DllImport("kernel32.dll")]
+            public static extern bool ProcessIdToSessionId(
+                uint dwProcessId, 
+                out uint pSessionId);
         }
     }
 }
