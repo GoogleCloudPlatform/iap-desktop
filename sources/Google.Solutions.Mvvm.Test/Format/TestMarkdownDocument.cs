@@ -378,6 +378,21 @@ namespace Google.Solutions.Mvvm.Test.Format
         }
 
         [Test]
+        public void SingleCharacterEmphasis()
+        {
+            var doc = MarkdownDocument.Parse(
+                 "one *!* char");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] one \n" +
+                "  [Emphasis delimiter=*] !\n" +
+                "  [Text]  char\n",
+                doc.ToString());
+        }
+
+        [Test]
         public void EmphasisAtStartOfLine()
         {
             var doc = MarkdownDocument.Parse(

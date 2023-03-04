@@ -182,15 +182,20 @@ namespace Google.Solutions.Mvvm.Format
                 this.writer.SetFontColor(fontColorIndex);
             }
 
+            private void StartParagraph()
+            {
+                StartParagraph(
+                    this.fontTable.FontSize,
+                    this.colorTable.TextIndex,
+                    this.layoutTable.SpaceBeforeParagraph,
+                    this.layoutTable.SpaceAfterParagraph);
+            }
+
             private void ContinueParagraph()
             {
                 if (!this.inParagraph)
                 {
-                    StartParagraph(
-                        this.fontTable.FontSize,
-                        this.colorTable.TextIndex,
-                        this.layoutTable.SpaceBeforeParagraph,
-                        this.layoutTable.SpaceAfterParagraph);
+                    StartParagraph();
                 }
             }
 
@@ -262,7 +267,7 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     EndParagraph();
                 }
-                else if (node is MarkdownDocument.UnorderedListItemNode ul) // TODO: Fix indentation
+                else if (node is MarkdownDocument.UnorderedListItemNode ul) // TODO: Format in list item broken
                 {
                     using (var block = new NodeVisitor(
                         this.layoutTable,
@@ -271,12 +276,14 @@ namespace Google.Solutions.Mvvm.Format
                         this.writer, 
                         this.indentationLevel + 1))
                     {
+                        block.StartParagraph();
                         this.writer.UnorderedListItem(
                             FirstLineIndent,
                             (int)block.indentationLevel * BlockIndent,
                             this.fontTable.SymbolsIndex,
                             this.fontTable.TextIndex);
                         block.Visit(ul.Children);
+                        block.EndParagraph();
                     }
                 }
                 else if (node is MarkdownDocument.OrderedListItemNode ol)
@@ -288,11 +295,13 @@ namespace Google.Solutions.Mvvm.Format
                         this.writer,
                         this.indentationLevel + 1))
                     {
+                        block.StartParagraph();
                         this.writer.OrderedListItem(
                             FirstLineIndent,
                             (int)block.indentationLevel * BlockIndent,
-                            this.nextListItemNumber++);
+                            block.nextListItemNumber++);
                         block.Visit(ol.Children);
+                        block.EndParagraph();
                     }
                 }
                 else if (node is MarkdownDocument.DocumentNode)
@@ -302,6 +311,12 @@ namespace Google.Solutions.Mvvm.Format
                     this.writer.ColorTable(this.colorTable.GetTable());
                     this.writer.SetBackgroundColor(this.colorTable.BackgroundIndex);
                     Visit(node.Children);
+
+                    //
+                    // Add an empty paragraph to prevent "hanging" list items.
+                    //
+                    StartParagraph();
+                    EndParagraph();
                     this.writer.EndDocument();
                 }
                 else

@@ -587,7 +587,7 @@ namespace Google.Solutions.Mvvm.Format
                     remainder.FirstOrDefault() is Token next &&
                     next != null &&
                     next.Type == TokenType.Text &&
-                    next.Value.Length > 1 &&
+                    next.Value.Length >= 1 &&
                     !NonLineBreakingWhitespace.Contains(next.Value[0]))
                 {
                     return new EmphasisNode(token.Value);

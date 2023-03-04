@@ -190,7 +190,7 @@ namespace Google.Solutions.Mvvm.Format
             int firstLineIndent, 
             int blockIndent,
             uint symbolFont,
-            uint textFont) // TODO: Use 'B7 and Symbol font
+            uint textFont)
         {
             this.writer.Write("{\\pntext\\f"+ symbolFont + "\\'B7\\f" + textFont +"\\tab}");
             this.writer.Write("{\\*\\pn\\pnlvlblt\\pnf2\\pnindent0{\\pntxtb\\bullet}}");
