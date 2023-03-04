@@ -80,6 +80,7 @@ namespace Google.Solutions.Mvvm.Controls
 
             return es;
         }
+
         private string CharRangeToString(NativeMethods.CHARRANGE c)
         {
             Debug.Assert(c.cpMax > c.cpMin);

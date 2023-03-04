@@ -314,7 +314,7 @@ namespace Google.Solutions.Mvvm.Controls
                 {
                     ContinueParagraph();
                     this.writer.StartHyperlink(link.Href);
-                    this.writer.SetUnderline(true); // TODO: Links aren't clickable
+                    this.writer.SetUnderline(true);
                     this.writer.SetFontColor(this.colorTable.LinkIndex);
                     Visit(link.Children);
                     this.writer.SetFontColor();
