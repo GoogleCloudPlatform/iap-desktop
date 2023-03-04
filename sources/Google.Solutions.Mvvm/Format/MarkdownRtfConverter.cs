@@ -107,6 +107,16 @@ namespace Google.Solutions.Mvvm.Format
             /// Space after paragraph, in twips.
             /// </summary>
             public uint SpaceAfterParagraph { get; set; } = 100;
+
+            /// <summary>
+            /// Space before paragraph, in twips.
+            /// </summary>
+            public uint SpaceBeforeListItem { get; set; } = 50;
+
+            /// <summary>
+            /// Space after paragraph, in twips.
+            /// </summary>
+            public uint SpaceAfterListItem { get; set; } = 50;
         }
 
         /// <summary>
@@ -290,7 +300,11 @@ namespace Google.Solutions.Mvvm.Format
                         this.writer, 
                         this.indentationLevel + 1))
                     {
-                        block.StartParagraph();
+                        block.StartParagraph(
+                            this.fontTable.FontSize,
+                            this.colorTable.TextIndex,
+                            this.layoutTable.SpaceBeforeListItem,
+                            this.layoutTable.SpaceAfterListItem);
                         this.writer.UnorderedListItem(
                             FirstLineIndent,
                             (int)block.indentationLevel * BlockIndent,
@@ -309,7 +323,11 @@ namespace Google.Solutions.Mvvm.Format
                         this.writer,
                         this.indentationLevel + 1))
                     {
-                        block.StartParagraph();
+                        block.StartParagraph(
+                            this.fontTable.FontSize,
+                            this.colorTable.TextIndex,
+                            this.layoutTable.SpaceBeforeListItem,
+                            this.layoutTable.SpaceAfterListItem);
                         this.writer.OrderedListItem(
                             FirstLineIndent,
                             (int)block.indentationLevel * BlockIndent,
