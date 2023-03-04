@@ -316,7 +316,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
             [DllImport("kernel32.dll")]
             public static extern bool ProcessIdToSessionId(
-                uint dwProcessId, 
+                uint dwProcessId,
                 out uint pSessionId);
         }
     }

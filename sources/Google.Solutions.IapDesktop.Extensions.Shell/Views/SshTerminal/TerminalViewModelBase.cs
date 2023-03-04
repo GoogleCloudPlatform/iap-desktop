@@ -21,7 +21,6 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
@@ -31,6 +30,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+
+#if !DEBUG
+using Google.Solutions.IapDesktop.Application;
+#endif
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
@@ -190,8 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         protected void OnDataReceived(DataEventArgs args)
         {
             // Keep buffer if DEBUG or tracing enabled.
-#if DEBUG
-#else
+#if !DEBUG
             if (ApplicationTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
 #endif
             {
@@ -204,8 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         protected void OnDataSent(DataEventArgs args)
         {
             // Keep buffer if DEBUG or tracing enabled.
-#if DEBUG
-#else
+#if !DEBUG
             if (ApplicationTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
 #endif
             {

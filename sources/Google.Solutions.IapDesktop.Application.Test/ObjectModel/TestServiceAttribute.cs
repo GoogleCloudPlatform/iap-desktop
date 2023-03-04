@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         }
 
         [Service(ServiceLifetime.Singleton)]
-        public class SingletonWithoutDelayCreationAttribute 
+        public class SingletonWithoutDelayCreationAttribute
         {
             public SingletonWithoutDelayCreationAttribute(CounterService counter)
             {
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             }
         }
 
-        [Service(ServiceLifetime.Singleton, DelayCreation=false)]
+        [Service(ServiceLifetime.Singleton, DelayCreation = false)]
         public class SingletonWithDelayCreationAttribute
         {
             public SingletonWithDelayCreationAttribute(CounterService counter)
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             Assert.AreEqual(
-                0, 
+                0,
                 registry.GetService<CounterService>().SingletonWithoutDelayCreationAttributeCount);
 
             registry.GetService<SingletonWithoutDelayCreationAttribute>();

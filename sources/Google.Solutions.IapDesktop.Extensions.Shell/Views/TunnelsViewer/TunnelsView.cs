@@ -21,14 +21,12 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell.Util;
 using System;
-using System.Runtime.InteropServices;
 using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
@@ -52,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
         }
 
         public void Bind(TunnelsViewModel viewModel)
-        { 
+        {
             this.tunnelsList.BindCollection(viewModel.Tunnels);
             this.tunnelsList.BindColumn(0, t => t.Destination.Instance.Name);
             this.tunnelsList.BindColumn(1, t => t.Destination.Instance.ProjectId);

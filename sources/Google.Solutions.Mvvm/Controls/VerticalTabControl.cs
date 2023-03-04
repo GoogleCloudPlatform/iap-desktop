@@ -53,7 +53,7 @@ namespace Google.Solutions.Mvvm.Controls
                 {
                     throw new ArgumentException("The margin is invalid");
                 }
-                    
+
                 this.textMargin = value;
             }
         }
@@ -61,8 +61,8 @@ namespace Google.Solutions.Mvvm.Controls
         public VerticalTabControl()
         {
             SetStyle(
-                ControlStyles.AllPaintingInWmPaint 
-                    | ControlStyles.ResizeRedraw 
+                ControlStyles.AllPaintingInWmPaint
+                    | ControlStyles.ResizeRedraw
                     | ControlStyles.UserPaint |
                 ControlStyles.DoubleBuffer, true);
             this.SizeMode = TabSizeMode.Fixed;
@@ -138,7 +138,7 @@ namespace Google.Solutions.Mvvm.Controls
                         boxRect.Y,
                         boxRect.Width - this.textMargin,
                         boxRect.Height);
-                    
+
                     if (i == this.SelectedIndex)
                     {
                         //

@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
-using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {

@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
-    public partial class OAuthScopeNotGrantedView 
+    public partial class OAuthScopeNotGrantedView
         : Form, IView<OAuthScopeNotGrantedViewModel>
     {
         public OAuthScopeNotGrantedView()

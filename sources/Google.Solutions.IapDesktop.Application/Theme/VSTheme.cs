@@ -165,9 +165,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             }
 
             protected static Color GetColor(
-                XDocument xml, 
+                XDocument xml,
                 string category,
-                string name, 
+                string name,
                 string type)
             {
                 var color = xml.Root.Element("Theme")

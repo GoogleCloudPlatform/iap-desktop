@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 new ComputeEngineAdapter(credential),
                 new ResourceManagerAdapter(credential),
                 new Mock<IOsLoginService>().Object);
-            
+
             return await keyAdapter.AuthorizeKeyAsync(
                     instance,
                     SshKeyPair.NewEphemeralKeyPair(keyType),

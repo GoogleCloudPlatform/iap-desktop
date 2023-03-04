@@ -30,7 +30,7 @@ namespace Google.Solutions.Mvvm.Theme
 {
     public class ToolStripItemTheme
     {
-        private readonly LinkedList<Action<ToolStripItem>> rules 
+        private readonly LinkedList<Action<ToolStripItem>> rules
             = new LinkedList<Action<ToolStripItem>>();
 
 
@@ -100,7 +100,7 @@ namespace Google.Solutions.Mvvm.Theme
                             }
 
                             appliedItems.Add(new WeakReference<ToolStripItem>(subItem));
-                            
+
                             Debug.Assert(
                                 appliedItems.Count < 256,
                                 "Cache should not grow excessively large");
@@ -112,7 +112,7 @@ namespace Google.Solutions.Mvvm.Theme
                         }
 
                     }
-                        
+
                     //
                     // Only allow each event to be fired once, otherwise
                     // the appliedItem list will grow too large.
@@ -173,7 +173,7 @@ namespace Google.Solutions.Mvvm.Theme
         /// are themed.
         /// </summary>
         public static void AddRules(
-            this ControlTheme controlTheme, 
+            this ControlTheme controlTheme,
             ToolStripItemTheme toolStripItemTheme)
         {
             controlTheme.ThrowIfNull(nameof(controlTheme));

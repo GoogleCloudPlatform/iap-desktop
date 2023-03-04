@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         }
 
         public GenerateCredentialsDialogResult ShowDialog(
-            IWin32Window owner, 
+            IWin32Window owner,
             string suggestedUsername)
         {
             using (var dialog = this.dialogFactory.CreateDialog())

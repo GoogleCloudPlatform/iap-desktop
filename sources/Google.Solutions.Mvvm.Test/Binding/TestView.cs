@@ -213,7 +213,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var serviceProvider = CreateServiceProvider(form, viewModel);
 
             var window = serviceProvider.GetWindow<SampleForm, SampleViewModel>();
-            
+
             Assert.AreSame(form, window.Form);
             Assert.AreSame(window.Form, viewModel.View);
             Assert.AreSame(viewModel, window.Form.ViewModel);

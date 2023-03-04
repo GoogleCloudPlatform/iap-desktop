@@ -53,7 +53,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
         public void ApplyToConsidersCurrentTopLevelItems()
         {
             var menu = new MenuStrip();
-            
+
             var item1 = new ToolStripSeparator();
             var item2 = new ToolStripSeparator();
             menu.Items.Add(item1);

@@ -32,7 +32,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
     [TestFixture]
     [Apartment(ApartmentState.STA)]
     public partial class TestIconInverter : Form
-    {        
+    {
         //---------------------------------------------------------------------
         // UI tests.
         //---------------------------------------------------------------------
@@ -84,7 +84,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
             var darkImage = (Bitmap)lightImage.Clone();
             var inverter = new IconInverter()
             {
-                ColorFactor = ((float)this.colorFactorScale.Value) / 100, 
+                ColorFactor = ((float)this.colorFactorScale.Value) / 100,
                 GrayFactor = ((float)this.grayFactorScale.Value) / 100,
                 InvertGray = this.invertGraysCheckBox.Checked
             };

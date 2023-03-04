@@ -271,7 +271,7 @@ namespace Google.Solutions.Mvvm.Controls
             {
                 int start;
                 int size;
-                
+
                 if (!this.Indeterminate)
                 {
                     //

@@ -22,13 +22,12 @@
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using System;
-using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     public partial class DebugServiceRegistryView : DocumentWindow, IView<DebugServiceRegistryViewModel>
     {
-        public DebugServiceRegistryView(IServiceProvider serviceProvider) 
+        public DebugServiceRegistryView(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             InitializeComponent();

@@ -78,7 +78,7 @@ namespace Google.Solutions.Mvvm.Test.Drawing
         [Test]
         public void ToStringReturnsHslValues()
         {
-            var c = new HslColor(.1f, .2f,.3f);
+            var c = new HslColor(.1f, .2f, .3f);
             Assert.AreEqual("H=25, S=51, L=76", c.ToString());
         }
     }

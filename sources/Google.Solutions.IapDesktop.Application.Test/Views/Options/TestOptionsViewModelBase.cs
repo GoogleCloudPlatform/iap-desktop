@@ -19,19 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Testing.Application.Test;
-using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
@@ -53,8 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             public int SaveCalls = 0;
 
             public OptionsViewModel(
-                string title, 
-                SettingsRepositoryBase<IRegistrySettingsCollection> settingsRepository) 
+                string title,
+                SettingsRepositoryBase<IRegistrySettingsCollection> settingsRepository)
                 : base(title, settingsRepository)
             {
             }
@@ -105,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         public void Title()
         {
             var optionsViewModel = new OptionsViewModel(
-                "Sample", 
+                "Sample",
                 CreateRepositoryMock().Object);
 
             Assert.AreEqual("Sample", optionsViewModel.Title);

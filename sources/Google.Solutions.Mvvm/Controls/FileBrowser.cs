@@ -56,7 +56,7 @@ namespace Google.Solutions.Mvvm.Controls
         private int GetImageIndex(FileType fileType)
         {
             Debug.Assert(!this.InvokeRequired, "Running on UI thread");
-            
+
             if (this.IsDisposed)
             {
                 //

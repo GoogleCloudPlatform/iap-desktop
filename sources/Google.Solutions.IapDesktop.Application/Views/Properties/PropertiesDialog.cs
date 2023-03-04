@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Collections.Generic;
@@ -55,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
 
             InitializeComponent();
             this.theme.ApplyTo(this);
-            
+
             ResumeLayout();
 
             this.Shown += (_, __) => this.tabs.Focus();

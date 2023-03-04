@@ -27,7 +27,6 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

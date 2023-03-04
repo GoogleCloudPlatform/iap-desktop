@@ -42,7 +42,7 @@ namespace Google.Solutions.Mvvm.Controls
             Debug.Assert(textBox.Width > searchButton.Width);
 
             searchButton.Location = new Point(
-                textBox.ClientSize.Width - searchButton.Width - 4, 
+                textBox.ClientSize.Width - searchButton.Width - 4,
                 (textBox.Height - searchButton.Height) / 2 - 1);
             searchButton.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             searchButton.FlatStyle = FlatStyle.Flat;

@@ -202,7 +202,7 @@ namespace Google.Solutions.Mvvm.Theme
 
                                     case NativeMethods.CDDS_ITEMPREPAINT:
                                         NativeMethods.SetTextColor(
-                                            custDraw.hdc, 
+                                            custDraw.hdc,
                                             listView.ForeColor.ToCOLORREF());
                                         m.Result = new IntPtr(NativeMethods.CDRF_DODEFAULT);
                                         break;

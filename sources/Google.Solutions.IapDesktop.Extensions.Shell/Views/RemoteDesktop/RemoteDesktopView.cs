@@ -49,7 +49,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     [Service]
-    public partial class RemoteDesktopView 
+    public partial class RemoteDesktopView
         : SessionViewBase, IRemoteDesktopSession, IView<RemoteDesktopViewModel>
     {
         private readonly IExceptionDialog exceptionDialog;
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             //
             this.overlayPanel.Location = Point.Empty;
             this.overlayPanel.Size = this.Size;
-                
+
             //
             // Center the other panels.
             //
@@ -520,7 +520,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 {
                     var value = this.rdpClient.Connected == 1 && !this.connecting;
 
-                    Debug.Assert((this.rdpClient.Connected == 1) == 
+                    Debug.Assert((this.rdpClient.Connected == 1) ==
                         (this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.Connected ||
                         this.viewModel.State.Value == RemoteDesktopViewModel.ConnectionState.LoggedOn));
 

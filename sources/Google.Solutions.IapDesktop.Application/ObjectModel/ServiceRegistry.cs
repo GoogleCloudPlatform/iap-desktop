@@ -456,7 +456,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             public SingletonStub(Func<object> factoryFunc)
             {
                 this.factoryFunc = new Lazy<object>(
-                    factoryFunc, 
+                    factoryFunc,
                     LazyThreadSafetyMode.ExecutionAndPublication);
             }
 

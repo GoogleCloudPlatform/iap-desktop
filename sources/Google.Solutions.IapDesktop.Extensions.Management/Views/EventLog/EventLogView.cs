@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                 this.viewModel,
                 m => m.SelectedEvent,
                 this.components);
-            
+
             this.list.BindColumn(0, e => e.Timestamp.ToString());
             this.list.BindColumn(1, e => GetInstanceName(e));
             this.list.BindColumn(2, e => e.Severity);

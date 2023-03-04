@@ -18,7 +18,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Interop;
 using System;
@@ -60,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     //
                     e.ArrowColor = this.palette.CommandBarMenuPopupDefault.Arrow;
                 }
-                else if (e.Item is ToolStripDropDownButton dropDown && 
+                else if (e.Item is ToolStripDropDownButton dropDown &&
                          e.Item.Owner is ToolStrip toolStrip)
                 {
                     if (toolStrip is StatusStrip)
