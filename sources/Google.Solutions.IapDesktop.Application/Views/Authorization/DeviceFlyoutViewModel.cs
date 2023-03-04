@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         {
             this.enrollment = authorizationSource.Authorization.DeviceEnrollment;
 
-            switch (enrollment.State)
+            switch (this.enrollment.State)
             {
                 case DeviceEnrollmentState.Disabled:
                     this.EnrollmentStateDescription =

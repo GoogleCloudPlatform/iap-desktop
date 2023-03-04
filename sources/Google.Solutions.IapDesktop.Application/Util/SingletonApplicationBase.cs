@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
             {
                 using (var mutex = new Mutex(
                     true,   // Try to claim ownership.
-                    MutexName,
+                    this.MutexName,
                     out bool ownsMutex,
                     mutexSecurity))
                 {
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
         {
             using (var pipe = new NamedPipeClientStream(
                 ".",
-                PipeName,
+                this.PipeName,
                 PipeDirection.InOut))
             {
                 pipe.Connect();
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 try
                 {
                     using (var pipe = new NamedPipeServerStream(
-                        PipeName,
+                        this.PipeName,
                         PipeDirection.InOut,
                         1,  // Translates to FILE_FLAG_FIRST_PIPE_INSTANCE
                         PipeTransmissionMode.Message,
