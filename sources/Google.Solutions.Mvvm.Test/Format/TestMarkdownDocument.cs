@@ -443,6 +443,27 @@ namespace Google.Solutions.Mvvm.Test.Format
                 doc.ToString());
         }
 
+
+        //---------------------------------------------------------------------
+        // Code.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void Code()
+        {
+            var doc = MarkdownDocument.Parse(
+                 "one `two` three `four`");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(
+                "[Document]\n" +
+                " [Span]\n" +
+                "  [Text] one \n" +
+                "  [Emphasis delimiter=`] two\n" +
+                "  [Text]  three \n" +
+                "  [Emphasis delimiter=`] four\n",
+                doc.ToString());
+        }
+
         //---------------------------------------------------------------------
         // Link.
         //---------------------------------------------------------------------

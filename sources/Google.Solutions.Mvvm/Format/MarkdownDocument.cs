@@ -491,6 +491,7 @@ namespace Google.Solutions.Mvvm.Format
                             }
 
                         case '_':
+                        case '`':
                         case '[':
                         case ']':
                         case '(':
@@ -583,7 +584,7 @@ namespace Google.Solutions.Mvvm.Format
                     return new TextNode(token.Value, true);
                 }
                 
-                if ((token.Value == "_" || token.Value == "*" || token.Value == "**") &&
+                if ((token.Value == "_" || token.Value == "*" || token.Value == "**" || token.Value == "`") &&
                     remainder.FirstOrDefault() is Token next &&
                     next != null &&
                     next.Type == TokenType.Text &&
@@ -708,7 +709,8 @@ namespace Google.Solutions.Mvvm.Format
 
             public string Text { get; protected set; }
             
-            public bool IsStrong => delimiter == "**";
+            public bool IsStrong => this.delimiter == "**";
+            public bool IsCode => this.delimiter == "`";
 
             public EmphasisNode(string delimiter)
             {
