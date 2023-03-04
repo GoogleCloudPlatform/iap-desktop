@@ -393,7 +393,7 @@ namespace Google.Solutions.Mvvm.Format
         /// <summary>
         /// Document, this forms the root of the tree.
         /// </summary>
-        public class DocumentNode : Node // TODO: remove "Node" suffix
+        public class DocumentNode : Node 
         {
             protected override Node CreateNode(string line)
             {

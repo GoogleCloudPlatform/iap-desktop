@@ -47,9 +47,16 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
         [InteractiveTest]
         [Test]
-        public void ConvertToMarkdown()
+        public void ShowTestUi()
         {
             ShowDialog();
+        }
+
+        [Test]
+        public void LoadMarkdown()
+        {
+            Show();
+            Close();
         }
     }
 }
