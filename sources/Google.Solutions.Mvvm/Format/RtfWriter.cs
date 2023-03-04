@@ -21,7 +21,7 @@ namespace Google.Solutions.Mvvm.Format
             this.writer = writer.ThrowIfNot(writer != null, nameof(writer));
         }
 
-        public void WriteText(string s)
+        public void Text(string s)
         {
             foreach (var c in s)
             {
@@ -151,6 +151,13 @@ namespace Google.Solutions.Mvvm.Format
             this.writer.Write(" ");
         }
 
+        public void SetFontSize(uint size)
+        {
+            this.writer.Write("\\fs");
+            this.writer.Write((size * 2).ToString());
+            this.writer.Write(" ");
+        }
+
         public void SetBold(bool bold)
         {
             this.writer.Write(bold ? "\\b " : "\\b0 ");
@@ -166,17 +173,10 @@ namespace Google.Solutions.Mvvm.Format
             this.writer.Write(bold ? "\\i " : "\\i0 ");
         }
 
-        public void SetFontSize(uint size)
-        {
-            this.writer.Write("\\fs");
-            this.writer.Write((size * 2).ToString());
-            this.writer.Write(" ");
-        }
-
         public void Hyperlink(string text, string href)
         {
             StartHyperlink(href);
-            WriteText(text);
+            Text(text);
             EndHyperlink();
         }
 

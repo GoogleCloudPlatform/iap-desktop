@@ -242,14 +242,14 @@ namespace Google.Solutions.Mvvm.Format
                         this.layoutTable.SpaceBeforeParagraph,
                         this.layoutTable.SpaceAfterParagraph);
                     this.writer.SetBold(true);
-                    this.writer.WriteText(heading.Text);
+                    this.writer.Text(heading.Text);
                     this.writer.SetBold(false);
                     EndParagraph();
                 }
                 else if (node is MarkdownDocument.TextNode text)
                 {
                     ContinueParagraph();
-                    this.writer.WriteText(text.Text);
+                    this.writer.Text(text.Text);
                 }
 
                 else if (node is MarkdownDocument.LinkNode link)
@@ -270,20 +270,20 @@ namespace Google.Solutions.Mvvm.Format
                     {
                         this.writer.SetHighlightColor(this.colorTable.CodeIndex);
                         this.writer.SetFont(this.fontTable.CodeIndex);
-                        this.writer.WriteText(emph.Text);
+                        this.writer.Text(emph.Text);
                         this.writer.SetFont();
                         this.writer.SetHighlightColor();
                     }
                     else if (emph.IsStrong)
                     {
                         this.writer.SetBold(true);
-                        this.writer.WriteText(emph.Text);
+                        this.writer.Text(emph.Text);
                         this.writer.SetBold(false);
                     }
                     else
                     {
                         this.writer.SetItalic(true);
-                        this.writer.WriteText(emph.Text);
+                        this.writer.Text(emph.Text);
                         this.writer.SetItalic(false);
                     }
                 }
@@ -291,7 +291,7 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     EndParagraph();
                 }
-                else if (node is MarkdownDocument.UnorderedListItemNode ul) // TODO: Format in list item broken
+                else if (node is MarkdownDocument.UnorderedListItemNode ul)
                 {
                     using (var block = new NodeVisitor(
                         this.layoutTable,
