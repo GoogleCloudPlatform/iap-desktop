@@ -160,7 +160,6 @@ namespace Google.Solutions.Mvvm.Controls
             internal const int WM_NOTIFY = 0x4E;
             internal const int WM_USER = 0x400;
             internal const int WM_REFLECT = WM_USER + 0x1C00;
-            internal const int WM_ReflectNotify = WM_REFLECT | WM_NOTIFY;
             internal const int WM_LBUTTONDOWN = 0x201;
             internal const int EM_GETTEXTRANGE = WM_USER + 75;
 
