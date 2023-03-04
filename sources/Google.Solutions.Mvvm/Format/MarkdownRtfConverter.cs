@@ -48,10 +48,12 @@ namespace Google.Solutions.Mvvm.Format
             public Color Background { get; set; } = Color.White;
             public Color Text { get; set; } = Color.DarkSlateGray;
             public Color Link { get; set; } = Color.DarkBlue;
+            public Color Code { get; set; } = Color.LightGray;
 
             public uint BackgroundIndex = 0;
             public uint TextIndex = 1;
             public uint LinkIndex = 2;
+            public uint CodeIndex = 3;
 
             public Color[] GetTable()
             {
@@ -59,7 +61,8 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     this.Background,
                     this.Text,
-                    this.Link
+                    this.Link,
+                    this.Code
                 };
             }
         }
@@ -67,16 +70,19 @@ namespace Google.Solutions.Mvvm.Format
         public class FontTable
         {
             public FontFamily Text { get; set; } = FontFamily.GenericSansSerif;
+            public FontFamily Code { get; set; } = FontFamily.GenericMonospace;
             public FontFamily Symbols { get; set; } = new FontFamily("Symbol");
 
             public uint TextIndex = 0;
-            public uint SymbolsIndex = 1;
+            public uint CodeIndex = 1;
+            public uint SymbolsIndex = 2;
 
             public FontFamily[] GetTable()
             {
                 return new[]
                 {
                     this.Text,
+                    this.Code,
                     this.Symbols
                 };
             }
@@ -243,14 +249,22 @@ namespace Google.Solutions.Mvvm.Format
                     this.writer.SetUnderline(true); // TODO: Links aren't clickable
                     this.writer.SetFontColor(this.colorTable.LinkIndex);
                     Visit(link.Children);
-                    this.writer.SetFontColor(this.colorTable.TextIndex);
+                    this.writer.SetFontColor();
                     this.writer.SetUnderline(false);
                     this.writer.EndHyperlink();
                 }
                 else if (node is MarkdownDocument.EmphasisNode emph)
                 {
                     ContinueParagraph();
-                    if (emph.IsStrong)
+                    if (emph.IsCode)
+                    {
+                        this.writer.SetHighlightColor(this.colorTable.CodeIndex);
+                        this.writer.SetFont(this.fontTable.CodeIndex);
+                        this.writer.WriteText(emph.Text);
+                        this.writer.SetFont();
+                        this.writer.SetHighlightColor();
+                    }
+                    else if (emph.IsStrong)
                     {
                         this.writer.SetBold(true);
                         this.writer.WriteText(emph.Text);
@@ -309,7 +323,6 @@ namespace Google.Solutions.Mvvm.Format
                     this.writer.StartDocument();
                     this.writer.FontTable(this.fontTable.GetTable());
                     this.writer.ColorTable(this.colorTable.GetTable());
-                    this.writer.SetBackgroundColor(this.colorTable.BackgroundIndex);
                     Visit(node.Children);
 
                     //

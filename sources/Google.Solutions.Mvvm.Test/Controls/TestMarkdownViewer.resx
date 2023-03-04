@@ -123,16 +123,21 @@
 ## Headline 2
 
 This is *emphasized* text, more _emphasized text_, and
-**strongly emphasized** text.
+**strongly emphasized** text. And `code-formatted text`.
 
 This is [a link **with emphasis**](http://google.com/).
 
 * Item 1
 * Item 2
 
+  * Subitem 1
+    with **extra** text
+
 1. One
 2. Two
    and some more
+
+
 
 </value>
   </data>

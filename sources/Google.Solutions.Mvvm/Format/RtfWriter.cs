@@ -129,19 +129,26 @@ namespace Google.Solutions.Mvvm.Format
             this.writer.WriteLine();
         }
 
-        public void SetFontColor(uint index)
+        public void SetFontColor(uint index = 0)
         {
             this.writer.Write("\\cf");
             this.writer.Write(index.ToString());
             this.writer.Write(" ");
 
         }
-        public void SetBackgroundColor(uint index)
+
+        public void SetHighlightColor(uint index = 0)
         {
-            this.writer.Write("\\cb");
+            this.writer.Write("\\highlight");
             this.writer.Write(index.ToString());
             this.writer.Write(" ");
+        }
 
+        public void SetFont(uint index = 0)
+        {
+            this.writer.Write("\\f");
+            this.writer.Write(index.ToString());
+            this.writer.Write(" ");
         }
 
         public void SetBold(bool bold)
