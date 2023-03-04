@@ -22,6 +22,7 @@
 using Google.Solutions.Mvvm.Format;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -45,14 +46,14 @@ namespace Google.Solutions.Mvvm.Controls
         // Properties.
         //---------------------------------------------------------------------
 
-        public ColorTable Colors { get; } = new ColorTable();
-        public FontTable Fonts { get; } = new FontTable();
-        public LayoutTable Layout__ { get; } = new LayoutTable(); // TODO: rename
+        public ColorStyles Colors { get; } = new ColorStyles();
+        public FontStyles Fonts { get; } = new FontStyles();
+        public ParagraphStyles Paragraphs { get; } = new ParagraphStyles();
 
         /// <summary>
         /// The intermediate RTF.
         /// </summary>
-        internal String Rtf { get; private set; }
+        internal string Rtf { get; private set; }
 
         /// <summary>
         /// Gets or sets the Markdown text to bew rendered.
@@ -72,7 +73,7 @@ namespace Google.Solutions.Mvvm.Controls
                 using (var buffer = new StringWriter())
                 using (var writer = new RtfWriter(buffer))
                 using (var visitor = new NodeVisitor(
-                    this.Layout__,
+                    this.Paragraphs,
                     this.Fonts,
                     this.Colors,
                     writer))
@@ -89,17 +90,17 @@ namespace Google.Solutions.Mvvm.Controls
         // Markdown to RTF conversion.
         //---------------------------------------------------------------------
 
-        public class ColorTable
+        public class ColorStyles
         {
             public Color Background { get; set; } = Color.White;
             public Color Text { get; set; } = Color.DarkSlateGray;
             public Color Link { get; set; } = Color.DarkBlue;
             public Color Code { get; set; } = Color.LightGray;
 
-            public uint BackgroundIndex = 0;
-            public uint TextIndex = 1;
-            public uint LinkIndex = 2;
-            public uint CodeIndex = 3;
+            internal uint BackgroundIndex = 0;
+            internal uint TextIndex = 1;
+            internal uint LinkIndex = 2;
+            internal uint CodeIndex = 3;
 
             internal Color[] GetTable()
             {
@@ -113,15 +114,22 @@ namespace Google.Solutions.Mvvm.Controls
             }
         }
 
-        public class FontTable
+        public class FontStyles
         {
+            public uint FontSizeHeading1 { get; set; } = 16;
+            public uint FontSizeHeading2 { get; set; } = 14;
+            public uint FontSizeHeading3 { get; set; } = 13;
+            public uint FontSizeHeading4 { get; set; } = 12;
+            public uint FontSizeHeading5 { get; set; } = 11;
+            public uint FontSizeHeading6 { get; set; } = 10;
+            public uint FontSize { get; set; } = 10;
             public FontFamily Text { get; set; } = FontFamily.GenericSansSerif;
             public FontFamily Code { get; set; } = FontFamily.GenericMonospace;
             public FontFamily Symbols { get; set; } = new FontFamily("Symbol");
 
-            public uint TextIndex = 0;
-            public uint CodeIndex = 1;
-            public uint SymbolsIndex = 2;
+            internal uint TextIndex = 0;
+            internal uint CodeIndex = 1;
+            internal uint SymbolsIndex = 2;
 
             internal FontFamily[] GetTable()
             {
@@ -132,17 +140,9 @@ namespace Google.Solutions.Mvvm.Controls
                     this.Symbols
                 };
             }
-
-            public uint FontSizeHeading1 = 16;
-            public uint FontSizeHeading2 = 14;
-            public uint FontSizeHeading3 = 13;
-            public uint FontSizeHeading4 = 12;
-            public uint FontSizeHeading5 = 11;
-            public uint FontSizeHeading6 = 10;
-            public uint FontSize = 10;
         }
 
-        public class LayoutTable
+        public class ParagraphStyles
         {
             /// <summary>
             /// Space before paragraph, in twips.
@@ -175,9 +175,9 @@ namespace Google.Solutions.Mvvm.Controls
 
             protected readonly RtfWriter writer;
 
-            private readonly LayoutTable layoutTable;
-            private readonly FontTable fontTable;
-            private readonly ColorTable colorTable;
+            private readonly ParagraphStyles layoutTable;
+            private readonly FontStyles fontTable;
+            private readonly ColorStyles colorTable;
 
             private readonly uint indentationLevel;
 
@@ -202,9 +202,9 @@ namespace Google.Solutions.Mvvm.Controls
             }
 
             public NodeVisitor(
-                LayoutTable layoutTable,
-                FontTable fontTable,
-                ColorTable colorTable,
+                ParagraphStyles layoutTable,
+                FontStyles fontTable,
+                ColorStyles colorTable,
                 RtfWriter writer,
                 uint indentationLevel = 0)
             {
