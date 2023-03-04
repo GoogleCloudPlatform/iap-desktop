@@ -56,16 +56,30 @@ namespace Google.Solutions.Mvvm.Format
             }
         }
 
-        public void StartDocument(FontFamily font)
+        public void StartDocument()
         {
-            this.writer.Write(@"{\rtf1\ansi\deff0\deflang1033\widowctrl{\fonttbl{\f0 ");
-            this.writer.Write(font.Name);
-            this.writer.Write(";}}");
-            this.writer.WriteLine();
+            this.writer.Write(@"{\rtf1\ansi\deff0\deflang1033\widowctrl");
         }
 
         public void EndDocument()
         { }
+
+
+        public void FontTable(FontFamily[] fonts)
+        {
+            this.writer.Write("{\\fonttbl");
+            
+            for (int i = 0; i < fonts.Length; i++)
+            {
+                this.writer.Write("{\\f");
+                this.writer.Write(i.ToString());
+                this.writer.Write(" ");
+                this.writer.Write(fonts[i].Name);
+                this.writer.Write(";}");
+            }
+            this.writer.Write("}");
+            this.writer.WriteLine();
+        }
 
         public void ColorTable(Color[] colors)
         {
@@ -172,9 +186,13 @@ namespace Google.Solutions.Mvvm.Format
             this.writer.WriteLine();
         }
 
-        public void UnorderedListItem(int firstLineIndent, int blockIndent)
+        public void UnorderedListItem(
+            int firstLineIndent, 
+            int blockIndent,
+            uint symbolFont,
+            uint textFont) // TODO: Use 'B7 and Symbol font
         {
-            this.writer.Write("{\\pntext\\bullet\\tab}");
+            this.writer.Write("{\\pntext\\f"+ symbolFont + "\\'B7\\f" + textFont +"\\tab}");
             this.writer.Write("{\\*\\pn\\pnlvlblt\\pnf2\\pnindent0{\\pntxtb\\bullet}}");
             this.writer.Write("\\fi");
             this.writer.Write(firstLineIndent.ToString());

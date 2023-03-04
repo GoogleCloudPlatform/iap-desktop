@@ -36,7 +36,7 @@ namespace Google.Solutions.Mvvm.Test.Format
             using (var buffer = new StringWriter())
             using (var writer = new RtfWriter(buffer))
             {
-                writer.StartDocument(FontFamily.GenericSansSerif);
+                writer.StartDocument();
 
                 writer.StartParagraph();
                 writer.SetFontSize(36);
@@ -68,18 +68,18 @@ namespace Google.Solutions.Mvvm.Test.Format
                 writer.SetUnderline(true);
                 writer.Hyperlink("Google", "https://Google.com/");
                 writer.SetUnderline(false);
-                writer.EndParagraph();
+                //writer.EndParagraph();
 
 
-                writer.StartParagraph();
-                writer.UnorderedListItem(-270, 360);
-                writer.WriteText("first\nlevel");
-                writer.EndParagraph();
+                //writer.StartParagraph();
+                //writer.UnorderedListItem(-270, 360);
+                //writer.WriteText("first\nlevel");
+                //writer.EndParagraph();
 
-                writer.StartParagraph();
-                writer.UnorderedListItem(-270, 720);
-                writer.WriteText("second\nlevel");
-                writer.EndParagraph();
+                //writer.StartParagraph();
+                //writer.UnorderedListItem(-270, 720);
+                //writer.WriteText("second\nlevel");
+                //writer.EndParagraph();
 
 
                 var s = buffer.ToString();

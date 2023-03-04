@@ -67,6 +67,20 @@ namespace Google.Solutions.Mvvm.Format
         public class FontTable
         {
             public FontFamily Text { get; set; } = FontFamily.GenericSansSerif;
+            public FontFamily Symbols { get; set; } = new FontFamily("Symbol");
+
+            public uint TextIndex = 0;
+            public uint SymbolsIndex = 1;
+
+            public FontFamily[] GetTable()
+            {
+                return new[]
+                {
+                    this.Text,
+                    this.Symbols
+                };
+            }
+
             public uint FontSizeHeading1 = 16;
             public uint FontSizeHeading2 = 14;
             public uint FontSizeHeading3 = 13;
@@ -221,7 +235,7 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     ContinueParagraph();
                     this.writer.StartHyperlink(link.Href);
-                    this.writer.SetUnderline(true); // TODO: Set link color
+                    this.writer.SetUnderline(true); // TODO: Links aren't clickable
                     this.writer.SetFontColor(this.colorTable.LinkIndex);
                     Visit(link.Children);
                     this.writer.SetFontColor(this.colorTable.TextIndex);
@@ -248,7 +262,7 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     EndParagraph();
                 }
-                else if (node is MarkdownDocument.UnorderedListItemNode ul)
+                else if (node is MarkdownDocument.UnorderedListItemNode ul) // TODO: Fix indentation
                 {
                     using (var block = new NodeVisitor(
                         this.layoutTable,
@@ -259,7 +273,9 @@ namespace Google.Solutions.Mvvm.Format
                     {
                         this.writer.UnorderedListItem(
                             FirstLineIndent,
-                            (int)block.indentationLevel * BlockIndent);
+                            (int)block.indentationLevel * BlockIndent,
+                            this.fontTable.SymbolsIndex,
+                            this.fontTable.TextIndex);
                         block.Visit(ul.Children);
                     }
                 }
@@ -281,7 +297,8 @@ namespace Google.Solutions.Mvvm.Format
                 }
                 else if (node is MarkdownDocument.DocumentNode)
                 {
-                    this.writer.StartDocument(this.fontTable.Text);
+                    this.writer.StartDocument();
+                    this.writer.FontTable(this.fontTable.GetTable());
                     this.writer.ColorTable(this.colorTable.GetTable());
                     this.writer.SetBackgroundColor(this.colorTable.BackgroundIndex);
                     Visit(node.Children);
