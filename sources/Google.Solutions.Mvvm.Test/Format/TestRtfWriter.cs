@@ -331,8 +331,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 writer.UnorderedListItem(
                     100,
                     200,
-                    3,
-                    0);
+                    3);
 
                 Assert.AreEqual(
                     "{\\pntext\\f3\\'B7\\f0\\tab}{\\*\\pn\\pnlvlblt\\pnf2\\pnindent0{\\pntxtb\\bullet}}\\fi100\\li200",

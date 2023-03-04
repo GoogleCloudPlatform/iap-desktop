@@ -196,10 +196,9 @@ namespace Google.Solutions.Mvvm.Format
         public void UnorderedListItem(
             int firstLineIndent, 
             int blockIndent,
-            uint symbolFont,
-            uint textFont)
+            uint symbolFont)
         {
-            this.writer.Write("{\\pntext\\f"+ symbolFont + "\\'B7\\f" + textFont +"\\tab}");
+            this.writer.Write("{\\pntext\\f"+ symbolFont + "\\'B7\\f0\\tab}");
             this.writer.Write("{\\*\\pn\\pnlvlblt\\pnf2\\pnindent0{\\pntxtb\\bullet}}");
             this.writer.Write("\\fi");
             this.writer.Write(firstLineIndent.ToString());

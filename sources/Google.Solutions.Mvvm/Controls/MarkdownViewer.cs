@@ -366,8 +366,7 @@ namespace Google.Solutions.Mvvm.Controls
                         this.writer.UnorderedListItem(
                             FirstLineIndent,
                             (int)block.indentationLevel * BlockIndent,
-                            this.fontTable.SymbolsIndex,
-                            this.fontTable.TextIndex);
+                            this.fontTable.SymbolsIndex);
                         block.Visit(ul.Children);
                         block.EndParagraph();
                     }
