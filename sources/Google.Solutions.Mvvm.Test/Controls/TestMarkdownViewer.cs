@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 this.markdown.Markdown = this.sourceText.Text;
                 var markdownDoc = MarkdownDocument.Parse(this.sourceText.Text);
                 this.parsedMarkdown.Text = markdownDoc.ToString().Replace("\n", "\r\n");
-                this.rtf.Text = new MarkdownRtfConverter().ConvertToString(markdownDoc);
+                this.rtf.Text = this.markdown.Rtf;
             };
 
             this.sourceText.Text += " ";
