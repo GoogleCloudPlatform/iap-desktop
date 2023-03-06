@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var serviceProvider = CreateServiceProvider();
             var credentialAdapter = new WindowsCredentialService(
                 new ComputeEngineAdapter(serviceProvider.GetService<IAuthorizationSource>()));
-            
+
             var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
                 instanceLocator,
                 CreateRandomUsername(),

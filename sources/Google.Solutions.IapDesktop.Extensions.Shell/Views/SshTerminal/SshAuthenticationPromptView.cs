@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 {
     [SkipCodeCoverage("UI code")]
     [Service]
-    public partial class SshAuthenticationPromptView 
+    public partial class SshAuthenticationPromptView
         : Form, IView<SshAuthenticationPromptViewModel>
     {
         public SshAuthenticationPromptView()

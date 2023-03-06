@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
-    internal class InstancePropertiesInspectorView 
+    internal class InstancePropertiesInspectorView
         : PropertiesInspectorViewBase, IView<InstancePropertiesInspectorViewModel>
     {
         public InstancePropertiesInspectorView(IServiceProvider serviceProvider)

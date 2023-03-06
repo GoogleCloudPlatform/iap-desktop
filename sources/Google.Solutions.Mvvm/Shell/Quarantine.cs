@@ -49,7 +49,7 @@ namespace Google.Solutions.Mvvm.Shell
         /// <returns></returns>
         public static Task ScanAsync(
             IntPtr owner,
-            FileInfo filePath, 
+            FileInfo filePath,
             Uri source,
             Guid clientGuid)
         {
@@ -289,12 +289,12 @@ namespace Google.Solutions.Mvvm.Shell
 
     public class QuarantineException : Exception
     {
-        public QuarantineException(string message) 
+        public QuarantineException(string message)
             : base(message)
         {
         }
 
-        public QuarantineException(string message, Exception innerException) 
+        public QuarantineException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

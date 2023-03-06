@@ -53,14 +53,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         public void WhenSelectedThemeChanged_ThenDirtyFlagIsSet()
         {
             Assert.AreNotEqual(
-                ThemeSettings.ApplicationTheme._Default, 
+                ThemeSettings.ApplicationTheme._Default,
                 ThemeSettings.ApplicationTheme.Dark);
 
             var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
             Assert.IsFalse(viewModel.IsDirty);
 
             viewModel.SelectedTheme.Value = ThemeSettings.ApplicationTheme.Dark;
-            
+
             Assert.IsTrue(viewModel.IsDirty);
         }
 

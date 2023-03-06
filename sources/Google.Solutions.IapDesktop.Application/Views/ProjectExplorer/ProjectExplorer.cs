@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.view = window.Bind();
         }
 
-        public IProjectModelNode SelectedNode 
+        public IProjectModelNode SelectedNode
             => this.view.SelectedNode;
 
         public ICommandContainer<IProjectModelNode> ContextMenuCommands

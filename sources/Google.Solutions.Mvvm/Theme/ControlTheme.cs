@@ -119,7 +119,7 @@ namespace Google.Solutions.Mvvm.Theme
             private readonly Options options;
 
             public Rule(
-                Type controlType, 
+                Type controlType,
                 Action<Control> apply,
                 Options options)
             {
@@ -144,7 +144,7 @@ namespace Google.Solutions.Mvvm.Theme
             {
                 if (Matches(control))
                 {
-                    if (!control.IsHandleCreated && 
+                    if (!control.IsHandleCreated &&
                         this.options.HasFlag(Options.ApplyWhenHandleCreated))
                     {
                         //

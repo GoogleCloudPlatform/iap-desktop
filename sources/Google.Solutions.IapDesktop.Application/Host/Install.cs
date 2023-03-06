@@ -69,8 +69,8 @@ namespace Google.Solutions.IapDesktop.Application.Host
                     history.Add(this.CurrentVersion.ToString());
 
                     key.SetValue(
-                        VersionHistoryValueName, 
-                        history.ToArray(), 
+                        VersionHistoryValueName,
+                        history.ToArray(),
                         RegistryValueKind.MultiString);
                 }
             }
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
                         var history = ((string[])key.GetValue(VersionHistoryValueName))
                             .EnsureNotNull();
 
-                        return history.Any() 
+                        return history.Any()
                             ? history.Select(v => new Version(v)).Min()
                             : this.CurrentVersion;
                     }

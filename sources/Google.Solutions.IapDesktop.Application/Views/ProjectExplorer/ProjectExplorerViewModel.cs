@@ -496,8 +496,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // IDisposable.
         //---------------------------------------------------------------------
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
+
             this.settings.Dispose();
             this.projectModelService.Dispose();
         }

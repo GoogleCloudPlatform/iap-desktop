@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             [Display(Name = "Current Windows theme")]
             System = 1,
-            
+
             [Display(Name = "Dark theme")]
             Dark = 2,
             _Default = Light

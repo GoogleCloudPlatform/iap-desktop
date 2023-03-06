@@ -298,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             var registrations = child.Registrations;
 
             Assert.AreEqual(
-                ServiceLifetime.Singleton, 
+                ServiceLifetime.Singleton,
                 registrations[typeof(ServiceWithDefaultConstructor)]);
             Assert.AreEqual(
                 ServiceLifetime.Transient,

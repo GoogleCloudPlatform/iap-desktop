@@ -99,8 +99,8 @@ namespace Google.Solutions.Mvvm.Drawing
                 bitmapImage.Height);
 
             var bitmapRead = bitmapImage.LockBits(
-                dimensions, 
-                ImageLockMode.ReadOnly, 
+                dimensions,
+                ImageLockMode.ReadOnly,
                 PixelFormat.Format32bppPArgb);
             var bitmapLength = bitmapRead.Stride * bitmapRead.Height;
 
@@ -176,10 +176,10 @@ namespace Google.Solutions.Mvvm.Drawing
             }
 
             var bitmapWrite = bitmapImage.LockBits(
-                dimensions, 
-                ImageLockMode.WriteOnly, 
+                dimensions,
+                ImageLockMode.WriteOnly,
                 PixelFormat.Format32bppPArgb);
-            
+
             Marshal.Copy(bitmapBGRA, 0, bitmapWrite.Scan0, bitmapLength);
             bitmapImage.UnlockBits(bitmapWrite);
 
@@ -198,7 +198,7 @@ namespace Google.Solutions.Mvvm.Drawing
 
             var images = imageList.Images.Cast<Image>().ToList();
             imageList.Images.Clear();
-            
+
             foreach (var image in images)
             {
                 Invert((Bitmap)image);

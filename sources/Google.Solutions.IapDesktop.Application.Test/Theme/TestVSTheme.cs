@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Theme
         //---------------------------------------------------------------------
         // Load.
         //---------------------------------------------------------------------
-        
+
         [Test]
         public void GetLightTheme()
         {

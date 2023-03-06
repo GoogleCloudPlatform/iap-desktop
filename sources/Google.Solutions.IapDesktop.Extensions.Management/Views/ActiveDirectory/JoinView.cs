@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirector
         }
 
         public void Bind(JoinViewModel viewModel)
-        { 
+        {
             this.domainText.BindObservableProperty(
                 c => c.Text,
                 viewModel,

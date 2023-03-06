@@ -19,15 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Binding;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Windows.Forms;
-using System.Reflection;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Controls
 {
@@ -47,12 +47,13 @@ namespace Google.Solutions.Mvvm.Controls
             property.ThrowIfNot(property != null, nameof(property));
 
             var adapter = new SelectionAdapter<TEnum>(property);
-            
+
             //
             // Show the friendly value, not the technical enum value.
             //
             this.FormattingEnabled = true;
-            this.Format += (_, e) => {
+            this.Format += (_, e) =>
+            {
                 var v = ((Enum)e.Value);
                 e.Value = v.GetAttribute<DisplayAttribute>().Name ?? v.ToString();
             };
@@ -113,7 +114,7 @@ namespace Google.Solutions.Mvvm.Controls
 
                     this.property.Value = this.Options[value];
                     this.PropertyChanged?.Invoke(
-                        this, 
+                        this,
                         new PropertyChangedEventArgs(nameof(SelectedItem)));
                 }
             }

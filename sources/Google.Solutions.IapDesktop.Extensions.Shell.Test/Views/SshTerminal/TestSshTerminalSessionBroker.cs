@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 new ComputeEngineAdapter(await credential),
                 new ResourceManagerAdapter(await credential),
                 new Mock<IOsLoginService>().Object);
-            
+
             var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
                     locator,
                     key,

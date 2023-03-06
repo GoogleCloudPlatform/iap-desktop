@@ -66,8 +66,8 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
         public UpdateService(
             Install install,
-            IGithubAdapter githubAdapter, 
-            ITaskDialog taskDialog, 
+            IGithubAdapter githubAdapter,
+            ITaskDialog taskDialog,
             IClock clock)
         {
             this.install = install.ThrowIfNull(nameof(install));

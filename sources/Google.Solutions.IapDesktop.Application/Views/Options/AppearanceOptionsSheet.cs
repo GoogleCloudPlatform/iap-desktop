@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
     [SkipCodeCoverage("UI code")]
     internal partial class AppearanceOptionsSheet : UserControl, IPropertiesSheet
     {
-        private AppearanceOptionsViewModel viewModel;
+        private readonly AppearanceOptionsViewModel viewModel;
 
         public AppearanceOptionsSheet(
             ThemeSettingsRepository settingsRepository)
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 m => m.IsThemeEditable,
                 this.components);
             this.theme.BindObservableProperty(
-                viewModel.SelectedTheme,
+                this.viewModel.SelectedTheme,
                 this.components);
         }
 

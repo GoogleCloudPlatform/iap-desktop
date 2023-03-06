@@ -144,7 +144,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Dock = DockStyle.Fill
             })
             {
-                progressBar.Click += (_, __) 
+                progressBar.Click += (_, __)
                     => progressBar.Value = (progressBar.Value + 1) % progressBar.Maximum;
                 form.Controls.Add(progressBar);
                 form.ShowDialog();

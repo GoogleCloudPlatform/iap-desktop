@@ -58,12 +58,12 @@ namespace Google.Solutions.Mvvm.Test.Theme
                 var theme = new ControlTheme();
                 var appliedControls = new List<Control>();
                 theme.AddRule<Control>(c => appliedControls.Add(c));
-                
+
                 theme.ApplyTo(form);
 
                 form.Show();
                 form.Close();
-                
+
                 CollectionAssert.AreEquivalent(
                     new Control[] { form, panel, button },
                     appliedControls);
@@ -112,7 +112,7 @@ namespace Google.Solutions.Mvvm.Test.Theme
 
                 form.Controls.Add(new Button());
                 form.Controls.Add(new Panel());
-                
+
                 theme.ApplyTo(form);
 
                 form.Show();

@@ -35,9 +35,9 @@ namespace Google.Solutions.Mvvm.Drawing
         public float S;
         public float L;
 
-        private static int ToBase256(float v) 
-        { 
-            return (int)Math.Min(255, 256 * v); 
+        private static int ToBase256(float v)
+        {
+            return (int)Math.Min(255, 256 * v);
         }
 
         private static float HueToRgb(float p, float q, float t)

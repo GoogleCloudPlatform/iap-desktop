@@ -28,9 +28,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     public class DebugDockingViewModel : ViewModelBase
     {
-        private readonly StateSnapshot snapshot = new StateSnapshot();
-        private readonly StringBuilder log = new StringBuilder();
-
         public DebugDockingViewModel()
         {
             this.LogOutput = ObservableProperty.Build(string.Empty);

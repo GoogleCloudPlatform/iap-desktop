@@ -20,11 +20,9 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
-using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Host
 {
@@ -77,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void WhenUpgraded_ThenInitialVersionIsCurrentVersion()
         {
             var install = new Install(TestBaseKeyPath);
-            
+
             using (var key = this.hkcu.CreateSubKey(TestBaseKeyPath))
             {
                 key.SetValue(

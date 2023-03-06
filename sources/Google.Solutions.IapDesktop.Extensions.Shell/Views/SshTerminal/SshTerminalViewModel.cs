@@ -647,7 +647,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
     public class DownloadBlockedException : Exception
     {
-        public DownloadBlockedException(string message, Exception innerException) 
+        public DownloadBlockedException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

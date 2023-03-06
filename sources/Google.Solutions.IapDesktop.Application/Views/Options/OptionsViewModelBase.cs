@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             //
             // Mark view model as dirty until changes are applied.
             //
-            property.PropertyChanged += (_, __ ) => this.IsDirty = true;
+            property.PropertyChanged += (_, __) => this.IsDirty = true;
         }
 
         //---------------------------------------------------------------------

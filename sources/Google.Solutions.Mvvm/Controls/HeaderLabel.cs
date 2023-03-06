@@ -29,9 +29,9 @@ namespace Google.Solutions.Mvvm.Controls
         public HeaderLabel()
         {
             this.Font = new Font(
-                "Segoe UI", 
-                16F, 
-                FontStyle.Regular, 
+                "Segoe UI",
+                16F,
+                FontStyle.Regular,
                 GraphicsUnit.Point, ((byte)(0)));
         }
     }
