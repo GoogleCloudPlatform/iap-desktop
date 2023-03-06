@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Shell;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -32,6 +33,7 @@ namespace Google.Solutions.Mvvm.Controls
     public class NotificationBarPanel : SplitContainer
     {
         private readonly Label infoLabel = new Label();
+        private readonly PictureBox icon = new PictureBox();
 
         //---------------------------------------------------------------------
         // Overrides.
@@ -54,8 +56,13 @@ namespace Google.Solutions.Mvvm.Controls
             this.infoLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             this.infoLabel.ForeColor = SystemColors.InfoText;
 
+            this.icon.Location = new Point(5, (this.SplitterDistance - 16) / 2);
+            this.icon.Size = new Size(16, 16);
+            this.icon.Image = StockIcons.GetIcon(StockIcons.IconId.Info, StockIcons.IconSize.Small);
+
             this.Panel1Collapsed = true;
             this.Panel1.Controls.Add(this.infoLabel);
+            this.Panel1.Controls.Add(this.icon);
 
             base.OnCreateControl();
         }
