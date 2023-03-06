@@ -83,6 +83,7 @@
     <Compile Include="Controls\TestMarkdownViewer.Designer.cs">
       <DependentUpon>TestMarkdownViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TestNotificationBarPanel.cs" />
     <Compile Include="Controls\TestProgressBar.cs" />
     <Compile Include="Controls\TestFileBrowser.cs" />
     <Compile Include="Controls\TestFileBrowserUi.cs" />
