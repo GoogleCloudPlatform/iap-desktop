@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.Apis.Core, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -75,6 +77,15 @@
     <Compile Include="Controls\DropDownButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\MarkdownViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MarkdownViewer.Designer.cs">
+      <DependentUpon>MarkdownViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RichTextBox50.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Drawing\FontExtensions.cs" />
     <Compile Include="Controls\ProgressBar.cs">
       <SubType>Component</SubType>
@@ -98,6 +109,8 @@
     <Compile Include="Drawing\ColorExtensions.cs" />
     <Compile Include="Drawing\HslColor.cs" />
     <Compile Include="Drawing\IconInverter.cs" />
+    <Compile Include="Format\MarkdownDocument.cs" />
+    <Compile Include="Format\RtfWriter.cs" />
     <Compile Include="Interop\SubclassCallback.cs" />
     <Compile Include="Interop\WindowMessage.cs" />
     <Compile Include="Shell\FileTypeCache.cs" />
@@ -144,6 +157,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\FileBrowser.resx">
       <DependentUpon>FileBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MarkdownViewer.resx">
+      <DependentUpon>MarkdownViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SearchableList.resx">
       <DependentUpon>SearchableList.cs</DependentUpon>
