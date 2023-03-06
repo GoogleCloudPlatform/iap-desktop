@@ -83,7 +83,12 @@
     <Compile Include="Controls\TestMarkdownViewer.Designer.cs">
       <DependentUpon>TestMarkdownViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TestNotificationBarPanel.cs" />
+    <Compile Include="Controls\TestNotificationBarPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\TestNotificationBarPanel.Designer.cs">
+      <DependentUpon>TestNotificationBarPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TestProgressBar.cs" />
     <Compile Include="Controls\TestFileBrowser.cs" />
     <Compile Include="Controls\TestFileBrowserUi.cs" />
@@ -134,6 +139,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\TestMarkdownViewer.resx">
       <DependentUpon>TestMarkdownViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TestNotificationBarPanel.resx">
+      <DependentUpon>TestNotificationBarPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Drawing\TestIconInverter.resx">
       <DependentUpon>TestIconInverter.cs</DependentUpon>

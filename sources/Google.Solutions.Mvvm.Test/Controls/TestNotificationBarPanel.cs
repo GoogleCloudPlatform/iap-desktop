@@ -20,18 +20,37 @@
 //
 
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System.Threading;
 using System.Windows.Forms;
-
 namespace Google.Solutions.Mvvm.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestNotificationBarPanel
+    public partial class TestNotificationBarPanel : Form
     {
+        public TestNotificationBarPanel()
+        {
+            InitializeComponent();
+
+            this.textBox.TextChanged += (_, __)
+                => this.notificationBarPanel.Text = this.textBox.Text;
+        }
+
         //---------------------------------------------------------------------
-        // Indeterminate.
+        // UI tests.
+        //---------------------------------------------------------------------
+
+        [InteractiveTest]
+        [Test]
+        public void ShowTestUi()
+        {
+            ShowDialog();
+        }
+
+        //---------------------------------------------------------------------
+        // Unit tests.
         //---------------------------------------------------------------------
 
         [Test]

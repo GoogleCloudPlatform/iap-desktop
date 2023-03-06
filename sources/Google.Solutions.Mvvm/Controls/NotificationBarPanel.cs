@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -32,6 +33,10 @@ namespace Google.Solutions.Mvvm.Controls
     {
         private readonly Label infoLabel = new Label();
 
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
         protected override void OnCreateControl()
         {
             this.Dock = DockStyle.Fill;
@@ -40,10 +45,9 @@ namespace Google.Solutions.Mvvm.Controls
             this.Orientation = Orientation.Horizontal;
             this.SplitterWidth = 1;
             this.SplitterDistance = 25;
-            this.Panel1.BackColor = this.NotificationBarBackColor;
+            this.Panel1.BackColor = SystemColors.Info;
 
             this.infoLabel.Location = new Point(30, 5);
-            this.infoLabel.Size = new Size(this.Width - 40, this.SplitterDistance - 10);
             this.infoLabel.AutoEllipsis = true;
             this.infoLabel.AutoSize = false;
             this.infoLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -55,6 +59,21 @@ namespace Google.Solutions.Mvvm.Controls
 
             base.OnCreateControl();
         }
+
+        protected override void OnLayout(LayoutEventArgs e)
+        {
+            base.OnLayout(e);
+            this.infoLabel.Size = new Size(this.Width - 40, this.SplitterDistance - 10);
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+        }
+
+        //---------------------------------------------------------------------
+        // Public properties.
+        //---------------------------------------------------------------------
 
         /// <summary>
         /// Determine if the notification bar is currently visible.
