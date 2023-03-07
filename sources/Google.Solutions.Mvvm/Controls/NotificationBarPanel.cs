@@ -131,60 +131,70 @@ namespace Google.Solutions.Mvvm.Controls
         //---------------------------------------------------------------------
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new DockStyle Dock
         {
             get => base.Dock;
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new bool IsSplitterFixed
         {
             get => base.IsSplitterFixed;
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new bool Panel1Collapsed
         {
             get => base.Panel1Collapsed;
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new bool Panel2Collapsed
         {
             get => base.Panel2Collapsed;
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new int Panel1MinSize
         {
             get => base.Panel1MinSize;
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new int SplitterDistance
         {
             get => base.SplitterDistance;
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new int SplitterWidth
         {
             get => base.SplitterWidth;
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Orientation Orientation
         {
             get => base.Orientation;
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new SplitterPanel Panel1
         {
             get => base.Panel1;
         }
 
         [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Point Location
         {
             get => base.Location;
