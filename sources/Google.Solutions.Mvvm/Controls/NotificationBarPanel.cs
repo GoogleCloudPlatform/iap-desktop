@@ -22,6 +22,7 @@
 using Google.Solutions.Mvvm.Shell;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -41,13 +42,13 @@ namespace Google.Solutions.Mvvm.Controls
 
         protected override void OnCreateControl()
         {
-            this.Dock = DockStyle.Fill;
-            this.FixedPanel = FixedPanel.Panel1;
-            this.IsSplitterFixed = true;
-            this.Orientation = Orientation.Horizontal;
-            this.SplitterWidth = 1;
-            this.SplitterDistance = 25;
-            this.Panel1.BackColor = SystemColors.Info;
+            base.Dock = DockStyle.Fill;
+            base.FixedPanel = FixedPanel.Panel1;
+            base.IsSplitterFixed = true;
+            base.Orientation = Orientation.Horizontal;
+            base.SplitterWidth = 1;
+            base.SplitterDistance = 25;
+            base.Panel1.BackColor = SystemColors.Info;
 
             this.infoLabel.Location = new Point(30, 5);
             this.infoLabel.AutoEllipsis = true;
@@ -124,6 +125,73 @@ namespace Google.Solutions.Mvvm.Controls
         {
             get => this.infoLabel.ForeColor;
             set => this.infoLabel.ForeColor = value;
+        }
+
+        //---------------------------------------------------------------------
+        // Hiding properties.
+        //---------------------------------------------------------------------
+
+        [Browsable(false)]
+        public new DockStyle Dock
+        {
+            get => base.Dock;
+            private set { }
+        }
+
+        [Browsable(false)]
+        public new bool IsSplitterFixed
+        {
+            get => base.IsSplitterFixed;
+            private set { }
+        }
+
+        [Browsable(false)]
+        public new bool Panel1Collapsed
+        {
+            get => base.Panel1Collapsed;
+            private set { }
+        }
+
+        [Browsable(false)]
+        public new bool Panel2Collapsed
+        {
+            get => base.Panel2Collapsed;
+            private set { }
+        }
+
+        [Browsable(false)]
+        public new int Panel1MinSize
+        {
+            get => base.Panel1MinSize;
+            private set { }
+        }
+
+        [Browsable(false)]
+        public new int SplitterDistance
+        {
+            get => base.SplitterDistance;
+            private set { }
+        }
+
+        [Browsable(false)]
+        public new int SplitterWidth
+        {
+            get => base.SplitterWidth;
+            private set { }
+        }
+
+        [Browsable(false)]
+        public new Orientation Orientation
+        {
+            get => base.Orientation;
+            private set { }
+        }
+
+        [Browsable(false)]
+        public new SplitterPanel Panel1
+        {
+            get => base.Panel1;
+            private set { }
         }
     }
 }
