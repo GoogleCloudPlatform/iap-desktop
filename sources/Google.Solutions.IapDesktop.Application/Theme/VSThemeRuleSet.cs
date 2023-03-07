@@ -161,6 +161,12 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             button.BackColor = this.theme.Palette.Button.Background;
             button.ForeColor = this.theme.Palette.Button.Text;
             button.UseVisualStyleBackColor = false;
+
+            if (button is DropDownButton dropDownButton)
+            {
+                dropDownButton.GlyphColor = this.theme.Palette.Button.DropDownGlyphColor;
+                dropDownButton.GlyphDisabledColor = this.theme.Palette.Button.DropDownGlyphDisabledColor;
+            }
         }
 
         private void StyleDropDownButton(DropDownButton button)

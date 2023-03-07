@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebugCommonControlsView));
             this.regularButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
@@ -82,9 +83,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.oneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.twoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.dropDownButton = new Google.Solutions.Mvvm.Controls.DropDownButton();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.toolStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // regularButton
@@ -372,11 +377,35 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.toolStripComboBox.Name = "toolStripComboBox";
             this.toolStripComboBox.Size = new System.Drawing.Size(121, 25);
             // 
+            // dropDownButton
+            // 
+            this.dropDownButton.Location = new System.Drawing.Point(18, 730);
+            this.dropDownButton.Menu = this.contextMenuStrip1;
+            this.dropDownButton.Name = "dropDownButton";
+            this.dropDownButton.Size = new System.Drawing.Size(149, 23);
+            this.dropDownButton.TabIndex = 20;
+            this.dropDownButton.Text = "dropDownButton1";
+            this.dropDownButton.UseVisualStyleBackColor = true;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(108, 26);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+            this.toolStripMenuItem1.Text = "Item 1";
+            // 
             // DebugCommonControlsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 777);
+            this.Controls.Add(this.dropDownButton);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.circularProgressBar1);
             this.Controls.Add(this.readOnlyCheckBox);
@@ -404,6 +433,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -441,5 +471,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.ToolStripMenuItem oneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem twoToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox;
+        private DropDownButton dropDownButton;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
     }
 }
