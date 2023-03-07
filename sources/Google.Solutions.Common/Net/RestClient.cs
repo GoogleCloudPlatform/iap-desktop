@@ -20,8 +20,10 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -31,34 +33,64 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Net
 {
-    public class RestClient
+    public class RestClient : IDisposable
     {
-        public UserAgent UserAgent { get; set; }
+        //
+        // Underlying HTTP client. We keep using the same client so
+        // that we can benefit from the underlying connection pool.
+        //
+        private readonly HttpClient client;
 
-        public X509Certificate2 ClientCertificate { get; set; }
-
-        public ICredential Credential { get; set; }
-
-        private HttpClient CreateClient()
+        public RestClient(
+            UserAgent userAgent,
+            X509Certificate2 clientCertificate)
         {
+            this.UserAgent = userAgent.ThrowIfNull(nameof(userAgent));
+            this.ClientCertificate = clientCertificate;
+
             if (this.ClientCertificate != null)
             {
                 var handler = new HttpClientHandler();
                 handler.TryAddClientCertificate(this.ClientCertificate);
-                return new HttpClient(handler);
+                this.client = new HttpClient(handler);
             }
             else
             {
-                return new HttpClient();
+                this.client = new HttpClient();
             }
         }
 
+        public RestClient(UserAgent userAgent) : this(userAgent, null)
+        {
+        }
+
+        /// <summary>
+        /// User agent to add to HTTP requests.
+        /// </summary>
+        public UserAgent UserAgent { get; }
+
+        /// <summary>
+        /// Certificate for mTLS.
+        /// </summary>
+        public X509Certificate2 ClientCertificate { get; }
+
+        /// <summary>
+        /// Perform a GET request.
+        /// </summary>
+        public Task<TModel> GetAsync<TModel>(
+            string url,
+            CancellationToken cancellationToken)
+            => GetAsync<TModel>(url, null, cancellationToken);
+
+        /// <summary>
+        /// Perform an authenticated GET request.
+        /// </summary>
         public async Task<TModel> GetAsync<TModel>(
             string url,
+            ICredential credential,
             CancellationToken cancellationToken)
         {
             using (CommonTraceSources.Default.TraceMethod().WithParameters(url))
-            using (var client = CreateClient())
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
                 if (this.UserAgent != null)
@@ -66,9 +98,9 @@ namespace Google.Solutions.Common.Net
                     request.Headers.UserAgent.ParseAdd(this.UserAgent.ToHeaderValue());
                 }
 
-                if (this.Credential != null)
+                if (credential != null)
                 {
-                    var accessToken = await this.Credential.GetAccessTokenForRequestAsync(
+                    var accessToken = await credential.GetAccessTokenForRequestAsync(
                         null,
                         cancellationToken).ConfigureAwait(false);
                     request.Headers.Authorization = new AuthenticationHeaderValue(
@@ -92,6 +124,15 @@ namespace Google.Solutions.Common.Net
                     }
                 }
             }
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.client.Dispose();
         }
     }
 }

@@ -58,10 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var assemblyName = typeof(ComputeEngineAdapter).Assembly.GetName();
-                var client = new RestClient()
-                {
-                    UserAgent = Globals.UserAgent
-                };
+                var client = new RestClient(Globals.UserAgent);
 
                 var latestRelease = await client.GetAsync<Release>(
                     $"https://api.github.com/repos/{this.RepositoryName}/releases/latest",

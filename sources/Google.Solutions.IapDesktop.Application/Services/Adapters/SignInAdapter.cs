@@ -277,14 +277,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ICredential credential,
             CancellationToken token)
         {
-            var client = new RestClient()
-            {
-                ClientCertificate = this.deviceCertificate,
-                Credential = credential,
-            };
+            var client = new RestClient(Globals.UserAgent, this.deviceCertificate);
 
             return await client.GetAsync<UserInfo>(
                     CreateInitializer().UserInfoUrl,
+                    credential,
                     token)
                 .ConfigureAwait(false);
         }
