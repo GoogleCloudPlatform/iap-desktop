@@ -31,7 +31,7 @@ The application automatically manages IAP TCP tunnels for you, and protects them
 
 ## Connect to Windows VMs with Remote Desktop
 
-<img src='doc/images/RemoteDesktop_350.gif?_=1' align='right'>
+<img src='doc/images/RemoteDesktop_350.png?_=1' align='right'>
 
 IAP Desktop is a [full-featured Remote Desktop client](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-instances) that lets you:
 
@@ -44,7 +44,7 @@ To help you authenticate to Windows VMs, IAP Desktop can:
 *   Automatically generate Windows credentials by using the Compute Engine guest agent environment
 *   Encrypt and store your Windows credentials locally
 
-[View larger screenshot](doc/images/RemoteDesktop_1024.gif?raw=true)
+[View larger screenshot](doc/images/RemoteDesktop_1400.gif?raw=true)
 
 <img src='doc/images/pix.gif' width='100%' height='1'>
 
