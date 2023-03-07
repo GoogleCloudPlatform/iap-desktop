@@ -74,7 +74,9 @@ To help you authenticate to Linux VMs, IAP Desktop can:
 
 ## Manage VMs across projects
 
-<img src='doc/images/Manage_350.gif?_=1' align='right'>
+<a href='doc/images/Manage_1400.gif?raw=true'>
+<img src='doc/images/Manage_350.png?raw=true' align='right'>
+</a>
 
 IAP Desktop gives you a consolidated view of your VMs and lets you:
 
@@ -84,7 +86,7 @@ IAP Desktop gives you a consolidated view of your VMs and lets you:
 *   Perform common operations such as starting or stopping VMs
 
 
-[View larger screenshot](doc/images/Manage_1024.gif?raw=true)
+:arrow_forward: [Show screencast](doc/images/Manage_1400.gif?raw=true)
 
 <img src='doc/images/pix.gif' width='100%' height='1'>
 
