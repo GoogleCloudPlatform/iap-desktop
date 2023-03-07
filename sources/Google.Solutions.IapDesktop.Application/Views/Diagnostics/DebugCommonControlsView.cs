@@ -80,7 +80,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 this.richTextBox,
                 this.comboBox,
                 this.numericUpDown,
-                this.listView
+                this.listView,
+                this.dropDownButton
             })
             {
                 control.BindReadonlyObservableProperty(

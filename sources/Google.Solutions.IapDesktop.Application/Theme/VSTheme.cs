@@ -127,7 +127,9 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     Text = GetColor(xml, "CommonControls", "Button", "Foreground"),
                     Border = GetColor(xml, "CommonControls", "ButtonBorder", "Background"),
                     BackgroundHover = GetColor(xml, "CommonControls", "ButtonHover", "Background"),
-                    BackgroundPressed = GetColor(xml, "CommonControls", "ButtonPressed", "Background")
+                    BackgroundPressed = GetColor(xml, "CommonControls", "ButtonPressed", "Background"),
+                    DropDownGlyphColor = GetColor(xml, "CommonControls", "ComboBoxGlyph", "Background"),
+                    DropDownGlyphDisabledColor = GetColor(xml, "CommonControls", "ComboBoxGlyphDisabled", "Background"),
                 };
                 this.Label = new LabelPalette()
                 {
@@ -209,6 +211,8 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             public Color Border { get; set; }
             public Color BackgroundHover { get; set; }
             public Color BackgroundPressed { get; set; }
+            public Color DropDownGlyphColor { get; set; }
+            public Color DropDownGlyphDisabledColor { get; set; }
         }
 
         internal struct LabelPalette

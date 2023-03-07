@@ -34,13 +34,25 @@ namespace Google.Solutions.Mvvm.Controls
     {
         [DefaultValue(null)]
         [Browsable(true)]
+        [Category("Behavior")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public ContextMenuStrip Menu { get; set; }
 
         [DefaultValue(20)]
         [Browsable(true)]
+        [Category("Appearance")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int SplitWidth { get; set; }
+
+        [Browsable(true)]
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "ControlText")]
+        public Color GlyphColor { get; set; } = SystemColors.ControlText;
+
+        [Browsable(true)]
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "ButtonShadow")]
+        public Color GlyphDisabledColor { get; set; } = SystemColors.ButtonShadow;
 
         public DropDownButton()
         {
@@ -85,10 +97,6 @@ namespace Google.Solutions.Mvvm.Controls
                 int arrowX = this.ClientRectangle.Width - 14;
                 int arrowY = this.ClientRectangle.Height / 2 - 1;
 
-                var arrowBrush = this.Enabled
-                    ? SystemBrushes.ControlText
-                    : SystemBrushes.ButtonShadow;
-
                 var arrowPoints = new[]
                 {
                     new Point(arrowX, arrowY),
@@ -96,20 +104,25 @@ namespace Google.Solutions.Mvvm.Controls
                     new Point(arrowX + 3, arrowY + 4)
                 };
 
-                args.Graphics.FillPolygon(arrowBrush, arrowPoints);
+                using (var arrowBrush = new SolidBrush(this.Enabled
+                    ? this.GlyphColor
+                    : this.GlyphDisabledColor))
+                {
+                    args.Graphics.FillPolygon(arrowBrush, arrowPoints);
 
-                //
-                // Draw a dashed separator.
-                //
-                int lineX = this.ClientRectangle.Width - this.SplitWidth;
-                int lineYFrom = arrowY - 4;
-                int lineYTo = arrowY + 8;
-                using (var separatorPen = new Pen(Brushes.DarkGray)
-                {
-                    DashStyle = DashStyle.Dot
-                })
-                {
-                    args.Graphics.DrawLine(separatorPen, lineX, lineYFrom, lineX, lineYTo);
+                    //
+                    // Draw a dashed separator.
+                    //
+                    int lineX = this.ClientRectangle.Width - this.SplitWidth;
+                    int lineYFrom = arrowY - 4;
+                    int lineYTo = arrowY + 8;
+                    using (var separatorPen = new Pen(arrowBrush)
+                    {
+                        DashStyle = DashStyle.Dot
+                    })
+                    {
+                        args.Graphics.DrawLine(separatorPen, lineX, lineYFrom, lineX, lineYTo);
+                    }
                 }
             }
         }
