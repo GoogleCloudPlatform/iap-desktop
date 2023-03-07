@@ -31,7 +31,7 @@ The application automatically manages IAP TCP tunnels for you, and protects them
 
 ## Connect to Windows VMs with Remote Desktop
 
-<a href='doc/images/RemoteDesktop_1400?raw=true'>
+<a href='doc/images/RemoteDesktop_1400.gif?raw=true'>
 <img src='doc/images/RemoteDesktop_350.png' align='right'>
 </a>
 
@@ -46,14 +46,14 @@ To help you authenticate to Windows VMs, IAP Desktop can:
 *   Automatically generate Windows credentials by using the Compute Engine guest agent environment
 *   Encrypt and store your Windows credentials locally
 
-[Show screencast](doc/images/RemoteDesktop_1400.gif?raw=true)
+:arrow_forward: [Show screencast](doc/images/RemoteDesktop_1400.gif?raw=true)
 
-:arrow_forward: <img src='doc/images/pix.gif' width='100%' height='1'>
+<img src='doc/images/pix.gif' width='100%' height='1'>
 
 ## Connect to Linux VMs with SSH
 
 <a href='doc/images/RemoteDesktop_1400?raw=true'>
-<img src='doc/images/SSH_1400.gif?raw=true' align='right'>
+<img src='doc/images/SSH_350.png?raw=true' align='right'>
 </a>
 
 IAP Desktop [includes an SSH client and terminal](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-linux-instances) so that you can:
@@ -67,9 +67,9 @@ To help you authenticate to Linux VMs, IAP Desktop can:
 *   Use OS Login [2-factor authentication](https://cloud.google.com/compute/docs/oslogin/set-up-oslogin)
 *   Store our SSH keys locally using Windows CNG
 
-[View larger screenshot](doc/images/SSH_1400.gif?raw=true)
+:arrow_forward: [Show screencast](doc/images/SSH_1400.gif?raw=true)
 
-:arrow_forward: <img src='doc/images/pix.gif' width='100%' height='1'>
+<img src='doc/images/pix.gif' width='100%' height='1'>
 
 
 ## Manage VMs across projects
