@@ -52,7 +52,7 @@ To help you authenticate to Windows VMs, IAP Desktop can:
 
 ## Connect to Linux VMs with SSH
 
-<a href='doc/images/RemoteDesktop_1400?raw=true'>
+<a href='doc/images/RemoteDesktop_1400.gif?raw=true'>
 <img src='doc/images/SSH_350.png?raw=true' align='right'>
 </a>
 
