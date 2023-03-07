@@ -38,26 +38,19 @@ namespace Google.Solutions.Mvvm.Test.Controls
             // 
             // notificationBarPanel
             // 
-            this.notificationBarPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.notificationBarPanel.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.notificationBarPanel.IsSplitterFixed = true;
-            this.notificationBarPanel.Location = new System.Drawing.Point(0, 0);
             this.notificationBarPanel.Name = "notificationBarPanel";
             this.notificationBarPanel.NotificationBarBackColor = System.Drawing.SystemColors.Control;
             this.notificationBarPanel.NotificationBarForeColor = System.Drawing.SystemColors.InfoText;
-            this.notificationBarPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // notificationBarPanel.Panel1
             // 
             this.notificationBarPanel.Panel1.BackColor = System.Drawing.SystemColors.Control;
-            this.notificationBarPanel.Panel1Collapsed = true;
             // 
             // notificationBarPanel.Panel2
             // 
             this.notificationBarPanel.Panel2.Controls.Add(this.textBox);
             this.notificationBarPanel.Size = new System.Drawing.Size(476, 108);
-            this.notificationBarPanel.SplitterDistance = 25;
-            this.notificationBarPanel.SplitterWidth = 1;
             this.notificationBarPanel.TabIndex = 0;
             // 
             // textBox

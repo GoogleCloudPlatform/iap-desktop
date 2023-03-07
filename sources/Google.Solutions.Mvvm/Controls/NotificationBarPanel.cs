@@ -61,9 +61,9 @@ namespace Google.Solutions.Mvvm.Controls
             this.icon.Size = new Size(16, 16);
             this.icon.Image = StockIcons.GetIcon(StockIcons.IconId.Info, StockIcons.IconSize.Small);
 
-            this.Panel1Collapsed = true;
-            this.Panel1.Controls.Add(this.infoLabel);
-            this.Panel1.Controls.Add(this.icon);
+            base.Panel1Collapsed = true;
+            base.Panel1.Controls.Add(this.infoLabel);
+            base.Panel1.Controls.Add(this.icon);
 
             base.OnCreateControl();
         }
@@ -101,7 +101,7 @@ namespace Google.Solutions.Mvvm.Controls
             set
             {
                 this.infoLabel.Text = value;
-                this.Panel1Collapsed = string.IsNullOrWhiteSpace(value);
+                base.Panel1Collapsed = string.IsNullOrWhiteSpace(value);
             }
         }
 
@@ -112,8 +112,8 @@ namespace Google.Solutions.Mvvm.Controls
         [Category("Appearance")]
         public Color NotificationBarBackColor
         {
-            get => this.Panel1.BackColor;
-            set => this.Panel1.BackColor = value;
+            get => base.Panel1.BackColor;
+            set => base.Panel1.BackColor = value;
         }
 
         /// <summary>
@@ -135,63 +135,60 @@ namespace Google.Solutions.Mvvm.Controls
         public new DockStyle Dock
         {
             get => base.Dock;
-            private set { }
         }
 
         [Browsable(false)]
         public new bool IsSplitterFixed
         {
             get => base.IsSplitterFixed;
-            private set { }
         }
 
         [Browsable(false)]
         public new bool Panel1Collapsed
         {
             get => base.Panel1Collapsed;
-            private set { }
         }
 
         [Browsable(false)]
         public new bool Panel2Collapsed
         {
             get => base.Panel2Collapsed;
-            private set { }
         }
 
         [Browsable(false)]
         public new int Panel1MinSize
         {
             get => base.Panel1MinSize;
-            private set { }
         }
 
         [Browsable(false)]
         public new int SplitterDistance
         {
             get => base.SplitterDistance;
-            private set { }
         }
 
         [Browsable(false)]
         public new int SplitterWidth
         {
             get => base.SplitterWidth;
-            private set { }
         }
 
         [Browsable(false)]
         public new Orientation Orientation
         {
             get => base.Orientation;
-            private set { }
         }
 
         [Browsable(false)]
         public new SplitterPanel Panel1
         {
             get => base.Panel1;
-            private set { }
+        }
+
+        [Browsable(false)]
+        public new Point Location
+        {
+            get => base.Location;
         }
     }
 }
