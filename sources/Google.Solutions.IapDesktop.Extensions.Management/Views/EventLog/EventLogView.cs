@@ -106,12 +106,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                 b => b.Enabled,
                 this.viewModel,
                 m => m.IsOpenSelectedEventInCloudConsoleButtonEnabled,
-                this.components);
+                bindingContext);
             this.openLogsButton.BindReadonlyProperty(
                 b => b.Enabled,
                 this.viewModel,
                 m => m.IsOpenSelectedEventInCloudConsoleButtonEnabled,
-                this.components);
+                bindingContext);
 
             // Bind list.
             this.list.BindProperty(

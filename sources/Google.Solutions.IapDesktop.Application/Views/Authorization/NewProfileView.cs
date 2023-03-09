@@ -46,14 +46,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                 c => c.Visible,
                 viewModel,
                 m => m.IsProfileNameInvalid,
-                this.components);
+                bindingContext);
 
             // Bind buttons.
             this.okButton.BindReadonlyProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsOkButtonEnabled,
-                this.components);
+                bindingContext);
         }
     }
 }

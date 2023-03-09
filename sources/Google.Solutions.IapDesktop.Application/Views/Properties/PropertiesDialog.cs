@@ -121,11 +121,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
 
             ResumeLayout();
 
+            // TODO: Use shared binding context.
+            var bindingContext = ViewBindingContext.CreateDummy();
+
             tab.BindReadonlyProperty(
                 t => t.Text,
                 sheetInterface.ViewModel,
                 m => m.Title,
-                this.Container);
+                bindingContext);
             sheetInterface.ViewModel.OnPropertyChange(
                 m => m.IsDirty,
                 _ =>

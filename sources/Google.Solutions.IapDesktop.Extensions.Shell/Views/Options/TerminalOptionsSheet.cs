@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
@@ -49,6 +50,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
 
             InitializeComponent();
+
+
+            // TODO: Use shared binding context.
+            var bindingContext = ViewBindingContext.CreateDummy();
 
             //
             // Clipboard box.
@@ -109,17 +114,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 c => c.Font,
                 viewModel,
                 m => m.TerminalFont,
-                this.Container);
+                bindingContext);
             this.terminalLook.BindReadonlyProperty(
                 c => c.ForeColor,
                 viewModel,
                 m => m.TerminalForegroundColor,
-                this.Container);
+                bindingContext);
             this.terminalLook.BindReadonlyProperty(
                 c => c.BackColor,
                 viewModel,
                 m => m.TerminalBackgroundColor,
-                this.Container);
+                bindingContext);
         }
 
         //---------------------------------------------------------------------

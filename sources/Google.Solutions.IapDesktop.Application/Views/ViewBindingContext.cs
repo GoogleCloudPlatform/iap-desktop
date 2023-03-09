@@ -40,7 +40,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public ViewBindingContext(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
+            this.serviceProvider = serviceProvider; //TODO: .ThrowIfNull(nameof(serviceProvider));
+        }
+
+        public static ViewBindingContext CreateDummy() // TODO: REMOVE THIS REMOVE THIS
+        {
+            return new ViewBindingContext(null);
         }
 
         //---------------------------------------------------------------------

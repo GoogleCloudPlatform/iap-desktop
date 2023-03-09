@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             SshTerminalViewModel viewModel,
             IBindingContext bindingContext)
         {
-            base.Bind(viewModel);
+            base.Bind(viewModel, bindingContext);
 
             this.viewModel = viewModel;
             this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;

@@ -54,11 +54,11 @@ namespace Google.Solutions.Mvvm.Commands
 
         void BindTo(
             ToolStripDropDownMenu menu,
-            IContainer container = null);
+            IBindingContext bindingContext);
 
         void BindTo(
             ToolStripMenuItem menu,
-            IContainer container = null);
+            IBindingContext bindingContext);
     }
 
     public sealed class CommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
@@ -124,7 +124,7 @@ namespace Google.Solutions.Mvvm.Commands
 
         public void BindTo(
             ToolStripItemCollection view,
-            IContainer container = null)
+            IBindingContext bindingContext)
         {
             view.BindCollection(
                 this.menuItems,
@@ -138,7 +138,7 @@ namespace Google.Solutions.Mvvm.Commands
                 m => m.DisplayStyle,
                 m => m.Children,
                 m => m.Invoke(),
-                container);
+                bindingContext);
         }
 
         public void ForceRefresh()
@@ -161,9 +161,9 @@ namespace Google.Solutions.Mvvm.Commands
 
         public void BindTo(
             ToolStripDropDownMenu menu,
-            IContainer container = null)
+            IBindingContext bindingContext)
         {
-            BindTo(menu.Items, container);
+            BindTo(menu.Items, bindingContext);
 
             if (!(this.ContextSource is INotifyPropertyChanged))
             {
@@ -177,9 +177,9 @@ namespace Google.Solutions.Mvvm.Commands
 
         public void BindTo(
             ToolStripMenuItem menu,
-            IContainer container = null)
+            IBindingContext bindingContext)
         {
-            BindTo(menu.DropDownItems, container);
+            BindTo(menu.DropDownItems, bindingContext);
 
             if (!(this.ContextSource is INotifyPropertyChanged))
             {

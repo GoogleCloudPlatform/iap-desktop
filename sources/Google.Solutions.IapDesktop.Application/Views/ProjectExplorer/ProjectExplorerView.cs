@@ -256,8 +256,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             // All commands added, apply to menu.
             //
-            this.contextMenuCommands.BindTo(this.contextMenu.Items);
-            this.toolbarCommands.BindTo(this.toolStrip.Items);
+            this.contextMenuCommands.BindTo(
+                this.contextMenu.Items, 
+                bindingContext);
+            this.toolbarCommands.BindTo(
+                this.toolStrip.Items,
+                bindingContext);
         }
 
         private async Task<bool> AddNewProjectAsync()

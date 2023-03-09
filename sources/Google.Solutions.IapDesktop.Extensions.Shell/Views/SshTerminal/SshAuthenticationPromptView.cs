@@ -66,12 +66,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 c => c.UseSystemPasswordChar,
                 viewModel,
                 m => m.IsPasswordMasked,
-                this.Container);
+                bindingContext);
             this.okButton.BindReadonlyProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsOkButtonEnabled,
-                this.Container);
+                bindingContext);
         }
 
         private void descriptionLabel_SizeChanged(object sender, EventArgs e)

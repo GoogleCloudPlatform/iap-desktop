@@ -23,6 +23,7 @@ using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
@@ -48,6 +49,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 
             InitializeComponent();
 
+
+            // TODO: Use shared binding context.
+            var bindingContext = ViewBindingContext.CreateDummy();
+
             //
             // Authentication box.
             //
@@ -65,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsPublicKeyTypeEditable,
-                this.Container);
+                bindingContext);
 
             this.publicKeyValidityUpDown.BindProperty(
                 c => c.Value,
@@ -76,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsPublicKeyValidityInDaysEditable,
-                this.Container);
+                bindingContext);
 
             this.publicKeyType.FormattingEnabled = true;
             this.publicKeyType.Format += delegate (object sender, ListControlConvertEventArgs e) {

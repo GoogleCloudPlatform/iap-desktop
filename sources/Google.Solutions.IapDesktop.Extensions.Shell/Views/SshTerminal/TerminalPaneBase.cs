@@ -79,7 +79,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
 
 
-        public void Bind(TerminalViewModelBase viewModel)
+        public void Bind(
+            TerminalViewModelBase viewModel,
+            IBindingContext bindingContext)
         {
             this.ViewModel = viewModel;
 
@@ -90,17 +92,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 c => c.Visible,
                 this.ViewModel,
                 m => m.IsReconnectPanelVisible,
-                this.components);
+                bindingContext);
             this.spinner.BindReadonlyProperty(
                 c => c.Visible,
                 this.ViewModel,
                 m => m.IsSpinnerVisible,
-                this.components);
+                bindingContext);
             this.terminal.BindReadonlyProperty(
                 c => c.Visible,
                 this.ViewModel,
                 m => m.IsTerminalVisible,
-                this.components);
+                bindingContext);
             this.ViewModel.OnPropertyChange(
                 m => m.IsTerminalVisible,
                 visible =>

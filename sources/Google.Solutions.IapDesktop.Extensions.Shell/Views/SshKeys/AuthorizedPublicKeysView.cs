@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 c => c.Text,
                 this.viewModel,
                 m => m.InformationBarContent,
-                this.components);
+                bindingContext);
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.IsInformationBarVisible,
                 visible =>
@@ -87,19 +87,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsListEnabled,
-                this.components);
+                bindingContext);
             this.deleteToolStripButton.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsDeleteButtonEnabled,
-                this.components);
+                bindingContext);
 
             // Bind list.
             this.keysList.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsListEnabled,
-                this.components);
+                bindingContext);
 
             this.keysList.List.BindCollection(this.viewModel.FilteredKeys);
             this.keysList.List.BindProperty(

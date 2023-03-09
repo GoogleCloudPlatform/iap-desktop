@@ -70,17 +70,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
                 b => b.Enabled,
                 viewModel,
                 m => m.IsRefreshButtonEnabled,
-                this.components);
+                bindingContext);
             this.disconnectToolStripButton.BindReadonlyProperty(
                 b => b.Enabled,
                 viewModel,
                 m => m.IsDisconnectButtonEnabled,
-                this.components);
+                bindingContext);
             this.disconnectTunnelToolStripMenuItem.BindReadonlyProperty(
                 b => b.Enabled,
                 viewModel,
                 m => m.IsDisconnectButtonEnabled,
-                this.components);
+                bindingContext);
 
             this.disconnectToolStripButton.Click += async (_, __) => await viewModel
                 .DisconnectSelectedTunnelAsync()

@@ -260,7 +260,30 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlBoundReadonly_ThenValueFromModelIsApplied()
+        public void BindReadonlyProperty()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithBareProperties
+            {
+                One = "text from model"
+            };
+
+            var context = new Mock<IBindingContext>();
+
+            control.BindReadonlyProperty(
+                t => t.Text,
+                model,
+                m => m.One,
+                context.Object);
+
+            context.Verify(c => c.OnBindingCreated(
+                It.Is<IComponent>(ctl => ctl == control),
+                It.IsAny<IDisposable>()),
+                Times.Once);
+        }
+
+        [Test]
+        public void BindReadonlyPropertyAppliesInitialValue()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties
@@ -271,13 +294,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindReadonlyProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("text from model", control.Text);
         }
 
         [Test]
-        public void WhenControlBoundReadonlyAndControlChanges_ThenModelIsNotUpdated()
+        public void BindReadonlyPropertyPropagatesControlChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties();
@@ -285,7 +309,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindReadonlyProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.IsNull(model.One);
             control.Text = "test";
@@ -293,7 +318,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenControlBoundReadonlyAndModelChanges_ThenControlIsUpdated()
+        public void BindReadonlyPropertyPropagatesModelChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties();
@@ -301,7 +326,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindReadonlyProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("", control.Text);
             model.One = "test";

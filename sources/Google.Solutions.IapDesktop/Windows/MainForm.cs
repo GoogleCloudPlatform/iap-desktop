@@ -71,6 +71,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IThemeService themeService;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly IServiceProvider serviceProvider;
+        private readonly IBindingContext bindingContext;
+
         private IIapUrlHandler urlHandler;
 
         private readonly ObservableCommandContextSource<IMainWindow> viewMenuContextSource;
@@ -89,6 +91,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.themeService = this.serviceProvider.GetService<IThemeService>();
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
+            this.bindingContext = serviceProvider.GetService<IBindingContext>();
 
             // 
             // Restore window settings.
@@ -136,7 +139,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.viewMenuContextSource);
             this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
-            this.viewMenuCommands.BindTo(this.viewToolStripMenuItem, this.Container);
+            this.viewMenuCommands.BindTo(
+                this.viewToolStripMenuItem, 
+                this.bindingContext);
 
             //
             // Window menu.
@@ -165,7 +170,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.windowMenuContextSource);
             this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;
-            this.windowMenuCommands.BindTo(this.windowToolStripMenuItem, this.Container);
+            this.windowMenuCommands.BindTo(
+                this.windowToolStripMenuItem, 
+                this.bindingContext);
 
             //
             // Bind controls.
@@ -231,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Text,
                 this.viewModel,
                 m => m.ProfileStateCaption,
-                this.components);
+                this.bindingContext);
 
             //
             // Profile chooser.
@@ -746,7 +753,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 ToolStripItemDisplayStyle.ImageAndText,
                 new CallbackSource<TContext>(queryCurrentContextFunc));
             container.CommandFailed += CommandContainer_CommandFailed;
-            container.BindTo(menu, this.Container);
+            container.BindTo(menu, this.bindingContext);
 
             menu.DropDownOpening += (sender, args) =>
             {

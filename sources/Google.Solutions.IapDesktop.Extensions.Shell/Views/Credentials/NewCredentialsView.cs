@@ -49,14 +49,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 c => c.Visible,
                 viewModel,
                 m => m.IsUsernameReserved,
-                this.components);
+                bindingContext);
 
             // Bind buttons.
             this.okButton.BindReadonlyProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsOkButtonEnabled,
-                this.components);
+                bindingContext);
 
             this.usernameText.KeyPress += (_, e) =>
             {

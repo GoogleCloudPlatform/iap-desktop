@@ -45,16 +45,20 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             InitializeComponent();
 
+
+            // TODO: Use shared binding context.
+            var bindingContext = ViewBindingContext.CreateDummy();
+
             this.updateBox.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsUpdateCheckEditable,
-                this.Container);
+                bindingContext);
             this.secureConnectBox.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsDeviceCertificateAuthenticationEditable,
-                this.Container);
+                bindingContext);
 
             this.enableUpdateCheckBox.BindProperty(
                 c => c.Checked,

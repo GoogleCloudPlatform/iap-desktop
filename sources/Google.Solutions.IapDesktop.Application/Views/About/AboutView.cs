@@ -46,22 +46,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
                 c => c.Text,
                 viewModel,
                 m => m.Information,
-                this.Container);
+                bindingContext);
             this.copyrightLabel.BindReadonlyProperty(
                 c => c.Text,
                 viewModel,
                 m => m.Copyright,
-                this.Container);
+                bindingContext);
             this.authorLink.BindReadonlyProperty(
                 c => c.Text,
                 viewModel,
                 m => m.AuthorText,
-                this.Container);
+                bindingContext);
             this.licenseText.BindReadonlyProperty(
                 c => c.Rtf,
                 viewModel,
                 m => m.LicenseText,
-                this.Container);
+                bindingContext);
 
             this.authorLink.LinkClicked += (sender, args) =>
             {

@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using System;
@@ -62,6 +63,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
             var viewModel = new AuthorizeViewModel(this, signInAdapter, deviceEnrollment);
 
+            // TODO: Use shared binding context.
+            var bindingContext = ViewBindingContext.CreateDummy();
+
             //
             // Bind controls.
             //
@@ -69,12 +73,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Visible,
                 viewModel,
                 m => m.IsWaitControlVisible,
-                this.Container);
+                bindingContext);
             this.signInButton.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsSignOnControlVisible,
-                this.Container);
+                bindingContext);
             viewModel.OnPropertyChange(
                 m => m.IsSignOnControlVisible,
                 visible =>
@@ -89,17 +93,17 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Visible,
                 viewModel,
                 m => m.IsCancelButtonVisible,
-                this.Container);
+                bindingContext);
             this.cancelSignInLink.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsCancelButtonVisible,
-                this.Container);
+                bindingContext);
             this.signInWithChromeMenuItem.BindReadonlyProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsChromeSingnInButtonEnabled,
-                this.Container);
+                bindingContext);
 
             viewModel.OnPropertyChange(
                 m => m.Authorization,

@@ -149,14 +149,20 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        public static void BindReadonlyProperty<TControl, TProperty, TModel>(// TODO: Change signature
+        public static void BindReadonlyProperty<TControl, TProperty, TModel>(
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
             Expression<Func<TModel, TProperty>> modelProperty,
-            IContainer container = null)
+            IBindingContext bindingContext)
             where TModel : INotifyPropertyChanged
+            where TControl : IComponent
         {
+            Precondition.NotNull(controlProperty, nameof(controlProperty));
+            Precondition.NotNull(model, nameof(model));
+            Precondition.NotNull(modelProperty, nameof(modelProperty));
+            Precondition.NotNull(bindingContext, nameof(bindingContext));
+
             //
             // Apply initial value.
             //
@@ -167,12 +173,7 @@ namespace Google.Solutions.Mvvm.Binding
                 modelProperty,
                 CreateSetter(control, controlProperty));
 
-            if (container != null)
-            {
-                // To ensure that the bindings are disposed, add them to the
-                // container of the control.
-                container.Add(binding);
-            }
+            bindingContext.OnBindingCreated(control, binding);
         }
 
         //---------------------------------------------------------------------
@@ -187,6 +188,11 @@ namespace Google.Solutions.Mvvm.Binding
             IBindingContext bindingContext)
             where TControl : IComponent
         {
+            Precondition.NotNull(controlProperty, nameof(controlProperty));
+            Precondition.NotNull(model, nameof(model));
+            Precondition.NotNull(modelProperty, nameof(modelProperty));
+            Precondition.NotNull(bindingContext, nameof(bindingContext));
+
             //
             // Apply initial value.
             //
@@ -222,6 +228,11 @@ namespace Google.Solutions.Mvvm.Binding
             IBindingContext bindingContext)
             where TControl : IComponent
         {
+            Precondition.NotNull(controlProperty, nameof(controlProperty));
+            Precondition.NotNull(model, nameof(model));
+            Precondition.NotNull(modelProperty, nameof(modelProperty));
+            Precondition.NotNull(bindingContext, nameof(bindingContext));
+
             //
             // Apply initial value.
             //
