@@ -50,7 +50,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         {
             public SampleViewModel ViewModel { get; private set; }
 
-            public void Bind(SampleViewModel viewModel)
+            public void Bind(SampleViewModel viewModel, IBindingContext bindingContext)
             {
                 this.ViewModel = viewModel;
             }

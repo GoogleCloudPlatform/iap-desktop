@@ -182,7 +182,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             set { }
         }
 
-        public void Bind(RemoteDesktopViewModel viewModel)
+        public void Bind(
+            RemoteDesktopViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
 
@@ -195,7 +197,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             statusLabel.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
-                m => m.StatusText);
+                m => m.StatusText,
+                bindingContext);
 #endif
         }
 

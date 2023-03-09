@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Mvvm.Theme;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
@@ -36,7 +37,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// Bind view model to model. This method is only
         /// called once, briefly after construction.
         /// </summary>
-        void Bind(TViewModel viewModel);
+        void Bind(TViewModel viewModel, IBindingContext context);
     }
 
     /// <summary>
@@ -206,6 +207,10 @@ namespace Google.Solutions.Mvvm.Binding
                 this.shown = true;
             }
 
+            var bindingContext = (IBindingContext)
+                this.serviceProvider.GetService(typeof(IBindingContext));
+            Debug.Assert(bindingContext != null);
+
             //
             // Create view, show, and dispose it.
             //
@@ -219,7 +224,9 @@ namespace Google.Solutions.Mvvm.Binding
                 // Bind view <-> view model.
                 //
                 this.ViewModel.Bind(view);
-                view.Bind(this.ViewModel);
+                view.Bind(
+                    this.ViewModel,
+                    bindingContext);
                 view.ResumeLayout();
 
                 var result = view.ShowDialog(parent);
@@ -266,7 +273,8 @@ namespace Google.Solutions.Mvvm.Binding
         public static void Bind(
             TView view,
             TViewModel viewModel,
-            IControlTheme theme)
+            IControlTheme theme,
+            IBindingContext bindingContext)
         {
             view.SuspendLayout();
 
@@ -276,7 +284,7 @@ namespace Google.Solutions.Mvvm.Binding
             // Bind view <-> view model.
             //
             viewModel.Bind(view);
-            view.Bind(viewModel);
+            view.Bind(viewModel, bindingContext);
             view.ResumeLayout();
 
             //
@@ -304,8 +312,13 @@ namespace Google.Solutions.Mvvm.Binding
                     // Create view and bind it.
                     //
                     var view = (TView)this.serviceProvider.GetService(typeof(TView));
+                    Debug.Assert(view != null);
 
-                    Bind(view, this.ViewModel, this.Theme);
+                    var bindingContext = (IBindingContext)
+                        this.serviceProvider.GetService(typeof(IBindingContext));
+                    Debug.Assert(bindingContext != null);
+
+                    Bind(view, this.ViewModel, this.Theme, bindingContext);
 
                     this.form = view;
                 }

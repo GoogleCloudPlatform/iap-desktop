@@ -32,7 +32,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             InitializeComponent();
         }
 
-        public void Bind(OAuthScopeNotGrantedViewModel viewModel)
+        public void Bind(
+            OAuthScopeNotGrantedViewModel viewModel,
+            IBindingContext bindingContext)
         {
         }
     }

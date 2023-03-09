@@ -50,7 +50,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             this.list.AddCopyCommands();
         }
 
-        public void Bind(EventLogViewModel viewModel)
+        public void Bind(
+            EventLogViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
 

@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Commands;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -49,13 +50,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // IBindingContext.
         //---------------------------------------------------------------------
 
-        public void OnBindingCreated(Control control, IDisposable binding)
+        public void OnBindingCreated(IComponent control, IDisposable binding)
         {
-            Debug.WriteLine($"Bining added for {control.GetType().Name} ({control.Text})");
+            Debug.WriteLine($"Bining added for {control.GetType().Name} ({control})");
             control.Disposed += (_, __) => binding.Dispose();
         }
 
-        public void OnCommandFailed(Control control, ICommand command, Exception exception)
+        public void OnCommandFailed(IComponent control, ICommand command, Exception exception)
         {
             this.exceptionDialog.Show(
                 this.window, 
@@ -63,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 exception);
         }
 
-        public void OnBindingFailed(Control control, Exception exception)
+        public void OnBindingFailed(IComponent control, Exception exception)
         {
             this.exceptionDialog.Show(
                 this.window,

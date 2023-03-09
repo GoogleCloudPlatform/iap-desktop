@@ -43,13 +43,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             InitializeComponent();
         }
 
-        public void Bind(DebugProjectExplorerTrackingViewModel viewModel)
+        public void Bind(
+            DebugProjectExplorerTrackingViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.instanceNameLabel.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.InstanceName,
-                this.Container);
+                bindingContext);
             this.viewModel = viewModel;
         }
 

@@ -32,7 +32,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             InitializeComponent();
         }
 
-        public void Bind(DeviceFlyoutViewModel viewModel)
+        public void Bind(
+            DeviceFlyoutViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.enrollmentStateLabel.Text = viewModel.EnrollmentStateDescription;
 

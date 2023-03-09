@@ -37,7 +37,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
         {
         }
 
-        public void Bind(InstancePropertiesInspectorViewModel viewModel)
+        public void Bind(
+            InstancePropertiesInspectorViewModel viewModel,
+            IBindingContext bindingContext)
         {
             base.Bind(viewModel);
         }

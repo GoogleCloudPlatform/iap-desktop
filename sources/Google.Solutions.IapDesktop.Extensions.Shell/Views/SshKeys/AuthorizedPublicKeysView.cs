@@ -51,7 +51,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.keysList.List.AddCopyCommands();
         }
 
-        public void Bind(AuthorizedPublicKeysViewModel viewModel)
+        public void Bind(
+            AuthorizedPublicKeysViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
 

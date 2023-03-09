@@ -37,7 +37,7 @@ namespace Google.Solutions.Mvvm.Binding
     /// </summary>
     public static class BindingExtensions
     {
-        public static Binding OnPropertyChange<TObject, TProperty>(
+        public static Binding OnPropertyChange<TObject, TProperty>( // TODO: Change signature
             this TObject observed,
             Expression<Func<TObject, TProperty>> modelProperty,
             Action<TProperty> newValue)
@@ -59,7 +59,7 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        public static Binding OnControlPropertyChange<TControl, TProperty>(
+        public static Binding OnControlPropertyChange<TControl, TProperty>(// TODO: Change signature
             this TControl observed,
             Expression<Func<TControl, TProperty>> controlProperty,
             Action<TProperty> newValue)
@@ -110,7 +110,7 @@ namespace Google.Solutions.Mvvm.Binding
         // Binding for bare properties.
         //---------------------------------------------------------------------
 
-        public static void BindProperty<TControl, TProperty, TModel>(
+        public static void BindProperty<TControl, TProperty, TModel>(// TODO: Change signature
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
@@ -149,7 +149,7 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        public static void BindReadonlyProperty<TControl, TProperty, TModel>(
+        public static void BindReadonlyProperty<TControl, TProperty, TModel>(// TODO: Change signature
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
@@ -184,7 +184,7 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
             Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
-            IContainer container = null)
+            IContainer container = null)// TODO: Change signature
             where TControl : IComponent
         {
             //
@@ -224,7 +224,8 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
             Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
-            IContainer container = null)
+            IBindingContext bindingContext)// TODO: Change signature
+            where TControl : IComponent
         {
             //
             // Apply initial value.
@@ -236,14 +237,7 @@ namespace Google.Solutions.Mvvm.Binding
                 observable,
                 CreateSetter(control, controlProperty));
 
-            if (container != null)
-            {
-                //
-                // To ensure that the bindings are disposed, add them to the
-                // container of the control.
-                //
-                container.Add(binding);
-            }
+            bindingContext.OnBindingCreated(control, binding);
         }
         // TODO: Add preconditions to other methods
 

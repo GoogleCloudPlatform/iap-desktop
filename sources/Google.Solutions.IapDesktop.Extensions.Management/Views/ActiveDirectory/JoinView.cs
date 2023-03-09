@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirector
             InitializeComponent();
         }
 
-        public void Bind(JoinViewModel viewModel)
+        public void Bind(JoinViewModel viewModel, IBindingContext bindingContext)
         {
             this.domainText.BindObservableProperty(
                 c => c.Text,
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirector
                 c => c.Visible,
                 viewModel,
                 m => m.IsDomainNameInvalid,
-                this.Container);
+                bindingContext);
 
             this.computerNameText.BindObservableProperty(
                 c => c.Text,
@@ -55,13 +55,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirector
                 c => c.Visible,
                 viewModel,
                 m => m.IsComputerNameInvalid,
-                this.Container);
+                bindingContext);
 
             this.okButton.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsOkButtonEnabled,
-                this.Container);
+                bindingContext);
         }
     }
 }

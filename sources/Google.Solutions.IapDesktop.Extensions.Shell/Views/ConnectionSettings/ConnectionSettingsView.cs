@@ -37,7 +37,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         {
         }
 
-        public void Bind(ConnectionSettingsViewModel viewModel)
+        public void Bind(
+            ConnectionSettingsViewModel viewModel,
+            IBindingContext bindingContext)
         {
             base.Bind(viewModel);
         }

@@ -441,6 +441,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 var boundWindow = new BoundToolWindow<TToolWindowView, TToolWindowViewModel>(
                     view,
                     serviceProvider.GetService<TToolWindowViewModel>(),
+                    serviceProvider.GetService<IBindingContext>(),
                     serviceProvider.GetService<IThemeService>().ToolWindowTheme);
                 view.boundWindow = boundWindow;
 
@@ -463,14 +464,17 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
             private readonly IControlTheme theme;
             private readonly TToolWindowView view;
+            private readonly IBindingContext bindingContext;
 
             public BoundToolWindow(
                 TToolWindowView view,
                 TToolWindowViewModel viewModel,
+                IBindingContext bindingContext,
                 IControlTheme theme)
             {
                 this.view = view.ThrowIfNull(nameof(view));
                 this.ViewModel = viewModel.ThrowIfNull(nameof(viewModel));
+                this.bindingContext = bindingContext.ThrowIfNull(nameof(bindingContext));
                 this.theme = theme;
             }
 
@@ -491,7 +495,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     Window<TToolWindowView, TToolWindowViewModel>.Bind(
                         this.view,
                         this.ViewModel,
-                        this.theme);
+                        this.theme,
+                        this.bindingContext);
 
                     this.bound = true;
                 }

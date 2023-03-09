@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.propertyGrid.SelectedObject = new ColorPaletteInspector(palette);
         }
 
-        public void Bind(DebugThemeViewModel viewModel)
+        public void Bind(DebugThemeViewModel viewModel, IBindingContext bindingContext)
         {
         }
 

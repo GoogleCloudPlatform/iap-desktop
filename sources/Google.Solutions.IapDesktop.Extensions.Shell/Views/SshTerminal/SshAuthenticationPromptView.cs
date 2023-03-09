@@ -38,7 +38,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             InitializeComponent();
         }
 
-        public void Bind(SshAuthenticationPromptViewModel viewModel)
+        public void Bind(
+            SshAuthenticationPromptViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.BindProperty(
                c => c.Text,

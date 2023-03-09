@@ -38,13 +38,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             InitializeComponent();
         }
 
-        public void Bind(DownloadFileViewModel viewModel)
+        public void Bind(
+            DownloadFileViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.DialogText,
-                this.Container);
+                bindingContext);
             this.targetDirectoryTextBox.BindObservableProperty(
                 c => c.Text,
                 viewModel,
@@ -59,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
                 c => c.Enabled,
                 viewModel,
                 m => m.IsDownloadButtonEnabled,
-                this.Container);
+                bindingContext);
             this.fileBrowser.Bind(viewModel.FileSystem);
 
             this.fileBrowser.NavigationFailed += (_, args) =>

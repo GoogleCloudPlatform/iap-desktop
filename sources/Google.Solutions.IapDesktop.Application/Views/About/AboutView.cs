@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             InitializeComponent();
         }
 
-        public void Bind(AboutViewModel viewModel)
+        public void Bind(AboutViewModel viewModel, IBindingContext bindingContext)
         {
             this.infoLabel.BindReadonlyProperty(
                 c => c.Text,

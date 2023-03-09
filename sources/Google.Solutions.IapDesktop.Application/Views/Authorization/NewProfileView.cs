@@ -33,7 +33,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             InitializeComponent();
         }
 
-        public void Bind(NewProfileViewModel viewModel)
+        public void Bind(
+            NewProfileViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.profileNameTextBox.BindProperty(
                 c => c.Text,

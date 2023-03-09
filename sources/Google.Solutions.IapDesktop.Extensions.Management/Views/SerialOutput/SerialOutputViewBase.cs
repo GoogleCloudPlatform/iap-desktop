@@ -49,7 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             InitializeComponent();
         }
 
-        public void Bind(SerialOutputViewModel viewModel)
+        public void Bind(
+            SerialOutputViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
             viewModel.SerialPortNumber = this.portNumber;

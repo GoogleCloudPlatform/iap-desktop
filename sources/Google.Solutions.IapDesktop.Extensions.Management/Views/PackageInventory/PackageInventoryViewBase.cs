@@ -54,7 +54,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             this.packageList.List.AddCopyCommands();
         }
 
-        public void Bind(PackageInventoryViewModel viewModel)
+        public void Bind(
+            PackageInventoryViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
             viewModel.InventoryType = this.inventoryType;

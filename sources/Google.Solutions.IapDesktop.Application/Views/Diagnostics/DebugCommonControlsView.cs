@@ -45,7 +45,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             }
         }
 
-        public void Bind(DebugCommonControlsViewModel viewModel)
+        public void Bind(
+            DebugCommonControlsViewModel viewModel, 
+            IBindingContext bindingContext)
         {
             this.richTextBox.Rtf =
                 @"{\rtf1\ansi{\fonttbl\f0\fswiss Helvetica;}\f0\pard
@@ -88,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                     c => c.Enabled,
                     viewModel,
                     m => m.ControlEnabled,
-                    this.components);
+                    bindingContext);
             }
             foreach (var item in new ToolStripItem[]
             {
@@ -101,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                     c => c.Enabled,
                     viewModel,
                     m => m.ControlEnabled,
-                    this.components);
+                    bindingContext);
             }
 
             //
@@ -124,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                     c => c.ReadOnly,
                     viewModel,
                     m => m.ControlReadonly,
-                    this.components);
+                    bindingContext);
 
             }
         }

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Mvvm.Commands;
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
@@ -33,18 +34,18 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Notify that a command failed.
         /// </summary>
-        void OnCommandFailed(Control control, ICommand command, Exception exception);
+        void OnCommandFailed(IComponent control, ICommand command, Exception exception);
 
         /// <summary>
         /// Notify that a binding failed.
         /// </summary>
-        void OnBindingFailed(Control control, Exception exception); // TODO: use in all methods
+        void OnBindingFailed(IComponent control, Exception exception); // TODO: use in all methods
 
         /// <summary>
         /// Notify that a new binding has been created. Implementing
         /// classes should dispose the binding when it's no longer needed,
         /// for example by tying them to the lifecycle of the control.
         /// </summary>
-        void OnBindingCreated(Control control, IDisposable binding);
+        void OnBindingCreated(IComponent control, IDisposable binding);
     }
 }

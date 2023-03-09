@@ -50,7 +50,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.promptFactory.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
         }
 
-        public void Bind(SshTerminalViewModel viewModel)
+        public void Bind(
+            SshTerminalViewModel viewModel,
+            IBindingContext bindingContext)
         {
             base.Bind(viewModel);
 

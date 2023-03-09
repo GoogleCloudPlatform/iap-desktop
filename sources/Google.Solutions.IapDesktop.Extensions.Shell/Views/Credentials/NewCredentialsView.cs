@@ -36,7 +36,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             InitializeComponent();
         }
 
-        public void Bind(NewCredentialsViewModel viewModel)
+        public void Bind(
+            NewCredentialsViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.usernameText.BindProperty(
                 c => c.Text,

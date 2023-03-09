@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.HideOnClose = true;
         }
 
-        public void Bind(TunnelsViewModel viewModel)
+        public void Bind(TunnelsViewModel viewModel, IBindingContext bindingContext)
         {
             this.tunnelsList.BindCollection(viewModel.Tunnels);
             this.tunnelsList.BindColumn(0, t => t.Destination.Instance.Name);

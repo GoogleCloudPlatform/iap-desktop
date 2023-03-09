@@ -88,7 +88,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.HideOnClose = true;
         }
 
-        public void Bind(ProjectExplorerViewModel viewModel)
+        public void Bind(
+            ProjectExplorerViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
 
