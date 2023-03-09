@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 c => c.Checked,
                 viewModel,
                 m => m.IsBackgroundJob,
-                this.components);
+                bindingContext);
             this.spinner.BindReadonlyObservableProperty(
                 c => c.Visible,
                 viewModel,

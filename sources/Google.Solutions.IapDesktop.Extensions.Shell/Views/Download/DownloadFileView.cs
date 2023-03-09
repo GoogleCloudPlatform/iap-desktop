@@ -51,12 +51,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
                 c => c.Text,
                 viewModel,
                 m => m.TargetDirectory,
-                this.Container);
+                bindingContext);
             this.fileBrowser.BindObservableProperty(
                 c => c.SelectedFiles,
                 viewModel,
                 m => m.SelectedFiles,
-                this.Container);
+                bindingContext);
             this.downloadButton.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 viewModel,

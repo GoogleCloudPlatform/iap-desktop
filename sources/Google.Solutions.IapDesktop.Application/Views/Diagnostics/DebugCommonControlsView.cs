@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 c => c.Checked,
                 viewModel,
                 m => m.ControlEnabled,
-                this.components);
+                bindingContext);
 
             foreach (var control in new Control[]
             {
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 c => c.Checked,
                 viewModel,
                 m => m.ControlReadonly,
-                this.components);
+                bindingContext);
 
             foreach (var textBoxIsh in new TextBoxBase[]
             {

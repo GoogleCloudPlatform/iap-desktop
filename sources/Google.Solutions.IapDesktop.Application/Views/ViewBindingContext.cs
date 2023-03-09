@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Commands;
@@ -35,15 +36,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
     /// </summary>
     public class ViewBindingContext : IBindingContext
     {
-        private readonly IWin32Window window;
-        private readonly IExceptionDialog exceptionDialog;
+        private readonly IServiceProvider serviceProvider;
 
-        public ViewBindingContext(
-            IMainWindow mainWindow,
-            IExceptionDialog exceptionDialog)
+        public ViewBindingContext(IServiceProvider serviceProvider)
         {
-            this.window = mainWindow.ThrowIfNull(nameof(mainWindow));
-            this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
+            this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
         }
 
         //---------------------------------------------------------------------
@@ -58,16 +55,16 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void OnCommandFailed(IComponent control, ICommand command, Exception exception)
         {
-            this.exceptionDialog.Show(
-                this.window, 
+            this.serviceProvider.GetService<IExceptionDialog>().Show(
+                this.serviceProvider.GetService<IMainWindow>(), 
                 command.ActivityText, 
                 exception);
         }
 
         public void OnBindingFailed(IComponent control, Exception exception)
         {
-            this.exceptionDialog.Show(
-                this.window,
+            this.serviceProvider.GetService<IExceptionDialog>().Show(
+                this.serviceProvider.GetService<IMainWindow>(),
                 "The control/view model binding failed",
                 exception);
         }

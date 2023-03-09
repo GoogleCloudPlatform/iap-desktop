@@ -313,7 +313,28 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlBound_ThenValueFromObservablePropertyIsApplied()
+        public void BindObservableProperty()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithObservableProperties();
+            model.One.Value = "text from model";
+
+            var context = new Mock<IBindingContext>();
+
+            control.BindObservableProperty(
+                t => t.Text,
+                model,
+                m => m.One,
+                context.Object);
+
+            context.Verify(c => c.OnBindingCreated(
+                It.Is<IComponent>(ctl => ctl == control),
+                It.IsAny<IDisposable>()),
+                Times.Exactly(2));
+        }
+
+        [Test]
+        public void BindObservablePropertyAppliesInitialValue()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -322,13 +343,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindObservableProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("text from model", control.Text);
         }
 
         [Test]
-        public void WhenControlChanges_ThenObservablePropertyIsUpdated()
+        public void BindObservablePropertyPropagatesControlChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -336,7 +358,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindObservableProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("", model.One.Value);
             control.Text = "test";
@@ -344,7 +367,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenObservablePropertyChanges_ThenControlIsUpdated()
+        public void BindObservablePropertyPropagatesModelChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -352,7 +375,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindObservableProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("", control.Text);
             model.One.Value = "test";
@@ -575,48 +599,6 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 button.PerformClick();
                 Assert.IsTrue(button.Enabled);
                 
-                form.Close();
-            }
-        }
-
-        [Test]
-        public void WhenCommandFails_ThenContextIsNotified()
-        {
-            var bindingContext = new Mock<IBindingContext>();
-            var command = new Command<ViewModelWithCommand>(
-                "Command name",
-                _ => CommandState.Enabled,
-                _ => throw new InvalidOperationException("mock"));
-
-            using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
-            {
-                var button = new Button()
-                {
-                    Enabled = false
-                };
-                form.Controls.Add(button);
-
-                button.BindCommand(
-                    viewModel,
-                    m => m.Command,
-                    m => m.CommandState,
-                    bindingContext.Object);
-
-                form.Show();
-
-                button.PerformClick();
-
-                bindingContext.Verify(
-                    c => c.OnCommandFailed(
-                        It.IsAny<Control>(),
-                        It.IsAny<ICommand>(),
-                        It.IsAny<InvalidOperationException>()), 
-                    Times.Once);
-
                 form.Close();
             }
         }

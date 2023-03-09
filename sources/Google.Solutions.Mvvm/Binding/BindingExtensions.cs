@@ -184,7 +184,7 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
             Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
-            IContainer container = null)// TODO: Change signature
+            IBindingContext bindingContext)
             where TControl : IComponent
         {
             //
@@ -210,13 +210,8 @@ namespace Google.Solutions.Mvvm.Binding
             forwardBinding.Peer = reverseBinding;
             reverseBinding.Peer = forwardBinding;
 
-            if (container != null)
-            {
-                // To ensure that the bindings are disposed, add them to the
-                // container of the control.
-                container.Add(forwardBinding);
-                container.Add(reverseBinding);
-            }
+            bindingContext.OnBindingCreated(control, forwardBinding);
+            bindingContext.OnBindingCreated(control, reverseBinding);
         }
 
         public static void BindReadonlyObservableProperty<TControl, TProperty, TModel>(
@@ -224,7 +219,7 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
             Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
-            IBindingContext bindingContext)// TODO: Change signature
+            IBindingContext bindingContext)
             where TControl : IComponent
         {
             //
@@ -256,9 +251,10 @@ namespace Google.Solutions.Mvvm.Binding
             //
             // Bind status.
             //
-            if (modelStateProperty != null)
+            if (modelStateProperty != null &&
+                modelStateProperty(model) is var stateObservable &&
+                stateObservable != null)
             {
-                var stateObservable = modelStateProperty(model);
                 button.Enabled = stateObservable.Value == CommandState.Enabled;
 
                 //

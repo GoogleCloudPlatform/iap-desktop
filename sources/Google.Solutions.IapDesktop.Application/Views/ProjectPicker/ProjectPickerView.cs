@@ -84,12 +84,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 c => c.Loading,
                 viewModel,
                 m => m.IsLoading,
-                this.components);
+                bindingContext);
             this.projectList.List.BindObservableProperty(
                 c => c.SelectedModelItems,
                 viewModel,
                 m => m.SelectedProjects,
-                this.components);
+                bindingContext);
 
             this.statusLabel.BindReadonlyObservableProperty(
                 c => c.Visible,
