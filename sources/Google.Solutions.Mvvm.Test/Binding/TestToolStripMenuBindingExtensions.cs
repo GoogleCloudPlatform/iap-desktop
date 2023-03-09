@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
+using Moq;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -85,7 +86,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.Style,
                 m => m.Children,
                 _ => { },
-                null);
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual(model.Text, menuItem.Text);
             Assert.AreEqual(model.ToolTip, menuItem.ToolTipText);
@@ -122,7 +123,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.Style,
                 m => m.Children,
                 _ => { },
-                null);
+                new Mock<IBindingContext>().Object);
 
             model.Text = "new text";
             model.ToolTip = "new tooltip";
@@ -170,7 +171,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.Style,
                 m => m.Children,
                 _ => { },
-                null);
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual(model.Count + 1, this.contextMenu.Items.Count);
         }
@@ -198,7 +199,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.Style,
                 m => m.Children,
                 _ => { },
-                null);
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual(1, this.contextMenu.Items.Count);
             Assert.IsInstanceOf<ToolStripSeparator>(this.contextMenu.Items[0]);
@@ -230,7 +231,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.Style,
                 m => m.Children,
                 _ => { },
-                null);
+                new Mock<IBindingContext>().Object);
 
             model.Insert(1, new Observable()
             {
@@ -277,7 +278,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 m => m.Style,
                 m => m.Children,
                 _ => { },
-                null);
+                new Mock<IBindingContext>().Object);
 
             model.RemoveAt(1);
 
