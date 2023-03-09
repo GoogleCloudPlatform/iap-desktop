@@ -19,12 +19,16 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Commands;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
 {
@@ -116,7 +120,9 @@ namespace Google.Solutions.Mvvm.Binding
             where TModel : INotifyPropertyChanged
             where TControl : IComponent
         {
+            //
             // Apply initial value.
+            //
             var modelValue = modelProperty.Compile()(model);
             CreateSetter(control, controlProperty)(modelValue);
 
@@ -128,8 +134,10 @@ namespace Google.Solutions.Mvvm.Binding
                 modelProperty,
                 CreateSetter(control, controlProperty));
 
+            //
             // Wire up these two bindings so that we do not deliver
             // updates in cycles.
+            //
             forwardBinding.Peer = reverseBinding;
             reverseBinding.Peer = forwardBinding;
 
@@ -150,7 +158,9 @@ namespace Google.Solutions.Mvvm.Binding
             IContainer container = null)
             where TModel : INotifyPropertyChanged
         {
+            //
             // Apply initial value.
+            //
             var modelValue = modelProperty.Compile()(model);
             CreateSetter(control, controlProperty)(modelValue);
 
@@ -178,7 +188,9 @@ namespace Google.Solutions.Mvvm.Binding
             IContainer container = null)
             where TControl : IComponent
         {
+            //
             // Apply initial value.
+            //
             var observable = modelProperty.Compile()(model);
             CreateSetter(control, controlProperty)(observable.Value);
 
@@ -192,8 +204,10 @@ namespace Google.Solutions.Mvvm.Binding
                 observable,
                 CreateSetter(control, controlProperty));
 
+            //
             // Wire up these two bindings so that we do not deliver
             // updates in cycles.
+            //
             forwardBinding.Peer = reverseBinding;
             reverseBinding.Peer = forwardBinding;
 
@@ -213,7 +227,9 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
             IContainer container = null)
         {
+            //
             // Apply initial value.
+            //
             var observable = modelProperty.Compile()(model);
             CreateSetter(control, controlProperty)(observable.Value);
 
@@ -223,12 +239,93 @@ namespace Google.Solutions.Mvvm.Binding
 
             if (container != null)
             {
+                //
                 // To ensure that the bindings are disposed, add them to the
                 // container of the control.
+                //
                 container.Add(binding);
             }
         }
 
+        public static void BindCommand<TCommand, TModel>(
+            this ButtonBase button,
+            TModel model,
+            Func<TModel, TCommand> commandProperty,
+            Func<TModel, IObservableProperty<CommandState>> modelStateProperty,
+            IBindingContext bindingContext)
+            where TCommand : ICommand<TModel>
+        {
+            //
+            // Apply initial value.
+            //
+            var stateObservable = modelStateProperty(model);
+            button.Enabled = stateObservable.Value == CommandState.Enabled;
+
+            //
+            // Update control if command state changes.
+            //
+            var stateBinding = new NotifyObservablePropertyChangedBinding<CommandState>(
+                stateObservable,
+                state => button.Enabled = state == CommandState.Enabled);
+            bindingContext.OnBindingCreated(button, stateBinding);
+
+            //
+            // Forward click events to the command.
+            //
+            async void OnClickAsync(object _, EventArgs __)
+            {
+                button.Enabled = false;
+                var command = commandProperty(model);
+                try
+                {
+                    await command
+                        .ExecuteAsync(model)
+                        .ConfigureAwait(true);
+
+                    if (button.FindForm() is Form form &&
+                        form.AcceptButton == button)
+                    {
+                        //
+                        // This is the accept button, so treat the
+                        // successful command execution as dialog result.
+                        //
+                        form.DialogResult = DialogResult.OK;
+                    }
+                }
+                catch (Exception e)
+                {
+                    bindingContext.OnCommandFailed(command, e);
+                }
+                finally
+                {
+                    button.Enabled = command.QueryState(model) == CommandState.Enabled;
+                }
+            }
+
+            var clickBinding = new ClickBinding(button, OnClickAsync);
+            bindingContext.OnBindingCreated(button, clickBinding);
+        }
+
+        public interface IBindingContext // TODO: move out
+        {
+            /// <summary>
+            /// Notify that a command failed.
+            /// </summary>
+            void OnCommandFailed(ICommand command, Exception exception);
+
+            /// <summary>
+            /// Notify that a new binding has been created. Implementing
+            /// classes should dispose the binding when it's no longer needed,
+            /// for example by tying them to the lifecycle of the control.
+            /// </summary>
+            void OnBindingCreated(Control control, Binding binding);
+        }
+
+        // TODO: Update other methods to use IBindingContext
+        // TODO: Remove Component
+
+        //---------------------------------------------------------------------
+        // Inner classes.
         //---------------------------------------------------------------------
 
         public abstract class Binding : Component
@@ -359,6 +456,29 @@ namespace Google.Solutions.Mvvm.Binding
                       prop => prop.Value,
                       newValueAction)
             {
+            }
+        }
+
+        private class ClickBinding : Binding
+        {
+            private readonly ButtonBase observed;
+            private readonly EventHandler handler;
+
+            public ClickBinding(
+                ButtonBase observed,
+                EventHandler handler)
+            {
+                this.observed = observed;
+                this.handler = handler;
+
+                observed.Click += handler;
+            }
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    this.observed.Click -= this.handler;
+                }
             }
         }
 

@@ -84,6 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\NavigateUrlCommand.cs" />
     <Compile Include="Controls\BadgeIcon.cs" />
     <Compile Include="Controls\ScreenPicker.cs">
       <SubType>UserControl</SubType>

@@ -26,6 +26,20 @@ namespace Google.Solutions.Common.Util
 {
     public static class Precondition
     {
+        public static T ThrowIf<T>(
+            this T value,
+            bool condition,
+            string argumentName)
+        {
+            if (condition)
+            {
+                throw new ArgumentException(
+                    $"The argument {argumentName} does not meet the condition");
+            }
+
+            return value;
+        }
+
         public static T ThrowIfNot<T>(
             this T value,
             bool condition,

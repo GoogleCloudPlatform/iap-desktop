@@ -20,9 +20,15 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Testing.Common.Integration;
+using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Google.Solutions.Mvvm.Binding.BindingExtensions;
 
 namespace Google.Solutions.Mvvm.Test.Binding
 {
@@ -58,6 +64,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
         private class ViewModelWithObservableProperties : ViewModelBase
         {
             public ObservableProperty<string> One = ObservableProperty.Build("");
+        }
+
+        private class ViewModelWithCommand : ViewModelBase
+        {
+            public ObservableProperty<CommandState> CommandState { get; set; }
+            public ICommand<ViewModelWithCommand> Command { get; set; }
         }
 
         //---------------------------------------------------------------------
@@ -395,6 +407,240 @@ namespace Google.Solutions.Mvvm.Test.Binding
             Assert.AreEqual("", control.Text);
             model.One.Value = "test";
             Assert.AreEqual("test", control.Text);
+        }
+
+        //---------------------------------------------------------------------
+        // Binding for commands.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenCommandDisabled_ThenButtonIsDisabled()
+        {
+            var commandAvailable = ObservableProperty.Build(CommandState.Disabled);
+            var command = new Command<ViewModelWithCommand>(
+                "Command name",
+                _ => commandAvailable.Value,
+                _ => { });
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command,
+                CommandState = commandAvailable
+            })
+            {
+                var button = new Button();
+                form.Controls.Add(button);
+
+                button.BindCommand(
+                    viewModel,
+                    m => m.Command,
+                    m => m.CommandState,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                Assert.IsFalse(button.Enabled);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenCommandAvailable_ThenButtonIsEnabled()
+        {
+            var commandAvailable = ObservableProperty.Build(CommandState.Enabled);
+            var command = new Command<ViewModelWithCommand>(
+                "Command name",
+                _ => commandAvailable.Value,
+                _ => { });
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command,
+                CommandState = commandAvailable
+            })
+            {
+                var button = new Button()
+                {
+                    Enabled = false
+                };
+                form.Controls.Add(button);
+
+                button.BindCommand(
+                    viewModel,
+                    m => m.Command,
+                    m => m.CommandState,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                Assert.IsTrue(button.Enabled);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenCommandTurnsFromUnavailableToAvailable_ThenButtonIsEnabled()
+        {
+            var commandAvailable = ObservableProperty.Build(CommandState.Unavailable);
+            var command = new Command<ViewModelWithCommand>(
+                "Command name",
+                _ => commandAvailable.Value,
+                _ => { });
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command,
+                CommandState = commandAvailable
+            })
+            {
+                var button = new Button()
+                {
+                    Enabled = false
+                };
+                form.Controls.Add(button);
+
+                button.BindCommand(
+                    viewModel,
+                    m => m.Command,
+                    m => m.CommandState,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                Assert.IsFalse(button.Enabled);
+                commandAvailable.Value = CommandState.Enabled;
+                Assert.IsTrue(button.Enabled);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenCommandIsExecuting_ThenButtonIsDisabled()
+        {
+            var button = new Button();
+            var commandAvailable = ObservableProperty.Build(CommandState.Enabled);
+            var command = new Command<ViewModelWithCommand>(
+                "Command name",
+                _ => commandAvailable.Value,
+                _ => {
+                    Assert.IsFalse(button.Enabled);
+                });
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command,
+                CommandState = commandAvailable
+            })
+            {
+                form.Controls.Add(button);
+
+                button.BindCommand(
+                    viewModel,
+                    m => m.Command,
+                    m => m.CommandState,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                button.PerformClick();
+                Assert.IsTrue(button.Enabled);
+                
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenCommandFails_ThenContextIsNotified()
+        {
+            var bindingContext = new Mock<IBindingContext>();
+
+            var commandAvailable = ObservableProperty.Build(CommandState.Enabled);
+            var command = new Command<ViewModelWithCommand>(
+                "Command name",
+                _ => commandAvailable.Value,
+                _ => throw new InvalidOperationException("mock"));
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command,
+                CommandState = commandAvailable
+            })
+            {
+                var button = new Button()
+                {
+                    Enabled = false
+                };
+                form.Controls.Add(button);
+
+                button.BindCommand(
+                    viewModel,
+                    m => m.Command,
+                    m => m.CommandState,
+                    bindingContext.Object);
+
+                form.Show();
+
+                button.PerformClick();
+
+                bindingContext.Verify(
+                    c => c.OnCommandFailed(
+                        It.IsAny<ICommand>(),
+                        It.IsAny<InvalidOperationException>()), 
+                    Times.Once);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        [InteractiveTest]
+        [Apartment(ApartmentState.STA)]
+        public void TestCommandBindingUi()
+        {
+            var commandAvailable = ObservableProperty.Build(CommandState.Enabled);
+            var command = new Command<ViewModelWithCommand>(
+                "Command name",
+                vm => CommandState.Enabled,
+                async vm =>
+                {
+                    await Task.Delay(500);
+                    MessageBox.Show("Execute");
+                });
+
+            using (var form = new Form()
+            {
+                Width = 400,
+                Height = 400
+            })
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command,
+                CommandState = commandAvailable
+            })
+            {
+                var button = new Button()
+                {
+                    Text = "Bound button"
+                };
+                form.Controls.Add(button);
+                form.AcceptButton = button;
+
+                button.BindCommand(
+                    viewModel,
+                    m => m.Command,
+                    m => m.CommandState,
+                    new Mock<IBindingContext>().Object);
+
+                form.ShowDialog();
+            }
         }
     }
 }

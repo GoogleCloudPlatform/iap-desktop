@@ -66,6 +66,7 @@
     <Compile Include="Cache\ModelCachingViewModel.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandContainer.cs" />
+    <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ObservableCommandContextSource.cs" />
     <Compile Include="Controls\BindableComboBox.cs">
       <SubType>Component</SubType>
