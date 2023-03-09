@@ -246,6 +246,7 @@ namespace Google.Solutions.Mvvm.Binding
                 container.Add(binding);
             }
         }
+        // TODO: Add preconditions to other methods
 
         public static void BindCommand<TCommand, TModel>(
             this ButtonBase button,
@@ -255,19 +256,26 @@ namespace Google.Solutions.Mvvm.Binding
             IBindingContext bindingContext)
             where TCommand : ICommand<TModel>
         {
-            //
-            // Apply initial value.
-            //
-            var stateObservable = modelStateProperty(model);
-            button.Enabled = stateObservable.Value == CommandState.Enabled;
+            Precondition.NotNull(commandProperty, nameof(commandProperty));
+            Precondition.NotNull(model, nameof(model));
+            Precondition.NotNull(bindingContext, nameof(bindingContext));
 
             //
-            // Update control if command state changes.
+            // Bind status.
             //
-            var stateBinding = new NotifyObservablePropertyChangedBinding<CommandState>(
-                stateObservable,
-                state => button.Enabled = state == CommandState.Enabled);
-            bindingContext.OnBindingCreated(button, stateBinding);
+            if (modelStateProperty != null)
+            {
+                var stateObservable = modelStateProperty(model);
+                button.Enabled = stateObservable.Value == CommandState.Enabled;
+
+                //
+                // Update control if command state changes.
+                //
+                var stateBinding = new NotifyObservablePropertyChangedBinding<CommandState>(
+                    stateObservable,
+                    state => button.Enabled = state == CommandState.Enabled);
+                bindingContext.OnBindingCreated(button, stateBinding);
+            }
 
             //
             // Forward click events to the command.
@@ -294,7 +302,7 @@ namespace Google.Solutions.Mvvm.Binding
                 }
                 catch (Exception e)
                 {
-                    bindingContext.OnCommandFailed(command, e);
+                    bindingContext.OnCommandFailed(button, command, e);
                 }
                 finally
                 {
@@ -311,7 +319,12 @@ namespace Google.Solutions.Mvvm.Binding
             /// <summary>
             /// Notify that a command failed.
             /// </summary>
-            void OnCommandFailed(ICommand command, Exception exception);
+            void OnCommandFailed(Control control, ICommand command, Exception exception);
+
+            /// <summary>
+            /// Notify that a binding failed.
+            /// </summary>
+            void OnCommandFailed(Control control, Exception exception); // TODO: use in all methods
 
             /// <summary>
             /// Notify that a new binding has been created. Implementing

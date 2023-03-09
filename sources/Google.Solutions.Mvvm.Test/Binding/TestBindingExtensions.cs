@@ -524,10 +524,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenCommandIsExecuting_ThenButtonIsDisabled()
         {
             var button = new Button();
-            var commandAvailable = ObservableProperty.Build(CommandState.Enabled);
             var command = new Command<ViewModelWithCommand>(
                 "Command name",
-                _ => commandAvailable.Value,
+                _ => CommandState.Enabled,
                 _ => {
                     Assert.IsFalse(button.Enabled);
                 });
@@ -535,8 +534,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
             using (var form = new Form())
             using (var viewModel = new ViewModelWithCommand()
             {
-                Command = command,
-                CommandState = commandAvailable
+                Command = command
             })
             {
                 form.Controls.Add(button);
@@ -560,18 +558,15 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenCommandFails_ThenContextIsNotified()
         {
             var bindingContext = new Mock<IBindingContext>();
-
-            var commandAvailable = ObservableProperty.Build(CommandState.Enabled);
             var command = new Command<ViewModelWithCommand>(
                 "Command name",
-                _ => commandAvailable.Value,
+                _ => CommandState.Enabled,
                 _ => throw new InvalidOperationException("mock"));
 
             using (var form = new Form())
             using (var viewModel = new ViewModelWithCommand()
             {
-                Command = command,
-                CommandState = commandAvailable
+                Command = command
             })
             {
                 var button = new Button()
@@ -592,6 +587,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 bindingContext.Verify(
                     c => c.OnCommandFailed(
+                        It.IsAny<Control>(),
                         It.IsAny<ICommand>(),
                         It.IsAny<InvalidOperationException>()), 
                     Times.Once);

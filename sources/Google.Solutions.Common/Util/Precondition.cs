@@ -26,15 +26,14 @@ namespace Google.Solutions.Common.Util
 {
     public static class Precondition
     {
-        public static T ThrowIf<T>(
+        public static T NotNull<T>( // TODO: Resolve naming clash - make non-extenion method?
             this T value,
-            bool condition,
             string argumentName)
         {
-            if (condition)
+            if (value == null)
             {
-                throw new ArgumentException(
-                    $"The argument {argumentName} does not meet the condition");
+                throw new ArgumentNullException(
+                    $"The argument {argumentName} must not be null");
             }
 
             return value;
