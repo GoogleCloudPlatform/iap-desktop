@@ -514,7 +514,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // Utility methods.
         //---------------------------------------------------------------------
 
-        protected void InvokeAction(
+        protected void InvokeAction( // TODO: Replace by command
             Action action,
             string actionName)
         {
@@ -537,7 +537,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        protected async Task InvokeActionAsync(
+        protected async Task InvokeActionAsync(// TODO: Replace by command
             Func<Task> action,
             string actionName)
         {

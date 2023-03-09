@@ -27,7 +27,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
@@ -314,25 +313,7 @@ namespace Google.Solutions.Mvvm.Binding
             bindingContext.OnBindingCreated(button, clickBinding);
         }
 
-        public interface IBindingContext // TODO: move out
-        {
-            /// <summary>
-            /// Notify that a command failed.
-            /// </summary>
-            void OnCommandFailed(Control control, ICommand command, Exception exception);
-
-            /// <summary>
-            /// Notify that a binding failed.
-            /// </summary>
-            void OnCommandFailed(Control control, Exception exception); // TODO: use in all methods
-
-            /// <summary>
-            /// Notify that a new binding has been created. Implementing
-            /// classes should dispose the binding when it's no longer needed,
-            /// for example by tying them to the lifecycle of the control.
-            /// </summary>
-            void OnBindingCreated(Control control, Binding binding);
-        }
+        
 
         // TODO: Update other methods to use IBindingContext
         // TODO: Remove Component

@@ -184,6 +184,7 @@
     <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
     <Compile Include="Views\Authorization\OAuthScopeNotGrantedViewModel.cs" />
+    <Compile Include="Views\ViewBindingContext.cs" />
     <Compile Include="Views\Diagnostics\DebugCommonControlsView.cs">
       <SubType>Form</SubType>
     </Compile>

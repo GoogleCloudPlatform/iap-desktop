@@ -38,7 +38,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Notify that a binding failed.
         /// </summary>
-        void OnCommandFailed(Control control, Exception exception); // TODO: use in all methods
+        void OnBindingFailed(Control control, Exception exception); // TODO: use in all methods
 
         /// <summary>
         /// Notify that a new binding has been created. Implementing

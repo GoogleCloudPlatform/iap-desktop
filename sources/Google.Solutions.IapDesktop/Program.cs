@@ -46,6 +46,7 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.IapTunneling;
 using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Ssh;
 using System;
 using System.Collections.Generic;
@@ -284,6 +285,7 @@ namespace Google.Solutions.IapDesktop
                     Globals.UserAgent.Extensions = "Enterprise";
                 }
 
+                baseLayer.AddTransient<IBindingContext, ViewBindingContext>();
                 baseLayer.AddSingleton(new ThemeSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Theme")));
                 baseLayer.AddSingleton<IThemeService, ThemeService>();
