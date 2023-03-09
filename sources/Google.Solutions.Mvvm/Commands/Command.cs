@@ -28,62 +28,6 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Commands
 {
     /// <summary>
-    /// A command that can be sufaced in a menu or some other
-    /// control.
-    /// </summary>
-    public interface ICommand
-    {
-        /// <summary>
-        /// Caption for command.
-        /// </summary>
-        string Text { get; }
-
-        /// <summary>
-        /// Caption when command is executing.
-        /// </summary>
-        string ActivityText { get; }
-
-        /// <summary>
-        /// Optional icon.
-        /// </summary>
-        System.Drawing.Image Image { get; }
-
-        /// <summary>
-        /// Accelerator for command.
-        /// </summary>
-        Keys ShortcutKeys { get; }
-
-        /// <summary>
-        /// Check if command should be executed by default.
-        /// </summary>
-        bool IsDefault { get; }
-    }
-
-    /// <summary>
-    /// A command that can be sufaced in a menu or some other
-    /// control.
-    /// </summary>
-    public interface ICommand<TContext> : ICommand
-    {
-        /// <summary>
-        /// Queries if command should be enabled or not.
-        /// </summary>
-        CommandState QueryState(TContext context);
-
-        /// <summary>
-        /// Executes the command.
-        /// </summary>
-        Task ExecuteAsync(TContext context);
-    }
-
-    public enum CommandState
-    {
-        Enabled,
-        Disabled,
-        Unavailable
-    }
-
-    /// <summary>
     /// Basic command implementation.
     /// </summary>
     public class Command<TContext> : ICommand<TContext>
@@ -143,19 +87,6 @@ namespace Google.Solutions.Mvvm.Commands
 
     public static class CommandExtensions
     {
-        public static ICommandContainer<TContext> AddCommand<TContext>(
-            this ICommandContainer<TContext> container,
-            string text,
-            Func<TContext, CommandState> queryStateFunc,
-            Func<TContext, Task> executeFunc)
-            where TContext : class
-        {
-            return container.AddCommand(new Command<TContext>(
-                text,
-                queryStateFunc,
-                executeFunc));
-        }
-
         public static ICommandContainer<TContext> AddCommand<TContext>(
             this ICommandContainer<TContext> container,
             string text,
