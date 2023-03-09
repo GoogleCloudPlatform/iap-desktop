@@ -61,34 +61,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             this.viewModel = viewModel;
             viewModel.InventoryType = this.inventoryType;
 
-            this.infoLabel.BindProperty(
+            this.panel.BindReadonlyObservableProperty(
                 c => c.Text,
-                this.viewModel,
+                viewModel,
                 m => m.InformationText,
                 bindingContext);
-            this.viewModel.OnPropertyChange(
-                m => m.IsInformationBarVisible,
-                visible =>
-                {
-                    this.splitContainer.Panel1Collapsed = !visible;
-                    this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
-                },
-                bindingContext);
-
-            this.viewModel.OnPropertyChange(
+            this.BindReadonlyObservableProperty(
+                c => c.Text,
+                viewModel,
                 m => m.WindowTitle,
-                title =>
-                {
-                    // NB. Update properties separately instead of using multi-assignment,
-                    // otherwise the title does not update properly.
-                    this.TabText = title;
-                    this.Text = title;
-                },
+                bindingContext);
+            this.BindReadonlyObservableProperty(
+                c => c.TabText,
+                viewModel,
+                m => m.WindowTitle,
                 bindingContext);
             this.viewModel.ResetWindowTitle();  // Fire event to set initial window title.
 
+            //
             // Bind list.
-            this.packageList.BindProperty(
+            //
+            this.packageList.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsPackageListEnabled,
@@ -100,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 this.viewModel,
                 m => m.Filter,
                 bindingContext);
-            this.packageList.BindProperty(
+            this.packageList.BindReadonlyObservableProperty(
                 c => c.Loading,
                 this.viewModel,
                 m => m.IsLoading,

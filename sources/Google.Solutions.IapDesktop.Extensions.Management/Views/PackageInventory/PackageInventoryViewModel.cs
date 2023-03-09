@@ -44,15 +44,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
     public class PackageInventoryViewModel
         : ModelCachingViewModelBase<IProjectModelNode, PackageInventoryModel>
     {
+        internal const string OsInventoryNotAvailableWarning = "OS inventory data not available";
         private const int ModelCacheCapacity = 5;
 
         private readonly IJobService jobService;
         private readonly Service<IInventoryService> inventoryService;
 
         private string filter;
-        private bool isLoading;
-        private bool isPackageListEnabled = false;
-        private string windowTitle;
         private bool isInformationBarVisible = true;
 
         private string WindowTitlePrefix =>
@@ -60,7 +58,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                     ? "Available updates"
                     : "Installed packages";
 
-        public string InformationText => "OS inventory data not available";
         internal PackageInventoryType InventoryType { get; set; }
 
         public PackageInventoryViewModel(IServiceProvider serviceProvider)
@@ -68,11 +65,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         {
             this.jobService = serviceProvider.GetService<IJobService>();
             this.inventoryService = serviceProvider.GetService<Service<IInventoryService>>();
+
+            this.IsPackageListEnabled = ObservableProperty.Build(false);
+            this.IsLoading = ObservableProperty.Build(false);
+            this.WindowTitle = ObservableProperty.Build<string>(null);
+            this.InformationText = ObservableProperty.Build<string>(null);
         }
 
         public void ResetWindowTitle()
         {
-            this.WindowTitle = this.WindowTitlePrefix;
+            this.WindowTitle.Value = this.WindowTitlePrefix;
         }
 
         //---------------------------------------------------------------------
@@ -109,45 +111,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         public RangeObservableCollection<PackageInventoryModel.Item> FilteredPackages { get; }
             = new RangeObservableCollection<PackageInventoryModel.Item>();
 
-        public bool IsPackageListEnabled
-        {
-            get => this.isPackageListEnabled;
-            set
-            {
-                this.isPackageListEnabled = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsLoading
-        {
-            get => this.isLoading;
-            set
-            {
-                this.isLoading = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public string WindowTitle
-        {
-            get => this.windowTitle;
-            set
-            {
-                this.windowTitle = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsInformationBarVisible
-        {
-            get => this.isInformationBarVisible;
-            private set
-            {
-                this.isInformationBarVisible = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsPackageListEnabled { get; }
+        public ObservableProperty<bool> IsLoading { get; }
+        public ObservableProperty<string> WindowTitle { get; }
+        public ObservableProperty<string> InformationText { get; }
 
         //---------------------------------------------------------------------
         // "Input" properties.
@@ -208,16 +175,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             {
                 try
                 {
-                    this.IsLoading = true;
+                    this.IsLoading.Value = true;
 
                     //
                     // Reset window title, otherwise the default or previous title
                     // stays while data is loading.
                     //
-                    this.WindowTitle = this.WindowTitlePrefix;
+                    ResetWindowTitle();
 
+                    //
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
+                    //
                     return await this.jobService.RunInBackground(
                         new JobDescription(
                             $"Loading inventory for {node.DisplayName}",
@@ -234,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 }
                 finally
                 {
-                    this.IsLoading = false;
+                    this.IsLoading.Value = false;
                 }
             }
         }
@@ -246,20 +215,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
 
             if (this.Model == null)
             {
+                //
                 // Unsupported node.
-                this.IsPackageListEnabled = false;
-                this.IsInformationBarVisible = false;
-                this.WindowTitle = this.WindowTitlePrefix;
+                //
+                this.IsPackageListEnabled.Value = false;
+                this.InformationText.Value = null;
+                this.WindowTitle.Value = this.WindowTitlePrefix;
             }
             else
             {
-                this.IsPackageListEnabled = true;
-                this.IsInformationBarVisible = !this.Model.IsInventoryDataAvailable;
-                this.WindowTitle = this.WindowTitlePrefix + $": {this.Model.DisplayName}";
+                this.IsPackageListEnabled.Value = true;
+                this.InformationText.Value = !this.Model.IsInventoryDataAvailable
+                    ? OsInventoryNotAvailableWarning
+                    : null;
+                this.WindowTitle.Value = this.WindowTitlePrefix + $": {this.Model.DisplayName}";
                 this.AllPackages.AddRange(this.Model.Packages);
             }
 
+            //
             // Reset filter, implicitly populating the FilteredPackages property.
+            //
             this.Filter = string.Empty;
         }
     }

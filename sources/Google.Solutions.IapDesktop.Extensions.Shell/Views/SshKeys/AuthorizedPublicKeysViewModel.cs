@@ -53,10 +53,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         private readonly Service<IResourceManagerAdapter> resourceManagerAdapter;
 
         private string filter;
-        private bool isLoading;
-        private bool isListEnabled = false;
-        private string windowTitle;
-        private string informationBarContent;
         private AuthorizedPublicKeysModel.Item selectedItem;
 
         public AuthorizedPublicKeysViewModel(
@@ -68,12 +64,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.osLoginService = serviceProvider.GetService<Service<IOsLoginService>>();
             this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
             this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
+
+            this.IsListEnabled = ObservableProperty.Build(false);
+            this.IsLoading = ObservableProperty.Build(false);
+            this.WindowTitle = ObservableProperty.Build<string>(null);
+            this.InformationText = ObservableProperty.Build<string>(null);
         }
 
         public void ResetWindowTitleAndInformationBar()
         {
-            this.WindowTitle = WindowTitlePrefix;
-            this.InformationBarContent = null;
+            this.WindowTitle.Value = WindowTitlePrefix;
+            this.InformationText.Value = null;
         }
 
         //---------------------------------------------------------------------
@@ -86,47 +87,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         public RangeObservableCollection<AuthorizedPublicKeysModel.Item> FilteredKeys { get; }
             = new RangeObservableCollection<AuthorizedPublicKeysModel.Item>();
 
-        public bool IsListEnabled
-        {
-            get => this.isListEnabled;
-            set
-            {
-                this.isListEnabled = value;
-                RaisePropertyChange();
-            }
-        }
-        public bool IsLoading
-        {
-            get => this.isLoading;
-            set
-            {
-                this.isLoading = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsListEnabled { get; }
 
-        public string WindowTitle
-        {
-            get => this.windowTitle;
-            set
-            {
-                this.windowTitle = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsLoading { get; }
 
-        public bool IsInformationBarVisible => this.InformationBarContent != null;
+        public ObservableProperty<string> WindowTitle { get; }
 
-        public string InformationBarContent
-        {
-            get => this.informationBarContent;
-            private set
-            {
-                this.informationBarContent = value;
-                RaisePropertyChange();
-                RaisePropertyChange((AuthorizedPublicKeysViewModel m) => m.IsInformationBarVisible);
-            }
-        }
+        public ObservableProperty<string> InformationText { get; }
 
         public AuthorizedPublicKeysModel.Item SelectedItem
         {
@@ -250,13 +217,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             {
                 try
                 {
-                    this.IsLoading = true;
+                    this.IsLoading.Value = true;
 
                     //
                     // Reset window title, otherwise the default or previous title
                     // stays while data is loading.
                     //
-                    this.WindowTitle = WindowTitlePrefix;
+                    ResetWindowTitleAndInformationBar();
 
                     //
                     // Load data using a job so that the task is retried in case
@@ -280,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 }
                 finally
                 {
-                    this.IsLoading = false;
+                    this.IsLoading.Value = false;
                 }
             }
         }
@@ -293,18 +260,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
             if (this.Model == null)
             {
+                //
                 // Unsupported node.
-                this.IsListEnabled = false;
-                this.InformationBarContent = null;
-                this.WindowTitle = WindowTitlePrefix;
+                //
+                this.IsListEnabled.Value = false;
+                this.InformationText.Value = null;
+                this.WindowTitle.Value = WindowTitlePrefix;
             }
             else
             {
-                this.IsListEnabled = true;
-                this.InformationBarContent = this.Model.Warnings.Any()
+                this.IsListEnabled.Value = true;
+                this.InformationText.Value = this.Model.Warnings.Any()
                     ? string.Join(", ", this.Model.Warnings)
                     : null;
-                this.WindowTitle = WindowTitlePrefix + $": {this.Model.DisplayName}";
+                this.WindowTitle.Value = WindowTitlePrefix + $": {this.Model.DisplayName}";
                 this.AllKeys.AddRange(this.Model.Items);
             }
 

@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Controls;
+
 namespace Google.Solutions.IapDesktop.Application.Views.Properties
 {
     partial class PropertiesInspectorViewBase
@@ -51,62 +53,28 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PropertiesInspectorViewBase));
-            this.splitContainer = new System.Windows.Forms.SplitContainer();
-            this.infoLabel = new System.Windows.Forms.Label();
-            this.infoIcon = new System.Windows.Forms.PictureBox();
+            this.panel = new NotificationBarPanel();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-            this.splitContainer.Panel1.SuspendLayout();
-            this.splitContainer.Panel2.SuspendLayout();
-            this.splitContainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.panel)).BeginInit();
+            this.panel.Panel1.SuspendLayout();
+            this.panel.Panel2.SuspendLayout();
+            this.panel.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
-            // splitContainer
+            // panel
             // 
-            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer.IsSplitterFixed = true;
-            this.splitContainer.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer.Name = "splitContainer";
-            this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.panel.Name = "splitContainer";
             // 
             // splitContainer.Panel1
             // 
-            this.splitContainer.Panel1.BackColor = System.Drawing.SystemColors.Info;
-            this.splitContainer.Panel1.Controls.Add(this.infoLabel);
-            this.splitContainer.Panel1.Controls.Add(this.infoIcon);
-            this.splitContainer.Panel1Collapsed = true;
-            this.splitContainer.Panel1MinSize = 22;
             // 
             // splitContainer.Panel2
             // 
-            this.splitContainer.Panel2.Controls.Add(this.propertyGrid);
-            this.splitContainer.Size = new System.Drawing.Size(800, 450);
-            this.splitContainer.SplitterDistance = 25;
-            this.splitContainer.SplitterWidth = 1;
-            this.splitContainer.TabIndex = 0;
-            // 
-            // infoLabel
-            // 
-            this.infoLabel.AutoSize = true;
-            this.infoLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.infoLabel.Location = new System.Drawing.Point(22, 4);
-            this.infoLabel.Name = "infoLabel";
-            this.infoLabel.Size = new System.Drawing.Size(86, 13);
-            this.infoLabel.TabIndex = 2;
-            this.infoLabel.Text = "This is a warning";
-            // 
-            // infoIcon
-            // 
-            this.infoIcon.Image = ((System.Drawing.Image)(resources.GetObject("infoIcon.Image")));
-            this.infoIcon.Location = new System.Drawing.Point(6, 3);
-            this.infoIcon.Name = "infoIcon";
-            this.infoIcon.Size = new System.Drawing.Size(16, 16);
-            this.infoIcon.TabIndex = 1;
-            this.infoIcon.TabStop = false;
+            this.panel.Panel2.Controls.Add(this.propertyGrid);
+            this.panel.TabIndex = 0;
             // 
             // propertyGrid
             // 
@@ -138,16 +106,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.splitContainer);
+            this.Controls.Add(this.panel);
             this.Name = "PropertiesInspectorViewBase";
             this.Text = "Properties";
-            this.SizeChanged += new System.EventHandler(this.PropertiesWindow_SizeChanged);
-            this.splitContainer.Panel1.ResumeLayout(false);
-            this.splitContainer.Panel1.PerformLayout();
-            this.splitContainer.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-            this.splitContainer.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).EndInit();
+            this.panel.Panel1.ResumeLayout(false);
+            this.panel.Panel1.PerformLayout();
+            this.panel.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.panel)).EndInit();
+            this.panel.ResumeLayout(false);
             this.contextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -155,10 +121,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
 
         #endregion
 
-        private System.Windows.Forms.SplitContainer splitContainer;
+        private NotificationBarPanel panel;
         private System.Windows.Forms.PropertyGrid propertyGrid;
-        private System.Windows.Forms.PictureBox infoIcon;
-        private System.Windows.Forms.Label infoLabel;
         private System.Windows.Forms.ContextMenuStrip contextMenu;
         private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
     }

@@ -55,33 +55,25 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.viewModel = viewModel;
             this.propertyGrid.EnableRichTextDescriptions();
 
-            this.infoLabel.BindProperty(
+            this.panel.BindReadonlyObservableProperty(
                 c => c.Text,
-                this.viewModel,
+                viewModel,
                 m => m.InformationText,
                 bindingContext);
-            this.viewModel.OnPropertyChange(
-                m => m.IsInformationBarVisible,
-                visible =>
-                {
-                    this.splitContainer.Panel1Collapsed = !visible;
-                    this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
-                },
-                bindingContext);
-            this.viewModel.OnPropertyChange(
+            this.BindReadonlyObservableProperty(
+                c => c.Text,
+                viewModel,
                 m => m.WindowTitle,
-                title =>
-                {
-                    // NB. Update properties separately instead of using multi-assignment,
-                    // otherwise the title does not update properly.
-                    this.TabText = title;
-                    this.Text = title;
-                },
                 bindingContext);
-            this.viewModel.OnPropertyChange(
-                m => m.InspectedObject,
-                obj => SetInspectedObject(obj),
+            this.BindReadonlyObservableProperty(
+                c => c.TabText,
+                viewModel,
+                m => m.WindowTitle,
                 bindingContext);
+            viewModel.InspectedObject.PropertyChanged += (_, __) =>
+            {
+                SetInspectedObject(viewModel.InspectedObject.Value);
+            };
         }
 
         private void SetInspectedObject(object obj)
@@ -168,11 +160,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
 
             this.resetToolStripMenuItem.Enabled =
                 property != null && property.CanResetValue(this.propertyGrid.SelectedObject);
-        }
-
-        private void PropertiesWindow_SizeChanged(object sender, EventArgs e)
-        {
-            this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
         }
     }
 }
