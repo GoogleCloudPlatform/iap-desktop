@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Util;
@@ -28,10 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-#pragma warning disable CA1822 // Mark members as static
-#pragma warning disable CA1056 // Uri properties should not be strings
-#pragma warning disable CA2227 // Collection properties should be read only
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
@@ -51,42 +48,68 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
     public class GithubAdapter : IGithubAdapter
     {
-        public string RepositoryName { get; set; } = "GoogleCloudPlatform/iap-desktop";
+        public const string RepositoryName = "GoogleCloudPlatform/iap-desktop";
 
-        public async Task<IGitHubRelease> FindLatestReleaseAsync(CancellationToken cancellationToken)
+        private readonly IExternalRestAdapter restAdapter;
+
+        public GithubAdapter(IExternalRestAdapter restAdapter)
+        {
+            this.restAdapter = restAdapter.ThrowIfNull(nameof(restAdapter));
+        }
+
+        public async Task<IGitHubRelease> FindLatestReleaseAsync(
+            CancellationToken cancellationToken)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                var assemblyName = typeof(ComputeEngineAdapter).Assembly.GetName();
-                var client = new RestClient(Globals.UserAgent);
+                var latestRelease = await this.restAdapter
+                    .GetAsync<Release>(
+                        $"https://api.github.com/repos/{RepositoryName}/releases/latest",
+                        cancellationToken)
+                    .ConfigureAwait(false);
 
-                var latestRelease = await client.GetAsync<Release>(
-                    $"https://api.github.com/repos/{this.RepositoryName}/releases/latest",
-                    cancellationToken).ConfigureAwait(false);
                 if (latestRelease == null)
                 {
                     return null;
                 }
                 else
                 {
-                    ApplicationTraceSources.Default.TraceVerbose("Found new release: {0}", latestRelease.TagName);
+                    ApplicationTraceSources.Default.TraceVerbose(
+                        "Found new release: {0}", latestRelease.TagName);
 
+                    //
                     // New release available.
+                    //
                     return latestRelease;
                 }
             }
         }
 
+        //---------------------------------------------------------------------
+        // Classes for deserialization.
+        //---------------------------------------------------------------------
+
         public class Release : IGitHubRelease
         {
             [JsonProperty("tag_name")]
-            public string TagName { get; set; }
+            public string TagName { get;  }
 
             [JsonProperty("html_url")]
-            public string HtmlUrl { get; set; }
+            public string HtmlUrl { get;  }
 
             [JsonProperty("assets")]
-            public List<ReleaseAsset> Assets { get; set; }
+            public List<ReleaseAsset> Assets { get;  }
+
+            [JsonConstructor]
+            public Release(
+                [JsonProperty("tag_name")] string tagName,
+                [JsonProperty("html_url")] string htmlUrl,
+                [JsonProperty("assets")] List<ReleaseAsset> assets)
+            {
+                this.TagName = tagName;
+                this.HtmlUrl = htmlUrl;
+                this.Assets = assets;
+            }
 
             public Version TagVersion
             {
@@ -115,7 +138,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public class ReleaseAsset
         {
             [JsonProperty("browser_download_url")]
-            public string DownloadUrl { get; set; }
+            public string DownloadUrl { get; }
+
+            public ReleaseAsset(
+                [JsonProperty("browser_download_url")] string downloadUrl)
+            {
+                this.DownloadUrl = downloadUrl;
+            }
         }
     }
 }
