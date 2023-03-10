@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Mvvm.Windows
 {
-    public class PropertiesViewModel : ViewModelBase // TODO: Add tests
+    public class PropertiesViewModel : ViewModelBase
     {
         private readonly List<PropertiesSheetViewModelBase> sheets;
 
@@ -36,9 +36,11 @@ namespace Google.Solutions.Mvvm.Windows
         {
             this.sheets = new List<PropertiesSheetViewModelBase>();
 
-            this.ApplyCommand = new Command<PropertiesViewModel>(
+            this.IsDirty = new ObservableFunc<bool>(
+                () => this.sheets.Any(s => s.IsDirty.Value));
+            this.ApplyCommand = new Command<PropertiesViewModel>( // TODO: Use DispatchCommand?
                 "&Apply",
-                _ => this.IsDirty ? CommandState.Enabled : CommandState.Disabled,
+                _ => this.IsDirty.Value ? CommandState.Enabled : CommandState.Disabled,
                 _ => ApplyChangesAsync());
             this.OkCommand = new Command<PropertiesViewModel>(
                 "OK",
@@ -50,9 +52,7 @@ namespace Google.Solutions.Mvvm.Windows
                 _ => Task.CompletedTask);
         }
 
-        internal bool IsDirty => this.sheets.Any(s => s.IsDirty.Value);
-
-        internal async Task ApplyChangesAsync()
+        private async Task ApplyChangesAsync()
         {
             foreach (var sheet in this.sheets.Where(t => t.IsDirty.Value))
             {
@@ -67,7 +67,14 @@ namespace Google.Solutions.Mvvm.Windows
         internal void AddSheet(PropertiesSheetViewModelBase sheet)
         {
             this.sheets.Add(sheet);
+            sheet.IsDirty.AddDependentProperty(this.IsDirty);
         }
+
+        //---------------------------------------------------------------------
+        // Observable properties.
+        //---------------------------------------------------------------------
+
+        public IObservableProperty<bool> IsDirty { get; }
 
         //---------------------------------------------------------------------
         // Commands.

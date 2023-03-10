@@ -58,8 +58,8 @@ namespace Google.Solutions.Mvvm.Commands
     }
 
     /// <summary>
-    /// A command that can be sufaced in a menu or some other
-    /// control.
+    /// A command that is applicable to a certain context,
+    /// typically sufaced as a context menu item.
     /// </summary>
     public interface ICommand<TContext> : ICommand
     {
@@ -72,6 +72,23 @@ namespace Google.Solutions.Mvvm.Commands
         /// Executes the command.
         /// </summary>
         Task ExecuteAsync(TContext context);
+    }
+
+    /// <summary>
+    /// A command that is not tied to any particular context,
+    /// typically surfaced as a button.
+    /// </summary>
+    public interface IDispatchCommand : ICommand
+    {
+        /// <summary>
+        /// Queries if command should be enabled or not.
+        /// </summary>
+        CommandState State { get; }
+
+        /// <summary>
+        /// Executes the command.
+        /// </summary>
+        Task ExecuteAsync();
     }
 
     public enum CommandState
