@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Mvvm.Windows
 {
-    public class PropertiesViewModel : ViewModelBase
+    public class PropertiesViewModel : ViewModelBase // TODO: Add tests
     {
         private readonly List<PropertiesSheetViewModelBase> sheets;
 

@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
 
         private class SessionPane : SessionViewBase
         {
-            public SessionPane()
+            public SessionPane() : base(new Mock<IBindingContext>().Object)
             {
             }
         }

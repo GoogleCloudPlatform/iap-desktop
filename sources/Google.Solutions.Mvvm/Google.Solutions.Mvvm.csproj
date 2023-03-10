@@ -148,6 +148,8 @@
     <Compile Include="Theme\WindowsRuleSet.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\StaTask.cs" />
+    <Compile Include="Windows\IPropertiesSheet.cs" />
+    <Compile Include="Windows\PropertiesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\FileBrowser.Interfaces.cs">

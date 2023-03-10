@@ -36,9 +36,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
         private readonly IBindingContext bindingContext;
         private ICommandContainer<ISession> contextCommands;
 
-        protected SessionViewBase()
+        protected SessionViewBase(IBindingContext bindingContext)
         {
-            // Constructor is for designer only.
+            // Constructor is for testing only.
+            this.bindingContext = bindingContext;
         }
 
         protected SessionViewBase(IServiceProvider serviceProvider)
@@ -60,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 {
                     //
                     // Don't allow binding multiple command containers to
-                    // the smae menu (or binding the same container multiple
+                    // the same menu (or binding the same container multiple
                     // times) as that leads to duplication.
                     //
                     throw new InvalidOperationException(
