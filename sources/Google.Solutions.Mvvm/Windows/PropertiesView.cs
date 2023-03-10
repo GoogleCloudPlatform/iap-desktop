@@ -24,8 +24,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -36,9 +34,6 @@ namespace Google.Solutions.Mvvm.Windows
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IControlTheme theme;
-
-        private PropertiesViewModel viewModel;
-        private IBindingContext bindingContext;
 
         public Color SheetBackColor { get; set; } = Color.White;
 
@@ -56,9 +51,9 @@ namespace Google.Solutions.Mvvm.Windows
 
         public void Bind(PropertiesViewModel viewModel, IBindingContext bindingContext)
         {
-            this.viewModel = viewModel;
-            this.bindingContext = bindingContext;
-
+            //
+            // Bind commands.
+            //
             this.okButton.BindCommand(
                 viewModel,
                 m => m.OkCommand,
@@ -71,76 +66,44 @@ namespace Google.Solutions.Mvvm.Windows
                 viewModel,
                 m => m.CancelCommand,
                 bindingContext);
-        }
-
-        internal IEnumerable<PropertiesSheetViewModelBase> Sheets => this.viewModel.Sheets;
-
-        internal void AddSheet(
-            IPropertiesSheetView view, 
-            PropertiesSheetViewModelBase viewModel)
-        {
-            Debug.Assert(viewModel.View == null, "view model not bound yet");
-            
-            Debug.Assert(this.viewModel != null);
-            Debug.Assert(this.bindingContext != null);
-
-            SuspendLayout();
 
             //
-            // Create control and add it to tabs.
+            // Bind sheets.
             //
-            var viewControl = (ContainerControl)(object)view;
-            viewControl.Location = new Point(0, 0);
-            viewControl.Dock = DockStyle.Fill;
-            viewControl.BackColor = this.SheetBackColor;
-            
-            var tab = new TabPage()
+            foreach (var sheet in viewModel.Sheets)
             {
-                BackColor = this.SheetBackColor
-            };
-            tab.Controls.Add(viewControl);
-            this.tabs.TabPages.Add(tab);
+                //
+                // Create control and add it to tabs.
+                //
+                var viewControl = (ContainerControl)(object)sheet.View;
+                viewControl.Location = new Point(0, 0);
+                viewControl.Dock = DockStyle.Fill;
+                viewControl.BackColor = this.SheetBackColor;
 
-            //
-            // Bind the sheet and its view model.
-            //
-            tab.BindReadonlyProperty(
-                t => t.Text,
-                viewModel,
-                m => m.Title,
-                this.bindingContext);
+                var tab = new TabPage()
+                {
+                    BackColor = this.SheetBackColor
+                };
+                tab.Controls.Add(viewControl);
+                this.tabs.TabPages.Add(tab);
 
-            Window<IPropertiesSheetView, PropertiesSheetViewModelBase>.Bind(
-                view,
-                viewModel,
-                this.theme,
-                this.bindingContext);
+                //
+                // Bind the sheet and its view model.
+                //
+                tab.BindReadonlyProperty(
+                    t => t.Text,
+                    sheet.ViewModel,
+                    m => m.Title,
+                    bindingContext);
 
-            //
-            // Register the (bound) view model.
-            //
-            this.viewModel.AddSheet(viewModel);
-
-            ResumeLayout();
-        }
-
-        //---------------------------------------------------------------------
-        // Publics.
-        //---------------------------------------------------------------------
-
-        public void AddSheet(IPropertiesSheetView view)
-        {
-            AddSheet(
-                view,
-                (PropertiesSheetViewModelBase)this.serviceProvider.GetService(view.ViewModel));
-        }
-
-        public void AddSheet<TSheet>()
-        {
-            var view = (IPropertiesSheetView)this.serviceProvider.GetService(typeof(TSheet));
-            AddSheet(
-                view,
-                (PropertiesSheetViewModelBase)this.serviceProvider.GetService(view.ViewModel));
+                Window<IPropertiesSheetView, PropertiesSheetViewModelBase>.Bind(
+                    sheet.View,
+                    sheet.ViewModel,
+                    this.theme,
+                    bindingContext);
+            }
         }
     }
+
+// TODO: Extension: GetPropertiesDialog()
 }

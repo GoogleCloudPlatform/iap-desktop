@@ -19,8 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Commands;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -30,14 +30,14 @@ namespace Google.Solutions.Mvvm.Windows
 {
     public class PropertiesViewModel : ViewModelBase
     {
-        private readonly List<PropertiesSheetViewModelBase> sheets;
+        internal IList<Sheet> Sheets { get; }
 
         public PropertiesViewModel()
         {
-            this.sheets = new List<PropertiesSheetViewModelBase>();
+            this.Sheets = new List<Sheet>();
 
             this.IsDirty = new ObservableFunc<bool>(
-                () => this.sheets.Any(s => s.IsDirty.Value));
+                () => this.Sheets.Any(s => s.ViewModel.IsDirty.Value));
 
             this.ApplyCommand = ObservableCommand.Build(
                 "&Apply",
@@ -53,38 +53,70 @@ namespace Google.Solutions.Mvvm.Windows
 
         private async Task ApplyChangesAsync()
         {
-            foreach (var sheet in this.sheets.Where(t => t.IsDirty.Value))
+            foreach (var sheet in this.Sheets.Where(t => t.ViewModel.IsDirty.Value))
             {
                 await sheet
+                    .ViewModel
                     .ApplyChangesAsync()
                     .ConfigureAwait(true);
                 
-                Debug.Assert(!sheet.IsDirty.Value);
+                Debug.Assert(!sheet.ViewModel.IsDirty.Value);
             }
         }
-
-        internal void AddSheet(PropertiesSheetViewModelBase sheet)
-        {
-            this.sheets.Add(sheet);
-            sheet.IsDirty.AddDependentProperty(this.IsDirty);
-        }
-
-        internal IEnumerable<PropertiesSheetViewModelBase> Sheets => this.sheets;
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public IObservableProperty<bool> IsDirty { get; }
+        internal IObservableProperty<bool> IsDirty { get; }
 
         //---------------------------------------------------------------------
         // Commands.
         //---------------------------------------------------------------------
 
-        public IObservableCommand ApplyCommand { get; }
+        internal IObservableCommand ApplyCommand { get; }
 
-        public IObservableCommand OkCommand { get; }
+        internal IObservableCommand OkCommand { get; }
 
-        public IObservableCommand CancelCommand { get; }
+        internal IObservableCommand CancelCommand { get; }
+
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Add a property sheet. This needs to be done before binding.
+        /// </summary>
+        public void AddSheet(
+            IPropertiesSheetView view,
+            PropertiesSheetViewModelBase viewModel)
+        {
+            Precondition.Expect(
+                view.ViewModel == viewModel.GetType(), 
+                "The view model must match the view");
+            Precondition.Expect(
+                viewModel.View == null,
+                "The view must not have been bound yet");
+
+            this.Sheets.Add(new Sheet(view, viewModel));
+
+            viewModel.IsDirty.AddDependentProperty(this.IsDirty);
+        }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
+        internal struct Sheet
+        {
+            public readonly IPropertiesSheetView View;
+            public readonly PropertiesSheetViewModelBase ViewModel;
+
+            public Sheet(IPropertiesSheetView view, PropertiesSheetViewModelBase viewModel)
+            {
+                this.View = view;
+                this.ViewModel = viewModel;
+            }
+        }
     }
 }

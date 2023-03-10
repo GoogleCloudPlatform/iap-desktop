@@ -20,21 +20,31 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.Mvvm.Windows;
 using Google.Solutions.Testing.Common;
 using NUnit.Framework;
+using System;
+using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Test.Windows
 {
     [TestFixture]
     public class TestPropertiesViewModel
     {
-        private class SampleSheet : PropertiesSheetViewModelBase
+        private class SampleSheetView : UserControl, IPropertiesSheetView
+        {
+            public Type ViewModel => typeof(SampleSheetViewModel);
+
+            public void Bind(PropertiesSheetViewModelBase viewModel, IBindingContext context)
+            {
+            }
+        }
+
+        private class SampleSheetViewModel : PropertiesSheetViewModelBase
         {
             public uint ApplyCalls = 0;
 
-            public SampleSheet() : base("Sample")
+            public SampleSheetViewModel() : base("Sample")
             {
             }
 
@@ -57,22 +67,23 @@ namespace Google.Solutions.Mvvm.Test.Windows
         {
             using (var viewModel = new PropertiesViewModel())
             {
-                var sheet = new SampleSheet();
-                viewModel.AddSheet(sheet);
-                viewModel.AddSheet(new SampleSheet());
+                var sheetViewModel = new SampleSheetViewModel();
+                var sheetView = new SampleSheetView();
+                viewModel.AddSheet(sheetView, sheetViewModel);
+                viewModel.AddSheet(new SampleSheetView(), new SampleSheetViewModel());
 
                 Assert.IsFalse(viewModel.IsDirty.Value);
 
                 PropertyAssert.RaisesPropertyChangedNotification(
-                    sheet.IsDirty,
-                    () => sheet.IsDirty.Value = true,
+                    sheetViewModel.IsDirty,
+                    () => sheetViewModel.IsDirty.Value = true,
                     "Value");
 
                 Assert.IsTrue(viewModel.IsDirty.Value);
 
                 PropertyAssert.RaisesPropertyChangedNotification(
-                    sheet.IsDirty,
-                    () => sheet.IsDirty.Value = false,
+                    sheetViewModel.IsDirty,
+                    () => sheetViewModel.IsDirty.Value = false,
                     "Value");
 
                 Assert.IsFalse(viewModel.IsDirty.Value);
@@ -88,9 +99,10 @@ namespace Google.Solutions.Mvvm.Test.Windows
         {
             using (var viewModel = new PropertiesViewModel())
             {
-                var sheet = new SampleSheet();
-                sheet.IsDirty.Value = true;
-                viewModel.AddSheet(sheet);
+                var sheetViewModel = new SampleSheetViewModel();
+                viewModel.AddSheet(new SampleSheetView(), sheetViewModel);
+
+                sheetViewModel.IsDirty.Value = true;
 
                 Assert.IsTrue(viewModel.ApplyCommand.CanExecute.Value);
             }
@@ -101,7 +113,7 @@ namespace Google.Solutions.Mvvm.Test.Windows
         {
             using (var viewModel = new PropertiesViewModel())
             {
-                viewModel.AddSheet(new SampleSheet());
+                viewModel.AddSheet(new SampleSheetView(), new SampleSheetViewModel());
 
                 Assert.IsFalse(viewModel.ApplyCommand.CanExecute.Value);
             }
@@ -113,19 +125,19 @@ namespace Google.Solutions.Mvvm.Test.Windows
         {
             using (var viewModel = new PropertiesViewModel())
             {
-                var sheet1 = new SampleSheet();
-                sheet1.IsDirty.Value = true;
+                var sheetViewModel1 = new SampleSheetViewModel();
+                sheetViewModel1.IsDirty.Value = true;
 
-                var sheet2 = new SampleSheet();
-                sheet2.IsDirty.Value = false;
+                var sheetViewModel2 = new SampleSheetViewModel();
+                sheetViewModel2.IsDirty.Value = false;
 
-                viewModel.AddSheet(sheet1);
-                viewModel.AddSheet(sheet2);
+                viewModel.AddSheet(new SampleSheetView(), sheetViewModel1);
+                viewModel.AddSheet(new SampleSheetView(), sheetViewModel2);
 
                 viewModel.ApplyCommand.ExecuteAsync();
 
-                Assert.AreEqual(1, sheet1.ApplyCalls);
-                Assert.AreEqual(0, sheet2.ApplyCalls);
+                Assert.AreEqual(1, sheetViewModel1.ApplyCalls);
+                Assert.AreEqual(0, sheetViewModel2.ApplyCalls);
             }
         }
     }

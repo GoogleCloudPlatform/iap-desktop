@@ -39,18 +39,14 @@ namespace Google.Solutions.Common.Util
             return value;
         }
 
-        public static T Expect<T>(
-            this T value,
+        public static void Expect(
             bool condition,
-            string argumentName)
+            string message)
         {
             if (!condition)
             {
-                throw new ArgumentException(
-                    $"The argument {argumentName} does not meet the condition");
+                throw new ArgumentException(message);
             }
-
-            return value;
         }
 
         public static float ExpectInRange(

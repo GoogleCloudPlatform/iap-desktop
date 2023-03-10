@@ -157,6 +157,7 @@
       <DependentUpon>PropertiesView.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\PropertiesViewModel.cs" />
+    <Compile Include="Windows\ViewType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\FileBrowser.Interfaces.cs">

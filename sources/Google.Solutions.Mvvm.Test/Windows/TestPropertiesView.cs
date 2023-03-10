@@ -23,7 +23,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using Google.Solutions.Mvvm.Binding;
-using System.Linq;
 using Google.Solutions.Mvvm.Windows;
 using System.Windows.Forms;
 using Google.Solutions.Testing.Common.Integration;
@@ -36,10 +35,12 @@ namespace Google.Solutions.Mvvm.Test.Windows
     {
         private class SampleSheetView : UserControl, IPropertiesSheetView
         {
+            public bool Bound = false;
             public Type ViewModel => typeof(SampleSheetViewModel);
 
             public void Bind(PropertiesSheetViewModelBase viewModel, IBindingContext context)
             {
+                this.Bound = true;
             }
         }
 
@@ -87,17 +88,15 @@ namespace Google.Solutions.Mvvm.Test.Windows
         {
             var serviceProvider = CreateServiceProvider();
 
-            var window = serviceProvider
-                .GetWindow<PropertiesView, PropertiesViewModel>()
-                .Form;
-            window.AddSheet<SampleSheetView>();
-            window.Show();
+            var sheetView = new SampleSheetView();
 
-            var sheet = window.Sheets.FirstOrDefault();
-            Assert.IsNotNull(sheet);
-            Assert.IsNotNull(sheet.View);
+            var window = serviceProvider.GetWindow<PropertiesView, PropertiesViewModel>();
+            window.ViewModel.AddSheet(sheetView, new SampleSheetViewModel());
+            window.Form.Show();
 
-            window.Close();
+            Assert.IsTrue(sheetView.Bound);
+
+            window.Form.Close();
         }
 
         [InteractiveTest]
@@ -115,11 +114,9 @@ namespace Google.Solutions.Mvvm.Test.Windows
             button.Click += (_, __) => viewModel.IsDirty.Value = true;
             view.Controls.Add(button);
 
-            var window = serviceProvider
-                .GetWindow<PropertiesView, PropertiesViewModel>()
-                .Form;
-            window.AddSheet(view, viewModel);
-            window.ShowDialog();
+            var window = serviceProvider.GetDialog<PropertiesView, PropertiesViewModel>();
+            window.ViewModel.AddSheet(view, viewModel);
+            window.ShowDialog(null);
         }
     }
 }
