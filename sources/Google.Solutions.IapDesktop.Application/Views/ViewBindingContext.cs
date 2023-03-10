@@ -26,6 +26,7 @@ using Google.Solutions.Mvvm.Commands;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
@@ -34,11 +35,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
     /// </summary>
     public class ViewBindingContext : IBindingContext
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IExceptionDialog exceptionDialog;
 
-        public ViewBindingContext(IServiceProvider serviceProvider)
+        public ViewBindingContext(IExceptionDialog exceptionDialog)
         {
-            this.serviceProvider = serviceProvider; //TODO: .ThrowIfNull(nameof(serviceProvider));
+            this.exceptionDialog = exceptionDialog; //TODO: .ThrowIfNull(nameof(serviceProvider));
         }
 
         public static ViewBindingContext CreateDummy() // TODO: REMOVE THIS REMOVE THIS
@@ -57,12 +58,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void OnCommandFailed(IComponent control, ICommand command, Exception exception)
         {
-            this.serviceProvider
-                .GetService<IExceptionDialog>()
-                .Show(
-                    this.serviceProvider.GetService<IMainWindow>(), 
-                    command.ActivityText, 
-                    exception);
+            this.exceptionDialog.Show(
+                (control as Control),
+                command.ActivityText, 
+                exception);
         }
     }
 }

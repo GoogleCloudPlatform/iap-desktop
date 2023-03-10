@@ -41,6 +41,16 @@ namespace Google.Solutions.Mvvm.Binding
     }
 
     /// <summary>
+    /// Optional interface to implement by views if they need access
+    /// to the "raw" theme.
+    /// </summary>
+    internal interface IThemedView<TViewModel> : IView<TViewModel>
+        where TViewModel : ViewModelBase
+    {
+        IControlTheme Theme { get; set; }
+    }
+
+    /// <summary>
     /// View-related extension methods for IServiceProvider.
     /// </summary>
     public static class ViewExtensions
@@ -219,6 +229,11 @@ namespace Google.Solutions.Mvvm.Binding
                 view.SuspendLayout();
 
                 this.Theme?.ApplyTo(view);
+                if (this.Theme != null &&
+                    view is IThemedView<TViewModel> themedView && themedView != null)
+                {
+                    themedView.Theme = this.Theme;
+                }
 
                 //
                 // Bind view <-> view model.
@@ -281,6 +296,11 @@ namespace Google.Solutions.Mvvm.Binding
             viewControl.SuspendLayout();
 
             theme?.ApplyTo(viewControl);
+            if (theme != null &&
+                view is IThemedView<TViewModel> themedView && themedView != null)
+            {
+                themedView.Theme = theme;
+            }
 
             //
             // Bind view <-> view model.

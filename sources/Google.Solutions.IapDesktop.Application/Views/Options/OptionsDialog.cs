@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
     [SkipCodeCoverage("UI code")]
     public class OptionsDialog : PropertiesDialog
     {
-        public OptionsDialog(IServiceCategoryProvider serviceProvider)
+        public OptionsDialog(IServiceCategoryProvider serviceProvider) //TODO: Remove class
             : base(serviceProvider)
         {
             this.Text = "Options";

@@ -184,6 +184,13 @@
     <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
     <Compile Include="Views\Authorization\OAuthScopeNotGrantedViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugOptionsSheet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugOptionsSheet.Designer.cs">
+      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugOptionsSheetViewModel.cs" />
     <Compile Include="Views\ViewBindingContext.cs" />
     <Compile Include="Views\Diagnostics\DebugCommonControlsView.cs">
       <SubType>Form</SubType>
@@ -404,6 +411,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugFullScreenView.resx">
       <DependentUpon>DebugFullScreenView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugOptionsSheet.resx">
+      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugProjectExplorerTrackingView.resx">
       <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>

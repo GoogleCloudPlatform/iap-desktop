@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Mvvm.Binding;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

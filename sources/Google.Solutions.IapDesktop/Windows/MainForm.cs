@@ -935,7 +935,17 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             try
             {
-                new OptionsDialog((IServiceCategoryProvider)this.serviceProvider).ShowDialog(this);
+                using (var dialog = this.serviceProvider.GetDialog<PropertiesView, PropertiesViewModel>())
+                {
+                    dialog.Theme = this.themeService.DialogTheme;
+#if DEBUG
+                    dialog.ViewModel.AddSheet(new DebugOptionsSheet(), new DebugOptionsSheetViewModel());
+#endif
+
+                    dialog.ShowDialog(this);
+                }
+
+                // (IServiceCategoryProvider)this.serviceProvider
             }
             catch (TaskCanceledException)
             {

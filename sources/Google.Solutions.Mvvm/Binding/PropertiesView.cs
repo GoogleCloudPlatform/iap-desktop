@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Drawing;
@@ -30,20 +29,12 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Binding
 {
     [SkipCodeCoverage("UI code")]
-    public partial class PropertiesView : Form, IView<PropertiesViewModel>
+    public partial class PropertiesView : Form, IThemedView<PropertiesViewModel>
     {
-        private readonly IServiceProvider serviceProvider;
-        private readonly IControlTheme theme;
+        public IControlTheme Theme { get; set; }
 
-        public Color SheetBackColor { get; set; } = Color.White;
-
-        public PropertiesView(
-            IServiceProvider serviceProvider,
-            IControlTheme controlTheme)
+        public PropertiesView()
         {
-            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
-            this.theme = controlTheme;
-
             InitializeComponent();
 
             this.Shown += (_, __) => this.tabs.Focus();
@@ -78,11 +69,11 @@ namespace Google.Solutions.Mvvm.Binding
                 var viewControl = (ContainerControl)(object)sheet.View;
                 viewControl.Location = new Point(0, 0);
                 viewControl.Dock = DockStyle.Fill;
-                viewControl.BackColor = this.SheetBackColor;
+                viewControl.BackColor = this.tabs.SheetBackColor;
 
                 var tab = new TabPage()
                 {
-                    BackColor = this.SheetBackColor
+                    BackColor = this.tabs.SheetBackColor
                 };
                 tab.Controls.Add(viewControl);
                 this.tabs.TabPages.Add(tab);
@@ -99,7 +90,7 @@ namespace Google.Solutions.Mvvm.Binding
                 Window<IPropertiesSheetView, PropertiesSheetViewModelBase>.Bind(
                     sheet.View,
                     sheet.ViewModel,
-                    this.theme,
+                    this.Theme,
                     bindingContext);
             }
         }
