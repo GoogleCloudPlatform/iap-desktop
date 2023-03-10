@@ -23,7 +23,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
@@ -44,8 +43,8 @@ namespace Google.Solutions.Mvvm.Binding
             Action<TProperty> newValue)
             where TObject : INotifyPropertyChanged
         {
-            Precondition.NotNull(observed, nameof(observed));
-            Precondition.NotNull(modelProperty, nameof(modelProperty));
+            Precondition.ExpectNotNull(observed, nameof(observed));
+            Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
 
             Debug.Assert(modelProperty.NodeType == ExpressionType.Lambda);
             if (modelProperty.Body is MemberExpression memberExpression &&
@@ -69,8 +68,8 @@ namespace Google.Solutions.Mvvm.Binding
             Action<TProperty> newValue)
             where TControl : IComponent
         {
-            Precondition.NotNull(observed, nameof(observed));
-            Precondition.NotNull(controlProperty, nameof(controlProperty));
+            Precondition.ExpectNotNull(observed, nameof(observed));
+            Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
 
             Debug.Assert(controlProperty.NodeType == ExpressionType.Lambda);
             if (controlProperty.Body is MemberExpression memberExpression &&
@@ -124,7 +123,7 @@ namespace Google.Solutions.Mvvm.Binding
             IBindingContext bindingContext)
             where TControl : IComponent
         {
-            Precondition.NotNull(bindingContext, nameof(bindingContext));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
             var binding = CreateControlPropertyChangeBinding(
                 observed,
@@ -140,19 +139,23 @@ namespace Google.Solutions.Mvvm.Binding
             IBindingContext bindingContext)
             where TObject : INotifyPropertyChanged
         {
-            Precondition.NotNull(bindingContext, nameof(bindingContext));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
             var binding = CreatePropertyChangeBinding(
                 observed,
                 modelProperty,
                 newValue);
-            // TODO: bindingContext.OnBindingCreated(observed, binding);
+
+            if (binding is IComponent component)
+            {
+                bindingContext.OnBindingCreated(component, binding);
+            }
         }
 
         //---------------------------------------------------------------------
         // Binding for bare properties.
         //---------------------------------------------------------------------
-        //TODO: Remnove all ...new COntainer()
+        
         public static void BindProperty<TControl, TProperty, TModel>(
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
@@ -162,10 +165,10 @@ namespace Google.Solutions.Mvvm.Binding
             where TModel : INotifyPropertyChanged
             where TControl : IComponent
         {
-            Precondition.NotNull(controlProperty, nameof(controlProperty));
-            Precondition.NotNull(model, nameof(model));
-            Precondition.NotNull(modelProperty, nameof(modelProperty));
-            Precondition.NotNull(bindingContext, nameof(bindingContext));
+            Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
+            Precondition.ExpectNotNull(model, nameof(model));
+            Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
             //
             // Apply initial value.
@@ -206,10 +209,10 @@ namespace Google.Solutions.Mvvm.Binding
             where TModel : INotifyPropertyChanged
             where TControl : IComponent
         {
-            Precondition.NotNull(controlProperty, nameof(controlProperty));
-            Precondition.NotNull(model, nameof(model));
-            Precondition.NotNull(modelProperty, nameof(modelProperty));
-            Precondition.NotNull(bindingContext, nameof(bindingContext));
+            Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
+            Precondition.ExpectNotNull(model, nameof(model));
+            Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
             //
             // Apply initial value.
@@ -238,10 +241,10 @@ namespace Google.Solutions.Mvvm.Binding
             IBindingContext bindingContext)
             where TControl : IComponent
         {
-            Precondition.NotNull(controlProperty, nameof(controlProperty));
-            Precondition.NotNull(model, nameof(model));
-            Precondition.NotNull(modelProperty, nameof(modelProperty));
-            Precondition.NotNull(bindingContext, nameof(bindingContext));
+            Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
+            Precondition.ExpectNotNull(model, nameof(model));
+            Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
             //
             // Apply initial value.
@@ -282,10 +285,10 @@ namespace Google.Solutions.Mvvm.Binding
             IBindingContext bindingContext)
             where TControl : IComponent
         {
-            Precondition.NotNull(controlProperty, nameof(controlProperty));
-            Precondition.NotNull(model, nameof(model));
-            Precondition.NotNull(modelProperty, nameof(modelProperty));
-            Precondition.NotNull(bindingContext, nameof(bindingContext));
+            Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
+            Precondition.ExpectNotNull(model, nameof(model));
+            Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
             //
             // Apply initial value.
@@ -309,9 +312,9 @@ namespace Google.Solutions.Mvvm.Binding
             IBindingContext bindingContext)
             where TCommand : ICommand<TModel>
         {
-            Precondition.NotNull(commandProperty, nameof(commandProperty));
-            Precondition.NotNull(model, nameof(model));
-            Precondition.NotNull(bindingContext, nameof(bindingContext));
+            Precondition.ExpectNotNull(commandProperty, nameof(commandProperty));
+            Precondition.ExpectNotNull(model, nameof(model));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
             //
             // Bind status.

@@ -36,14 +36,14 @@ namespace Google.Solutions.Common.Test.Util
         public void WhenConditionFalse_ThenThrowIfNotThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => "".ThrowIfNot(false, "test"));
+                () => "".Expect(false, "test"));
         }
 
         [Test]
         public void WhenConditionTrue_ThenThrowIfNotReturnsValue()
         {
-            Assert.AreEqual(0, 0.ThrowIfNot(true, null));
-            Assert.AreEqual("test", "test".ThrowIfNot(true, null));
+            Assert.AreEqual(0, 0.Expect(true, null));
+            Assert.AreEqual("test", "test".Expect(true, null));
         }
 
         //---------------------------------------------------------------------
@@ -54,17 +54,17 @@ namespace Google.Solutions.Common.Test.Util
         public void WhenOutOfRange_ThenThrowIfOutOfRangeThrowsException()
         {
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => (1.1f).ThrowIfOutOfRange(0f, 1f, "test"));
+                () => (1.1f).ExpectInRange(0f, 1f, "test"));
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => (-.1f).ThrowIfOutOfRange(0f, 1f, "test"));
+                () => (-.1f).ExpectInRange(0f, 1f, "test"));
         }
 
         [Test]
         public void WhenInRange_ThenThrowIfOutOfRangeReturnsValue()
         {
-            Assert.AreEqual(0f, (0f).ThrowIfOutOfRange(-1f, 1f, null));
-            Assert.AreEqual(1f, (1f).ThrowIfOutOfRange(-1f, 1f, null));
-            Assert.AreEqual(-1f, (-1f).ThrowIfOutOfRange(-1f, 1f, null));
+            Assert.AreEqual(0f, (0f).ExpectInRange(-1f, 1f, null));
+            Assert.AreEqual(1f, (1f).ExpectInRange(-1f, 1f, null));
+            Assert.AreEqual(-1f, (-1f).ExpectInRange(-1f, 1f, null));
         }
     }
 }

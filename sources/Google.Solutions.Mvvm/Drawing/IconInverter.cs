@@ -53,7 +53,7 @@ namespace Google.Solutions.Mvvm.Drawing
             get => this.grayFactor;
             set
             {
-                this.grayFactor = value.ThrowIfOutOfRange(0.0f, 1.0f, nameof(GrayFactor));
+                this.grayFactor = value.ExpectInRange(0.0f, 1.0f, nameof(GrayFactor));
             }
         }
 
@@ -65,7 +65,7 @@ namespace Google.Solutions.Mvvm.Drawing
             get => this.colorFactor;
             set
             {
-                this.colorFactor = value.ThrowIfOutOfRange(0.0f, 1.0f, nameof(ColorFactor));
+                this.colorFactor = value.ExpectInRange(0.0f, 1.0f, nameof(ColorFactor));
             }
         }
 

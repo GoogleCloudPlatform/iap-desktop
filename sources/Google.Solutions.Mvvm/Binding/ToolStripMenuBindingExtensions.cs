@@ -177,7 +177,11 @@ namespace Google.Solutions.Mvvm.Binding
                 view,
                 modelCollection,
                 CreateMenuItem);
-            // TODO: Missing control for bindingContext.OnBindingCreated(view, binding);
+
+            //
+            // NB. ToolStripItemCollection aren't componnets, so we
+            // cannot report this binding to the binding context.
+            //
         }
 
         private sealed class Binding<TModel> : IDisposable

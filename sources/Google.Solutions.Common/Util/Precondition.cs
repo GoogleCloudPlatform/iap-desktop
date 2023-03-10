@@ -26,7 +26,7 @@ namespace Google.Solutions.Common.Util
 {
     public static class Precondition
     {
-        public static T NotNull<T>( // TODO: Resolve naming clash - make non-extenion method?
+        public static T ExpectNotNull<T>(
             this T value,
             string argumentName)
         {
@@ -39,7 +39,7 @@ namespace Google.Solutions.Common.Util
             return value;
         }
 
-        public static T ThrowIfNot<T>(
+        public static T Expect<T>(
             this T value,
             bool condition,
             string argumentName)
@@ -53,7 +53,7 @@ namespace Google.Solutions.Common.Util
             return value;
         }
 
-        public static float ThrowIfOutOfRange(
+        public static float ExpectInRange(
             this float value,
             float min,
             float max,

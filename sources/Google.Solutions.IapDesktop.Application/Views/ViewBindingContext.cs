@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
@@ -27,7 +26,6 @@ using Google.Solutions.Mvvm.Commands;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
@@ -54,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void OnBindingCreated(IComponent control, IDisposable binding)
         {
-            Debug.WriteLine($"Bining added for {control.GetType().Name} ({control})");
+            Debug.WriteLine($"Binding added for {control.GetType().Name} ({control})");
         }
 
         public void OnCommandFailed(IComponent control, ICommand command, Exception exception)
