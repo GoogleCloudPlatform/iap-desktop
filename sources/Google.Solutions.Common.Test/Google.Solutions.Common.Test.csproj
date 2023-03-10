@@ -120,6 +120,7 @@
     <Compile Include="Util\TestCancellationTokenExtensions.cs" />
     <Compile Include="Util\TestDateTimeOffsetExtensions.cs" />
     <Compile Include="Util\TestDisposable.cs" />
+    <Compile Include="Util\TestDisposableContainer.cs" />
     <Compile Include="Util\TestEnumExtensions.cs" />
     <Compile Include="Util\TestExceptionExtensions.cs" />
     <Compile Include="Util\TestLinqExtensions.cs" />

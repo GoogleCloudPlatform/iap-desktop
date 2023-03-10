@@ -111,6 +111,7 @@
     <Compile Include="Util\CancellationTokenExtensions.cs" />
     <Compile Include="Util\DateTimeOffsetExtensions.cs" />
     <Compile Include="Util\Disposable.cs" />
+    <Compile Include="Util\DisposableContainer.cs" />
     <Compile Include="Util\EnumExtensions.cs" />
     <Compile Include="Util\ExceptionExtensions.cs" />
     <Compile Include="Util\LinqExtensions.cs" />
