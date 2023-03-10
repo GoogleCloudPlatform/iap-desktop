@@ -31,26 +31,30 @@ The application automatically manages IAP TCP tunnels for you, and protects them
 
 ## Connect to Windows VMs with Remote Desktop
 
-<img src='doc/images/RemoteDesktop_350.gif?_=1' align='right'>
+<a href='doc/images/RemoteDesktop_1400.gif?raw=true'>
+<img src='doc/images/RemoteDesktop_350.png' align='right'>
+</a>
 
 IAP Desktop is a [full-featured Remote Desktop client](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-instances) that lets you:
 
 *   Use multiple Remote Desktop sessions at the same time
 *   Switch between full-screen and tabbed Remote Desktop sessions
-*   Upload and download files
+*   Upload and download files over SFTP
 
 To help you authenticate to Windows VMs, IAP Desktop can:
 
 *   Automatically generate Windows credentials by using the Compute Engine guest agent environment
 *   Encrypt and store your Windows credentials locally
 
-[View larger screenshot](doc/images/RemoteDesktop_1024.gif?raw=true)
+:arrow_forward: [Show screencast](doc/images/RemoteDesktop_1400.gif?raw=true)
 
 <img src='doc/images/pix.gif' width='100%' height='1'>
 
 ## Connect to Linux VMs with SSH
 
-<img src='doc/images/SSH_350.gif?_=1' align='right'>
+<a href='doc/images/RemoteDesktop_1400.gif?raw=true'>
+<img src='doc/images/SSH_350.png?raw=true' align='right'>
+</a>
 
 IAP Desktop [includes an SSH client and terminal](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-linux-instances) so that you can:
 
@@ -63,14 +67,16 @@ To help you authenticate to Linux VMs, IAP Desktop can:
 *   Use OS Login [2-factor authentication](https://cloud.google.com/compute/docs/oslogin/set-up-oslogin)
 *   Store our SSH keys locally using Windows CNG
 
-[View larger screenshot](doc/images/SSH_1024.gif?raw=true)
+:arrow_forward: [Show screencast](doc/images/SSH_1400.gif?raw=true)
 
 <img src='doc/images/pix.gif' width='100%' height='1'>
 
 
 ## Manage VMs across projects
 
-<img src='doc/images/Manage_350.gif?_=1' align='right'>
+<a href='doc/images/Manage_1400.gif?raw=true'>
+<img src='doc/images/Manage_350.png?raw=true' align='right'>
+</a>
 
 IAP Desktop gives you a consolidated view of your VMs and lets you:
 
@@ -80,7 +86,7 @@ IAP Desktop gives you a consolidated view of your VMs and lets you:
 *   Perform common operations such as starting or stopping VMs
 
 
-[View larger screenshot](doc/images/Manage_1024.gif?raw=true)
+:arrow_forward: [Show screencast](doc/images/Manage_1400.gif?raw=true)
 
 <img src='doc/images/pix.gif' width='100%' height='1'>
 
