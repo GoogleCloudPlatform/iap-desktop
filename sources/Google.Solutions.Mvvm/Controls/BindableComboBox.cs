@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Controls
             IBindingContext bindingContext)
             where TEnum : struct
         {
-            property.Expect(property != null, nameof(property));
+            Precondition.ExpectNotNull(property, nameof(property));
 
             var adapter = new SelectionAdapter<TEnum>(property);
 

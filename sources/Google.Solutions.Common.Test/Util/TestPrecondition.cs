@@ -29,29 +29,47 @@ namespace Google.Solutions.Common.Test.Util
     public class TestPrecondition
     {
         //---------------------------------------------------------------------
-        // ThrowIfNot.
+        // ExpectNotNull.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenConditionFalse_ThenThrowIfNotThrowsException()
+        public void WhenNull_ThenExpectNotNullThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => ((string)null).ExpectNotNull("test"));
+        }
+
+        [Test]
+        public void WhenNotNull_ThenExpectNotNullReturnsValue()
+        {
+            Assert.AreEqual("value", "value".ExpectNotNull("test"));
+            Assert.AreEqual(123, 123.ExpectNotNull("test"));
+        }
+
+        //---------------------------------------------------------------------
+        // Expect.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenConditionFalse_ThenExpectThrowsException()
         {
             Assert.Throws<ArgumentException>(
-                () => "".Expect(false, "test"));
+                () => Precondition.Expect(false, "test"));
         }
 
         [Test]
-        public void WhenConditionTrue_ThenThrowIfNotReturnsValue()
+        public void WhenConditionTrue_ThenExpectReturns()
         {
-            Assert.AreEqual(0, 0.Expect(true, null));
-            Assert.AreEqual("test", "test".Expect(true, null));
+            Precondition.Expect(true, null);
+            Precondition.Expect(true, null);
         }
 
         //---------------------------------------------------------------------
-        // ThrowIfOutOfRange.
+        // ExpectInRange.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenOutOfRange_ThenThrowIfOutOfRangeThrowsException()
+        public void WhenOutOfRange_ThenExpectInRangeThrowsException()
         {
             Assert.Throws<ArgumentOutOfRangeException>(
                 () => (1.1f).ExpectInRange(0f, 1f, "test"));
@@ -60,7 +78,7 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         [Test]
-        public void WhenInRange_ThenThrowIfOutOfRangeReturnsValue()
+        public void WhenInRange_ThenExpectInRangeReturnsValue()
         {
             Assert.AreEqual(0f, (0f).ExpectInRange(-1f, 1f, null));
             Assert.AreEqual(1f, (1f).ExpectInRange(-1f, 1f, null));
