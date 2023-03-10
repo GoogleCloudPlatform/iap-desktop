@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
@@ -188,16 +189,18 @@ namespace Google.Solutions.Mvvm.Controls
             private readonly TaskCompletionSource<ICollection<TModelNode>> lazyLoadResult
                 = new TaskCompletionSource<ICollection<TModelNode>>();
 
-            private readonly IContainer bindings = new Container();// TODO: Use multi-disposable
+            private readonly DisposableContainer bindings = new DisposableContainer();
 
             public Node(BindableTreeView<TModelNode> treeView, TModelNode modelNode)
             {
                 this.treeView = treeView;
                 this.Model = modelNode;
 
+                //
                 // Bind properties to keep TreeNode in sync with view model.
                 // Note that binding is one-way (view model -> view) as TreeNodes
                 // are not proper controls and do not provide the necessary events.
+                //
                 if (this.treeView.textExpression != null)
                 {
                     this.Name = this.Text = this.treeView.textExpression.Compile()(this.Model);

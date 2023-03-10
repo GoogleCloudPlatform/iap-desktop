@@ -79,6 +79,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
         private class DummyBinding : BindingExtensions.Binding
         {
+            public override void Dispose()
+            {
+            }
         }
 
         [Test]

@@ -37,7 +37,7 @@ namespace Google.Solutions.Mvvm.Binding
     /// </summary>
     public static class BindingExtensions
     {
-        internal static Binding CreatePropertyChangeBinding<TObject, TProperty>( // TODO: Change signature
+        internal static Binding CreatePropertyChangeBinding<TObject, TProperty>(
             TObject observed,
             Expression<Func<TObject, TProperty>> modelProperty,
             Action<TProperty> newValue)
@@ -62,7 +62,7 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        internal static Binding CreateControlPropertyChangeBinding<TControl, TProperty>(// TODO: Change signature
+        internal static Binding CreateControlPropertyChangeBinding<TControl, TProperty>(
             TControl observed,
             Expression<Func<TControl, TProperty>> controlProperty,
             Action<TProperty> newValue)
@@ -291,7 +291,6 @@ namespace Google.Solutions.Mvvm.Binding
 
             bindingContext.OnBindingCreated(control, binding);
         }
-        // TODO: Add preconditions to other methods
 
         public static void BindCommand<TCommand, TModel>(
             this ButtonBase button,
@@ -360,22 +359,18 @@ namespace Google.Solutions.Mvvm.Binding
             bindingContext.OnBindingCreated(button, clickBinding);
         }
 
-        
-
-        // TODO: Update other methods to use IBindingContext
-        // TODO: Remove Component
-
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
 
-        public abstract class Binding : Component
+        public abstract class Binding : IDisposable
         {
             public bool IsBusy { get; internal set; } = false;
             public Binding Peer { get; internal set; }
+            public abstract void Dispose();
         }
 
-        private sealed class EventHandlerBinding<TControl, TProperty> : Binding, IDisposable
+        private sealed class EventHandlerBinding<TControl, TProperty> : Binding
             where TControl : IComponent
         {
             private readonly TControl observed;
@@ -419,14 +414,11 @@ namespace Google.Solutions.Mvvm.Binding
                     new EventHandler(Observed_PropertyChanged));
             }
 
-            protected override void Dispose(bool disposing)
+            public override void Dispose()
             {
-                if (disposing)
-                {
-                    this.eventInfo.RemoveEventHandler(
-                        this.observed,
-                        new EventHandler(Observed_PropertyChanged));
-                }
+                this.eventInfo.RemoveEventHandler(
+                    this.observed,
+                    new EventHandler(Observed_PropertyChanged));
             }
         }
 
@@ -476,12 +468,9 @@ namespace Google.Solutions.Mvvm.Binding
                 this.observed.PropertyChanged += Observed_PropertyChanged;
             }
 
-            protected override void Dispose(bool disposing)
+            public override void Dispose()
             {
-                if (disposing)
-                {
-                    this.observed.PropertyChanged -= Observed_PropertyChanged;
-                }
+                this.observed.PropertyChanged -= Observed_PropertyChanged;
             }
         }
 
@@ -514,30 +503,10 @@ namespace Google.Solutions.Mvvm.Binding
 
                 observed.Click += handler;
             }
-            protected override void Dispose(bool disposing)
-            {
-                if (disposing)
-                {
-                    this.observed.Click -= this.handler;
-                }
-            }
-        }
 
-        private sealed class MultiDisposable : IDisposable
-        {
-            private readonly IEnumerable<IDisposable> disposables;
-
-            public MultiDisposable(params IDisposable[] disposables)
+            public override void Dispose()
             {
-                this.disposables = disposables;
-            }
-
-            public void Dispose()
-            {
-                foreach (var d in this.disposables)
-                {
-                    d.Dispose();
-                }
+                this.observed.Click -= this.handler;
             }
         }
 

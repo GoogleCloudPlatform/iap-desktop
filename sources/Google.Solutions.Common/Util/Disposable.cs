@@ -21,7 +21,9 @@
 
 using Google.Apis.Util;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Google.Solutions.Common
 {
@@ -42,6 +44,29 @@ namespace Google.Solutions.Common
         public void Dispose()
         {
             this.dispose();
+        }
+    }
+
+    public class DisposableContainer : IDisposable // TODO: Add tests
+    {
+        private readonly IList<IDisposable> disposables;
+
+        public DisposableContainer(params IDisposable[] disposables)
+        {
+            this.disposables = disposables.ToList();
+        }
+
+        public void Add(IDisposable disposable)
+        {
+            this.disposables.Add(disposable);
+        }
+
+        public void Dispose()
+        {
+            foreach (var d in this.disposables)
+            {
+                d.Dispose();
+            }
         }
     }
 
