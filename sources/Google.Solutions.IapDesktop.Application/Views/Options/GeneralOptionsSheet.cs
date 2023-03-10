@@ -64,22 +64,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsUpdateCheckEnabled,
-                this.Container);
+                bindingContext);
             this.enableDcaCheckBox.BindProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsDeviceCertificateAuthenticationEnabled,
-                this.Container);
+                bindingContext);
             this.lastCheckLabel.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.LastUpdateCheck,
-                this.Container);
+                bindingContext);
             this.enableBrowserIntegrationCheckBox.BindProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsBrowserIntegrationEnabled,
-                this.Container);
+                bindingContext);
         }
 
         //---------------------------------------------------------------------

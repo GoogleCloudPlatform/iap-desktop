@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                 c => c.Text,
                 viewModel,
                 m => m.ProfileName,
-                this.components);
+                bindingContext);
             this.profileNameInvalidLabel.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,

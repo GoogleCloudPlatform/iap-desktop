@@ -110,15 +110,20 @@ namespace Google.Solutions.Mvvm.Binding
         // Binding for bare properties.
         //---------------------------------------------------------------------
 
-        public static void BindProperty<TControl, TProperty, TModel>(// TODO: Change signature
+        public static void BindProperty<TControl, TProperty, TModel>(
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
             Expression<Func<TModel, TProperty>> modelProperty,
-            IContainer container = null)
+            IBindingContext bindingContext)
             where TModel : INotifyPropertyChanged
             where TControl : IComponent
         {
+            Precondition.NotNull(controlProperty, nameof(controlProperty));
+            Precondition.NotNull(model, nameof(model));
+            Precondition.NotNull(modelProperty, nameof(modelProperty));
+            Precondition.NotNull(bindingContext, nameof(bindingContext));
+
             //
             // Apply initial value.
             //
@@ -140,13 +145,8 @@ namespace Google.Solutions.Mvvm.Binding
             forwardBinding.Peer = reverseBinding;
             reverseBinding.Peer = forwardBinding;
 
-            if (container != null)
-            {
-                // To ensure that the bindings are disposed, add them to the
-                // container of the control.
-                container.Add(forwardBinding);
-                container.Add(reverseBinding);
-            }
+            bindingContext.OnBindingCreated(control, forwardBinding);
+            bindingContext.OnBindingCreated(control, reverseBinding);// TODO: Dispose here instead of in the context ...DisposeTogetherWith(ctl)
         }
 
         public static void BindReadonlyProperty<TControl, TProperty, TModel>(

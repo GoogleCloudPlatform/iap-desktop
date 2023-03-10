@@ -62,17 +62,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 c => c.Checked,
                 viewModel,
                 m => m.IsCopyPasteUsingCtrlCAndCtrlVEnabled,
-                this.Container);
+                bindingContext);
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
-                this.Container);
+                bindingContext);
             this.convertTypographicQuotesCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsQuoteConvertionOnPasteEnabled,
-                this.Container);
+                bindingContext);
 
             //
             // Text selection box.
@@ -81,17 +81,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 c => c.Checked,
                 viewModel,
                 m => m.IsSelectUsingShiftArrrowEnabled,
-                this.Container);
+                bindingContext);
             this.selectAllUsingCtrlAEnabledCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsSelectAllUsingCtrlAEnabled,
-                this.Container);
+                bindingContext);
             this.navigationUsingControlArrrowEnabledCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsNavigationUsingControlArrrowEnabled,
-                this.Container);
+                bindingContext);
 
             //
             // Scrolling box.
@@ -100,12 +100,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 c => c.Checked,
                 viewModel,
                 m => m.IsScrollingUsingCtrlUpDownEnabled,
-                this.Container);
+                bindingContext);
             this.scrollUsingCtrlHomeEndcheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsScrollingUsingCtrlHomeEndEnabled,
-                this.Container);
+                bindingContext);
 
             //
             // Font box.

@@ -48,7 +48,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             InitializeComponent();
         }
 
-        protected void Bind(IPropertiesInspectorViewModel viewModel)
+        protected void Bind(
+            IPropertiesInspectorViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
             this.propertyGrid.EnableRichTextDescriptions();
@@ -57,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                 c => c.Text,
                 this.viewModel,
                 m => m.InformationText,
-                this.components);
+                bindingContext);
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.IsInformationBarVisible,
                 visible =>

@@ -82,12 +82,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsTailEnabled,
-                this.components);
+                bindingContext);
             this.enableTailButton.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsEnableTailingButtonEnabled,
-                this.components);
+                bindingContext);
 
             this.viewModel.NewOutputAvailable += (sender, output) =>
             {

@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 c => c.Text,
                 viewModel,
                 m => m.Username,
-                this.components);
+                bindingContext);
             this.usernameReservedLabel.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,

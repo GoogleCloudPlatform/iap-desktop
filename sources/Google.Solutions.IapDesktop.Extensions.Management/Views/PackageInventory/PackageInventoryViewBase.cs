@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 c => c.Text,
                 this.viewModel,
                 m => m.InformationText,
-                this.components);
+                bindingContext);
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.IsInformationBarVisible,
                 visible =>
@@ -90,19 +90,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsPackageListEnabled,
-                this.components);
+                bindingContext);
 
             this.packageList.List.BindCollection(this.viewModel.FilteredPackages);
             this.packageList.BindProperty(
                 c => c.SearchTerm,
                 this.viewModel,
                 m => m.Filter,
-                this.components);
+                bindingContext);
             this.packageList.BindProperty(
                 c => c.Loading,
                 this.viewModel,
                 m => m.IsLoading,
-                this.components);
+                bindingContext);
             this.packageList.SearchOnKeyDown = true;
 
             var openUrl = new ToolStripMenuItem(

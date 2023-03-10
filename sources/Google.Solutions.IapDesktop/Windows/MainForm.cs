@@ -189,12 +189,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Text,
                 this.viewModel,
                 m => m.WindowTitle,
-                this.components);
+                bindingContext);
             this.reportInternalIssueToolStripMenuItem.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsReportInternalIssueVisible,
-                this.components);
+                bindingContext);
 
             //
             // Status bar.
@@ -203,37 +203,37 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.BackColor,
                 this.viewModel,
                 m => m.StatusBarBackColor,
-                this.components);
+                bindingContext);
             this.toolStripStatus.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.StatusText,
-                this.components);
+                bindingContext);
             this.backgroundJobLabel.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsBackgroundJobStatusVisible,
-                this.components);
+                bindingContext);
             this.cancelBackgroundJobsButton.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsBackgroundJobStatusVisible,
-                this.components);
+                bindingContext);
             this.backgroundJobLabel.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.BackgroundJobStatus,
-                this.components);
+                bindingContext);
             this.deviceStateButton.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.DeviceStateCaption,
-                this.components);
+                bindingContext);
             this.deviceStateButton.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsDeviceStateVisible,
-                this.components);
+                bindingContext);
             this.profileStateButton.BindReadonlyProperty(
                 c => c.Text,
                 this.viewModel,
@@ -280,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsLoggingEnabled,
-                this.components);
+                bindingContext);
         }
 
         //---------------------------------------------------------------------

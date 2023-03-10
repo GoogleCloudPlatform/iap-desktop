@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
                 SampleViewModel<T> viewModel, 
                 IBindingContext bindingContext)
             {
-                base.Bind(viewModel);
+                base.Bind(viewModel, bindingContext);
             }
         }
 

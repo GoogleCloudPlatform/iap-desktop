@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 c => c.SelectedIndex,
                 this.viewModel,
                 m => m.PublicKeyTypeIndex,
-                this.Container);
+                bindingContext);
             this.publicKeyType.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 c => c.Value,
                 this.viewModel,
                 m => m.PublicKeyValidityInDays,
-                this.Container);
+                bindingContext);
             this.publicKeyValidityUpDown.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 c => c.Checked,
                 viewModel,
                 m => m.IsPropagateLocaleEnabled,
-                this.Container);
+                bindingContext);
         }
 
         //---------------------------------------------------------------------

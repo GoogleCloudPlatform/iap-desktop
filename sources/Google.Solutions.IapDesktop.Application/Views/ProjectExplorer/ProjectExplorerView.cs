@@ -126,17 +126,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 c => c.Enabled,
                 viewModel,
                 m => m.IsLoading,
-                this.Container);
+                bindingContext);
             this.progressBar.BindProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsLoading,
-                this.Container);
+                bindingContext);
             this.searchTextBox.BindProperty(
                 c => c.Text,
                 viewModel,
                 m => m.InstanceFilter,
-                this.Container);
+                bindingContext);
 
             //
             // Menus.
@@ -174,12 +174,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsLinuxIncluded,
-                this.Container);
+                bindingContext);
             this.windowsInstancesToolStripMenuItem.BindProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsWindowsIncluded,
-                this.Container);
+                bindingContext);
 
             //
             // Context menu.

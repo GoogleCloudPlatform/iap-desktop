@@ -46,22 +46,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                c => c.Text,
                viewModel,
                m => m.Title,
-               this.Container);
+                bindingContext);
             this.headlineLabel.BindProperty(
                 c => c.Text,
                 viewModel,
                 m => m.Title,
-                this.Container);
+                bindingContext);
             this.descriptionLabel.BindProperty(
                 c => c.Text,
                 viewModel,
                 m => m.Description,
-                this.Container);
+                bindingContext);
             this.inputTextBox.BindProperty(
                 c => c.Text,
                 viewModel,
                 m => m.Input,
-                this.Container);
+                bindingContext);
             this.inputTextBox.BindReadonlyProperty(
                 c => c.UseSystemPasswordChar,
                 viewModel,

@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 c => c.SearchTerm,
                 viewModel,
                 m => m.Filter,
-                this.components);
+                bindingContext);
             this.projectList.BindObservableProperty(
                 c => c.Loading,
                 viewModel,

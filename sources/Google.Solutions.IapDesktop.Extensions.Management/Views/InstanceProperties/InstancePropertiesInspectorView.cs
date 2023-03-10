@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
             InstancePropertiesInspectorViewModel viewModel,
             IBindingContext bindingContext)
         {
-            base.Bind(viewModel);
+            base.Bind(viewModel, bindingContext);
         }
     }
 }

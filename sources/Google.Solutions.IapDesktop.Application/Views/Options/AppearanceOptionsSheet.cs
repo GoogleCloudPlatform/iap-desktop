@@ -39,19 +39,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             InitializeComponent();
 
+
+            // TODO: Use shared binding context.
+            var bindingContext = ViewBindingContext.CreateDummy();
+
             this.themeInfoLabel.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.ThemeInfoText,
-                this.components);
+                bindingContext);
             this.theme.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsThemeEditable,
-                this.components);
+                bindingContext);
             this.theme.BindObservableProperty(
                 this.viewModel.SelectedTheme,
-                this.components);
+                bindingContext);
         }
 
         //---------------------------------------------------------------------

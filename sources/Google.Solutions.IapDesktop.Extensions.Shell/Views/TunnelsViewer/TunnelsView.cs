@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
                 v => this.tunnelsList.SelectedModelItem,
                 viewModel,
                 m => viewModel.SelectedTunnel,
-                this.components);
+                bindingContext);
             this.refreshToolStripButton.BindReadonlyProperty(
                 b => b.Enabled,
                 viewModel,

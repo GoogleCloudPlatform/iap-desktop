@@ -106,18 +106,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 l => l.SelectedModelItem,
                 this.viewModel,
                 m => this.viewModel.SelectedItem,
-                this.components);
+                bindingContext);
 
             this.keysList.BindProperty(
                 c => c.SearchTerm,
                 this.viewModel,
                 m => m.Filter,
-                this.components);
+                bindingContext);
             this.keysList.BindProperty(
                 c => c.Loading,
                 this.viewModel,
                 m => m.IsLoading,
-                this.components);
+                bindingContext);
             this.keysList.SearchOnKeyDown = true;
             this.keysList.List.MultiSelect = false;
         }
