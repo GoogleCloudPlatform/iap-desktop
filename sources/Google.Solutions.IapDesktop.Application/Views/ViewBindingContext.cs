@@ -56,10 +56,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             Debug.WriteLine($"Binding added for {control.GetType().Name} ({control})");
         }
 
-        public void OnCommandFailed(IComponent control, ICommand command, Exception exception)
+        public void OnCommandFailed(Control control, ICommand command, Exception exception)
         {
-            this.exceptionDialog.Show(
-                (control as Control),
+            this.exceptionDialog.Show( // TODO: Test
+                control,
                 command.ActivityText, 
                 exception);
         }

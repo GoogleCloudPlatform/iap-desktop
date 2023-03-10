@@ -22,6 +22,7 @@
 using Google.Solutions.Mvvm.Commands;
 using System;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
 {
@@ -33,7 +34,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Notify that a command failed.
         /// </summary>
-        void OnCommandFailed(IComponent control, ICommand command, Exception exception);
+        void OnCommandFailed(Control control, ICommand command, Exception exception);
 
         /// <summary>
         /// Notify that a new binding has been created. Implementing
