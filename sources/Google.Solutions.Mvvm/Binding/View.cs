@@ -250,7 +250,7 @@ namespace Google.Solutions.Mvvm.Binding
     /// Hydrated view that can be used as a standalone window.
     /// </summary>
     public sealed class Window<TView, TViewModel>
-        where TView : Form, IView<TViewModel>
+        where TView : IView<TViewModel>
         where TViewModel : ViewModelBase
     {
         private readonly IServiceProvider serviceProvider;
@@ -276,22 +276,24 @@ namespace Google.Solutions.Mvvm.Binding
             IControlTheme theme,
             IBindingContext bindingContext)
         {
-            view.SuspendLayout();
+            var viewControl = (ContainerControl)(object)view;
 
-            theme?.ApplyTo(view);
+            viewControl.SuspendLayout();
+
+            theme?.ApplyTo(viewControl);
 
             //
             // Bind view <-> view model.
             //
-            viewModel.Bind(view);
+            viewModel.Bind(viewControl);
             view.Bind(viewModel, bindingContext);
-            view.ResumeLayout();
+            viewControl.ResumeLayout();
 
             //
             // Tie lifetime of the view model to that of the view.
             //
             bool disposed = false;
-            view.Disposed += (_, __) =>
+            viewControl.Disposed += (_, __) =>
             {
                 if (!disposed)
                 {

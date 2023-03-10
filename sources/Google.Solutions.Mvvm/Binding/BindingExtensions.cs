@@ -345,14 +345,20 @@ namespace Google.Solutions.Mvvm.Binding
                         .ExecuteAsync()
                         .ConfigureAwait(true);
 
-                    if (button.FindForm() is Form form &&
-                        form.AcceptButton == button)
+                    if (button.FindForm() is Form form)
                     {
                         //
-                        // This is the accept button, so treat the
-                        // successful command execution as dialog result.
+                        // Treat the successful command execution
+                        // as dialog result.
                         //
-                        form.DialogResult = DialogResult.OK;
+                        if (form.AcceptButton == button)
+                        {
+                            form.DialogResult = DialogResult.OK;
+                        }
+                        else if (form.CancelButton == button)
+                        {
+                            form.DialogResult = DialogResult.Cancel;
+                        }
                     }
                 }
                 catch (Exception e)

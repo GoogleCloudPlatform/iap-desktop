@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using System;
@@ -35,12 +36,16 @@ namespace Google.Solutions.Mvvm.Windows
     [SkipCodeCoverage("UI code")]
     public partial class PropertiesView : Form, IView<PropertiesViewModel>
     {
+        private readonly IServiceProvider serviceProvider;
         private readonly IControlTheme theme;
 
         public Color SheetBackColor { get; set; } = Color.White;
 
-        protected PropertiesView(IControlTheme controlTheme)
+        protected PropertiesView(
+            IServiceProvider serviceProvider,
+            IControlTheme controlTheme)
         {
+            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
             this.theme = controlTheme;
 
             SuspendLayout();
@@ -65,117 +70,85 @@ namespace Google.Solutions.Mvvm.Windows
                 viewModel,
                 m => m.CancelCommand,
                 bindingContext);
-
-            throw new NotImplementedException();
-        }
-
-        private DialogResult ApplyChanges()
-        {
-        //    try
-        //    {
-        //        foreach (var tab in this.Sheets
-        //            .Where(t => t.ViewModel.IsDirty))
-        //        {
-        //            var result = tab.ViewModel.ApplyChanges();
-
-        //            if (result == DialogResult.OK)
-        //            {
-        //                Debug.Assert(!tab.ViewModel.IsDirty);
-        //            }
-        //            else
-        //            {
-        //                return result;
-        //            }
-        //        }
-
-                return DialogResult.OK;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return DialogResult.Cancel;
-        //    }
         }
 
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
 
-        //public IEnumerable<IPropertiesSheet> Sheets => this.tabs.TabPages
-        //    .Cast<TabPage>()
-        //    .Select(tab => tab.Tag)
-        //    .Cast<IPropertiesSheet>();
+        public IEnumerable<IPropertiesSheetView> Sheets => this.tabs.TabPages
+            .Cast<TabPage>()
+            .Select(tab => tab.Tag)
+            .Cast<IPropertiesSheetView>();
 
-        //internal void AddSheet(UserControl sheet, IPropertiesSheet sheetInterface)
-        //{
-        //    Debug.Assert(sheet == sheetInterface);
-
-        //    SuspendLayout();
-
-        //    //
-        //    // Create control and add it to tabs.
-        //    //
-
-        //    sheet.Location = new Point(0, 0);
-        //    sheet.Dock = DockStyle.Fill;
-        //    sheet.BackColor = this.SheetBackColor;
-        //    this.theme.ApplyTo(sheet);
-
-        //    var tab = new TabPage()
-        //    {
-        //        BackColor = this.SheetBackColor
-        //    };
-        //    tab.Controls.Add(sheet);
-        //    this.tabs.TabPages.Add(tab);
-
-        //    ResumeLayout();
-
-        //    // TODO: Use shared binding context.
-        //    var bindingContext = ViewBindingContext.CreateDummy();
-
-        //    tab.BindReadonlyProperty(
-        //        t => t.Text,
-        //        sheetInterface.ViewModel,
-        //        m => m.Title,
-        //        bindingContext);
-        //    sheetInterface.ViewModel.OnPropertyChange(
-        //        m => m.IsDirty,
-        //        _ =>
-        //        {
-        //            //
-        //            // Enable the Apply button if any of the panes goes dirty.
-        //            //
-        //            this.applyButton.Enabled = this.Sheets.Any(p => p.ViewModel.IsDirty);
-        //        },
-        //        bindingContext);
-
-        //    //
-        //    // Set tag so that we can access the object later.
-        //    //
-        //    tab.Tag = sheet;
-        //}
-
-        //internal void AddSheet<TSheet>(TSheet sheet)
-        //    where TSheet : UserControl, IPropertiesSheet
-        //    => AddSheet(sheet, sheet);
-
-        //---------------------------------------------------------------------
-        // Window events.
-        //---------------------------------------------------------------------
-
-        private void okButton_Click(object sender, EventArgs e)
+        private void AddSheet(
+            IPropertiesSheetView view, 
+            PropertiesSheetViewModelBase viewModel,
+            IBindingContext bindingContext)
         {
-            this.DialogResult = ApplyChanges();
+            Debug.Assert(viewModel.View == null, "view model not bound yet");
+
+            SuspendLayout();
+
+            //
+            // Create control and add it to tabs.
+            //
+            var viewControl = (ContainerControl)(object)view;
+            viewControl.Location = new Point(0, 0);
+            viewControl.Dock = DockStyle.Fill;
+            viewControl.BackColor = this.SheetBackColor;
+            this.theme.ApplyTo(viewControl);
+
+            var tab = new TabPage()
+            {
+                BackColor = this.SheetBackColor
+            };
+            tab.Controls.Add(viewControl);
+            this.tabs.TabPages.Add(tab);
+
+            //
+            // Bind the sheet and its view model.
+            //
+            tab.BindReadonlyProperty(
+                t => t.Text,
+                viewModel,
+                m => m.Title,
+                bindingContext);
+
+            Window<IPropertiesSheetView, PropertiesSheetViewModelBase>.Bind(
+                view,
+                viewModel,
+                this.theme,
+                bindingContext);
+
+            //
+            // Set tag so that we can access the object later.
+            //
+            tab.Tag = view;
+
+            ResumeLayout();
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        public void AddSheet<TSheet>(
+            IPropertiesSheetView view,
+            IBindingContext bindingContext)
+            where TSheet : IPropertiesSheetView
         {
-            this.DialogResult = DialogResult.Cancel;
+            AddSheet(
+                view,
+                (PropertiesSheetViewModelBase)this.serviceProvider.GetService(view.ViewModel),
+                bindingContext);
         }
 
-        private void applyButton_Click(object sender, EventArgs e)
+        public void AddSheet<TSheet>(
+            IBindingContext bindingContext)
+            where TSheet : IPropertiesSheetView
         {
-            ApplyChanges();
+            var view = (IPropertiesSheetView)this.serviceProvider.GetService(typeof(TSheet));
+            AddSheet(
+                view,
+                (PropertiesSheetViewModelBase)this.serviceProvider.GetService(view.ViewModel),
+                bindingContext);
         }
-
     }
 }
