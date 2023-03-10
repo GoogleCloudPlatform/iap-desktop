@@ -119,6 +119,7 @@
     <Compile Include="Theme\TestControlTheme.cs" />
     <Compile Include="Theme\TestToolStripItemTheme.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
+    <Compile Include="Windows\TestPropertiesView.cs" />
     <Compile Include="Windows\TestPropertiesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -38,26 +38,26 @@ namespace Google.Solutions.Mvvm.Windows
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IControlTheme theme;
+        private IBindingContext bindingContext;
 
         public Color SheetBackColor { get; set; } = Color.White;
 
-        protected PropertiesView(
+        public PropertiesView(
             IServiceProvider serviceProvider,
             IControlTheme controlTheme)
         {
             this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
             this.theme = controlTheme;
 
-            SuspendLayout();
-
             InitializeComponent();
-            ResumeLayout();
 
             this.Shown += (_, __) => this.tabs.Focus();
         }
 
         public void Bind(PropertiesViewModel viewModel, IBindingContext bindingContext)
         {
+            this.bindingContext = bindingContext;
+
             this.okButton.BindCommand(
                 viewModel,
                 m => m.OkCommand,
@@ -72,6 +72,9 @@ namespace Google.Solutions.Mvvm.Windows
                 bindingContext);
         }
 
+        internal IEnumerable<TabPage> TabPages 
+            => this.tabs.TabPages.Cast<TabPage>();
+
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
@@ -83,10 +86,10 @@ namespace Google.Solutions.Mvvm.Windows
 
         private void AddSheet(
             IPropertiesSheetView view, 
-            PropertiesSheetViewModelBase viewModel,
-            IBindingContext bindingContext)
+            PropertiesSheetViewModelBase viewModel)
         {
             Debug.Assert(viewModel.View == null, "view model not bound yet");
+            Debug.Assert(this.bindingContext != null);
 
             SuspendLayout();
 
@@ -97,8 +100,7 @@ namespace Google.Solutions.Mvvm.Windows
             viewControl.Location = new Point(0, 0);
             viewControl.Dock = DockStyle.Fill;
             viewControl.BackColor = this.SheetBackColor;
-            this.theme.ApplyTo(viewControl);
-
+            
             var tab = new TabPage()
             {
                 BackColor = this.SheetBackColor
@@ -113,13 +115,13 @@ namespace Google.Solutions.Mvvm.Windows
                 t => t.Text,
                 viewModel,
                 m => m.Title,
-                bindingContext);
+                this.bindingContext);
 
             Window<IPropertiesSheetView, PropertiesSheetViewModelBase>.Bind(
                 view,
                 viewModel,
                 this.theme,
-                bindingContext);
+                this.bindingContext);
 
             //
             // Set tag so that we can access the object later.
@@ -129,26 +131,19 @@ namespace Google.Solutions.Mvvm.Windows
             ResumeLayout();
         }
 
-        public void AddSheet<TSheet>(
-            IPropertiesSheetView view,
-            IBindingContext bindingContext)
-            where TSheet : IPropertiesSheetView
+        public void AddSheet(IPropertiesSheetView view)
         {
             AddSheet(
                 view,
-                (PropertiesSheetViewModelBase)this.serviceProvider.GetService(view.ViewModel),
-                bindingContext);
+                (PropertiesSheetViewModelBase)this.serviceProvider.GetService(view.ViewModel));
         }
 
-        public void AddSheet<TSheet>(
-            IBindingContext bindingContext)
-            where TSheet : IPropertiesSheetView
+        public void AddSheet<TSheet>()
         {
             var view = (IPropertiesSheetView)this.serviceProvider.GetService(typeof(TSheet));
             AddSheet(
                 view,
-                (PropertiesSheetViewModelBase)this.serviceProvider.GetService(view.ViewModel),
-                bindingContext);
+                (PropertiesSheetViewModelBase)this.serviceProvider.GetService(view.ViewModel));
         }
     }
 }
