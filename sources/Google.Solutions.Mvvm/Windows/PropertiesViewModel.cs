@@ -69,6 +69,8 @@ namespace Google.Solutions.Mvvm.Windows
             sheet.IsDirty.AddDependentProperty(this.IsDirty);
         }
 
+        internal IEnumerable<PropertiesSheetViewModelBase> Sheets => this.sheets;
+
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------

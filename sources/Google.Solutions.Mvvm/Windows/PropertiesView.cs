@@ -25,10 +25,8 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Windows
@@ -38,6 +36,8 @@ namespace Google.Solutions.Mvvm.Windows
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IControlTheme theme;
+
+        private PropertiesViewModel viewModel;
         private IBindingContext bindingContext;
 
         public Color SheetBackColor { get; set; } = Color.White;
@@ -56,6 +56,7 @@ namespace Google.Solutions.Mvvm.Windows
 
         public void Bind(PropertiesViewModel viewModel, IBindingContext bindingContext)
         {
+            this.viewModel = viewModel;
             this.bindingContext = bindingContext;
 
             this.okButton.BindCommand(
@@ -72,23 +73,15 @@ namespace Google.Solutions.Mvvm.Windows
                 bindingContext);
         }
 
-        internal IEnumerable<TabPage> TabPages 
-            => this.tabs.TabPages.Cast<TabPage>();
+        internal IEnumerable<PropertiesSheetViewModelBase> Sheets => this.viewModel.Sheets;
 
-        //---------------------------------------------------------------------
-        // Publics.
-        //---------------------------------------------------------------------
-
-        public IEnumerable<IPropertiesSheetView> Sheets => this.tabs.TabPages
-            .Cast<TabPage>()
-            .Select(tab => tab.Tag)
-            .Cast<IPropertiesSheetView>();
-
-        private void AddSheet(
+        internal void AddSheet(
             IPropertiesSheetView view, 
             PropertiesSheetViewModelBase viewModel)
         {
             Debug.Assert(viewModel.View == null, "view model not bound yet");
+            
+            Debug.Assert(this.viewModel != null);
             Debug.Assert(this.bindingContext != null);
 
             SuspendLayout();
@@ -124,12 +117,16 @@ namespace Google.Solutions.Mvvm.Windows
                 this.bindingContext);
 
             //
-            // Set tag so that we can access the object later.
+            // Register the (bound) view model.
             //
-            tab.Tag = view;
+            this.viewModel.AddSheet(viewModel);
 
             ResumeLayout();
         }
+
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
 
         public void AddSheet(IPropertiesSheetView view)
         {
