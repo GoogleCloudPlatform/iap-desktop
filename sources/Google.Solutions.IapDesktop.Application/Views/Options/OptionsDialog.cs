@@ -74,9 +74,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             {
                 dialog.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
 
+                var appSettingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
+
                 dialog.ViewModel.AddSheet(
                     new AppearanceOptionsSheet(),
                     new AppearanceOptionsViewModel(serviceProvider.GetService<ThemeSettingsRepository>()));
+                dialog.ViewModel.AddSheet(
+                    new ScreenOptionsSheet(),
+                    new ScreenOptionsViewModel(appSettingsRepository));
 
 #if DEBUG
                 dialog.ViewModel.AddSheet(new DebugOptionsSheet(), new DebugOptionsSheetViewModel());

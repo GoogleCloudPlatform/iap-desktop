@@ -25,6 +25,7 @@ using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
@@ -116,16 +117,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new ScreenOptionsViewModel(
                 this.settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
             Assert.GreaterOrEqual(viewModel.Devices.Count(), 1);
 
             viewModel.Devices.First().IsSelected = true;
 
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         [Test]
-        public void WhenAllDevicesDeselected_ThenKeyIsRemoved()
+        public async Task WhenAllDevicesDeselected_ThenKeyIsRemoved()
         {
             var settings = this.settingsRepository.GetSettings();
             settings.FullScreenDevices.StringValue = "unknown\\device,and junk";
@@ -136,13 +137,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             viewModel.Devices.First().IsSelected = true;
             viewModel.Devices.First().IsSelected = false;
-            viewModel.ApplyChanges();
+            
+            await viewModel.ApplyChangesAsync();
 
             Assert.IsNull(this.settingsRepository.GetSettings().FullScreenDevices.StringValue);
         }
 
         [Test]
-        public void WhenDeviceSelected_ThenKeyIsUpdated()
+        public async Task WhenDeviceSelected_ThenKeyIsUpdated()
         {
             var settings = this.settingsRepository.GetSettings();
             this.settingsRepository.SetSettings(settings);
@@ -151,7 +153,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.settingsRepository);
 
             viewModel.Devices.First().IsSelected = true;
-            viewModel.ApplyChanges();
+
+            await viewModel.ApplyChangesAsync();
 
             Assert.AreEqual(
                 Screen.PrimaryScreen.DeviceName,
