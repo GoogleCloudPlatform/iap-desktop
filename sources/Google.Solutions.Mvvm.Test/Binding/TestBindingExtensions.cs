@@ -551,6 +551,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 form.Show();
 
+                Assert.AreEqual(command.Text, button.Text);
                 Assert.IsFalse(button.Enabled);
 
                 form.Close();
@@ -587,6 +588,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 form.Show();
 
+                Assert.AreEqual(command.Text, button.Text);
                 Assert.IsTrue(button.Enabled);
 
                 form.Close();
@@ -623,7 +625,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
                 form.Show();
 
+                Assert.AreEqual(command.Text, button.Text);
                 Assert.IsFalse(button.Enabled);
+
                 commandAvailable.Value = CommandState.Enabled;
                 Assert.IsTrue(button.Enabled);
 

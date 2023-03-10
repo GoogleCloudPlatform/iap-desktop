@@ -316,6 +316,8 @@ namespace Google.Solutions.Mvvm.Binding
             Precondition.ExpectNotNull(model, nameof(model));
             Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
+            button.Text = commandProperty(model).Text;
+
             //
             // Bind status.
             //

@@ -24,7 +24,7 @@ using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
-
+//TODO: Move to Windows namespace
 namespace Google.Solutions.Mvvm.Binding
 {
     /// <summary>

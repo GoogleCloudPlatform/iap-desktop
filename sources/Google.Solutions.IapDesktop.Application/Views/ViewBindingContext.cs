@@ -57,18 +57,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void OnCommandFailed(IComponent control, ICommand command, Exception exception)
         {
-            this.serviceProvider.GetService<IExceptionDialog>().Show(
-                this.serviceProvider.GetService<IMainWindow>(), 
-                command.ActivityText, 
-                exception);
-        }
-
-        public void OnBindingFailed(IComponent control, Exception exception)
-        {
-            this.serviceProvider.GetService<IExceptionDialog>().Show(
-                this.serviceProvider.GetService<IMainWindow>(),
-                "The control/view model binding failed",
-                exception);
+            this.serviceProvider
+                .GetService<IExceptionDialog>()
+                .Show(
+                    this.serviceProvider.GetService<IMainWindow>(), 
+                    command.ActivityText, 
+                    exception);
         }
     }
 }
