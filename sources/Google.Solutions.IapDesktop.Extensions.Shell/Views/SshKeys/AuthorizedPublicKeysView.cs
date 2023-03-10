@@ -62,15 +62,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 this.viewModel,
                 m => m.InformationBarContent,
                 bindingContext);
-            this.components.Add(this.viewModel.OnPropertyChange(
+            this.viewModel.OnPropertyChange(
                 m => m.IsInformationBarVisible,
                 visible =>
                 {
                     this.splitContainer.Panel1Collapsed = !visible;
                     this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
-                }));
+                },
+                bindingContext);
 
-            this.components.Add(this.viewModel.OnPropertyChange(
+            this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
@@ -78,7 +79,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     // otherwise the title does not update properly.
                     this.TabText = title;
                     this.Text = title;
-                }));
+                },
+                bindingContext);
             this.viewModel.ResetWindowTitleAndInformationBar();  // Fire event to set initial window title.
 
 

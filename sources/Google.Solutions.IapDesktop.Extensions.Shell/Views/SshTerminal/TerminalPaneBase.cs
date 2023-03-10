@@ -111,7 +111,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     {
                         this.terminal.Focus();
                     }
-                });
+                },
+                bindingContext);
 
             Debug.Assert(this.Text != this.Name);
 

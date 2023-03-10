@@ -137,7 +137,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.viewMenuCommands = new CommandContainer<IMainWindow>(
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.viewMenuContextSource);
+                this.viewMenuContextSource,
+                bindingContext);
             this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
             this.viewMenuCommands.BindTo(
                 this.viewToolStripMenuItem, 
@@ -168,7 +169,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.windowMenuCommands = new CommandContainer<ToolWindow>(
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.windowMenuContextSource);
+                this.windowMenuContextSource,
+                bindingContext);
             this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;
             this.windowMenuCommands.BindTo(
                 this.windowToolStripMenuItem, 
@@ -751,7 +753,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
             var container = new CommandContainer<TContext>(
                 ToolStripItemDisplayStyle.ImageAndText,
-                new CallbackSource<TContext>(queryCurrentContextFunc));
+                new CallbackSource<TContext>(queryCurrentContextFunc),
+                this.bindingContext);
             container.CommandFailed += CommandContainer_CommandFailed;
             container.BindTo(menu, this.bindingContext);
 

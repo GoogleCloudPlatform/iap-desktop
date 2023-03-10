@@ -87,7 +87,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new ViewModelWithBareProperties();
 
-            using (observed.OnPropertyChange(
+            using (BindingExtensions.CreatePropertyChangeBinding(
+                observed,
                 o => o.One,
                 v => { callbacks++; }))
             {
@@ -105,7 +106,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new ViewModelWithBareProperties();
 
-            using (observed.OnPropertyChange(
+            using (BindingExtensions.CreatePropertyChangeBinding(
+                observed,
                 o => o.One,
                 v => { callbacks++; }))
             {
@@ -120,7 +122,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new ViewModelWithBareProperties();
 
-            using (var binding = observed.OnPropertyChange(
+            using (var binding = BindingExtensions.CreatePropertyChangeBinding(
+                observed,
                 o => o.One,
                 v => { callbacks++; }))
             {
@@ -144,7 +147,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new TextBox();
 
-            using (observed.OnControlPropertyChange(
+            using (BindingExtensions.CreateControlPropertyChangeBinding(
+                observed,
                 o => o.Text,
                 v => { callbacks++; }))
             {
@@ -162,7 +166,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new TextBox();
 
-            using (observed.OnControlPropertyChange(
+            using (BindingExtensions.CreateControlPropertyChangeBinding(
+                observed,
                 o => o.Text,
                 v => { callbacks++; }))
             {
@@ -177,7 +182,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new TextBox();
 
-            using (var binding = observed.OnControlPropertyChange(
+            using (var binding = BindingExtensions.CreateControlPropertyChangeBinding(
+                observed,
                 o => o.Text,
                 v => { callbacks++; }))
             {
@@ -196,7 +202,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
         {
             var observed = new TextBox();
 
-            Assert.Throws<ArgumentException>(() => observed.OnControlPropertyChange(
+            Assert.Throws<ArgumentException>(() => BindingExtensions.CreateControlPropertyChangeBinding(
+                observed,
                 o => o.PasswordChar,
                 _ => { }));
         }
@@ -206,7 +213,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void BindPropertyApplies()
+        public void BindPropertyNotifiesContext()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties
@@ -286,7 +293,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void BindReadonlyProperty()
+        public void BindReadonlyPropertyNotifiesContext()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties
@@ -365,7 +372,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void BindObservableProperty()
+        public void BindObservablePropertyNotifiesContext()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -440,7 +447,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void BindReadonlyObservablePropertyNotifiesBindingContext()
+        public void BindReadonlyObservableProperty()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();

@@ -137,7 +137,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                     // Enable the Apply button if any of the panes goes dirty.
                     //
                     this.applyButton.Enabled = this.Sheets.Any(p => p.ViewModel.IsDirty);
-                });
+                },
+                bindingContext);
 
             //
             // Set tag so that we can access the object later.

@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 
             this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AvailableTimeframes.ToArray());
 
-            this.components.Add(this.viewModel.OnPropertyChange(
+            this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
@@ -66,7 +66,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                     // otherwise the title does not update properly.
                     this.TabText = title;
                     this.Text = title;
-                }));
+                },
+                bindingContext);
 
             // Bind toolbar buttons.
             this.timeFrameComboBox.BindProperty(

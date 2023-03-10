@@ -264,7 +264,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 {
                     Assert.IsTrue(v);
                     eventCount++;
-                });
+                },
+                new Mock<IBindingContext>().Object);
 
             initialViewModel.IsWindowsIncluded = true;
             Assert.AreEqual(1, eventCount);
@@ -281,7 +282,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 {
                     Assert.IsTrue(v);
                     eventCount++;
-                });
+                },
+                new Mock<IBindingContext>().Object);
 
             initialViewModel.IsLinuxIncluded = true;
             Assert.AreEqual(1, eventCount);
@@ -298,7 +300,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 {
                     Assert.AreEqual(OperatingSystems.Linux, v);
                     eventCount++;
-                });
+                },
+                new Mock<IBindingContext>().Object);
 
             initialViewModel.OperatingSystemsFilter = OperatingSystems.Linux;
             Assert.AreEqual(1, eventCount);
@@ -345,7 +348,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 {
                     Assert.AreEqual("test", v);
                     eventCount++;
-                });
+                },
+                new Mock<IBindingContext>().Object);
 
             initialViewModel.InstanceFilter = "test";
             Assert.AreEqual(1, eventCount);

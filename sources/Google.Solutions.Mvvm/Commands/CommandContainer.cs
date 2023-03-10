@@ -68,6 +68,7 @@ namespace Google.Solutions.Mvvm.Commands
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly ObservableCollection<MenuItemViewModelBase> menuItems;
         private readonly CommandContainer<TContext> parent;
+        private readonly IBindingContext bindingContext;
 
         internal ICommandContextSource<TContext> ContextSource { get; }
 
@@ -79,31 +80,36 @@ namespace Google.Solutions.Mvvm.Commands
             ToolStripItemDisplayStyle displayStyle,
             ICommandContextSource<TContext> contextSource,
             CommandContainer<TContext> parent,
-            ObservableCollection<MenuItemViewModelBase> items)
+            ObservableCollection<MenuItemViewModelBase> items,
+            IBindingContext bindingContext)
         {
             this.parent = parent;
             this.displayStyle = displayStyle;
             this.menuItems = items;
             this.ContextSource = contextSource;
+            this.bindingContext = bindingContext;
         }
 
         public CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
-            ICommandContextSource<TContext> contextSource)
+            ICommandContextSource<TContext> contextSource,
+            IBindingContext bindingContext)
             : this(
                   displayStyle,
                   contextSource,
                   null,
-                  new ObservableCollection<MenuItemViewModelBase>())
+                  new ObservableCollection<MenuItemViewModelBase>(),
+                  bindingContext)
         {
             if (this.ContextSource is INotifyPropertyChanged observable)
             {
-                this.binding = observable.OnPropertyChange(
+                observable.OnPropertyChange(
                     s => ((ICommandContextSource<TContext>)s).Context,
                     context =>
                     {
                         MenuItemViewModel.OnContextUpdated(this.menuItems);
-                    });
+                    },
+                    bindingContext);
             }
         }
 
@@ -218,7 +224,8 @@ namespace Google.Solutions.Mvvm.Commands
                 this.displayStyle,
                 this.ContextSource,
                 this,
-                item.Children);
+                item.Children,
+                this.bindingContext);
         }
 
         public void AddSeparator(int? index = null)

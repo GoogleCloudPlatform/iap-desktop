@@ -103,10 +103,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.treeView.BindIsExpanded(node => node.IsExpanded);
             this.treeView.BindIsLeaf(node => node.IsLeaf);
             this.treeView.BindText(node => node.Text);
-            this.treeView.Bind(this.viewModel.RootNode);
+            this.treeView.Bind(this.viewModel.RootNode, bindingContext);
             this.treeView.OnControlPropertyChange(
                 c => c.SelectedModelNode,
-                node => this.viewModel.SelectedNode = node);
+                node => this.viewModel.SelectedNode = node,
+                bindingContext);
 
             this.treeView.LoadingChildrenFailed += (sender, args) =>
             {
@@ -154,16 +155,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     {
                         contextSource.Context = node.ModelNode;
                     }
-                });
+                },
+                bindingContext);
 
             this.contextMenuCommands = new CommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.ImageAndText,
-                contextSource);
+                contextSource,
+                bindingContext);
             this.contextMenuCommands.CommandFailed += Command_CommandFailed;
 
             this.toolbarCommands = new CommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.Image,
-                contextSource);
+                contextSource,
+                bindingContext);
             this.toolbarCommands.CommandFailed += Command_CommandFailed;
 
 

@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
                 viewModel,
                 m => m.IsDownloadButtonEnabled,
                 bindingContext);
-            this.fileBrowser.Bind(viewModel.FileSystem);
+            this.fileBrowser.Bind(viewModel.FileSystem, bindingContext);
 
             this.fileBrowser.NavigationFailed += (_, args) =>
                 this.exceptionDialog.Show(this, "Navigation failed", args.Exception);

@@ -87,7 +87,8 @@ namespace Google.Solutions.IapDesktop.Windows
                     {
                         this.signInButton.Focus();
                     }
-                });
+                },
+                bindingContext);
 
             this.cancelSignInLabel.BindReadonlyProperty(
                 c => c.Visible,
@@ -118,7 +119,8 @@ namespace Google.Solutions.IapDesktop.Windows
                         this.DialogResult = DialogResult.OK;
                         Close();
                     }
-                });
+                },
+                bindingContext);
 
             //
             // Manual sign-in.

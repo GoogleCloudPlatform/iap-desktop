@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Moq;
@@ -116,12 +117,13 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 };
                 form.Controls.Add(browser);
 
+                var bindingContext = new Mock<IBindingContext>().Object;
                 var fileSystem = CreateFileSystemWithEmptyRoot().Object;
 
-                browser.Bind(fileSystem);
+                browser.Bind(fileSystem, bindingContext);
 
                 Assert.Throws<InvalidOperationException>(
-                    () => browser.Bind(fileSystem));
+                    () => browser.Bind(fileSystem, bindingContext));
             }
         }
 
@@ -160,7 +162,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     eventRaised = true;
                 };
 
-                browser.Bind(fileSystem.Object);
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
 
                 Application.DoEvents();
                 Assert.IsTrue(eventRaised);
@@ -201,7 +205,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 browser.NavigationFailed += (sender, args) => Assert.Fail();
 
-                browser.Bind(fileSystem.Object);
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
                 Assert.AreEqual(1, browser.Directories.Nodes.Count);
@@ -244,7 +250,10 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
                 browser.NavigationFailed += (sender, args) => Assert.Fail();
 
-                browser.Bind(fileSystem.Object);
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
+
                 await browser.NavigateAsync((IEnumerable<string>)null);
                 Application.DoEvents();
 
@@ -278,7 +287,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.Controls.Add(browser);
 
                 var fileSystem = CreateFileSystemWithEmptyRoot().Object;
-                browser.Bind(fileSystem);
+                browser.Bind(
+                    fileSystem,
+                    new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
                 Assert.AreSame(fileSystem.Root, browser.CurrentDirectory);
@@ -301,7 +312,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.Controls.Add(browser);
 
                 var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
-                browser.Bind(fileSystem);
+                browser.Bind(
+                    fileSystem,
+                    new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
                 form.Show();
@@ -339,7 +352,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.Controls.Add(browser);
 
                 var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
-                browser.Bind(fileSystem);
+                browser.Bind(
+                    fileSystem,
+                    new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
                 IFileItem currentDirectory = null;
@@ -375,7 +390,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.Controls.Add(browser);
 
                 var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
-                browser.Bind(fileSystem);
+                browser.Bind(
+                    fileSystem,
+                    new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
                 form.Show();
@@ -411,7 +428,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 form.Controls.Add(browser);
 
                 var fileSystem = CreateFileSystemWithInfinitelyNestedDirectories().Object;
-                browser.Bind(fileSystem);
+                browser.Bind(
+                    fileSystem,
+                    new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
                 form.Show();
@@ -460,7 +479,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
                         CreateFile().Object
                     });
 
-                browser.Bind(fileSystem.Object);
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
                 form.Show();
@@ -505,7 +526,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     .Setup(fs => fs.ListFilesAsync(It.IsIn(root.Object)))
                     .ReturnsAsync(files);
 
-                browser.Bind(fileSystem.Object);
+                browser.Bind(
+                    fileSystem.Object,
+                    new Mock<IBindingContext>().Object);
                 Application.DoEvents();
 
                 form.Show();

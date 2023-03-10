@@ -66,15 +66,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 this.viewModel,
                 m => m.InformationText,
                 bindingContext);
-            this.components.Add(this.viewModel.OnPropertyChange(
+            this.viewModel.OnPropertyChange(
                 m => m.IsInformationBarVisible,
                 visible =>
                 {
                     this.splitContainer.Panel1Collapsed = !visible;
                     this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
-                }));
+                },
+                bindingContext);
 
-            this.components.Add(this.viewModel.OnPropertyChange(
+            this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
@@ -82,7 +83,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                     // otherwise the title does not update properly.
                     this.TabText = title;
                     this.Text = title;
-                }));
+                },
+                bindingContext);
             this.viewModel.ResetWindowTitle();  // Fire event to set initial window title.
 
             // Bind list.

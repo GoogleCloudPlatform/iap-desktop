@@ -37,12 +37,15 @@ namespace Google.Solutions.Mvvm.Binding
     /// </summary>
     public static class BindingExtensions
     {
-        public static Binding OnPropertyChange<TObject, TProperty>( // TODO: Change signature
-            this TObject observed,
+        internal static Binding CreatePropertyChangeBinding<TObject, TProperty>( // TODO: Change signature
+            TObject observed,
             Expression<Func<TObject, TProperty>> modelProperty,
             Action<TProperty> newValue)
             where TObject : INotifyPropertyChanged
         {
+            Precondition.NotNull(observed, nameof(observed));
+            Precondition.NotNull(modelProperty, nameof(modelProperty));
+
             Debug.Assert(modelProperty.NodeType == ExpressionType.Lambda);
             if (modelProperty.Body is MemberExpression memberExpression &&
                 memberExpression.Member is PropertyInfo propertyInfo)
@@ -59,12 +62,15 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        public static Binding OnControlPropertyChange<TControl, TProperty>(// TODO: Change signature
-            this TControl observed,
+        internal static Binding CreateControlPropertyChangeBinding<TControl, TProperty>(// TODO: Change signature
+            TControl observed,
             Expression<Func<TControl, TProperty>> controlProperty,
             Action<TProperty> newValue)
             where TControl : IComponent
         {
+            Precondition.NotNull(observed, nameof(observed));
+            Precondition.NotNull(controlProperty, nameof(controlProperty));
+
             Debug.Assert(controlProperty.NodeType == ExpressionType.Lambda);
             if (controlProperty.Body is MemberExpression memberExpression &&
                 memberExpression.Member is PropertyInfo propertyInfo)
@@ -107,9 +113,45 @@ namespace Google.Solutions.Mvvm.Binding
         }
 
         //---------------------------------------------------------------------
-        // Binding for bare properties.
+        // OnChange callbacks.
         //---------------------------------------------------------------------
 
+        public static void OnControlPropertyChange<TControl, TProperty>(
+            this TControl observed,
+            Expression<Func<TControl, TProperty>> controlProperty,
+            Action<TProperty> newValue,
+            IBindingContext bindingContext)
+            where TControl : IComponent
+        {
+            Precondition.NotNull(bindingContext, nameof(bindingContext));
+
+            var binding = CreateControlPropertyChangeBinding(
+                observed,
+                controlProperty,
+                newValue);
+            bindingContext.OnBindingCreated(observed, binding);
+        }
+
+        public static void OnPropertyChange<TObject, TProperty>(
+            this TObject observed,
+            Expression<Func<TObject, TProperty>> modelProperty,
+            Action<TProperty> newValue,
+            IBindingContext bindingContext)
+            where TObject : INotifyPropertyChanged
+        {
+            Precondition.NotNull(bindingContext, nameof(bindingContext));
+
+            var binding = CreatePropertyChangeBinding(
+                observed,
+                modelProperty,
+                newValue);
+            // TODO: bindingContext.OnBindingCreated(observed, binding);
+        }
+
+        //---------------------------------------------------------------------
+        // Binding for bare properties.
+        //---------------------------------------------------------------------
+        //TODO: Remnove all ...new COntainer()
         public static void BindProperty<TControl, TProperty, TModel>(
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
@@ -130,11 +172,13 @@ namespace Google.Solutions.Mvvm.Binding
             var modelValue = modelProperty.Compile()(model);
             CreateSetter(control, controlProperty)(modelValue);
 
-            var forwardBinding = control.OnControlPropertyChange(
+            var forwardBinding = CreateControlPropertyChangeBinding(
+                control,
                 controlProperty,
                 CreateSetter(model, modelProperty));
 
-            var reverseBinding = model.OnPropertyChange(
+            var reverseBinding = CreatePropertyChangeBinding(
+                model,
                 modelProperty,
                 CreateSetter(control, controlProperty));
 
@@ -169,7 +213,8 @@ namespace Google.Solutions.Mvvm.Binding
             var modelValue = modelProperty.Compile()(model);
             CreateSetter(control, controlProperty)(modelValue);
 
-            var binding = model.OnPropertyChange(
+            var binding = CreatePropertyChangeBinding(
+                model,
                 modelProperty,
                 CreateSetter(control, controlProperty));
 
@@ -201,7 +246,8 @@ namespace Google.Solutions.Mvvm.Binding
 
             Debug.Assert(observable is IObservableWritableProperty<TProperty>);
 
-            var forwardBinding = control.OnControlPropertyChange(
+            var forwardBinding = CreateControlPropertyChangeBinding(
+                control,
                 controlProperty,
                 val => ObservablePropertyHelper.SetValue(observable, val));
 

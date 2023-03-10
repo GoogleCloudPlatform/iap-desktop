@@ -60,14 +60,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                 this.viewModel,
                 m => m.InformationText,
                 bindingContext);
-            this.components.Add(this.viewModel.OnPropertyChange(
+            this.viewModel.OnPropertyChange(
                 m => m.IsInformationBarVisible,
                 visible =>
                 {
                     this.splitContainer.Panel1Collapsed = !visible;
                     this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
-                }));
-            this.components.Add(this.viewModel.OnPropertyChange(
+                },
+                bindingContext);
+            this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
@@ -75,10 +76,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                     // otherwise the title does not update properly.
                     this.TabText = title;
                     this.Text = title;
-                }));
-            this.components.Add(this.viewModel.OnPropertyChange(
+                },
+                bindingContext);
+            this.viewModel.OnPropertyChange(
                 m => m.InspectedObject,
-                obj => SetInspectedObject(obj)));
+                obj => SetInspectedObject(obj),
+                bindingContext);
         }
 
         private void SetInspectedObject(object obj)

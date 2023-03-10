@@ -24,6 +24,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Testing.Common.Integration;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.ObjectModel;
@@ -62,11 +63,12 @@ namespace Google.Solutions.Mvvm.Test.Controls
                     form,
                     e.Exception.Message);
 
-                browser.Bind(fileSystem);
-
+                var bindingContext = new Mock<IBindingContext>().Object;
+                browser.Bind(fileSystem, bindingContext);
                 browser.OnControlPropertyChange(
                     b => b.CurrentDirectory,
-                    path => form.Text = browser.CurrentPath);
+                    path => form.Text = browser.CurrentPath,
+                    bindingContext);
 
                 form.Controls.Add(browser);
                 form.ShowDialog();

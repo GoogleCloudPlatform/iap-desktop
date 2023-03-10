@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Commands;
 using Google.Solutions.Testing.Common;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -52,7 +54,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
 
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                source))
+                source,
+                new Mock<IBindingContext>().Object))
             {
                 var observedContexts = new List<string>();
                 container.AddCommand(
@@ -82,7 +85,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
 
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                source))
+                source,
+                new Mock<IBindingContext>().Object))
             {
                 var subContainer = container.AddCommand(
                     "parent",
@@ -118,7 +122,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
 
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                source))
+                source,
+                new Mock<IBindingContext>().Object))
             {
                 container.AddCommand(
                     "toplevel",
@@ -139,7 +144,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
 
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                source))
+                source,
+                new Mock<IBindingContext>().Object))
             {
                 container.AddCommand(
                     "toplevel",
@@ -159,7 +165,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>()))
+                new ObservableCommandContextSource<string>(),
+                new Mock<IBindingContext>().Object))
             {
                 PropertyAssert.RaisesCollectionChangedNotification(
                     container.MenuItems,
@@ -176,7 +183,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>()))
+                new ObservableCommandContextSource<string>(),
+                new Mock<IBindingContext>().Object))
             {
                 PropertyAssert.RaisesCollectionChangedNotification(
                     container.MenuItems,
@@ -194,7 +202,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>()))
+                new ObservableCommandContextSource<string>(),
+                new Mock<IBindingContext>().Object))
             {
                 container.ExecuteCommandByKey(Keys.A);
             }
@@ -210,7 +219,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
 
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                source))
+                source,
+                new Mock<IBindingContext>().Object))
             {
                 string contextOfCallback = null;
                 container.AddCommand(
@@ -241,7 +251,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
 
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                source))
+                source,
+                new Mock<IBindingContext>().Object))
             {
                 container.AddCommand(
                     new Command<string>(
@@ -273,7 +284,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
 
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                source))
+                source,
+                new Mock<IBindingContext>().Object))
             {
                 container.AddCommand(
                     new Command<string>(
@@ -297,7 +309,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
 
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                source))
+                source,
+                new Mock<IBindingContext>().Object))
             {
                 container.AddCommand(
                     new Command<string>(
@@ -322,7 +335,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
 
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                source))
+                source,
+                new Mock<IBindingContext>().Object))
             {
                 bool commandExecuted = false;
                 container.AddCommand(
@@ -351,7 +365,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>()))
+                new ObservableCommandContextSource<string>(),
+                new Mock<IBindingContext>().Object))
             {
                 Exception exception = null;
                 container.CommandFailed += (s, a) =>
@@ -380,7 +395,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>()))
+                new ObservableCommandContextSource<string>(),
+                new Mock<IBindingContext>().Object))
             {
                 container.CommandFailed += (s, a) => Assert.Fail();
 
@@ -402,7 +418,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>()))
+                new ObservableCommandContextSource<string>(),
+                new Mock<IBindingContext>().Object))
             {
                 Exception exception = null;
                 container.CommandFailed += (s, a) =>
@@ -440,7 +457,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>()))
+                new ObservableCommandContextSource<string>(),
+                new Mock<IBindingContext>().Object))
             {
                 container.CommandFailed += (s, a) => Assert.Fail();
 
@@ -466,7 +484,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>()))
+                new ObservableCommandContextSource<string>(),
+                new Mock<IBindingContext>().Object))
             {
                 object sender = null;
                 container.CommandFailed += (s, a) =>
@@ -495,7 +514,8 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                 new ObservableCommandContextSource<string>()))
+                 new ObservableCommandContextSource<string>(),
+                 new Mock<IBindingContext>().Object))
             {
                 object sender = null;
                 container.CommandFailed += (s, a) =>

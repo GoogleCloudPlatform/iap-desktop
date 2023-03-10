@@ -21,6 +21,7 @@
 
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
+using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -373,7 +374,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 c => c.SelectedModelItem,
                 viewModel,
                 m => m.SelectedItem,
-                null);
+                new Mock<IBindingContext>().Object);
 
             this.listView.Items[0].Selected = true;
 
@@ -408,7 +409,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 c => c.SelectedModelItem,
                 viewModel,
                 m => m.SelectedItem,
-                null);
+                new Mock<IBindingContext>().Object);
 
             Assert.IsFalse(this.listView.Items[0].Selected);
 
@@ -450,7 +451,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 c => c.SelectedModelItems,
                 viewModel,
                 m => m.SelectedItems,
-                null);
+                new Mock<IBindingContext>().Object);
 
             this.listView.Items[0].Selected = true;
             this.listView.Items[1].Selected = true;
@@ -486,7 +487,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 c => c.SelectedModelItems,
                 viewModel,
                 m => m.SelectedItems,
-                null);
+                new Mock<IBindingContext>().Object);
 
             Assert.IsFalse(this.listView.Items[0].Selected);
 

@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Commands;
 using Moq;
 using NUnit.Framework;
@@ -52,7 +53,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         {
             var commands = new CommandContainer<ISession>(
                 ToolStripItemDisplayStyle.Text,
-                new Mock<ICommandContextSource<ISession>>().Object);
+                new Mock<ICommandContextSource<ISession>>().Object,
+                new Mock<IBindingContext>().Object);
             commands.AddCommand(
                 "test-command",
                 s => CommandState.Enabled,
@@ -82,7 +84,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         {
             var commands = new CommandContainer<ISession>(
                 ToolStripItemDisplayStyle.Text,
-                new Mock<ICommandContextSource<ISession>>().Object);
+                new Mock<ICommandContextSource<ISession>>().Object,
+                new Mock<IBindingContext>().Object);
             commands.AddCommand(
                 "test-command",
                 s => CommandState.Enabled,
@@ -107,7 +110,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
 
                 var commands = new CommandContainer<ISession>(
                     ToolStripItemDisplayStyle.Text,
-                    new Mock<ICommandContextSource<ISession>>().Object);
+                    new Mock<ICommandContextSource<ISession>>().Object,
+                    new Mock<IBindingContext>().Object);
                 commands.AddCommand(
                     "test-command",
                     s => CommandState.Enabled,
