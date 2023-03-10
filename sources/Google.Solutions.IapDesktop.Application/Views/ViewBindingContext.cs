@@ -55,7 +55,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
         public void OnBindingCreated(IComponent control, IDisposable binding)
         {
             Debug.WriteLine($"Bining added for {control.GetType().Name} ({control})");
-            control.Disposed += (_, __) => binding.Dispose();
         }
 
         public void OnCommandFailed(IComponent control, ICommand command, Exception exception)

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -189,8 +190,11 @@ namespace Google.Solutions.Mvvm.Binding
             forwardBinding.Peer = reverseBinding;
             reverseBinding.Peer = forwardBinding;
 
+            control.AttachDisposable(forwardBinding);
+            control.AttachDisposable(reverseBinding);
+
             bindingContext.OnBindingCreated(control, forwardBinding);
-            bindingContext.OnBindingCreated(control, reverseBinding);// TODO: Dispose here instead of in the context ...DisposeTogetherWith(ctl)
+            bindingContext.OnBindingCreated(control, reverseBinding);
         }
 
         public static void BindReadonlyProperty<TControl, TProperty, TModel>(
@@ -217,7 +221,8 @@ namespace Google.Solutions.Mvvm.Binding
                 model,
                 modelProperty,
                 CreateSetter(control, controlProperty));
-
+            
+            control.AttachDisposable(binding);
             bindingContext.OnBindingCreated(control, binding);
         }
 
@@ -262,6 +267,9 @@ namespace Google.Solutions.Mvvm.Binding
             forwardBinding.Peer = reverseBinding;
             reverseBinding.Peer = forwardBinding;
 
+            control.AttachDisposable(forwardBinding);
+            control.AttachDisposable(reverseBinding);
+
             bindingContext.OnBindingCreated(control, forwardBinding);
             bindingContext.OnBindingCreated(control, reverseBinding);
         }
@@ -289,6 +297,7 @@ namespace Google.Solutions.Mvvm.Binding
                 observable,
                 CreateSetter(control, controlProperty));
 
+            control.AttachDisposable(binding);
             bindingContext.OnBindingCreated(control, binding);
         }
 
@@ -319,6 +328,8 @@ namespace Google.Solutions.Mvvm.Binding
                 var stateBinding = new NotifyObservablePropertyChangedBinding<CommandState>(
                     stateObservable,
                     state => button.Enabled = state == CommandState.Enabled);
+
+                button.AttachDisposable(stateBinding);
                 bindingContext.OnBindingCreated(button, stateBinding);
             }
 
@@ -356,6 +367,8 @@ namespace Google.Solutions.Mvvm.Binding
             }
 
             var clickBinding = new ClickBinding(button, OnClickAsync);
+
+            button.AttachDisposable(clickBinding);
             bindingContext.OnBindingCreated(button, clickBinding);
         }
 
