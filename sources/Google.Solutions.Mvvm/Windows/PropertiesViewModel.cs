@@ -38,18 +38,17 @@ namespace Google.Solutions.Mvvm.Windows
 
             this.IsDirty = new ObservableFunc<bool>(
                 () => this.sheets.Any(s => s.IsDirty.Value));
-            this.ApplyCommand = new Command<PropertiesViewModel>( // TODO: Use DispatchCommand?
+
+            this.ApplyCommand = ObservableCommand.Build(
                 "&Apply",
-                _ => this.IsDirty.Value ? CommandState.Enabled : CommandState.Disabled,
-                _ => ApplyChangesAsync());
-            this.OkCommand = new Command<PropertiesViewModel>(
+                ApplyChangesAsync,
+                this.IsDirty);
+            this.OkCommand = ObservableCommand.Build(
                 "OK",
-                _ => CommandState.Enabled,
-                _ => ApplyChangesAsync());
-            this.CancelCommand = new Command<PropertiesViewModel>(
+                ApplyChangesAsync);
+            this.CancelCommand = ObservableCommand.Build(
                 "Cancel",
-                _ => CommandState.Enabled,
-                _ => Task.CompletedTask);
+                () => Task.CompletedTask);
         }
 
         private async Task ApplyChangesAsync()
@@ -80,10 +79,10 @@ namespace Google.Solutions.Mvvm.Windows
         // Commands.
         //---------------------------------------------------------------------
 
-        public ICommand<PropertiesViewModel> ApplyCommand { get; }
+        public IObservableCommand ApplyCommand { get; }
 
-        public ICommand<PropertiesViewModel> OkCommand { get; }
+        public IObservableCommand OkCommand { get; }
 
-        public ICommand<PropertiesViewModel> CancelCommand { get; }
+        public IObservableCommand CancelCommand { get; }
     }
 }

@@ -68,6 +68,7 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandContainer.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Binding\ObservableCommand.cs" />
     <Compile Include="Commands\ObservableCommandContextSource.cs" />
     <Compile Include="Controls\BindableComboBox.cs">
       <SubType>Component</SubType>
@@ -148,7 +149,13 @@
     <Compile Include="Theme\WindowsRuleSet.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\StaTask.cs" />
-    <Compile Include="Windows\IPropertiesSheet.cs" />
+    <Compile Include="Windows\IPropertiesSheetView.cs" />
+    <Compile Include="Windows\PropertiesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\PropertiesView.Designer.cs">
+      <DependentUpon>PropertiesView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\PropertiesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +183,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\PropertiesView.resx">
+      <DependentUpon>PropertiesView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

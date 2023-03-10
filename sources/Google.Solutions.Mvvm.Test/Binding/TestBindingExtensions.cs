@@ -70,7 +70,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         private class ViewModelWithCommand : ViewModelBase
         {
             public ObservableProperty<CommandState> CommandState { get; set; }
-            public ICommand<ViewModelWithCommand> Command { get; set; }
+            public ObservableCommand Command { get; set; }
         }
 
         //---------------------------------------------------------------------
@@ -527,17 +527,16 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenCommandDisabled_ThenButtonIsDisabled()
         {
-            var commandAvailable = ObservableProperty.Build(CommandState.Disabled);
-            var command = new Command<ViewModelWithCommand>(
+            var commandAvailable = ObservableProperty.Build(false);
+            var command = ObservableCommand.Build(
                 "Command name",
-                _ => commandAvailable.Value,
-                _ => { });
+                () => Task.CompletedTask,
+                commandAvailable);
 
             using (var form = new Form())
             using (var viewModel = new ViewModelWithCommand()
             {
                 Command = command,
-                CommandState = commandAvailable
             })
             {
                 var button = new Button();
@@ -546,7 +545,6 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 button.BindCommand(
                     viewModel,
                     m => m.Command,
-                    m => m.CommandState,
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
@@ -561,17 +559,16 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public void WhenCommandAvailable_ThenButtonIsEnabled()
         {
-            var commandAvailable = ObservableProperty.Build(CommandState.Enabled);
-            var command = new Command<ViewModelWithCommand>(
+            var commandAvailable = ObservableProperty.Build(true);
+            var command = ObservableCommand.Build(
                 "Command name",
-                _ => commandAvailable.Value,
-                _ => { });
+                () => Task.CompletedTask,
+                commandAvailable);
 
             using (var form = new Form())
             using (var viewModel = new ViewModelWithCommand()
             {
                 Command = command,
-                CommandState = commandAvailable
             })
             {
                 var button = new Button()
@@ -583,52 +580,11 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 button.BindCommand(
                     viewModel,
                     m => m.Command,
-                    m => m.CommandState,
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
 
                 Assert.AreEqual(command.Text, button.Text);
-                Assert.IsTrue(button.Enabled);
-
-                form.Close();
-            }
-        }
-
-        [Test]
-        public void WhenCommandTurnsFromUnavailableToAvailable_ThenButtonIsEnabled()
-        {
-            var commandAvailable = ObservableProperty.Build(CommandState.Unavailable);
-            var command = new Command<ViewModelWithCommand>(
-                "Command name",
-                _ => commandAvailable.Value,
-                _ => { });
-
-            using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command,
-                CommandState = commandAvailable
-            })
-            {
-                var button = new Button()
-                {
-                    Enabled = false
-                };
-                form.Controls.Add(button);
-
-                button.BindCommand(
-                    viewModel,
-                    m => m.Command,
-                    m => m.CommandState,
-                    new Mock<IBindingContext>().Object);
-
-                form.Show();
-
-                Assert.AreEqual(command.Text, button.Text);
-                Assert.IsFalse(button.Enabled);
-
-                commandAvailable.Value = CommandState.Enabled;
                 Assert.IsTrue(button.Enabled);
 
                 form.Close();
@@ -639,11 +595,11 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void WhenCommandIsExecuting_ThenButtonIsDisabled()
         {
             var button = new Button();
-            var command = new Command<ViewModelWithCommand>(
+            var command = ObservableCommand.Build(
                 "Command name",
-                _ => CommandState.Enabled,
-                _ => {
+                () => {
                     Assert.IsFalse(button.Enabled);
+                    return Task.CompletedTask;
                 });
 
             using (var form = new Form())
@@ -657,7 +613,6 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 button.BindCommand(
                     viewModel,
                     m => m.Command,
-                    m => m.CommandState,
                     new Mock<IBindingContext>().Object);
 
                 form.Show();
@@ -675,10 +630,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
         public void TestCommandBindingUi()
         {
             var commandAvailable = ObservableProperty.Build(CommandState.Enabled);
-            var command = new Command<ViewModelWithCommand>(
+            var command = ObservableCommand.Build(
                 "Command name",
-                vm => CommandState.Enabled,
-                async vm =>
+                async () =>
                 {
                     await Task.Delay(500);
                     MessageBox.Show("Execute");
@@ -705,7 +659,6 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 button.BindCommand(
                     viewModel,
                     m => m.Command,
-                    m => m.CommandState,
                     new Mock<IBindingContext>().Object);
 
                 form.ShowDialog();

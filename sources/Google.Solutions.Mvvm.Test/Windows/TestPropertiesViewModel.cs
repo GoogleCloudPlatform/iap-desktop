@@ -84,7 +84,7 @@ namespace Google.Solutions.Mvvm.Test.Windows
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSheetDirty_ThenApplyCommandIsEnabled()
+        public void WhenSheetDirty_ThenApplyCommandCanBeExecuted()
         {
             using (var viewModel = new PropertiesViewModel())
             {
@@ -92,22 +92,18 @@ namespace Google.Solutions.Mvvm.Test.Windows
                 sheet.IsDirty.Value = true;
                 viewModel.AddSheet(sheet);
 
-                Assert.AreEqual(
-                    CommandState.Enabled,
-                    viewModel.ApplyCommand.QueryState(viewModel));
+                Assert.IsTrue(viewModel.ApplyCommand.CanExecute.Value);
             }
         }
 
         [Test]
-        public void WhenNoSheetDirty_ThenApplyCommandIsDisabled()
+        public void WhenNoSheetDirty_ThenApplyCommandCannotBeExecuted()
         {
             using (var viewModel = new PropertiesViewModel())
             {
                 viewModel.AddSheet(new SampleSheet());
 
-                Assert.AreEqual(
-                    CommandState.Disabled,
-                    viewModel.ApplyCommand.QueryState(viewModel));
+                Assert.IsFalse(viewModel.ApplyCommand.CanExecute.Value);
             }
         }
 
@@ -126,7 +122,7 @@ namespace Google.Solutions.Mvvm.Test.Windows
                 viewModel.AddSheet(sheet1);
                 viewModel.AddSheet(sheet2);
 
-                viewModel.ApplyCommand.ExecuteAsync(viewModel);
+                viewModel.ApplyCommand.ExecuteAsync();
 
                 Assert.AreEqual(1, sheet1.ApplyCalls);
                 Assert.AreEqual(0, sheet2.ApplyCalls);

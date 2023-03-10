@@ -74,23 +74,6 @@ namespace Google.Solutions.Mvvm.Commands
         Task ExecuteAsync(TContext context);
     }
 
-    /// <summary>
-    /// A command that is not tied to any particular context,
-    /// typically surfaced as a button.
-    /// </summary>
-    public interface IDispatchCommand : ICommand
-    {
-        /// <summary>
-        /// Queries if command should be enabled or not.
-        /// </summary>
-        CommandState State { get; }
-
-        /// <summary>
-        /// Executes the command.
-        /// </summary>
-        Task ExecuteAsync();
-    }
-
     public enum CommandState
     {
         Enabled,

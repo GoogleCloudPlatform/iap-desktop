@@ -33,7 +33,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Properties
+namespace Google.Solutions.IapDesktop.Application.Views.Properties // TODO: Delete
 {
     [SkipCodeCoverage("UI code")]
     public partial class PropertiesDialog : Form

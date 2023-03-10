@@ -308,35 +308,30 @@ namespace Google.Solutions.Mvvm.Binding
             this ButtonBase button,
             TModel model,
             Func<TModel, TCommand> commandProperty,
-            Func<TModel, IObservableProperty<CommandState>> modelStateProperty,
             IBindingContext bindingContext)
-            where TCommand : ICommand<TModel>
+            where TCommand : IObservableCommand
         {
             Precondition.ExpectNotNull(commandProperty, nameof(commandProperty));
             Precondition.ExpectNotNull(model, nameof(model));
             Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
-            button.Text = commandProperty(model).Text;
+            var command = commandProperty(model);
 
             //
-            // Bind status.
+            // Apply initial values.
             //
-            if (modelStateProperty != null &&
-                modelStateProperty(model) is var stateObservable &&
-                stateObservable != null)
-            {
-                button.Enabled = stateObservable.Value == CommandState.Enabled;
+            button.Enabled = command.CanExecute.Value;
+            button.Text = command.Text;
 
-                //
-                // Update control if command state changes.
-                //
-                var stateBinding = new NotifyObservablePropertyChangedBinding<CommandState>(
-                    stateObservable,
-                    state => button.Enabled = state == CommandState.Enabled);
+            //
+            // Update control if command state changes.
+            //
+            var stateBinding = new NotifyObservablePropertyChangedBinding<bool>(
+                command.CanExecute,
+                canExecute => button.Enabled = canExecute);
 
-                button.AttachDisposable(stateBinding);
-                bindingContext.OnBindingCreated(button, stateBinding);
-            }
+            button.AttachDisposable(stateBinding);
+            bindingContext.OnBindingCreated(button, stateBinding);
 
             //
             // Forward click events to the command.
@@ -344,11 +339,10 @@ namespace Google.Solutions.Mvvm.Binding
             async void OnClickAsync(object _, EventArgs __)
             {
                 button.Enabled = false;
-                var command = commandProperty(model);
                 try
                 {
                     await command
-                        .ExecuteAsync(model)
+                        .ExecuteAsync()
                         .ConfigureAwait(true);
 
                     if (button.FindForm() is Form form &&
@@ -367,7 +361,7 @@ namespace Google.Solutions.Mvvm.Binding
                 }
                 finally
                 {
-                    button.Enabled = command.QueryState(model) == CommandState.Enabled;
+                    button.Enabled = command.CanExecute.Value;
                 }
             }
 
