@@ -25,7 +25,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
-    public partial class DebugOptionsSheet : UserControl, IPropertiesSheetView
+    internal partial class DebugOptionsSheet : UserControl, IPropertiesSheetView
     {
         public DebugOptionsSheet()
         {

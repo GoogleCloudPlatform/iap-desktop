@@ -22,29 +22,25 @@
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     internal abstract class OptionsViewModelBase<TSettings>
-        : ViewModelBase, IPropertiesSheetViewModel
+        : PropertiesSheetViewModelBase
         where TSettings : IRegistrySettingsCollection
     {
-        private bool isDirty;
         private readonly SettingsRepositoryBase<TSettings> settingsRepository;
 
         public OptionsViewModelBase(
             string title,
-            SettingsRepositoryBase<TSettings> settingsRepository
-            )
+            SettingsRepositoryBase<TSettings> settingsRepository)
+            : base(title)
         {
-            this.Title = title.ThrowIfNullOrEmpty(nameof(title));
             this.settingsRepository = settingsRepository.ThrowIfNull(nameof(settingsRepository));
 
-            this.settingsRepository = settingsRepository;
+            this.IsDirty = ObservableProperty.Build(false);
 
             Load(settingsRepository.GetSettings());
         }
@@ -54,28 +50,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             //
             // Mark view model as dirty until changes are applied.
             //
-            property.PropertyChanged += (_, __) => this.IsDirty = true;
+            property.PropertyChanged += (_, __) => this.IsDirty.Value = true;
         }
 
         //---------------------------------------------------------------------
-        // IPropertiesSheetViewModel.
+        // PropertiesSheetViewModelBase.
         //---------------------------------------------------------------------
 
-        public string Title { get; }
+        public override ObservableProperty<bool> IsDirty { get; }
 
-        public bool IsDirty
+        protected override void ApplyChanges()
         {
-            get => this.isDirty;
-            set
-            {
-                this.isDirty = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public DialogResult ApplyChanges()
-        {
-            Debug.Assert(this.IsDirty);
+            Debug.Assert(this.IsDirty.Value);
 
             //
             // Save settings.
@@ -84,11 +70,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             Save(settings);
             this.settingsRepository.SetSettings(settings);
 
-            this.IsDirty = false;
+            this.IsDirty.Value = false;
 
-            Debug.Assert(!this.IsDirty);
-
-            return DialogResult.OK;
+            Debug.Assert(!this.IsDirty.Value);
         }
 
         //---------------------------------------------------------------------

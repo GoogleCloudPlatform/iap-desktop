@@ -24,7 +24,7 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
-    public class DebugOptionsSheetViewModel : PropertiesSheetViewModelBase
+    internal class DebugOptionsSheetViewModel : PropertiesSheetViewModelBase
     {
         public DebugOptionsSheetViewModel() : base("Debug")
         {

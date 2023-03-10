@@ -20,48 +20,39 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
+using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    internal partial class AppearanceOptionsSheet : UserControl, IPropertiesSheet
+    internal partial class AppearanceOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private readonly AppearanceOptionsViewModel viewModel;
-
-        public AppearanceOptionsSheet(
-            ThemeSettingsRepository settingsRepository)
+        public AppearanceOptionsSheet()
         {
-            this.viewModel = new AppearanceOptionsViewModel(settingsRepository);
-
             InitializeComponent();
+        }
 
+        public Type ViewModel => typeof(AppearanceOptionsViewModel);
 
-            // TODO: Use shared binding context.
-            var bindingContext = ViewBindingContext.CreateDummy();
+        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
+        {
+            var viewModel = (AppearanceOptionsViewModel)viewModelBase;
 
             this.themeInfoLabel.BindProperty(
                 c => c.Text,
-                this.viewModel,
+                viewModel,
                 m => m.ThemeInfoText,
                 bindingContext);
             this.theme.BindProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsThemeEditable,
                 bindingContext);
             this.theme.BindObservableProperty(
-                this.viewModel.SelectedTheme,
+                viewModel.SelectedTheme,
                 bindingContext);
         }
-
-        //---------------------------------------------------------------------
-        // IPropertiesSheet.
-        //---------------------------------------------------------------------
-
-        public IPropertiesSheetViewModel ViewModel => this.viewModel;
     }
 }

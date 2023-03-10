@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Commands;
@@ -58,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void OnCommandFailed(Control control, ICommand command, Exception exception)
         {
-            this.exceptionDialog.Show( // TODO: Test
+            this.exceptionDialog.Show(
                 control,
                 command.ActivityText, 
                 exception);
