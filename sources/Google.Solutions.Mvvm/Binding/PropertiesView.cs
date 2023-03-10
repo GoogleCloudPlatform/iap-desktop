@@ -27,7 +27,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.Mvvm.Windows
+namespace Google.Solutions.Mvvm.Binding
 {
     [SkipCodeCoverage("UI code")]
     public partial class PropertiesView : Form, IView<PropertiesViewModel>
@@ -104,6 +104,4 @@ namespace Google.Solutions.Mvvm.Windows
             }
         }
     }
-
-// TODO: Extension: GetPropertiesDialog()
 }

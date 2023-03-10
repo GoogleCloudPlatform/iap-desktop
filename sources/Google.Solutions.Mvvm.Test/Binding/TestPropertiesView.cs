@@ -23,11 +23,10 @@ using Moq;
 using NUnit.Framework;
 using System;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Windows;
 using System.Windows.Forms;
 using Google.Solutions.Testing.Common.Integration;
 
-namespace Google.Solutions.Mvvm.Test.Windows
+namespace Google.Solutions.Mvvm.Test.Binding
 {
     [Apartment(System.Threading.ApartmentState.STA)]
     [TestFixture]

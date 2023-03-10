@@ -20,13 +20,12 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Windows;
 using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.Mvvm.Test.Windows
+namespace Google.Solutions.Mvvm.Test.Binding
 {
     [TestFixture]
     public class TestPropertiesViewModel

@@ -26,7 +26,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Mvvm.Windows
+namespace Google.Solutions.Mvvm.Binding
 {
     public class PropertiesViewModel : ViewModelBase
     {

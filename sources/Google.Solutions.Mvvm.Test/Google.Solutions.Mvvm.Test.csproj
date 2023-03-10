@@ -119,8 +119,8 @@
     <Compile Include="Theme\TestControlTheme.cs" />
     <Compile Include="Theme\TestToolStripItemTheme.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
-    <Compile Include="Windows\TestPropertiesView.cs" />
-    <Compile Include="Windows\TestPropertiesViewModel.cs" />
+    <Compile Include="Binding\TestPropertiesView.cs" />
+    <Compile Include="Binding\TestPropertiesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -150,6 +150,9 @@
     <EmbeddedResource Include="Drawing\TestIconInverter.resx">
       <DependentUpon>TestIconInverter.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Windows\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

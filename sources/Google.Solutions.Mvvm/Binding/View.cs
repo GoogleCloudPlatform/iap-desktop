@@ -24,7 +24,7 @@ using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
-//TODO: Split files
+
 namespace Google.Solutions.Mvvm.Binding
 {
     /// <summary>

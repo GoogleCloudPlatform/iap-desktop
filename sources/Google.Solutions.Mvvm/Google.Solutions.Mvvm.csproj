@@ -57,7 +57,7 @@
     <Compile Include="Binding\FilteredObservableCollection.cs" />
     <Compile Include="Binding\ObservableFunc.cs" />
     <Compile Include="Binding\ObservableProperty.Builder.cs" />
-    <Compile Include="Binding\IBindingContext.cs" />
+    <Compile Include="Binding\BindingContext.cs" />
     <Compile Include="Binding\ObservableProperty.cs" />
     <Compile Include="Binding\RangeObservableCollection.cs" />
     <Compile Include="Binding\ToolStripMenuBindingExtensions.cs" />
@@ -149,15 +149,14 @@
     <Compile Include="Theme\WindowsRuleSet.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\StaTask.cs" />
-    <Compile Include="Windows\IPropertiesSheetView.cs" />
-    <Compile Include="Windows\PropertiesView.cs">
+    <Compile Include="Binding\PropertiesSheetView.cs" />
+    <Compile Include="Binding\PropertiesView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\PropertiesView.Designer.cs">
+    <Compile Include="Binding\PropertiesView.Designer.cs">
       <DependentUpon>PropertiesView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\PropertiesViewModel.cs" />
-    <Compile Include="Windows\ViewType.cs" />
+    <Compile Include="Binding\PropertiesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\FileBrowser.Interfaces.cs">
@@ -185,7 +184,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\PropertiesView.resx">
+    <EmbeddedResource Include="Binding\PropertiesView.resx">
       <DependentUpon>PropertiesView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -194,6 +193,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Search_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Windows\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" />

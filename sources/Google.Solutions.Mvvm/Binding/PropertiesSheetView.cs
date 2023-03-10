@@ -19,11 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Mvvm.Windows
+namespace Google.Solutions.Mvvm.Binding
 {
     /// <summary>
     /// A property sheet that can be displayed in a

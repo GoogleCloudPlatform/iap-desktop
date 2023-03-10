@@ -21,7 +21,7 @@
 
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.Mvvm.Windows
+namespace Google.Solutions.Mvvm.Binding
 {
     partial class PropertiesView
     {
