@@ -20,73 +20,60 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
+using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    internal partial class GeneralOptionsSheet : UserControl, IPropertiesSheet
+    internal partial class GeneralOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private readonly GeneralOptionsViewModel viewModel;
+        private GeneralOptionsViewModel viewModel;
 
-        public GeneralOptionsSheet(
-            ApplicationSettingsRepository settingsRepository,
-            IAppProtocolRegistry protocolRegistry,
-            HelpAdapter helpService)
+        public GeneralOptionsSheet()
         {
-            this.viewModel = new GeneralOptionsViewModel(
-                settingsRepository,
-                protocolRegistry,
-                helpService);
-
             InitializeComponent();
+        }
 
+        public Type ViewModel => typeof(GeneralOptionsViewModel);
 
-            // TODO: Use shared binding context.
-            var bindingContext = ViewBindingContext.CreateDummy();
+        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
+        {
+            this.viewModel = (GeneralOptionsViewModel)viewModelBase;
 
-            this.updateBox.BindReadonlyProperty(
+            this.updateBox.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsUpdateCheckEditable,
                 bindingContext);
-            this.secureConnectBox.BindReadonlyProperty(
+            this.secureConnectBox.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsDeviceCertificateAuthenticationEditable,
                 bindingContext);
 
-            this.enableUpdateCheckBox.BindProperty(
+            this.enableUpdateCheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsUpdateCheckEnabled,
                 bindingContext);
-            this.enableDcaCheckBox.BindProperty(
+            this.enableDcaCheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsDeviceCertificateAuthenticationEnabled,
                 bindingContext);
-            this.lastCheckLabel.BindProperty(
+            this.lastCheckLabel.BindReadonlyProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.LastUpdateCheck,
                 bindingContext);
-            this.enableBrowserIntegrationCheckBox.BindProperty(
+            this.enableBrowserIntegrationCheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsBrowserIntegrationEnabled,
                 bindingContext);
         }
-
-        //---------------------------------------------------------------------
-        // IPropertiesSheet.
-        //---------------------------------------------------------------------
-
-        public IPropertiesSheetViewModel ViewModel => this.viewModel;
 
         //---------------------------------------------------------------------
         // Events.

@@ -22,96 +22,74 @@
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
 using System;
-using System.Diagnostics;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    public class GeneralOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
+    internal class GeneralOptionsViewModel : OptionsViewModelBase<ApplicationSettings>
     {
-        private readonly ApplicationSettingsRepository settingsRepository;
         private readonly IAppProtocolRegistry protocolRegistry;
         private readonly HelpAdapter helpService;
-
-        private bool isUpdateCheckEnabled;
-        private readonly string lastUpdateCheck;
-
-        private bool isBrowserIntegrationEnabled;
-        private bool isDcaEnabled;
-        private bool isDirty = false;
 
         public GeneralOptionsViewModel(
             ApplicationSettingsRepository settingsRepository,
             IAppProtocolRegistry protocolRegistry,
             HelpAdapter helpService)
+            : base("General", settingsRepository)
         {
-            this.settingsRepository = settingsRepository;
             this.protocolRegistry = protocolRegistry;
             this.helpService = helpService;
 
-            //
-            // Read current settings.
-            //
-            // NB. Do not hold on to the settings object because other tabs
-            // might apply changes to other application settings.
-            //
+            this.IsUpdateCheckEditable = ObservableProperty.Build(false);
+            this.IsDeviceCertificateAuthenticationEditable = ObservableProperty.Build(false);
 
-            var settings = this.settingsRepository.GetSettings();
+            this.IsUpdateCheckEnabled = ObservableProperty.Build(false);
+            this.IsBrowserIntegrationEnabled = ObservableProperty.Build(false);
+            this.IsDeviceCertificateAuthenticationEnabled = ObservableProperty.Build(false);
 
-            this.isUpdateCheckEnabled = settings.IsUpdateCheckEnabled.BoolValue;
-            this.IsUpdateCheckEditable = !settings.IsUpdateCheckEnabled.IsReadOnly;
+            MarkDirtyWhenPropertyChanges(this.IsUpdateCheckEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsBrowserIntegrationEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsDeviceCertificateAuthenticationEnabled);
 
-            this.isDcaEnabled = settings.IsDeviceCertificateAuthenticationEnabled.BoolValue;
-            this.IsDeviceCertificateAuthenticationEditable =
+            base.OnInitializationCompleted();
+        }
+
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        protected override void Load(ApplicationSettings settings)
+        {
+            this.IsUpdateCheckEnabled.Value = settings.IsUpdateCheckEnabled.BoolValue;
+            this.IsUpdateCheckEditable.Value = !settings.IsUpdateCheckEnabled.IsReadOnly;
+
+            this.IsDeviceCertificateAuthenticationEnabled.Value = 
+                settings.IsDeviceCertificateAuthenticationEnabled.BoolValue;
+            this.IsDeviceCertificateAuthenticationEditable.Value =
                 !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly;
 
-            this.lastUpdateCheck = settings.LastUpdateCheck.IsDefault
+            this.LastUpdateCheck = settings.LastUpdateCheck.IsDefault
                 ? "never"
                 : DateTime.FromBinary(settings.LastUpdateCheck.LongValue).ToString();
 
-            this.isBrowserIntegrationEnabled = this.protocolRegistry.IsRegistered(
+            this.IsBrowserIntegrationEnabled.Value = this.protocolRegistry.IsRegistered(
                 IapRdpUrl.Scheme,
                 ExecutableLocation);
         }
 
-        // NB. GetEntryAssembly returns the .exe, but this does not work during tests.
-        private static string ExecutableLocation =>
-            (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
-
-        //---------------------------------------------------------------------
-        // IPropertiesSheetViewModel.
-        //---------------------------------------------------------------------
-
-        public string Title => "General";
-
-        public bool IsDirty
+        protected override void Save(ApplicationSettings settings)
         {
-            get => this.isDirty;
-            set
-            {
-                this.isDirty = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public DialogResult ApplyChanges()
-        {
-            Debug.Assert(this.IsDirty);
+            settings.IsUpdateCheckEnabled.BoolValue = 
+                this.IsUpdateCheckEnabled.Value;
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue =
+                this.IsDeviceCertificateAuthenticationEnabled.Value;
 
             //
-            // Save changed settings.
-            //
-            var settings = this.settingsRepository.GetSettings();
-            settings.IsUpdateCheckEnabled.BoolValue = this.isUpdateCheckEnabled;
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = this.isDcaEnabled;
-            this.settingsRepository.SetSettings(settings);
-
             // Update protocol registration.
-            if (this.isBrowserIntegrationEnabled)
+            //
+            if (this.IsBrowserIntegrationEnabled.Value)
             {
                 this.protocolRegistry.Register(
                     IapRdpUrl.Scheme,
@@ -122,53 +100,28 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             {
                 this.protocolRegistry.Unregister(IapRdpUrl.Scheme);
             }
-
-            this.IsDirty = false;
-
-            return DialogResult.OK;
         }
+
+
+        // NB. GetEntryAssembly returns the .exe, but this does not work during tests.
+        private static string ExecutableLocation =>
+            (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public bool IsUpdateCheckEditable { get; }
-        public bool IsDeviceCertificateAuthenticationEditable { get; }
+        public ObservableProperty<bool> IsUpdateCheckEditable { get; }
 
-        public bool IsUpdateCheckEnabled
-        {
-            get => this.isUpdateCheckEnabled;
-            set
-            {
-                this.isUpdateCheckEnabled = value;
-                this.IsDirty = true;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsDeviceCertificateAuthenticationEditable { get; }
 
-        public bool IsBrowserIntegrationEnabled
-        {
-            get => this.isBrowserIntegrationEnabled;
-            set
-            {
-                this.isBrowserIntegrationEnabled = value;
-                this.IsDirty = true;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsUpdateCheckEnabled { get; }
 
-        public bool IsDeviceCertificateAuthenticationEnabled
-        {
-            get => this.isDcaEnabled;
-            set
-            {
-                this.isDcaEnabled = value;
-                this.IsDirty = true;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsBrowserIntegrationEnabled { get; }
 
-        public string LastUpdateCheck => this.lastUpdateCheck;
+        public ObservableProperty<bool> IsDeviceCertificateAuthenticationEnabled { get; }
+
+        public string LastUpdateCheck { get; private set; }
 
         //---------------------------------------------------------------------
         // Actions.

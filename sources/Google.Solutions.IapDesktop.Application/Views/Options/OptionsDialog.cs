@@ -77,6 +77,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 var appSettingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
 
                 dialog.ViewModel.AddSheet(
+                    new GeneralOptionsSheet(),
+                    new GeneralOptionsViewModel(
+                        appSettingsRepository,
+                        serviceProvider.GetService<IAppProtocolRegistry>(),
+                        serviceProvider.GetService<HelpAdapter>()));
+                dialog.ViewModel.AddSheet(
                     new AppearanceOptionsSheet(),
                     new AppearanceOptionsViewModel(serviceProvider.GetService<ThemeSettingsRepository>()));
                 dialog.ViewModel.AddSheet(

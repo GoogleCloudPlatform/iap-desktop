@@ -30,6 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         public AppearanceOptionsViewModel(ThemeSettingsRepository settingsRepository)
             : base("Appearance", settingsRepository)
         {
+            base.OnInitializationCompleted();
         }
 
         //---------------------------------------------------------------------

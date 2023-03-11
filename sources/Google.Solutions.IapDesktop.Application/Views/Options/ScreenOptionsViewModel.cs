@@ -34,6 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         public ScreenOptionsViewModel(ApplicationSettingsRepository settingsRepository)
             : base("Display", settingsRepository)
         {
+            base.OnInitializationCompleted();
         }
 
         //---------------------------------------------------------------------
@@ -52,8 +53,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 {
                     IsSelected = fullScreenDevices.Contains(s.DeviceName)
                 }));
-
-            this.IsDirty.Value = false;
         }
 
         protected override void Save(ApplicationSettings settings)

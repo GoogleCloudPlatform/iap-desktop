@@ -41,10 +41,20 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.settingsRepository = settingsRepository.ThrowIfNull(nameof(settingsRepository));
 
             this.IsDirty = ObservableProperty.Build(false);
-
-            Load(settingsRepository.GetSettings());
         }
 
+        /// <summary>
+        /// Deriving class must call this method at the end of their constructor.
+        /// </summary>
+        protected void OnInitializationCompleted()
+        {
+            Load(this.settingsRepository.GetSettings());
+
+            this.IsDirty.Value = false;
+        }
+
+        /// <summary>
+        /// Mark view model as dirty if the property changes.
         protected void MarkDirtyWhenPropertyChanges<T>(ObservableProperty<T> property)
         {
             //

@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 SettingsRepositoryBase<IRegistrySettingsCollection> settingsRepository)
                 : base(title, settingsRepository)
             {
+                OnInitializationCompleted();
             }
 
             protected override void Load(IRegistrySettingsCollection settings)
