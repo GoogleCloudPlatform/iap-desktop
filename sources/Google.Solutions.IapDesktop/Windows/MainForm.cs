@@ -145,7 +145,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.viewMenuContextSource,
                 bindingContext);
-            this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
             this.viewMenuCommands.BindTo(
                 this.viewToolStripMenuItem, 
                 this.bindingContext);
@@ -177,7 +176,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.windowMenuContextSource,
                 bindingContext);
-            this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;
             this.windowMenuCommands.BindTo(
                 this.windowToolStripMenuItem, 
                 this.bindingContext);
@@ -294,13 +292,6 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
         // Window events.
         //---------------------------------------------------------------------
-
-        private void CommandContainer_CommandFailed(object sender, ExceptionEventArgs e)
-        {
-            this.serviceProvider
-                .GetService<IExceptionDialog>()
-                .Show(this, "Executing command failed", e.Exception);
-        }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -761,7 +752,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 ToolStripItemDisplayStyle.ImageAndText,
                 new CallbackSource<TContext>(queryCurrentContextFunc),
                 this.bindingContext);
-            container.CommandFailed += CommandContainer_CommandFailed;
             container.BindTo(menu, this.bindingContext);
 
             menu.DropDownOpening += (sender, args) =>

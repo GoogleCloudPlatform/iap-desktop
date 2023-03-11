@@ -162,14 +162,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 ToolStripItemDisplayStyle.ImageAndText,
                 contextSource,
                 bindingContext);
-            this.contextMenuCommands.CommandFailed += Command_CommandFailed;
-
             this.toolbarCommands = new CommandContainer<IProjectModelNode>(
                 ToolStripItemDisplayStyle.Image,
                 contextSource,
                 bindingContext);
-            this.toolbarCommands.CommandFailed += Command_CommandFailed;
-
 
             //
             // Toolbar.
@@ -346,14 +342,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
-
-        private void Command_CommandFailed(object sender, ExceptionEventArgs e)
-        {
-            var command = (ICommand)sender;
-            this.exceptionDialog.Show(
-                this,
-                $"{command.ActivityText} failed", e.Exception);
-        }
 
         private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
         {

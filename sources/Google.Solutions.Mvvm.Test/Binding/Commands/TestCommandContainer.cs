@@ -361,19 +361,14 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInvokeSynchronouslyThrowsException_ThenEventIsFired()
+        public void WhenInvokeSynchronouslyThrowsException_ThenContextIsNotified()
         {
+            var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
                 new ContextSource<string>(),
-                new Mock<IBindingContext>().Object))
+                bindingContext.Object))
             {
-                Exception exception = null;
-                container.CommandFailed += (s, a) =>
-                {
-                    exception = a.Exception;
-                };
-
                 container.AddCommand(
                     new ContextCommand<string>(
                         "test",
@@ -385,21 +380,23 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 container.ExecuteDefaultCommand();
 
-                Assert.IsNotNull(exception);
-                Assert.IsInstanceOf<ArgumentException>(exception);
+                bindingContext.Verify(
+                    ctx => ctx.OnCommandFailed(
+                        It.IsAny<ICommand>(),
+                        It.IsAny<ArgumentException>()),
+                    Times.Once);
             }
         }
 
         [Test]
         public void WhenInvokeSynchronouslyThrowsCancellationException_ThenExceptionIsSwallowed()
         {
+            var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
                 new ContextSource<string>(),
-                new Mock<IBindingContext>().Object))
+                bindingContext.Object))
             {
-                container.CommandFailed += (s, a) => Assert.Fail();
-
                 container.AddCommand(
                     new ContextCommand<string>(
                         "test",
@@ -410,22 +407,30 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                     });
 
                 container.ExecuteDefaultCommand();
+
+                bindingContext.Verify(
+                    ctx => ctx.OnCommandFailed(
+                        It.IsAny<ICommand>(),
+                        It.IsAny<Exception>()),
+                    Times.Never);
             }
         }
 
         [Test]
         public async Task WhenInvokeAsynchronouslyThrowsException_ThenEventIsFired()
         {
+            var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
                 new ContextSource<string>(),
-                new Mock<IBindingContext>().Object))
+                bindingContext.Object))
             {
                 Exception exception = null;
-                container.CommandFailed += (s, a) =>
-                {
-                    exception = a.Exception;
-                };
+                bindingContext.Setup(
+                    ctx => ctx.OnCommandFailed(
+                        It.IsAny<ICommand>(),
+                        It.IsAny<Exception>()))
+                    .Callback<ICommand, Exception>((c, e) => exception = e);
 
                 container.AddCommand(
                     new ContextCommand<string>(
@@ -455,13 +460,12 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         [Test]
         public void WhenInvokeAsynchronouslyThrowsCancellationException_ThenExceptionIsSwallowed()
         {
+            var bindingContext = new Mock<IBindingContext>();
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
                 new ContextSource<string>(),
-                new Mock<IBindingContext>().Object))
+                bindingContext.Object))
             {
-                container.CommandFailed += (s, a) => Assert.Fail();
-
                 container.AddCommand(
                     new ContextCommand<string>(
                         "test",
@@ -476,72 +480,12 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                     });
 
                 container.ExecuteDefaultCommand();
-            }
-        }
 
-        [Test]
-        public void WhenInvokeThrowsException_ThenCommandIsPassedAsSender()
-        {
-            using (var container = new CommandContainer<string>(
-                ToolStripItemDisplayStyle.Text,
-                new ContextSource<string>(),
-                new Mock<IBindingContext>().Object))
-            {
-                object sender = null;
-                container.CommandFailed += (s, a) =>
-                {
-                    sender = s;
-                };
-
-                var command = container.AddCommand(
-                    new ContextCommand<string>(
-                        "test",
-                        ctx => CommandState.Enabled,
-                        ctx => throw new ArgumentException())
-                    {
-                        IsDefault = true
-                    });
-
-                container.ExecuteDefaultCommand();
-
-                Assert.IsNotNull(sender);
-                Assert.IsInstanceOf<IContextCommand<string>>(sender);
-            }
-        }
-
-        [Test]
-        public void WhenInvokeThrowsException_ThenEventIsRaisedOnParentContainer()
-        {
-            using (var container = new CommandContainer<string>(
-                ToolStripItemDisplayStyle.Text,
-                 new ContextSource<string>(),
-                 new Mock<IBindingContext>().Object))
-            {
-                object sender = null;
-                container.CommandFailed += (s, a) =>
-                {
-                    sender = s;
-                };
-
-                using (var subContainer = container.AddCommand(
-                    "subcontainer",
-                    _ => CommandState.Enabled,
-                    _ => { }))
-                {
-                    var command = subContainer.AddCommand(
-                        new ContextCommand<string>(
-                            "test",
-                            ctx => CommandState.Enabled,
-                            ctx => throw new ArgumentException())
-                        {
-                            IsDefault = true
-                        });
-
-                    subContainer.ExecuteDefaultCommand();
-                }
-
-                Assert.IsNotNull(sender);
-                Assert.IsInstanceOf<IContextCommand<string>>(sender);
+                bindingContext.Verify(
+                    ctx => ctx.OnCommandFailed(
+                        It.IsAny<ICommand>(),
+                        It.IsAny<Exception>()),
+                    Times.Never);
             }
         }
     }

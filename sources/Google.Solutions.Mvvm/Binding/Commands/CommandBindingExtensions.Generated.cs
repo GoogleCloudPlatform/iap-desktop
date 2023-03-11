@@ -60,7 +60,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                         }
                     }
                                     }
-                catch (TaskCanceledException)
+                catch (Exception e) when (e.IsCancellation())
                 {
                     // Ignore.
                 }
@@ -107,7 +107,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                         .ConfigureAwait(true);
 
                                     }
-                catch (TaskCanceledException)
+                catch (Exception e) when (e.IsCancellation())
                 {
                     // Ignore.
                 }

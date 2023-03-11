@@ -72,8 +72,6 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 
         internal ObservableCollection<MenuItemViewModelBase> MenuItems => this.menuItems;
 
-        public event EventHandler<ExceptionEventArgs> CommandFailed;
-
         private CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
             IContextSource<TContext> contextSource,
@@ -113,17 +111,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 
         private void OnCommandFailed(IContextCommand<TContext> command, Exception e)
         {
-            if (this.parent != null)
-            {
-                //
-                // Bubble up to topmost container.
-                //
-                this.parent.OnCommandFailed(command, e);
-            }
-            else
-            {
-                this.CommandFailed?.Invoke(command, new ExceptionEventArgs(e));
-            }
+            this.bindingContext.OnCommandFailed(command, e);
         }
 
         public void BindTo(
@@ -381,7 +369,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 
             public override string ToolTip
                 => this.DisplayStyle == ToolStripItemDisplayStyle.Image
-                    ? command.Text.Replace("&", "")
+                    ? this.command.Text.Replace("&", "")
                     : null;
 
             public override Image Image => this.command.Image;
