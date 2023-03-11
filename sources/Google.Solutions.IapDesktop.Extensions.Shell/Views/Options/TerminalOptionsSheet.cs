@@ -22,9 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
 using System;
@@ -34,43 +32,44 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    [Service(typeof(ITerminalOptionsSheet), ServiceLifetime.Transient, ServiceVisibility.Global)]
-    [ServiceCategory(typeof(IPropertiesSheet))]
-    public partial class TerminalOptionsSheet : UserControl, ITerminalOptionsSheet
+    [Service(ServiceLifetime.Transient, ServiceVisibility.Global)]
+    [ServiceCategory(typeof(IPropertiesSheetView))]
+    public partial class TerminalOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private readonly TerminalOptionsViewModel viewModel;
+        private TerminalOptionsViewModel viewModel;
         private readonly IExceptionDialog exceptionDialog;
 
         public TerminalOptionsSheet(
             TerminalSettingsRepository settingsRepository,
             IExceptionDialog exceptionDialog)
         {
-            this.viewModel = new TerminalOptionsViewModel(
-                settingsRepository.ThrowIfNull(nameof(settingsRepository)));
             this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
 
             InitializeComponent();
+        }
 
+        public Type ViewModel => typeof(TerminalOptionsViewModel);
 
-            // TODO: Use shared binding context.
-            var bindingContext = ViewBindingContext.CreateDummy();
+        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
+        {
+            this.viewModel = (TerminalOptionsViewModel)viewModelBase;
 
             //
             // Clipboard box.
             //
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsCopyPasteUsingCtrlCAndCtrlVEnabled,
                 bindingContext);
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
                 bindingContext);
             this.convertTypographicQuotesCheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsQuoteConvertionOnPasteEnabled,
                 bindingContext);
 
@@ -79,17 +78,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             //
             this.selectUsingShiftArrrowEnabledCheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsSelectUsingShiftArrrowEnabled,
                 bindingContext);
             this.selectAllUsingCtrlAEnabledCheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsSelectAllUsingCtrlAEnabled,
                 bindingContext);
             this.navigationUsingControlArrrowEnabledCheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsNavigationUsingControlArrrowEnabled,
                 bindingContext);
 
@@ -98,12 +97,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             //
             this.scrollUsingCtrlUpDownCheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsScrollingUsingCtrlUpDownEnabled,
                 bindingContext);
             this.scrollUsingCtrlHomeEndcheckBox.BindProperty(
                 c => c.Checked,
-                viewModel,
+                this.viewModel,
                 m => m.IsScrollingUsingCtrlHomeEndEnabled,
                 bindingContext);
 
@@ -112,26 +111,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             //
             this.terminalLook.BindReadonlyProperty(
                 c => c.Font,
-                viewModel,
+                this.viewModel,
                 m => m.TerminalFont,
                 bindingContext);
             this.terminalLook.BindReadonlyProperty(
                 c => c.ForeColor,
-                viewModel,
+                this.viewModel,
                 m => m.TerminalForegroundColor,
                 bindingContext);
             this.terminalLook.BindReadonlyProperty(
                 c => c.BackColor,
-                viewModel,
+                this.viewModel,
                 m => m.TerminalBackgroundColor,
                 bindingContext);
         }
-
-        //---------------------------------------------------------------------
-        // IPropertiesSheet.
-        //---------------------------------------------------------------------
-
-        public IPropertiesSheetViewModel ViewModel => this.viewModel;
 
         //---------------------------------------------------------------------
         // Events.

@@ -33,12 +33,10 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    public class OptionsDialog : PropertiesDialog
+    public class OptionsDialog 
     {
         public OptionsDialog(IServiceCategoryProvider serviceProvider) //TODO: Remove class
-            : base(serviceProvider)
         {
-            this.Text = "Options";
 
             //var appSettingsRepository =
             //    serviceProvider.GetService<ApplicationSettingsRepository>();
@@ -66,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             //}
         }
 
-        public static void Show(
+        public static DialogResult Show(
             IWin32Window parent,
             IServiceCategoryProvider serviceProvider) // TODO: Move elsewhere
         {
@@ -94,11 +92,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                     new ScreenOptionsSheet(),
                     new ScreenOptionsViewModel(appSettingsRepository));
 
+                //
+                // Load all services implementing IPropertiesSheet and
+                // add them automatically. This gives extensions a chance
+                // to plug in their own sheets.
+                //
+                foreach (var sheet in serviceProvider
+                    .GetServicesByCategory<IPropertiesSheetView>()
+                    .Select(sheet => new {
+                        View = sheet,
+                        ViewModel = (PropertiesSheetViewModelBase)serviceProvider.GetService(sheet.ViewModel)
+                    })
+                    .OrderBy(p => p.ViewModel.Title))
+                {
+                    dialog.ViewModel.AddSheet(sheet.View, sheet.ViewModel);
+                }
+
 #if DEBUG
                 dialog.ViewModel.AddSheet(new DebugOptionsSheet(), new DebugOptionsSheetViewModel());
 #endif
 
-                dialog.ShowDialog(parent);
+                return dialog.ShowDialog(parent);
             }
         }
     }

@@ -329,11 +329,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             tab.HoverTabForeColor = this.theme.Palette.TabControl.MouseOverTabText;
         }
 
-        private void StylePropertiesDialog(PropertiesDialog dialog)
-        {
-            dialog.SheetBackColor = this.theme.Palette.ToolWindowInnerTabInactive.Background;
-        }
-
         private void StyleProgressBar(ProgressBarBase bar)
         {
             bar.BackColor = this.theme.Palette.ProgressBar.Background;
@@ -358,7 +353,6 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.AddRule<ComboBox>(c => StyleComboBox(c));
             controlTheme.AddRule<GroupBox>(c => StyleGroupBox(c));
             controlTheme.AddRule<VerticalTabControl>(c => StyleTabControl(c));
-            controlTheme.AddRule<PropertiesDialog>(c => StylePropertiesDialog(c));
             controlTheme.AddRule<ProgressBarBase>(c => StyleProgressBar(c));
 
             var menuTheme = new ToolStripItemTheme(true);

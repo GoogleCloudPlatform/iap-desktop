@@ -400,7 +400,7 @@ namespace Google.Solutions.IapDesktop.Windows
                                 out bool _) == 0)
                         {
                             // Open settings.
-                            if (this.serviceProvider.GetService<OptionsDialog>().ShowDialog(this) == DialogResult.OK)
+                            if (OptionsDialog.Show(this, (IServiceCategoryProvider)this.serviceProvider) == DialogResult.OK)
                             {
                                 // Ok, retry with modified settings.
                                 continue;

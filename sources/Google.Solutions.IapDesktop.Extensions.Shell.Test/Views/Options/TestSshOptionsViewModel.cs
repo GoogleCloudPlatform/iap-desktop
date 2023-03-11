@@ -29,6 +29,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 {
@@ -92,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         }
 
         [Test]
-        public void WhenDisablingIsPropagateLocaleEnabled_ThenChangeIsApplied()
+        public async Task WhenDisablingIsPropagateLocaleEnabled_ThenChangeIsApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -103,7 +104,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             {
                 IsPropagateLocaleEnabled = false
             };
-            viewModel.ApplyChanges();
+
+            await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
             Assert.IsFalse(settings.IsPropagateLocaleEnabled.BoolValue);
@@ -115,11 +117,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
 
             viewModel.IsPropagateLocaleEnabled = !viewModel.IsPropagateLocaleEnabled;
 
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         //---------------------------------------------------------------------
@@ -160,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         }
 
         [Test]
-        public void WhenChangingPublicKeyValidityInDays_ThenChangeIsApplied()
+        public async Task WhenChangingPublicKeyValidityInDays_ThenChangeIsApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -171,7 +173,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             {
                 PublicKeyValidityInDays = 365 * 2
             };
-            viewModel.ApplyChanges();
+
+            await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
             Assert.AreEqual(365 * 2 * 24 * 60 * 60, settings.PublicKeyValidity.IntValue);
@@ -183,11 +186,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
 
             viewModel.PublicKeyValidityInDays++;
 
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         //---------------------------------------------------------------------
@@ -228,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
         }
 
         [Test]
-        public void WhenChangingPublicKeyType_ThenChangeIsApplied()
+        public async Task WhenChangingPublicKeyType_ThenChangeIsApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -239,7 +242,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             {
                 PublicKeyType = SshKeyType.EcdsaNistp384
             };
-            viewModel.ApplyChanges();
+
+            await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
             Assert.AreEqual(SshKeyType.EcdsaNistp384, settings.PublicKeyType.EnumValue);
@@ -251,11 +255,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new SshOptionsViewModel(settingsRepository);
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
 
             viewModel.PublicKeyType++;
 
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
+        }
+
+        [Test]
+        public void WhenPublicKeyTypeNotChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var settingsRepository = CreateSettingsRepository();
+            var viewModel = new SshOptionsViewModel(settingsRepository);
+
+            Assert.IsFalse(viewModel.IsDirty.Value);
+
+            viewModel.PublicKeyType = viewModel.PublicKeyType;
+
+            Assert.IsFalse(viewModel.IsDirty.Value);
         }
 
         //---------------------------------------------------------------------

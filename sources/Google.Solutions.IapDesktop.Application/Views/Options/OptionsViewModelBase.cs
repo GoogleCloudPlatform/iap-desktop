@@ -27,7 +27,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    internal abstract class OptionsViewModelBase<TSettings>
+    public abstract class OptionsViewModelBase<TSettings>
         : PropertiesSheetViewModelBase
         where TSettings : IRegistrySettingsCollection
     {

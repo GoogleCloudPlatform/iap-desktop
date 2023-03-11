@@ -19,21 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
-using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Forms;
-
-#pragma warning disable CA1822 // Mark members as static
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    public interface ITerminalOptionsSheet : IPropertiesSheet
-    { }
-
-    public class TerminalOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
+    [Service(ServiceLifetime.Transient, ServiceVisibility.Global)]
+    public class TerminalOptionsViewModel : OptionsViewModelBase<TerminalSettings>
     {
         private bool isCopyPasteUsingCtrlCAndCtrlVEnabled;
         private bool isSelectAllUsingCtrlAEnabled;
@@ -47,23 +42,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         private Color terminalForegroundColor;
         private Color terminalBackgroundColor;
 
-        private readonly TerminalSettingsRepository settingsRepository;
-
-        private bool isDirty;
-
         public TerminalOptionsViewModel(
             TerminalSettingsRepository settingsRepository)
+            : base("Terminal", settingsRepository)
         {
-            this.settingsRepository = settingsRepository;
+            base.OnInitializationCompleted();
+        }
 
-            //
-            // Read current settings.
-            //
-            // NB. Do not hold on to the settings object because other tabs
-            // might apply changes to other application settings.
-            //
-            var settings = this.settingsRepository.GetSettings();
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
+        protected override void Load(TerminalSettings settings)
+        {
             this.IsCopyPasteUsingCtrlCAndCtrlVEnabled =
                 settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue;
             this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled =
@@ -87,34 +78,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 settings.ForegroundColorArgb.IntValue);
             this.TerminalBackgroundColor = Color.FromArgb(
                 settings.BackgroundColorArgb.IntValue);
-
-            this.isDirty = false;
         }
 
-        //---------------------------------------------------------------------
-        // IOptionsDialogPane.
-        //---------------------------------------------------------------------
-
-        public string Title => "Terminal";
-
-        public bool IsDirty
+        protected override void Save(TerminalSettings settings)
         {
-            get => this.isDirty;
-            set
-            {
-                this.isDirty = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public DialogResult ApplyChanges()
-        {
-            Debug.Assert(this.IsDirty);
-
-            //
-            // Save settings.
-            //
-            var settings = this.settingsRepository.GetSettings();
+            Debug.Assert(this.IsDirty.Value);
 
             settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue =
                 this.IsCopyPasteUsingCtrlCAndCtrlVEnabled;
@@ -140,12 +108,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.TerminalForegroundColor.ToArgb();
             settings.BackgroundColorArgb.IntValue =
                 this.TerminalBackgroundColor.ToArgb();
-
-            this.settingsRepository.SetSettings(settings);
-
-            this.IsDirty = false;
-
-            return DialogResult.OK;
         }
 
         //---------------------------------------------------------------------
@@ -157,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.isCopyPasteUsingCtrlCAndCtrlVEnabled;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.isCopyPasteUsingCtrlCAndCtrlVEnabled = value;
                 RaisePropertyChange();
             }
@@ -168,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.isCopyPasteUsingShiftInsertAndCtrlInsertEnabled;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.isCopyPasteUsingShiftInsertAndCtrlInsertEnabled = value;
                 RaisePropertyChange();
             }
@@ -179,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.isSelectAllUsingCtrlAEnabled;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.isSelectAllUsingCtrlAEnabled = value;
                 RaisePropertyChange();
             }
@@ -190,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.isSelectUsingShiftArrrowEnabled;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.isSelectUsingShiftArrrowEnabled = value;
                 RaisePropertyChange();
             }
@@ -201,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.isQuoteConvertionOnPasteEnabled;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.isQuoteConvertionOnPasteEnabled = value;
                 RaisePropertyChange();
             }
@@ -212,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.isNavigationUsingControlArrrowEnabled;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.isNavigationUsingControlArrrowEnabled = value;
                 RaisePropertyChange();
             }
@@ -223,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.isScrollingUsingCtrlUpDownEnabled;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.isScrollingUsingCtrlUpDownEnabled = value;
                 RaisePropertyChange();
             }
@@ -234,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.isScrollingUsingCtrlHomeEndEnabled;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.isScrollingUsingCtrlHomeEndEnabled = value;
                 RaisePropertyChange();
             }
@@ -245,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.terminalFont;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.terminalFont = value;
                 RaisePropertyChange();
             }
@@ -259,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.terminalForegroundColor;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.terminalForegroundColor = value;
                 RaisePropertyChange();
             }
@@ -270,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.terminalBackgroundColor;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.terminalBackgroundColor = value;
                 RaisePropertyChange();
             }

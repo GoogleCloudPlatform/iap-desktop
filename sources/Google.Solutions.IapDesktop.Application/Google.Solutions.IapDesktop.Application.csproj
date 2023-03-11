@@ -272,9 +272,7 @@
       <DependentUpon>GeneralOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Options\GeneralOptionsViewModel.cs" />
-    <Compile Include="Views\Options\OptionsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Views\Options\OptionsDialog.cs" />
     <Compile Include="Views\Options\NetworkOptionsSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -299,14 +297,7 @@
     <Compile Include="Views\ProjectPicker\ProjectPickerView.Designer.cs">
       <DependentUpon>ProjectPickerView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Properties\IPropertiesSheet.cs" />
     <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
-    <Compile Include="Views\Properties\PropertiesDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Properties\PropertiesDialog.Designer.cs">
-      <DependentUpon>PropertiesDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\Properties\PropertiesInspectorViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -444,9 +435,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProjectPicker\ProjectPickerView.resx">
       <DependentUpon>ProjectPickerView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Properties\PropertiesDialog.resx">
-      <DependentUpon>PropertiesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Properties\PropertiesInspectorViewBase.resx">
       <DependentUpon>PropertiesInspectorViewBase.cs</DependentUpon>
