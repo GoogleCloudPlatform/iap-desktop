@@ -66,8 +66,10 @@
   <ItemGroup>
     <Compile Include="Binding\TestBindingExtensions.cs" />
     <Compile Include="Binding\TestFilteredObservableCollection.cs" />
+    <Compile Include="Binding\TestObservableFunc.cs" />
     <Compile Include="Binding\TestObservableProperty.cs" />
     <Compile Include="Binding\TestRangeObservableCollection.cs" />
+    <Compile Include="Binding\TestThreadSafeObservableProperty.cs" />
     <Compile Include="Binding\TestToolStripMenuBindingExtensions.cs" />
     <Compile Include="Binding\TestView.cs" />
     <Compile Include="Cache\TestLeastRecentlyUsedCache.cs" />

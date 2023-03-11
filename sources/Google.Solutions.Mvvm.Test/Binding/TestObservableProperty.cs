@@ -33,7 +33,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRaisingPropertyChange_ThenEventIsRaised()
+        public void RaisePropertyChange()
         {
             var property = ObservableProperty.Build(string.Empty);
 
@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenRaisingPropertyChange_ThenEventIsRaisedForDependents()
+        public void RaisePropertyChangeNotifiesDependents()
         {
             var property = ObservableProperty.Build(string.Empty);
             var dependent1 = ObservableProperty.Build(
@@ -94,34 +94,6 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 dependent2,
                 () => property.Value = "Test",
                 "Value");
-        }
-
-        //---------------------------------------------------------------------
-        // Build
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenFuncDependsOnOneSource_ThenFuncIsCalledWithParameters()
-        {
-            var source = ObservableProperty.Build("One");
-            var dependent1 = ObservableProperty.Build(
-                source,
-                s => s.ToUpper());
-
-            Assert.AreEqual("ONE", dependent1.Value);
-        }
-
-        [Test]
-        public void WhenFuncDependsOnTwoSources_ThenFuncIsCalledWithParameters()
-        {
-            var source1 = ObservableProperty.Build("One");
-            var source2 = ObservableProperty.Build("Two");
-            var dependent1 = ObservableProperty.Build(
-                source1,
-                source2,
-                (s1, s2) => s1 + s2);
-
-            Assert.AreEqual("OneTwo", dependent1.Value);
         }
     }
 }

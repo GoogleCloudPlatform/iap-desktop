@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="Binding\BindingExtensions.cs" />
     <Compile Include="Binding\FilteredObservableCollection.cs" />
+    <Compile Include="Binding\ObservableFunc.cs" />
+    <Compile Include="Binding\ObservableProperty.Builder.cs" />
     <Compile Include="Binding\ObservableProperty.cs" />
     <Compile Include="Binding\RangeObservableCollection.cs" />
     <Compile Include="Binding\ToolStripMenuBindingExtensions.cs" />
