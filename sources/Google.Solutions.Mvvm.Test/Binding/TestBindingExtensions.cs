@@ -20,16 +20,11 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Google.Solutions.Mvvm.Binding.BindingExtensions;
 
 namespace Google.Solutions.Mvvm.Test.Binding
 {
@@ -65,12 +60,6 @@ namespace Google.Solutions.Mvvm.Test.Binding
         private class ViewModelWithObservableProperties : ViewModelBase
         {
             public ObservableProperty<string> One = ObservableProperty.Build("");
-        }
-
-        private class ViewModelWithCommand : ViewModelBase
-        {
-            public ObservableProperty<CommandState> CommandState { get; set; }
-            public ObservableCommand Command { get; set; }
         }
 
         //---------------------------------------------------------------------
@@ -518,215 +507,6 @@ namespace Google.Solutions.Mvvm.Test.Binding
             Assert.AreEqual("", control.Text);
             model.One.Value = "test";
             Assert.AreEqual("test", control.Text);
-        }
-
-        //---------------------------------------------------------------------
-        // Binding for commands.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenCommandDisabled_ThenButtonIsDisabled()
-        {
-            var commandAvailable = ObservableProperty.Build(false);
-            var command = ObservableCommand.Build(
-                "Command name",
-                () => Task.CompletedTask,
-                commandAvailable);
-
-            using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command,
-            })
-            {
-                var button = new Button();
-                form.Controls.Add(button);
-
-                button.BindCommand(
-                    viewModel,
-                    m => m.Command,
-                    new Mock<IBindingContext>().Object);
-
-                form.Show();
-
-                Assert.AreEqual(command.Text, button.Text);
-                Assert.IsFalse(button.Enabled);
-
-                form.Close();
-            }
-        }
-
-        [Test]
-        public void WhenCommandAvailable_ThenButtonIsEnabled()
-        {
-            var commandAvailable = ObservableProperty.Build(true);
-            var command = ObservableCommand.Build(
-                "Command name",
-                () => Task.CompletedTask,
-                commandAvailable);
-
-            using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command,
-            })
-            {
-                var button = new Button()
-                {
-                    Enabled = false
-                };
-                form.Controls.Add(button);
-
-                button.BindCommand(
-                    viewModel,
-                    m => m.Command,
-                    new Mock<IBindingContext>().Object);
-
-                form.Show();
-
-                Assert.AreEqual(command.Text, button.Text);
-                Assert.IsTrue(button.Enabled);
-
-                form.Close();
-            }
-        }
-
-        [Test]
-        public void WhenCommandIsExecuting_ThenButtonIsDisabled()
-        {
-            var button = new Button();
-            var command = ObservableCommand.Build(
-                "Command name",
-                () => {
-                    Assert.IsFalse(button.Enabled);
-                    return Task.CompletedTask;
-                });
-
-            using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
-            {
-                form.Controls.Add(button);
-
-                button.BindCommand(
-                    viewModel,
-                    m => m.Command,
-                    new Mock<IBindingContext>().Object);
-
-                form.Show();
-
-                button.PerformClick();
-                Assert.IsTrue(button.Enabled);
-                
-                form.Close();
-            }
-        }
-
-        [Test]
-        public void WhenCommandTextNotEmpty_ThenControlTextIsUpdated()
-        {
-            var button = new Button()
-            {
-                Text = "Original text"
-            };
-            var command = ObservableCommand.Build(
-                "Command text",
-                () => {});
-
-            using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
-            {
-                form.Controls.Add(button);
-
-                button.BindCommand(
-                    viewModel,
-                    m => m.Command,
-                    new Mock<IBindingContext>().Object);
-
-                form.Show();
-
-                Assert.AreEqual("Command text", button.Text);
-
-                form.Close();
-            }
-        }
-
-        [Test]
-        public void WhenCommandTextIsNullOrEmpty_ThenControlTextIsLeftAsIs()
-        {
-            var button = new Button()
-            {
-                Text = "Original text"
-            };
-            var command = ObservableCommand.Build(
-                string.Empty,
-                () => { });
-
-            using (var form = new Form())
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command
-            })
-            {
-                form.Controls.Add(button);
-
-                button.BindCommand(
-                    viewModel,
-                    m => m.Command,
-                    new Mock<IBindingContext>().Object);
-
-                form.Show();
-
-                Assert.AreEqual("Original text", button.Text);
-
-                form.Close();
-            }
-        }
-
-        [Test]
-        [InteractiveTest]
-        [Apartment(ApartmentState.STA)]
-        public void TestCommandBindingUi()
-        {
-            var commandAvailable = ObservableProperty.Build(CommandState.Enabled);
-            var command = ObservableCommand.Build(
-                "Command name",
-                async () =>
-                {
-                    await Task.Delay(500);
-                    MessageBox.Show("Execute");
-                });
-
-            using (var form = new Form()
-            {
-                Width = 400,
-                Height = 400
-            })
-            using (var viewModel = new ViewModelWithCommand()
-            {
-                Command = command,
-                CommandState = commandAvailable
-            })
-            {
-                var button = new Button()
-                {
-                    Text = "Bound button"
-                };
-                form.Controls.Add(button);
-                form.AcceptButton = button;
-
-                button.BindCommand(
-                    viewModel,
-                    m => m.Command,
-                    new Mock<IBindingContext>().Object);
-
-                form.ShowDialog();
-            }
         }
     }
 }

@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Binding\Commands\TestCommandBindingExtensions.cs" />
     <Compile Include="Binding\TestBindingExtensions.cs" />
     <Compile Include="Binding\TestFilteredObservableCollection.cs" />
     <Compile Include="Binding\TestObservableFunc.cs" />

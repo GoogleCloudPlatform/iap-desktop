@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Binding\BindingExtensions.cs" />
+    <Compile Include="Binding\Commands\CommandBindingExtensions.cs" />
     <Compile Include="Binding\Commands\IContextCommand.cs" />
     <Compile Include="Binding\FilteredObservableCollection.cs" />
     <Compile Include="Binding\ObservableFunc.cs" />

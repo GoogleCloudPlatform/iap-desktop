@@ -304,83 +304,6 @@ namespace Google.Solutions.Mvvm.Binding
             bindingContext.OnBindingCreated(control, binding);
         }
 
-        public static void BindCommand<TButton, TCommand, TModel>(
-            this TButton button,
-            TModel model,
-            Func<TModel, TCommand> commandProperty,
-            IBindingContext bindingContext)
-            where TCommand : IObservableCommand
-            where TButton : Control, IButtonControl
-        {
-            Precondition.ExpectNotNull(commandProperty, nameof(commandProperty));
-            Precondition.ExpectNotNull(model, nameof(model));
-            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
-
-            var command = commandProperty(model);
-
-            //
-            // Apply initial values.
-            //
-            button.Enabled = command.CanExecute.Value;
-            if (!string.IsNullOrEmpty(command.Text))
-            {
-                button.Text = command.Text;
-            }
-
-            //
-            // Update control if command state changes.
-            //
-            var stateBinding = new NotifyObservablePropertyChangedBinding<bool>(
-                command.CanExecute,
-                canExecute => button.Enabled = canExecute);
-
-            button.AttachDisposable(stateBinding);
-            bindingContext.OnBindingCreated(button, stateBinding);
-
-            //
-            // Forward click events to the command.
-            //
-            async void OnClickAsync(object _, EventArgs __)
-            {
-                button.Enabled = false;
-                try
-                {
-                    await command
-                        .ExecuteAsync()
-                        .ConfigureAwait(true);
-
-                    if (button.FindForm() is Form form)
-                    {
-                        //
-                        // Treat the successful command execution
-                        // as dialog result.
-                        //
-                        if (form.AcceptButton == button)
-                        {
-                            form.DialogResult = DialogResult.OK;
-                        }
-                        else if (form.CancelButton == button)
-                        {
-                            form.DialogResult = DialogResult.Cancel;
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    bindingContext.OnCommandFailed(button, command, e);
-                }
-                finally
-                {
-                    button.Enabled = command.CanExecute.Value;
-                }
-            }
-
-            var clickBinding = new ClickBinding(button, OnClickAsync);
-
-            button.AttachDisposable(clickBinding);
-            bindingContext.OnBindingCreated(button, clickBinding);
-        }
-
         //---------------------------------------------------------------------
         // Inner classes.
         //---------------------------------------------------------------------
@@ -444,7 +367,7 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        private class NotifyPropertyChangedBinding<TObject, TProperty> : Binding, IDisposable
+        internal class NotifyPropertyChangedBinding<TObject, TProperty> : Binding, IDisposable
             where TObject : INotifyPropertyChanged
         {
             private readonly TObject observed;
@@ -496,7 +419,7 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        private class NotifyObservablePropertyChangedBinding<TProperty>
+        internal class NotifyObservablePropertyChangedBinding<TProperty>
             : NotifyPropertyChangedBinding<IObservableProperty<TProperty>, TProperty>
         {
             public NotifyObservablePropertyChangedBinding(
@@ -508,27 +431,6 @@ namespace Google.Solutions.Mvvm.Binding
                       prop => prop.Value,
                       newValueAction)
             {
-            }
-        }
-
-        private class ClickBinding : Binding
-        {
-            private readonly Control observed;
-            private readonly EventHandler handler;
-
-            public ClickBinding(
-                Control observed,
-                EventHandler handler)
-            {
-                this.observed = observed;
-                this.handler = handler;
-
-                observed.Click += handler;
-            }
-
-            public override void Dispose()
-            {
-                this.observed.Click -= this.handler;
             }
         }
 

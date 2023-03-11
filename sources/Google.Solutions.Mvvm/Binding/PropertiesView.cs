@@ -20,9 +20,8 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Theme;
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 
