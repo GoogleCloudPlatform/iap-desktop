@@ -86,6 +86,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                     new AppearanceOptionsSheet(),
                     new AppearanceOptionsViewModel(serviceProvider.GetService<ThemeSettingsRepository>()));
                 dialog.ViewModel.AddSheet(
+                    new NetworkOptionsSheet(),
+                    new NetworkOptionsViewModel(
+                        appSettingsRepository,
+                        serviceProvider.GetService<IHttpProxyAdapter>()));
+                dialog.ViewModel.AddSheet(
                     new ScreenOptionsSheet(),
                     new ScreenOptionsViewModel(appSettingsRepository));
 

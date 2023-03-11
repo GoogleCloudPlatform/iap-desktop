@@ -24,27 +24,26 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
+using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    public partial class NetworkOptionsSheet : UserControl, IPropertiesSheet
+    public partial class NetworkOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private readonly NetworkOptionsViewModel viewModel;
+        private NetworkOptionsViewModel viewModel;
 
-        public NetworkOptionsSheet(
-            ApplicationSettingsRepository settingsRepository,
-            IHttpProxyAdapter proxyAdapter)
+        public NetworkOptionsSheet()
         {
-            this.viewModel = new NetworkOptionsViewModel(
-                settingsRepository,
-                proxyAdapter);
-
             InitializeComponent();
+        }
 
-            // TODO: Use shared binding context.
-            var bindingContext = ViewBindingContext.CreateDummy();
+        public Type ViewModel => typeof(NetworkOptionsViewModel);
+
+        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
+        {
+            this.viewModel = (NetworkOptionsViewModel)viewModelBase;
 
             this.proxyBox.BindProperty(
                 c => c.Enabled,
@@ -171,12 +170,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 m => m.ConnectionLimit,
                 bindingContext);
         }
-
-        //---------------------------------------------------------------------
-        // IPropertiesSheet.
-        //---------------------------------------------------------------------
-
-        public IPropertiesSheetViewModel ViewModel => this.viewModel;
 
         //---------------------------------------------------------------------
         // Events.

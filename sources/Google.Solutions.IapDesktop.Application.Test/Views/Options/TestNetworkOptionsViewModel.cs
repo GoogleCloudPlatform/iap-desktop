@@ -29,6 +29,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 {
@@ -96,20 +97,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         [Test]
-        public void WhenConnectionLimitChanged_ThenIsDirtyIsTrueUntilApplied()
+        public async Task WhenConnectionLimitChanged_ThenIsDirtyIsTrueUntilApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
                 settingsRepository,
                 this.proxyAdapterMock.Object);
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
             viewModel.ConnectionLimit = 4;
 
-            Assert.IsTrue(viewModel.IsDirty);
-            viewModel.ApplyChanges();
+            Assert.IsTrue(viewModel.IsDirty.Value);
+            
+            await viewModel.ApplyChangesAsync();
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
             Assert.AreEqual(4, settingsRepository.GetSettings().ConnectionLimit.IntValue);
         }
 
@@ -135,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
             Assert.IsTrue(viewModel.IsSystemProxyServerEnabled);
         }
 
@@ -164,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
             Assert.IsTrue(viewModel.IsProxyEditable);
         }
 
@@ -188,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
             Assert.IsTrue(viewModel.IsProxyEditable);
         }
 
@@ -214,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
         }
 
         [Test]
@@ -237,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         [Test]
@@ -263,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         //---------------------------------------------------------------------
@@ -291,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
             Assert.IsTrue(viewModel.IsProxyEditable);
         }
 
@@ -315,7 +317,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
             Assert.IsTrue(viewModel.IsProxyEditable);
         }
 
@@ -342,7 +344,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
         }
 
         [Test]
@@ -365,7 +367,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         [Test]
@@ -390,7 +392,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         //---------------------------------------------------------------------
@@ -418,7 +420,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsTrue(viewModel.IsProxyAuthenticationEnabled);
             Assert.AreEqual("user", viewModel.ProxyUsername);
             Assert.AreEqual("pass", viewModel.ProxyPassword);
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
         }
 
         [Test]
@@ -435,7 +437,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             Assert.AreEqual(Environment.UserName, viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         [Test]
@@ -455,7 +457,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         //---------------------------------------------------------------------
@@ -475,7 +477,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 ProxyPort = "442"
             };
 
-            Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
+            Assert.Throws<ArgumentException>(() => viewModel.ApplyChangesAsync().Wait());
         }
 
         [Test]
@@ -491,7 +493,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 ProxyPort = "0"
             };
 
-            Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
+            Assert.Throws<ArgumentException>(() => viewModel.ApplyChangesAsync().Wait());
         }
 
         [Test]
@@ -507,7 +509,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 ProxyPort = "70000"
             };
 
-            Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
+            Assert.Throws<ArgumentException>(() => viewModel.ApplyChangesAsync().Wait());
         }
 
         [Test]
@@ -522,7 +524,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 ProxyAutoconfigurationAddress = "file:///proxy.pac"
             };
 
-            Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
+            Assert.Throws<ArgumentException>(() => viewModel.ApplyChangesAsync().Wait());
         }
 
         [Test]
@@ -539,11 +541,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 ProxyPassword = "pass"
             };
 
-            Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
+            Assert.Throws<ArgumentException>(() => viewModel.ApplyChangesAsync().Wait());
         }
 
         [Test]
-        public void WhenEnablingCustomProxy_ThenProxyAdapterIsUpdated()
+        public async Task WhenEnablingCustomProxy_ThenProxyAdapterIsUpdated()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
@@ -552,14 +554,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             {
                 IsCustomProxyServerEnabled = true
             };
-            viewModel.ApplyChanges();
+
+            await viewModel.ApplyChangesAsync();
 
             this.proxyAdapterMock.Verify(m => m.ActivateSettings(
                     It.IsAny<ApplicationSettings>()), Times.Once);
         }
 
         [Test]
-        public void WhenEnablingOrDisablingCustomProxy_ThenSettingsAreSaved()
+        public async Task WhenEnablingOrDisablingCustomProxy_ThenSettingsAreSaved()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
@@ -573,7 +576,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 ProxyUsername = "user",
                 ProxyPassword = "pass"
             };
-            viewModel.ApplyChanges();
+
+            await viewModel.ApplyChangesAsync();
 
             var settings = settingsRepository.GetSettings();
             Assert.AreEqual("http://prx:123", settings.ProxyUrl.StringValue);
@@ -582,7 +586,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             // Disable authentication.
             viewModel.IsProxyAuthenticationEnabled = false;
-            viewModel.ApplyChanges();
+            await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
             Assert.AreEqual("http://prx:123", settings.ProxyUrl.StringValue);
@@ -591,7 +595,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             // Revert to system proxy.
             viewModel.IsSystemProxyServerEnabled = true;
-            viewModel.ApplyChanges();
+            await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
             Assert.IsNull(settings.ProxyUrl.StringValue);
@@ -601,7 +605,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
 
         [Test]
-        public void WhenEnablingOrDisablingProxyAutoconfig_ThenSettingsAreSaved()
+        public async Task WhenEnablingOrDisablingProxyAutoconfig_ThenSettingsAreSaved()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
@@ -614,7 +618,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 ProxyUsername = "user",
                 ProxyPassword = "pass"
             };
-            viewModel.ApplyChanges();
+            await viewModel.ApplyChangesAsync();
 
             var settings = settingsRepository.GetSettings();
             Assert.AreEqual("https://www/proxy.pac", settings.ProxyPacUrl.StringValue);
@@ -623,7 +627,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             // Disable authentication.
             viewModel.IsProxyAuthenticationEnabled = false;
-            viewModel.ApplyChanges();
+            await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
             Assert.AreEqual("https://www/proxy.pac", settings.ProxyPacUrl.StringValue);
@@ -632,7 +636,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             // Revert to system proxy.
             viewModel.IsSystemProxyServerEnabled = true;
-            viewModel.ApplyChanges();
+            await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
             Assert.IsNull(settings.ProxyUrl.StringValue);
@@ -641,7 +645,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         [Test]
-        public void WhenChangesApplied_ThenDirtyFlagIsCleared()
+        public async Task WhenChangesApplied_ThenDirtyFlagIsCleared()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new NetworkOptionsViewModel(
@@ -651,11 +655,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 IsCustomProxyServerEnabled = true
             };
 
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
 
-            viewModel.ApplyChanges();
+            await viewModel.ApplyChangesAsync();
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
         }
     }
 }

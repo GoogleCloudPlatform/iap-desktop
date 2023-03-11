@@ -31,10 +31,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    public class NetworkOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
+    internal class NetworkOptionsViewModel : OptionsViewModelBase<ApplicationSettings>
     {
         private readonly IHttpProxyAdapter proxyAdapter;
-        private readonly ApplicationSettingsRepository settingsRepository;
 
         private int connectionLimit;
         private string proxyPacAddress = null;
@@ -42,24 +41,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private string proxyPort = null;
         private string proxyUsername = null;
         private string proxyPassword = null;
-        private bool isDirty = false;
 
         public NetworkOptionsViewModel(
             ApplicationSettingsRepository settingsRepository,
             IHttpProxyAdapter proxyAdapter)
+            : base("Network", settingsRepository)
         {
-            this.settingsRepository = settingsRepository;
             this.proxyAdapter = proxyAdapter;
 
-            //
-            // Read current settings.
-            //
-            // NB. Do not hold on to the settings object because other tabs
-            // might apply changes to other application settings.
-            //
+            base.OnInitializationCompleted();
+        }
 
-            var settings = this.settingsRepository.GetSettings();
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
+        protected override void Load(ApplicationSettings settings)
+        { 
             this.connectionLimit = settings.ConnectionLimit.IntValue;
             this.IsProxyEditable =
                 !settings.ProxyUrl.IsReadOnly &&
@@ -85,30 +83,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             }
         }
 
-        //---------------------------------------------------------------------
-        // IPropertiesSheetViewModel.
-        //---------------------------------------------------------------------
-
-        public string Title => "Network";
-
-        public bool IsDirty
+        protected override void Save(ApplicationSettings settings)
         {
-            get => this.isDirty;
-            set
-            {
-                this.isDirty = value;
-                RaisePropertyChange();
-            }
-        }
+            Debug.Assert(this.IsDirty.Value);
 
-        public DialogResult ApplyChanges()
-        {
-            Debug.Assert(this.IsDirty);
-
-            //
-            // Validate ans save settings.
-            //
-            var settings = this.settingsRepository.GetSettings();
             settings.ConnectionLimit.IntValue = this.connectionLimit;
 
             switch (this.Proxy)
@@ -164,25 +142,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 settings.ProxyPassword.Value = null;
             }
 
-            this.settingsRepository.SetSettings(settings);
-
             //
             // Activate changed proxy settings so that the app
             // does not need to be restarted.
             //
 
             this.proxyAdapter.ActivateSettings(settings);
-
-            this.IsDirty = false;
-
-            return DialogResult.OK;
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public bool IsProxyEditable { get; }
+        public bool IsProxyEditable { get; private set; }
 
         public decimal ConnectionLimit
         {
@@ -190,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             set
             {
                 this.connectionLimit = (int)value;
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 RaisePropertyChange();
             }
         }
@@ -301,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             set
             {
                 this.proxyPacAddress = value;
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 RaisePropertyChange();
             }
         }
@@ -312,7 +284,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             set
             {
                 this.proxyServer = value;
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 RaisePropertyChange();
             }
         }
@@ -323,14 +295,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             set
             {
                 this.proxyPort = value;
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 RaisePropertyChange();
             }
         }
 
         public bool IsProxyAuthenticationEnabled
         {
-            get => !IsSystemProxyServerEnabled && !string.IsNullOrEmpty(this.proxyUsername);
+            get => !this.IsSystemProxyServerEnabled && !string.IsNullOrEmpty(this.proxyUsername);
             set
             {
                 if (value)
@@ -354,7 +326,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             set
             {
                 this.proxyUsername = value;
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 RaisePropertyChange();
             }
         }
@@ -365,7 +337,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             set
             {
                 this.proxyPassword = value;
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 RaisePropertyChange();
             }
         }
