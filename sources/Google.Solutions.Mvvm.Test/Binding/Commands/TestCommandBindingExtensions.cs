@@ -61,7 +61,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 var button = new Button();
                 form.Controls.Add(button);
 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -96,7 +96,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 };
                 form.Controls.Add(button);
 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -129,7 +129,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             {
                 form.Controls.Add(button);
 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -162,7 +162,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             {
                 form.Controls.Add(button);
 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -194,7 +194,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             {
                 form.Controls.Add(button);
 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -231,7 +231,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 var button = new ToolStripButton();
                 toolStrip.Items.Add(button);
                 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -268,7 +268,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 };
                 toolStrip.Items.Add(button);
 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -303,7 +303,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Controls.Add(toolStrip);
                 toolStrip.Items.Add(button);
 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -338,7 +338,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Controls.Add(toolStrip);
                 toolStrip.Items.Add(button);
 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -372,7 +372,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Controls.Add(toolStrip);
                 toolStrip.Items.Add(button);
 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -421,7 +421,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Controls.Add(button);
                 form.AcceptButton = button;
 
-                button.BindCommand(
+                button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);

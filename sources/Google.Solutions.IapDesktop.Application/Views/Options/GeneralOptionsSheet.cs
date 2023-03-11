@@ -73,11 +73,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 m => m.IsBrowserIntegrationEnabled,
                 bindingContext);
 
-            this.browserIntegrationLink.BindCommand(
+            this.browserIntegrationLink.BindObservableCommand(
                 viewModel,
                 m => m.OpenBrowserIntegrationHelp,
                 bindingContext);
-            this.secureConnectLink.BindCommand(
+            this.secureConnectLink.BindObservableCommand(
                 viewModel,
                 m => m.OpenSecureConnectHelp,
                 bindingContext);

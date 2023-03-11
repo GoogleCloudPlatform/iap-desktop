@@ -44,15 +44,15 @@ namespace Google.Solutions.Mvvm.Binding
             //
             // Bind commands.
             //
-            this.okButton.BindCommand(
+            this.okButton.BindObservableCommand(
                 viewModel,
                 m => m.OkCommand,
                 bindingContext);
-            this.applyButton.BindCommand(
+            this.applyButton.BindObservableCommand(
                 viewModel,
                 m => m.ApplyCommand,
                 bindingContext);
-            this.cancelButton.BindCommand(
+            this.cancelButton.BindObservableCommand(
                 viewModel,
                 m => m.CancelCommand,
                 bindingContext);

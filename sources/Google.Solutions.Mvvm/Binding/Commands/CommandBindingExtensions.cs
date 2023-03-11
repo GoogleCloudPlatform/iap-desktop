@@ -28,7 +28,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 {
     public static partial class CommandBindingExtensions
     {
-        public static void BindCommand<TButton, TCommand, TModel>(
+        public static void BindObservableCommand<TButton, TCommand, TModel>(
             this TButton button,
             TModel model,
             Func<TModel, TCommand> commandProperty,
@@ -106,7 +106,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             bindingContext.OnBindingCreated(button, clickBinding);
         }
 
-        public static void BindCommand< TCommand, TModel>(
+        public static void BindObservableCommand< TCommand, TModel>(
             this ToolStripButton button,
             TModel model,
             Func<TModel, TCommand> commandProperty,
