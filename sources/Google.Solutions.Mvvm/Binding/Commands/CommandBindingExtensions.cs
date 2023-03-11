@@ -92,7 +92,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
                 catch (Exception e)
                 {
-                    bindingContext.OnCommandFailed(button, command, e);
+                    bindingContext.OnCommandFailed(command, e);
                 }
                 finally
                 {
@@ -108,14 +108,12 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 
         public static void BindCommand< TCommand, TModel>(
             this ToolStripButton button,
-            ToolStrip enclosingToolStrip,
             TModel model,
             Func<TModel, TCommand> commandProperty,
             IBindingContext bindingContext)
             where TCommand : IObservableCommand
         {
             Precondition.ExpectNotNull(button, nameof(button));
-            Precondition.ExpectNotNull(enclosingToolStrip, nameof(enclosingToolStrip));
             Precondition.ExpectNotNull(commandProperty, nameof(commandProperty));
             Precondition.ExpectNotNull(model, nameof(model));
             Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
@@ -155,7 +153,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
                 catch (Exception e)
                 {
-                    bindingContext.OnCommandFailed(enclosingToolStrip, command, e);
+                    bindingContext.OnCommandFailed(command, e);
                 }
                 finally
                 {

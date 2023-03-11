@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop
                     Globals.UserAgent.Extensions = "Enterprise";
                 }
 
-                baseLayer.AddTransient<IBindingContext, ViewBindingContext>();
+                baseLayer.AddSingleton<IBindingContext, ViewBindingContext>();
                 baseLayer.AddSingleton(new ThemeSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Theme")));
                 baseLayer.AddSingleton<IThemeService, ThemeService>();

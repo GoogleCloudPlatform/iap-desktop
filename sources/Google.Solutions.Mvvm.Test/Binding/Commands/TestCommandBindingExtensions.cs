@@ -232,7 +232,6 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 toolStrip.Items.Add(button);
                 
                 button.BindCommand(
-                    toolStrip,
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -270,7 +269,6 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 toolStrip.Items.Add(button);
 
                 button.BindCommand(
-                    toolStrip,
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -306,7 +304,6 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 toolStrip.Items.Add(button);
 
                 button.BindCommand(
-                    toolStrip,
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -342,7 +339,6 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 toolStrip.Items.Add(button);
 
                 button.BindCommand(
-                    toolStrip,
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);
@@ -377,7 +373,6 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 toolStrip.Items.Add(button);
 
                 button.BindCommand(
-                    toolStrip,
                     viewModel,
                     m => m.Command,
                     new Mock<IBindingContext>().Object);

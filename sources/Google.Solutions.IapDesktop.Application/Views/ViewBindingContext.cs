@@ -36,6 +36,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
     public class ViewBindingContext : IBindingContext
     {
         private readonly IExceptionDialog exceptionDialog;
+        private IWin32Window errorReportingOwner;
+
+        public void SetErrorReportingOwner(IWin32Window owner)
+        {
+            Debug.Assert(this.errorReportingOwner == null);
+            this.errorReportingOwner = owner;
+        }
 
         public ViewBindingContext(IExceptionDialog exceptionDialog)
         {
@@ -48,13 +55,15 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void OnBindingCreated(IComponent control, IDisposable binding)
         {
+            Debug.Assert(this.errorReportingOwner != null);
             Debug.WriteLine($"Binding added for {control.GetType().Name} ({control})");
         }
 
-        public void OnCommandFailed(Control control, ICommand command, Exception exception)
+        public void OnCommandFailed(ICommand command, Exception exception)
         {
+            Debug.Assert(this.errorReportingOwner != null);
             this.exceptionDialog.Show(
-                control,
+                this.errorReportingOwner,
                 command.ActivityText, 
                 exception);
         }

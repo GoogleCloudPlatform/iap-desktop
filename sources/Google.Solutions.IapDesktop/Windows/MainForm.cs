@@ -93,6 +93,12 @@ namespace Google.Solutions.IapDesktop.Windows
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
             this.bindingContext = serviceProvider.GetService<IBindingContext>();
 
+            //
+            // Register this window with the binding context so that any
+            // error dialos can use this window as owner.
+            //
+            ((ViewBindingContext)this.bindingContext).SetErrorReportingOwner(this);
+
             // 
             // Restore window settings.
             //

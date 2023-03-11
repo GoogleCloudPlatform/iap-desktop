@@ -34,7 +34,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// <summary>
         /// Notify that a command failed.
         /// </summary>
-        void OnCommandFailed(Control control, ICommand command, Exception exception);
+        void OnCommandFailed(ICommand command, Exception exception);
 
         /// <summary>
         /// Notify that a new binding has been created. Implementing
