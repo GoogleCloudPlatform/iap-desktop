@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;

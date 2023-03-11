@@ -23,25 +23,8 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.Mvvm.Commands
+namespace Google.Solutions.Mvvm.Binding.Commands
 {
-    /// <summary>
-    /// A command that can be sufaced in a menu or some other
-    /// control.
-    /// </summary>
-    public interface ICommand
-    {
-        /// <summary>
-        /// Caption for command.
-        /// </summary>
-        string Text { get; }
-
-        /// <summary>
-        /// Caption when command is executing.
-        /// </summary>
-        string ActivityText { get; }
-    }
-
     /// <summary>
     /// A command that is applicable to a certain context,
     /// typically sufaced as a context menu item.

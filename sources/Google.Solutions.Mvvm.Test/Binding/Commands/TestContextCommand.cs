@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using NUnit.Framework;
 
-namespace Google.Solutions.Mvvm.Test.Commands
+namespace Google.Solutions.Mvvm.Test.Binding.Commands
 {
     [TestFixture]
-    public class TestCommand
+    public class TestContextCommand
     {
         //---------------------------------------------------------------------
         // ActivityText.

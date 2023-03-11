@@ -24,7 +24,7 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.Mvvm.Commands
+namespace Google.Solutions.Mvvm.Binding.Commands
 {
     /// <summary>
     /// Context command that invokes callbacks.

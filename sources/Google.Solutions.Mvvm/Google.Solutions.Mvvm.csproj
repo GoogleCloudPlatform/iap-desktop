@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Binding\BindingExtensions.cs" />
+    <Compile Include="Binding\Commands\IContextCommand.cs" />
     <Compile Include="Binding\FilteredObservableCollection.cs" />
     <Compile Include="Binding\ObservableFunc.cs" />
     <Compile Include="Binding\ObservableProperty.Builder.cs" />
@@ -65,12 +66,12 @@
     <Compile Include="Binding\ViewModelBase.cs" />
     <Compile Include="Cache\LeastRecentlyUsedCache.cs" />
     <Compile Include="Cache\ModelCachingViewModel.cs" />
-    <Compile Include="Commands\CommandBase.cs" />
-    <Compile Include="Commands\ContextCommand.cs" />
-    <Compile Include="Commands\CommandContainer.cs" />
-    <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Binding\ObservableCommand.cs" />
-    <Compile Include="Commands\ObservableCommandContextSource.cs" />
+    <Compile Include="Binding\Commands\CommandBase.cs" />
+    <Compile Include="Binding\Commands\ContextCommand.cs" />
+    <Compile Include="Binding\Commands\CommandContainer.cs" />
+    <Compile Include="Binding\Commands\ICommand.cs" />
+    <Compile Include="Binding\Commands\ObservableCommand.cs" />
+    <Compile Include="Binding\Commands\ContextSource.cs" />
     <Compile Include="Controls\BindableComboBox.cs">
       <SubType>Component</SubType>
     </Compile>

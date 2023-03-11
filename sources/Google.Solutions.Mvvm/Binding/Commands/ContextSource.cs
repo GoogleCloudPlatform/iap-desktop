@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,29 +19,32 @@
 // under the License.
 //
 
-using System.Diagnostics;
-
-namespace Google.Solutions.Mvvm.Commands
+namespace Google.Solutions.Mvvm.Binding.Commands
 {
     /// <summary>
-    /// Base class for commands.
+    /// Source (typically a view model) for the context that
+    /// determines the availability of commands.
     /// </summary>
-    public abstract class CommandBase : ICommand
+    public interface IContextSource<TContext>
     {
-        private string activityText;
+        TContext Context { get; }
+    }
 
-        public string Text { get; protected set; }
+    /// <summary>
+    /// Basic context source implementation.
+    /// </summary>
+    public class ContextSource<TContext>
+        : ViewModelBase, IContextSource<TContext>
+    {
+        private TContext context;
 
-        public string ActivityText
+        public TContext Context
         {
-            get => this.activityText ?? this.Text.Replace("&", string.Empty);
+            get => this.context;
             set
             {
-                Debug.Assert(
-                    value.Contains("ing"),
-                    "Action name should be formatted like 'Doing something'");
-
-                this.activityText = value;
+                this.context = value;
+                RaisePropertyChange();
             }
         }
     }

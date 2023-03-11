@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
@@ -30,12 +30,12 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.Mvvm.Test.Commands
+namespace Google.Solutions.Mvvm.Test.Binding.Commands
 {
     [TestFixture]
     public class TestCommandContainer
     {
-        private class NonObservableCommandContextSource<TContext> : ICommandContextSource<TContext>
+        private class NonObservableCommandContextSource<TContext> : IContextSource<TContext>
         {
             public TContext Context { get; set; }
         }
@@ -47,7 +47,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         [Test]
         public void WhenObservableContextChanged_ThenQueryStateIsCalledOnTopLevelCommands()
         {
-            var source = new ObservableCommandContextSource<string>()
+            var source = new ContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -78,7 +78,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         [Test]
         public void WhenObservableContextChanged_ThenQueryStateIsCalledOnChildCommands()
         {
-            var source = new ObservableCommandContextSource<string>()
+            var source = new ContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -115,7 +115,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         [Test]
         public void WhenObservableContextChanged_ThenExecuteUsesLatestContext()
         {
-            var source = new ObservableCommandContextSource<string>()
+            var source = new ContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -165,7 +165,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>(),
+                new ContextSource<string>(),
                 new Mock<IBindingContext>().Object))
             {
                 PropertyAssert.RaisesCollectionChangedNotification(
@@ -183,7 +183,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>(),
+                new ContextSource<string>(),
                 new Mock<IBindingContext>().Object))
             {
                 PropertyAssert.RaisesCollectionChangedNotification(
@@ -202,7 +202,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>(),
+                new ContextSource<string>(),
                 new Mock<IBindingContext>().Object))
             {
                 container.ExecuteCommandByKey(Keys.A);
@@ -212,7 +212,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         [Test]
         public void WhenKeyIsMappedAndCommandIsEnabled_ThenExecuteCommandInvokesHandler()
         {
-            var source = new ObservableCommandContextSource<string>()
+            var source = new ContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -244,7 +244,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         [Test]
         public void WhenKeyIsMappedAndCommandIsDisabled_ThenExecuteCommandByKeyDoesNothing()
         {
-            var source = new ObservableCommandContextSource<string>()
+            var source = new ContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -277,7 +277,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         [Test]
         public void WhenContainerDoesNotHaveDefaultCommand_ThenExecuteDefaultCommandDoesNothing()
         {
-            var source = new ObservableCommandContextSource<string>()
+            var source = new ContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -302,7 +302,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         [Test]
         public void WhenDefaultCommandIsDisabled_ThenExecuteDefaultCommandDoesNothing()
         {
-            var source = new ObservableCommandContextSource<string>()
+            var source = new ContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -328,7 +328,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         [Test]
         public void WhenDefaultCommandIsEnabled_ThenExecuteDefaultExecutesCommand()
         {
-            var source = new ObservableCommandContextSource<string>()
+            var source = new ContextSource<string>()
             {
                 Context = "ctx-1"
             };
@@ -365,7 +365,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>(),
+                new ContextSource<string>(),
                 new Mock<IBindingContext>().Object))
             {
                 Exception exception = null;
@@ -395,7 +395,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>(),
+                new ContextSource<string>(),
                 new Mock<IBindingContext>().Object))
             {
                 container.CommandFailed += (s, a) => Assert.Fail();
@@ -418,7 +418,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>(),
+                new ContextSource<string>(),
                 new Mock<IBindingContext>().Object))
             {
                 Exception exception = null;
@@ -457,7 +457,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>(),
+                new ContextSource<string>(),
                 new Mock<IBindingContext>().Object))
             {
                 container.CommandFailed += (s, a) => Assert.Fail();
@@ -484,7 +484,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                new ObservableCommandContextSource<string>(),
+                new ContextSource<string>(),
                 new Mock<IBindingContext>().Object))
             {
                 object sender = null;
@@ -514,7 +514,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         {
             using (var container = new CommandContainer<string>(
                 ToolStripItemDisplayStyle.Text,
-                 new ObservableCommandContextSource<string>(),
+                 new ContextSource<string>(),
                  new Mock<IBindingContext>().Object))
             {
                 object sender = null;

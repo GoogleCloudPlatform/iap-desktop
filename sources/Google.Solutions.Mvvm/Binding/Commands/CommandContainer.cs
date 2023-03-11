@@ -30,7 +30,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Google.Solutions.Mvvm.Commands
+namespace Google.Solutions.Mvvm.Binding.Commands
 {
     /// <summary>
     /// Set of commands.
@@ -69,7 +69,7 @@ namespace Google.Solutions.Mvvm.Commands
         private readonly CommandContainer<TContext> parent;
         private readonly IBindingContext bindingContext;
 
-        internal ICommandContextSource<TContext> ContextSource { get; }
+        internal IContextSource<TContext> ContextSource { get; }
 
         internal ObservableCollection<MenuItemViewModelBase> MenuItems => this.menuItems;
 
@@ -77,7 +77,7 @@ namespace Google.Solutions.Mvvm.Commands
 
         private CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
-            ICommandContextSource<TContext> contextSource,
+            IContextSource<TContext> contextSource,
             CommandContainer<TContext> parent,
             ObservableCollection<MenuItemViewModelBase> items,
             IBindingContext bindingContext)
@@ -91,7 +91,7 @@ namespace Google.Solutions.Mvvm.Commands
 
         public CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
-            ICommandContextSource<TContext> contextSource,
+            IContextSource<TContext> contextSource,
             IBindingContext bindingContext)
             : this(
                   displayStyle,
@@ -103,7 +103,7 @@ namespace Google.Solutions.Mvvm.Commands
             if (this.ContextSource is INotifyPropertyChanged observable)
             {
                 observable.OnPropertyChange(
-                    s => ((ICommandContextSource<TContext>)s).Context,
+                    s => ((IContextSource<TContext>)s).Context,
                     context =>
                     {
                         MenuItemViewModel.OnContextUpdated(this.menuItems);

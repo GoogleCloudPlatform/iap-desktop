@@ -21,7 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Threading.Tasks;
 

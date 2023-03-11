@@ -19,15 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Commands;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Mvvm.Binding
+namespace Google.Solutions.Mvvm.Binding.Commands
 {
     /// <summary>
-    /// A command that is associated witha fixed context,
+    /// A command that is associated with a fixed context,
     /// typically surfaced as a button.
     /// </summary>
     public interface IObservableCommand : ICommand

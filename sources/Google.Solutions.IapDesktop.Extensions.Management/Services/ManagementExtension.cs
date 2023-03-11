@@ -38,7 +38,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;

@@ -39,7 +39,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;
@@ -75,8 +75,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private IIapUrlHandler urlHandler;
 
-        private readonly ObservableCommandContextSource<IMainWindow> viewMenuContextSource;
-        private readonly ObservableCommandContextSource<ToolWindow> windowMenuContextSource;
+        private readonly ContextSource<IMainWindow> viewMenuContextSource;
+        private readonly ContextSource<ToolWindow> windowMenuContextSource;
 
         private readonly CommandContainer<IMainWindow> viewMenuCommands;
         private readonly CommandContainer<ToolWindow> windowMenuCommands;
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // View menu.
             //
-            this.viewMenuContextSource = new ObservableCommandContextSource<IMainWindow>()
+            this.viewMenuContextSource = new ContextSource<IMainWindow>()
             {
                 Context = this // Pseudo-context, never changes
             };
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Window menu.
             //
-            this.windowMenuContextSource = new ObservableCommandContextSource<ToolWindow>();
+            this.windowMenuContextSource = new ContextSource<ToolWindow>();
 
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
@@ -1044,7 +1044,7 @@ namespace Google.Solutions.IapDesktop.Windows
         // Helper classes.
         //---------------------------------------------------------------------
 
-        private class CallbackSource<TContext> : ICommandContextSource<TContext>
+        private class CallbackSource<TContext> : IContextSource<TContext>
         {
             private readonly Func<TContext> queryCurrentContextFunc;
 

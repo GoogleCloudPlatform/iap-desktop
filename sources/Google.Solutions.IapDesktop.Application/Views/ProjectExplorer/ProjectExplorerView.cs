@@ -30,7 +30,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Diagnostics;
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             // Menus.
             //
-            var contextSource = new ObservableCommandContextSource<IProjectModelNode>();
+            var contextSource = new ContextSource<IProjectModelNode>();
             this.viewModel.OnPropertyChange(
                 m => m.SelectedNode,
                 node =>

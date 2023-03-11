@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;

@@ -74,8 +74,8 @@
     <Compile Include="Binding\TestView.cs" />
     <Compile Include="Cache\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Cache\TestModelCachingViewModelBase.cs" />
-    <Compile Include="Commands\TestCommand.cs" />
-    <Compile Include="Commands\TestCommandContainer.cs" />
+    <Compile Include="Binding\Commands\TestContextCommand.cs" />
+    <Compile Include="Binding\Commands\TestCommandContainer.cs" />
     <Compile Include="Controls\TestBindableComboBox.cs" />
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />

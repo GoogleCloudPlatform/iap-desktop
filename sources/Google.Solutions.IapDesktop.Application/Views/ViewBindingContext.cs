@@ -22,7 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;

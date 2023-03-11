@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,28 +19,23 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Binding.Commands;
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-
-namespace Google.Solutions.Mvvm.Binding
+namespace Google.Solutions.Mvvm.Binding.Commands
 {
     /// <summary>
-    /// Context for MVVM binding operations.
+    /// A command that can be sufaced in a menu or some other
+    /// control.
     /// </summary>
-    public interface IBindingContext
+    public interface ICommand
     {
         /// <summary>
-        /// Notify that a command failed.
+        /// Caption for command.
         /// </summary>
-        void OnCommandFailed(Control control, ICommand command, Exception exception);
+        string Text { get; }
 
         /// <summary>
-        /// Notify that a new binding has been created. Implementing
-        /// classes should dispose the binding when it's no longer needed,
-        /// for example by tying them to the lifecycle of the control.
+        /// Caption when command is executing.
         /// </summary>
-        void OnBindingCreated(IComponent control, IDisposable binding);
+        string ActivityText { get; }
     }
+
 }
