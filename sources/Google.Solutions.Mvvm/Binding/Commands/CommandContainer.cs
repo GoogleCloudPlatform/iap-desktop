@@ -386,7 +386,9 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             {
                 try
                 {
-                    await this.command.ExecuteAsync(this.container.ContextSource.Context);
+                    await this.command
+                        .ExecuteAsync(this.container.ContextSource.Context)
+                        .ConfigureAwait(true);
                 }
                 catch (Exception e) when (e.IsCancellation())
                 {
