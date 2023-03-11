@@ -26,7 +26,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding.Commands
 {
-    public static class CommandBindingExtensions
+    public static partial class CommandBindingExtensions
     {
         public static void BindCommand<TButton, TCommand, TModel>(
             this TButton button,
@@ -100,7 +100,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
             }
 
-            var clickBinding = new CommandBindingHelpers.ControlClickBinding(button, OnClickAsync);
+            var clickBinding = new ControlClickBinding(button, OnClickAsync);
 
             button.AttachDisposable(clickBinding);
             bindingContext.OnBindingCreated(button, clickBinding);
@@ -163,7 +163,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
             }
 
-            var clickBinding = new CommandBindingHelpers.ToolStripButtonClickBinding(button, OnClickAsync);
+            var clickBinding = new ToolStripButtonClickBinding(button, OnClickAsync);
 
             button.AttachDisposable(clickBinding);
             bindingContext.OnBindingCreated(button, clickBinding);

@@ -26,16 +26,15 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding.Commands
 {
-    internal static class CommandBindingHelpers
+    public static partial class CommandBindingExtensions
     {
-        <# foreach (var controlType in new[] { "Control", "ToolStripButton"} ) { #>
-        internal class <#=controlType#>ClickBinding : BindingExtensions.Binding
+                private class ControlClickBinding : BindingExtensions.Binding
         {
-            private readonly <#=controlType#> observed;
+            private readonly Control observed;
             private readonly EventHandler handler;
 
-            public <#=controlType#>ClickBinding(
-                <#=controlType#> observed,
+            public ControlClickBinding(
+                Control observed,
                 EventHandler handler)
             {
                 this.observed = observed;
@@ -49,6 +48,25 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 this.observed.Click -= this.handler;
             }
         }
-        <# } #>
-    }
+                private class ToolStripButtonClickBinding : BindingExtensions.Binding
+        {
+            private readonly ToolStripButton observed;
+            private readonly EventHandler handler;
+
+            public ToolStripButtonClickBinding(
+                ToolStripButton observed,
+                EventHandler handler)
+            {
+                this.observed = observed;
+                this.handler = handler;
+
+                observed.Click += handler;
+            }
+
+            public override void Dispose()
+            {
+                this.observed.Click -= this.handler;
+            }
+        }
+            }
 }

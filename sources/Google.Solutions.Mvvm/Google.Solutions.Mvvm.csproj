@@ -55,14 +55,14 @@
   <ItemGroup>
     <Compile Include="Binding\BindingExtensions.cs" />
     <Compile Include="Binding\Commands\CommandBindingExtensions.cs" />
-    <Content Include="Binding\Commands\CommandBindingHelpers.cs.tt">
+    <Content Include="Binding\Commands\CommandBindingExtensions.Generated.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>CommandBindingHelpers.cs1.cs</LastGenOutput>
+      <LastGenOutput>CommandBindingExtensions.Generated.cs</LastGenOutput>
     </Content>
-    <Compile Include="Binding\Commands\CommandBindingHelpers.cs1.cs">
+    <Compile Include="Binding\Commands\CommandBindingExtensions.Generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>CommandBindingHelpers.cs.tt</DependentUpon>
+      <DependentUpon>CommandBindingExtensions.Generated.tt</DependentUpon>
     </Compile>
     <Compile Include="Binding\Commands\IContextCommand.cs" />
     <Compile Include="Binding\FilteredObservableCollection.cs" />
