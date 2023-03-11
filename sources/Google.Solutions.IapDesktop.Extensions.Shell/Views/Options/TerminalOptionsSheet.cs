@@ -57,17 +57,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             //
             // Clipboard box.
             //
-            this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.BindProperty(
+            this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsCopyPasteUsingCtrlCAndCtrlVEnabled,
                 bindingContext);
-            this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.BindProperty(
+            this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
                 bindingContext);
-            this.convertTypographicQuotesCheckBox.BindProperty(
+            this.convertTypographicQuotesCheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsQuoteConvertionOnPasteEnabled,
@@ -76,17 +76,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             //
             // Text selection box.
             //
-            this.selectUsingShiftArrrowEnabledCheckBox.BindProperty(
+            this.selectUsingShiftArrrowEnabledCheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsSelectUsingShiftArrrowEnabled,
                 bindingContext);
-            this.selectAllUsingCtrlAEnabledCheckBox.BindProperty(
+            this.selectAllUsingCtrlAEnabledCheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsSelectAllUsingCtrlAEnabled,
                 bindingContext);
-            this.navigationUsingControlArrrowEnabledCheckBox.BindProperty(
+            this.navigationUsingControlArrrowEnabledCheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsNavigationUsingControlArrrowEnabled,
@@ -95,12 +95,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             //
             // Scrolling box.
             //
-            this.scrollUsingCtrlUpDownCheckBox.BindProperty(
+            this.scrollUsingCtrlUpDownCheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsScrollingUsingCtrlUpDownEnabled,
                 bindingContext);
-            this.scrollUsingCtrlHomeEndcheckBox.BindProperty(
+            this.scrollUsingCtrlHomeEndcheckBox.BindObservableProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsScrollingUsingCtrlHomeEndEnabled,
@@ -109,17 +109,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             //
             // Font box.
             //
-            this.terminalLook.BindReadonlyProperty(
+            this.terminalLook.BindReadonlyObservableProperty(
                 c => c.Font,
                 this.viewModel,
                 m => m.TerminalFont,
                 bindingContext);
-            this.terminalLook.BindReadonlyProperty(
+            this.terminalLook.BindReadonlyObservableProperty(
                 c => c.ForeColor,
                 this.viewModel,
                 m => m.TerminalForegroundColor,
                 bindingContext);
-            this.terminalLook.BindReadonlyProperty(
+            this.terminalLook.BindReadonlyObservableProperty(
                 c => c.BackColor,
                 this.viewModel,
                 m => m.TerminalBackgroundColor,
@@ -158,13 +158,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                     MinSize = (int)Math.Ceiling(this.viewModel.MinimumFontSize * PointsToPixelRatio),
                     MaxSize = (int)Math.Floor(this.viewModel.MaximumFontSize * PointsToPixelRatio),
 
-                    Font = this.viewModel.TerminalFont
+                    Font = this.viewModel.TerminalFont.Value
                 })
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
                         // Strip the font style.
-                        this.viewModel.TerminalFont = new Font(
+                        this.viewModel.TerminalFont.Value = new Font(
                             dialog.Font.FontFamily,
                             dialog.Font.Size);
                     }
@@ -186,19 +186,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                     AnyColor = true,
                     SolidColorOnly = true,
                     Color = sender == this.selectBackgroundColorButton
-                        ? this.viewModel.TerminalBackgroundColor
-                        : this.viewModel.TerminalForegroundColor
+                        ? this.viewModel.TerminalBackgroundColor.Value
+                        : this.viewModel.TerminalForegroundColor.Value
                 })
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
                         if (sender == this.selectBackgroundColorButton)
                         {
-                            this.viewModel.TerminalBackgroundColor = dialog.Color;
+                            this.viewModel.TerminalBackgroundColor.Value = dialog.Color;
                         }
                         else
                         {
-                            this.viewModel.TerminalForegroundColor = dialog.Color;
+                            this.viewModel.TerminalForegroundColor.Value = dialog.Color;
                         }
                     }
                 }
