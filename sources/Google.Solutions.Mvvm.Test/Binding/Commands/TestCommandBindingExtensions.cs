@@ -40,7 +40,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         //---------------------------------------------------------------------
-        // Bind buttons
+        // Button.
         //---------------------------------------------------------------------
 
         [Test]
@@ -144,7 +144,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandTextNotEmpty_ThenControlTextIsUpdated()
+        public void WhenCommandTextNotEmpty_ThenButtonTextIsUpdated()
         {
             var button = new Button()
             {
@@ -176,7 +176,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
         }
 
         [Test]
-        public void WhenCommandTextIsNullOrEmpty_ThenControlTextIsLeftAsIs()
+        public void WhenCommandTextIsNullOrEmpty_ThenButtonTextIsLeftAsIs()
         {
             var button = new Button()
             {
@@ -206,6 +206,193 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Close();
             }
         }
+
+        //---------------------------------------------------------------------
+        // ToolStripButton.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenCommandDisabled_ThenToolStripButtonIsDisabled()
+        {
+            var commandAvailable = ObservableProperty.Build(false);
+            var command = ObservableCommand.Build(
+                "Command name",
+                () => Task.CompletedTask,
+                commandAvailable);
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command,
+            })
+            {
+                var toolStrip = new ToolStrip();
+                form.Controls.Add(toolStrip);
+                var button = new ToolStripButton();
+                toolStrip.Items.Add(button);
+                
+                button.BindCommand(
+                    toolStrip,
+                    viewModel,
+                    m => m.Command,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                Assert.AreEqual(command.Text, button.Text);
+                Assert.IsFalse(button.Enabled);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenCommandAvailable_ThenToolStripButtonIsEnabled()
+        {
+            var commandAvailable = ObservableProperty.Build(true);
+            var command = ObservableCommand.Build(
+                "Command name",
+                () => Task.CompletedTask,
+                commandAvailable);
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command,
+            })
+            {
+                var toolStrip = new ToolStrip();
+                form.Controls.Add(toolStrip);
+                var button = new ToolStripButton()
+                {
+                    Enabled = false
+                };
+                toolStrip.Items.Add(button);
+
+                button.BindCommand(
+                    toolStrip,
+                    viewModel,
+                    m => m.Command,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                Assert.AreEqual(command.Text, button.Text);
+                Assert.IsTrue(button.Enabled);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenCommandIsExecuting_ThenToolStripButtonIsDisabled()
+        {
+            var button = new ToolStripButton();
+            var command = ObservableCommand.Build(
+                "Command name",
+                () => {
+                    Assert.IsFalse(button.Enabled);
+                    return Task.CompletedTask;
+                });
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command
+            })
+            {
+                var toolStrip = new ToolStrip();
+                form.Controls.Add(toolStrip);
+                toolStrip.Items.Add(button);
+
+                button.BindCommand(
+                    toolStrip,
+                    viewModel,
+                    m => m.Command,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                button.PerformClick();
+                Assert.IsTrue(button.Enabled);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenCommandTextNotEmpty_ThenToolStripButtonTextIsUpdated()
+        {
+            var button = new ToolStripButton()
+            {
+                Text = "Original text"
+            };
+            var command = ObservableCommand.Build(
+                "Command text",
+                () => { });
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command
+            })
+            {
+                var toolStrip = new ToolStrip();
+                form.Controls.Add(toolStrip);
+                toolStrip.Items.Add(button);
+
+                button.BindCommand(
+                    toolStrip,
+                    viewModel,
+                    m => m.Command,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                Assert.AreEqual("Command text", button.Text);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenCommandTextIsNullOrEmpty_ThenToolStripButtonTextIsLeftAsIs()
+        {
+            var button = new ToolStripButton()
+            {
+                Text = "Original text"
+            };
+            var command = ObservableCommand.Build(
+                string.Empty,
+                () => { });
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command
+            })
+            {
+                var toolStrip = new ToolStrip();
+                form.Controls.Add(toolStrip);
+                toolStrip.Items.Add(button);
+
+                button.BindCommand(
+                    toolStrip,
+                    viewModel,
+                    m => m.Command,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                Assert.AreEqual("Original text", button.Text);
+
+                form.Close();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // UI tests.
+        //---------------------------------------------------------------------
 
         [Test]
         [InteractiveTest]

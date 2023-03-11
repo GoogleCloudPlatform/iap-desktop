@@ -28,7 +28,6 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 {
     public static class CommandBindingExtensions
     {
-
         public static void BindCommand<TButton, TCommand, TModel>(
             this TButton button,
             TModel model,
@@ -37,6 +36,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             where TCommand : IObservableCommand
             where TButton : Control, IButtonControl
         {
+            Precondition.ExpectNotNull(button, nameof(button));
             Precondition.ExpectNotNull(commandProperty, nameof(commandProperty));
             Precondition.ExpectNotNull(model, nameof(model));
             Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
@@ -100,36 +100,73 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
             }
 
-            var clickBinding = new ClickBinding(button, OnClickAsync);
+            var clickBinding = new CommandBindingHelpers.ControlClickBinding(button, OnClickAsync);
 
             button.AttachDisposable(clickBinding);
             bindingContext.OnBindingCreated(button, clickBinding);
         }
 
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
-        private class ClickBinding : BindingExtensions.Binding
+        public static void BindCommand< TCommand, TModel>(
+            this ToolStripButton button,
+            ToolStrip enclosingToolStrip,
+            TModel model,
+            Func<TModel, TCommand> commandProperty,
+            IBindingContext bindingContext)
+            where TCommand : IObservableCommand
         {
-            private readonly Control observed;
-            private readonly EventHandler handler;
+            Precondition.ExpectNotNull(button, nameof(button));
+            Precondition.ExpectNotNull(enclosingToolStrip, nameof(enclosingToolStrip));
+            Precondition.ExpectNotNull(commandProperty, nameof(commandProperty));
+            Precondition.ExpectNotNull(model, nameof(model));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
 
-            public ClickBinding(
-                Control observed,
-                EventHandler handler)
+            var command = commandProperty(model);
+
+            //
+            // Apply initial values.
+            //
+            button.Enabled = command.CanExecute.Value;
+            if (!string.IsNullOrEmpty(command.Text))
             {
-                this.observed = observed;
-                this.handler = handler;
-
-                observed.Click += handler;
+                button.Text = command.Text;
             }
 
-            public override void Dispose()
+            //
+            // Update control if command state changes.
+            //
+            var stateBinding = new BindingExtensions.NotifyObservablePropertyChangedBinding<bool>(
+                command.CanExecute,
+                canExecute => button.Enabled = canExecute);
+
+            button.AttachDisposable(stateBinding);
+            bindingContext.OnBindingCreated(button, stateBinding);
+
+            //
+            // Forward click events to the command.
+            //
+            async void OnClickAsync(object _, EventArgs __)
             {
-                this.observed.Click -= this.handler;
+                button.Enabled = false;
+                try
+                {
+                    await command
+                        .ExecuteAsync()
+                        .ConfigureAwait(true);
+                }
+                catch (Exception e)
+                {
+                    bindingContext.OnCommandFailed(enclosingToolStrip, command, e);
+                }
+                finally
+                {
+                    button.Enabled = command.CanExecute.Value;
+                }
             }
+
+            var clickBinding = new CommandBindingHelpers.ToolStripButtonClickBinding(button, OnClickAsync);
+
+            button.AttachDisposable(clickBinding);
+            bindingContext.OnBindingCreated(button, clickBinding);
         }
-
     }
 }
