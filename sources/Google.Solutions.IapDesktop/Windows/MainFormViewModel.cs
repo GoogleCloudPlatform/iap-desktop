@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public IAuthorization Authorization { get; private set; }
 
-        public void Authorize()
+        public void Authorize(IBindingContext bindingContext)
         {
             Debug.Assert(this.Authorization == null);
 
@@ -250,7 +250,8 @@ namespace Google.Solutions.IapDesktop.Windows
                 new[] { IapTunnelingEndpoint.RequiredScope },
                 deviceEnrollment,
                 this.authSettings,
-                this.themeService.DialogTheme);
+                this.themeService.DialogTheme,
+                bindingContext);
             if (this.Authorization == null)
             {
                 // Aborted.

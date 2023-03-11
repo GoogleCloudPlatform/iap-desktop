@@ -65,14 +65,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 .Returns(new PropertiesViewModel());
 
             serviceProvider
-                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(SampleSheetView))))
-                .Returns(new SampleSheetView());
-            serviceProvider
-                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(SampleSheetViewModel))))
-                .Returns(new SampleSheetViewModel());
-
-            serviceProvider
-                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(IBindingContext)))) //TODO: Remove unneded services
+                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(IBindingContext))))
                 .Returns(new Mock<IBindingContext>().Object);
 
             return serviceProvider.Object;

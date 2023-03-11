@@ -346,7 +346,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 try
                 {
                     // NB. If the user cancels, no exception is thrown.
-                    this.viewModel.Authorize();
+                    this.viewModel.Authorize(this.bindingContext);
                 }
                 catch (OAuthScopeNotGrantedException)
                 {

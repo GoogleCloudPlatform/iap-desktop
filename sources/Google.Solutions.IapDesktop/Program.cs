@@ -369,7 +369,6 @@ namespace Google.Solutions.IapDesktop
                 windowLayer.AddSingleton<IProjectExplorer, ProjectExplorer>();
                 windowLayer.AddSingleton<ProjectExplorerView>();
                 windowLayer.AddTransient<ProjectExplorerViewModel>();
-                windowLayer.AddTransient<OptionsDialog>();
 
 #if DEBUG
                 windowLayer.AddSingleton<DebugProjectExplorerTrackingView>();

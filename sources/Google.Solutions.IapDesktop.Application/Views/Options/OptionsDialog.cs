@@ -19,54 +19,22 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    [SkipCodeCoverage("UI code")]
-    public class OptionsDialog 
+    public static class OptionsDialog 
     {
-        public OptionsDialog(IServiceCategoryProvider serviceProvider) //TODO: Remove class
-        {
-
-            //var appSettingsRepository =
-            //    serviceProvider.GetService<ApplicationSettingsRepository>();
-            //var themeSettingsRepository =
-            //    serviceProvider.GetService<ThemeSettingsRepository>();
-
-            //AddSheet(new GeneralOptionsSheet(
-            //    appSettingsRepository,
-            //    serviceProvider.GetService<IAppProtocolRegistry>(),
-            //    serviceProvider.GetService<HelpAdapter>()));
-            //AddSheet(new AppearanceOptionsSheet(themeSettingsRepository));
-            //AddSheet(new NetworkOptionsSheet(
-            //    appSettingsRepository,
-            //    serviceProvider.GetService<IHttpProxyAdapter>()));
-            //AddSheet(new ScreenOptionsSheet(appSettingsRepository));
-
-            //// Load all services implementing IOptionsDialogPane and
-            //// add them automatically. This gives extensions a chance
-            //// to plug in their own panes.
-            //foreach (var sheet in serviceProvider
-            //    .GetServicesByCategory<IPropertiesSheet>()
-            //    .OrderBy(p => p.ViewModel.Title))
-            //{
-            //    AddSheet((UserControl)sheet, sheet);
-            //}
-        }
-
         public static DialogResult Show(
             IWin32Window parent,
-            IServiceCategoryProvider serviceProvider) // TODO: Move elsewhere
+            IServiceCategoryProvider serviceProvider)
         {
             using (var dialog = serviceProvider.GetDialog<PropertiesView, PropertiesViewModel>())
             {

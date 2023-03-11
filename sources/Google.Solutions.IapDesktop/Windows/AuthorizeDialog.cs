@@ -46,7 +46,8 @@ namespace Google.Solutions.IapDesktop.Windows
             ClientSecrets clientSecrets,
             IEnumerable<string> scopes,
             IDeviceEnrollment deviceEnrollment,
-            AuthSettingsRepository authSettingsRepository)
+            AuthSettingsRepository authSettingsRepository,
+            IBindingContext bindingContext)
         {
             InitializeComponent();
 
@@ -62,9 +63,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 codeReceiver);
 
             var viewModel = new AuthorizeViewModel(this, signInAdapter, deviceEnrollment);
-
-            // TODO: Use shared binding context.
-            var bindingContext = ViewBindingContext.CreateDummy();
 
             //
             // Bind controls.
@@ -217,13 +215,15 @@ namespace Google.Solutions.IapDesktop.Windows
             IEnumerable<string> scopes,
             IDeviceEnrollment deviceEnrollment,
             AuthSettingsRepository authSettingsRepository,
-            IControlTheme theme)
+            IControlTheme theme,
+            IBindingContext bindingContext)
         {
             var dialog = new AuthorizeDialog(
                 clientSecrets,
                 scopes,
                 deviceEnrollment,
-                authSettingsRepository);
+                authSettingsRepository,
+                bindingContext);
             theme.ApplyTo(dialog);
             if (dialog.ShowDialog(parent) == DialogResult.OK)
             {

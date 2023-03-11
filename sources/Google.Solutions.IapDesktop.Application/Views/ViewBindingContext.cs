@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Commands;
@@ -38,12 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public ViewBindingContext(IExceptionDialog exceptionDialog)
         {
-            this.exceptionDialog = exceptionDialog; //TODO: .ThrowIfNull(nameof(serviceProvider));
-        }
-
-        public static ViewBindingContext CreateDummy() // TODO: REMOVE THIS REMOVE THIS
-        {
-            return new ViewBindingContext(null);
+            this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
         }
 
         //---------------------------------------------------------------------
