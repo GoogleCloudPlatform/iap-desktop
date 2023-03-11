@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
 
             this.contextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "&Unload projects...",
                     node => node is IProjectModelCloudNode
                         ? CommandState.Enabled
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     ActivityText = "Unloading projects"
                 });
             this.contextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "&Refresh project",
                     _ => this.viewModel.IsRefreshProjectsCommandVisible
                         ? CommandState.Enabled
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     ActivityText = "Refreshing project"
                 });
             this.contextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Refresh &all projects",
                     _ => this.viewModel.IsRefreshAllProjectsCommandVisible
                         ? CommandState.Enabled
@@ -222,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     ActivityText = "Refreshing project"
                 });
             this.contextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "&Unload project",
                     _ => this.viewModel.IsUnloadProjectCommandVisible
                         ? CommandState.Enabled
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             this.contextMenuCommands.AddSeparator();
             this.contextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Open in Cloud Consol&e",
                     _ => this.viewModel.IsCloudConsoleCommandVisible
                         ? CommandState.Enabled
@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     ActivityText = "Opening Cloud Console"
                 });
             this.contextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Configure IAP a&ccess",
                     _ => this.viewModel.IsCloudConsoleCommandVisible
                         ? CommandState.Enabled

@@ -46,7 +46,7 @@ namespace Google.Solutions.Mvvm.Commands
     /// A command that is applicable to a certain context,
     /// typically sufaced as a context menu item.
     /// </summary>
-    public interface ICommand<TContext> : ICommand
+    public interface IContextCommand<TContext> : ICommand
     {
         /// <summary>
         /// Queries if command should be enabled or not.

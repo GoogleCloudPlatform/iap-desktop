@@ -20,7 +20,6 @@
 //
 
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,15 +27,14 @@ using System.Windows.Forms;
 namespace Google.Solutions.Mvvm.Commands
 {
     /// <summary>
-    /// Basic command implementation.
+    /// Context command that invokes callbacks.
     /// </summary>
-    public class Command<TContext> : ICommand<TContext>
+    public class ContextCommand<TContext> : CommandBase, IContextCommand<TContext>
     {
-        private string activityText;
         private readonly Func<TContext, Task> executeFunc;
         private readonly Func<TContext, CommandState> queryStateFunc;
 
-        public Command(
+        public ContextCommand(
             string text,
             Func<TContext, CommandState> queryStateFunc,
             Func<TContext, Task> executeFunc)
@@ -46,7 +44,7 @@ namespace Google.Solutions.Mvvm.Commands
             this.executeFunc = executeFunc;
         }
 
-        public Command(
+        public ContextCommand(
             string text,
             Func<TContext, CommandState> queryStateFunc,
             Action<TContext> executeAction)
@@ -61,22 +59,9 @@ namespace Google.Solutions.Mvvm.Commands
         {
         }
 
-        public string Text { get; }
         public Image Image { get; set; }
         public Keys ShortcutKeys { get; set; }
         public bool IsDefault { get; set; }
-        public string ActivityText
-        {
-            get => this.activityText ?? this.Text.Replace("&", string.Empty);
-            set
-            {
-                Debug.Assert(
-                    value.Contains("ing"),
-                    "Action name should be formatted like 'Doing something'");
-
-                this.activityText = value;
-            }
-        }
 
         public Task ExecuteAsync(TContext context)
             => this.executeFunc(context);
@@ -94,7 +79,7 @@ namespace Google.Solutions.Mvvm.Commands
             Action<TContext> executeAction)
             where TContext : class
         {
-            return container.AddCommand(new Command<TContext>(
+            return container.AddCommand(new ContextCommand<TContext>(
                 text,
                 queryStateFunc,
                 executeAction));

@@ -65,7 +65,8 @@
     <Compile Include="Binding\ViewModelBase.cs" />
     <Compile Include="Cache\LeastRecentlyUsedCache.cs" />
     <Compile Include="Cache\ModelCachingViewModel.cs" />
-    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\ContextCommand.cs" />
     <Compile Include="Commands\CommandContainer.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Binding\ObservableCommand.cs" />

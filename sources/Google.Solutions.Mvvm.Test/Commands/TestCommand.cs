@@ -34,7 +34,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         [Test]
         public void WhenActivityTextNotSet_ThenActivityTextReturnsText()
         {
-            var command = new Command<string>(
+            var command = new ContextCommand<string>(
                 "&Sample",
                 _ => CommandState.Enabled,
                 _ => { });
@@ -44,7 +44,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
         [Test]
         public void WhenActivityTextSet_ThenActivityTextReturnsActivityText()
         {
-            var command = new Command<string>(
+            var command = new ContextCommand<string>(
                 "&Sample",
                 _ => CommandState.Enabled,
                 _ => { })

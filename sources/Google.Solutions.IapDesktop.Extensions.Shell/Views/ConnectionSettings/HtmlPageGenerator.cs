@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
             this.projectModelService = projectModelService;
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Generate HTML page",
                     context => context is IProjectModelProjectNode
                         ? CommandState.Enabled

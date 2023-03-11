@@ -40,10 +40,10 @@ namespace Google.Solutions.Mvvm.Commands
         where TContext : class
     {
         ICommandContainer<TContext> AddCommand(
-            ICommand<TContext> command);
+            IContextCommand<TContext> command);
 
         ICommandContainer<TContext> AddCommand(
-            ICommand<TContext> command,
+            IContextCommand<TContext> command,
             int? index);
 
         void AddSeparator(int? index = null);
@@ -112,7 +112,7 @@ namespace Google.Solutions.Mvvm.Commands
             }
         }
 
-        private void OnCommandFailed(ICommand<TContext> command, Exception e)
+        private void OnCommandFailed(IContextCommand<TContext> command, Exception e)
         {
             if (this.parent != null)
             {
@@ -195,10 +195,10 @@ namespace Google.Solutions.Mvvm.Commands
             }
         }
 
-        public ICommandContainer<TContext> AddCommand(ICommand<TContext> command)
+        public ICommandContainer<TContext> AddCommand(IContextCommand<TContext> command)
             => AddCommand(command, null);
 
-        public ICommandContainer<TContext> AddCommand(ICommand<TContext> command, int? index)
+        public ICommandContainer<TContext> AddCommand(IContextCommand<TContext> command, int? index)
         {
             var item = new MenuItemViewModel(
                 this.displayStyle,
@@ -330,12 +330,12 @@ namespace Google.Solutions.Mvvm.Commands
 
         internal class MenuItemViewModel : MenuItemViewModelBase
         {
-            private readonly ICommand<TContext> command;
+            private readonly IContextCommand<TContext> command;
             private readonly CommandContainer<TContext> container;
 
             public MenuItemViewModel(
                 ToolStripItemDisplayStyle displayStyle,
-                ICommand<TContext> command,
+                IContextCommand<TContext> command,
                 CommandContainer<TContext> container)
                 : base(displayStyle)
             {

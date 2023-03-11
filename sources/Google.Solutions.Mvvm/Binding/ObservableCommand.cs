@@ -43,9 +43,8 @@ namespace Google.Solutions.Mvvm.Binding
         Task ExecuteAsync();
     }
 
-    public class ObservableCommand : IObservableCommand
+    public class ObservableCommand : CommandBase, IObservableCommand
     {
-        private string activityText;
         private readonly Func<Task> executeFunc;
 
         private ObservableCommand(
@@ -56,21 +55,6 @@ namespace Google.Solutions.Mvvm.Binding
             this.Text = text;
             this.CanExecute = canExecute;
             this.executeFunc = executeFunc;
-        }
-
-        public string Text { get; }
-
-        public string ActivityText
-        {
-            get => this.activityText ?? this.Text.Replace("&", string.Empty);
-            set
-            {
-                Debug.Assert(
-                    value.Contains("ing"),
-                    "Action name should be formatted like 'Doing something'");
-
-                this.activityText = value;
-            }
         }
 
         public IObservableProperty<bool> CanExecute { get; }

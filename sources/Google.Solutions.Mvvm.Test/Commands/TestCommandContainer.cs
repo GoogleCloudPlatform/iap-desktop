@@ -224,7 +224,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
             {
                 string contextOfCallback = null;
                 container.AddCommand(
-                    new Command<string>(
+                    new ContextCommand<string>(
                         "test",
                         ctx => CommandState.Enabled,
                         ctx =>
@@ -255,7 +255,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 new Mock<IBindingContext>().Object))
             {
                 container.AddCommand(
-                    new Command<string>(
+                    new ContextCommand<string>(
                         "test",
                         ctx => CommandState.Disabled,
                         ctx =>
@@ -288,7 +288,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 new Mock<IBindingContext>().Object))
             {
                 container.AddCommand(
-                    new Command<string>(
+                    new ContextCommand<string>(
                         "test",
                         ctx => CommandState.Enabled,
                         ctx => Assert.Fail("Unexpected callback"))
@@ -313,7 +313,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 new Mock<IBindingContext>().Object))
             {
                 container.AddCommand(
-                    new Command<string>(
+                    new ContextCommand<string>(
                         "test",
                         ctx => CommandState.Disabled,
                         ctx => Assert.Fail("Unexpected callback"))
@@ -340,7 +340,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
             {
                 bool commandExecuted = false;
                 container.AddCommand(
-                    new Command<string>(
+                    new ContextCommand<string>(
                         "test",
                         ctx => CommandState.Enabled,
                         ctx =>
@@ -375,7 +375,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 };
 
                 container.AddCommand(
-                    new Command<string>(
+                    new ContextCommand<string>(
                         "test",
                         ctx => CommandState.Enabled,
                         ctx => throw new ArgumentException())
@@ -401,7 +401,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 container.CommandFailed += (s, a) => Assert.Fail();
 
                 container.AddCommand(
-                    new Command<string>(
+                    new ContextCommand<string>(
                         "test",
                         ctx => CommandState.Enabled,
                         ctx => throw new TaskCanceledException())
@@ -428,7 +428,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 };
 
                 container.AddCommand(
-                    new Command<string>(
+                    new ContextCommand<string>(
                         "test",
                         ctx => CommandState.Enabled,
                         async ctx =>
@@ -463,7 +463,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 container.CommandFailed += (s, a) => Assert.Fail();
 
                 container.AddCommand(
-                    new Command<string>(
+                    new ContextCommand<string>(
                         "test",
                         ctx => CommandState.Enabled,
                         async ctx =>
@@ -494,7 +494,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 };
 
                 var command = container.AddCommand(
-                    new Command<string>(
+                    new ContextCommand<string>(
                         "test",
                         ctx => CommandState.Enabled,
                         ctx => throw new ArgumentException())
@@ -505,7 +505,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 container.ExecuteDefaultCommand();
 
                 Assert.IsNotNull(sender);
-                Assert.IsInstanceOf<ICommand<string>>(sender);
+                Assert.IsInstanceOf<IContextCommand<string>>(sender);
             }
         }
 
@@ -529,7 +529,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                     _ => { }))
                 {
                     var command = subContainer.AddCommand(
-                        new Command<string>(
+                        new ContextCommand<string>(
                             "test",
                             ctx => CommandState.Enabled,
                             ctx => throw new ArgumentException())
@@ -541,7 +541,7 @@ namespace Google.Solutions.Mvvm.Test.Commands
                 }
 
                 Assert.IsNotNull(sender);
-                Assert.IsInstanceOf<ICommand<string>>(sender);
+                Assert.IsInstanceOf<IContextCommand<string>>(sender);
             }
         }
     }

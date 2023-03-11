@@ -437,14 +437,14 @@ namespace Google.Solutions.IapDesktop.Windows
             // Bind menu commands.
             //
             this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
+                new ContextCommand<ToolWindow>(
                     "&Close",
                     window => window != null && window.IsDockable
                         ? CommandState.Enabled
                         : CommandState.Disabled,
                     window => window.CloseSafely()));
             this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
+                new ContextCommand<ToolWindow>(
                     "&Float",
                     window => window != null &&
                               !window.IsFloat &&
@@ -453,7 +453,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         : CommandState.Disabled,
                     window => window.IsFloat = true));
             this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
+                new ContextCommand<ToolWindow>(
                     "&Auto hide",
                     window => window != null && window.IsDocked && !window.IsAutoHide
                         ? CommandState.Enabled
@@ -468,7 +468,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 });
 
             var dockCommand = this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
+                new ContextCommand<ToolWindow>(
                     "Dock",
                     _ => CommandState.Enabled,
                     context => { }));
@@ -497,7 +497,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     : CommandState.Disabled;
 
             this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
+                new ContextCommand<ToolWindow>(
                     "&Next tab",
                     showTabCommand,
                     window => SwitchTab(window, 1))
@@ -505,7 +505,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageDown
                 });
             this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
+                new ContextCommand<ToolWindow>(
                     "&Previous tab",
                     showTabCommand,
                     window => SwitchTab(window, -1))
@@ -513,7 +513,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageUp
                 });
             this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
+                new ContextCommand<ToolWindow>(
                     "Capture/release &focus",
                     _ => this.dockPanel.ActiveDocumentPane != null &&
                          this.dockPanel.ActiveDocumentPane.Contents.EnsureNotNull().Any()
@@ -526,69 +526,69 @@ namespace Google.Solutions.IapDesktop.Windows
 
 #if DEBUG
             var debugCommand = this.ViewMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "Debug",
                     _ => CommandState.Enabled,
                     context => { }));
-            debugCommand.AddCommand(new Command<IMainWindow>(
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Job Service",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugJobServiceView, DebugJobServiceViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Docking ",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugDockingView, DebugDockingViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Project Explorer Tracking",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugProjectExplorerTrackingView, DebugProjectExplorerTrackingViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Full screen pane",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugFullScreenView, DebugFullScreenViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Theme",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugThemeView, DebugThemeViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Registered services",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)
                     .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Common controls",
                 _ => CommandState.Enabled,
                 _ => ToolWindow
                     .GetWindow<DebugCommonControlsView, DebugCommonControlsViewModel>(this.serviceProvider)
                     .Show()));
 
-            var crashCommand = debugCommand.AddCommand(new Command<IMainWindow>(
+            var crashCommand = debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Exceptions",
                 _ => CommandState.Enabled,
                 _ => { }));
-            crashCommand.AddCommand(new Command<IMainWindow>(
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Command: Throw ExceptionWithHelp (sync)",
                 _ => CommandState.Enabled,
                 _ => throw new ResourceAccessDeniedException(
                         "DEBUG",
                         HelpTopics.General,
                         new ApplicationException("DEBUG"))));
-            crashCommand.AddCommand(new Command<IMainWindow>(
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Command: Throw ApplicationException (sync)",
                 _ => CommandState.Enabled,
                 _ => throw new ApplicationException("DEBUG")));
-            crashCommand.AddCommand(new Command<IMainWindow>(
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Command: Throw ApplicationException (async)",
                 _ => CommandState.Enabled,
                 async _ =>
@@ -596,11 +596,11 @@ namespace Google.Solutions.IapDesktop.Windows
                     await Task.Yield();
                     throw new ApplicationException("DEBUG");
                 }));
-            crashCommand.AddCommand(new Command<IMainWindow>(
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Command: Throw TaskCanceledException (sync)",
                 _ => CommandState.Enabled,
                 _ => throw new TaskCanceledException("DEBUG")));
-            crashCommand.AddCommand(new Command<IMainWindow>(
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Command: Throw TaskCanceledException (async)",
                 _ => CommandState.Enabled,
                 async _ =>
@@ -608,7 +608,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     await Task.Yield();
                     throw new TaskCanceledException("DEBUG");
                 }));
-            crashCommand.AddCommand(new Command<IMainWindow>(
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Window: Throw ApplicationException",
                 _ => CommandState.Enabled,
                 _ =>
@@ -633,12 +633,12 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        private Command<ToolWindow> CreateDockCommand(
+        private ContextCommand<ToolWindow> CreateDockCommand(
             string caption,
             DockState dockState,
             Keys shortcutKeys)
         {
-            return new Command<ToolWindow>(
+            return new ContextCommand<ToolWindow>(
                 caption,
                 window => window != null &&
                             window.VisibleState != dockState &&

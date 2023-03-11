@@ -279,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "&Connect",
                     GetContextMenuCommandStateWhenRunningInstanceRequired,
                     node => ConnectAsync(node, true, false))
@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 },
                 0);
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Connect &as user...",
                     GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,   // Windows/RDP only.
                     node => ConnectAsync(node, false, false))
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 },
                 1);
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Connect in &new terminal",
                     GetContextMenuCommandStateWhenRunningSshInstanceRequired,   // Linux/SSH only.
                     node => ConnectAsync(node, false, true))
@@ -310,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 },
                 2);
             projectExplorer.ToolbarCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Connect",
                     GetToolbarCommandStateWhenRunningInstanceRequired,
                     node => ConnectAsync(node, true, false))
@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             // Generate credentials (Windows/RDP only).
             //
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "&Generate Windows logon credentials...",
                     GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,
                     GenerateCredentialsAsync)
@@ -334,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 3);
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Generate Windows logon credentials",
                     GetToolbarCommandStateWhenRunningWindowsInstanceRequired,
                     GenerateCredentialsAsync)
@@ -348,7 +348,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             var settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Connection settings",
                     node => settingsService.IsConnectionSettingsAvailable(node)
                         ? CommandState.Enabled
@@ -361,7 +361,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 4);
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Connection &settings",
                     node => settingsService.IsConnectionSettingsAvailable(node)
                         ? CommandState.Enabled
@@ -376,7 +376,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             // Authorized keys.
             //
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Authorized SSH &keys",
                     node => AuthorizedPublicKeysViewModel.GetCommandState(node),
                     _ => ToolWindow
@@ -391,7 +391,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             // View menu.
             //
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "Active IAP &tunnels",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ToolWindow
@@ -403,7 +403,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 },
                 1);
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "Authorized SSH &keys",
                     _ => CommandState.Enabled,
                     _ => ToolWindow
@@ -426,7 +426,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     .ActiveSession);
 
             this.sessionCommands.AddCommand(
-                new Command<ISession>(
+                new ContextCommand<ISession>(
                     "&Full screen",
                     session => GetSessionMenuCommandState<IRemoteDesktopSession>(
                         session,
@@ -438,7 +438,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     ActivityText = "Activating full screen"
                 });
             this.sessionCommands.AddCommand(
-                new Command<ISession>(
+                new ContextCommand<ISession>(
                     "&Full screen (multiple displays)",
                     session => GetSessionMenuCommandState<IRemoteDesktopSession>(
                         session,
@@ -450,7 +450,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     ActivityText = "Activating full screen"
                 });
             this.sessionCommands.AddCommand(
-                new Command<ISession>(
+                new ContextCommand<ISession>(
                     "D&uplicate",
                     session => GetSessionMenuCommandState<ISshTerminalSession>(
                         session,
@@ -461,7 +461,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     ActivityText = "Duplicating session"
                 });
             this.sessionCommands.AddCommand(
-                new Command<ISession>(
+                new ContextCommand<ISession>(
                     "&Disconnect",
                     session => GetSessionMenuCommandState<ISession>(
                         session,
@@ -474,7 +474,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 });
             this.sessionCommands.AddSeparator();
             this.sessionCommands.AddCommand(
-                new Command<ISession>(
+                new ContextCommand<ISession>(
                     "Do&wnload files...",
                     session => GetSessionMenuCommandState<ISshTerminalSession>(
                         session,
@@ -485,14 +485,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     ActivityText = "Downloading files"
                 });
             this.sessionCommands.AddCommand(
-                new Command<ISession>(
+                new ContextCommand<ISession>(
                     "Show &security screen (send Ctrl+Alt+Esc)",
                     session => GetSessionMenuCommandState<IRemoteDesktopSession>(
                         session,
                         rdpSession => rdpSession.IsConnected),
                     session => (session as IRemoteDesktopSession)?.ShowSecurityScreen()));
             this.sessionCommands.AddCommand(
-                new Command<ISession>(
+                new ContextCommand<ISession>(
                     "Open &task manager (send Ctrl+Shift+Esc)",
                     session => GetSessionMenuCommandState<IRemoteDesktopSession>(
                         session,
