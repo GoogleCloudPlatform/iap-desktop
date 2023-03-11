@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding.Commands
@@ -90,6 +91,10 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                         }
                     }
                 }
+                catch (TaskCanceledException)
+                {
+                    // Ignore.
+                }
                 catch (Exception e)
                 {
                     bindingContext.OnCommandFailed(command, e);
@@ -150,6 +155,10 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                     await command
                         .ExecuteAsync()
                         .ConfigureAwait(true);
+                }
+                catch (TaskCanceledException)
+                {
+                    // Ignore.
                 }
                 catch (Exception e)
                 {

@@ -24,6 +24,7 @@ using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -138,6 +139,77 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
 
                 button.PerformClick();
                 Assert.IsTrue(button.Enabled);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenCommandThrowsException_ThenContextIsNotified()
+        {
+            var button = new Button();
+            var command = ObservableCommand.Build(
+                "Command name",
+                () => throw new ArgumentException());
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command
+            })
+            {
+                form.Controls.Add(button);
+
+                var bindingContext = new Mock<IBindingContext>();
+                button.BindObservableCommand(
+                    viewModel,
+                    m => m.Command,
+                    bindingContext.Object);
+
+                form.Show();
+
+                button.PerformClick();
+
+                bindingContext.Verify(
+                    ctx => ctx.OnCommandFailed(
+                        It.Is<ICommand>(c => c == command),
+                        It.IsAny<ArgumentException>()),
+                    Times.Once);
+
+                form.Close();
+            }
+        }
+        [Test]
+        public void WhenCommandThrowsTaskCancelledException_ThenContextIsNotNotified()
+        {
+            var button = new Button();
+            var command = ObservableCommand.Build(
+                "Command name",
+                () => throw new TaskCanceledException());
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command
+            })
+            {
+                form.Controls.Add(button);
+
+                var bindingContext = new Mock<IBindingContext>();
+                button.BindObservableCommand(
+                    viewModel,
+                    m => m.Command,
+                    bindingContext.Object);
+
+                form.Show();
+
+                button.PerformClick();
+
+                bindingContext.Verify(
+                    ctx => ctx.OnCommandFailed(
+                        It.Is<ICommand>(c => c == command),
+                        It.IsAny<TaskCanceledException>()),
+                    Times.Never);
 
                 form.Close();
             }
