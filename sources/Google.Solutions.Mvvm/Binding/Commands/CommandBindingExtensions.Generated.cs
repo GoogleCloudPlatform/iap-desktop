@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding.Commands
@@ -30,42 +31,111 @@ namespace Google.Solutions.Mvvm.Binding.Commands
     {
                 private class ControlClickBinding : BindingExtensions.Binding
         {
-            private readonly Control observed;
-            private readonly EventHandler handler;
+            private readonly IBindingContext bindingContext;
+            private IObservableCommand command;
+            private readonly Control button;
+
+            private async void OnClickAsync(object _, EventArgs __)
+            {
+                button.Enabled = false;
+                try
+                {
+                    await this.command
+                        .ExecuteAsync()
+                        .ConfigureAwait(true);
+
+                                        if (button.FindForm() is Form form)
+                    {
+                        //
+                        // Treat the successful command execution
+                        // as dialog result.
+                        //
+                        if (form.AcceptButton == button)
+                        {
+                            form.DialogResult = DialogResult.OK;
+                        }
+                        else if (form.CancelButton == button)
+                        {
+                            form.DialogResult = DialogResult.Cancel;
+                        }
+                    }
+                                    }
+                catch (TaskCanceledException)
+                {
+                    // Ignore.
+                }
+                catch (Exception e)
+                {
+                    this.bindingContext.OnCommandFailed(command, e);
+                }
+                finally
+                {
+                    button.Enabled = command.CanExecute.Value;
+                }
+            }
 
             public ControlClickBinding(
-                Control observed,
-                EventHandler handler)
+                Control button,
+                IObservableCommand command,
+                IBindingContext bindingContext)
             {
-                this.observed = observed;
-                this.handler = handler;
+                this.button = button;
+                this.command = command;
+                this.bindingContext = bindingContext;
 
-                observed.Click += handler;
+                button.Click += OnClickAsync;
             }
 
             public override void Dispose()
             {
-                this.observed.Click -= this.handler;
+                this.button.Click -= OnClickAsync;
             }
         }
                 private class ToolStripButtonClickBinding : BindingExtensions.Binding
         {
-            private readonly ToolStripButton observed;
-            private readonly EventHandler handler;
+            private readonly IBindingContext bindingContext;
+            private IObservableCommand command;
+            private readonly ToolStripButton button;
+
+            private async void OnClickAsync(object _, EventArgs __)
+            {
+                button.Enabled = false;
+                try
+                {
+                    await this.command
+                        .ExecuteAsync()
+                        .ConfigureAwait(true);
+
+                                    }
+                catch (TaskCanceledException)
+                {
+                    // Ignore.
+                }
+                catch (Exception e)
+                {
+                    this.bindingContext.OnCommandFailed(command, e);
+                }
+                finally
+                {
+                    button.Enabled = command.CanExecute.Value;
+                }
+            }
 
             public ToolStripButtonClickBinding(
-                ToolStripButton observed,
-                EventHandler handler)
+                ToolStripButton button,
+                IObservableCommand command,
+                IBindingContext bindingContext)
             {
-                this.observed = observed;
-                this.handler = handler;
+                this.button = button;
+                this.command = command;
+                this.bindingContext = bindingContext;
 
-                observed.Click += handler;
+                button.Click += OnClickAsync;
             }
 
             public override void Dispose()
             {
-                this.observed.Click -= this.handler;
+                this.button.Click -= OnClickAsync;
             }
         }
             }

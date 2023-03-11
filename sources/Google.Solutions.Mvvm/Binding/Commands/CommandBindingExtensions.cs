@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using System;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding.Commands
@@ -66,46 +65,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             //
             // Forward click events to the command.
             //
-            async void OnClickAsync(object _, EventArgs __)
-            {
-                button.Enabled = false;
-                try
-                {
-                    await command
-                        .ExecuteAsync()
-                        .ConfigureAwait(true);
-
-                    if (button.FindForm() is Form form)
-                    {
-                        //
-                        // Treat the successful command execution
-                        // as dialog result.
-                        //
-                        if (form.AcceptButton == button)
-                        {
-                            form.DialogResult = DialogResult.OK;
-                        }
-                        else if (form.CancelButton == button)
-                        {
-                            form.DialogResult = DialogResult.Cancel;
-                        }
-                    }
-                }
-                catch (TaskCanceledException)
-                {
-                    // Ignore.
-                }
-                catch (Exception e)
-                {
-                    bindingContext.OnCommandFailed(command, e);
-                }
-                finally
-                {
-                    button.Enabled = command.CanExecute.Value;
-                }
-            }
-
-            var clickBinding = new ControlClickBinding(button, OnClickAsync);
+            var clickBinding = new ControlClickBinding(button, command, bindingContext);
 
             button.AttachDisposable(clickBinding);
             bindingContext.OnBindingCreated(button, clickBinding);
@@ -147,30 +107,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             //
             // Forward click events to the command.
             //
-            async void OnClickAsync(object _, EventArgs __)
-            {
-                button.Enabled = false;
-                try
-                {
-                    await command
-                        .ExecuteAsync()
-                        .ConfigureAwait(true);
-                }
-                catch (TaskCanceledException)
-                {
-                    // Ignore.
-                }
-                catch (Exception e)
-                {
-                    bindingContext.OnCommandFailed(command, e);
-                }
-                finally
-                {
-                    button.Enabled = command.CanExecute.Value;
-                }
-            }
-
-            var clickBinding = new ToolStripButtonClickBinding(button, OnClickAsync);
+            var clickBinding = new ToolStripButtonClickBinding(button, command, bindingContext);
 
             button.AttachDisposable(clickBinding);
             bindingContext.OnBindingCreated(button, clickBinding);
