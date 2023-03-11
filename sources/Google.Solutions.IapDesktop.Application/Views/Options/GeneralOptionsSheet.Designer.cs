@@ -125,7 +125,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.browserIntegrationLink.TabIndex = 2;
             this.browserIntegrationLink.TabStop = true;
             this.browserIntegrationLink.Text = "More information";
-            this.browserIntegrationLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.browserIntegrationLink_LinkClicked);
             // 
             // enableBrowserIntegrationCheckBox
             // 
@@ -180,7 +179,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.secureConnectLink.TabIndex = 5;
             this.secureConnectLink.TabStop = true;
             this.secureConnectLink.Text = "More information";
-            this.secureConnectLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.secureConnectLink_LinkClicked);
             // 
             // enableDcaCheckBox
             // 

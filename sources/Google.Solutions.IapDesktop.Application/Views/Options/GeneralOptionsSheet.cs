@@ -29,8 +29,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
     [SkipCodeCoverage("UI code")]
     internal partial class GeneralOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private GeneralOptionsViewModel viewModel;
-
         public GeneralOptionsSheet()
         {
             InitializeComponent();
@@ -40,49 +38,48 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
         {
-            this.viewModel = (GeneralOptionsViewModel)viewModelBase;
+            var viewModel = (GeneralOptionsViewModel)viewModelBase;
 
             this.updateBox.BindReadonlyObservableProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsUpdateCheckEditable,
                 bindingContext);
             this.secureConnectBox.BindReadonlyObservableProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsDeviceCertificateAuthenticationEditable,
                 bindingContext);
 
             this.enableUpdateCheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsUpdateCheckEnabled,
                 bindingContext);
             this.enableDcaCheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsDeviceCertificateAuthenticationEnabled,
                 bindingContext);
             this.lastCheckLabel.BindReadonlyProperty(
                 c => c.Text,
-                this.viewModel,
+                viewModel,
                 m => m.LastUpdateCheck,
                 bindingContext);
             this.enableBrowserIntegrationCheckBox.BindObservableProperty(
                 c => c.Checked,
-                this.viewModel,
+                viewModel,
                 m => m.IsBrowserIntegrationEnabled,
                 bindingContext);
+
+            this.browserIntegrationLink.BindCommand(
+                viewModel,
+                m => m.OpenBrowserIntegrationHelp,
+                bindingContext);
+            this.secureConnectLink.BindCommand(
+                viewModel,
+                m => m.OpenSecureConnectHelp,
+                bindingContext);
         }
-
-        //---------------------------------------------------------------------
-        // Events.
-        //---------------------------------------------------------------------
-
-        private void browserIntegrationLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-            => this.viewModel.OpenBrowserIntegrationDocs();
-
-        private void secureConnectLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-            => this.viewModel.OpenSecureConnectDcaOverviewDocs();
     }
 }

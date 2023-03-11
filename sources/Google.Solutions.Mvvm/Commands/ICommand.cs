@@ -40,21 +40,6 @@ namespace Google.Solutions.Mvvm.Commands
         /// Caption when command is executing.
         /// </summary>
         string ActivityText { get; }
-
-        /// <summary>
-        /// Optional icon.
-        /// </summary>
-        Image Image { get; }
-
-        /// <summary>
-        /// Accelerator for command.
-        /// </summary>
-        Keys ShortcutKeys { get; }
-
-        /// <summary>
-        /// Check if command should be executed by default.
-        /// </summary>
-        bool IsDefault { get; }
     }
 
     /// <summary>
@@ -72,6 +57,21 @@ namespace Google.Solutions.Mvvm.Commands
         /// Executes the command.
         /// </summary>
         Task ExecuteAsync(TContext context);
+
+        /// <summary>
+        /// Optional icon.
+        /// </summary>
+        Image Image { get; }
+
+        /// <summary>
+        /// Accelerator for command.
+        /// </summary>
+        Keys ShortcutKeys { get; }
+
+        /// <summary>
+        /// Check if command should be executed by default.
+        /// </summary>
+        bool IsDefault { get; }
     }
 
     public enum CommandState

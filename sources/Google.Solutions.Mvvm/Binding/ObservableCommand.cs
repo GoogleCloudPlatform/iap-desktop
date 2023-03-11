@@ -22,9 +22,7 @@
 using Google.Solutions.Mvvm.Commands;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
 {
@@ -61,9 +59,6 @@ namespace Google.Solutions.Mvvm.Binding
         }
 
         public string Text { get; }
-        public Image Image { get; set; }
-        public Keys ShortcutKeys { get; set; }
-        public bool IsDefault { get; set; }
 
         public string ActivityText
         {
@@ -97,6 +92,21 @@ namespace Google.Solutions.Mvvm.Binding
             return new ObservableCommand(
                 text,
                 executeFunc,
+                canExecute ?? ObservableProperty.Build(true));
+        }
+
+        public static ObservableCommand Build(
+            string text,
+            Action executeAction,
+            IObservableProperty<bool> canExecute = null)
+        {
+            return new ObservableCommand(
+                text,
+                () =>
+                {
+                    executeAction();
+                    return Task.CompletedTask;
+                },
                 canExecute ?? ObservableProperty.Build(true));
         }
     }

@@ -625,6 +625,70 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
+        public void WhenCommandTextNotEmpty_ThenControlTextIsUpdated()
+        {
+            var button = new Button()
+            {
+                Text = "Original text"
+            };
+            var command = ObservableCommand.Build(
+                "Command text",
+                () => {});
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command
+            })
+            {
+                form.Controls.Add(button);
+
+                button.BindCommand(
+                    viewModel,
+                    m => m.Command,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                Assert.AreEqual("Command text", button.Text);
+
+                form.Close();
+            }
+        }
+
+        [Test]
+        public void WhenCommandTextIsNullOrEmpty_ThenControlTextIsLeftAsIs()
+        {
+            var button = new Button()
+            {
+                Text = "Original text"
+            };
+            var command = ObservableCommand.Build(
+                string.Empty,
+                () => { });
+
+            using (var form = new Form())
+            using (var viewModel = new ViewModelWithCommand()
+            {
+                Command = command
+            })
+            {
+                form.Controls.Add(button);
+
+                button.BindCommand(
+                    viewModel,
+                    m => m.Command,
+                    new Mock<IBindingContext>().Object);
+
+                form.Show();
+
+                Assert.AreEqual("Original text", button.Text);
+
+                form.Close();
+            }
+        }
+
+        [Test]
         [InteractiveTest]
         [Apartment(ApartmentState.STA)]
         public void TestCommandBindingUi()

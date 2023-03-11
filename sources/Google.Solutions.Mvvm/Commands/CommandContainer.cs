@@ -64,7 +64,6 @@ namespace Google.Solutions.Mvvm.Commands
     public sealed class CommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
         where TContext : class
     {
-        private readonly IDisposable binding;
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly ObservableCollection<MenuItemViewModelBase> menuItems;
         private readonly CommandContainer<TContext> parent;
@@ -158,7 +157,6 @@ namespace Google.Solutions.Mvvm.Commands
 
         public void Dispose()
         {
-            this.binding?.Dispose();
         }
 
         //---------------------------------------------------------------------

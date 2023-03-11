@@ -31,7 +31,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
     internal class GeneralOptionsViewModel : OptionsViewModelBase<ApplicationSettings>
     {
         private readonly IAppProtocolRegistry protocolRegistry;
-        private readonly HelpAdapter helpService;
 
         public GeneralOptionsViewModel(
             ApplicationSettingsRepository settingsRepository,
@@ -40,7 +39,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             : base("General", settingsRepository)
         {
             this.protocolRegistry = protocolRegistry;
-            this.helpService = helpService;
+
+            this.OpenSecureConnectHelp = ObservableCommand.Build(
+                string.Empty,
+                () =>  helpService.OpenTopic(HelpTopics.SecureConnectDcaOverview));
+            this.OpenBrowserIntegrationHelp = ObservableCommand.Build(
+                string.Empty,
+                () => helpService.OpenTopic(HelpTopics.BrowserIntegration));
 
             this.IsUpdateCheckEditable = ObservableProperty.Build(false);
             this.IsDeviceCertificateAuthenticationEditable = ObservableProperty.Build(false);
@@ -108,6 +113,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
 
         //---------------------------------------------------------------------
+        // Observable command.
+        //---------------------------------------------------------------------
+
+        public ObservableCommand OpenSecureConnectHelp { get; }
+        public ObservableCommand OpenBrowserIntegrationHelp { get; }
+
+        //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
@@ -122,15 +134,5 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         public ObservableProperty<bool> IsDeviceCertificateAuthenticationEnabled { get; }
 
         public string LastUpdateCheck { get; private set; }
-
-        //---------------------------------------------------------------------
-        // Actions.
-        //---------------------------------------------------------------------
-
-        public void OpenBrowserIntegrationDocs()
-            => this.helpService.OpenTopic(HelpTopics.BrowserIntegration);
-
-        public void OpenSecureConnectDcaOverviewDocs()
-            => this.helpService.OpenTopic(HelpTopics.SecureConnectDcaOverview);
     }
 }

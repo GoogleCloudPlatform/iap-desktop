@@ -304,12 +304,13 @@ namespace Google.Solutions.Mvvm.Binding
             bindingContext.OnBindingCreated(control, binding);
         }
 
-        public static void BindCommand<TCommand, TModel>(
-            this ButtonBase button,
+        public static void BindCommand<TButton, TCommand, TModel>(
+            this TButton button,
             TModel model,
             Func<TModel, TCommand> commandProperty,
             IBindingContext bindingContext)
             where TCommand : IObservableCommand
+            where TButton : Control, IButtonControl
         {
             Precondition.ExpectNotNull(commandProperty, nameof(commandProperty));
             Precondition.ExpectNotNull(model, nameof(model));
@@ -321,7 +322,10 @@ namespace Google.Solutions.Mvvm.Binding
             // Apply initial values.
             //
             button.Enabled = command.CanExecute.Value;
-            button.Text = command.Text;
+            if (!string.IsNullOrEmpty(command.Text))
+            {
+                button.Text = command.Text;
+            }
 
             //
             // Update control if command state changes.
@@ -509,11 +513,11 @@ namespace Google.Solutions.Mvvm.Binding
 
         private class ClickBinding : Binding
         {
-            private readonly ButtonBase observed;
+            private readonly Control observed;
             private readonly EventHandler handler;
 
             public ClickBinding(
-                ButtonBase observed,
+                Control observed,
                 EventHandler handler)
             {
                 this.observed = observed;
