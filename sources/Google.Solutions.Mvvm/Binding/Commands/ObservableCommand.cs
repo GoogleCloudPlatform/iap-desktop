@@ -21,6 +21,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Mvvm.Binding.Commands
@@ -39,16 +40,16 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         /// <summary>
         /// Executes the command.
         /// </summary>
-        Task ExecuteAsync();
+        Task ExecuteAsync(CancellationToken cancellationToken);
     }
 
     public class ObservableCommand : CommandBase, IObservableCommand
     {
-        private readonly Func<Task> executeFunc;
+        private readonly Func<CancellationToken, Task> executeFunc;
 
         private ObservableCommand(
             string text,
-            Func<Task> executeFunc,
+            Func<CancellationToken, Task> executeFunc,
             IObservableProperty<bool> canExecute)
         {
             this.Text = text;
@@ -58,9 +59,9 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 
         public IObservableProperty<bool> CanExecute { get; }
 
-        public Task ExecuteAsync()
+        public Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            return this.executeFunc();
+            return this.executeFunc(cancellationToken);
         }
 
         //---------------------------------------------------------------------
@@ -69,12 +70,22 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 
         public static ObservableCommand Build(
             string text,
-            Func<Task> executeFunc,
+            Func<CancellationToken, Task> executeFunc,
             IObservableProperty<bool> canExecute = null)
         {
             return new ObservableCommand(
                 text,
                 executeFunc,
+                canExecute ?? ObservableProperty.Build(true));
+        }
+        public static ObservableCommand Build(
+            string text,
+            Func<Task> executeFunc,
+            IObservableProperty<bool> canExecute = null)
+        {
+            return new ObservableCommand(
+                text,
+                _ => executeFunc(),
                 canExecute ?? ObservableProperty.Build(true));
         }
 
@@ -85,7 +96,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
         {
             return new ObservableCommand(
                 text,
-                () =>
+                _ =>
                 {
                     executeAction();
                     return Task.CompletedTask;

@@ -23,6 +23,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Test.Binding
@@ -133,7 +134,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
                 viewModel.AddSheet(new SampleSheetView(), sheetViewModel1);
                 viewModel.AddSheet(new SampleSheetView(), sheetViewModel2);
 
-                viewModel.ApplyCommand.ExecuteAsync();
+                viewModel.ApplyCommand.ExecuteAsync(CancellationToken.None);
 
                 Assert.AreEqual(1, sheetViewModel1.ApplyCalls);
                 Assert.AreEqual(0, sheetViewModel2.ApplyCalls);

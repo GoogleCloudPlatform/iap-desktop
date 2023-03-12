@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -41,7 +42,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 try
                 {
                     await this.command
-                        .ExecuteAsync()
+                        .ExecuteAsync(CancellationToken.None)
                         .ConfigureAwait(true);
 
                                         if (button.FindForm() is Form form)
@@ -103,7 +104,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 try
                 {
                     await this.command
-                        .ExecuteAsync()
+                        .ExecuteAsync(CancellationToken.None)
                         .ConfigureAwait(true);
 
                                     }
