@@ -57,16 +57,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
         {
             var serviceProvider = new Mock<IServiceProvider>();
 
-            serviceProvider
-                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(PropertiesView))))
-                .Returns(new PropertiesView());
-            serviceProvider
-                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(PropertiesViewModel))))
-                .Returns(new PropertiesViewModel());
-
-            serviceProvider
-                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(IBindingContext))))
-                .Returns(new Mock<IBindingContext>().Object);
+            serviceProvider.Add(new PropertiesView());
+            serviceProvider.Add(new PropertiesViewModel());
+            serviceProvider.AddMock<IBindingContext>();
 
             return serviceProvider.Object;
         }

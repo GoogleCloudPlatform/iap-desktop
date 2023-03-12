@@ -70,13 +70,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
         {
             var serviceProvider = new Mock<IServiceProvider>();
 
-            serviceProvider
-                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(SampleForm))))
-                .Returns(view);
-
-            serviceProvider
-                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(SampleViewModel))))
-                .Returns(viewModel);
+            serviceProvider.Add(view);
+            serviceProvider.Add(viewModel);
+            serviceProvider.AddMock<IBindingContext>();
 
             return serviceProvider.Object;
         }
