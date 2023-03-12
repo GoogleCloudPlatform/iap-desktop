@@ -45,36 +45,13 @@ namespace Google.Solutions.Mvvm.Binding
         void AddDependentProperty(IObservableProperty property);
     }
 
-    /// <summary>
-    /// Simple observable property.
-    /// </summary>
-    public class ObservableProperty<T>
-        : IObservableProperty<T>, IObservableWritableProperty<T>, ISourceProperty
+    public abstract class ObservablePropertyBase<T>
+         : IObservableProperty<T>, IObservableWritableProperty<T>, ISourceProperty
     {
-        private T value;
         private LinkedList<IObservableProperty> dependents;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
-        internal ObservableProperty(T initialValue)
-        {
-            this.value = initialValue;
-        }
-
-        /// <summary>
-        /// Get or set the value, raises a change event.
-        /// </summary>
-        public T Value
-        {
-            get => this.value;
-            set
-            {
-                this.value = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public void RaisePropertyChange()
+        public virtual void RaisePropertyChange()
         {
             PropertyChanged?.Invoke(
                 this,
@@ -98,93 +75,87 @@ namespace Google.Solutions.Mvvm.Binding
 
             this.dependents.AddLast(property);
         }
+
+        public abstract T Value { get; set; }
     }
 
     /// <summary>
-    /// Observable property that is derived from one or more
-    /// other properties.
+    /// Simple observable property.
     /// </summary>
-    public class ObservableFunc<T> : IObservableProperty<T>
+    public class ObservableProperty<T> : ObservablePropertyBase<T>
     {
-        private readonly Func<T> func;
+        private T value;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public T Value => func();
-
-        internal ObservableFunc(
-            Func<T> func,
-            params ISourceProperty[] sources)
+        internal ObservableProperty(T initialValue)
         {
-            this.func = func;
-
-            foreach (var source in sources)
-            {
-                source.AddDependentProperty(this);
-            }
+            this.value = initialValue;
         }
 
-        public void RaisePropertyChange()
+        /// <summary>
+        /// Get or set the value, raises a change event.
+        /// </summary>
+        public override T Value
         {
-            PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs("Value"));
+            get => this.value;
+            set
+            {
+                this.value = value;
+                RaisePropertyChange();
+            }
         }
     }
 
-    public static class ObservableProperty
+    internal class ThreadSafeObservableProperty<T> : ObservableProperty<T>
     {
-        public static ObservableProperty<T> Build<T>(T initialValue)
+        private readonly ISynchronizeInvoke synchronizeInvoke;
+        private T value;
+
+        internal ThreadSafeObservableProperty(
+            ISynchronizeInvoke synchronizeInvoke,
+            T initialValue)
+            : base(initialValue)
         {
-            return new ObservableProperty<T>(initialValue);
+            this.synchronizeInvoke = synchronizeInvoke;
         }
 
-        public static ObservableFunc<TResult> Build<T1, TResult>(
-            ObservableProperty<T1> source,
-            Func<T1, TResult> func)
+        /// <summary>
+        /// Get or set the value, raises a change event.
+        /// </summary>
+        public override T Value
         {
-            return new ObservableFunc<TResult>(
-                () => func(source.Value),
-                source);
+            get
+            {
+                lock (this.synchronizeInvoke)
+                {
+                    return this.value;
+                }
+            }
+            set
+            {
+                lock (this.synchronizeInvoke)
+                {
+                    this.value = value;
+                    RaisePropertyChange();
+                }
+            }
         }
 
-        public static ObservableFunc<TResult> Build<T1, T2, TResult>(
-            ObservableProperty<T1> source1,
-            ObservableProperty<T2> source2,
-            Func<T1, T2, TResult> func)
+        public override void RaisePropertyChange()
         {
-            return new ObservableFunc<TResult>(
-                () => func(source1.Value, source2.Value),
-                source1,
-                source2);
-        }
-
-        public static ObservableFunc<TResult> Build<T1, T2, T3, TResult>(
-            ObservableProperty<T1> source1,
-            ObservableProperty<T2> source2,
-            ObservableProperty<T3> source3,
-            Func<T1, T2, T3, TResult> func)
-        {
-            return new ObservableFunc<TResult>(
-                () => func(source1.Value, source2.Value, source3.Value),
-                source1,
-                source2,
-                source3);
-        }
-
-        public static ObservableFunc<TResult> Build<T1, T2, T3, T4, TResult>(
-            ObservableProperty<T1> source1,
-            ObservableProperty<T2> source2,
-            ObservableProperty<T3> source3,
-            ObservableProperty<T4> source4,
-            Func<T1, T2, T3, T4, TResult> func)
-        {
-            return new ObservableFunc<TResult>(
-                () => func(source1.Value, source2.Value, source3.Value, source4.Value),
-                source1,
-                source2,
-                source3,
-                source4);
+            if (this.synchronizeInvoke.InvokeRequired)
+            {
+                //
+                // We're on the wrong thread (not the GUI thread,
+                // presumably).
+                //
+                this.synchronizeInvoke.BeginInvoke(
+                    (Action)(() => base.RaisePropertyChange()),
+                    null);
+            }
+            else
+            {
+                base.RaisePropertyChange();
+            }
         }
     }
 }
