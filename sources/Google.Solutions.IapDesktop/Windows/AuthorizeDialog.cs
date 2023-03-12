@@ -23,7 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using System;
@@ -67,33 +66,30 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Bind controls.
             //
-            this.spinner.BindReadonlyProperty(
+            this.spinner.BindReadonlyObservableProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsWaitControlVisible,
                 bindingContext);
-            this.signInButton.BindReadonlyProperty(
+            this.signInButton.BindReadonlyObservableProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsSignOnControlVisible,
                 bindingContext);
-            viewModel.OnPropertyChange(
-                m => m.IsSignOnControlVisible,
-                visible =>
+            viewModel.IsSignOnControlVisible.PropertyChanged += (_, __) =>
+            {
+                if (viewModel.IsSignOnControlVisible.Value)
                 {
-                    if (visible)
-                    {
-                        this.signInButton.Focus();
-                    }
-                },
-                bindingContext);
+                    this.signInButton.Focus();
+                }
+            };
 
-            this.cancelSignInLabel.BindReadonlyProperty(
+            this.cancelSignInLabel.BindReadonlyObservableProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsCancelButtonVisible,
                 bindingContext);
-            this.cancelSignInLink.BindReadonlyProperty(
+            this.cancelSignInLink.BindReadonlyObservableProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsCancelButtonVisible,
@@ -104,21 +100,18 @@ namespace Google.Solutions.IapDesktop.Windows
                 m => m.IsChromeSingnInButtonEnabled,
                 bindingContext);
 
-            viewModel.OnPropertyChange(
-                m => m.Authorization,
-                authz =>
+            viewModel.Authorization.PropertyChanged += (_, __) =>
+            {
+                if (viewModel.Authorization.Value != null)
                 {
-                    if (authz != null)
-                    {
-                        //
-                        // We're all set, close the dialog.
-                        //
-                        this.AuthorizationResult = authz;
-                        this.DialogResult = DialogResult.OK;
-                        Close();
-                    }
-                },
-                bindingContext);
+                    //
+                    // We're all set, close the dialog.
+                    //
+                    this.AuthorizationResult = viewModel.Authorization.Value;
+                    this.DialogResult = DialogResult.OK;
+                    Close();
+                }
+            };
 
             //
             // Manual sign-in.

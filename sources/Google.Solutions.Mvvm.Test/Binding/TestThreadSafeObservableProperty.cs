@@ -31,12 +31,19 @@ namespace Google.Solutions.Mvvm.Test.Binding
     [TestFixture]
     public class TestThreadSafeObservableProperty
     {
+        private class SampleViewModel : ViewModelBase
+        {
+        }
+
         [Test]
         public async Task RaisePropertyChange()
         {
+            using (var viewModel = new SampleViewModel())
             using (var form = new Form())
             {
-                var property = ObservableProperty.Build(string.Empty, form);
+                viewModel.View = form;
+
+                var property = ObservableProperty.Build(string.Empty, viewModel);
 
                 bool eventRaised = false;
                 property.PropertyChanged += (_, __) =>
@@ -56,9 +63,12 @@ namespace Google.Solutions.Mvvm.Test.Binding
         [Test]
         public async Task RaisePropertyChangeNotifiesDependents()
         {
+            using (var viewModel = new SampleViewModel())
             using (var form = new Form())
             {
-                var property = ObservableProperty.Build(string.Empty, form);
+                viewModel.View = form;
+
+                var property = ObservableProperty.Build(string.Empty, viewModel);
                 var dependent1 = ObservableProperty.Build(
                     property,
                     s => s.ToUpper());

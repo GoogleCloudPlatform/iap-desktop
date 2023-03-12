@@ -35,11 +35,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly ISignInAdapter signInAdapter;
         private readonly IDeviceEnrollment deviceEnrollment;
 
-        private bool isWaitControlVisible = false;
-        private bool isSignOnControlVisible = false;
-        private bool isCancelButtonVisible = false;
-        private IAuthorization authorization;
-
         public AuthorizeViewModel(
             Control view,
             ISignInAdapter signInAdapter,
@@ -48,56 +43,31 @@ namespace Google.Solutions.IapDesktop.Windows
             this.View = view.ThrowIfNull(nameof(view));
             this.signInAdapter = signInAdapter.ThrowIfNull(nameof(signInAdapter));
             this.deviceEnrollment = deviceEnrollment;
-        }
 
-        private void FireAndForgetOnGuiThread(Action action)
-        {
-            ((Control)this.View).BeginInvoke(action);
+            //
+            // NB. Properties are access from a non-GUI thrad, so
+            // they must be thread-safe.
+            //
+            this.Authorization = ObservableProperty.Build<IAuthorization>(null, this);
+            this.IsWaitControlVisible = ObservableProperty.Build(false, this);
+            this.IsSignOnControlVisible = ObservableProperty.Build(false, this);
+            this.IsCancelButtonVisible = ObservableProperty.Build(false, this);
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public IAuthorization Authorization
-        {
-            get => this.authorization;
-            private set
-            {
-                this.authorization = value;
-                RaisePropertyChange();
-            }
-        }
+        /// <summary>
+        /// Authorization result. Set after a successful authorization.
+        /// </summary>
+        public ObservableProperty<IAuthorization> Authorization { get; set; }
 
-        public bool IsWaitControlVisible
-        {
-            get => this.isWaitControlVisible;
-            private set
-            {
-                this.isWaitControlVisible = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsWaitControlVisible { get; set; }
 
-        public bool IsSignOnControlVisible
-        {
-            get => this.isSignOnControlVisible;
-            private set
-            {
-                this.isSignOnControlVisible = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsSignOnControlVisible { get; set; }
 
-        public bool IsCancelButtonVisible
-        {
-            get => this.isCancelButtonVisible;
-            private set
-            {
-                this.isCancelButtonVisible = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsCancelButtonVisible { get; set; }
 
         public bool IsChromeSingnInButtonEnabled => ChromeBrowser.IsAvailable;
 
@@ -107,9 +77,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public Task TryLoadExistingAuthorizationAsync(CancellationToken cancellationToken)
         {
-            this.IsSignOnControlVisible = false;
-            this.IsWaitControlVisible = true;
-            this.IsCancelButtonVisible = false;
+            this.IsSignOnControlVisible.Value = false;
+            this.IsWaitControlVisible.Value = true;
+            this.IsCancelButtonVisible.Value = false;
 
             //
             // This method is called on the GUI thread, but we don't want to 
@@ -133,10 +103,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         // We have existing credentials, there is no need to even
                         // show the "Sign In" button.
                         //
-                        FireAndForgetOnGuiThread(() =>
-                        {
-                            this.Authorization = authorization;
-                        });
+                        this.Authorization.Value = authorization;
                     }
                     else
                     {
@@ -144,11 +111,8 @@ namespace Google.Solutions.IapDesktop.Windows
                         // No valid credentials present, request user to authroize
                         // by showing the "Sign In" button.
                         //
-                        FireAndForgetOnGuiThread(() =>
-                        {
-                            this.IsSignOnControlVisible = true;
-                            this.IsWaitControlVisible = false;
-                        });
+                        this.IsSignOnControlVisible.Value = true;
+                        this.IsWaitControlVisible.Value = false;
                     }
                 }
                 catch (Exception)
@@ -156,24 +120,22 @@ namespace Google.Solutions.IapDesktop.Windows
                     //
                     // Something went wrong trying to load existing credentials.
                     //
-                    FireAndForgetOnGuiThread(() =>
-                    {
-                        this.IsSignOnControlVisible = true;
-                        this.IsWaitControlVisible = false;
-                    });
+                    this.IsSignOnControlVisible.Value = true;
+                    this.IsWaitControlVisible.Value = false;
                 }
             });
         }
 
         public async Task SignInAsync(CancellationToken cancellationToken)
         {
-            this.IsSignOnControlVisible = false;
-            this.IsWaitControlVisible = true;
-            this.IsCancelButtonVisible = true;
+            this.IsSignOnControlVisible.Value = false;
+            this.IsWaitControlVisible.Value = true;
+            this.IsCancelButtonVisible.Value = true;
 
             try
             {
-                this.Authorization = await AppAuthorization.CreateAuthorizationAsync(
+                this.Authorization.Value = await AppAuthorization
+                    .CreateAuthorizationAsync(
                         this.signInAdapter,
                         this.deviceEnrollment,
                         cancellationToken)
@@ -181,9 +143,9 @@ namespace Google.Solutions.IapDesktop.Windows
             }
             finally
             {
-                this.IsSignOnControlVisible = true;
-                this.IsWaitControlVisible = false;
-                this.IsCancelButtonVisible = false;
+                this.IsSignOnControlVisible.Value = true;
+                this.IsWaitControlVisible.Value = false;
+                this.IsCancelButtonVisible.Value = false;
             }
         }
     }

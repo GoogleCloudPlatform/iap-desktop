@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Google.Solutions.Mvvm.Binding
 {
@@ -107,15 +109,25 @@ namespace Google.Solutions.Mvvm.Binding
 
     internal class ThreadSafeObservableProperty<T> : ObservableProperty<T>
     {
-        private readonly ISynchronizeInvoke synchronizeInvoke;
+        private readonly ViewModelBase viewModel;
         private T value;
 
         internal ThreadSafeObservableProperty(
-            ISynchronizeInvoke synchronizeInvoke,
+            ViewModelBase viewModel,
             T initialValue)
             : base(initialValue)
         {
-            this.synchronizeInvoke = synchronizeInvoke;
+            this.viewModel = viewModel.ExpectNotNull(nameof(viewModel));
+        }
+
+        internal ISynchronizeInvoke Invoker
+        {
+            get
+            {
+                Debug.Assert(this.viewModel.View != null);
+                Debug.Assert(this.viewModel.View is ISynchronizeInvoke);
+                return ((ISynchronizeInvoke)this.viewModel.View);
+            }
         }
 
         /// <summary>
@@ -125,14 +137,14 @@ namespace Google.Solutions.Mvvm.Binding
         {
             get
             {
-                lock (this.synchronizeInvoke)
+                lock (this.Invoker)
                 {
                     return this.value;
                 }
             }
             set
             {
-                lock (this.synchronizeInvoke)
+                lock (this.Invoker)
                 {
                     this.value = value;
                     RaisePropertyChange();
@@ -142,13 +154,13 @@ namespace Google.Solutions.Mvvm.Binding
 
         public override void RaisePropertyChange()
         {
-            if (this.synchronizeInvoke.InvokeRequired)
+            if (this.Invoker.InvokeRequired)
             {
                 //
                 // We're on the wrong thread (not the GUI thread,
                 // presumably).
                 //
-                this.synchronizeInvoke.BeginInvoke(
+                this.Invoker.BeginInvoke(
                     (Action)(() => base.RaisePropertyChange()),
                     null);
             }
