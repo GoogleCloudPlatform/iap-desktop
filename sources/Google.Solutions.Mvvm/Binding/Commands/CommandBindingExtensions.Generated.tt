@@ -30,7 +30,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
 {
     public static partial class CommandBindingExtensions
     {
-        <# foreach (var controlType in new[] { "Control", "ToolStripButton"} ) { #>
+        <# foreach (var controlType in new[] { "Control", "ToolStripItem"} ) { #>
         private class <#=controlType#>ClickBinding : BindingExtensions.Binding
         {
             private readonly IBindingContext bindingContext;

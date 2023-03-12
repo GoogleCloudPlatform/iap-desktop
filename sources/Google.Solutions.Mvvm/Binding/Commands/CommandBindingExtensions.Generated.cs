@@ -92,11 +92,11 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 this.button.Click -= OnClickAsync;
             }
         }
-                private class ToolStripButtonClickBinding : BindingExtensions.Binding
+                private class ToolStripItemClickBinding : BindingExtensions.Binding
         {
             private readonly IBindingContext bindingContext;
             private IObservableCommand command;
-            private readonly ToolStripButton button;
+            private readonly ToolStripItem button;
 
             private async void OnClickAsync(object _, EventArgs __)
             {
@@ -122,8 +122,8 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 }
             }
 
-            public ToolStripButtonClickBinding(
-                ToolStripButton button,
+            public ToolStripItemClickBinding(
+                ToolStripItem button,
                 IObservableCommand command,
                 IBindingContext bindingContext)
             {

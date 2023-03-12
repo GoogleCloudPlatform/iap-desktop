@@ -71,8 +71,8 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             bindingContext.OnBindingCreated(button, clickBinding);
         }
 
-        public static void BindObservableCommand< TCommand, TModel>(
-            this ToolStripButton button,
+        public static void BindObservableCommand<TCommand, TModel>(
+            this ToolStripItem button,
             TModel model,
             Func<TModel, TCommand> commandProperty,
             IBindingContext bindingContext)
@@ -107,7 +107,7 @@ namespace Google.Solutions.Mvvm.Binding.Commands
             //
             // Forward click events to the command.
             //
-            var clickBinding = new ToolStripButtonClickBinding(button, command, bindingContext);
+            var clickBinding = new ToolStripItemClickBinding(button, command, bindingContext);
 
             button.AttachDisposable(clickBinding);
             bindingContext.OnBindingCreated(button, clickBinding);

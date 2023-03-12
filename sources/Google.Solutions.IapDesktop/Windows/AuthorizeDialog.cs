@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Collections.Generic;
@@ -100,6 +101,27 @@ namespace Google.Solutions.IapDesktop.Windows
                 m => m.IsChromeSingnInButtonEnabled,
                 bindingContext);
 
+            this.cancelSignInLink.BindObservableCommand(
+                viewModel,
+                m => m.CancelSignInCommand,
+                bindingContext);
+            this.signInButton.BindObservableCommand(
+                viewModel,
+                m => m.SignInWithDefaultBrowserCommand,
+                bindingContext);
+            this.signInWithDefaultBrowserMenuItem.BindObservableCommand(
+                viewModel,
+                m => m.SignInWithDefaultBrowserCommand,
+                bindingContext);
+            this.signInWithChromeMenuItem.BindObservableCommand(
+                viewModel,
+                m => m.SignInWithChromeCommand,
+                bindingContext);
+            this.signInWithChromeGuestMenuItem.BindObservableCommand(
+                viewModel,
+                m => m.SignInWithChromeGuestModeCommand,
+                bindingContext);
+
             viewModel.Authorization.PropertyChanged += (_, __) =>
             {
                 if (viewModel.Authorization.Value != null)
@@ -112,50 +134,62 @@ namespace Google.Solutions.IapDesktop.Windows
                     Close();
                 }
             };
-
-            //
-            // Manual sign-in.
-            //
-            CancellationTokenSource cancellationSource = null;
-            async void signIn(BrowserPreference browserPreference)
+            viewModel.AuthorizationError.PropertyChanged += (_, __) =>
             {
-                try
-                {
-                    cancellationSource?.Dispose();
-                    cancellationSource = new CancellationTokenSource();
-
-                    //
-                    // Adjust browser preference.
-                    //
-                    codeReceiver.BrowserPreference = browserPreference;
-
-                    await viewModel
-                        .SignInAsync(cancellationSource.Token)
-                        .ConfigureAwait(true);
-                    Debug.Assert(this.AuthorizationResult != null);
-                }
-                catch (OperationCanceledException)
+                if (viewModel.AuthorizationError.Value != null)
                 {
                     //
-                    // User clicked cancel-link.
+                    // Give up, close the dialog.
                     //
-                }
-                catch (Exception e)
-                {
-                    this.AuthorizationError = e;
+                    this.AuthorizationError = viewModel.AuthorizationError.Value;
                     this.DialogResult = DialogResult.Cancel;
                     Close();
                 }
             };
 
-            this.signInButton.Click += (s, a) => signIn(BrowserPreference.Default);
-            this.signInWithDefaultBrowserMenuItem.Click += (s, a) => signIn(BrowserPreference.Default);
-            this.signInWithChromeMenuItem.Click += (s, a) => signIn(BrowserPreference.Chrome);
-            this.signInWithChromeGuestMenuItem.Click += (s, a) => signIn(BrowserPreference.ChromeGuest);
-            this.cancelSignInLink.Click += (s, a) =>
-            {
-                cancellationSource?.Cancel();
-            };
+            //
+            // Manual sign-in.
+            //
+            //CancellationTokenSource cancellationSource = null;
+            //async void signIn(BrowserPreference browserPreference)
+            //{
+            //    try
+            //    {
+            //        cancellationSource?.Dispose();
+            //        cancellationSource = new CancellationTokenSource();
+
+            //        //
+            //        // Adjust browser preference.
+            //        //
+            //        codeReceiver.BrowserPreference = browserPreference;
+
+            //        await viewModel
+            //            .SignInAsync(cancellationSource.Token)
+            //            .ConfigureAwait(true);
+            //        Debug.Assert(this.AuthorizationResult != null);
+            //    }
+            //    catch (OperationCanceledException)
+            //    {
+            //        //
+            //        // User clicked cancel-link.
+            //        //
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        this.AuthorizationError = e;
+            //        this.DialogResult = DialogResult.Cancel;
+            //        Close();
+            //    }
+            //};
+
+            //this.signInButton.Click += (s, a) => signIn(BrowserPreference.Default);
+            //this.signInWithDefaultBrowserMenuItem.Click += (s, a) => signIn(BrowserPreference.Default);
+            //this.signInWithChromeMenuItem.Click += (s, a) => signIn(BrowserPreference.Chrome);
+            //this.signInWithChromeGuestMenuItem.Click += (s, a) => signIn(BrowserPreference.ChromeGuest);
+            //this.cancelSignInLink.Click += (s, a) =>
+            //{
+            //    cancellationSource?.Cancel();
+            //};
 
             //
             // Hide focus rectangle.
@@ -169,7 +203,8 @@ namespace Google.Solutions.IapDesktop.Windows
             // calls work properly.
             //
             this.HandleCreated += (_, __) => viewModel
-                .TryLoadExistingAuthorizationAsync(CancellationToken.None)
+                .TryLoadExistingAuthorizationCommand
+                .ExecuteAsync(CancellationToken.None)
                 .ContinueWith(
                     t => Debug.Assert(false, "Should never throw an exception"),
                     TaskContinuationOptions.OnlyOnFaulted);
