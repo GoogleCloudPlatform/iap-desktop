@@ -90,6 +90,19 @@ namespace Google.Solutions.Mvvm.Controls
         }
 
         //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
+
+        public BindableListView()
+        {
+            //
+            // By default, double buffering is off. Especially in dark mode,
+            // this causes visible flickering.
+            //
+            this.DoubleBuffered = true;
+        }
+
+        //---------------------------------------------------------------------
         // Selection properties.
         //---------------------------------------------------------------------
 
