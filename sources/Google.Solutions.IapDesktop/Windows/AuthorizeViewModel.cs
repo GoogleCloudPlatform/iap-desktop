@@ -19,36 +19,27 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Util.Store;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
     internal class AuthorizeViewModel : ViewModelBase
     {
-        private readonly ISignInAdapter signInAdapter;
-        private readonly IDeviceEnrollment deviceEnrollment;
-
         private CancellationTokenSource cancelCurrentSignin = null;
 
-        public AuthorizeViewModel(
-            Control view,
-            ISignInAdapter signInAdapter,
-            IDeviceEnrollment deviceEnrollment)
+        public AuthorizeViewModel()
         {
-            this.View = view.ThrowIfNull(nameof(view));
-            this.signInAdapter = signInAdapter.ThrowIfNull(nameof(signInAdapter));
-            this.deviceEnrollment = deviceEnrollment;
-
             //
             // NB. Properties are access from a non-GUI thrad, so
             // they must be thread-safe.
@@ -58,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.IsWaitControlVisible = ObservableProperty.Build(false, this);
             this.IsSignOnControlVisible = ObservableProperty.Build(false, this);
             this.IsCancelButtonVisible = ObservableProperty.Build(false, this);
+            this.IsChromeSingnInButtonEnabled = ObservableProperty.Build(!ChromeBrowser.IsAvailable);
 
             this.CancelSignInCommand = ObservableCommand.Build(
                 string.Empty,
@@ -70,14 +62,52 @@ namespace Google.Solutions.IapDesktop.Windows
                 () => SignInAsync(BrowserPreference.Default));
             this.SignInWithChromeCommand= ObservableCommand.Build(
                 string.Empty,
-                () => SignInAsync(BrowserPreference.Chrome));
+                () => SignInAsync(BrowserPreference.Chrome),
+                this.IsChromeSingnInButtonEnabled);
             this.SignInWithChromeGuestModeCommand = ObservableCommand.Build(
                 string.Empty,
-                () => SignInAsync(BrowserPreference.ChromeGuest));
+                () => SignInAsync(BrowserPreference.ChromeGuest),
+                this.IsChromeSingnInButtonEnabled);
+        }
+
+        private ISignInAdapter CreateSigningAdapter(BrowserPreference preference)
+        {
+            Precondition.ExpectNotNull(this.DeviceEnrollment, nameof(this.DeviceEnrollment));
+            Precondition.ExpectNotNull(this.ClientSecrets, nameof(this.ClientSecrets));
+            Precondition.ExpectNotNull(this.Scopes, nameof(this.Scopes));
+            Precondition.ExpectNotNull(this.TokenStore, nameof(this.TokenStore));
+
+            return new SignInAdapter(
+                this.DeviceEnrollment.Certificate,
+                this.ClientSecrets,
+                this.Scopes,
+                this.TokenStore,
+                new BrowserCodeReceiver(preference));
         }
 
         //---------------------------------------------------------------------
+        // Input properties.
+        //---------------------------------------------------------------------
+
+        public IDeviceEnrollment DeviceEnrollment { get; set; }
+        public ClientSecrets ClientSecrets { get; set; }
+        public IEnumerable<string> Scopes { get; set; }
+        public IDataStore TokenStore { get; set; }
+
+        //---------------------------------------------------------------------
         // Observable properties.
+        //---------------------------------------------------------------------
+
+        public ObservableProperty<bool> IsWaitControlVisible { get; set; }
+
+        public ObservableProperty<bool> IsSignOnControlVisible { get; set; }
+
+        public ObservableProperty<bool> IsCancelButtonVisible { get; set; }
+
+        public ObservableProperty<bool> IsChromeSingnInButtonEnabled { get; }
+
+        //---------------------------------------------------------------------
+        // Output properties.
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -89,14 +119,6 @@ namespace Google.Solutions.IapDesktop.Windows
         /// Authorization error. Set after a failed authorization.
         /// </summary>
         public ObservableProperty<Exception> AuthorizationError { get; set; }
-
-        public ObservableProperty<bool> IsWaitControlVisible { get; set; }
-
-        public ObservableProperty<bool> IsSignOnControlVisible { get; set; }
-
-        public ObservableProperty<bool> IsCancelButtonVisible { get; set; }
-
-        public bool IsChromeSingnInButtonEnabled => ChromeBrowser.IsAvailable;
 
         //---------------------------------------------------------------------
         // Observable commands.
@@ -135,8 +157,8 @@ namespace Google.Solutions.IapDesktop.Windows
                 {
                     // Try to authorize using OAuth.
                     var authorization = await AppAuthorization.TryLoadExistingAuthorizationAsync(
-                            this.signInAdapter,
-                            this.deviceEnrollment,
+                            CreateSigningAdapter(BrowserPreference.Default),
+                            this.DeviceEnrollment,
                             CancellationToken.None)
                         .ConfigureAwait(false);
 
@@ -182,8 +204,8 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 this.Authorization.Value = await AppAuthorization // TODO: Use browserPreference
                     .CreateAuthorizationAsync(
-                        this.signInAdapter,
-                        this.deviceEnrollment,
+                        CreateSigningAdapter(browserPreference),
+                        this.DeviceEnrollment,
                         this.cancelCurrentSignin.Token)
                     .ConfigureAwait(true);
             }
@@ -197,6 +219,30 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.IsSignOnControlVisible.Value = true;
                 this.IsWaitControlVisible.Value = false;
                 this.IsCancelButtonVisible.Value = false;
+            }
+        }
+
+
+        //---------------------------------------------------------------------
+        // Custom code receiver.
+        //---------------------------------------------------------------------
+
+        private class BrowserCodeReceiver : LocalServerCodeReceiver
+        {
+            private BrowserPreference browserPreference;
+
+            public BrowserCodeReceiver(BrowserPreference browserPreference)
+                : base(Resources.AuthorizationSuccessful)
+            {
+                this.browserPreference = browserPreference;
+            }
+
+            protected override bool OpenBrowser(string url)
+            {
+                Browser
+                    .Get(this.browserPreference)
+                    .Navigate(url);
+                return true;
             }
         }
     }

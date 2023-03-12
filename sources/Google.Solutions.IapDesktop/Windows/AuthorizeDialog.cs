@@ -54,15 +54,15 @@ namespace Google.Solutions.IapDesktop.Windows
             // Don't maximize when double-clicking title bar.
             this.MaximumSize = this.Size;
 
-            var codeReceiver = new BrowserCodeReceiver();
-            var signInAdapter = new SignInAdapter(
-                deviceEnrollment.Certificate,
-                clientSecrets,
-                scopes,
-                authSettingsRepository,
-                codeReceiver);
 
-            var viewModel = new AuthorizeViewModel(this, signInAdapter, deviceEnrollment);
+            var viewModel = new AuthorizeViewModel()
+            {
+                View = this,
+                DeviceEnrollment = deviceEnrollment,
+                ClientSecrets = clientSecrets,
+                Scopes = scopes,
+                TokenStore = authSettingsRepository
+            };
 
             //
             // Bind controls.
@@ -95,12 +95,10 @@ namespace Google.Solutions.IapDesktop.Windows
                 viewModel,
                 m => m.IsCancelButtonVisible,
                 bindingContext);
-            this.signInWithChromeMenuItem.BindReadonlyProperty(
-                c => c.Enabled,
-                viewModel,
-                m => m.IsChromeSingnInButtonEnabled,
-                bindingContext);
 
+            //
+            // Bind sign-in commands.
+            //
             this.cancelSignInLink.BindObservableCommand(
                 viewModel,
                 m => m.CancelSignInCommand,
@@ -148,50 +146,6 @@ namespace Google.Solutions.IapDesktop.Windows
             };
 
             //
-            // Manual sign-in.
-            //
-            //CancellationTokenSource cancellationSource = null;
-            //async void signIn(BrowserPreference browserPreference)
-            //{
-            //    try
-            //    {
-            //        cancellationSource?.Dispose();
-            //        cancellationSource = new CancellationTokenSource();
-
-            //        //
-            //        // Adjust browser preference.
-            //        //
-            //        codeReceiver.BrowserPreference = browserPreference;
-
-            //        await viewModel
-            //            .SignInAsync(cancellationSource.Token)
-            //            .ConfigureAwait(true);
-            //        Debug.Assert(this.AuthorizationResult != null);
-            //    }
-            //    catch (OperationCanceledException)
-            //    {
-            //        //
-            //        // User clicked cancel-link.
-            //        //
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        this.AuthorizationError = e;
-            //        this.DialogResult = DialogResult.Cancel;
-            //        Close();
-            //    }
-            //};
-
-            //this.signInButton.Click += (s, a) => signIn(BrowserPreference.Default);
-            //this.signInWithDefaultBrowserMenuItem.Click += (s, a) => signIn(BrowserPreference.Default);
-            //this.signInWithChromeMenuItem.Click += (s, a) => signIn(BrowserPreference.Chrome);
-            //this.signInWithChromeGuestMenuItem.Click += (s, a) => signIn(BrowserPreference.ChromeGuest);
-            //this.cancelSignInLink.Click += (s, a) =>
-            //{
-            //    cancellationSource?.Cancel();
-            //};
-
-            //
             // Hide focus rectangle.
             //
             this.signInButton.NotifyDefault(false);
@@ -208,29 +162,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 .ContinueWith(
                     t => Debug.Assert(false, "Should never throw an exception"),
                     TaskContinuationOptions.OnlyOnFaulted);
-        }
-
-        //---------------------------------------------------------------------
-        // Custom code receiver.
-        //---------------------------------------------------------------------
-
-        private class BrowserCodeReceiver : LocalServerCodeReceiver
-        {
-            public BrowserPreference BrowserPreference { get; set; }
-                = BrowserPreference.Default;
-
-            public BrowserCodeReceiver()
-                : base(Resources.AuthorizationSuccessful)
-            {
-            }
-
-            protected override bool OpenBrowser(string url)
-            {
-                Browser
-                    .Get(this.BrowserPreference)
-                    .Navigate(url);
-                return true;
-            }
         }
 
         //---------------------------------------------------------------------
