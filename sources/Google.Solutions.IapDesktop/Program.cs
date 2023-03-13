@@ -325,7 +325,7 @@ namespace Google.Solutions.IapDesktop
                     // Settings invalid -> ignore.
                 }
 
-                baseLayer.AddTransient<AuthorizeDialog>();
+                baseLayer.AddTransient<AuthorizeView>();
                 baseLayer.AddTransient<AuthorizeViewModel>();
 
                 var mainForm = new MainForm(baseLayer, windowLayer)

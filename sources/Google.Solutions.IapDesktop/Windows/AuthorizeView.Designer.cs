@@ -23,7 +23,7 @@ using Google.Solutions.Mvvm.Controls;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    partial class AuthorizeDialog
+    partial class AuthorizeView
     {
         /// <summary>
         /// Required designer variable.
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizeDialog));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizeView));
             this.cancelSignInLink = new System.Windows.Forms.LinkLabel();
             this.cancelSignInLabel = new System.Windows.Forms.Label();
             this.signInMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);

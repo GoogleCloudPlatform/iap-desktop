@@ -341,7 +341,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // Authorize.
             //
             using (var dialog = this.serviceProvider
-                .GetDialog<AuthorizeDialog, AuthorizeViewModel>(this.themeService.DialogTheme))
+                .GetDialog<AuthorizeView, AuthorizeViewModel>(this.themeService.DialogTheme))
             {
                 //
                 // Initialize the view model.

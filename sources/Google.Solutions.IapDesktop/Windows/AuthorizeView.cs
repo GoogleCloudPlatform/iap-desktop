@@ -28,9 +28,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public partial class AuthorizeDialog : Form, IView<AuthorizeViewModel> // TODO: Rename to AuthorizeView
+    public partial class AuthorizeView : Form, IView<AuthorizeViewModel>
     {
-        public AuthorizeDialog()
+        public AuthorizeView()
         {
             InitializeComponent();
 

@@ -119,11 +119,11 @@
     <Compile Include="ProcessMitigations.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Windows\AuthorizeDialog.cs">
+    <Compile Include="Windows\AuthorizeView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\AuthorizeDialog.Designer.cs">
-      <DependentUpon>AuthorizeDialog.cs</DependentUpon>
+    <Compile Include="Windows\AuthorizeView.Designer.cs">
+      <DependentUpon>AuthorizeView.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\AuthorizeViewModel.cs" />
     <Compile Include="Windows\ErrorDialog.cs">
@@ -156,8 +156,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Windows\AuthorizeDialog.resx">
-      <DependentUpon>AuthorizeDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Windows\AuthorizeView.resx">
+      <DependentUpon>AuthorizeView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
