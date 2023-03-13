@@ -32,4 +32,18 @@ namespace Google.Solutions.Mvvm.Controls
             this.Exception = exception;
         }
     }
+
+    public class RecoverableExceptionEventArgs : ExceptionEventArgs
+    {
+        /// <summary>
+        /// Gets or sets a value indicating whether the operation should be
+        /// retried.
+        /// </summary>
+        public bool Retry { get; set; }
+
+        public RecoverableExceptionEventArgs(Exception exception)
+            : base(exception)
+        {
+        }
+    }
 }

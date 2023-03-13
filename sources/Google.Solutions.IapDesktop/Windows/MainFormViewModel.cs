@@ -20,20 +20,16 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Interop;
-using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Mvvm.Binding;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,7 +44,6 @@ namespace Google.Solutions.IapDesktop.Windows
     internal class MainFormViewModel : ViewModelBase
     {
         private readonly IThemeService themeService;
-        private readonly AuthSettingsRepository authSettings;//TODO: Remove
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly Install install;
         private readonly Profile profile;
@@ -69,7 +64,6 @@ namespace Google.Solutions.IapDesktop.Windows
             Install install,
             Profile profile,
             ApplicationSettingsRepository applicationSettings,
-            AuthSettingsRepository authSettings,
             IThemeService themeService)
         {
             this.View = view;
@@ -79,8 +73,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.profile = profile.ThrowIfNull(nameof(profile));
             this.applicationSettings = applicationSettings
                 .ThrowIfNull(nameof(applicationSettings));
-            this.authSettings = authSettings
-                .ThrowIfNull(nameof(authSettings));
         }
 
         //---------------------------------------------------------------------

@@ -26,15 +26,17 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public class AuthorizeViewModel : ViewModelBase
+    public class AuthorizeViewModel : ViewModelBase // TODO: Add tests
     {
         private CancellationTokenSource cancelCurrentSignin = null;
 
@@ -70,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.IsChromeSingnInButtonEnabled);
         }
 
-        private ISignInAdapter CreateSigningAdapter(BrowserPreference preference)
+        private ISignInAdapter CreateSignInAdapter(BrowserPreference preference)
         {
             Precondition.ExpectNotNull(this.DeviceEnrollment, nameof(this.DeviceEnrollment));
             Precondition.ExpectNotNull(this.ClientSecrets, nameof(this.ClientSecrets));
@@ -84,6 +86,20 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.TokenStore,
                 new BrowserCodeReceiver(preference));
         }
+
+        //---------------------------------------------------------------------
+        // Events to interact with view.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// One or more requires scopes haven't been granted.
+        /// </summary>
+        internal EventHandler<RecoverableExceptionEventArgs> OAuthScopeNotGranted;
+
+        /// <summary>
+        /// An error occured that might be due to network misconfiguration.
+        /// </summary>
+        internal EventHandler<RecoverableExceptionEventArgs> NetworkError;
 
         //---------------------------------------------------------------------
         // Input properties.
@@ -157,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 {
                     // Try to authorize using OAuth.
                     var authorization = await AppAuthorization.TryLoadExistingAuthorizationAsync(
-                            CreateSigningAdapter(BrowserPreference.Default),
+                            CreateSignInAdapter(BrowserPreference.Default),
                             this.DeviceEnrollment,
                             CancellationToken.None)
                         .ConfigureAwait(false);
@@ -202,12 +218,42 @@ namespace Google.Solutions.IapDesktop.Windows
 
             try
             {
-                this.Authorization.Value = await AppAuthorization // TODO: Use browserPreference
-                    .CreateAuthorizationAsync(
-                        CreateSigningAdapter(browserPreference),
-                        this.DeviceEnrollment,
-                        this.cancelCurrentSignin.Token)
-                    .ConfigureAwait(true);
+                bool retry = true;
+                while (retry)
+                {
+                    try
+                    {
+                        this.Authorization.Value = await AppAuthorization
+                            .CreateAuthorizationAsync(
+                                CreateSignInAdapter(browserPreference),
+                                this.DeviceEnrollment,
+                                this.cancelCurrentSignin.Token)
+                            .ConfigureAwait(true);
+
+                        //
+                        // Authorization successful.
+                        //
+                        retry = false;
+                    }
+                    catch (OAuthScopeNotGrantedException e)
+                    {
+                        var args = new RecoverableExceptionEventArgs(e);
+                        this.OAuthScopeNotGranted?.Invoke(this, args);
+
+                        //
+                        // This token is useless, so drop it.
+                        //
+                        await this.TokenStore.ClearAsync();
+
+                        retry = args.Retry;
+                    }
+                    catch (Exception e) when (!e.IsCancellation())
+                    {
+                        var args = new RecoverableExceptionEventArgs(e);
+                        this.NetworkError?.Invoke(this, args);
+                        retry = args.Retry;
+                    }
+                }
             }
             catch (Exception e) when (!e.IsCancellation())
             {
@@ -222,9 +268,8 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-
         //---------------------------------------------------------------------
-        // Custom code receiver.
+        // Inner classes.
         //---------------------------------------------------------------------
 
         private class BrowserCodeReceiver : LocalServerCodeReceiver

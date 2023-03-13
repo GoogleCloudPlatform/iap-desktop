@@ -191,7 +191,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 bootstrappingServiceProvider.GetService<Install>(),
                 bootstrappingServiceProvider.GetService<Profile>(),
                 bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
-                bootstrappingServiceProvider.GetService<AuthSettingsRepository>(),
                 this.themeService);
 
             this.BindProperty(
@@ -336,117 +335,100 @@ namespace Google.Solutions.IapDesktop.Windows
         {
         }
 
-        private void MainForm_Shown(object sender, EventArgs args)
+        private void MainForm_Shown(object sender, EventArgs __)
         {
             //
             // Authorize.
             //
-            while (this.viewModel.Authorization == null)
+            using (var dialog = this.serviceProvider
+                .GetDialog<AuthorizeDialog, AuthorizeViewModel>(this.themeService.DialogTheme))
             {
-                try
-                {
-                    using (var dialog = this.serviceProvider
-                        .GetDialog<AuthorizeDialog, AuthorizeViewModel>(this.themeService.DialogTheme))
-                    {
-                        //
-                        // Initialize the view model.
-                        //
-                        dialog.ViewModel.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
-                            new CertificateStoreAdapter(),
-                            new ChromePolicy(),
-                            this.applicationSettings).Result;
-                        dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
-                        dialog.ViewModel.Scopes = new[] { IapTunnelingEndpoint.RequiredScope };
-                        dialog.ViewModel.TokenStore = this.serviceProvider.GetService<AuthSettingsRepository>();
+                //
+                // Initialize the view model.
+                //
+                dialog.ViewModel.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
+                    new CertificateStoreAdapter(),
+                    new ChromePolicy(),
+                    this.applicationSettings).Result;
+                dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
+                dialog.ViewModel.Scopes = new[] { IapTunnelingEndpoint.RequiredScope };
+                dialog.ViewModel.TokenStore = this.serviceProvider.GetService<AuthSettingsRepository>();
 
-                        dialog.Theme = this.themeService.DialogTheme;
-
-                        if (dialog.ShowDialog(this) == DialogResult.OK)
-                        {
-                            Debug.Assert(dialog.ViewModel.Authorization != null);
-                            this.viewModel.Authorize(dialog.ViewModel.Authorization.Value);
-                        }
-                        else
-                        {
-                            if (dialog.ViewModel.AuthorizationError.Value != null)
-                            {
-                                throw dialog.ViewModel.AuthorizationError.Value;
-                            }
-                            else
-                            {
-                                //
-                                // User just closed the dialog.
-                                //
-                                Close();
-                                return;
-                            }
-                        }
-                    }
-                }
-                catch (OAuthScopeNotGrantedException) //TODO: Prevent duplicate error message-> move to AuthzViewModel
+                //
+                // Allow recovery from common errors.
+                //
+                dialog.ViewModel.OAuthScopeNotGranted += (_, retryArgs) =>
                 {
                     //
                     // User did not grant 'cloud-platform' scope.
                     //
-                    using (var dialog = this.serviceProvider
+                    using (var scopeDialog = this.serviceProvider
                         .GetDialog<OAuthScopeNotGrantedView, OAuthScopeNotGrantedViewModel>(
                             this.themeService.DialogTheme))
                     {
-                        if (dialog.ShowDialog(this) == DialogResult.OK)
-                        {
-                            // Retry sign-in.
-                            continue;
-                        }
+                        retryArgs.Retry = scopeDialog.ShowDialog(dialog.ViewModel.View) == DialogResult.OK;
                     }
-                }
-                catch (AuthorizationFailedException e) //TODO: Prevent duplicate error messag->remove
-                {
-                    //
-                    // Authorization failed for reasons not related to networking.
-                    //
-                    this.serviceProvider
-                        .GetService<IExceptionDialog>()
-                        .Show(this, "Authorization failed", e);
-                }
-                catch (Exception e)//TODO: Prevent duplicate error message -> move to AuthzViewModel
+                };
+
+                dialog.ViewModel.NetworkError += (_, retryArgs) =>
                 {
                     //
                     // This exception might be due to a missing/incorrect proxy
                     // configuration, so give the user a chance to change proxy
                     // settings.
                     //
-
                     try
                     {
                         if (this.serviceProvider.GetService<ITaskDialog>()
                             .ShowOptionsTaskDialog(
-                                this,
+                                dialog.ViewModel.View,
                                 TaskDialogIcons.TD_ERROR_ICON,
                                 "Authorization failed",
                                 "IAP Desktop failed to complete the OAuth authorization. " +
                                     "This might be due to network communication issues.",
-                                e.Message,
-                                e.FullMessage(),
+                                retryArgs.Exception.Message,
+                                retryArgs.Exception.FullMessage(),
                                 new[]
                                 {
-                                    "Change network settings"
+                            "Change network settings"
                                 },
                                 null,
                                 out bool _) == 0)
                         {
+                            //
                             // Open settings.
-                            if (OptionsDialog.Show(this, (IServiceCategoryProvider)this.serviceProvider) == DialogResult.OK)
-                            {
-                                // Ok, retry with modified settings.
-                                continue;
-                            }
+                            //
+                            retryArgs.Retry = OptionsDialog.Show(
+                                this,
+                                (IServiceCategoryProvider)this.serviceProvider) == DialogResult.OK;
                         }
                     }
                     catch (OperationCanceledException)
                     { }
+                };
+
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    Debug.Assert(dialog.ViewModel.Authorization != null);
+                    this.viewModel.Authorize(dialog.ViewModel.Authorization.Value);
+                }
+                else
+                {
+                    if (dialog.ViewModel.AuthorizationError.Value != null)
+                    {
+                        throw dialog.ViewModel.AuthorizationError.Value;
+                    }
+                    else
+                    {
+                        //
+                        // User just closed the dialog.
+                        //
+                        Close();
+                        return;
+                    }
                 }
             }
-
+                
             if (this.StartupUrl != null)
             {
                 // Dispatch URL.
