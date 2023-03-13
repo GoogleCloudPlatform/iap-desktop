@@ -414,18 +414,11 @@ namespace Google.Solutions.IapDesktop.Windows
                 }
                 else
                 {
-                    if (dialog.ViewModel.AuthorizationError.Value != null)
-                    {
-                        throw dialog.ViewModel.AuthorizationError.Value;
-                    }
-                    else
-                    {
-                        //
-                        // User just closed the dialog.
-                        //
-                        Close();
-                        return;
-                    }
+                    //
+                    // User just closed the dialog.
+                    //
+                    Close();
+                    return;
                 }
             }
                 

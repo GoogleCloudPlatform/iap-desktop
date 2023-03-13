@@ -107,17 +107,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                     Close();
                 }
             };
-            viewModel.AuthorizationError.PropertyChanged += (_, __) =>
-            {
-                if (viewModel.AuthorizationError.Value != null)
-                {
-                    //
-                    // Give up, close the dialog.
-                    //
-                    this.DialogResult = DialogResult.Cancel;
-                    Close();
-                }
-            };
 
             //
             // Hide focus rectangle.

@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
-    public class AuthorizeViewModel : ViewModelBase // TODO: Add tests
+    public class AuthorizeViewModel : ViewModelBase
     {
         private CancellationTokenSource cancelCurrentSignin = null;
 
@@ -47,7 +47,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             // they must be thread-safe.
             //
             this.Authorization = ObservableProperty.Build<IAuthorization>(null, this);
-            this.AuthorizationError = ObservableProperty.Build<Exception>(null);
             this.IsWaitControlVisible = ObservableProperty.Build(false, this);
             this.IsSignOnControlVisible = ObservableProperty.Build(false, this);
             this.IsCancelButtonVisible = ObservableProperty.Build(false, this);
@@ -72,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                 this.IsChromeSingnInButtonEnabled);
         }
 
-        private ISignInAdapter CreateSignInAdapter(BrowserPreference preference)
+        protected virtual ISignInAdapter CreateSignInAdapter(BrowserPreference preference)
         {
             Precondition.ExpectNotNull(this.DeviceEnrollment, nameof(this.DeviceEnrollment));
             Precondition.ExpectNotNull(this.ClientSecrets, nameof(this.ClientSecrets));
@@ -130,11 +129,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         /// Authorization result. Set after a successful authorization.
         /// </summary>
         public ObservableProperty<IAuthorization> Authorization { get; set; }
-
-        /// <summary>
-        /// Authorization error. Set after a failed authorization.
-        /// </summary>
-        public ObservableProperty<Exception> AuthorizationError { get; set; }
 
         //---------------------------------------------------------------------
         // Observable commands.
@@ -254,11 +248,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                         retry = args.Retry;
                     }
                 }
-            }
-            catch (Exception e) when (!e.IsCancellation())
-            {
-                this.AuthorizationError.Value = e;
-                throw;
             }
             finally
             {
