@@ -217,6 +217,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                 {
                     try
                     {
+                        //
+                        // Clear any existing token to force a fresh authentication.
+                        //
+                        await this.TokenStore.ClearAsync();
+
                         this.Authorization.Value = await AppAuthorization
                             .CreateAuthorizationAsync(
                                 CreateSignInAdapter(browserPreference),
@@ -233,12 +238,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                     {
                         var args = new RecoverableExceptionEventArgs(e);
                         this.OAuthScopeNotGranted?.Invoke(this, args);
-
-                        //
-                        // This token is useless, so drop it.
-                        //
-                        await this.TokenStore.ClearAsync();
-
                         retry = args.Retry;
                     }
                     catch (Exception e) when (!e.IsCancellation())

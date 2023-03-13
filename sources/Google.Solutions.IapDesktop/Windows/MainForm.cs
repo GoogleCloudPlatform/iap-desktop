@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
@@ -30,7 +29,6 @@ using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -40,10 +38,8 @@ using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -100,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // Register this window with the binding context so that any
             // error dialos can use this window as owner.
             //
-            ((ViewBindingContext)this.bindingContext).SetErrorReportingOwner(this);
+            ((ViewBindingContext)this.bindingContext).SetCurrentMainWindow(this);
 
             // 
             // Restore window settings.
@@ -127,8 +123,6 @@ namespace Google.Solutions.IapDesktop.Windows
             SuspendLayout();
 
             this.themeService.MainWindowTheme.ApplyTo(this);
-
-            ResumeLayout();
 
             this.MinimumSize = MinimumWindowSize;
 
@@ -290,66 +284,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel,
                 m => m.IsLoggingEnabled,
                 bindingContext);
-        }
-
-        //---------------------------------------------------------------------
-        // Window events.
-        //---------------------------------------------------------------------
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            var settings = this.applicationSettings.GetSettings();
-
-            var updateService = this.serviceProvider.GetService<IUpdateService>();
-            if (settings.IsUpdateCheckEnabled.BoolValue &&
-                updateService.IsUpdateCheckDue(DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
-            {
-                //
-                // Time to check for updates again.
-                //
-                try
-                {
-                    updateService.CheckForUpdates(
-                        this,
-                        out bool donotCheckForUpdatesAgain);
-
-                    settings.IsUpdateCheckEnabled.BoolValue = !donotCheckForUpdatesAgain;
-                    settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
-                }
-                catch (Exception)
-                {
-                    // Nevermind.
-                }
-            }
-
-            //
-            // Save window state.
-            //
-            settings.IsMainWindowMaximized.BoolValue = this.WindowState == FormWindowState.Maximized;
-            settings.MainWindowHeight.IntValue = this.Size.Height;
-            settings.MainWindowWidth.IntValue = this.Size.Width;
-
-            this.applicationSettings.SetSettings(settings);
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-        }
-
-        private void MainForm_Shown(object sender, EventArgs __)
-        {
-            if (this.StartupUrl != null)
-            {
-                // Dispatch URL.
-                ConnectToUrl(this.StartupUrl);
-            }
-            else
-            {
-                // No startup URL provided, just show project explorer then.
-                ToolWindow
-                    .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(this.serviceProvider)
-                    .Show();
-            }
 
             //
             // Bind menu commands.
@@ -534,6 +468,64 @@ namespace Google.Solutions.IapDesktop.Windows
                     this.BeginInvoke((Action)(() => throw new ApplicationException("DEBUG")));
                 }));
 #endif
+
+            ResumeLayout();
+        }
+
+        //---------------------------------------------------------------------
+        // Window events.
+        //---------------------------------------------------------------------
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            var settings = this.applicationSettings.GetSettings();
+
+            var updateService = this.serviceProvider.GetService<IUpdateService>();
+            if (settings.IsUpdateCheckEnabled.BoolValue &&
+                updateService.IsUpdateCheckDue(DateTime.FromBinary(settings.LastUpdateCheck.LongValue)))
+            {
+                //
+                // Time to check for updates again.
+                //
+                try
+                {
+                    updateService.CheckForUpdates(
+                        this,
+                        out bool donotCheckForUpdatesAgain);
+
+                    settings.IsUpdateCheckEnabled.BoolValue = !donotCheckForUpdatesAgain;
+                    settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
+                }
+                catch (Exception)
+                {
+                    // Nevermind.
+                }
+            }
+
+            //
+            // Save window state.
+            //
+            settings.IsMainWindowMaximized.BoolValue = this.WindowState == FormWindowState.Maximized;
+            settings.MainWindowHeight.IntValue = this.Size.Height;
+            settings.MainWindowWidth.IntValue = this.Size.Width;
+
+            this.applicationSettings.SetSettings(settings);
+        }
+
+        private void MainForm_Shown(object sender, EventArgs __)
+        {
+            if (this.StartupUrl != null)
+            {
+                // Dispatch URL.
+                ConnectToUrl(this.StartupUrl);
+            }
+            else
+            {
+                // No startup URL provided, just show project explorer then.
+                ToolWindow
+                    .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(this.serviceProvider)
+                    .Show();
+            }
         }
 
         private void SwitchTab(ToolWindow reference, int delta)

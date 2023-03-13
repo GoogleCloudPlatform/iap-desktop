@@ -67,7 +67,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view
+                View = view,
+                TokenStore = new Mock<IDataStore>().Object
             })
             {
                 viewModel.SignInAdapter
@@ -91,7 +92,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view
+                View = view,
+                TokenStore = new Mock<IDataStore>().Object
             })
             {
                 viewModel.SignInAdapter
@@ -115,7 +117,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view
+                View = view,
+                TokenStore = new Mock<IDataStore>().Object
             })
             {
                 viewModel.SignInAdapter
@@ -143,7 +146,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view
+                View = view,
+                TokenStore = new Mock<IDataStore>().Object
             })
             {
                 viewModel.SignInAdapter
@@ -162,10 +166,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
         [Test]
         public async Task NetworkErrorAndRetryDenied()
         {
+            var tokenStore = new Mock<IDataStore>();
             using (var view = new Form())
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
-                View = view
+                View = view,
+                TokenStore = tokenStore.Object
             })
             {
                 viewModel.SignInAdapter
@@ -183,6 +189,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
                 await viewModel.SignInWithDefaultBrowserCommand
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(true);
+
+                tokenStore.Verify(s => s.ClearAsync(), Times.Once);
 
                 Assert.IsNull(viewModel.Authorization.Value);
 

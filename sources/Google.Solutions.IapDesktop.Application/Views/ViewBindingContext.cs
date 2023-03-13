@@ -38,9 +38,15 @@ namespace Google.Solutions.IapDesktop.Application.Views
         private readonly IExceptionDialog exceptionDialog;
         private IWin32Window errorReportingOwner;
 
-        public void SetErrorReportingOwner(IWin32Window owner)
+        /// <summary>
+        /// Sets the current main window that can be used as parent
+        /// for any error messages.
+        /// 
+        /// NB. During startup, we have a different main window than
+        /// later.
+        /// </summary>
+        public void SetCurrentMainWindow(IWin32Window owner)
         {
-            // TOOD: Set in ShowDialog
             this.errorReportingOwner = owner;
         }
 

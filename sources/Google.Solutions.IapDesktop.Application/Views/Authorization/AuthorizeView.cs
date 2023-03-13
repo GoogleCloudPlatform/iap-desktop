@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             // Register this window with the binding context so that any
             // error dialos can use this window as owner.
             //
-            ((ViewBindingContext)bindingContext).SetErrorReportingOwner(this);
+            ((ViewBindingContext)bindingContext).SetCurrentMainWindow(this);
 
             //
             // Bind controls.
