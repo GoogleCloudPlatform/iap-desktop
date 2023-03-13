@@ -413,6 +413,8 @@ namespace Google.Solutions.IapDesktop
 
                 preAuthLayer.AddTransient<AuthorizeView>();
                 preAuthLayer.AddTransient<AuthorizeViewModel>();
+                preAuthLayer.AddTransient<OAuthScopeNotGrantedView>();
+                preAuthLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
                 preAuthLayer.AddTransient<PropertiesView>();
                 preAuthLayer.AddTransient<PropertiesViewModel>();
 
@@ -461,8 +463,6 @@ namespace Google.Solutions.IapDesktop
                 // Load windows.
                 //
                 mainLayer.AddSingleton<IMainWindow>(mainForm);
-                mainLayer.AddTransient<OAuthScopeNotGrantedView>();
-                mainLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
                 mainLayer.AddTransient<AboutView>();
                 mainLayer.AddTransient<AboutViewModel>();
                 mainLayer.AddTransient<DeviceFlyoutView>();

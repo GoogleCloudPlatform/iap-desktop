@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Diagnostics;
@@ -28,6 +29,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
+    [SkipCodeCoverage("UI")]
     public partial class AuthorizeView : Form, IView<AuthorizeViewModel>
     {
         public AuthorizeView()

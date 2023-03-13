@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
+    [SkipCodeCoverage("UI")]
     internal partial class DebugOptionsSheet : UserControl, IPropertiesSheetView
     {
         public DebugOptionsSheet()
