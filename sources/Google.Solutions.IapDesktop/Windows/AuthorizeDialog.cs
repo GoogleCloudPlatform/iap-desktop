@@ -19,15 +19,8 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.Mvvm.Theme;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,35 +28,18 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public partial class AuthorizeDialog : Form
+    public partial class AuthorizeDialog : Form, IView<AuthorizeViewModel> // TODO: Rename to AuthorizeView
     {
-        public IAuthorization AuthorizationResult { get; private set; }
-
-        public Exception AuthorizationError { get; private set; }
-
-
-        public AuthorizeDialog(
-            ClientSecrets clientSecrets,
-            IEnumerable<string> scopes,
-            IDeviceEnrollment deviceEnrollment,
-            AuthSettingsRepository authSettingsRepository,
-            IBindingContext bindingContext)
+        public AuthorizeDialog()
         {
             InitializeComponent();
 
             // Don't maximize when double-clicking title bar.
             this.MaximumSize = this.Size;
+        }
 
-
-            var viewModel = new AuthorizeViewModel()
-            {
-                View = this,
-                DeviceEnrollment = deviceEnrollment,
-                ClientSecrets = clientSecrets,
-                Scopes = scopes,
-                TokenStore = authSettingsRepository
-            };
-
+        public void Bind(AuthorizeViewModel viewModel, IBindingContext bindingContext)
+        {
             //
             // Bind controls.
             //
@@ -127,7 +103,6 @@ namespace Google.Solutions.IapDesktop.Windows
                     //
                     // We're all set, close the dialog.
                     //
-                    this.AuthorizationResult = viewModel.Authorization.Value;
                     this.DialogResult = DialogResult.OK;
                     Close();
                 }
@@ -139,7 +114,6 @@ namespace Google.Solutions.IapDesktop.Windows
                     //
                     // Give up, close the dialog.
                     //
-                    this.AuthorizationError = viewModel.AuthorizationError.Value;
                     this.DialogResult = DialogResult.Cancel;
                     Close();
                 }
@@ -162,47 +136,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 .ContinueWith(
                     t => Debug.Assert(false, "Should never throw an exception"),
                     TaskContinuationOptions.OnlyOnFaulted);
-        }
-
-        //---------------------------------------------------------------------
-        // Statics.
-        //---------------------------------------------------------------------
-
-        public static IAuthorization Authorize(
-            Control parent,
-            ClientSecrets clientSecrets,
-            IEnumerable<string> scopes,
-            IDeviceEnrollment deviceEnrollment,
-            AuthSettingsRepository authSettingsRepository,
-            IControlTheme theme,
-            IBindingContext bindingContext)
-        {
-            var dialog = new AuthorizeDialog(
-                clientSecrets,
-                scopes,
-                deviceEnrollment,
-                authSettingsRepository,
-                bindingContext);
-            theme.ApplyTo(dialog);
-            if (dialog.ShowDialog(parent) == DialogResult.OK)
-            {
-                Debug.Assert(dialog.AuthorizationResult != null);
-                return dialog.AuthorizationResult;
-            }
-            else
-            {
-                if (dialog.AuthorizationError != null)
-                {
-                    throw dialog.AuthorizationError;
-                }
-                else
-                {
-                    //
-                    // User just closed the dialog.
-                    //
-                    return null;
-                }
-            }
         }
     }
 }

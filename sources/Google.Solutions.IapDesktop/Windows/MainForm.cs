@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
@@ -29,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -38,6 +40,7 @@ using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
@@ -342,26 +345,61 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 try
                 {
-                    // NB. If the user cancels, no exception is thrown.
-                    this.viewModel.Authorize(this.bindingContext);
+                    using (var dialog = this.serviceProvider
+                        .GetDialog<AuthorizeDialog, AuthorizeViewModel>(this.themeService.DialogTheme))
+                    {
+                        //
+                        // Initialize the view model.
+                        //
+                        dialog.ViewModel.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
+                            new CertificateStoreAdapter(),
+                            new ChromePolicy(),
+                            this.applicationSettings).Result;
+                        dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
+                        dialog.ViewModel.Scopes = new[] { IapTunnelingEndpoint.RequiredScope };
+                        dialog.ViewModel.TokenStore = this.serviceProvider.GetService<AuthSettingsRepository>();
+
+                        dialog.Theme = this.themeService.DialogTheme;
+
+                        if (dialog.ShowDialog(this) == DialogResult.OK)
+                        {
+                            Debug.Assert(dialog.ViewModel.Authorization != null);
+                            this.viewModel.Authorize(dialog.ViewModel.Authorization.Value);
+                        }
+                        else
+                        {
+                            if (dialog.ViewModel.AuthorizationError.Value != null)
+                            {
+                                throw dialog.ViewModel.AuthorizationError.Value;
+                            }
+                            else
+                            {
+                                //
+                                // User just closed the dialog.
+                                //
+                                Close();
+                                return;
+                            }
+                        }
+                    }
                 }
-                catch (OAuthScopeNotGrantedException)
+                catch (OAuthScopeNotGrantedException) //TODO: Prevent duplicate error message-> move to AuthzViewModel
                 {
                     //
                     // User did not grant 'cloud-platform' scope.
                     //
-                    using (var view = this.serviceProvider
+                    using (var dialog = this.serviceProvider
                         .GetDialog<OAuthScopeNotGrantedView, OAuthScopeNotGrantedViewModel>(
                             this.themeService.DialogTheme))
                     {
-                        if (view.ShowDialog(this) == DialogResult.OK)
+                        if (dialog.ShowDialog(this) == DialogResult.OK)
                         {
                             // Retry sign-in.
                             continue;
                         }
                     }
                 }
-                catch (AuthorizationFailedException e)
+                catch (AuthorizationFailedException e) //TODO: Prevent duplicate error messag->remove
                 {
                     //
                     // Authorization failed for reasons not related to networking.
@@ -370,7 +408,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         .GetService<IExceptionDialog>()
                         .Show(this, "Authorization failed", e);
                 }
-                catch (Exception e)
+                catch (Exception e)//TODO: Prevent duplicate error message -> move to AuthzViewModel
                 {
                     //
                     // This exception might be due to a missing/incorrect proxy
@@ -406,14 +444,6 @@ namespace Google.Solutions.IapDesktop.Windows
                     }
                     catch (OperationCanceledException)
                     { }
-                }
-
-                if (!this.viewModel.IsAuthorized)
-                {
-                    // Not authorized, either because the user cancelled or an 
-                    // error occured -> close.
-                    Close();
-                    return;
                 }
             }
 

@@ -137,10 +137,12 @@ namespace Google.Solutions.Mvvm.Binding
         {
             get
             {
-                lock (this.Invoker)
-                {
-                    return this.value;
-                }
+                //
+                // NB. The value might be read after the view model has been
+                // detached from the view. Therefore, don't even try to
+                // acuire a lock (which isn't necessary anyway).
+                //
+                return this.value;
             }
             set
             {

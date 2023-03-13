@@ -325,6 +325,9 @@ namespace Google.Solutions.IapDesktop
                     // Settings invalid -> ignore.
                 }
 
+                baseLayer.AddTransient<AuthorizeDialog>();
+                baseLayer.AddTransient<AuthorizeViewModel>();
+
                 var mainForm = new MainForm(baseLayer, windowLayer)
                 {
                     StartupUrl = this.commandLineOptions.StartupUrl

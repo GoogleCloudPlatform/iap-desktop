@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Interop;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Host;
@@ -47,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Windows
     internal class MainFormViewModel : ViewModelBase
     {
         private readonly IThemeService themeService;
-        private readonly AuthSettingsRepository authSettings;
+        private readonly AuthSettingsRepository authSettings;//TODO: Remove
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly Install install;
         private readonly Profile profile;
@@ -228,36 +229,11 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public IAuthorization Authorization { get; private set; }
 
-        public void Authorize(IBindingContext bindingContext)
+        public void Authorize(IAuthorization authorization)
         {
-            Debug.Assert(this.Authorization == null);
+            Precondition.ExpectNotNull(authorization, nameof(authorization));
 
-            //
-            // Determine enrollment state of this device.
-            //
-            var deviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
-                new CertificateStoreAdapter(),
-                new ChromePolicy(),
-                this.applicationSettings).Result;
-
-            //
-            // Get the user authorization, either by using stored
-            // credentials or by initiating an OAuth authorization flow.
-            //
-            this.Authorization = AuthorizeDialog.Authorize(
-                (Control)this.View,
-                OAuthClient.Secrets,
-                new[] { IapTunnelingEndpoint.RequiredScope },
-                deviceEnrollment,
-                this.authSettings,
-                this.themeService.DialogTheme,
-                bindingContext);
-            if (this.Authorization == null)
-            {
-                // Aborted.
-                return;
-            }
-
+            this.Authorization = authorization;
             this.ProfileStateCaption = $"{this.profile.Name}: {this.Authorization.Email}";
             this.DeviceStateCaption = "Endpoint Verification";
             this.IsDeviceStateVisible = this.Authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
@@ -303,10 +279,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
             return this.Authorization.RevokeAsync();
         }
-
-        public bool IsAuthorized =>
-            this.Authorization != null &&
-            this.Authorization.DeviceEnrollment != null;
 
         //---------------------------------------------------------------------
         // Other actions.

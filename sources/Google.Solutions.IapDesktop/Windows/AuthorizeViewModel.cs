@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    internal class AuthorizeViewModel : ViewModelBase
+    public class AuthorizeViewModel : ViewModelBase
     {
         private CancellationTokenSource cancelCurrentSignin = null;
 
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.IsWaitControlVisible = ObservableProperty.Build(false, this);
             this.IsSignOnControlVisible = ObservableProperty.Build(false, this);
             this.IsCancelButtonVisible = ObservableProperty.Build(false, this);
-            this.IsChromeSingnInButtonEnabled = ObservableProperty.Build(!ChromeBrowser.IsAvailable);
+            this.IsChromeSingnInButtonEnabled = ObservableProperty.Build(ChromeBrowser.IsAvailable);
 
             this.CancelSignInCommand = ObservableCommand.Build(
                 string.Empty,
