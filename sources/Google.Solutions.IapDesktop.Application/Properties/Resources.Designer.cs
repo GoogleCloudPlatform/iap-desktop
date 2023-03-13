@@ -81,6 +81,33 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///    &lt;head&gt;
+        ///        &lt;title&gt;Authorization successful&lt;/title&gt;
+        ///        &lt;style&gt;
+        ///            body {
+        ///                font-family: &apos;Roboto&apos;, &apos;Helvetica&apos;, &apos;Arial&apos;, sans-serif;
+        ///                font-size: 14px;
+        ///                color: #5f6368;
+        ///                text-align: center;
+        ///                
+        ///                
+        ///                background-color: #F5F5F5;
+        ///                color: black;
+        ///            }
+        ///            
+        ///            h1 {
+        ///                font-size: 24px;
+        ///                fon [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AuthorizationSuccessful {
+            get {
+                return ResourceManager.GetString("AuthorizationSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Computer_16 {
@@ -111,12 +138,32 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GoogleSignIn_24 {
+            get {
+                object obj = ResourceManager.GetObject("GoogleSignIn_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon logo {
             get {
                 object obj = ResourceManager.GetObject("logo", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LogoWatermark_180 {
+            get {
+                object obj = ResourceManager.GetObject("LogoWatermark_180", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

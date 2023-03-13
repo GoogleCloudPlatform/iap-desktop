@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util.Store;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.Mvvm.Binding;
@@ -29,12 +30,11 @@ using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Windows
+namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
     public class AuthorizeViewModel : ViewModelBase // TODO: Add tests
     {
@@ -94,12 +94,12 @@ namespace Google.Solutions.IapDesktop.Windows
         /// <summary>
         /// One or more requires scopes haven't been granted.
         /// </summary>
-        internal EventHandler<RecoverableExceptionEventArgs> OAuthScopeNotGranted;
+        public EventHandler<RecoverableExceptionEventArgs> OAuthScopeNotGranted;
 
         /// <summary>
         /// An error occured that might be due to network misconfiguration.
         /// </summary>
-        internal EventHandler<RecoverableExceptionEventArgs> NetworkError;
+        public EventHandler<RecoverableExceptionEventArgs> NetworkError;
 
         //---------------------------------------------------------------------
         // Input properties.

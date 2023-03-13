@@ -26,7 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Windows
+namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
     public partial class AuthorizeView : Form, IView<AuthorizeViewModel>
     {

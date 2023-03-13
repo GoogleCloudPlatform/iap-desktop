@@ -19,9 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Windows
+namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 {
     partial class AuthorizeView
     {
@@ -151,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // watermarkPictureBox
             // 
-            this.watermarkPictureBox.Image = global::Google.Solutions.IapDesktop.Properties.Resources.LogoWatermark_180;
+            this.watermarkPictureBox.Image = Resources.LogoWatermark_180;
             this.watermarkPictureBox.Location = new System.Drawing.Point(0, 305);
             this.watermarkPictureBox.Name = "watermarkPictureBox";
             this.watermarkPictureBox.Size = new System.Drawing.Size(180, 145);
@@ -160,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // gradient
             // 
-            this.gradient.Image = global::Google.Solutions.IapDesktop.Properties.Resources.AccentGradient_450;
+            this.gradient.Image = Resources.AccentGradient_450;
             this.gradient.Location = new System.Drawing.Point(0, 442);
             this.gradient.Name = "gradient";
             this.gradient.Size = new System.Drawing.Size(450, 10);
@@ -170,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // signInButton
             // 
             this.signInButton.BackColor = System.Drawing.Color.White;
-            this.signInButton.Image = global::Google.Solutions.IapDesktop.Properties.Resources.GoogleSignIn_24;
+            this.signInButton.Image = Resources.GoogleSignIn_24;
             this.signInButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.signInButton.Location = new System.Drawing.Point(99, 264);
             this.signInButton.Menu = this.signInMenuStrip;
