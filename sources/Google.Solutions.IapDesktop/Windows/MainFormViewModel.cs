@@ -20,16 +20,13 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Interop;
 using Google.Solutions.Mvvm.Binding;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -233,23 +230,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
             Debug.Assert(this.ProfileStateCaption != null);
             Debug.Assert(this.Authorization.DeviceEnrollment != null);
-
-            if (!this.profile.IsDefault)
-            {
-                //
-                // Add taskbar badge to help distinguish this profile
-                // from other profiles.
-                //
-                using (var badge = BadgeIcon.ForTextInitial(this.profile.Name))
-                using (var taskbar = ComReference.For((ITaskbarList3)new TaskbarList()))
-                {
-                    taskbar.Object.HrInit();
-                    taskbar.Object.SetOverlayIcon(
-                        this.View.Handle,
-                        badge.Handle,
-                        string.Empty);
-                }
-            }
         }
 
         public async Task ReauthorizeAsync(CancellationToken token)

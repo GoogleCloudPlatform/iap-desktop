@@ -358,7 +358,6 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<ICloudConsoleAdapter, CloudConsoleAdapter>();
                 preAuthLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
-
                 var appSettingsRepository = new ApplicationSettingsRepository(
                     profile.SettingsKey.CreateSubKey("Application"),
                     profile.MachinePolicyKey?.OpenSubKey("Application"),

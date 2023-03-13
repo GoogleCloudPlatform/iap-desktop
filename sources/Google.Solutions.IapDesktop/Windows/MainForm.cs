@@ -21,7 +21,9 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -38,6 +40,7 @@ using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Interop;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
@@ -514,6 +517,27 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void MainForm_Shown(object sender, EventArgs __)
         {
+            var profile = this.serviceProvider.GetService<Profile>();
+            if (!profile.IsDefault)
+            {
+                //
+                // Add taskbar badge to help distinguish this profile
+                // from other profiles.
+                //
+                // NB. This can only be done after the window has been shown,
+                // so this code must not be moved to the constructor.
+                //
+                using (var badge = BadgeIcon.ForTextInitial(profile.Name))
+                using (var taskbar = ComReference.For((ITaskbarList3)new TaskbarList()))
+                {
+                    taskbar.Object.HrInit();
+                    taskbar.Object.SetOverlayIcon(
+                        this.Handle,
+                        badge.Handle,
+                        string.Empty);
+                }
+            }
+
             if (this.StartupUrl != null)
             {
                 // Dispatch URL.
