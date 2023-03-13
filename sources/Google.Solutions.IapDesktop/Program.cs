@@ -20,8 +20,10 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.CloudIap;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -31,6 +33,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Theme;
@@ -45,6 +48,7 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.IapTunneling;
+using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Ssh;
@@ -160,6 +164,93 @@ namespace Google.Solutions.IapDesktop
             }
         }
 
+        private static IAuthorization AuthorizeOrExit(IServiceProvider serviceProvider)
+        {
+            var theme = serviceProvider.GetService<IThemeService>().DialogTheme;
+            Debug.Assert(theme != null);
+
+            using (var dialog = serviceProvider
+                .GetDialog<AuthorizeView, AuthorizeViewModel>(theme))
+            {
+                //
+                // Initialize the view model.
+                //
+                dialog.ViewModel.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
+                    new CertificateStoreAdapter(),
+                    new ChromePolicy(),
+                    serviceProvider.GetService<ApplicationSettingsRepository>()).Result;
+                dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
+                dialog.ViewModel.Scopes = new[] { IapTunnelingEndpoint.RequiredScope };
+                dialog.ViewModel.TokenStore = serviceProvider.GetService<AuthSettingsRepository>();
+
+                //
+                // Allow recovery from common errors.
+                //
+                dialog.ViewModel.OAuthScopeNotGranted += (_, retryArgs) =>
+                {
+                    //
+                    // User did not grant 'cloud-platform' scope.
+                    //
+                    using (var scopeDialog = serviceProvider
+                        .GetDialog<OAuthScopeNotGrantedView, OAuthScopeNotGrantedViewModel>(theme))
+                    {
+                        retryArgs.Retry = scopeDialog.ShowDialog(dialog.ViewModel.View) == DialogResult.OK;
+                    }
+                };
+
+                dialog.ViewModel.NetworkError += (_, retryArgs) =>
+                {
+                    //
+                    // This exception might be due to a missing/incorrect proxy
+                    // configuration, so give the user a chance to change proxy
+                    // settings.
+                    //
+                    try
+                    {
+                        if (serviceProvider.GetService<ITaskDialog>()
+                            .ShowOptionsTaskDialog(
+                                dialog.ViewModel.View,
+                                TaskDialogIcons.TD_ERROR_ICON,
+                                "Authorization failed",
+                                "IAP Desktop failed to complete the OAuth authorization. " +
+                                    "This might be due to network communication issues.",
+                                retryArgs.Exception.Message,
+                                retryArgs.Exception.FullMessage(),
+                                new[]
+                                {
+                            "Change network settings"
+                                },
+                                null,
+                                out bool _) == 0)
+                        {
+                            //
+                            // Open settings.
+                            //
+                            retryArgs.Retry = OptionsDialog.Show(
+                                dialog.ViewModel.View,
+                                (IServiceCategoryProvider)serviceProvider) == DialogResult.OK;
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    { }
+                };
+
+                if (dialog.ShowDialog(null) == DialogResult.OK)
+                {
+                    Debug.Assert(dialog.ViewModel.Authorization != null);
+                    return dialog.ViewModel.Authorization.Value;
+                }
+                else
+                {
+                    //
+                    // User just closed the dialog.
+                    //
+                    Environment.Exit(1);
+                    throw new InvalidOperationException();
+                }
+            }
+        }
+
         //---------------------------------------------------------------------
         // SingletonApplicationBase overrides.
         //---------------------------------------------------------------------
@@ -240,8 +331,6 @@ namespace Google.Solutions.IapDesktop
             // but not in a higher layer.
             //
             var baseLayer = new ServiceRegistry();
-            var serviceLayer = new ServiceRegistry(baseLayer);
-            var windowLayer = new ServiceRegistry(serviceLayer);
 
             var install = new Install(Install.DefaultBaseKeyPath);
             using (var profile = LoadProfileOrExit(install, this.commandLineOptions))
@@ -327,8 +416,19 @@ namespace Google.Solutions.IapDesktop
 
                 baseLayer.AddTransient<AuthorizeView>();
                 baseLayer.AddTransient<AuthorizeViewModel>();
+                baseLayer.AddTransient<PropertiesView>();
+                baseLayer.AddTransient<PropertiesViewModel>();
 
-                var mainForm = new MainForm(baseLayer, windowLayer)
+                var authorization = AuthorizeOrExit(baseLayer);
+
+                //
+                // Authorization complete, now the main part of the application
+                // can be initialized.
+                //
+                var serviceLayer = new ServiceRegistry(baseLayer);
+                serviceLayer.AddSingleton<IAuthorization>(authorization);
+
+                var mainForm = new MainForm(serviceLayer)
                 {
                     StartupUrl = this.commandLineOptions.StartupUrl
                 };
@@ -337,7 +437,7 @@ namespace Google.Solutions.IapDesktop
                 baseLayer.AddSingleton<IAuthorizationSource>(mainForm);
 
                 //
-                // Load service layer: "Business" logic
+                // Load main services.
                 //
                 var eventService = new EventService(mainForm);
                 serviceLayer.AddTransient<IWindowsCredentialService, WindowsCredentialService>();
@@ -351,48 +451,46 @@ namespace Google.Solutions.IapDesktop
                 serviceLayer.AddTransient<IUpdateService, UpdateService>();
 
                 //
-                // Load window layer.
+                // Load windows.
                 //
-                windowLayer.AddSingleton<IMainWindow>(mainForm);
-                windowLayer.AddTransient<OAuthScopeNotGrantedView>();
-                windowLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
-                windowLayer.AddTransient<AboutView>();
-                windowLayer.AddTransient<AboutViewModel>();
-                windowLayer.AddTransient<DeviceFlyoutView>();
-                windowLayer.AddTransient<DeviceFlyoutViewModel>();
-                windowLayer.AddTransient<NewProfileView>();
-                windowLayer.AddTransient<NewProfileViewModel>();
-                windowLayer.AddTransient<PropertiesView>();
-                windowLayer.AddTransient<PropertiesViewModel>();
+                serviceLayer.AddSingleton<IMainWindow>(mainForm);
+                serviceLayer.AddTransient<OAuthScopeNotGrantedView>();
+                serviceLayer.AddTransient<OAuthScopeNotGrantedViewModel>();
+                serviceLayer.AddTransient<AboutView>();
+                serviceLayer.AddTransient<AboutViewModel>();
+                serviceLayer.AddTransient<DeviceFlyoutView>();
+                serviceLayer.AddTransient<DeviceFlyoutViewModel>();
+                serviceLayer.AddTransient<NewProfileView>();
+                serviceLayer.AddTransient<NewProfileViewModel>();
 
-                windowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
-                windowLayer.AddTransient<ProjectPickerView>();
-                windowLayer.AddTransient<ProjectPickerViewModel>();
+                serviceLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
+                serviceLayer.AddTransient<ProjectPickerView>();
+                serviceLayer.AddTransient<ProjectPickerViewModel>();
 
-                windowLayer.AddSingleton<IProjectExplorer, ProjectExplorer>();
-                windowLayer.AddSingleton<ProjectExplorerView>();
-                windowLayer.AddTransient<ProjectExplorerViewModel>();
+                serviceLayer.AddSingleton<IProjectExplorer, ProjectExplorer>();
+                serviceLayer.AddSingleton<ProjectExplorerView>();
+                serviceLayer.AddTransient<ProjectExplorerViewModel>();
 
 #if DEBUG
-                windowLayer.AddSingleton<DebugProjectExplorerTrackingView>();
-                windowLayer.AddTransient<DebugProjectExplorerTrackingViewModel>();
-                windowLayer.AddTransient<DebugThemeView>();
-                windowLayer.AddTransient<DebugThemeViewModel>();
-                windowLayer.AddSingleton<DebugJobServiceView>();
-                windowLayer.AddTransient<DebugJobServiceViewModel>();
-                windowLayer.AddTransient<DebugFullScreenView>();
-                windowLayer.AddTransient<DebugFullScreenViewModel>();
-                windowLayer.AddTransient<DebugDockingView>();
-                windowLayer.AddTransient<DebugDockingViewModel>();
-                windowLayer.AddTransient<DebugServiceRegistryView>();
-                windowLayer.AddTransient<DebugServiceRegistryViewModel>();
-                windowLayer.AddTransient<DebugCommonControlsView>();
-                windowLayer.AddTransient<DebugCommonControlsViewModel>();
+                serviceLayer.AddSingleton<DebugProjectExplorerTrackingView>();
+                serviceLayer.AddTransient<DebugProjectExplorerTrackingViewModel>();
+                serviceLayer.AddTransient<DebugThemeView>();
+                serviceLayer.AddTransient<DebugThemeViewModel>();
+                serviceLayer.AddSingleton<DebugJobServiceView>();
+                serviceLayer.AddTransient<DebugJobServiceViewModel>();
+                serviceLayer.AddTransient<DebugFullScreenView>();
+                serviceLayer.AddTransient<DebugFullScreenViewModel>();
+                serviceLayer.AddTransient<DebugDockingView>();
+                serviceLayer.AddTransient<DebugDockingViewModel>();
+                serviceLayer.AddTransient<DebugServiceRegistryView>();
+                serviceLayer.AddTransient<DebugServiceRegistryViewModel>();
+                serviceLayer.AddTransient<DebugCommonControlsView>();
+                serviceLayer.AddTransient<DebugCommonControlsViewModel>();
 #endif
                 //
                 // Load extensions.
                 //
-                var extensionLayer = new ServiceRegistry(windowLayer);
+                var extensionLayer = new ServiceRegistry(serviceLayer);
                 foreach (var extension in LoadExtensionAssemblies())
                 {
                     extensionLayer.AddExtensionAssembly(extension);

@@ -88,12 +88,12 @@ namespace Google.Solutions.IapDesktop.Windows
         public ICommandContainer<IMainWindow> ViewMenu => this.viewMenuCommands;
         public ICommandContainer<ToolWindow> WindowMenu => this.windowMenuCommands;
 
-        public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
+        public MainForm(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
 
             this.themeService = this.serviceProvider.GetService<IThemeService>();
-            this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
+            this.applicationSettings = this.serviceProvider.GetService<ApplicationSettingsRepository>();
             this.bindingContext = serviceProvider.GetService<IBindingContext>();
 
             //
@@ -188,10 +188,11 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             this.viewModel = new MainFormViewModel(
                 this,
-                bootstrappingServiceProvider.GetService<Install>(),
-                bootstrappingServiceProvider.GetService<Profile>(),
-                bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
+                this.serviceProvider.GetService<Install>(),
+                this.serviceProvider.GetService<Profile>(),
+                this.serviceProvider.GetService<ApplicationSettingsRepository>(),
                 this.themeService);
+            this.viewModel.Authorize(this.serviceProvider.GetService<IAuthorization>());
 
             this.BindProperty(
                 c => c.Text,
@@ -337,91 +338,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void MainForm_Shown(object sender, EventArgs __)
         {
-            //
-            // Authorize.
-            //
-            using (var dialog = this.serviceProvider
-                .GetDialog<AuthorizeView, AuthorizeViewModel>(this.themeService.DialogTheme))
-            {
-                //
-                // Initialize the view model.
-                //
-                dialog.ViewModel.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
-                    new CertificateStoreAdapter(),
-                    new ChromePolicy(),
-                    this.applicationSettings).Result;
-                dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
-                dialog.ViewModel.Scopes = new[] { IapTunnelingEndpoint.RequiredScope };
-                dialog.ViewModel.TokenStore = this.serviceProvider.GetService<AuthSettingsRepository>();
-
-                //
-                // Allow recovery from common errors.
-                //
-                dialog.ViewModel.OAuthScopeNotGranted += (_, retryArgs) =>
-                {
-                    //
-                    // User did not grant 'cloud-platform' scope.
-                    //
-                    using (var scopeDialog = this.serviceProvider
-                        .GetDialog<OAuthScopeNotGrantedView, OAuthScopeNotGrantedViewModel>(
-                            this.themeService.DialogTheme))
-                    {
-                        retryArgs.Retry = scopeDialog.ShowDialog(dialog.ViewModel.View) == DialogResult.OK;
-                    }
-                };
-
-                dialog.ViewModel.NetworkError += (_, retryArgs) =>
-                {
-                    //
-                    // This exception might be due to a missing/incorrect proxy
-                    // configuration, so give the user a chance to change proxy
-                    // settings.
-                    //
-                    try
-                    {
-                        if (this.serviceProvider.GetService<ITaskDialog>()
-                            .ShowOptionsTaskDialog(
-                                dialog.ViewModel.View,
-                                TaskDialogIcons.TD_ERROR_ICON,
-                                "Authorization failed",
-                                "IAP Desktop failed to complete the OAuth authorization. " +
-                                    "This might be due to network communication issues.",
-                                retryArgs.Exception.Message,
-                                retryArgs.Exception.FullMessage(),
-                                new[]
-                                {
-                            "Change network settings"
-                                },
-                                null,
-                                out bool _) == 0)
-                        {
-                            //
-                            // Open settings.
-                            //
-                            retryArgs.Retry = OptionsDialog.Show(
-                                this,
-                                (IServiceCategoryProvider)this.serviceProvider) == DialogResult.OK;
-                        }
-                    }
-                    catch (OperationCanceledException)
-                    { }
-                };
-
-                if (dialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    Debug.Assert(dialog.ViewModel.Authorization != null);
-                    this.viewModel.Authorize(dialog.ViewModel.Authorization.Value);
-                }
-                else
-                {
-                    //
-                    // User just closed the dialog.
-                    //
-                    Close();
-                    return;
-                }
-            }
-                
             if (this.StartupUrl != null)
             {
                 // Dispatch URL.

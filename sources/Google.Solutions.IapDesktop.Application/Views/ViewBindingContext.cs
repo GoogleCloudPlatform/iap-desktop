@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void SetErrorReportingOwner(IWin32Window owner)
         {
-            Debug.Assert(this.errorReportingOwner == null);
+            // TOOD: Set in ShowDialog
             this.errorReportingOwner = owner;
         }
 
