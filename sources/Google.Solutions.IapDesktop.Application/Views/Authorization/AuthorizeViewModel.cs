@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util.Store;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
@@ -46,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             // NB. Properties are access from a non-GUI thrad, so
             // they must be thread-safe.
             //
+            this.WindowTitle = ObservableProperty.Build($"Sign in - {Install.FriendlyName}");
             this.Authorization = ObservableProperty.Build<IAuthorization>(null, this);
             this.IsWaitControlVisible = ObservableProperty.Build(false, this);
             this.IsSignOnControlVisible = ObservableProperty.Build(false, this);
@@ -112,6 +114,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public ObservableProperty<string> WindowTitle { get; }
 
         public ObservableProperty<bool> IsWaitControlVisible { get; set; }
 
