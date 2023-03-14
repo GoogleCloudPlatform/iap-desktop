@@ -194,11 +194,6 @@ namespace Google.Solutions.Testing.Application.Views
             }
         }
 
-        protected static string CreateRandomUsername()
-        {
-            return "test" + Guid.NewGuid().ToString().Substring(0, 4);
-        }
-
         protected static Mock<IAuthorization> CreateAuthorizationMock(ICredential credential = null)
         {
             credential = credential ?? new Mock<ICredential>().Object;
@@ -220,11 +215,15 @@ namespace Google.Solutions.Testing.Application.Views
 
         protected async Task<NetworkCredential> GenerateWindowsCredentials(InstanceLocator locator)
         {
+            var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
             var credentialAdapter = new WindowsCredentialService(
-                new ComputeEngineAdapter(TestProject.GetAdminCredential()));
-            return await credentialAdapter.CreateWindowsCredentialsAsync(
+                new ComputeEngineAdapter(
+                    TestProject.GetAdminCredential()));
+
+            return await credentialAdapter
+                .CreateWindowsCredentialsAsync(
                     locator,
-                    CreateRandomUsername(),
+                    username,
                     UserFlags.AddToAdministrators,
                     TimeSpan.FromSeconds(60),
                     CancellationToken.None)
