@@ -62,28 +62,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             this.UserInfo = userInfo.ExpectNotNull(nameof(userInfo));
         }
 
-        /// <summary>
-        /// Event triggered after a successful reauthorization. Might be
-        /// triggere on any thread.
-        /// </summary>
         public event EventHandler Reauthorized;
 
-        /// <summary>
-        /// Credential to use for Google API requests.
-        /// </summary>
         public ICredential Credential => this.credential;
 
         public string Email => this.UserInfo.Email;
 
-        /// <summary>
-        /// OIDC user info.
-        /// </summary>
         public UserInfo UserInfo { get; private set; }
 
-        /// <summary>
-        /// Device. This is non-null, but the enrollment might be
-        /// in state "Disabled".
-        /// </summary>
         public IDeviceEnrollment DeviceEnrollment { get; }
 
         public Task RevokeAsync()

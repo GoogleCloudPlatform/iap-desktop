@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.Mvvm.Binding;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -44,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly Install install;
         private readonly Profile profile;
+        private readonly IAuthorization authorization;
 
         // NB. This list is only access from the UI thread, so no locking required.
         private readonly LinkedList<BackgroundJob> backgroundJobs
@@ -60,16 +62,31 @@ namespace Google.Solutions.IapDesktop.Windows
             Control view,
             Install install,
             Profile profile,
+            IAuthorization authorization,
             ApplicationSettingsRepository applicationSettings,
             IThemeService themeService)
         {
-            this.View = view;
-            this.themeService = themeService;
-
+            this.View = view.ThrowIfNull(nameof(view));
             this.install = install.ThrowIfNull(nameof(install));
             this.profile = profile.ThrowIfNull(nameof(profile));
-            this.applicationSettings = applicationSettings
-                .ThrowIfNull(nameof(applicationSettings));
+            this.authorization = authorization.ThrowIfNull(nameof(authorization));
+            this.applicationSettings = applicationSettings.ThrowIfNull(nameof(applicationSettings));
+            this.themeService = themeService.ThrowIfNull(nameof(themeService));
+
+            this.ProfileStateCaption = $"{this.profile.Name}: {this.authorization.Email}";
+            this.DeviceStateCaption = "Endpoint Verification";
+            this.IsDeviceStateVisible = this.authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
+            this.IsReportInternalIssueVisible = this.authorization.UserInfo?.HostedDomain == "google.com";
+
+            this.authorization.Reauthorized += (_, __) =>
+            {
+                //
+                // The email address might have changed after reauth.
+                //
+                // NB. The event might be fired on a worker thread.
+                //
+                view.BeginInvoke((Action)(() => this.ProfileStateCaption = authorization.Email));
+            };
         }
 
         //---------------------------------------------------------------------
@@ -216,40 +233,13 @@ namespace Google.Solutions.IapDesktop.Windows
         // Authorization actions.
         //---------------------------------------------------------------------
 
-        public IAuthorization Authorization { get; private set; }
-
-        public void Authorize(IAuthorization authorization)
-        {
-            Precondition.ExpectNotNull(authorization, nameof(authorization));
-
-            this.Authorization = authorization;
-            this.ProfileStateCaption = $"{this.profile.Name}: {this.Authorization.Email}";
-            this.DeviceStateCaption = "Endpoint Verification";
-            this.IsDeviceStateVisible = this.Authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
-            this.IsReportInternalIssueVisible = this.Authorization.UserInfo?.HostedDomain == "google.com";
-
-            Debug.Assert(this.ProfileStateCaption != null);
-            Debug.Assert(this.Authorization.DeviceEnrollment != null);
-        }
-
-        public async Task ReauthorizeAsync(CancellationToken token)
-        {
-            Debug.Assert(this.Authorization != null);
-            Debug.Assert(this.Authorization.DeviceEnrollment != null);
-
-            // Reauthorize, this might cause another OAuth code flow.
-            await this.Authorization.ReauthorizeAsync(token)
-                .ConfigureAwait(true);
-
-            this.ProfileStateCaption = this.Authorization.Email;
-        }
 
         public Task RevokeAuthorizationAsync()
         {
-            Debug.Assert(this.Authorization != null);
-            Debug.Assert(this.Authorization.DeviceEnrollment != null);
+            Debug.Assert(this.authorization != null);
+            Debug.Assert(this.authorization.DeviceEnrollment != null);
 
-            return this.Authorization.RevokeAsync();
+            return this.authorization.RevokeAsync();
         }
 
         //---------------------------------------------------------------------

@@ -82,11 +82,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         {
             var serviceRegistry = new ServiceRegistry();
 
-            var auth = new Mock<IAuthorization>();
-            auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-
-            serviceRegistry.AddMock<IAuthorizationSource>()
-                .SetupGet(a => a.Authorization).Returns(auth.Object);
+            serviceRegistry.AddMock<IAuthorization>()
+                .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 
             var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
             credDialog
@@ -117,10 +114,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         {
             var serviceRegistry = new ServiceRegistry();
 
-            var auth = new Mock<IAuthorization>();
-            auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-            serviceRegistry.AddMock<IAuthorizationSource>()
-                .SetupGet(a => a.Authorization).Returns(auth.Object);
+            serviceRegistry.AddMock<IAuthorization>()
+                .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 
             var credDialog = serviceRegistry.AddMock<INewCredentialsDialog>();
             credDialog
@@ -152,10 +147,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         {
             var serviceRegistry = new ServiceRegistry();
 
-            var auth = new Mock<IAuthorization>();
-            auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-            serviceRegistry.AddMock<IAuthorizationSource>()
-                .SetupGet(a => a.Authorization).Returns(auth.Object);
+            serviceRegistry.AddMock<IAuthorization>()
+                .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
             serviceRegistry.AddMock<IWindowsCredentialService>()
@@ -205,10 +198,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         {
             var serviceRegistry = new ServiceRegistry();
 
-            var auth = new Mock<IAuthorization>();
-            auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-            serviceRegistry.AddMock<IAuthorizationSource>()
-                .SetupGet(a => a.Authorization).Returns(auth.Object);
+            serviceRegistry.AddMock<IAuthorization>()
+                .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
             serviceRegistry.AddMock<IWindowsCredentialService>()
@@ -243,10 +234,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         {
             var serviceRegistry = new ServiceRegistry();
 
-            var auth = new Mock<IAuthorization>();
-            auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-            serviceRegistry.AddMock<IAuthorizationSource>()
-                .SetupGet(a => a.Authorization).Returns(auth.Object);
+            serviceRegistry.AddMock<IAuthorization>()
+                .SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 
             serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
             serviceRegistry.AddMock<IWindowsCredentialService>()

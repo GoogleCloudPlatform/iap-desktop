@@ -40,11 +40,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
     [Service(typeof(ITunnelService))]
     public class TunnelService : ITunnelService
     {
-        private readonly IAuthorizationSource authorizationSource;
+        private readonly IAuthorization authorization;
 
-        public TunnelService(IAuthorizationSource authorizationSource)
+        public TunnelService(IAuthorization authorization)
         {
-            this.authorizationSource = authorizationSource.ThrowIfNull(nameof(authorizationSource));
+            this.authorization = authorization.ThrowIfNull(nameof(authorization));
         }
 
         public Task<ITunnel> CreateTunnelAsync(
@@ -54,9 +54,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(tunnelEndpoint))
             {
                 var clientCertificate =
-                        (this.authorizationSource.Authorization.DeviceEnrollment != null &&
-                        this.authorizationSource.Authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
-                    ? this.authorizationSource.Authorization.DeviceEnrollment.Certificate
+                        (this.authorization.DeviceEnrollment != null &&
+                        this.authorization.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
+                    ? this.authorization.DeviceEnrollment.Certificate
                     : null;
 
                 if (clientCertificate != null)
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                 }
 
                 var iapEndpoint = new IapTunnelingEndpoint(
-                    this.authorizationSource.Authorization.Credential,
+                    this.authorization.Credential,
                     tunnelEndpoint.Instance,
                     tunnelEndpoint.RemotePort,
                     IapTunnelingEndpoint.DefaultNetworkInterface,

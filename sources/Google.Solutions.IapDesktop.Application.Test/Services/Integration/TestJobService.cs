@@ -71,19 +71,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             }
         }
 
-        private Mock<IAuthorizationSource> authService = null;
+        private Mock<IAuthorization> authorization = null;
         private Mock<IJobHost> jobHost = null;
         private JobService jobService = null;
 
         [SetUp]
         public void SetUp()
         {
-            var authz = new Mock<IAuthorization>();
-
-            this.authService = new Mock<IAuthorizationSource>();
-            this.authService.SetupGet(a => a.Authorization).Returns(authz.Object);
-            this.authService.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(true));
+            this.authorization = new Mock<IAuthorization>();
 
             var invoker = new SynchronousInvoker();
 
@@ -93,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
                 It.IsNotNull<JobDescription>(),
                 It.IsNotNull<CancellationTokenSource>())).Returns(new UserFeedback());
 
-            this.jobService = new JobService(authService.Object, this.jobHost.Object);
+            this.jobService = new JobService(authorization.Object, this.jobHost.Object);
         }
 
         [Test]
@@ -183,8 +178,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         public void WhenReauthFailed_ThenExceptionIsPropagated()
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-            this.authService.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromException(new ApplicationException()));
+            this.authorization
+                .Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ApplicationException());
 
             ExceptionAssert.ThrowsAggregateException<ApplicationException>(() =>
             {
@@ -295,8 +291,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         public void WhenReauthFailed_ThenExceptionIsPropagated_WithAggregateException()
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-            this.authService.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromException(new ApplicationException()));
+            this.authorization
+                .Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ApplicationException());
 
             ExceptionAssert.ThrowsAggregateException<ApplicationException>(() =>
             {

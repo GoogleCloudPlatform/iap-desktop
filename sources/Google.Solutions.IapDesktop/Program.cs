@@ -437,7 +437,6 @@ namespace Google.Solutions.IapDesktop
                 };
 
                 mainLayer.AddSingleton<IJobHost>(mainForm);
-                mainLayer.AddSingleton<IAuthorizationSource>(mainForm);
 
                 //
                 // Load main services.

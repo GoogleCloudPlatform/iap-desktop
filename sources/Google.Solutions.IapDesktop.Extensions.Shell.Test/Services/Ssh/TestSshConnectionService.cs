@@ -70,16 +70,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             return tunnelBrokerService;
         }
 
-        private Mock<IAuthorizationSource> CreateAuthorizationSourceMock()
+        private Mock<IAuthorization> CreateAuthorizationMock()
         {
             var authz = new Mock<IAuthorization>();
             authz.SetupGet(a => a.Email).Returns(SampleEmail);
-
-            var authzSource = new Mock<IAuthorizationSource>();
-            authzSource.SetupGet(a => a.Authorization)
-                .Returns(authz.Object);
-
-            return authzSource;
+            return authz;
         }
 
         private Mock<IKeyStoreAdapter> CreateKeyStoreAdapterMock()
@@ -146,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var service = new SshConnectionService(
                 new Mock<IMainWindow>().Object,
-                CreateAuthorizationSourceMock().Object,
+                CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock().Object,
                 sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,
@@ -178,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var service = new SshConnectionService(
                 new Mock<IMainWindow>().Object,
-                CreateAuthorizationSourceMock().Object,
+                CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
                 CreateTunnelBrokerServiceMock().Object,
@@ -215,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var service = new SshConnectionService(
                 new Mock<IMainWindow>().Object,
-                CreateAuthorizationSourceMock().Object,
+                CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
                 tunnelBrokerService.Object,
@@ -252,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var authorizedKeyService = new Mock<IKeyAuthorizationService>();
             var service = new SshConnectionService(
                 new Mock<IMainWindow>().Object,
-                CreateAuthorizationSourceMock().Object,
+                CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
                 CreateTunnelBrokerServiceMock().Object,
@@ -297,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var service = new SshConnectionService(
                 new Mock<IMainWindow>().Object,
-                CreateAuthorizationSourceMock().Object,
+                CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
                 CreateTunnelBrokerServiceMock().Object,
@@ -337,7 +332,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var service = new SshConnectionService(
                 new Mock<IMainWindow>().Object,
-                CreateAuthorizationSourceMock().Object,
+                CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
                 tunnelBrokerService.Object,
@@ -378,7 +373,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var service = new SshConnectionService(
                 new Mock<IMainWindow>().Object,
-                CreateAuthorizationSourceMock().Object,
+                CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
                 tunnelBrokerService.Object,
@@ -416,7 +411,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var service = new SshConnectionService(
                 new Mock<IMainWindow>().Object,
-                CreateAuthorizationSourceMock().Object,
+                CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock().Object,
                 new Mock<ISshTerminalSessionBroker>().Object,
                 CreateTunnelBrokerServiceMock().Object,
@@ -464,7 +459,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             var service = new SshConnectionService(
                 new Mock<IMainWindow>().Object,
-                CreateAuthorizationSourceMock().Object,
+                CreateAuthorizationMock().Object,
                 CreateProjectModelServiceMock().Object,
                 sessionBroker.Object,
                 tunnelBrokerService.Object,

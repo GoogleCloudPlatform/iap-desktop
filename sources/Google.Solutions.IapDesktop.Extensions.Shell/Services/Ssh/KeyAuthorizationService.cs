@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     public class KeyAuthorizationService : IKeyAuthorizationService
     {
 
-        private readonly IAuthorizationSource authorizationSource;
+        private readonly IAuthorization authorization;
         private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly IResourceManagerAdapter resourceManagerAdapter;
         private readonly IOsLoginService osLoginService;
@@ -47,12 +47,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         //---------------------------------------------------------------------
 
         public KeyAuthorizationService(
-            IAuthorizationSource authorizationSource,
+            IAuthorization authorization,
             IComputeEngineAdapter computeEngineAdapter,
             IResourceManagerAdapter resourceManagerAdapter,
             IOsLoginService osLoginService)
         {
-            this.authorizationSource = authorizationSource.ThrowIfNull(nameof(authorizationSource));
+            this.authorization = authorization.ThrowIfNull(nameof(authorization));
             this.computeEngineAdapter = computeEngineAdapter.ThrowIfNull(nameof(computeEngineAdapter));
             this.resourceManagerAdapter = resourceManagerAdapter.ThrowIfNull(nameof(resourceManagerAdapter));
             this.osLoginService = osLoginService.ThrowIfNull(nameof(osLoginService));
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                             validity,
                             preferredPosixUsername,
                             allowedMethods,
-                            this.authorizationSource.Authorization,
+                            this.authorization,
                             token)
                         .ConfigureAwait(false);
                 }

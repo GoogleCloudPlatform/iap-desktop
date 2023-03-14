@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
     [TestFixture]
     public class TestDeviceFlyoutViewModel : ApplicationFixtureBase
     {
-        private static IAuthorizationSource CreateAuthorizationSource(
+        private static IAuthorization CreateAuthorization(
             IDeviceEnrollment enrollment)
         {
             var authorization = new Mock<IAuthorization>();
@@ -40,12 +40,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             authorization
                 .SetupGet(a => a.DeviceEnrollment)
                 .Returns(enrollment);
-            var authorizationSource = new Mock<IAuthorizationSource>();
-            authorizationSource
-                .Setup(a => a.Authorization)
-                .Returns(authorization.Object);
 
-            return authorizationSource.Object;
+            return authorization.Object;
         }
 
         [Test]
@@ -55,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Disabled);
 
             var viewModel = new DeviceFlyoutViewModel(
-                CreateAuthorizationSource(enrollment.Object));
+                CreateAuthorization(enrollment.Object));
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
             Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
@@ -71,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
 
             var viewModel = new DeviceFlyoutViewModel(
-                CreateAuthorizationSource(enrollment.Object));
+                CreateAuthorization(enrollment.Object));
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
             Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
@@ -87,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
 
             var viewModel = new DeviceFlyoutViewModel(
-                CreateAuthorizationSource(enrollment.Object));
+                CreateAuthorization(enrollment.Object));
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
             Assert.IsTrue(viewModel.IsDeviceEnrolledIconVisible);

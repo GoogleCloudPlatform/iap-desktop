@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +30,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 {
     public interface IAuthorization
     {
+        /// <summary>
+        /// Event triggered after a successful reauthorization. Might be
+        /// triggere on any thread.
+        /// </summary>
+        event EventHandler Reauthorized;
+
+        /// <summary>
+        /// Credential to use for Google API requests.
+        /// </summary>
         ICredential Credential { get; }
 
         Task RevokeAsync();
@@ -37,8 +47,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 
         string Email { get; }
 
+        /// <summary>
+        /// OIDC user info.
+        /// </summary>
         UserInfo UserInfo { get; }
 
+        /// <summary>
+        /// Device. This is non-null, but the enrollment might be
+        /// in state "Disabled".
+        /// </summary>
         IDeviceEnrollment DeviceEnrollment { get; }
     }
 

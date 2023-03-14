@@ -88,18 +88,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             }
         }
 
-        private static Mock<IAuthorizationSource> CreateAuthorizationSource()
+        private static Mock<IAuthorization> CreateAuthorizationMock()
         {
             var authorization = new Mock<IAuthorization>();
             authorization
                 .SetupGet(a => a.Email)
                 .Returns("test@example.com");
-            var authorizationSource = new Mock<IAuthorizationSource>();
-            authorizationSource
-                .Setup(a => a.Authorization)
-                .Returns(authorization.Object);
 
-            return authorizationSource;
+            return authorization;
         }
 
         private static async Task<AuthorizedKeyPair> CreateAuthorizedKeyAsync(
@@ -107,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             ICredential credential,
             SshKeyType keyType)
         {
-            var authorizationSource = CreateAuthorizationSource();
+            var authorizationSource = CreateAuthorizationMock();
 
             var keyAdapter = new KeyAuthorizationService(
                 authorizationSource.Object,
@@ -316,14 +312,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         public async Task WhenConnectionFails_ThenEventFires(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            var authorizationSource = CreateAuthorizationSource();
+            var authorizationSource = CreateAuthorizationMock();
             var eventService = new Mock<IEventService>();
 
             var nonAuthorizedKey = AuthorizedKeyPair.ForMetadata(
                 SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072),
                 "invalid",
                 true,
-                authorizationSource.Object.Authorization);
+                authorizationSource.Object);
 
             using (var window = new Form())
             {

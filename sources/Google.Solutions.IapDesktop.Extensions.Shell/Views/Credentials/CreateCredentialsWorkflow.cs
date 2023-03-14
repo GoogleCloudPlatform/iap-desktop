@@ -60,10 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             bool silent)
         {
             var username = string.IsNullOrEmpty(settings.RdpUsername.StringValue)
-                ? this.serviceProvider
-                    .GetService<IAuthorizationSource>()
-                    .Authorization
-                    .SuggestWindowsUsername()
+                ? this.serviceProvider.GetService<IAuthorization>().SuggestWindowsUsername()
                 : settings.RdpUsername.StringValue;
 
             if (!silent)

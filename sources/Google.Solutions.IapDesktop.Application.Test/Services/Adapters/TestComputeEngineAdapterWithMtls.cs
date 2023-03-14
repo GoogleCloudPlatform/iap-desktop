@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         [Test]
         public void WhenEnrollmentProvided_ThenDeviceCertiticateAuthenticationIsOn()
         {
-            var adapter = new ComputeEngineAdapter(AuthorizationSourceMocks.ForSecureConnectUser());
+            var adapter = new ComputeEngineAdapter(AuthorizationMocks.ForSecureConnectUser());
             Assert.IsTrue(adapter.IsDeviceCertiticateAuthenticationEnabled);
         }
     }

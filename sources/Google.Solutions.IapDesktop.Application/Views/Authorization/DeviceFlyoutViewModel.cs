@@ -41,9 +41,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         public string DetailsLinkCaption { get; }
         public bool IsDetailsLinkVisible { get; }
 
-        public DeviceFlyoutViewModel(IAuthorizationSource authorizationSource)
+        public DeviceFlyoutViewModel(IAuthorization authorization)
         {
-            this.enrollment = authorizationSource.Authorization.DeviceEnrollment;
+            this.enrollment = authorization.DeviceEnrollment;
 
             switch (this.enrollment.State)
             {

@@ -58,7 +58,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public partial class MainForm : Form, IJobHost, IMainWindow, IAuthorizationSource
+    public partial class MainForm : Form, IJobHost, IMainWindow
     {
         //
         // Calculate minimum size so that it's a quarter of a 1080p screen,
@@ -187,9 +187,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 this,
                 this.serviceProvider.GetService<Install>(),
                 this.serviceProvider.GetService<Profile>(),
+                this.serviceProvider.GetService<IAuthorization>(),
                 this.serviceProvider.GetService<ApplicationSettingsRepository>(),
                 this.themeService);
-            this.viewModel.Authorize(this.serviceProvider.GetService<IAuthorization>());
 
             this.BindProperty(
                 c => c.Text,
@@ -961,17 +961,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void cancelBackgroundJobsButton_Click(object sender, EventArgs e)
             => this.viewModel.CancelBackgroundJobs();
-
-
-        //---------------------------------------------------------------------
-        // IAuthorizationSource.
-        //---------------------------------------------------------------------
-
-        public IAuthorization Authorization => this.viewModel.Authorization;
-
-        public Task ReauthorizeAsync(CancellationToken token)
-            => this.viewModel.ReauthorizeAsync(token);
-
 
         //---------------------------------------------------------------------
         // Helper classes.

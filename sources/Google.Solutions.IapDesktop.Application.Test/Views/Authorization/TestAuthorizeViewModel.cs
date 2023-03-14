@@ -24,6 +24,7 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common;
@@ -68,7 +69,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
                 View = view,
-                TokenStore = new Mock<IDataStore>().Object
+                TokenStore = new Mock<IDataStore>().Object,
+                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
                 viewModel.SignInAdapter
@@ -93,7 +95,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
                 View = view,
-                TokenStore = new Mock<IDataStore>().Object
+                TokenStore = new Mock<IDataStore>().Object,
+                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
                 viewModel.SignInAdapter
@@ -118,12 +121,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
                 View = view,
-                TokenStore = new Mock<IDataStore>().Object
+                TokenStore = new Mock<IDataStore>().Object,
+                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
                 viewModel.SignInAdapter
                     .Setup(a => a.TrySignInWithRefreshTokenAsync(It.IsAny<CancellationToken>()))
                     .ReturnsAsync(CreateCredential());
+                viewModel.SignInAdapter
+                    .Setup(a => a.QueryUserInfoAsync(
+                        It.IsAny<ICredential>(),
+                        It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new UserInfo());
 
                 await viewModel.TryLoadExistingAuthorizationCommand
                     .ExecuteAsync(CancellationToken.None)
@@ -147,7 +156,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
                 View = view,
-                TokenStore = new Mock<IDataStore>().Object
+                TokenStore = new Mock<IDataStore>().Object,
+                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
                 viewModel.SignInAdapter
@@ -171,7 +181,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
                 View = view,
-                TokenStore = tokenStore.Object
+                TokenStore = tokenStore.Object,
+                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
                 viewModel.SignInAdapter
@@ -207,7 +218,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
                 View = view,
-                TokenStore = tokenStore.Object
+                TokenStore = tokenStore.Object,
+                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
                 var tokenResponse = new TokenResponse()
@@ -256,7 +268,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter()
             {
                 View = view,
-                TokenStore = tokenStore.Object
+                TokenStore = tokenStore.Object,
+                DeviceEnrollment = new Mock<IDeviceEnrollment>().Object
             })
             {
                 var tokenResponse = new TokenResponse()
