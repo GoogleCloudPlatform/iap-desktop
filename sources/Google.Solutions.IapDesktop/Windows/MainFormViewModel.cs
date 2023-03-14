@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly LinkedList<BackgroundJob> backgroundJobs
             = new LinkedList<BackgroundJob>();
 
-        private string windowTitle = Globals.FriendlyName;
+        private string windowTitle = Install.FriendlyName;
         private bool isBackgroundJobStatusVisible = false;
         private string profileState = null;
         private string deviceState = null;
@@ -262,8 +262,8 @@ namespace Google.Solutions.IapDesktop.Windows
             // Update window title so that it shows the current document.
             //
             var newTitle = title == null
-                ? Globals.FriendlyName
-                : $"{title} - {Globals.FriendlyName}";
+                ? Install.FriendlyName
+                : $"{title} - {Install.FriendlyName}";
 
             if (!this.profile.IsDefault)
             {

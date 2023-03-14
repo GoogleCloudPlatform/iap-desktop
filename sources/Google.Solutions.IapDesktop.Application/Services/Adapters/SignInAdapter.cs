@@ -26,6 +26,7 @@ using Google.Apis.Util.Store;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -277,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ICredential credential,
             CancellationToken token)
         {
-            var client = new RestClient(Globals.UserAgent, this.deviceCertificate);
+            var client = new RestClient(Install.UserAgent, this.deviceCertificate);
 
             return await client.GetAsync<UserInfo>(
                     CreateInitializer().UserInfoUrl,

@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Solutions.Common.Net;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System.Diagnostics;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             var initializer = new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
-                ApplicationName = Globals.UserAgent.ToApplicationName()
+                ApplicationName = Install.UserAgent.ToApplicationName()
             };
 
             if (enrollment?.Certificate != null &&

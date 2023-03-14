@@ -27,6 +27,7 @@ using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Net;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
@@ -91,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             : this(credential, null)
         {
             // This constructor should only be used for test cases
-            Debug.Assert(Globals.IsTestCase);
+            Debug.Assert(Install.IsExecutingTests);
         }
 
         public AuditLogAdapter(IAuthorizationSource authService)

@@ -46,6 +46,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         //---------------------------------------------------------------------
 
         [Test]
+        public void UserAgent()
+        {
+            StringAssert.Contains("IAP-Desktop/2.", Install.UserAgent.ToHeaderValue());
+        }
+
+        //---------------------------------------------------------------------
+        // IsExecutingTests.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void IsExecutingTests()
+        {
+            Assert.IsTrue(Install.IsExecutingTests);
+        }
+
+        //---------------------------------------------------------------------
+        // CurrentVersion.
+        //---------------------------------------------------------------------
+
+        [Test]
         public void CurrentVersion()
         {
             var install = new Install(TestBaseKeyPath);

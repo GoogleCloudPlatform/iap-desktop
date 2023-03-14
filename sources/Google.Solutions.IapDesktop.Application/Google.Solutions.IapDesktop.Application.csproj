@@ -115,7 +115,6 @@
     <Compile Include="Data\Permissions.cs" />
     <Compile Include="Services\Windows\WindowsCredentialService.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
-    <Compile Include="Global.cs" />
     <Compile Include="Services\Adapters\SerialPortStream.cs" />
     <Compile Include="Services\Authorization\AppAuthorization.cs" />
     <Compile Include="Services\Authorization\IAuthorization.cs" />

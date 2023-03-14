@@ -20,11 +20,13 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace Google.Solutions.IapDesktop.Application.Host
 {
@@ -37,21 +39,49 @@ namespace Google.Solutions.IapDesktop.Application.Host
     /// </summary>
     public class Install
     {
+        public const string FriendlyName = "IAP Desktop";
+
         private const string VersionHistoryValueName = "InstalledVersionHistory";
 
         public const string DefaultBaseKeyPath = @"Software\Google\IapDesktop";
+
+        private static readonly Version assemblyVersion;
+
+        //---------------------------------------------------------------------
+        // Static properties (based on assembly metadata).
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// User agent to use in all HTTP requests.
+        /// </summary>
+        public static UserAgent UserAgent { get; }
+
+        public static bool IsExecutingTests { get; }
+
+        static Install()
+        {
+            assemblyVersion = typeof(Install).Assembly.GetName().Version;
+            UserAgent = new UserAgent("IAP-Desktop", assemblyVersion);
+            IsExecutingTests = Assembly.GetEntryAssembly() == null;
+        }
+
+        //---------------------------------------------------------------------
+        // Public properties (based on registry data).
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Currently installed and running version.
+        /// </summary>
+        public Version CurrentVersion => assemblyVersion;
 
         /// <summary>
         /// Base registry key for profiles, etc.
         /// </summary>
         public string BaseKeyPath { get; }
 
-        public Version CurrentVersion { get; }
-
         public Install(string baseKeyPath)
         {
             this.BaseKeyPath = baseKeyPath.ThrowIfNull(nameof(baseKeyPath));
-            this.CurrentVersion = GetType().Assembly.GetName().Version;
 
             //
             // Create or amend version history.
