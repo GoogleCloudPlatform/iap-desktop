@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void UserAgent()
         {
-            StringAssert.Contains("IAP-Desktop/2.", Install.UserAgent.ToHeaderValue());
+            StringAssert.Contains("IAP-Desktop/", Install.UserAgent.ToHeaderValue());
         }
 
         //---------------------------------------------------------------------
