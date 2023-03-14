@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
     [UsesCloudResources]
     public class TestTunnelService : ShellFixtureBase
     {
-        private IAuthorizationSource CreateAuthorizationSourceMock(
+        private IAuthorization CreateAuthorizationMock(
             ICredential credential,
             IDeviceEnrollment enrollment)
         {
@@ -47,10 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             authz.SetupGet(a => a.Credential).Returns(credential);
             authz.SetupGet(a => a.DeviceEnrollment).Returns(enrollment);
 
-            var adapter = new Mock<IAuthorizationSource>();
-            adapter.SetupGet(a => a.Authorization).Returns(authz.Object);
-
-            return adapter.Object;
+            return authz.Object;
         }
 
         [Test]
@@ -58,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var service = new TunnelService(CreateAuthorizationSourceMock(
+            var service = new TunnelService(CreateAuthorizationMock(
                 await credential,
                 null));
             var destination = new TunnelDestination(
@@ -85,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
         public async Task WhenInstanceNotAvailable_ThenProbeFails(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var service = new TunnelService(CreateAuthorizationSourceMock(
+            var service = new TunnelService(CreateAuthorizationMock(
                 await credential,
                 null));
             var destination = new TunnelDestination(
@@ -113,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var service = new TunnelService(CreateAuthorizationSourceMock(
+            var service = new TunnelService(CreateAuthorizationMock(
                 await credential,
                 null));
             var destination = new TunnelDestination(
@@ -138,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var service = new TunnelService(CreateAuthorizationSourceMock(
+            var service = new TunnelService(CreateAuthorizationMock(
                 await credential,
                 null));
             var destination = new TunnelDestination(

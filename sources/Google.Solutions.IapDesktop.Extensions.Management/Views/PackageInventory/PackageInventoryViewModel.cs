@@ -51,7 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
         private readonly Service<IInventoryService> inventoryService;
 
         private string filter;
-        private bool isInformationBarVisible = true;
 
         private string WindowTitlePrefix =>
                 this.InventoryType == PackageInventoryType.AvailablePackages

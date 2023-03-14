@@ -22,10 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
@@ -35,39 +32,29 @@ using Google.Solutions.Testing.Application.Views;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestRemoteDesktopWithServerSideGroupPolicies : WindowTestFixtureBase
+    public class TestRemoteDesktopViewWithServerSideGroupPolicies : WindowTestFixtureBase
     {
-        private IServiceProvider CreateServiceProvider()
+        private IServiceProvider CreateServiceProvider(ICredential credential)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
             registry.AddTransient<RemoteDesktopView>();
             registry.AddTransient<RemoteDesktopViewModel>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
+            registry.AddSingleton(CreateAuthorizationMock(credential).Object);
             return registry;
         }
 
         private async Task<InstanceConnectionSettings> CreateSettingsAsync(
             InstanceLocator instanceLocator)
         {
-            var serviceProvider = CreateServiceProvider();
-            var credentialAdapter = new WindowsCredentialService(
-                new ComputeEngineAdapter(serviceProvider.GetService<IAuthorizationSource>()));
-
-            var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
-                instanceLocator,
-                CreateRandomUsername(),
-                UserFlags.AddToAdministrators,
-                TimeSpan.FromSeconds(60),
-                CancellationToken.None)
-            .ConfigureAwait(true);
+            var credentials = await GenerateWindowsCredentials(instanceLocator).ConfigureAwait(true);
 
             var settings = InstanceConnectionSettings.CreateNew(instanceLocator);
             settings.RdpUsername.Value = credentials.UserName;
@@ -87,9 +74,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
         private async Task<IRemoteDesktopSession> ConnectAsync(
             IapTunnel tunnel,
-            InstanceLocator instanceLocator)
+            InstanceLocator instanceLocator,
+            ICredential credential)
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(credential);
             var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
             var settings = await CreateSettingsAsync(instanceLocator).ConfigureAwait(true);
 
@@ -106,15 +94,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 # Disable Policy
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDenyTSConnections /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
         {
             var locator = await testInstance;
+            var credential = await credentialTask;
 
-            using (var tunnel = IapTunnel.ForRdp(
-                locator,
-                await credential))
+            using (var tunnel = IapTunnel.ForRdp(locator, credential))
             {
-                await AssertRaisesEventAsync<SessionAbortedEvent>(() => ConnectAsync(tunnel, locator))
+                await AssertRaisesEventAsync<SessionAbortedEvent>(
+                    () => ConnectAsync(tunnel, locator, credential))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(this.ExceptionShown);
@@ -128,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
 
             using (var tunnel = IapTunnel.ForRdp(
@@ -160,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             ")] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
 
             using (var tunnel = IapTunnel.ForRdp(
@@ -203,18 +191,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
         {
             var locator = await testInstance;
+            var credential = await credentialTask;
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
-                await credential))
+                credential))
             {
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
-                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                        session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
                     })
                     .ConfigureAwait(true);
 
@@ -233,18 +222,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 3 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
         {
             var locator = await testInstance;
+            var credential = await credentialTask;
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
-                await credential))
+                credential))
             {
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
-                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                        session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
                     })
                     .ConfigureAwait(true);
 
@@ -263,18 +253,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 0 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
         {
             var locator = await testInstance;
+            var credential = await credentialTask;
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
-                await credential))
+                credential))
             {
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
-                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                        session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
                     })
                     .ConfigureAwait(true);
 
@@ -293,18 +284,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
         {
             var locator = await testInstance;
+            var credential = await credentialTask;
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
-                await credential))
+                credential))
             {
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
-                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                        session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
                     })
                     .ConfigureAwait(true);
 
@@ -323,18 +315,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 2 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
         {
             var locator = await testInstance;
+            var credential = await credentialTask;
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
-                await credential))
+                credential))
             {
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
-                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                        session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
                     })
                     .ConfigureAwait(true);
 
@@ -353,18 +346,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 0 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
         {
             var locator = await testInstance;
+            var credential = await credentialTask;
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
-                await credential))
+                credential))
             {
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
-                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                        session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
                     })
                     .ConfigureAwait(true);
 
@@ -383,18 +377,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
         {
             var locator = await testInstance;
+            var credential = await credentialTask;
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
-                await credential))
+                credential))
             {
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
-                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                        session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
                     })
                     .ConfigureAwait(true);
 
@@ -419,18 +414,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDisablePNPRedir /d 1 /f | Out-Default
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDisableCpm /d 1 /f | Out-Default
             ")] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credentialTask)
         {
             var locator = await testInstance;
+            var credential = await credentialTask;
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
-                await credential))
+                credential))
             {
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(async () =>
                     {
-                        session = await ConnectAsync(tunnel, locator).ConfigureAwait(true);
+                        session = await ConnectAsync(tunnel, locator, credential).ConfigureAwait(true);
                     })
                     .ConfigureAwait(true);
 

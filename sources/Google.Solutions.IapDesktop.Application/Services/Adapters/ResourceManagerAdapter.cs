@@ -89,10 +89,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Debug.Assert(Globals.IsTestCase);
         }
 
-        public ResourceManagerAdapter(IAuthorizationSource authService)
-            : this(
-                  authService.Authorization.Credential,
-                  authService.Authorization.DeviceEnrollment)
+        public ResourceManagerAdapter(IAuthorization authorization)
+            : this(authorization.Credential, authorization.DeviceEnrollment)
         {
         }
 

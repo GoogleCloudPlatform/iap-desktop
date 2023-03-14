@@ -63,13 +63,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly IConnectionSettingsService settingsService;
         private readonly IKeyAuthorizationService authorizedKeyService;
         private readonly IKeyStoreAdapter keyStoreAdapter;
-        private readonly IAuthorizationSource authorizationSource;
+        private readonly IAuthorization authorization;
         private readonly SshSettingsRepository sshSettingsRepository;
         private readonly IProjectModelService projectModelService;
 
         public SshConnectionService(
             IMainWindow window,
-            IAuthorizationSource authorizationSource,
+            IAuthorization authorization,
             IProjectModelService projectModelService,
             ISshTerminalSessionBroker sessionBroker,
             ITunnelBrokerService tunnelBroker,
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             IJobService jobService)
         {
             this.window = window.ThrowIfNull(nameof(window));
-            this.authorizationSource = authorizationSource.ThrowIfNull(nameof(authorizationSource));
+            this.authorization = authorization.ThrowIfNull(nameof(authorization));
             this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
             this.sessionBroker = sessionBroker.ThrowIfNull(nameof(sessionBroker));
             this.tunnelBroker = tunnelBroker.ThrowIfNull(nameof(tunnelBroker));
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             var sshSettings = this.sshSettingsRepository.GetSettings();
             var sshKey = this.keyStoreAdapter.OpenSshKeyPair(
                 sshSettings.PublicKeyType.EnumValue,
-                this.authorizationSource.Authorization,
+                this.authorization,
                 true,
                 this.window);
             Debug.Assert(sshKey != null);

@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     {
         private const string MtlsBaseUri = "https://oslogin.mtls.googleapis.com/";
 
-        private readonly IAuthorizationSource authorizationSource;
+        private readonly IAuthorization authorization;
         private readonly CloudOSLoginService service;
 
 
@@ -82,17 +82,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         // Ctor.
         //---------------------------------------------------------------------
 
-        public OsLoginAdapter(IAuthorizationSource authorizationSource)
+        public OsLoginAdapter(IAuthorization authorization)
         {
-            this.authorizationSource = authorizationSource.ThrowIfNull(nameof(authorizationSource));
+            this.authorization = authorization.ThrowIfNull(nameof(authorization));
             this.service = new CloudOSLoginService(
                 ClientServiceFactory.ForMtlsEndpoint(
-                    authorizationSource.Authorization.Credential,
-                    authorizationSource.Authorization.DeviceEnrollment,
+                    authorization.Credential,
+                    authorization.DeviceEnrollment,
                     MtlsBaseUri));
 
             Debug.Assert(
-                (authorizationSource.Authorization.DeviceEnrollment?.Certificate != null &&
+                (authorization.DeviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
                     == this.IsDeviceCertiticateAuthenticationEnabled);
         }
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 var expiryTimeUsec = new DateTimeOffset(DateTime.UtcNow.Add(validity))
                     .ToUnixTimeMilliseconds() * 1000;
 
-                var userEmail = this.authorizationSource.Authorization.Email;
+                var userEmail = this.authorization.Email;
                 Debug.Assert(userEmail != null);
 
                 var request = this.service.Users.ImportSshPublicKey(
@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
             {
                 var request = this.service.Users.GetLoginProfile(
-                    $"users/{this.authorizationSource.Authorization.Email}");
+                    $"users/{this.authorization.Email}");
                 request.ProjectId = project.ProjectId;
 
                 try
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             {
                 try
                 {
-                    var userEmail = this.authorizationSource.Authorization.Email;
+                    var userEmail = this.authorization.Email;
                     Debug.Assert(userEmail != null);
 
                     await this.service.Users.SshPublicKeys

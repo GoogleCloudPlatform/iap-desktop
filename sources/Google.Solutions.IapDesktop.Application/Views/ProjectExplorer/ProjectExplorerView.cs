@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         private readonly IMainWindow mainForm;
         private readonly IJobService jobService;
-        private readonly IAuthorizationSource authService;
+        private readonly IAuthorization authorization;
         private readonly IExceptionDialog exceptionDialog;
         private readonly IProjectPickerDialog projectPickerDialog;
 
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             this.mainForm = serviceProvider.GetService<IMainWindow>();
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.authService = serviceProvider.GetService<IAuthorizationSource>();
+            this.authorization = serviceProvider.GetService<IAuthorization>();
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.projectPickerDialog = serviceProvider.GetService<IProjectPickerDialog>();
             this.resourceManagerAdapter = serviceProvider.GetService<Service<IResourceManagerAdapter>>();
@@ -270,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 await this.jobService.RunInBackground(
                         new JobDescription("Loading projects..."),
-                        _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync())
+                        _ => this.authorization.Credential.GetAccessTokenForRequestAsync())
                     .ConfigureAwait(true);
 
                 //

@@ -36,7 +36,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.Testing.Application.Views
 {
-    public partial class TestMainForm : Form, IMainWindow, IAuthorizationSource, IJobService
+    public partial class TestMainForm : Form, IMainWindow, IJobService
     {
         public TestMainForm()
         {
@@ -79,57 +79,5 @@ namespace Google.Solutions.Testing.Application.Views
             var result = jobFunc(CancellationToken.None).Result;
             return Task.FromResult(result);
         }
-
-        //---------------------------------------------------------------------
-        // IAuthorizationSource.
-        //---------------------------------------------------------------------
-
-        private class SimpleAuthorization : IAuthorization
-        {
-            public ICredential Credential { get; }
-
-            public string Email => "test@example.com";
-
-            public UserInfo UserInfo => new UserInfo()
-            {
-                Email = "test@example.com"
-            };
-
-            public SimpleAuthorization(ICredential credential)
-            {
-                this.Credential = credential;
-            }
-
-            public Task ReauthorizeAsync(CancellationToken token)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Task RevokeAsync()
-            {
-                throw new NotImplementedException();
-            }
-
-            public IDeviceEnrollment DeviceEnrollment => new SimpleDeviceEnrollment();
-        }
-
-        private class SimpleDeviceEnrollment : IDeviceEnrollment
-        {
-            public DeviceEnrollmentState State => DeviceEnrollmentState.Disabled;
-
-            public X509Certificate2 Certificate => null;
-
-            public Task RefreshAsync()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public IAuthorization Authorization => new SimpleAuthorization(TestProject.GetAdminCredential());
-
-        public static IDeviceEnrollment DeviceEnrollment => new SimpleDeviceEnrollment();
-
-        public Task ReauthorizeAsync(CancellationToken token)
-            => this.Authorization.ReauthorizeAsync(token);
     }
 }

@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
         public async Task WhenDeviceEnrolled_ThenAuditLogIndicatesDevice(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            var service = new TunnelService(AuthorizationSourceMocks.ForSecureConnectUser());
+            var service = new TunnelService(AuthorizationMocks.ForSecureConnectUser());
 
             // Probe a random port so that we have something unique to look for
             // in the audit log.

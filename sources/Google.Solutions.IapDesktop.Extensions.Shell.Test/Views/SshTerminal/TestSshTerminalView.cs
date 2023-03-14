@@ -105,13 +105,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             authorization
                 .SetupGet(a => a.Email)
                 .Returns("test@example.com");
-            var authorizationSource = new Mock<IAuthorizationSource>();
-            authorizationSource
-                .Setup(a => a.Authorization)
-                .Returns(authorization.Object);
 
             var keyAdapter = new KeyAuthorizationService(
-                authorizationSource.Object,
+                authorization.Object,
                 new ComputeEngineAdapter(credential),
                 new ResourceManagerAdapter(credential),
                 new Mock<IOsLoginService>().Object);

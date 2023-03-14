@@ -33,6 +33,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Google.Solutions.Testing.Common.Integration;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading;
@@ -48,13 +49,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         // amount of memory.
         private const string MachineTypeForRdp = "n1-highmem-2";
 
-        private IServiceProvider CreateServiceProvider()
+        private IServiceProvider CreateServiceProvider(ICredential credential = null)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
             registry.AddTransient<RemoteDesktopView>();
             registry.AddTransient<RemoteDesktopViewModel>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
+            registry.AddSingleton(CreateAuthorizationMock(credential).Object);
+
             return registry;
         }
 
@@ -76,21 +79,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
-                var credentialAdapter = new WindowsCredentialService(
-                    new ComputeEngineAdapter(serviceProvider.GetService<IAuthorizationSource>()));
-                var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
-                        locator,
-                        CreateRandomUsername(),
-                        UserFlags.AddToAdministrators,
-                        TimeSpan.FromSeconds(60),
-                        CancellationToken.None)
+                var credentials = await GenerateWindowsCredentials(locator)
                     .ConfigureAwait(true);
 
                 var settings = InstanceConnectionSettings.CreateNew(

@@ -67,11 +67,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     public class JobService : IJobService
     {
         private readonly IJobHost host;
-        private readonly IAuthorizationSource authService;
+        private readonly IAuthorization authorization;
 
-        public JobService(IAuthorizationSource authService, IJobHost host)
+        public JobService(IAuthorization authorization, IJobHost host)
         {
-            this.authService = authService;
+            this.authorization = authorization;
             this.host = host;
         }
 
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                             new JobDescription("Authorizing..."),
                             async reauthCancellationToken =>
                             {
-                                await this.authService
+                                await this.authorization
                                     .ReauthorizeAsync(reauthCancellationToken)
                                     .ConfigureAwait(true);  // Continue on UI thread.
                                 return default(T);

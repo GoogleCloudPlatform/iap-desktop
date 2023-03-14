@@ -1,4 +1,4 @@
-﻿//
+﻿
 // Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -19,15 +19,28 @@
 // under the License.
 //
 
-using System.Threading;
-using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.Testing.Common.Integration;
+using Moq;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Authorization
+
+namespace Google.Solutions.Testing.Application.Mocks
 {
-    public interface IAuthorizationSource
+    public static class AuthorizationMocks
     {
-        IAuthorization Authorization { get; }
+        public static IAuthorization ForSecureConnectUser()
+        {
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.SetupGet(e => e.State)
+                .Returns(DeviceEnrollmentState.Enrolled);
+            enrollment.SetupGet(e => e.Certificate)
+                .Returns(TestProject.GetDeviceCertificate());
 
-        Task ReauthorizeAsync(CancellationToken token);
+            var authz = new Mock<IAuthorization>();
+            authz.SetupGet(a => a.Credential).Returns(TestProject.GetSecureConnectCredential());
+            authz.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+
+            return authz.Object;
+        }
     }
 }

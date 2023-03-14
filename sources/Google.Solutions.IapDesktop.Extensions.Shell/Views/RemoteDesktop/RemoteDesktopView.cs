@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // Because we're not initializing controls in the constructor, the
                 // theme isn't applied by default.
                 //
-                Debug.Assert(this.theme != null);
+                Debug.Assert(this.theme != null || Globals.IsTestCase);
 
                 SuspendLayout();
                 this.theme?.ApplyTo(this);

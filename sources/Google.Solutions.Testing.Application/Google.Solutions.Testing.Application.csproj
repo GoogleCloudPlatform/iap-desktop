@@ -87,7 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationFixtureBase.cs" />
-    <Compile Include="Mocks\AuthorizationSourceMocks.cs" />
+    <Compile Include="Mocks\AuthorizationMocks.cs" />
     <Compile Include="ObjectModel\ServiceRegistryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\ControlExtensions.cs" />
