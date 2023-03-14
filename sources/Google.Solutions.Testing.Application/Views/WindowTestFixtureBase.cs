@@ -19,7 +19,9 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -27,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading;
@@ -83,7 +86,6 @@ namespace Google.Solutions.Testing.Application.Views
             registry.AddSingleton<IMainWindow>(mainForm);
             registry.AddSingleton<IJobService>(mainForm);
             registry.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
-
             registry.AddSingleton<IEventService>(this.EventService);
 
             this.exceptionDialog = new MockExceptionDialog();
@@ -191,6 +193,25 @@ namespace Google.Solutions.Testing.Application.Views
         protected static string CreateRandomUsername()
         {
             return "test" + Guid.NewGuid().ToString().Substring(0, 4);
+        }
+
+        protected static Mock<IAuthorization> CreateAuthorizationMock(ICredential credential = null)
+        {
+            credential = credential ?? new Mock<ICredential>().Object;
+
+            var enrollment = new Mock<IDeviceEnrollment>();
+            enrollment.Setup(e => e.State).Returns(DeviceEnrollmentState.Disabled);
+
+            var authorization = new Mock<IAuthorization>();
+            authorization.SetupGet(a => a.Credential).Returns(credential);
+            authorization.SetupGet(a => a.Email).Returns("test@example.com");
+            authorization.SetupGet(a => a.UserInfo).Returns(new UserInfo()
+            {
+                Email = "test@example.com"
+            });
+            authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
+
+            return authorization;
         }
     }
 }

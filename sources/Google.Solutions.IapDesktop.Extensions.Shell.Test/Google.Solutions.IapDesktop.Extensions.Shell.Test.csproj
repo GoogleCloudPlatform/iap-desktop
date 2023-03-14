@@ -158,7 +158,7 @@
     <Compile Include="Views\Options\TestSshOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestTerminalOptionsViewModel.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopView.cs" />
-    <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPaneWithGroupPolicies.cs" />
+    <Compile Include="Views\RemoteDesktop\TestRemoteDesktopViewWithGroupPolicies.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopSessionBroker.cs" />
     <Compile Include="Views\SshKeys\TestAuthorizedPublicKeysModel.cs" />
     <Compile Include="Views\SshKeys\TestAuthorizedPublicKeysViewModel.cs" />

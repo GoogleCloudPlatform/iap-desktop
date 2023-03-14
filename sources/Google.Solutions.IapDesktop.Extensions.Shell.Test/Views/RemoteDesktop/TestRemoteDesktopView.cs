@@ -54,13 +54,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         private readonly InstanceLocator SampleLocator =
             new InstanceLocator("project", "zone", "instance");
 
-        private IServiceProvider CreateServiceProvider()
+        private IServiceProvider CreateServiceProvider(ICredential credential = null)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
             registry.AddTransient<RemoteDesktopView>();
             registry.AddTransient<RemoteDesktopViewModel>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
+            registry.AddSingleton(CreateAuthorizationMock(credential).Object);
             return registry;
         }
 
@@ -135,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
 
             using (var tunnel = IapTunnel.ForRdp(
@@ -183,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
 
             // To avoid excessive combinations, combine some settings.
@@ -251,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
 
             using (var tunnel = IapTunnel.ForRdp(
@@ -311,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
 
             using (var tunnel = IapTunnel.ForRdp(

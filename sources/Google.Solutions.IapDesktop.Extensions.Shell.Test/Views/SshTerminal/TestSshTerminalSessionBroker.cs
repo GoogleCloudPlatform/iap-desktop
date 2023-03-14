@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
     [UsesCloudResources]
     public class TestSshTerminalSessionBroker : WindowTestFixtureBase
     {
-        private IServiceProvider CreateServiceProvider()
+        private IServiceProvider CreateServiceProvider(ICredential credential = null)
         {
             var registry = new ServiceRegistry(this.ServiceRegistry);
             registry.AddTransient<SshTerminalView>();
@@ -63,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             registry.AddMock<IQuarantineAdapter>();
             registry.AddMock<IThemeService>();
             registry.AddMock<IBindingContext>();
+            registry.AddSingleton(CreateAuthorizationMock(credential).Object);
 
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             this.ServiceRegistry.AddSingleton(new TerminalSettingsRepository(
@@ -89,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var serviceProvider = CreateServiceProvider();
+            var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
             var key = SshKeyPair.NewEphemeralKeyPair(SshKeyType.Rsa3072);
 

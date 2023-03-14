@@ -233,7 +233,6 @@ namespace Google.Solutions.IapDesktop.Windows
         // Authorization actions.
         //---------------------------------------------------------------------
 
-
         public Task RevokeAuthorizationAsync()
         {
             Debug.Assert(this.authorization != null);
