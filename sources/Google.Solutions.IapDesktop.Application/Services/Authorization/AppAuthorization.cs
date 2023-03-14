@@ -20,27 +20,25 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Authorization
 {
+    /// <summary>
+    /// OAuth authorization for this app.
+    /// 
+    /// The Authorization object is initialized during startup and
+    /// a single instance is kept throughout the lifetime of the
+    /// process, even in the case of re-auth.
+    /// </summary>
     public class AppAuthorization : IAuthorization
     {
         private readonly ISignInAdapter adapter;
-
-        //
-        // Credential to use.
-        //
-        // NB. We must use the same UserCredential object throghout the
-        // lifetime of the app because existing clients maintain a 
-        // reference to the object.
-        //
-        // In case of re-auth, we therefore don't swap the credential
-        // object, but merely replace its embedded refresh token.
-        //
 
         private readonly UserCredential credential;
 
@@ -50,26 +48,88 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             UserCredential credential,
             UserInfo userInfo)
         {
-            Debug.Assert(credential != null);
-
-            this.adapter = adapter;
-            this.DeviceEnrollment = deviceEnrollment;
-            this.credential = credential;
-            this.UserInfo = userInfo;
+            //
+            // NB. We must use the same UserCredential object throghout the
+            // lifetime of the app because existing clients maintain a 
+            // reference to the object.
+            //
+            // In case of re-auth, we therefore don't swap the credential
+            // object, but merely replace its embedded refresh token.
+            //
+            this.adapter = adapter.ExpectNotNull(nameof(adapter));
+            this.DeviceEnrollment = deviceEnrollment.ExpectNotNull(nameof(deviceEnrollment));
+            this.credential = credential.ExpectNotNull(nameof(credential));
+            this.UserInfo = userInfo.ExpectNotNull(nameof(userInfo));
         }
 
+        /// <summary>
+        /// Event triggered after a successful reauthorization. Might be
+        /// triggere on any thread.
+        /// </summary>
+        public event EventHandler Reauthorized;
+
+        /// <summary>
+        /// Credential to use for Google API requests.
+        /// </summary>
         public ICredential Credential => this.credential;
 
         public string Email => this.UserInfo.Email;
 
+        /// <summary>
+        /// OIDC user info.
+        /// </summary>
         public UserInfo UserInfo { get; private set; }
 
+        /// <summary>
+        /// Device. This is non-null, but the enrollment might be
+        /// in state "Disabled".
+        /// </summary>
         public IDeviceEnrollment DeviceEnrollment { get; }
 
         public Task RevokeAsync()
         {
             return this.adapter.DeleteStoredRefreshToken();
         }
+
+        public async Task ReauthorizeAsync(CancellationToken token)
+        {
+            //
+            // Make sure we use the right certificate.
+            //
+            await this.DeviceEnrollment
+                .RefreshAsync()
+                .ConfigureAwait(false);
+
+            //
+            // As this is a 3p OAuth app, we do not support Gnubby/Password-based
+            // reauth. Instead, we simply trigger a new authorization (code flow).
+            //
+            // Use the current user as login hint to simplify the browser flow
+            // a little.
+            //
+            var newCredential = await this.adapter
+                .SignInWithBrowserAsync(this.Email, token)
+                .ConfigureAwait(false);
+
+            //
+            // Keep the credential object, but swap out its refresh token.
+            //
+            this.credential.Token = newCredential.Token;
+
+            //
+            // The user might have changed to a different user account,
+            // so we have to re-fetch user information.
+            //
+            this.UserInfo = await this.adapter
+                .QueryUserInfoAsync(newCredential, token)
+                .ConfigureAwait(false);
+
+            this.Reauthorized?.Invoke(this, EventArgs.Empty);
+        }
+
+        //---------------------------------------------------------------------
+        // Factory methods.
+        //---------------------------------------------------------------------
 
         public static async Task<AppAuthorization> TryLoadExistingAuthorizationAsync(
             ISignInAdapter oauthAdapter,
@@ -121,40 +181,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
                 deviceEnrollment,
                 credential,
                 userInfo);
-        }
-
-        public async Task ReauthorizeAsync(CancellationToken token)
-        {
-            //
-            // Make sure we use the right certificate.
-            //
-            await this.DeviceEnrollment
-                .RefreshAsync()
-                .ConfigureAwait(false);
-
-            //
-            // As this is a 3p OAuth app, we do not support Gnubby/Password-based
-            // reauth. Instead, we simply trigger a new authorization (code flow).
-            //
-            // Use the current user as login hint to simplify the browser flow
-            // a little.
-            //
-            var newCredential = await this.adapter
-                .SignInWithBrowserAsync(this.Email, token)
-                .ConfigureAwait(false);
-
-            //
-            // Keep the credential object, but swap out its refresh token.
-            //
-            this.credential.Token = newCredential.Token;
-
-            //
-            // The user might have changed to a different user account,
-            // so we have to re-fetch user information.
-            //
-            this.UserInfo = await this.adapter
-                .QueryUserInfoAsync(newCredential, token)
-                .ConfigureAwait(false);
         }
     }
 }
