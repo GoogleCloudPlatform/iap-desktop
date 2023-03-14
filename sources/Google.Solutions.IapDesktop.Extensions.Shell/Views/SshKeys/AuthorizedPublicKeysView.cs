@@ -57,35 +57,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         {
             this.viewModel = viewModel;
 
-            this.infoLabel.BindReadonlyProperty(
+            this.panel.BindReadonlyObservableProperty(
                 c => c.Text,
-                this.viewModel,
-                m => m.InformationBarContent,
+                viewModel,
+                m => m.InformationText,
                 bindingContext);
-            this.viewModel.OnPropertyChange(
-                m => m.IsInformationBarVisible,
-                visible =>
-                {
-                    this.splitContainer.Panel1Collapsed = !visible;
-                    this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
-                },
-                bindingContext);
-
-            this.viewModel.OnPropertyChange(
+            this.BindReadonlyObservableProperty(
+                c => c.Text,
+                viewModel,
                 m => m.WindowTitle,
-                title =>
-                {
-                    // NB. Update properties separately instead of using multi-assignment,
-                    // otherwise the title does not update properly.
-                    this.TabText = title;
-                    this.Text = title;
-                },
+                bindingContext);
+            this.BindReadonlyObservableProperty(
+                c => c.TabText,
+                viewModel,
+                m => m.WindowTitle,
                 bindingContext);
             this.viewModel.ResetWindowTitleAndInformationBar();  // Fire event to set initial window title.
 
-
+            //
             // Bind tool strip.
-            this.toolStrip.BindReadonlyProperty(
+            //
+            this.toolStrip.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsListEnabled,
@@ -96,8 +88,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 m => m.IsDeleteButtonEnabled,
                 bindingContext);
 
+            //
             // Bind list.
-            this.keysList.BindReadonlyProperty(
+            //
+            this.keysList.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsListEnabled,
@@ -115,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 this.viewModel,
                 m => m.Filter,
                 bindingContext);
-            this.keysList.BindProperty(
+            this.keysList.BindReadonlyObservableProperty(
                 c => c.Loading,
                 this.viewModel,
                 m => m.IsLoading,

@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceIsRunning_ThenInformationBarIsShown()
+        public async Task WhenInstanceIsRunning_ThenInformationTextIsSet()
         {
             var broker = new Mock<IGlobalSessionBroker>();
             broker.Setup(b => b.IsConnected(
@@ -85,11 +85,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsTrue(viewModel.IsInformationBarVisible);
+            Assert.AreEqual(
+                ConnectionSettingsViewModel.RequiresReconnectWarning,
+                viewModel.InformationText.Value);
         }
 
         [Test]
-        public async Task WhenInstanceIsNotRunning_ThenInformationBarIsNotShown()
+        public async Task WhenInstanceIsNotRunning_ThenInformationTextIsNull()
         {
             var broker = new Mock<IGlobalSessionBroker>();
             broker.Setup(b => b.IsConnected(
@@ -108,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsInformationBarVisible);
+            Assert.IsNull(viewModel.InformationText.Value);
         }
 
         //---------------------------------------------------------------------
@@ -116,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSwitchingToCloudNode_ThenGridIsDisabled()
+        public async Task WhenSwitchingToCloudNode_ThenInspectedObjectIsNull()
         {
             var broker = new Mock<IGlobalSessionBroker>();
             broker.Setup(b => b.IsConnected(
@@ -131,13 +133,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsInformationBarVisible);
-            Assert.IsNull(viewModel.InspectedObject);
-            Assert.AreEqual(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.IsNull(viewModel.InspectedObject.Value);
+            Assert.AreEqual(
+                ConnectionSettingsViewModel.DefaultWindowTitle, 
+                viewModel.WindowTitle.Value);
         }
 
         [Test]
-        public async Task WhenSwitchingToProjectNode_ThenGridIsPopulated()
+        public async Task WhenSwitchingToProjectNode_ThenInspectedObjectIsSet()
         {
             var broker = new Mock<IGlobalSessionBroker>();
             broker.Setup(b => b.IsConnected(
@@ -160,13 +164,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(viewModel.InspectedObject);
-            StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-            StringAssert.Contains("display", viewModel.WindowTitle);
+            Assert.IsNotNull(viewModel.InspectedObject.Value);
+            StringAssert.Contains(
+                ConnectionSettingsViewModel.DefaultWindowTitle, 
+                viewModel.WindowTitle.Value);
+            StringAssert.Contains(
+                "display", 
+                viewModel.WindowTitle.Value);
         }
 
         [Test]
-        public async Task WhenSwitchingToZoneNode_ThenGridIsPopulated()
+        public async Task WhenSwitchingToZoneNode_ThenInspectedObjectIsSet()
         {
             var broker = new Mock<IGlobalSessionBroker>();
             broker.Setup(b => b.IsConnected(
@@ -189,13 +197,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(viewModel.InspectedObject);
-            StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-            StringAssert.Contains("display", viewModel.WindowTitle);
+            Assert.IsNotNull(viewModel.InspectedObject.Value);
+            StringAssert.Contains(
+                ConnectionSettingsViewModel.DefaultWindowTitle, 
+                viewModel.WindowTitle.Value);
+            StringAssert.Contains(
+                "display", 
+                viewModel.WindowTitle.Value);
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNode_ThenGridIsPopulated()
+        public async Task WhenSwitchingToInstanceNode_ThenInspectedObjectIsSet()
         {
             var broker = new Mock<IGlobalSessionBroker>();
             broker.Setup(b => b.IsConnected(
@@ -220,9 +232,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(viewModel.InspectedObject);
-            StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-            StringAssert.Contains("display", viewModel.WindowTitle);
+            Assert.IsNotNull(viewModel.InspectedObject.Value);
+            StringAssert.Contains(
+                ConnectionSettingsViewModel.DefaultWindowTitle, 
+                viewModel.WindowTitle.Value);
+            StringAssert.Contains(
+                "display", 
+                viewModel.WindowTitle.Value);
         }
     }
 }

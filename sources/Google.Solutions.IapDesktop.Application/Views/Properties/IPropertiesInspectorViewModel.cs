@@ -20,17 +20,16 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using System.ComponentModel;
+using Google.Solutions.Mvvm.Binding;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Properties
 {
-    public interface IPropertiesInspectorViewModel : INotifyPropertyChanged
+    public interface IPropertiesInspectorViewModel
     {
-        bool IsInformationBarVisible { get; }
-        string InformationText { get; }
-        object InspectedObject { get; }
-        string WindowTitle { get; }
+        IObservableProperty<string> InformationText { get; }
+        IObservableProperty<object> InspectedObject { get; }
+        IObservableProperty<string> WindowTitle { get; }
 
         Task SwitchToModelAsync(IProjectModelNode node);
         void SaveChanges();

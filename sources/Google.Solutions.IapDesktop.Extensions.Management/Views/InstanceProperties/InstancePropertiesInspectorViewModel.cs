@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Cache;
 using System;
@@ -39,8 +40,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
 {
     [Service]
     public class InstancePropertiesInspectorViewModel
-        : ModelCachingViewModelBase<IProjectModelNode, InstancePropertiesInspectorModel>, IPropertiesInspectorViewModel
+        : ModelCachingViewModelBase<IProjectModelNode, InstancePropertiesInspectorModel>, 
+          IPropertiesInspectorViewModel
     {
+        private const string OsInventoryNotAvailableWarning = "OS inventory data not available";
         private const int ModelCacheCapacity = 5;
         internal const string DefaultWindowTitle = "VM instance";
 
@@ -48,11 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
         private readonly Service<IInventoryService> inventoryService;
         private readonly Service<IComputeEngineAdapter> computeEngineAdapter;
 
-        private bool isInformationBarVisible = false;
-        private object inspectedObject = null;
-        private string windowTitle = DefaultWindowTitle;
-
-        public string InformationText => "OS inventory data not available";
 
         public InstancePropertiesInspectorViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
@@ -60,41 +58,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
             this.jobService = serviceProvider.GetService<IJobService>();
             this.inventoryService = serviceProvider.GetService<Service<IInventoryService>>();
             this.computeEngineAdapter = serviceProvider.GetService<Service<IComputeEngineAdapter>>();
+
+            this.informationText = ObservableProperty.Build<string>(null);
+            this.inspectedObject = ObservableProperty.Build<object>(null);
+            this.windowTitle = ObservableProperty.Build(DefaultWindowTitle);
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public bool IsInformationBarVisible
-        {
-            get => this.isInformationBarVisible;
-            private set
-            {
-                this.isInformationBarVisible = value;
-                RaisePropertyChange();
-            }
-        }
+        private readonly ObservableProperty<string> informationText;
+        private readonly ObservableProperty<object> inspectedObject;
+        private readonly ObservableProperty<string> windowTitle;
 
-        public object InspectedObject
-        {
-            get => this.inspectedObject;
-            private set
-            {
-                this.inspectedObject = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public string WindowTitle
-        {
-            get => this.windowTitle;
-            set
-            {
-                this.windowTitle = value;
-                RaisePropertyChange();
-            }
-        }
+        public IObservableProperty<string> InformationText => this.informationText;
+        public IObservableProperty<object> InspectedObject => this.inspectedObject;
+        public IObservableProperty<string> WindowTitle => this.windowTitle;
 
         //---------------------------------------------------------------------
         // Actions.
@@ -133,28 +113,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
             {
                 if (node is IProjectModelInstanceNode vmNode)
                 {
+                    //
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
-                    return await this.jobService.RunInBackground(
-                        new JobDescription(
-                            $"Loading information about {vmNode.Instance.Name}",
-                            JobUserFeedbackType.BackgroundFeedback),
-                        async jobToken =>
-                        {
-                            using (var combinedTokenSource = jobToken.Combine(token))
+                    //
+                    return await this.jobService
+                        .RunInBackground(
+                            new JobDescription(
+                                $"Loading information about {vmNode.Instance.Name}",
+                                JobUserFeedbackType.BackgroundFeedback),
+                            async jobToken =>
                             {
-                                return await InstancePropertiesInspectorModel.LoadAsync(
-                                        vmNode.Instance,
-                                        this.computeEngineAdapter.GetInstance(),
-                                        this.inventoryService.GetInstance(),
-                                        combinedTokenSource.Token)
-                                    .ConfigureAwait(false);
-                            }
-                        }).ConfigureAwait(true);  // Back to original (UI) thread.
+                                using (var combinedTokenSource = jobToken.Combine(token))
+                                {
+                                    return await InstancePropertiesInspectorModel
+                                        .LoadAsync(
+                                            vmNode.Instance,
+                                            this.computeEngineAdapter.GetInstance(),
+                                            this.inventoryService.GetInstance(),
+                                            combinedTokenSource.Token)
+                                        .ConfigureAwait(false);
+                                }
+                            })
+                        .ConfigureAwait(true);  // Back to original (UI) thread.
                 }
                 else
                 {
+                    //
                     // Unknown/unsupported node.
+                    //
                     return null;
                 }
             }
@@ -166,16 +153,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
             {
                 if (this.Model == null)
                 {
+                    //
                     // Unsupported node.
-                    this.IsInformationBarVisible = false;
-                    this.InspectedObject = null;
-                    this.WindowTitle = DefaultWindowTitle;
+                    //
+                    this.informationText.Value = null;
+                    this.inspectedObject.Value = null;
+                    this.windowTitle.Value = DefaultWindowTitle;
                 }
                 else
                 {
-                    this.IsInformationBarVisible = !this.Model.IsOsInventoryInformationPopulated;
-                    this.InspectedObject = this.Model;
-                    this.WindowTitle = DefaultWindowTitle + $": {this.Model.InstanceName}";
+                    this.informationText.Value = !this.Model.IsOsInventoryInformationPopulated
+                        ? OsInventoryNotAvailableWarning
+                        : null;
+                    this.inspectedObject.Value = this.Model;
+                    this.windowTitle.Value = DefaultWindowTitle + $": {this.Model.InstanceName}";
                 }
             }
         }

@@ -65,6 +65,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                 {
                     Name = "instance-1"
                 });
+            gceAdapter.Setup(a => a.GetProjectAsync(
+                It.Is<string>(projectId => projectId == "project-1"),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Apis.Compute.v1.Data.Project()
+                {
+                    Name = "project-1"
+                });
 
             registry.AddSingleton<IComputeEngineAdapter>(gceAdapter.Object);
             registry.AddSingleton<IInventoryService>(new InventoryService(gceAdapter.Object));
@@ -77,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSwitchingToCloudNode_ThenGridIsDisabled()
+        public async Task WhenSwitchingToCloudNode_ThenInspectedObjectIsNull()
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
@@ -86,13 +93,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsInformationBarVisible);
-            Assert.IsNull(viewModel.InspectedObject);
-            Assert.AreEqual(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.IsNull(viewModel.InspectedObject.Value);
+            Assert.AreEqual(
+                InstancePropertiesInspectorViewModel.DefaultWindowTitle, 
+                viewModel.WindowTitle.Value);
         }
 
         [Test]
-        public async Task WhenSwitchingToProjectNode_ThenGridIsDisabled()
+        public async Task WhenSwitchingToProjectNode_ThenInspectedObjectIsNull()
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
@@ -102,13 +111,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsInformationBarVisible);
-            Assert.IsNull(viewModel.InspectedObject);
-            Assert.AreEqual(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.IsNull(viewModel.InspectedObject.Value);
+            Assert.AreEqual(
+                InstancePropertiesInspectorViewModel.DefaultWindowTitle, 
+                viewModel.WindowTitle.Value);
         }
 
         [Test]
-        public async Task WhenSwitchingToZoneNode_ThenGridIsDisabled()
+        public async Task WhenSwitchingToZoneNode_ThenInspectedObjectIsNull()
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
@@ -118,13 +129,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsFalse(viewModel.IsInformationBarVisible);
-            Assert.IsNull(viewModel.InspectedObject);
-            Assert.AreEqual(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.IsNull(viewModel.InspectedObject.Value);
+            Assert.AreEqual(
+                InstancePropertiesInspectorViewModel.DefaultWindowTitle, 
+                viewModel.WindowTitle.Value);
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNode_ThenGridIsPopulated()
+        public async Task WhenSwitchingToInstanceNode_ThenInspectedObjectIsSet()
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
@@ -140,13 +153,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.IsNotNull(viewModel.InspectedObject);
-            StringAssert.Contains(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-            StringAssert.Contains("instance-1", viewModel.WindowTitle);
+            Assert.IsNotNull(viewModel.InspectedObject.Value);
+            StringAssert.Contains(
+                InstancePropertiesInspectorViewModel.DefaultWindowTitle, 
+                viewModel.WindowTitle.Value);
+            StringAssert.Contains(
+                "instance-1", 
+                viewModel.WindowTitle.Value);
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNodeAndLoadFails_ThenGridIsDisabled()
+        public async Task WhenSwitchingToInstanceNodeAndLoadFails_ThenInspectedObjectIsNull()
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
@@ -165,9 +182,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => viewModel.SwitchToModelAsync(deniedNode.Object).Wait());
 
-            Assert.IsFalse(viewModel.IsInformationBarVisible);
-            Assert.IsNull(viewModel.InspectedObject);
-            Assert.AreEqual(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.IsNull(viewModel.InspectedObject.Value);
+            Assert.AreEqual(
+                InstancePropertiesInspectorViewModel.DefaultWindowTitle, 
+                viewModel.WindowTitle.Value);
         }
     }
 }

@@ -34,16 +34,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
     [Service]
     public class ConnectionSettingsViewModel : ViewModelBase, IPropertiesInspectorViewModel
     {
+        internal const string RequiresReconnectWarning = "Changes only take effect after reconnecting";
         internal const string DefaultWindowTitle = "Connection settings";
 
         private readonly IConnectionSettingsService settingsService;
         private readonly IGlobalSessionBroker globalSessionBroker;
-
-        private bool isInformationBarVisible = false;
-        private IPersistentSettingsCollection inspectedObject = null;
-        private string windowTitle = DefaultWindowTitle;
-
-        public string InformationText => "Changes only take effect after reconnecting";
 
         public ConnectionSettingsViewModel(
             IConnectionSettingsService settingsService,
@@ -51,41 +46,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         {
             this.settingsService = settingsService;
             this.globalSessionBroker = globalSessionBroker;
+
+            this.informationText = ObservableProperty.Build<string>(null);
+            this.inspectedObject = ObservableProperty.Build<object>(null);
+            this.windowTitle = ObservableProperty.Build(DefaultWindowTitle);
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public bool IsInformationBarVisible
-        {
-            get => isInformationBarVisible;
-            private set
-            {
-                this.isInformationBarVisible = value;
-                RaisePropertyChange();
-            }
-        }
+        private readonly ObservableProperty<string> informationText;
+        private readonly ObservableProperty<object> inspectedObject;
+        private readonly ObservableProperty<string> windowTitle;
 
-        public object InspectedObject
-        {
-            get => this.inspectedObject;
-            private set
-            {
-                this.inspectedObject = (IPersistentSettingsCollection)value;
-                RaisePropertyChange();
-            }
-        }
-
-        public string WindowTitle
-        {
-            get => this.windowTitle;
-            set
-            {
-                this.windowTitle = value;
-                RaisePropertyChange();
-            }
-        }
+        public IObservableProperty<string> InformationText => this.informationText;
+        public IObservableProperty<object> InspectedObject => this.inspectedObject;
+        public IObservableProperty<string> WindowTitle => this.windowTitle;
 
         //---------------------------------------------------------------------
         // Actions.
@@ -94,26 +71,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         public void SaveChanges()
         {
             Debug.Assert(this.inspectedObject != null);
-            this.inspectedObject.Save();
+
+            var settings = (IPersistentSettingsCollection)this.inspectedObject.Value;
+            settings.Save();
         }
 
         public Task SwitchToModelAsync(IProjectModelNode node)
         {
             if (this.settingsService.IsConnectionSettingsAvailable(node))
             {
-                this.IsInformationBarVisible =
+                var isConnected =
                     node is IProjectModelInstanceNode vmNode &&
                     this.globalSessionBroker.IsConnected(vmNode.Instance);
 
-                this.InspectedObject = this.settingsService.GetConnectionSettings(node);
-                this.WindowTitle = DefaultWindowTitle + $": {node.DisplayName}";
+                this.informationText.Value = isConnected ? RequiresReconnectWarning : null;
+                this.inspectedObject.Value = this.settingsService.GetConnectionSettings(node);
+                this.windowTitle.Value = DefaultWindowTitle + $": {node.DisplayName}";
             }
             else
             {
                 // Unsupported node.
-                this.InspectedObject = null;
-                this.IsInformationBarVisible = false;
-                this.WindowTitle = DefaultWindowTitle;
+                this.informationText.Value = null;
+                this.inspectedObject.Value = null;
+                this.windowTitle.Value = DefaultWindowTitle;
             }
 
             return Task.CompletedTask;

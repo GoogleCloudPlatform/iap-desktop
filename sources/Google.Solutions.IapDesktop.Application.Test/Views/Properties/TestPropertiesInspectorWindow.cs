@@ -71,23 +71,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
 
         public class SampleViewModel<T> : ViewModelBase, IPropertiesInspectorViewModel
         {
-            private object inspectedObject;
+            public readonly ObservableProperty<string> informationText = ObservableProperty.Build<string>(null);
+            public readonly ObservableProperty<object> inspectedObject = ObservableProperty.Build<object>(null);
+            public readonly ObservableProperty<string> windowTitle = ObservableProperty.Build<string>(null);
 
-            public bool IsInformationBarVisible => false;
-
-            public string InformationText => null;
-
-            public object InspectedObject
-            {
-                get => this.inspectedObject;
-                set
-                {
-                    this.inspectedObject = value;
-                    RaisePropertyChange();
-                }
-            }
-
-            public string WindowTitle => "";
+            public IObservableProperty<string> InformationText => this.informationText;
+            public IObservableProperty<object> InspectedObject => this.inspectedObject;
+            public IObservableProperty<string> WindowTitle => this.windowTitle;
 
             public void SaveChanges()
             {
@@ -134,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
                 viewModel,
                 new Mock<IBindingContext>().Object);
 
-            viewModel.InspectedObject = new PocoWithoutProperty();
+            viewModel.inspectedObject.Value = new PocoWithoutProperty();
 
             window.Show();
             PumpWindowMessages();
@@ -155,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
                 viewModel,
                 new Mock<IBindingContext>().Object);
 
-            viewModel.InspectedObject = new PocoWithProperty();
+            viewModel.inspectedObject.Value = new PocoWithProperty();
 
             window.Show();
             PumpWindowMessages();
@@ -176,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
                 viewModel,
                 new Mock<IBindingContext>().Object);
 
-            viewModel.InspectedObject = new Settings();
+            viewModel.inspectedObject.Value = new Settings();
 
             window.Show();
             PumpWindowMessages();

@@ -124,8 +124,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 .ConfigureAwait(true);
 
             Assert.AreEqual(CommandState.Unavailable, AuthorizedPublicKeysViewModel.GetCommandState(node.Object));
-            Assert.IsFalse(viewModel.IsInformationBarVisible);
-            Assert.AreEqual("Authorized SSH keys", viewModel.WindowTitle);
+            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.AreEqual("Authorized SSH keys", viewModel.WindowTitle.Value);
             Assert.IsFalse(viewModel.AllKeys.Any());
             Assert.IsFalse(viewModel.FilteredKeys.Any());
         }
@@ -141,8 +141,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 .ConfigureAwait(true);
 
             Assert.AreEqual(CommandState.Unavailable, AuthorizedPublicKeysViewModel.GetCommandState(node.Object));
-            Assert.IsFalse(viewModel.IsInformationBarVisible);
-            Assert.AreEqual("Authorized SSH keys", viewModel.WindowTitle);
+            Assert.IsNull(viewModel.InformationText.Value);
+            Assert.AreEqual("Authorized SSH keys", viewModel.WindowTitle.Value);
             Assert.IsFalse(viewModel.AllKeys.Any());
             Assert.IsFalse(viewModel.FilteredKeys.Any());
         }
@@ -166,9 +166,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 .ConfigureAwait(true);
 
             Assert.AreEqual(CommandState.Enabled, AuthorizedPublicKeysViewModel.GetCommandState(node.Object));
-            Assert.IsTrue(viewModel.IsListEnabled);
-            Assert.IsTrue(viewModel.IsInformationBarVisible);
-            StringAssert.Contains("project-1", viewModel.WindowTitle);
+            Assert.IsTrue(viewModel.IsListEnabled.Value);
+            Assert.IsNotEmpty(viewModel.InformationText.Value);
+            StringAssert.Contains("project-1", viewModel.WindowTitle.Value);
 
             Assert.AreEqual(2, viewModel.AllKeys.Count);
             Assert.AreEqual(2, viewModel.FilteredKeys.Count);
@@ -195,9 +195,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
                 .ConfigureAwait(true);
 
             Assert.AreEqual(CommandState.Enabled, AuthorizedPublicKeysViewModel.GetCommandState(node.Object));
-            Assert.IsTrue(viewModel.IsListEnabled);
-            Assert.IsTrue(viewModel.IsInformationBarVisible);
-            StringAssert.Contains("instance-1", viewModel.WindowTitle);
+            Assert.IsTrue(viewModel.IsListEnabled.Value);
+            Assert.IsNotEmpty(viewModel.InformationText.Value);
+            StringAssert.Contains("instance-1", viewModel.WindowTitle.Value);
 
             Assert.AreEqual(2, viewModel.AllKeys.Count);
             Assert.AreEqual(2, viewModel.FilteredKeys.Count);
