@@ -19,14 +19,12 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Ssh.Auth;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Windows.Forms;
@@ -34,49 +32,50 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    [Service(typeof(ISshOptionsSheet), ServiceLifetime.Transient, ServiceVisibility.Global)]
-    [ServiceCategory(typeof(IPropertiesSheet))]
-    public partial class SshOptionsSheet : UserControl, ISshOptionsSheet
+    [Service(ServiceLifetime.Transient, ServiceVisibility.Global)]
+    [ServiceCategory(typeof(IPropertiesSheetView))]
+    public partial class SshOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private readonly SshOptionsViewModel viewModel;
-
-        public SshOptionsSheet(
-            SshSettingsRepository settingsRepository)
+        public SshOptionsSheet()
         {
-            this.viewModel = new SshOptionsViewModel(
-                settingsRepository.ThrowIfNull(nameof(settingsRepository)));
-
             InitializeComponent();
+        }
+
+        public Type ViewModel => typeof(SshOptionsViewModel);
+
+        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
+        {
+            var viewModel = (SshOptionsViewModel)viewModelBase;
 
             //
             // Authentication box.
             //
             this.publicKeyType.Items.AddRange(
-                this.viewModel
+                viewModel
                     .AllPublicKeyTypes
                     .Cast<object>()
                     .ToArray());
             this.publicKeyType.BindProperty(
                 c => c.SelectedIndex,
-                this.viewModel,
+                viewModel,
                 m => m.PublicKeyTypeIndex,
-                this.Container);
+                bindingContext);
             this.publicKeyType.BindReadonlyProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsPublicKeyTypeEditable,
-                this.Container);
+                bindingContext);
 
             this.publicKeyValidityUpDown.BindProperty(
                 c => c.Value,
-                this.viewModel,
+                viewModel,
                 m => m.PublicKeyValidityInDays,
-                this.Container);
+                bindingContext);
             this.publicKeyValidityUpDown.BindReadonlyProperty(
                 c => c.Enabled,
-                this.viewModel,
+                viewModel,
                 m => m.IsPublicKeyValidityInDaysEditable,
-                this.Container);
+                bindingContext);
 
             this.publicKeyType.FormattingEnabled = true;
             this.publicKeyType.Format += delegate (object sender, ListControlConvertEventArgs e) {
@@ -91,13 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 c => c.Checked,
                 viewModel,
                 m => m.IsPropagateLocaleEnabled,
-                this.Container);
+                bindingContext);
         }
-
-        //---------------------------------------------------------------------
-        // IPropertiesSheet.
-        //---------------------------------------------------------------------
-
-        public IPropertiesSheetViewModel ViewModel => this.viewModel;
     }
 }

@@ -26,21 +26,30 @@ namespace Google.Solutions.Common.Util
 {
     public static class Precondition
     {
-        public static T ThrowIfNot<T>(
+        public static T ExpectNotNull<T>(
             this T value,
-            bool condition,
             string argumentName)
         {
-            if (!condition)
+            if (value == null)
             {
-                throw new ArgumentException(
-                    $"The argument {argumentName} does not meet the condition");
+                throw new ArgumentNullException(
+                    $"The argument {argumentName} must not be null");
             }
 
             return value;
         }
 
-        public static float ThrowIfOutOfRange(
+        public static void Expect(
+            bool condition,
+            string message)
+        {
+            if (!condition)
+            {
+                throw new ArgumentException(message);
+            }
+        }
+
+        public static float ExpectInRange(
             this float value,
             float min,
             float max,

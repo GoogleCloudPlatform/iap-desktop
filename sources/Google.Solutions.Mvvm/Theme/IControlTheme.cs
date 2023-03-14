@@ -19,12 +19,10 @@
 // under the License.
 //
 
-
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Theme
 {
-
     /// <summary>
     /// Theme that can be applied to a control (and its
     /// children).
@@ -36,5 +34,4 @@ namespace Google.Solutions.Mvvm.Theme
         /// </summary>
         void ApplyTo(Control control);
     }
-
 }

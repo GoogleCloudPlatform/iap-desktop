@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.ObjectModel;
@@ -121,7 +122,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
         [Test]
         public void WhenNoOtherPropertiesBound_ThenBindSucceeds()
         {
-            this.tree.Bind(new ModelNode());
+            this.tree.Bind(
+                new ModelNode(),
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual(1, this.tree.Nodes.Count);
         }
@@ -145,7 +148,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             this.tree.BindChildren(m => m.GetChildren());
             this.tree.BindIsExpanded(m => m.IsExpanded);
-            this.tree.Bind(root);
+            this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
             Assert.AreEqual(1, this.tree.Nodes.Count);
@@ -173,7 +176,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             this.tree.BindChildren(m => m.GetChildren());
             this.tree.BindIsExpanded(m => m.IsExpanded);
-            this.tree.Bind(root);
+            this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
             Assert.AreEqual(1, this.tree.Nodes.Count);
@@ -201,7 +204,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             this.tree.BindChildren(m => m.Throw());
             this.tree.BindIsExpanded(m => m.IsExpanded);
-            this.tree.Bind(root);
+            this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
             Assert.AreEqual(1, eventCount);
@@ -237,7 +240,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
             };
 
             this.tree.BindText(m => m.Name);
-            this.tree.Bind(root);
+            this.tree.Bind(root, new Mock<IBindingContext>().Object);
 
             Assert.AreEqual(1, this.tree.Nodes.Count);
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
@@ -259,7 +262,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             this.tree.BindImageIndex(m => m.ImageIndex);
             this.tree.BindSelectedImageIndex(m => m.ImageIndex);
-            this.tree.Bind(root);
+            this.tree.Bind(root, new Mock<IBindingContext>().Object);
 
             Assert.AreEqual(1, this.tree.Nodes.Count);
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
@@ -290,7 +293,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             this.tree.BindChildren(m => m.GetChildren());
             this.tree.BindIsExpanded(m => m.IsExpanded);
-            this.tree.Bind(root);
+            this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
@@ -323,7 +326,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             this.tree.BindChildren(m => m.GetChildren());
             this.tree.BindIsExpanded(m => m.IsExpanded);
-            this.tree.Bind(root);
+            this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
@@ -353,7 +356,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             this.tree.BindChildren(m => m.GetChildren());
             this.tree.BindIsExpanded(m => m.IsExpanded);
-            this.tree.Bind(root);
+            this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
@@ -387,7 +390,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             this.tree.BindChildren(m => m.GetChildren());
             this.tree.BindIsExpanded(m => m.IsExpanded);
-            this.tree.Bind(root);
+            this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
             Assert.IsTrue(child.HasPropertyChangeListeners);
@@ -405,7 +408,7 @@ namespace Google.Solutions.Mvvm.Test.Controls
 
             this.tree.BindChildren(m => m.GetChildren());
             this.tree.BindIsExpanded(m => m.IsExpanded);
-            this.tree.Bind(root);
+            this.tree.Bind(root, new Mock<IBindingContext>().Object);
             RunPendingAsyncTasks();
 
             Assert.IsTrue(root.HasPropertyChangeListeners);
@@ -415,7 +418,9 @@ namespace Google.Solutions.Mvvm.Test.Controls
                 Name = "root2"
             };
 
-            this.tree.Bind(newRoot);
+            this.tree.Bind(
+                newRoot,
+                new Mock<IBindingContext>().Object);
 
             Assert.IsFalse(root.HasPropertyChangeListeners);
             Assert.IsTrue(newRoot.HasPropertyChangeListeners);

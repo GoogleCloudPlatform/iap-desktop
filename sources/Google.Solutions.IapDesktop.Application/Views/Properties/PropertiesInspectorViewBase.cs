@@ -48,7 +48,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             InitializeComponent();
         }
 
-        protected void Bind(IPropertiesInspectorViewModel viewModel)
+        protected void Bind(
+            IPropertiesInspectorViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
             this.propertyGrid.EnableRichTextDescriptions();
@@ -57,15 +59,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                 c => c.Text,
                 this.viewModel,
                 m => m.InformationText,
-                this.components);
-            this.components.Add(this.viewModel.OnPropertyChange(
+                bindingContext);
+            this.viewModel.OnPropertyChange(
                 m => m.IsInformationBarVisible,
                 visible =>
                 {
                     this.splitContainer.Panel1Collapsed = !visible;
                     this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
-                }));
-            this.components.Add(this.viewModel.OnPropertyChange(
+                },
+                bindingContext);
+            this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
@@ -73,10 +76,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                     // otherwise the title does not update properly.
                     this.TabText = title;
                     this.Text = title;
-                }));
-            this.components.Add(this.viewModel.OnPropertyChange(
+                },
+                bindingContext);
+            this.viewModel.OnPropertyChange(
                 m => m.InspectedObject,
-                obj => SetInspectedObject(obj)));
+                obj => SetInspectedObject(obj),
+                bindingContext);
         }
 
         private void SetInspectedObject(object obj)

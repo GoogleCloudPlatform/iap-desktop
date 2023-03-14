@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
             }
         }
 
-        private static void TrySetForegroundWindow(int processId)
+        protected static void TrySetForegroundWindow(int processId)
         {
             // Try to pass focus to other instance. Note that the 
             // main instance's process cannot claim the focus because

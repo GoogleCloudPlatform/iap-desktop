@@ -37,13 +37,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             InitializeComponent();
         }
 
-        public void Bind(DebugFullScreenViewModel viewModel)
+        public void Bind(
+            DebugFullScreenViewModel viewModel, 
+            IBindingContext bindingContext)
         {
             this.sizeLabel.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 v => v.SizeLabel,
-                this.Container);
+                bindingContext);
 
             //
             // NB. Controls are re-parented, thus subscribe to the events

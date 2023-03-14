@@ -20,8 +20,10 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
+using Moq;
 using NUnit.Framework;
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Test.Binding
@@ -66,6 +68,9 @@ namespace Google.Solutions.Mvvm.Test.Binding
 
         private class DummyBinding : BindingExtensions.Binding
         {
+            public override void Dispose()
+            {
+            }
         }
 
         [Test]
@@ -74,7 +79,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new ViewModelWithBareProperties();
 
-            using (observed.OnPropertyChange(
+            using (BindingExtensions.CreatePropertyChangeBinding(
+                observed,
                 o => o.One,
                 v => { callbacks++; }))
             {
@@ -92,7 +98,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new ViewModelWithBareProperties();
 
-            using (observed.OnPropertyChange(
+            using (BindingExtensions.CreatePropertyChangeBinding(
+                observed,
                 o => o.One,
                 v => { callbacks++; }))
             {
@@ -107,7 +114,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new ViewModelWithBareProperties();
 
-            using (var binding = observed.OnPropertyChange(
+            using (var binding = BindingExtensions.CreatePropertyChangeBinding(
+                observed,
                 o => o.One,
                 v => { callbacks++; }))
             {
@@ -131,7 +139,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new TextBox();
 
-            using (observed.OnControlPropertyChange(
+            using (BindingExtensions.CreateControlPropertyChangeBinding(
+                observed,
                 o => o.Text,
                 v => { callbacks++; }))
             {
@@ -149,7 +158,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new TextBox();
 
-            using (observed.OnControlPropertyChange(
+            using (BindingExtensions.CreateControlPropertyChangeBinding(
+                observed,
                 o => o.Text,
                 v => { callbacks++; }))
             {
@@ -164,7 +174,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             var callbacks = 0;
             var observed = new TextBox();
 
-            using (var binding = observed.OnControlPropertyChange(
+            using (var binding = BindingExtensions.CreateControlPropertyChangeBinding(
+                observed,
                 o => o.Text,
                 v => { callbacks++; }))
             {
@@ -183,7 +194,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
         {
             var observed = new TextBox();
 
-            Assert.Throws<ArgumentException>(() => observed.OnControlPropertyChange(
+            Assert.Throws<ArgumentException>(() => BindingExtensions.CreateControlPropertyChangeBinding(
+                observed,
                 o => o.PasswordChar,
                 _ => { }));
         }
@@ -193,7 +205,30 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlBound_ThenValueFromModelIsApplied()
+        public void BindPropertyNotifiesContext()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithBareProperties
+            {
+                One = "text from model"
+            };
+
+            var context = new Mock<IBindingContext>();
+
+            control.BindProperty(
+                t => t.Text,
+                model,
+                m => m.One,
+                context.Object);
+
+            context.Verify(c => c.OnBindingCreated(
+                It.Is<IComponent>(ctl => ctl == control),
+                It.IsAny<IDisposable>()),
+                Times.Exactly(2));
+        }
+
+        [Test]
+        public void BindPropertyAppliesInitialValue()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties
@@ -204,13 +239,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("text from model", control.Text);
         }
 
         [Test]
-        public void WhenControlChanges_ThenModelIsUpdated()
+        public void BindPropertyPropagatesControlChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties();
@@ -218,7 +254,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.IsNull(model.One);
             control.Text = "test";
@@ -226,7 +263,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenModelChanges_ThenControlIsUpdated()
+        public void BindPropertyPropagatesModelChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties();
@@ -234,7 +271,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("", control.Text);
             model.One = "test";
@@ -247,7 +285,30 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlBoundReadonly_ThenValueFromModelIsApplied()
+        public void BindReadonlyPropertyNotifiesContext()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithBareProperties
+            {
+                One = "text from model"
+            };
+
+            var context = new Mock<IBindingContext>();
+
+            control.BindReadonlyProperty(
+                t => t.Text,
+                model,
+                m => m.One,
+                context.Object);
+
+            context.Verify(c => c.OnBindingCreated(
+                It.Is<IComponent>(ctl => ctl == control),
+                It.IsAny<IDisposable>()),
+                Times.Once);
+        }
+
+        [Test]
+        public void BindReadonlyPropertyAppliesInitialValue()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties
@@ -258,13 +319,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindReadonlyProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("text from model", control.Text);
         }
 
         [Test]
-        public void WhenControlBoundReadonlyAndControlChanges_ThenModelIsNotUpdated()
+        public void BindReadonlyPropertyPropagatesControlChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties();
@@ -272,7 +334,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindReadonlyProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.IsNull(model.One);
             control.Text = "test";
@@ -280,7 +343,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenControlBoundReadonlyAndModelChanges_ThenControlIsUpdated()
+        public void BindReadonlyPropertyPropagatesModelChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithBareProperties();
@@ -288,7 +351,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindReadonlyProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("", control.Text);
             model.One = "test";
@@ -300,7 +364,28 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlBound_ThenValueFromObservablePropertyIsApplied()
+        public void BindObservablePropertyNotifiesContext()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithObservableProperties();
+            model.One.Value = "text from model";
+
+            var context = new Mock<IBindingContext>();
+
+            control.BindObservableProperty(
+                t => t.Text,
+                model,
+                m => m.One,
+                context.Object);
+
+            context.Verify(c => c.OnBindingCreated(
+                It.Is<IComponent>(ctl => ctl == control),
+                It.IsAny<IDisposable>()),
+                Times.Exactly(2));
+        }
+
+        [Test]
+        public void BindObservablePropertyAppliesInitialValue()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -309,13 +394,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindObservableProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("text from model", control.Text);
         }
 
         [Test]
-        public void WhenControlChanges_ThenObservablePropertyIsUpdated()
+        public void BindObservablePropertyPropagatesControlChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -323,7 +409,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindObservableProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("", model.One.Value);
             control.Text = "test";
@@ -331,7 +418,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenObservablePropertyChanges_ThenControlIsUpdated()
+        public void BindObservablePropertyPropagatesModelChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -339,7 +426,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindObservableProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("", control.Text);
             model.One.Value = "test";
@@ -351,7 +439,28 @@ namespace Google.Solutions.Mvvm.Test.Binding
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenControlBoundReadonly_ThenValueFromObservablePropertyIsApplied()
+        public void BindReadonlyObservableProperty()
+        {
+            var control = new TextBox();
+            var model = new ViewModelWithObservableProperties();
+            model.One.Value = "text from model";
+
+            var context = new Mock<IBindingContext>();
+
+            control.BindReadonlyObservableProperty(
+                t => t.Text,
+                model,
+                m => m.One,
+                context.Object);
+
+            context.Verify(c => c.OnBindingCreated(
+                It.Is<IComponent>(ctl => ctl == control),
+                It.IsAny<IDisposable>()),
+                Times.Once);
+        }
+
+        [Test]
+        public void BindReadonlyObservablePropertyAppliesInitialValue()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -360,13 +469,14 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindReadonlyObservableProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("text from model", control.Text);
         }
 
         [Test]
-        public void WhenControlBoundReadonlyAndControlChanges_ThenObservablePropertyIsNotUpdated()
+        public void BindReadonlyObservablePropertyPropagatesControlChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -374,7 +484,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindReadonlyObservableProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("", model.One.Value);
             control.Text = "test";
@@ -382,7 +493,7 @@ namespace Google.Solutions.Mvvm.Test.Binding
         }
 
         [Test]
-        public void WhenControlBoundReadonlyAndObservablePropertyChanges_ThenControlIsUpdated()
+        public void BindReadonlyObservablePropertyPropagatesModelChanges()
         {
             var control = new TextBox();
             var model = new ViewModelWithObservableProperties();
@@ -390,7 +501,8 @@ namespace Google.Solutions.Mvvm.Test.Binding
             control.BindReadonlyObservableProperty(
                 t => t.Text,
                 model,
-                m => m.One);
+                m => m.One,
+                new Mock<IBindingContext>().Object);
 
             Assert.AreEqual("", control.Text);
             model.One.Value = "test";

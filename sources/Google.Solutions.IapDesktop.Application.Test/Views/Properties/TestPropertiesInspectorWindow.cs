@@ -108,9 +108,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
             {
             }
 
-            public void Bind(SampleViewModel<T> viewModel)
+            public void Bind(
+                SampleViewModel<T> viewModel, 
+                IBindingContext bindingContext)
             {
-                base.Bind(viewModel);
+                base.Bind(viewModel, bindingContext);
             }
         }
 
@@ -128,7 +130,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         {
             var viewModel = new SampleViewModel<PocoWithoutProperty>();
             var window = new SampleView<PocoWithoutProperty>(this.ServiceProvider);
-            window.Bind(viewModel);
+            window.Bind(
+                viewModel,
+                new Mock<IBindingContext>().Object);
 
             viewModel.InspectedObject = new PocoWithoutProperty();
 
@@ -147,7 +151,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         {
             var viewModel = new SampleViewModel<PocoWithoutProperty>();
             var window = new SampleView<PocoWithoutProperty>(this.ServiceProvider);
-            window.Bind(viewModel);
+            window.Bind(
+                viewModel,
+                new Mock<IBindingContext>().Object);
 
             viewModel.InspectedObject = new PocoWithProperty();
 
@@ -166,7 +172,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         {
             var viewModel = new SampleViewModel<Settings>();
             var window = new SampleView<Settings>(this.ServiceProvider);
-            window.Bind(viewModel);
+            window.Bind(
+                viewModel,
+                new Mock<IBindingContext>().Object);
 
             viewModel.InspectedObject = new Settings();
 

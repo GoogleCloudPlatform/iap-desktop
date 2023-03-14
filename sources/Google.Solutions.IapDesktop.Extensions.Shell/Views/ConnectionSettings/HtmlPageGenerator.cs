@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -55,13 +55,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
             this.projectModelService = projectModelService;
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Generate HTML page",
                     context => context is IProjectModelProjectNode
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
-                    context => GenerateHtmlPageAsync((IProjectModelProjectNode)context)
-                        .ContinueWith(_ => { })));
+                    context => GenerateHtmlPageAsync((IProjectModelProjectNode)context)));
         }
 
         private async Task GenerateHtmlPageAsync(IProjectModelProjectNode context)
@@ -77,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
             buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.Project.ProjectId)}</h1>");
 
             var zones = await this.projectModelService.GetZoneNodesAsync(
-                    ((IProjectModelProjectNode)context).Project,
+                    context.Project,
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);

@@ -39,23 +39,25 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             InitializeComponent();
         }
 
-        public void Bind(DebugJobServiceViewModel viewModel)
+        public void Bind(
+            DebugJobServiceViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.label.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.StatusText,
-                this.Container);
+                bindingContext);
             this.runInBackgroundCheckBox.BindObservableProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsBackgroundJob,
-                this.Container);
+                bindingContext);
             this.spinner.BindReadonlyObservableProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsSpinnerVisible,
-                this.Container);
+                bindingContext);
 
             this.slowOpButton.Click += async (_, __) => await viewModel.RunJobAsync();
             this.slowNonCanelOpButton.Click += async (_, __) => await viewModel.RunCancellableJobAsync();

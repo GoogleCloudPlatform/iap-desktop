@@ -41,10 +41,10 @@ namespace Google.Solutions.Mvvm.Controls
         /// </summary>
         public void BindObservableProperty<TEnum>(
             IObservableWritableProperty<TEnum> property,
-            IContainer container)
+            IBindingContext bindingContext)
             where TEnum : struct
         {
-            property.ThrowIfNot(property != null, nameof(property));
+            Precondition.ExpectNotNull(property, nameof(property));
 
             var adapter = new SelectionAdapter<TEnum>(property);
 
@@ -68,7 +68,7 @@ namespace Google.Solutions.Mvvm.Controls
                 c => c.SelectedIndex,
                 adapter,
                 m => m.SelectedIndex,
-                container);
+                bindingContext);
         }
 
         internal class SelectionAdapter<TEnum> : INotifyPropertyChanged

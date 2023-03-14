@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         {
             public int BindCalls = 0;
 
-            public void Bind(SampleViewModel viewModel)
+            public void Bind(SampleViewModel viewModel, IBindingContext bindingContext)
             {
                 Assert.IsNotNull(viewModel);
                 this.BindCalls++;
@@ -57,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         {
             var registry = new ServiceRegistry();
             registry.AddMock<IThemeService>();
+            registry.AddMock<IBindingContext>();
             registry.AddSingleton<SampleView>();
             registry.AddTransient<SampleViewModel>();
 
@@ -76,6 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         {
             var registry = new ServiceRegistry();
             registry.AddMock<IThemeService>();
+            registry.AddMock<IBindingContext>();
             registry.AddTransient<SampleView>();
             registry.AddTransient<SampleViewModel>();
 

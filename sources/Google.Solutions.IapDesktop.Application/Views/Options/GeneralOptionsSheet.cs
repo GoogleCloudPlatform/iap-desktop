@@ -20,78 +20,67 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
+using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    internal partial class GeneralOptionsSheet : UserControl, IPropertiesSheet
+    internal partial class GeneralOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private readonly GeneralOptionsViewModel viewModel;
-
-        public GeneralOptionsSheet(
-            ApplicationSettingsRepository settingsRepository,
-            IAppProtocolRegistry protocolRegistry,
-            HelpAdapter helpService)
+        public GeneralOptionsSheet()
         {
-            this.viewModel = new GeneralOptionsViewModel(
-                settingsRepository,
-                protocolRegistry,
-                helpService);
-
             InitializeComponent();
-
-            this.updateBox.BindReadonlyProperty(
-                c => c.Enabled,
-                this.viewModel,
-                m => m.IsUpdateCheckEditable,
-                this.Container);
-            this.secureConnectBox.BindReadonlyProperty(
-                c => c.Enabled,
-                this.viewModel,
-                m => m.IsDeviceCertificateAuthenticationEditable,
-                this.Container);
-
-            this.enableUpdateCheckBox.BindProperty(
-                c => c.Checked,
-                this.viewModel,
-                m => m.IsUpdateCheckEnabled,
-                this.Container);
-            this.enableDcaCheckBox.BindProperty(
-                c => c.Checked,
-                this.viewModel,
-                m => m.IsDeviceCertificateAuthenticationEnabled,
-                this.Container);
-            this.lastCheckLabel.BindProperty(
-                c => c.Text,
-                this.viewModel,
-                m => m.LastUpdateCheck,
-                this.Container);
-            this.enableBrowserIntegrationCheckBox.BindProperty(
-                c => c.Checked,
-                this.viewModel,
-                m => m.IsBrowserIntegrationEnabled,
-                this.Container);
         }
 
-        //---------------------------------------------------------------------
-        // IPropertiesSheet.
-        //---------------------------------------------------------------------
+        public Type ViewModel => typeof(GeneralOptionsViewModel);
 
-        public IPropertiesSheetViewModel ViewModel => this.viewModel;
+        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
+        {
+            var viewModel = (GeneralOptionsViewModel)viewModelBase;
 
-        //---------------------------------------------------------------------
-        // Events.
-        //---------------------------------------------------------------------
+            this.updateBox.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsUpdateCheckEditable,
+                bindingContext);
+            this.secureConnectBox.BindReadonlyObservableProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsDeviceCertificateAuthenticationEditable,
+                bindingContext);
 
-        private void browserIntegrationLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-            => this.viewModel.OpenBrowserIntegrationDocs();
+            this.enableUpdateCheckBox.BindObservableProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsUpdateCheckEnabled,
+                bindingContext);
+            this.enableDcaCheckBox.BindObservableProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsDeviceCertificateAuthenticationEnabled,
+                bindingContext);
+            this.lastCheckLabel.BindReadonlyProperty(
+                c => c.Text,
+                viewModel,
+                m => m.LastUpdateCheck,
+                bindingContext);
+            this.enableBrowserIntegrationCheckBox.BindObservableProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsBrowserIntegrationEnabled,
+                bindingContext);
 
-        private void secureConnectLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-            => this.viewModel.OpenSecureConnectDcaOverviewDocs();
+            this.browserIntegrationLink.BindObservableCommand(
+                viewModel,
+                m => m.OpenBrowserIntegrationHelp,
+                bindingContext);
+            this.secureConnectLink.BindObservableCommand(
+                viewModel,
+                m => m.OpenSecureConnectHelp,
+                bindingContext);
+        }
     }
 }

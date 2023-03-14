@@ -41,19 +41,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.TabText = this.Text;
         }
 
-        public void Bind(DebugDockingViewModel viewModel)
+        public void Bind(
+            DebugDockingViewModel viewModel, 
+            IBindingContext bindingContext)
         {
             this.output.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 v => v.LogOutput,
-                this.Container);
+                bindingContext);
 
             this.grid.BindReadonlyObservableProperty<PropertyGrid, object, DebugDockingViewModel>(
                 c => c.SelectedObject,
                 viewModel,
                 v => v.SelectedObject,
-                this.Container);
+                bindingContext);
 
             this.viewModel = viewModel;
         }

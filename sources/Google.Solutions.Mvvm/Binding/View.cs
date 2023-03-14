@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Mvvm.Theme;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
@@ -36,7 +37,17 @@ namespace Google.Solutions.Mvvm.Binding
         /// Bind view model to model. This method is only
         /// called once, briefly after construction.
         /// </summary>
-        void Bind(TViewModel viewModel);
+        void Bind(TViewModel viewModel, IBindingContext context);
+    }
+
+    /// <summary>
+    /// Optional interface to implement by views if they need access
+    /// to the "raw" theme.
+    /// </summary>
+    internal interface IThemedView<TViewModel> : IView<TViewModel>
+        where TViewModel : ViewModelBase
+    {
+        IControlTheme Theme { get; set; }
     }
 
     /// <summary>
@@ -206,6 +217,10 @@ namespace Google.Solutions.Mvvm.Binding
                 this.shown = true;
             }
 
+            var bindingContext = (IBindingContext)
+                this.serviceProvider.GetService(typeof(IBindingContext));
+            Debug.Assert(bindingContext != null);
+
             //
             // Create view, show, and dispose it.
             //
@@ -214,12 +229,19 @@ namespace Google.Solutions.Mvvm.Binding
                 view.SuspendLayout();
 
                 this.Theme?.ApplyTo(view);
+                if (this.Theme != null &&
+                    view is IThemedView<TViewModel> themedView && themedView != null)
+                {
+                    themedView.Theme = this.Theme;
+                }
 
                 //
                 // Bind view <-> view model.
                 //
                 this.ViewModel.Bind(view);
-                view.Bind(this.ViewModel);
+                view.Bind(
+                    this.ViewModel,
+                    bindingContext);
                 view.ResumeLayout();
 
                 var result = view.ShowDialog(parent);
@@ -243,7 +265,7 @@ namespace Google.Solutions.Mvvm.Binding
     /// Hydrated view that can be used as a standalone window.
     /// </summary>
     public sealed class Window<TView, TViewModel>
-        where TView : Form, IView<TViewModel>
+        where TView : IView<TViewModel>
         where TViewModel : ViewModelBase
     {
         private readonly IServiceProvider serviceProvider;
@@ -266,24 +288,32 @@ namespace Google.Solutions.Mvvm.Binding
         public static void Bind(
             TView view,
             TViewModel viewModel,
-            IControlTheme theme)
+            IControlTheme theme,
+            IBindingContext bindingContext)
         {
-            view.SuspendLayout();
+            var viewControl = (ContainerControl)(object)view;
 
-            theme?.ApplyTo(view);
+            viewControl.SuspendLayout();
+
+            theme?.ApplyTo(viewControl);
+            if (theme != null &&
+                view is IThemedView<TViewModel> themedView && themedView != null)
+            {
+                themedView.Theme = theme;
+            }
 
             //
             // Bind view <-> view model.
             //
-            viewModel.Bind(view);
-            view.Bind(viewModel);
-            view.ResumeLayout();
+            viewModel.Bind(viewControl);
+            view.Bind(viewModel, bindingContext);
+            viewControl.ResumeLayout();
 
             //
             // Tie lifetime of the view model to that of the view.
             //
             bool disposed = false;
-            view.Disposed += (_, __) =>
+            viewControl.Disposed += (_, __) =>
             {
                 if (!disposed)
                 {
@@ -304,8 +334,13 @@ namespace Google.Solutions.Mvvm.Binding
                     // Create view and bind it.
                     //
                     var view = (TView)this.serviceProvider.GetService(typeof(TView));
+                    Debug.Assert(view != null);
 
-                    Bind(view, this.ViewModel, this.Theme);
+                    var bindingContext = (IBindingContext)
+                        this.serviceProvider.GetService(typeof(IBindingContext));
+                    Debug.Assert(bindingContext != null);
+
+                    Bind(view, this.ViewModel, this.Theme, bindingContext);
 
                     this.form = view;
                 }

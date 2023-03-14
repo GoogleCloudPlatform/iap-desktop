@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;

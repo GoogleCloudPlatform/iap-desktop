@@ -58,7 +58,8 @@ namespace Google.Solutions.Mvvm.Shell
 
             Debug.Assert(source == null ||
                 source == DefaultSource ||
-                source.Scheme.StartsWith("http"));
+                source.Scheme.StartsWith("http") || 
+                source.Scheme == "file");
 
             //
             // NB. Scanning can be slow, but needs to be done on a STA-enabled thread.

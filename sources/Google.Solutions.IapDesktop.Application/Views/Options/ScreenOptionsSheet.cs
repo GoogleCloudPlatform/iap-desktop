@@ -21,8 +21,8 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.Mvvm.Binding;
+using System;
 using System.Windows.Forms;
 
 #pragma warning disable IDE1006 // Naming Styles
@@ -30,28 +30,24 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    internal partial class ScreenOptionsSheet : UserControl, IPropertiesSheet
+    internal partial class ScreenOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private readonly ScreenOptionsViewModel viewModel;
-
-        public ScreenOptionsSheet(
-            ApplicationSettingsRepository settingsRepository)
+        public ScreenOptionsSheet()
         {
-            this.viewModel = new ScreenOptionsViewModel(settingsRepository);
-
             InitializeComponent();
-
-            this.screenPicker.BindCollection(this.viewModel.Devices);
         }
 
-        //---------------------------------------------------------------------
-        // IPropertiesSheet.
-        //---------------------------------------------------------------------
+        public Type ViewModel => typeof(ScreenOptionsViewModel);
 
-        public IPropertiesSheetViewModel ViewModel => this.viewModel;
+        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
+        {
+            var viewModel = (ScreenOptionsViewModel)viewModelBase;
+
+            this.screenPicker.BindCollection(viewModel.Devices);
+        }
     }
 
-    public class ScreenDevicePicker : ScreenPicker<ScreenOptionsViewModel.ScreenDevice>
+    internal class ScreenDevicePicker : ScreenPicker<ScreenOptionsViewModel.ScreenDevice>
     {
 
     }

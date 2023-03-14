@@ -40,9 +40,9 @@ namespace Google.Solutions.Mvvm.Binding
         /// <returns></returns>
         public static ObservableProperty<T> Build<T>(
             T initialValue, 
-            ISynchronizeInvoke invoker)
+            ViewModelBase viewModel)
         {
-            return new ThreadSafeObservableProperty<T>(invoker, initialValue);
+            return new ThreadSafeObservableProperty<T>(viewModel, initialValue);
         }
 
         public static ObservableFunc<TResult> Build<T1, TResult>(

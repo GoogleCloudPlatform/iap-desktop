@@ -20,19 +20,13 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.CloudIap;
-using Google.Solutions.Common.Interop;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Interop;
-using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Mvvm.Binding;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,7 +41,6 @@ namespace Google.Solutions.IapDesktop.Windows
     internal class MainFormViewModel : ViewModelBase
     {
         private readonly IThemeService themeService;
-        private readonly AuthSettingsRepository authSettings;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly Install install;
         private readonly Profile profile;
@@ -68,7 +61,6 @@ namespace Google.Solutions.IapDesktop.Windows
             Install install,
             Profile profile,
             ApplicationSettingsRepository applicationSettings,
-            AuthSettingsRepository authSettings,
             IThemeService themeService)
         {
             this.View = view;
@@ -78,8 +70,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.profile = profile.ThrowIfNull(nameof(profile));
             this.applicationSettings = applicationSettings
                 .ThrowIfNull(nameof(applicationSettings));
-            this.authSettings = authSettings
-                .ThrowIfNull(nameof(authSettings));
         }
 
         //---------------------------------------------------------------------
@@ -228,35 +218,11 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public IAuthorization Authorization { get; private set; }
 
-        public void Authorize()
+        public void Authorize(IAuthorization authorization)
         {
-            Debug.Assert(this.Authorization == null);
+            Precondition.ExpectNotNull(authorization, nameof(authorization));
 
-            //
-            // Determine enrollment state of this device.
-            //
-            var deviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
-                new CertificateStoreAdapter(),
-                new ChromePolicy(),
-                this.applicationSettings).Result;
-
-            //
-            // Get the user authorization, either by using stored
-            // credentials or by initiating an OAuth authorization flow.
-            //
-            this.Authorization = AuthorizeDialog.Authorize(
-                (Control)this.View,
-                OAuthClient.Secrets,
-                new[] { IapTunnelingEndpoint.RequiredScope },
-                deviceEnrollment,
-                this.authSettings,
-                this.themeService.DialogTheme);
-            if (this.Authorization == null)
-            {
-                // Aborted.
-                return;
-            }
-
+            this.Authorization = authorization;
             this.ProfileStateCaption = $"{this.profile.Name}: {this.Authorization.Email}";
             this.DeviceStateCaption = "Endpoint Verification";
             this.IsDeviceStateVisible = this.Authorization.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
@@ -264,23 +230,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
             Debug.Assert(this.ProfileStateCaption != null);
             Debug.Assert(this.Authorization.DeviceEnrollment != null);
-
-            if (!this.profile.IsDefault)
-            {
-                //
-                // Add taskbar badge to help distinguish this profile
-                // from other profiles.
-                //
-                using (var badge = BadgeIcon.ForTextInitial(this.profile.Name))
-                using (var taskbar = ComReference.For((ITaskbarList3)new TaskbarList()))
-                {
-                    taskbar.Object.HrInit();
-                    taskbar.Object.SetOverlayIcon(
-                        this.View.Handle,
-                        badge.Handle,
-                        string.Empty);
-                }
-            }
         }
 
         public async Task ReauthorizeAsync(CancellationToken token)
@@ -302,10 +251,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
             return this.Authorization.RevokeAsync();
         }
-
-        public bool IsAuthorized =>
-            this.Authorization != null &&
-            this.Authorization.DeviceEnrollment != null;
 
         //---------------------------------------------------------------------
         // Other actions.

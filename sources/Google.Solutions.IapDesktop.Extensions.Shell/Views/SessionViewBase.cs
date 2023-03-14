@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
@@ -31,16 +33,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
     /// </summary>
     public class SessionViewBase : DocumentWindow
     {
+        private readonly IBindingContext bindingContext;
         private ICommandContainer<ISession> contextCommands;
 
-        protected SessionViewBase()
+        protected SessionViewBase(IBindingContext bindingContext)
         {
-            // Constructor is for designer only.
+            // Constructor is for testing only.
+            this.bindingContext = bindingContext;
         }
 
         protected SessionViewBase(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
+            this.bindingContext = serviceProvider.GetService<IBindingContext>();
         }
 
         //---------------------------------------------------------------------
@@ -56,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 {
                     //
                     // Don't allow binding multiple command containers to
-                    // the smae menu (or binding the same container multiple
+                    // the same menu (or binding the same container multiple
                     // times) as that leads to duplication.
                     //
                     throw new InvalidOperationException(
@@ -76,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                     this.contextCommands = value;
                     this.contextCommands.BindTo(
                         this.TabPageContextMenuStrip,
-                        this.Container);
+                        this.bindingContext);
                 }
 
                 //

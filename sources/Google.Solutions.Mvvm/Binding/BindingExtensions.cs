@@ -19,12 +19,15 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
+using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Mvvm.Controls;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
 {
@@ -34,12 +37,15 @@ namespace Google.Solutions.Mvvm.Binding
     /// </summary>
     public static class BindingExtensions
     {
-        public static Binding OnPropertyChange<TObject, TProperty>(
-            this TObject observed,
+        internal static Binding CreatePropertyChangeBinding<TObject, TProperty>(
+            TObject observed,
             Expression<Func<TObject, TProperty>> modelProperty,
             Action<TProperty> newValue)
             where TObject : INotifyPropertyChanged
         {
+            Precondition.ExpectNotNull(observed, nameof(observed));
+            Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
+
             Debug.Assert(modelProperty.NodeType == ExpressionType.Lambda);
             if (modelProperty.Body is MemberExpression memberExpression &&
                 memberExpression.Member is PropertyInfo propertyInfo)
@@ -56,12 +62,15 @@ namespace Google.Solutions.Mvvm.Binding
             }
         }
 
-        public static Binding OnControlPropertyChange<TControl, TProperty>(
-            this TControl observed,
+        internal static Binding CreateControlPropertyChangeBinding<TControl, TProperty>(
+            TControl observed,
             Expression<Func<TControl, TProperty>> controlProperty,
             Action<TProperty> newValue)
             where TControl : IComponent
         {
+            Precondition.ExpectNotNull(observed, nameof(observed));
+            Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
+
             Debug.Assert(controlProperty.NodeType == ExpressionType.Lambda);
             if (controlProperty.Body is MemberExpression memberExpression &&
                 memberExpression.Member is PropertyInfo propertyInfo)
@@ -104,42 +113,91 @@ namespace Google.Solutions.Mvvm.Binding
         }
 
         //---------------------------------------------------------------------
-        // Binding for bare properties.
+        // OnChange callbacks.
         //---------------------------------------------------------------------
 
+        public static void OnControlPropertyChange<TControl, TProperty>(
+            this TControl observed,
+            Expression<Func<TControl, TProperty>> controlProperty,
+            Action<TProperty> newValue,
+            IBindingContext bindingContext)
+            where TControl : IComponent
+        {
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
+
+            var binding = CreateControlPropertyChangeBinding(
+                observed,
+                controlProperty,
+                newValue);
+            bindingContext.OnBindingCreated(observed, binding);
+        }
+
+        public static void OnPropertyChange<TObject, TProperty>(
+            this TObject observed,
+            Expression<Func<TObject, TProperty>> modelProperty,
+            Action<TProperty> newValue,
+            IBindingContext bindingContext)
+            where TObject : INotifyPropertyChanged
+        {
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
+
+            var binding = CreatePropertyChangeBinding(
+                observed,
+                modelProperty,
+                newValue);
+
+            if (binding is IComponent component)
+            {
+                bindingContext.OnBindingCreated(component, binding);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Binding for bare properties.
+        //---------------------------------------------------------------------
+        
         public static void BindProperty<TControl, TProperty, TModel>(
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
             Expression<Func<TModel, TProperty>> modelProperty,
-            IContainer container = null)
+            IBindingContext bindingContext)
             where TModel : INotifyPropertyChanged
             where TControl : IComponent
         {
+            Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
+            Precondition.ExpectNotNull(model, nameof(model));
+            Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
+
+            //
             // Apply initial value.
+            //
             var modelValue = modelProperty.Compile()(model);
             CreateSetter(control, controlProperty)(modelValue);
 
-            var forwardBinding = control.OnControlPropertyChange(
+            var forwardBinding = CreateControlPropertyChangeBinding(
+                control,
                 controlProperty,
                 CreateSetter(model, modelProperty));
 
-            var reverseBinding = model.OnPropertyChange(
+            var reverseBinding = CreatePropertyChangeBinding(
+                model,
                 modelProperty,
                 CreateSetter(control, controlProperty));
 
+            //
             // Wire up these two bindings so that we do not deliver
             // updates in cycles.
+            //
             forwardBinding.Peer = reverseBinding;
             reverseBinding.Peer = forwardBinding;
 
-            if (container != null)
-            {
-                // To ensure that the bindings are disposed, add them to the
-                // container of the control.
-                container.Add(forwardBinding);
-                container.Add(reverseBinding);
-            }
+            control.AttachDisposable(forwardBinding);
+            control.AttachDisposable(reverseBinding);
+
+            bindingContext.OnBindingCreated(control, forwardBinding);
+            bindingContext.OnBindingCreated(control, reverseBinding);
         }
 
         public static void BindReadonlyProperty<TControl, TProperty, TModel>(
@@ -147,23 +205,28 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
             Expression<Func<TModel, TProperty>> modelProperty,
-            IContainer container = null)
+            IBindingContext bindingContext)
             where TModel : INotifyPropertyChanged
+            where TControl : IComponent
         {
+            Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
+            Precondition.ExpectNotNull(model, nameof(model));
+            Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
+
+            //
             // Apply initial value.
+            //
             var modelValue = modelProperty.Compile()(model);
             CreateSetter(control, controlProperty)(modelValue);
 
-            var binding = model.OnPropertyChange(
+            var binding = CreatePropertyChangeBinding(
+                model,
                 modelProperty,
                 CreateSetter(control, controlProperty));
-
-            if (container != null)
-            {
-                // To ensure that the bindings are disposed, add them to the
-                // container of the control.
-                container.Add(binding);
-            }
+            
+            control.AttachDisposable(binding);
+            bindingContext.OnBindingCreated(control, binding);
         }
 
         //---------------------------------------------------------------------
@@ -175,16 +238,24 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
             Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
-            IContainer container = null)
+            IBindingContext bindingContext)
             where TControl : IComponent
         {
+            Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
+            Precondition.ExpectNotNull(model, nameof(model));
+            Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
+
+            //
             // Apply initial value.
+            //
             var observable = modelProperty.Compile()(model);
             CreateSetter(control, controlProperty)(observable.Value);
 
             Debug.Assert(observable is IObservableWritableProperty<TProperty>);
 
-            var forwardBinding = control.OnControlPropertyChange(
+            var forwardBinding = CreateControlPropertyChangeBinding(
+                control,
                 controlProperty,
                 val => ObservablePropertyHelper.SetValue(observable, val));
 
@@ -192,18 +263,18 @@ namespace Google.Solutions.Mvvm.Binding
                 observable,
                 CreateSetter(control, controlProperty));
 
+            //
             // Wire up these two bindings so that we do not deliver
             // updates in cycles.
+            //
             forwardBinding.Peer = reverseBinding;
             reverseBinding.Peer = forwardBinding;
 
-            if (container != null)
-            {
-                // To ensure that the bindings are disposed, add them to the
-                // container of the control.
-                container.Add(forwardBinding);
-                container.Add(reverseBinding);
-            }
+            control.AttachDisposable(forwardBinding);
+            control.AttachDisposable(reverseBinding);
+
+            bindingContext.OnBindingCreated(control, forwardBinding);
+            bindingContext.OnBindingCreated(control, reverseBinding);
         }
 
         public static void BindReadonlyObservableProperty<TControl, TProperty, TModel>(
@@ -211,9 +282,17 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
             Expression<Func<TModel, IObservableProperty<TProperty>>> modelProperty,
-            IContainer container = null)
+            IBindingContext bindingContext)
+            where TControl : IComponent
         {
+            Precondition.ExpectNotNull(controlProperty, nameof(controlProperty));
+            Precondition.ExpectNotNull(model, nameof(model));
+            Precondition.ExpectNotNull(modelProperty, nameof(modelProperty));
+            Precondition.ExpectNotNull(bindingContext, nameof(bindingContext));
+
+            //
             // Apply initial value.
+            //
             var observable = modelProperty.Compile()(model);
             CreateSetter(control, controlProperty)(observable.Value);
 
@@ -221,23 +300,22 @@ namespace Google.Solutions.Mvvm.Binding
                 observable,
                 CreateSetter(control, controlProperty));
 
-            if (container != null)
-            {
-                // To ensure that the bindings are disposed, add them to the
-                // container of the control.
-                container.Add(binding);
-            }
+            control.AttachDisposable(binding);
+            bindingContext.OnBindingCreated(control, binding);
         }
 
         //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
 
-        public abstract class Binding : Component
+        public abstract class Binding : IDisposable
         {
             public bool IsBusy { get; internal set; } = false;
             public Binding Peer { get; internal set; }
+            public abstract void Dispose();
         }
 
-        private sealed class EventHandlerBinding<TControl, TProperty> : Binding, IDisposable
+        private sealed class EventHandlerBinding<TControl, TProperty> : Binding
             where TControl : IComponent
         {
             private readonly TControl observed;
@@ -281,18 +359,15 @@ namespace Google.Solutions.Mvvm.Binding
                     new EventHandler(Observed_PropertyChanged));
             }
 
-            protected override void Dispose(bool disposing)
+            public override void Dispose()
             {
-                if (disposing)
-                {
-                    this.eventInfo.RemoveEventHandler(
-                        this.observed,
-                        new EventHandler(Observed_PropertyChanged));
-                }
+                this.eventInfo.RemoveEventHandler(
+                    this.observed,
+                    new EventHandler(Observed_PropertyChanged));
             }
         }
 
-        private class NotifyPropertyChangedBinding<TObject, TProperty> : Binding, IDisposable
+        internal class NotifyPropertyChangedBinding<TObject, TProperty> : Binding, IDisposable
             where TObject : INotifyPropertyChanged
         {
             private readonly TObject observed;
@@ -338,16 +413,13 @@ namespace Google.Solutions.Mvvm.Binding
                 this.observed.PropertyChanged += Observed_PropertyChanged;
             }
 
-            protected override void Dispose(bool disposing)
+            public override void Dispose()
             {
-                if (disposing)
-                {
-                    this.observed.PropertyChanged -= Observed_PropertyChanged;
-                }
+                this.observed.PropertyChanged -= Observed_PropertyChanged;
             }
         }
 
-        private class NotifyObservablePropertyChangedBinding<TProperty>
+        internal class NotifyObservablePropertyChangedBinding<TProperty>
             : NotifyPropertyChangedBinding<IObservableProperty<TProperty>, TProperty>
         {
             public NotifyObservablePropertyChangedBinding(
@@ -359,24 +431,6 @@ namespace Google.Solutions.Mvvm.Binding
                       prop => prop.Value,
                       newValueAction)
             {
-            }
-        }
-
-        private sealed class MultiDisposable : IDisposable
-        {
-            private readonly IEnumerable<IDisposable> disposables;
-
-            public MultiDisposable(params IDisposable[] disposables)
-            {
-                this.disposables = disposables;
-            }
-
-            public void Dispose()
-            {
-                foreach (var d in this.disposables)
-                {
-                    d.Dispose();
-                }
             }
         }
 

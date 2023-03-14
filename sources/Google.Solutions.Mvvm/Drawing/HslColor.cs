@@ -76,9 +76,9 @@ namespace Google.Solutions.Mvvm.Drawing
 
         public HslColor(float h, float s, float l)
         {
-            this.H = h.ThrowIfOutOfRange(0.0f, 1.0f, nameof(h));
-            this.S = s.ThrowIfOutOfRange(0.0f, 1.0f, nameof(s));
-            this.L = l.ThrowIfOutOfRange(0.0f, 1.0f, nameof(l));
+            this.H = h.ExpectInRange(0.0f, 1.0f, nameof(h));
+            this.S = s.ExpectInRange(0.0f, 1.0f, nameof(s));
+            this.L = l.ExpectInRange(0.0f, 1.0f, nameof(l));
         }
 
         public static HslColor FromColor(Color color)

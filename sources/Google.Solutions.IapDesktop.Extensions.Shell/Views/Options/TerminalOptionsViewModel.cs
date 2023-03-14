@@ -19,261 +19,137 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Forms;
-
-#pragma warning disable CA1822 // Mark members as static
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    public interface ITerminalOptionsSheet : IPropertiesSheet
-    { }
-
-    public class TerminalOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
+    [Service(ServiceLifetime.Transient, ServiceVisibility.Global)]
+    public class TerminalOptionsViewModel : OptionsViewModelBase<TerminalSettings>
     {
-        private bool isCopyPasteUsingCtrlCAndCtrlVEnabled;
-        private bool isSelectAllUsingCtrlAEnabled;
-        private bool isCopyPasteUsingShiftInsertAndCtrlInsertEnabled;
-        private bool isSelectUsingShiftArrrowEnabled;
-        private bool isQuoteConvertionOnPasteEnabled;
-        private bool isNavigationUsingControlArrrowEnabled;
-        private bool isScrollingUsingCtrlUpDownEnabled;
-        private bool isScrollingUsingCtrlHomeEndEnabled;
-        private Font terminalFont;
-        private Color terminalForegroundColor;
-        private Color terminalBackgroundColor;
-
-        private readonly TerminalSettingsRepository settingsRepository;
-
-        private bool isDirty;
-
         public TerminalOptionsViewModel(
             TerminalSettingsRepository settingsRepository)
+            : base("Terminal", settingsRepository)
         {
-            this.settingsRepository = settingsRepository;
+            this.IsCopyPasteUsingCtrlCAndCtrlVEnabled = ObservableProperty.Build(false);
+            this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled  = ObservableProperty.Build(false);
+            this.IsSelectAllUsingCtrlAEnabled  = ObservableProperty.Build(false);
+            this.IsSelectUsingShiftArrrowEnabled  = ObservableProperty.Build(false);
+            this.IsQuoteConvertionOnPasteEnabled  = ObservableProperty.Build(false);
+            this.IsNavigationUsingControlArrrowEnabled  = ObservableProperty.Build(false);
+            this.IsScrollingUsingCtrlUpDownEnabled  = ObservableProperty.Build(false);
+            this.IsScrollingUsingCtrlHomeEndEnabled  = ObservableProperty.Build(false);
+            this.TerminalFont  = ObservableProperty.Build<Font>(null);
+            this.TerminalForegroundColor  = ObservableProperty.Build<Color>(Color.White);
+            this.TerminalBackgroundColor  = ObservableProperty.Build<Color>(Color.Black);
+            
+            MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsSelectAllUsingCtrlAEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsSelectUsingShiftArrrowEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsQuoteConvertionOnPasteEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsNavigationUsingControlArrrowEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsScrollingUsingCtrlUpDownEnabled);
+            MarkDirtyWhenPropertyChanges(this.IsScrollingUsingCtrlHomeEndEnabled);
+            MarkDirtyWhenPropertyChanges(this.TerminalFont);
+            MarkDirtyWhenPropertyChanges(this.TerminalForegroundColor);
+            MarkDirtyWhenPropertyChanges(this.TerminalBackgroundColor);
 
-            //
-            // Read current settings.
-            //
-            // NB. Do not hold on to the settings object because other tabs
-            // might apply changes to other application settings.
-            //
-            var settings = this.settingsRepository.GetSettings();
+            base.OnInitializationCompleted();
+        }
 
-            this.IsCopyPasteUsingCtrlCAndCtrlVEnabled =
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
+
+        protected override void Load(TerminalSettings settings)
+        {
+            this.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value =
                 settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue;
-            this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled =
+            this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value =
                 settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue;
-            this.IsSelectAllUsingCtrlAEnabled =
+            this.IsSelectAllUsingCtrlAEnabled.Value =
                 settings.IsSelectAllUsingCtrlAEnabled.BoolValue;
-            this.IsSelectUsingShiftArrrowEnabled =
+            this.IsSelectUsingShiftArrrowEnabled.Value =
                 settings.IsSelectUsingShiftArrrowEnabled.BoolValue;
-            this.IsQuoteConvertionOnPasteEnabled =
+            this.IsQuoteConvertionOnPasteEnabled.Value =
                 settings.IsQuoteConvertionOnPasteEnabled.BoolValue;
-            this.IsNavigationUsingControlArrrowEnabled =
+            this.IsNavigationUsingControlArrrowEnabled.Value =
                 settings.IsNavigationUsingControlArrrowEnabled.BoolValue;
-            this.IsScrollingUsingCtrlUpDownEnabled =
+            this.IsScrollingUsingCtrlUpDownEnabled.Value =
                 settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue;
-            this.IsScrollingUsingCtrlHomeEndEnabled =
+            this.IsScrollingUsingCtrlHomeEndEnabled.Value =
                 settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
-            this.TerminalFont = new Font(
+            this.TerminalFont.Value = new Font(
                 settings.FontFamily.StringValue,
                 TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
-            this.TerminalForegroundColor = Color.FromArgb(
+            this.TerminalForegroundColor.Value = Color.FromArgb(
                 settings.ForegroundColorArgb.IntValue);
-            this.TerminalBackgroundColor = Color.FromArgb(
+            this.TerminalBackgroundColor.Value = Color.FromArgb(
                 settings.BackgroundColorArgb.IntValue);
-
-            this.isDirty = false;
         }
 
-        //---------------------------------------------------------------------
-        // IOptionsDialogPane.
-        //---------------------------------------------------------------------
-
-        public string Title => "Terminal";
-
-        public bool IsDirty
+        protected override void Save(TerminalSettings settings)
         {
-            get => this.isDirty;
-            set
-            {
-                this.isDirty = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public DialogResult ApplyChanges()
-        {
-            Debug.Assert(this.IsDirty);
-
-            //
-            // Save settings.
-            //
-            var settings = this.settingsRepository.GetSettings();
+            Debug.Assert(this.IsDirty.Value);
 
             settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue =
-                this.IsCopyPasteUsingCtrlCAndCtrlVEnabled;
+                this.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value;
             settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue =
-                this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled;
+                this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
             settings.IsSelectAllUsingCtrlAEnabled.BoolValue =
-                this.IsSelectAllUsingCtrlAEnabled;
+                this.IsSelectAllUsingCtrlAEnabled.Value;
             settings.IsSelectUsingShiftArrrowEnabled.BoolValue =
-                this.IsSelectUsingShiftArrrowEnabled;
+                this.IsSelectUsingShiftArrrowEnabled.Value;
             settings.IsQuoteConvertionOnPasteEnabled.BoolValue =
-                this.IsQuoteConvertionOnPasteEnabled;
+                this.IsQuoteConvertionOnPasteEnabled.Value;
             settings.IsNavigationUsingControlArrrowEnabled.BoolValue =
-                this.IsNavigationUsingControlArrrowEnabled;
+                this.IsNavigationUsingControlArrrowEnabled.Value;
             settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue =
-                this.IsScrollingUsingCtrlUpDownEnabled;
+                this.IsScrollingUsingCtrlUpDownEnabled.Value;
             settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue =
-                this.IsScrollingUsingCtrlHomeEndEnabled;
+                this.IsScrollingUsingCtrlHomeEndEnabled.Value;
             settings.FontFamily.StringValue =
-                this.terminalFont.FontFamily.Name;
+                this.TerminalFont.Value.FontFamily.Name;
             settings.FontSizeAsDword.IntValue =
-                TerminalSettings.DwordFromFontSize(this.terminalFont.Size);
+                TerminalSettings.DwordFromFontSize(this.TerminalFont.Value.Size);
             settings.ForegroundColorArgb.IntValue =
-                this.TerminalForegroundColor.ToArgb();
+                this.TerminalForegroundColor.Value.ToArgb();
             settings.BackgroundColorArgb.IntValue =
-                this.TerminalBackgroundColor.ToArgb();
-
-            this.settingsRepository.SetSettings(settings);
-
-            this.IsDirty = false;
-
-            return DialogResult.OK;
+                this.TerminalBackgroundColor.Value.ToArgb();
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public bool IsCopyPasteUsingCtrlCAndCtrlVEnabled
-        {
-            get => this.isCopyPasteUsingCtrlCAndCtrlVEnabled;
-            set
-            {
-                this.IsDirty = true;
-                this.isCopyPasteUsingCtrlCAndCtrlVEnabled = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled
-        {
-            get => this.isCopyPasteUsingShiftInsertAndCtrlInsertEnabled;
-            set
-            {
-                this.IsDirty = true;
-                this.isCopyPasteUsingShiftInsertAndCtrlInsertEnabled = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsSelectAllUsingCtrlAEnabled
-        {
-            get => this.isSelectAllUsingCtrlAEnabled;
-            set
-            {
-                this.IsDirty = true;
-                this.isSelectAllUsingCtrlAEnabled = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsSelectUsingShiftArrrowEnabled
-        {
-            get => this.isSelectUsingShiftArrrowEnabled;
-            set
-            {
-                this.IsDirty = true;
-                this.isSelectUsingShiftArrrowEnabled = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsQuoteConvertionOnPasteEnabled
-        {
-            get => this.isQuoteConvertionOnPasteEnabled;
-            set
-            {
-                this.IsDirty = true;
-                this.isQuoteConvertionOnPasteEnabled = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsNavigationUsingControlArrrowEnabled
-        {
-            get => this.isNavigationUsingControlArrrowEnabled;
-            set
-            {
-                this.IsDirty = true;
-                this.isNavigationUsingControlArrrowEnabled = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsScrollingUsingCtrlUpDownEnabled
-        {
-            get => this.isScrollingUsingCtrlUpDownEnabled;
-            set
-            {
-                this.IsDirty = true;
-                this.isScrollingUsingCtrlUpDownEnabled = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsScrollingUsingCtrlHomeEndEnabled
-        {
-            get => this.isScrollingUsingCtrlHomeEndEnabled;
-            set
-            {
-                this.IsDirty = true;
-                this.isScrollingUsingCtrlHomeEndEnabled = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public Font TerminalFont
-        {
-            get => this.terminalFont;
-            set
-            {
-                this.IsDirty = true;
-                this.terminalFont = value;
-                RaisePropertyChange();
-            }
-        }
-
         public float MaximumFontSize => Controls.TerminalFont.MaximumSize;
         public float MinimumFontSize => Controls.TerminalFont.MinimumSize;
 
-        public Color TerminalForegroundColor
-        {
-            get => this.terminalForegroundColor;
-            set
-            {
-                this.IsDirty = true;
-                this.terminalForegroundColor = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsCopyPasteUsingCtrlCAndCtrlVEnabled { get; }
 
-        public Color TerminalBackgroundColor
-        {
-            get => this.terminalBackgroundColor;
-            set
-            {
-                this.IsDirty = true;
-                this.terminalBackgroundColor = value;
-                RaisePropertyChange();
-            }
-        }
+        public ObservableProperty<bool> IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; }
+
+        public ObservableProperty<bool> IsSelectAllUsingCtrlAEnabled { get; }
+
+        public ObservableProperty<bool> IsSelectUsingShiftArrrowEnabled { get; }
+
+        public ObservableProperty<bool> IsQuoteConvertionOnPasteEnabled { get; }
+
+        public ObservableProperty<bool> IsNavigationUsingControlArrrowEnabled { get; }
+
+        public ObservableProperty<bool> IsScrollingUsingCtrlUpDownEnabled { get; }
+
+        public ObservableProperty<bool> IsScrollingUsingCtrlHomeEndEnabled { get; }
+
+        public ObservableProperty<Font> TerminalFont { get; }
+
+        public ObservableProperty<Color> TerminalForegroundColor { get; }
+
+        public ObservableProperty<Color> TerminalBackgroundColor { get; }
     }
 }

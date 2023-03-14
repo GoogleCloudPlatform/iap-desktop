@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             this.HideOnClose = true;
         }
 
-        public void Bind(TunnelsViewModel viewModel)
+        public void Bind(TunnelsViewModel viewModel, IBindingContext bindingContext)
         {
             this.tunnelsList.BindCollection(viewModel.Tunnels);
             this.tunnelsList.BindColumn(0, t => t.Destination.Instance.Name);
@@ -65,22 +65,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
                 v => this.tunnelsList.SelectedModelItem,
                 viewModel,
                 m => viewModel.SelectedTunnel,
-                this.components);
+                bindingContext);
             this.refreshToolStripButton.BindReadonlyProperty(
                 b => b.Enabled,
                 viewModel,
                 m => m.IsRefreshButtonEnabled,
-                this.components);
+                bindingContext);
             this.disconnectToolStripButton.BindReadonlyProperty(
                 b => b.Enabled,
                 viewModel,
                 m => m.IsDisconnectButtonEnabled,
-                this.components);
+                bindingContext);
             this.disconnectTunnelToolStripMenuItem.BindReadonlyProperty(
                 b => b.Enabled,
                 viewModel,
                 m => m.IsDisconnectButtonEnabled,
-                this.components);
+                bindingContext);
 
             this.disconnectToolStripButton.Click += async (_, __) => await viewModel
                 .DisconnectSelectedTunnelAsync()

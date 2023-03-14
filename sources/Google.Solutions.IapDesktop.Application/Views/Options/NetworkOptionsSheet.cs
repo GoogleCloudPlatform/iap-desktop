@@ -24,93 +24,95 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.Mvvm.Binding;
+using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    public partial class NetworkOptionsSheet : UserControl, IPropertiesSheet
+    public partial class NetworkOptionsSheet : UserControl, IPropertiesSheetView
     {
-        private readonly NetworkOptionsViewModel viewModel;
+        private NetworkOptionsViewModel viewModel;
 
-        public NetworkOptionsSheet(
-            ApplicationSettingsRepository settingsRepository,
-            IHttpProxyAdapter proxyAdapter)
+        public NetworkOptionsSheet()
         {
-            this.viewModel = new NetworkOptionsViewModel(
-                settingsRepository,
-                proxyAdapter);
-
             InitializeComponent();
+        }
+
+        public Type ViewModel => typeof(NetworkOptionsViewModel);
+
+        public void Bind(PropertiesSheetViewModelBase viewModelBase, IBindingContext bindingContext)
+        {
+            this.viewModel = (NetworkOptionsViewModel)viewModelBase;
 
             this.proxyBox.BindProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsProxyEditable,
-                this.Container);
+                bindingContext);
 
             this.useSystemRadioButton.BindProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsSystemProxyServerEnabled,
-                this.Container);
+                bindingContext);
             this.openProxyControlPanelAppletButton.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsSystemProxyServerEnabled,
-                this.Container);
+                bindingContext);
 
             this.useCustomRadioButton.BindProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsCustomProxyServerEnabled,
-                this.Container);
+                bindingContext);
             this.addressLabel.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsCustomProxyServerEnabled,
-                this.Container);
+                bindingContext);
             this.proxyServerTextBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsCustomProxyServerEnabled,
-                this.Container);
+                bindingContext);
             this.proxyServerTextBox.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.ProxyServer,
-                this.Container);
+                bindingContext);
             this.proxyPortTextBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsCustomProxyServerEnabled,
-                this.Container);
+                bindingContext);
             this.proxyPortTextBox.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.ProxyPort,
-                this.Container);
+                bindingContext);
 
             this.usePacRadioButton.BindProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsProxyAutoConfigurationEnabled,
-                this.Container);
+                bindingContext);
             this.pacAddressLabel.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsProxyAutoConfigurationEnabled,
-                this.Container);
+                bindingContext);
             this.proxyPacTextBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsProxyAutoConfigurationEnabled,
-                this.Container);
+                bindingContext);
             this.proxyPacTextBox.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.ProxyAutoconfigurationAddress,
-                this.Container);
+                bindingContext);
 
             //
             // Proxy auth.
@@ -120,44 +122,44 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsProxyAuthenticationEnabled,
-                this.Container);
+                bindingContext);
             this.proxyAuthCheckBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsCustomProxyServerOrProxyAutoConfigurationEnabled,
-                this.Container);
+                bindingContext);
 
             this.proxyAuthUsernameTextBox.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.ProxyUsername,
-                this.Container);
+                bindingContext);
             this.proxyAuthUsernameTextBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsProxyAuthenticationEnabled,
-                this.Container);
+                bindingContext);
             this.proxyAuthUsernameLabel.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsProxyAuthenticationEnabled,
-                this.Container);
+                bindingContext);
 
             this.proxyAuthPasswordTextBox.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.ProxyPassword,
-                this.Container);
+                bindingContext);
             this.proxyAuthPasswordTextBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsProxyAuthenticationEnabled,
-                this.Container);
+                bindingContext);
             this.proxyAuthPasswordLabel.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsProxyAuthenticationEnabled,
-                this.Container);
+                bindingContext);
 
             //
             // Connection pool.
@@ -166,14 +168,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 c => c.Value,
                 this.viewModel,
                 m => m.ConnectionLimit,
-                this.Container);
+                bindingContext);
         }
-
-        //---------------------------------------------------------------------
-        // IPropertiesSheet.
-        //---------------------------------------------------------------------
-
-        public IPropertiesSheetViewModel ViewModel => this.viewModel;
 
         //---------------------------------------------------------------------
         // Events.

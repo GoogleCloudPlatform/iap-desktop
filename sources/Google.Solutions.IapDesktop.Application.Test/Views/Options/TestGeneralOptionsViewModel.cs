@@ -29,6 +29,7 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 {
@@ -80,8 +81,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
 
-            Assert.IsTrue(viewModel.IsUpdateCheckEnabled);
-            Assert.IsTrue(viewModel.IsUpdateCheckEditable);
+            Assert.IsTrue(viewModel.IsUpdateCheckEnabled.Value);
+            Assert.IsTrue(viewModel.IsUpdateCheckEditable.Value);
         }
 
         [Test]
@@ -97,8 +98,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
 
-            Assert.IsFalse(viewModel.IsUpdateCheckEnabled);
-            Assert.IsTrue(viewModel.IsUpdateCheckEditable);
+            Assert.IsFalse(viewModel.IsUpdateCheckEnabled.Value);
+            Assert.IsTrue(viewModel.IsUpdateCheckEditable.Value);
         }
 
         [Test]
@@ -119,12 +120,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
 
-            Assert.IsFalse(viewModel.IsUpdateCheckEnabled);
-            Assert.IsFalse(viewModel.IsUpdateCheckEditable);
+            Assert.IsFalse(viewModel.IsUpdateCheckEnabled.Value);
+            Assert.IsFalse(viewModel.IsUpdateCheckEditable.Value);
         }
 
         [Test]
-        public void WhenDisablingUpdateCheck_ThenChangeIsApplied()
+        public async Task WhenDisablingUpdateCheck_ThenChangeIsApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -134,11 +135,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpAdapter())
-            {
-                IsUpdateCheckEnabled = false
-            };
-            viewModel.ApplyChanges();
+                new HelpAdapter());
+            viewModel.IsUpdateCheckEnabled.Value = false;
+            
+            await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
             Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
@@ -153,11 +153,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsUpdateCheckEnabled = !viewModel.IsUpdateCheckEnabled;
+            viewModel.IsUpdateCheckEnabled.Value = !viewModel.IsUpdateCheckEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         [Test]
@@ -205,8 +205,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
 
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled);
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable);
+            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
+            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
         }
 
         [Test]
@@ -222,8 +222,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
 
-            Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEnabled);
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable);
+            Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
+            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
         }
 
         [Test]
@@ -244,12 +244,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
 
-            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled);
-            Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEditable);
+            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled.Value);
+            Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEditable.Value);
         }
 
         [Test]
-        public void WhenDisablingDca_ThenChangeIsApplied()
+        public async Task WhenDisablingDca_ThenChangeIsApplied()
         {
             var settingsRepository = CreateSettingsRepository();
             var settings = settingsRepository.GetSettings();
@@ -259,11 +259,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpAdapter())
-            {
-                IsDeviceCertificateAuthenticationEnabled = false
-            };
-            viewModel.ApplyChanges();
+                new HelpAdapter());
+            viewModel.IsDeviceCertificateAuthenticationEnabled.Value = false;
+            
+            await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
             Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
@@ -278,11 +277,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsDeviceCertificateAuthenticationEnabled = !viewModel.IsDeviceCertificateAuthenticationEnabled;
+            viewModel.IsDeviceCertificateAuthenticationEnabled.Value = 
+                !viewModel.IsDeviceCertificateAuthenticationEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         //---------------------------------------------------------------------
@@ -298,25 +298,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
 
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsBrowserIntegrationEnabled = !viewModel.IsBrowserIntegrationEnabled;
+            viewModel.IsBrowserIntegrationEnabled.Value = 
+                !viewModel.IsBrowserIntegrationEnabled.Value;
 
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         [Test]
-        public void WhenBrowserIntegrationEnabled_ThenApplyChangesRegistersProtocol()
+        public async Task WhenBrowserIntegrationEnabled_ThenApplyChangesRegistersProtocol()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpAdapter())
-            {
-                IsBrowserIntegrationEnabled = true
-            };
-            viewModel.ApplyChanges();
+                new HelpAdapter());
+            viewModel.IsBrowserIntegrationEnabled.Value = true;
+            
+            await viewModel.ApplyChangesAsync();
 
             this.protocolRegistryMock.Verify(r => r.Register(
                     It.Is<string>(s => s == IapRdpUrl.Scheme),
@@ -326,17 +326,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         [Test]
-        public void WhenBrowserIntegrationDisabled_ThenApplyChangesUnregistersProtocol()
+        public async Task WhenBrowserIntegrationDisabled_ThenApplyChangesUnregistersProtocol()
         {
             var settingsRepository = CreateSettingsRepository();
             var viewModel = new GeneralOptionsViewModel(
                 settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpAdapter())
-            {
-                IsBrowserIntegrationEnabled = false
-            };
-            viewModel.ApplyChanges();
+                new HelpAdapter());
+            viewModel.IsBrowserIntegrationEnabled.Value = false;
+            
+            await viewModel.ApplyChangesAsync();
 
             this.protocolRegistryMock.Verify(r => r.Unregister(
                     It.Is<string>(s => s == IapRdpUrl.Scheme)),

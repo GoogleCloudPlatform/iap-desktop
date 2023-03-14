@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Microsoft.Win32;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 {
@@ -57,11 +58,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 ThemeSettings.ApplicationTheme.Dark);
 
             var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
-            Assert.IsFalse(viewModel.IsDirty);
+            Assert.IsFalse(viewModel.IsDirty.Value);
 
             viewModel.SelectedTheme.Value = ThemeSettings.ApplicationTheme.Dark;
 
-            Assert.IsTrue(viewModel.IsDirty);
+            Assert.IsTrue(viewModel.IsDirty.Value);
         }
 
         //---------------------------------------------------------------------
@@ -87,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         [Test]
-        public void SaveUpdatesSettings()
+        public async Task SaveUpdatesSettings()
         {
             Assert.AreNotEqual(
                 ThemeSettings.ApplicationTheme._Default,
@@ -95,8 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             var viewModel = new AppearanceOptionsViewModel(this.settingsRepository);
             viewModel.SelectedTheme.Value = ThemeSettings.ApplicationTheme.Dark;
-            viewModel.ApplyChanges();
-
+            await viewModel.ApplyChangesAsync();
 
             var settings = this.settingsRepository.GetSettings();
             Assert.AreEqual(ThemeSettings.ApplicationTheme.Dark, settings.Theme.Value);

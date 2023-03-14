@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,36 +19,28 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Binding.Commands;
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Properties
+namespace Google.Solutions.Mvvm.Binding
 {
-    public interface IPropertiesSheet
+    /// <summary>
+    /// Context for MVVM binding operations.
+    /// </summary>
+    public interface IBindingContext
     {
         /// <summary>
-        /// View model backing this property sheet
-        /// page.
+        /// Notify that a command failed.
         /// </summary>
-        IPropertiesSheetViewModel ViewModel { get; }
-    }
-
-    public interface IPropertiesSheetViewModel : INotifyPropertyChanged
-    {
-        /// <summary>
-        /// Title of property sheet.
-        /// </summary>
-        string Title { get; }
+        void OnCommandFailed(ICommand command, Exception exception);
 
         /// <summary>
-        /// True if any values on property sheet have been
-        /// changed.
+        /// Notify that a new binding has been created. Implementing
+        /// classes should dispose the binding when it's no longer needed,
+        /// for example by tying them to the lifecycle of the control.
         /// </summary>
-        bool IsDirty { get; }
-
-        /// <summary>
-        /// Apply and persist changes.
-        /// </summary>
-        DialogResult ApplyChanges();
+        void OnBindingCreated(IComponent control, IDisposable binding);
     }
 }

@@ -51,7 +51,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             this.keysList.List.AddCopyCommands();
         }
 
-        public void Bind(AuthorizedPublicKeysViewModel viewModel)
+        public void Bind(
+            AuthorizedPublicKeysViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
 
@@ -59,16 +61,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 c => c.Text,
                 this.viewModel,
                 m => m.InformationBarContent,
-                this.components);
-            this.components.Add(this.viewModel.OnPropertyChange(
+                bindingContext);
+            this.viewModel.OnPropertyChange(
                 m => m.IsInformationBarVisible,
                 visible =>
                 {
                     this.splitContainer.Panel1Collapsed = !visible;
                     this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
-                }));
+                },
+                bindingContext);
 
-            this.components.Add(this.viewModel.OnPropertyChange(
+            this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
@@ -76,7 +79,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                     // otherwise the title does not update properly.
                     this.TabText = title;
                     this.Text = title;
-                }));
+                },
+                bindingContext);
             this.viewModel.ResetWindowTitleAndInformationBar();  // Fire event to set initial window title.
 
 
@@ -85,37 +89,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsListEnabled,
-                this.components);
+                bindingContext);
             this.deleteToolStripButton.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsDeleteButtonEnabled,
-                this.components);
+                bindingContext);
 
             // Bind list.
             this.keysList.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsListEnabled,
-                this.components);
+                bindingContext);
 
             this.keysList.List.BindCollection(this.viewModel.FilteredKeys);
             this.keysList.List.BindProperty(
                 l => l.SelectedModelItem,
                 this.viewModel,
                 m => this.viewModel.SelectedItem,
-                this.components);
+                bindingContext);
 
             this.keysList.BindProperty(
                 c => c.SearchTerm,
                 this.viewModel,
                 m => m.Filter,
-                this.components);
+                bindingContext);
             this.keysList.BindProperty(
                 c => c.Loading,
                 this.viewModel,
                 m => m.IsLoading,
-                this.components);
+                bindingContext);
             this.keysList.SearchOnKeyDown = true;
             this.keysList.List.MultiSelect = false;
         }

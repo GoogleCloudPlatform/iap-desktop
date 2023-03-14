@@ -44,30 +44,33 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.projectList.List.AddCopyCommands();
         }
 
-        public void Bind(ProjectPickerViewModel viewModel)
+        public void Bind(
+            ProjectPickerViewModel viewModel,
+            IBindingContext bindingContext)
         {
             viewModel.LoadingError.OnPropertyChange(
                 m => m.Value,
                 e =>
                 {
                     this.exceptionDialog.Show(this, "Loading projects failed", e);
-                });
+                },
+                bindingContext);
 
             this.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.DialogText,
-                this.components);
+                bindingContext);
             this.headlineLabel.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.DialogText,
-                this.components);
+                bindingContext);
             this.pickProjectButton.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.ButtonText,
-                this.components);
+                bindingContext);
 
             //
             // Bind list.
@@ -77,28 +80,28 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 c => c.SearchTerm,
                 viewModel,
                 m => m.Filter,
-                this.components);
+                bindingContext);
             this.projectList.BindObservableProperty(
                 c => c.Loading,
                 viewModel,
                 m => m.IsLoading,
-                this.components);
+                bindingContext);
             this.projectList.List.BindObservableProperty(
                 c => c.SelectedModelItems,
                 viewModel,
                 m => m.SelectedProjects,
-                this.components);
+                bindingContext);
 
             this.statusLabel.BindReadonlyObservableProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsStatusTextVisible,
-                this.components);
+                bindingContext);
             this.statusLabel.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.StatusText,
-                this.components);
+                bindingContext);
 
             //
             // Reset filter to kick off a search.
@@ -112,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 c => c.Enabled,
                 viewModel,
                 m => m.IsProjectSelected,
-                this.components);
+                bindingContext);
         }
 
         private void addProjectButton_Click(object sender, EventArgs e)

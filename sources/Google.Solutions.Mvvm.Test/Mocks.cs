@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,36 +19,32 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Binding;
+using Moq;
+using System;
 
-namespace Google.Solutions.Mvvm.Commands
+namespace Google.Solutions.Mvvm.Test
 {
-    /// <summary>
-    /// Source (typically a view model) for the context that
-    /// determines the availability of commands.
-    /// </summary>
-    /// <typeparam name="TContext"></typeparam>
-    public interface ICommandContextSource<TContext>
+    internal static class Mocks
     {
-        TContext Context { get; }
-    }
-
-    /// <summary>
-    /// Basic context source implementation.
-    /// </summary>
-    public class ObservableCommandContextSource<TContext>
-        : ViewModelBase, ICommandContextSource<TContext>
-    {
-        private TContext context;
-
-        public TContext Context
+        public static void Add<TService>(
+            this Mock<IServiceProvider> serviceProvider,
+            TService service)
+            where TService : class
         {
-            get => this.context;
-            set
-            {
-                this.context = value;
-                RaisePropertyChange();
-            }
+            serviceProvider
+                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(TService))))
+                .Returns(service);
+        }
+
+        public static Mock<TService> AddMock<TService>(
+            this Mock<IServiceProvider> serviceProvider)
+            where TService : class
+        {
+            var service = new Mock<TService>();
+            serviceProvider
+                .Setup(s => s.GetService(It.Is<Type>(t => t == typeof(TService))))
+                .Returns(service.Object);
+            return service;
         }
     }
 }

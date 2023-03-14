@@ -38,29 +38,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Download
             InitializeComponent();
         }
 
-        public void Bind(DownloadFileViewModel viewModel)
+        public void Bind(
+            DownloadFileViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.DialogText,
-                this.Container);
+                bindingContext);
             this.targetDirectoryTextBox.BindObservableProperty(
                 c => c.Text,
                 viewModel,
                 m => m.TargetDirectory,
-                this.Container);
+                bindingContext);
             this.fileBrowser.BindObservableProperty(
                 c => c.SelectedFiles,
                 viewModel,
                 m => m.SelectedFiles,
-                this.Container);
+                bindingContext);
             this.downloadButton.BindReadonlyObservableProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsDownloadButtonEnabled,
-                this.Container);
-            this.fileBrowser.Bind(viewModel.FileSystem);
+                bindingContext);
+            this.fileBrowser.Bind(viewModel.FileSystem, bindingContext);
 
             this.fileBrowser.NavigationFailed += (_, args) =>
                 this.exceptionDialog.Show(this, "Navigation failed", args.Exception);

@@ -21,7 +21,9 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -38,9 +40,9 @@ using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Interop;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Commands;
-using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -71,10 +73,12 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IThemeService themeService;
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly IServiceProvider serviceProvider;
+        private readonly IBindingContext bindingContext;
+
         private IIapUrlHandler urlHandler;
 
-        private readonly ObservableCommandContextSource<IMainWindow> viewMenuContextSource;
-        private readonly ObservableCommandContextSource<ToolWindow> windowMenuContextSource;
+        private readonly ContextSource<IMainWindow> viewMenuContextSource;
+        private readonly ContextSource<ToolWindow> windowMenuContextSource;
 
         private readonly CommandContainer<IMainWindow> viewMenuCommands;
         private readonly CommandContainer<ToolWindow> windowMenuCommands;
@@ -83,12 +87,19 @@ namespace Google.Solutions.IapDesktop.Windows
         public ICommandContainer<IMainWindow> ViewMenu => this.viewMenuCommands;
         public ICommandContainer<ToolWindow> WindowMenu => this.windowMenuCommands;
 
-        public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
+        public MainForm(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
 
             this.themeService = this.serviceProvider.GetService<IThemeService>();
-            this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
+            this.applicationSettings = this.serviceProvider.GetService<ApplicationSettingsRepository>();
+            this.bindingContext = serviceProvider.GetService<IBindingContext>();
+
+            //
+            // Register this window with the binding context so that any
+            // error dialos can use this window as owner.
+            //
+            ((ViewBindingContext)this.bindingContext).SetCurrentMainWindow(this);
 
             // 
             // Restore window settings.
@@ -116,8 +127,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.themeService.MainWindowTheme.ApplyTo(this);
 
-            ResumeLayout();
-
             this.MinimumSize = MinimumWindowSize;
 
             // Set fixed size for the left/right panels (in pixels).
@@ -127,21 +136,23 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // View menu.
             //
-            this.viewMenuContextSource = new ObservableCommandContextSource<IMainWindow>()
+            this.viewMenuContextSource = new ContextSource<IMainWindow>()
             {
                 Context = this // Pseudo-context, never changes
             };
 
             this.viewMenuCommands = new CommandContainer<IMainWindow>(
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.viewMenuContextSource);
-            this.viewMenuCommands.CommandFailed += CommandContainer_CommandFailed;
-            this.viewMenuCommands.BindTo(this.viewToolStripMenuItem, this.Container);
+                this.viewMenuContextSource,
+                bindingContext);
+            this.viewMenuCommands.BindTo(
+                this.viewToolStripMenuItem, 
+                this.bindingContext);
 
             //
             // Window menu.
             //
-            this.windowMenuContextSource = new ObservableCommandContextSource<ToolWindow>();
+            this.windowMenuContextSource = new ContextSource<ToolWindow>();
 
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
@@ -163,31 +174,33 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.windowMenuCommands = new CommandContainer<ToolWindow>(
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.windowMenuContextSource);
-            this.windowMenuCommands.CommandFailed += CommandContainer_CommandFailed;
-            this.windowMenuCommands.BindTo(this.windowToolStripMenuItem, this.Container);
+                this.windowMenuContextSource,
+                bindingContext);
+            this.windowMenuCommands.BindTo(
+                this.windowToolStripMenuItem, 
+                this.bindingContext);
 
             //
             // Bind controls.
             //
             this.viewModel = new MainFormViewModel(
                 this,
-                bootstrappingServiceProvider.GetService<Install>(),
-                bootstrappingServiceProvider.GetService<Profile>(),
-                bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
-                bootstrappingServiceProvider.GetService<AuthSettingsRepository>(),
+                this.serviceProvider.GetService<Install>(),
+                this.serviceProvider.GetService<Profile>(),
+                this.serviceProvider.GetService<ApplicationSettingsRepository>(),
                 this.themeService);
+            this.viewModel.Authorize(this.serviceProvider.GetService<IAuthorization>());
 
             this.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.WindowTitle,
-                this.components);
+                bindingContext);
             this.reportInternalIssueToolStripMenuItem.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsReportInternalIssueVisible,
-                this.components);
+                bindingContext);
 
             //
             // Status bar.
@@ -196,42 +209,42 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.BackColor,
                 this.viewModel,
                 m => m.StatusBarBackColor,
-                this.components);
+                bindingContext);
             this.toolStripStatus.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.StatusText,
-                this.components);
+                bindingContext);
             this.backgroundJobLabel.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsBackgroundJobStatusVisible,
-                this.components);
+                bindingContext);
             this.cancelBackgroundJobsButton.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsBackgroundJobStatusVisible,
-                this.components);
+                bindingContext);
             this.backgroundJobLabel.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.BackgroundJobStatus,
-                this.components);
+                bindingContext);
             this.deviceStateButton.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.DeviceStateCaption,
-                this.components);
+                bindingContext);
             this.deviceStateButton.BindProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsDeviceStateVisible,
-                this.components);
+                bindingContext);
             this.profileStateButton.BindReadonlyProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.ProfileStateCaption,
-                this.components);
+                this.bindingContext);
 
             //
             // Profile chooser.
@@ -273,19 +286,198 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsLoggingEnabled,
-                this.components);
+                bindingContext);
+
+            //
+            // Bind menu commands.
+            //
+            this.WindowMenu.AddCommand(
+                new ContextCommand<ToolWindow>(
+                    "&Close",
+                    window => window != null && window.IsDockable
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window => window.CloseSafely()));
+            this.WindowMenu.AddCommand(
+                new ContextCommand<ToolWindow>(
+                    "&Float",
+                    window => window != null &&
+                              !window.IsFloat &&
+                              window.IsDockStateValid(DockState.Float)
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window => window.IsFloat = true));
+            this.WindowMenu.AddCommand(
+                new ContextCommand<ToolWindow>(
+                    "&Auto hide",
+                    window => window != null && window.IsDocked && !window.IsAutoHide
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window =>
+                    {
+                        window.IsAutoHide = true;
+                        OnDockLayoutChanged();
+                    })
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.H
+                });
+
+            var dockCommand = this.WindowMenu.AddCommand(
+                new ContextCommand<ToolWindow>(
+                    "Dock",
+                    _ => CommandState.Enabled,
+                    context => { }));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Left",
+                DockState.DockLeft,
+                Keys.Control | Keys.Alt | Keys.Left));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Right",
+                DockState.DockRight,
+                Keys.Control | Keys.Alt | Keys.Right));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Top",
+                DockState.DockTop,
+                Keys.Control | Keys.Alt | Keys.Up));
+            dockCommand.AddCommand(CreateDockCommand(
+                "&Bottom",
+                DockState.DockBottom,
+                Keys.Control | Keys.Alt | Keys.Down));
+
+            this.WindowMenu.AddSeparator();
+
+            CommandState showTabCommand(ToolWindow window)
+                => window != null && window.DockState == DockState.Document && window.Pane.Contents.Count > 1
+                    ? CommandState.Enabled
+                    : CommandState.Disabled;
+
+            this.WindowMenu.AddCommand(
+                new ContextCommand<ToolWindow>(
+                    "&Next tab",
+                    showTabCommand,
+                    window => SwitchTab(window, 1))
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageDown
+                });
+            this.WindowMenu.AddCommand(
+                new ContextCommand<ToolWindow>(
+                    "&Previous tab",
+                    showTabCommand,
+                    window => SwitchTab(window, -1))
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageUp
+                });
+            this.WindowMenu.AddCommand(
+                new ContextCommand<ToolWindow>(
+                    "Capture/release &focus",
+                    _ => this.dockPanel.ActiveDocumentPane != null &&
+                         this.dockPanel.ActiveDocumentPane.Contents.EnsureNotNull().Any()
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    window => (this.dockPanel.ActiveDocumentPane?.ActiveContent as DocumentWindow)?.SwitchToDocument())
+                {
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.Home
+                });
+
+#if DEBUG
+            var debugCommand = this.ViewMenu.AddCommand(
+                new ContextCommand<IMainWindow>(
+                    "Debug",
+                    _ => CommandState.Enabled,
+                    context => { }));
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Job Service",
+                _ => CommandState.Enabled,
+                _ => ToolWindow
+                    .GetWindow<DebugJobServiceView, DebugJobServiceViewModel>(this.serviceProvider)
+                    .Show()));
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Docking ",
+                _ => CommandState.Enabled,
+                _ => ToolWindow
+                    .GetWindow<DebugDockingView, DebugDockingViewModel>(this.serviceProvider)
+                    .Show()));
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Project Explorer Tracking",
+                _ => CommandState.Enabled,
+                _ => ToolWindow
+                    .GetWindow<DebugProjectExplorerTrackingView, DebugProjectExplorerTrackingViewModel>(this.serviceProvider)
+                    .Show()));
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Full screen pane",
+                _ => CommandState.Enabled,
+                _ => ToolWindow
+                    .GetWindow<DebugFullScreenView, DebugFullScreenViewModel>(this.serviceProvider)
+                    .Show()));
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Theme",
+                _ => CommandState.Enabled,
+                _ => ToolWindow
+                    .GetWindow<DebugThemeView, DebugThemeViewModel>(this.serviceProvider)
+                    .Show()));
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Registered services",
+                _ => CommandState.Enabled,
+                _ => ToolWindow
+                    .GetWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)
+                    .Show()));
+            debugCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Common controls",
+                _ => CommandState.Enabled,
+                _ => ToolWindow
+                    .GetWindow<DebugCommonControlsView, DebugCommonControlsViewModel>(this.serviceProvider)
+                    .Show()));
+
+            var crashCommand = debugCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Exceptions",
+                _ => CommandState.Enabled,
+                _ => { }));
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Command: Throw ExceptionWithHelp (sync)",
+                _ => CommandState.Enabled,
+                _ => throw new ResourceAccessDeniedException(
+                        "DEBUG",
+                        HelpTopics.General,
+                        new ApplicationException("DEBUG"))));
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Command: Throw ApplicationException (sync)",
+                _ => CommandState.Enabled,
+                _ => throw new ApplicationException("DEBUG")));
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Command: Throw ApplicationException (async)",
+                _ => CommandState.Enabled,
+                async _ =>
+                {
+                    await Task.Yield();
+                    throw new ApplicationException("DEBUG");
+                }));
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Command: Throw TaskCanceledException (sync)",
+                _ => CommandState.Enabled,
+                _ => throw new TaskCanceledException("DEBUG")));
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Command: Throw TaskCanceledException (async)",
+                _ => CommandState.Enabled,
+                async _ =>
+                {
+                    await Task.Yield();
+                    throw new TaskCanceledException("DEBUG");
+                }));
+            crashCommand.AddCommand(new ContextCommand<IMainWindow>(
+                "Window: Throw ApplicationException",
+                _ => CommandState.Enabled,
+                _ =>
+                {
+                    this.BeginInvoke((Action)(() => throw new ApplicationException("DEBUG")));
+                }));
+#endif
+
+            ResumeLayout();
         }
 
         //---------------------------------------------------------------------
         // Window events.
         //---------------------------------------------------------------------
-
-        private void CommandContainer_CommandFailed(object sender, ExceptionEventArgs e)
-        {
-            this.serviceProvider
-                .GetService<IExceptionDialog>()
-                .Show(this, "Executing command failed", e.Exception);
-        }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -323,91 +515,26 @@ namespace Google.Solutions.IapDesktop.Windows
             this.applicationSettings.SetSettings(settings);
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void MainForm_Shown(object sender, EventArgs __)
         {
-        }
-
-        private void MainForm_Shown(object sender, EventArgs args)
-        {
-            //
-            // Authorize.
-            //
-            while (this.viewModel.Authorization == null)
+            var profile = this.serviceProvider.GetService<Profile>();
+            if (!profile.IsDefault)
             {
-                try
+                //
+                // Add taskbar badge to help distinguish this profile
+                // from other profiles.
+                //
+                // NB. This can only be done after the window has been shown,
+                // so this code must not be moved to the constructor.
+                //
+                using (var badge = BadgeIcon.ForTextInitial(profile.Name))
+                using (var taskbar = ComReference.For((ITaskbarList3)new TaskbarList()))
                 {
-                    // NB. If the user cancels, no exception is thrown.
-                    this.viewModel.Authorize();
-                }
-                catch (OAuthScopeNotGrantedException)
-                {
-                    //
-                    // User did not grant 'cloud-platform' scope.
-                    //
-                    using (var view = this.serviceProvider
-                        .GetDialog<OAuthScopeNotGrantedView, OAuthScopeNotGrantedViewModel>(
-                            this.themeService.DialogTheme))
-                    {
-                        if (view.ShowDialog(this) == DialogResult.OK)
-                        {
-                            // Retry sign-in.
-                            continue;
-                        }
-                    }
-                }
-                catch (AuthorizationFailedException e)
-                {
-                    //
-                    // Authorization failed for reasons not related to networking.
-                    //
-                    this.serviceProvider
-                        .GetService<IExceptionDialog>()
-                        .Show(this, "Authorization failed", e);
-                }
-                catch (Exception e)
-                {
-                    //
-                    // This exception might be due to a missing/incorrect proxy
-                    // configuration, so give the user a chance to change proxy
-                    // settings.
-                    //
-
-                    try
-                    {
-                        if (this.serviceProvider.GetService<ITaskDialog>()
-                            .ShowOptionsTaskDialog(
-                                this,
-                                TaskDialogIcons.TD_ERROR_ICON,
-                                "Authorization failed",
-                                "IAP Desktop failed to complete the OAuth authorization. " +
-                                    "This might be due to network communication issues.",
-                                e.Message,
-                                e.FullMessage(),
-                                new[]
-                                {
-                                    "Change network settings"
-                                },
-                                null,
-                                out bool _) == 0)
-                        {
-                            // Open settings.
-                            if (this.serviceProvider.GetService<OptionsDialog>().ShowDialog(this) == DialogResult.OK)
-                            {
-                                // Ok, retry with modified settings.
-                                continue;
-                            }
-                        }
-                    }
-                    catch (OperationCanceledException)
-                    { }
-                }
-
-                if (!this.viewModel.IsAuthorized)
-                {
-                    // Not authorized, either because the user cancelled or an 
-                    // error occured -> close.
-                    Close();
-                    return;
+                    taskbar.Object.HrInit();
+                    taskbar.Object.SetOverlayIcon(
+                        this.Handle,
+                        badge.Handle,
+                        string.Empty);
                 }
             }
 
@@ -423,190 +550,6 @@ namespace Google.Solutions.IapDesktop.Windows
                     .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(this.serviceProvider)
                     .Show();
             }
-
-            //
-            // Bind menu commands.
-            //
-            this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
-                    "&Close",
-                    window => window != null && window.IsDockable
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    window => window.CloseSafely()));
-            this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
-                    "&Float",
-                    window => window != null &&
-                              !window.IsFloat &&
-                              window.IsDockStateValid(DockState.Float)
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    window => window.IsFloat = true));
-            this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
-                    "&Auto hide",
-                    window => window != null && window.IsDocked && !window.IsAutoHide
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    window =>
-                    {
-                        window.IsAutoHide = true;
-                        OnDockLayoutChanged();
-                    })
-                {
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.H
-                });
-
-            var dockCommand = this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
-                    "Dock",
-                    _ => CommandState.Enabled,
-                    context => { }));
-            dockCommand.AddCommand(CreateDockCommand(
-                "&Left",
-                DockState.DockLeft,
-                Keys.Control | Keys.Alt | Keys.Left));
-            dockCommand.AddCommand(CreateDockCommand(
-                "&Right",
-                DockState.DockRight,
-                Keys.Control | Keys.Alt | Keys.Right));
-            dockCommand.AddCommand(CreateDockCommand(
-                "&Top",
-                DockState.DockTop,
-                Keys.Control | Keys.Alt | Keys.Up));
-            dockCommand.AddCommand(CreateDockCommand(
-                "&Bottom",
-                DockState.DockBottom,
-                Keys.Control | Keys.Alt | Keys.Down));
-
-            this.WindowMenu.AddSeparator();
-
-            CommandState showTabCommand(ToolWindow window)
-                => window != null && window.DockState == DockState.Document && window.Pane.Contents.Count > 1
-                    ? CommandState.Enabled
-                    : CommandState.Disabled;
-
-            this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
-                    "&Next tab",
-                    showTabCommand,
-                    window => SwitchTab(window, 1))
-                {
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageDown
-                });
-            this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
-                    "&Previous tab",
-                    showTabCommand,
-                    window => SwitchTab(window, -1))
-                {
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageUp
-                });
-            this.WindowMenu.AddCommand(
-                new Command<ToolWindow>(
-                    "Capture/release &focus",
-                    _ => this.dockPanel.ActiveDocumentPane != null &&
-                         this.dockPanel.ActiveDocumentPane.Contents.EnsureNotNull().Any()
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    window => (this.dockPanel.ActiveDocumentPane?.ActiveContent as DocumentWindow)?.SwitchToDocument())
-                {
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.Home
-                });
-
-#if DEBUG
-            var debugCommand = this.ViewMenu.AddCommand(
-                new Command<IMainWindow>(
-                    "Debug",
-                    _ => CommandState.Enabled,
-                    context => { }));
-            debugCommand.AddCommand(new Command<IMainWindow>(
-                "Job Service",
-                _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugJobServiceView, DebugJobServiceViewModel>(this.serviceProvider)
-                    .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
-                "Docking ",
-                _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugDockingView, DebugDockingViewModel>(this.serviceProvider)
-                    .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
-                "Project Explorer Tracking",
-                _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugProjectExplorerTrackingView, DebugProjectExplorerTrackingViewModel>(this.serviceProvider)
-                    .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
-                "Full screen pane",
-                _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugFullScreenView, DebugFullScreenViewModel>(this.serviceProvider)
-                    .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
-                "Theme",
-                _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugThemeView, DebugThemeViewModel>(this.serviceProvider)
-                    .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
-                "Registered services",
-                _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)
-                    .Show()));
-            debugCommand.AddCommand(new Command<IMainWindow>(
-                "Common controls",
-                _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugCommonControlsView, DebugCommonControlsViewModel>(this.serviceProvider)
-                    .Show()));
-
-            var crashCommand = debugCommand.AddCommand(new Command<IMainWindow>(
-                "Exceptions",
-                _ => CommandState.Enabled,
-                _ => { }));
-            crashCommand.AddCommand(new Command<IMainWindow>(
-                "Command: Throw ExceptionWithHelp (sync)",
-                _ => CommandState.Enabled,
-                _ => throw new ResourceAccessDeniedException(
-                        "DEBUG",
-                        HelpTopics.General,
-                        new ApplicationException("DEBUG"))));
-            crashCommand.AddCommand(new Command<IMainWindow>(
-                "Command: Throw ApplicationException (sync)",
-                _ => CommandState.Enabled,
-                _ => throw new ApplicationException("DEBUG")));
-            crashCommand.AddCommand(new Command<IMainWindow>(
-                "Command: Throw ApplicationException (async)",
-                _ => CommandState.Enabled,
-                async _ =>
-                {
-                    await Task.Yield();
-                    throw new ApplicationException("DEBUG");
-                }));
-            crashCommand.AddCommand(new Command<IMainWindow>(
-                "Command: Throw TaskCanceledException (sync)",
-                _ => CommandState.Enabled,
-                _ => throw new TaskCanceledException("DEBUG")));
-            crashCommand.AddCommand(new Command<IMainWindow>(
-                "Command: Throw TaskCanceledException (async)",
-                _ => CommandState.Enabled,
-                async _ =>
-                {
-                    await Task.Yield();
-                    throw new TaskCanceledException("DEBUG");
-                }));
-            crashCommand.AddCommand(new Command<IMainWindow>(
-                "Window: Throw ApplicationException",
-                _ => CommandState.Enabled,
-                _ =>
-                {
-                    this.BeginInvoke((Action)(() => throw new ApplicationException("DEBUG")));
-                }));
-#endif
         }
 
         private void SwitchTab(ToolWindow reference, int delta)
@@ -624,12 +567,12 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        private Command<ToolWindow> CreateDockCommand(
+        private ContextCommand<ToolWindow> CreateDockCommand(
             string caption,
             DockState dockState,
             Keys shortcutKeys)
         {
-            return new Command<ToolWindow>(
+            return new ContextCommand<ToolWindow>(
                 caption,
                 window => window != null &&
                             window.VisibleState != dockState &&
@@ -744,9 +687,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
             var container = new CommandContainer<TContext>(
                 ToolStripItemDisplayStyle.ImageAndText,
-                new CallbackSource<TContext>(queryCurrentContextFunc));
-            container.CommandFailed += CommandContainer_CommandFailed;
-            container.BindTo(menu, this.Container);
+                new CallbackSource<TContext>(queryCurrentContextFunc),
+                this.bindingContext);
+            container.BindTo(menu, this.bindingContext);
 
             menu.DropDownOpening += (sender, args) =>
             {
@@ -925,7 +868,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             try
             {
-                new OptionsDialog((IServiceCategoryProvider)this.serviceProvider).ShowDialog(this);
+                OptionsDialog.Show(this, (IServiceCategoryProvider)this.serviceProvider);
             }
             catch (TaskCanceledException)
             {
@@ -1034,7 +977,7 @@ namespace Google.Solutions.IapDesktop.Windows
         // Helper classes.
         //---------------------------------------------------------------------
 
-        private class CallbackSource<TContext> : ICommandContextSource<TContext>
+        private class CallbackSource<TContext> : IContextSource<TContext>
         {
             private readonly Func<TContext> queryCurrentContextFunc;
 

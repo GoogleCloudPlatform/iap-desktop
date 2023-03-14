@@ -19,48 +19,68 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
+using Google.Solutions.Mvvm.Binding;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    [SkipCodeCoverage("UI code")]
-    public class OptionsDialog : PropertiesDialog
+    public static class OptionsDialog 
     {
-        public OptionsDialog(IServiceCategoryProvider serviceProvider)
-            : base(serviceProvider)
+        public static DialogResult Show(
+            IWin32Window parent,
+            IServiceCategoryProvider serviceProvider)
         {
-            this.Text = "Options";
-
-            var appSettingsRepository =
-                serviceProvider.GetService<ApplicationSettingsRepository>();
-            var themeSettingsRepository =
-                serviceProvider.GetService<ThemeSettingsRepository>();
-
-            AddSheet(new GeneralOptionsSheet(
-                appSettingsRepository,
-                serviceProvider.GetService<IAppProtocolRegistry>(),
-                serviceProvider.GetService<HelpAdapter>()));
-            AddSheet(new AppearanceOptionsSheet(themeSettingsRepository));
-            AddSheet(new NetworkOptionsSheet(
-                appSettingsRepository,
-                serviceProvider.GetService<IHttpProxyAdapter>()));
-            AddSheet(new ScreenOptionsSheet(appSettingsRepository));
-
-            // Load all services implementing IOptionsDialogPane and
-            // add them automatically. This gives extensions a chance
-            // to plug in their own panes.
-            foreach (var sheet in serviceProvider
-                .GetServicesByCategory<IPropertiesSheet>()
-                .OrderBy(p => p.ViewModel.Title))
+            using (var dialog = serviceProvider.GetDialog<PropertiesView, PropertiesViewModel>())
             {
-                AddSheet((UserControl)sheet, sheet);
+                dialog.Theme = serviceProvider.GetService<IThemeService>().DialogTheme;
+
+                var appSettingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
+
+                dialog.ViewModel.AddSheet(
+                    new GeneralOptionsSheet(),
+                    new GeneralOptionsViewModel(
+                        appSettingsRepository,
+                        serviceProvider.GetService<IAppProtocolRegistry>(),
+                        serviceProvider.GetService<HelpAdapter>()));
+                dialog.ViewModel.AddSheet(
+                    new AppearanceOptionsSheet(),
+                    new AppearanceOptionsViewModel(serviceProvider.GetService<ThemeSettingsRepository>()));
+                dialog.ViewModel.AddSheet(
+                    new NetworkOptionsSheet(),
+                    new NetworkOptionsViewModel(
+                        appSettingsRepository,
+                        serviceProvider.GetService<IHttpProxyAdapter>()));
+                dialog.ViewModel.AddSheet(
+                    new ScreenOptionsSheet(),
+                    new ScreenOptionsViewModel(appSettingsRepository));
+
+                //
+                // Load all services implementing IPropertiesSheet and
+                // add them automatically. This gives extensions a chance
+                // to plug in their own sheets.
+                //
+                foreach (var sheet in serviceProvider
+                    .GetServicesByCategory<IPropertiesSheetView>()
+                    .Select(sheet => new {
+                        View = sheet,
+                        ViewModel = (PropertiesSheetViewModelBase)serviceProvider.GetService(sheet.ViewModel)
+                    })
+                    .OrderBy(p => p.ViewModel.Title))
+                {
+                    dialog.ViewModel.AddSheet(sheet.View, sheet.ViewModel);
+                }
+
+#if DEBUG
+                dialog.ViewModel.AddSheet(new DebugOptionsSheet(), new DebugOptionsSheetViewModel());
+#endif
+
+                return dialog.ShowDialog(parent);
             }
         }
     }

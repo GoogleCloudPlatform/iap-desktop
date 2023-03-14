@@ -34,6 +34,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
@@ -89,6 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             registry.AddMock<IDownloadFileDialog>();
             registry.AddMock<IQuarantineAdapter>();
             registry.AddMock<IThemeService>();
+            registry.AddMock<IBindingContext>();
             return registry;
         }
 

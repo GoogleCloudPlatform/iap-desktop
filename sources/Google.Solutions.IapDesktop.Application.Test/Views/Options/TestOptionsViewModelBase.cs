@@ -26,6 +26,7 @@ using Google.Solutions.Mvvm.Binding;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
@@ -51,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 SettingsRepositoryBase<IRegistrySettingsCollection> settingsRepository)
                 : base(title, settingsRepository)
             {
+                OnInitializationCompleted();
             }
 
             protected override void Load(IRegistrySettingsCollection settings)
@@ -72,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             public void MarkDirty()
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
             }
 
             public void CallMarkDirtyWhenPropertyChanges<T>(ObservableProperty<T> property)
@@ -135,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 repository.Object);
 
             optionsViewModel.MarkDirty();
-            optionsViewModel.ApplyChanges();
+            optionsViewModel.ApplyChangesAsync().Wait();
 
             repository.Verify(r => r.GetSettings(), Times.Exactly(2));
             repository.Verify(r => r.SetSettings(It.IsAny<IRegistrySettingsCollection>()), Times.Once);
@@ -144,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         [Test]
-        public void WhenWriteBackSucceeds_ThenApplyChangesReturnsOK()
+        public async Task WhenWriteBackSucceeds_ThenApplyChangesReturns()
         {
             var repository = CreateRepositoryMock();
             var optionsViewModel = new OptionsViewModel(
@@ -152,8 +154,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 repository.Object);
 
             optionsViewModel.MarkDirty();
-
-            Assert.AreEqual(DialogResult.OK, optionsViewModel.ApplyChanges());
+            
+            await optionsViewModel.ApplyChangesAsync();
         }
 
         [Test]
@@ -172,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             optionsViewModel.MarkDirty();
 
-            Assert.Throws<ArgumentException>(() => optionsViewModel.ApplyChanges());
+            Assert.Throws<ArgumentException>(() => optionsViewModel.ApplyChangesAsync().Wait());
         }
 
         [Test]
@@ -188,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             optionsViewModel.MarkDirty();
 
-            Assert.Throws<ArgumentException>(() => optionsViewModel.ApplyChanges());
+            Assert.Throws<ArgumentException>(() => optionsViewModel.ApplyChangesAsync().Wait());
         }
 
         //---------------------------------------------------------------------
@@ -196,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         //---------------------------------------------------------------------
 
         [Test]
-        public void ApplyChangesClearsDirtyFlag()
+        public async Task ApplyChangesClearsDirtyFlag()
         {
             var repository = CreateRepositoryMock();
             var optionsViewModel = new OptionsViewModel(
@@ -204,9 +206,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 repository.Object);
             optionsViewModel.MarkDirty();
 
-            Assert.IsTrue(optionsViewModel.IsDirty);
-            optionsViewModel.ApplyChanges();
-            Assert.IsFalse(optionsViewModel.IsDirty);
+            Assert.IsTrue(optionsViewModel.IsDirty.Value);
+            await optionsViewModel.ApplyChangesAsync();
+            Assert.IsFalse(optionsViewModel.IsDirty.Value);
         }
 
         [Test]
@@ -220,9 +222,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var property = ObservableProperty.Build(string.Empty);
             optionsViewModel.CallMarkDirtyWhenPropertyChanges(property);
 
-            Assert.IsFalse(optionsViewModel.IsDirty);
+            Assert.IsFalse(optionsViewModel.IsDirty.Value);
             property.Value = "new value";
-            Assert.IsTrue(optionsViewModel.IsDirty);
+            Assert.IsTrue(optionsViewModel.IsDirty.Value);
         }
     }
 }

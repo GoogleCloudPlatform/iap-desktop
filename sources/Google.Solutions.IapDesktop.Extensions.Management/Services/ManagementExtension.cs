@@ -38,7 +38,7 @@ using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Commands;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             //
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Properties",
                     InstancePropertiesInspectorViewModel.GetToolbarCommandState,
                     context => ToolWindow
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             // Add commands to project explorer context menu.
             //
             var reportContainer = projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Report",
                     context => context is IProjectModelProjectNode
                             || context is IProjectModelCloudNode
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                         : CommandState.Unavailable,
                     context => { }));
             reportContainer.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Analyze VM and sole-tenant node usage...",
                     context => CommandState.Enabled,
                     context => this.serviceProvider
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 });
 
             var controlContainer = projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Contro&l",
                     node => node is IProjectModelInstanceNode
                         ? CommandState.Enabled
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     context => { }),
                 7);
             controlContainer.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "&Start",
                     node => node is IProjectModelInstanceNode vmNode && vmNode.CanStart
                         ? CommandState.Enabled
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ActivityText = "Starting VM instance"
                 });
             controlContainer.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "&Resume",
                     node => node is IProjectModelInstanceNode vmNode && vmNode.CanResume
                         ? CommandState.Enabled
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ActivityText = "Resuming VM instance"
                 });
             controlContainer.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Sto&p",
                     node => node is IProjectModelInstanceNode vmNode && vmNode.CanStop
                         ? CommandState.Enabled
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ActivityText = "Stopping VM instance"
                 });
             controlContainer.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Suspe&nd",
                     node => node is IProjectModelInstanceNode vmNode && vmNode.CanSuspend
                         ? CommandState.Enabled
@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ActivityText = "Suspending VM instance"
                 });
             controlContainer.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Rese&t",
                     node => node is IProjectModelInstanceNode vmNode && vmNode.CanReset
                         ? CommandState.Enabled
@@ -297,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 
             controlContainer.AddSeparator();
             controlContainer.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "&Join to Active Directory",
                     node => node is IProjectModelInstanceNode vmNode &&
                             vmNode.OperatingSystem == OperatingSystems.Windows
@@ -309,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 });
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Show serial port &output (COM1)",
                     SerialOutputViewModel.GetCommandState,
                     context => ToolWindow
@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 },
                 9);
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Show &event log",
                     EventLogViewModel.GetCommandState,
                     context => ToolWindow
@@ -332,13 +332,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 10);
 
             var osCommand = projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Soft&ware packages",
                     PackageInventoryViewModel.GetCommandState,
                     context => { }),
                 11);
             osCommand.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Show &installed packages",
                     PackageInventoryViewModel.GetCommandState,
                     context => ToolWindow
@@ -348,7 +348,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     Image = Resources.PackageInspect_16
                 });
             osCommand.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "Show &available updates",
                     PackageInventoryViewModel.GetCommandState,
                     context => ToolWindow
@@ -359,7 +359,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 });
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectModelNode>(
+                new ContextCommand<IProjectModelNode>(
                     "P&roperties",
                     InstancePropertiesInspectorViewModel.GetContextMenuCommandState,
                     context => ToolWindow
@@ -376,7 +376,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             //
             var mainForm = serviceProvider.GetService<IMainWindow>();
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "&Event log",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ToolWindow
@@ -388,7 +388,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 });
 
             var serialPortMenu = mainForm.ViewMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "Serial port &output",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => { })
@@ -396,7 +396,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     Image = Resources.Log_16,
                 });
             serialPortMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "COM&1 (log)",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ToolWindow
@@ -407,7 +407,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.O
                 });
             serialPortMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "COM&3 (setup log)",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ToolWindow
@@ -417,7 +417,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     Image = Resources.Log_16,
                 });
             serialPortMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "COM&4 (agent)",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ToolWindow
@@ -429,7 +429,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 
 
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "&Instance properties",
                     _ => CommandState.Enabled,
                     _ => ToolWindow
@@ -440,7 +440,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.I
                 });
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "I&nstalled packages",
                     _ => CommandState.Enabled,
                     _ => ToolWindow
@@ -451,7 +451,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
                 });
             mainForm.ViewMenu.AddCommand(
-                new Command<IMainWindow>(
+                new ContextCommand<IMainWindow>(
                     "&Available updates",
                     _ => CommandState.Enabled,
                     _ => ToolWindow

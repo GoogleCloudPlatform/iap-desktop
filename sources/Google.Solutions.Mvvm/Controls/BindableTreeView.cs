@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Collections.Generic;
@@ -111,7 +113,7 @@ namespace Google.Solutions.Mvvm.Controls
             }
         }
 
-        public void Bind(TModelNode rootNode)
+        public void Bind(TModelNode rootNode, IBindingContext bindingContext)
         {
             DisposeAndClear(this.Nodes);
             this.Nodes.Add(new Node(this, rootNode));
@@ -188,20 +190,23 @@ namespace Google.Solutions.Mvvm.Controls
             private readonly TaskCompletionSource<ICollection<TModelNode>> lazyLoadResult
                 = new TaskCompletionSource<ICollection<TModelNode>>();
 
-            private readonly IContainer bindings = new Container();
+            private readonly DisposableContainer bindings = new DisposableContainer();
 
             public Node(BindableTreeView<TModelNode> treeView, TModelNode modelNode)
             {
                 this.treeView = treeView;
                 this.Model = modelNode;
 
+                //
                 // Bind properties to keep TreeNode in sync with view model.
                 // Note that binding is one-way (view model -> view) as TreeNodes
                 // are not proper controls and do not provide the necessary events.
+                //
                 if (this.treeView.textExpression != null)
                 {
                     this.Name = this.Text = this.treeView.textExpression.Compile()(this.Model);
-                    this.bindings.Add(this.Model.OnPropertyChange(
+                    this.bindings.Add(BindingExtensions.CreatePropertyChangeBinding(
+                        this.Model,
                         this.treeView.textExpression,
                         text => this.Text = text));
                 }
@@ -211,7 +216,8 @@ namespace Google.Solutions.Mvvm.Controls
                     this.ImageIndex = this.treeView.imageIndexExpression.Compile()(this.Model);
                     if (!this.treeView.imageIndexExpressionReadonly)
                     {
-                        this.bindings.Add(this.Model.OnPropertyChange(
+                        this.bindings.Add(BindingExtensions.CreatePropertyChangeBinding(
+                            this.Model,
                             this.treeView.imageIndexExpression,
                             iconIndex => this.ImageIndex = iconIndex));
                     }
@@ -222,7 +228,8 @@ namespace Google.Solutions.Mvvm.Controls
                     this.SelectedImageIndex = this.treeView.selectedImageIndexExpression.Compile()(this.Model);
                     if (!this.treeView.selectedImageIndexExpressionReadonly)
                     {
-                        this.bindings.Add(this.Model.OnPropertyChange(
+                        this.bindings.Add(BindingExtensions.CreatePropertyChangeBinding(
+                            this.Model,
                             this.treeView.selectedImageIndexExpression,
                             iconIndex => this.SelectedImageIndex = iconIndex));
                     }
@@ -230,7 +237,8 @@ namespace Google.Solutions.Mvvm.Controls
 
                 if (this.treeView.isExpandedExpression != null)
                 {
-                    this.bindings.Add(this.Model.OnPropertyChange(
+                    this.bindings.Add(BindingExtensions.CreatePropertyChangeBinding(
+                        this.Model,
                         this.treeView.isExpandedExpression,
                         expanded =>
                         {

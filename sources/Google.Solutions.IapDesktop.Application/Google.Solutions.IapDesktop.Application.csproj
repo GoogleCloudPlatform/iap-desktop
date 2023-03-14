@@ -161,6 +161,13 @@
     <Compile Include="Util\TypographicQuotes.cs" />
     <Compile Include="Util\Filename.cs" />
     <Compile Include="Views\About\AboutViewModel.cs" />
+    <Compile Include="Views\Authorization\AuthorizeView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Authorization\AuthorizeView.Designer.cs">
+      <DependentUpon>AuthorizeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Authorization\AuthorizeViewModel.cs" />
     <Compile Include="Views\Authorization\DeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authorization\NewProfileView.cs">
       <SubType>Form</SubType>
@@ -184,6 +191,14 @@
     <Compile Include="Services\Adapters\CloudConsoleAdapter.cs" />
     <Compile Include="Services\Authorization\IAuthorizationSource.cs" />
     <Compile Include="Views\Authorization\OAuthScopeNotGrantedViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugOptionsSheet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugOptionsSheet.Designer.cs">
+      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugOptionsSheetViewModel.cs" />
+    <Compile Include="Views\ViewBindingContext.cs" />
     <Compile Include="Views\Diagnostics\DebugCommonControlsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -264,9 +279,7 @@
       <DependentUpon>GeneralOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Options\GeneralOptionsViewModel.cs" />
-    <Compile Include="Views\Options\OptionsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Views\Options\OptionsDialog.cs" />
     <Compile Include="Views\Options\NetworkOptionsSheet.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -291,14 +304,7 @@
     <Compile Include="Views\ProjectPicker\ProjectPickerView.Designer.cs">
       <DependentUpon>ProjectPickerView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Properties\IPropertiesSheet.cs" />
     <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
-    <Compile Include="Views\Properties\PropertiesDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Properties\PropertiesDialog.Designer.cs">
-      <DependentUpon>PropertiesDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\Properties\PropertiesInspectorViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -386,6 +392,9 @@
     <EmbeddedResource Include="Views\About\AboutView.resx">
       <DependentUpon>AboutView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\Authorization\AuthorizeView.resx">
+      <DependentUpon>AuthorizeView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\Authorization\DeviceFlyoutView.resx">
       <DependentUpon>DeviceFlyoutView.cs</DependentUpon>
     </EmbeddedResource>
@@ -403,6 +412,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugFullScreenView.resx">
       <DependentUpon>DebugFullScreenView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugOptionsSheet.resx">
+      <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugProjectExplorerTrackingView.resx">
       <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
@@ -433,9 +445,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProjectPicker\ProjectPickerView.resx">
       <DependentUpon>ProjectPickerView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Properties\PropertiesDialog.resx">
-      <DependentUpon>PropertiesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Properties\PropertiesInspectorViewBase.resx">
       <DependentUpon>PropertiesInspectorViewBase.cs</DependentUpon>
@@ -485,6 +494,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AddProject_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LogoWatermark_180.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GoogleSignIn_24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" />

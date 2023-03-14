@@ -46,56 +46,53 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TModel, ToolStripItemDisplayStyle>> getStyle,
             Func<TModel, ObservableCollection<TModel>> getChildren,
             Action<TModel> click,
-            IContainer container = null)
+            IBindingContext bindingContext)
             where TModel : INotifyPropertyChanged
         {
             item.BindReadonlyProperty(
                 c => c.Text,
                 model,
                 getText,
-                container);
+                bindingContext);
             item.BindReadonlyProperty(
                 c => c.ToolTipText,
                 model,
                 getToolTip,
-                container);
+                bindingContext);
             item.BindReadonlyProperty(
                 c => c.Image,
                 model,
                 getImage,
-                container);
+                bindingContext);
             item.BindReadonlyProperty(
                 c => c.ShortcutKeys,
                 model,
                 getShortcuts,
-                container);
+                bindingContext);
             item.BindReadonlyProperty(
                 c => c.Visible,
                 model,
                 isVisible,
-                container);
+                bindingContext);
             item.BindReadonlyProperty(
                 c => c.Enabled,
                 model,
                 isEnabled,
-                container);
+                bindingContext);
             item.BindReadonlyProperty(
                 c => c.DisplayStyle,
                 model,
                 getStyle,
-                container);
+                bindingContext);
 
 
             void OnClick(object sender, EventArgs args)
                 => click(model);
 
             item.Click += OnClick;
-            if (container != null)
-            {
-                container.Add(Disposable
-                    .For(() => item.Click -= OnClick)
-                    .AsComponent());
-            }
+            bindingContext.OnBindingCreated(
+                item,
+                Disposable.For(() => item.Click -= OnClick));
 
             var subCommands = getChildren(model);
             if (subCommands != null)
@@ -112,7 +109,7 @@ namespace Google.Solutions.Mvvm.Binding
                     getStyle,
                     getChildren,
                     click,
-                    container);
+                    bindingContext);
             }
         }
 
@@ -129,7 +126,7 @@ namespace Google.Solutions.Mvvm.Binding
             Expression<Func<TModel, ToolStripItemDisplayStyle>> getStyle,
             Func<TModel, ObservableCollection<TModel>> getChildren,
             Action<TModel> click,
-            IContainer container = null)
+            IBindingContext bindingContext)
             where TModel : INotifyPropertyChanged
         {
             ToolStripItem CreateMenuItem(TModel model)
@@ -160,7 +157,7 @@ namespace Google.Solutions.Mvvm.Binding
                         getStyle,
                         getChildren,
                         click,
-                        container);
+                        bindingContext);
 
                     return item;
                 }
@@ -180,10 +177,11 @@ namespace Google.Solutions.Mvvm.Binding
                 view,
                 modelCollection,
                 CreateMenuItem);
-            if (container != null)
-            {
-                container.Add(binding.AsComponent());
-            }
+
+            //
+            // NB. ToolStripItemCollection aren't componnets, so we
+            // cannot report this binding to the binding context.
+            //
         }
 
         private sealed class Binding<TModel> : IDisposable

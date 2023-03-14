@@ -39,7 +39,7 @@ namespace Google.Solutions.Mvvm.Format
 
         public RtfWriter(TextWriter writer)
         {
-            this.writer = writer.ThrowIfNot(writer != null, nameof(writer));
+            this.writer = writer.ExpectNotNull(nameof(writer));
         }
 
         public void Text(string s)

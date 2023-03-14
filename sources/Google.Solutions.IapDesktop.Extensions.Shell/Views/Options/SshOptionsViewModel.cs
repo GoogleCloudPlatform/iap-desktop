@@ -19,22 +19,19 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
-using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Ssh.Auth;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    public interface ISshOptionsSheet : IPropertiesSheet
-    { }
-
-    public class SshOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
+    [Service(ServiceLifetime.Transient, ServiceVisibility.Global)]
+    public class SshOptionsViewModel : OptionsViewModelBase<SshSettings>
     {
         private static readonly SshKeyType[] publicKeyTypes =
             Enum.GetValues(typeof(SshKeyType))
@@ -45,23 +42,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         private int publicKeyValidityInDays;
         private SshKeyType publicKeyType;
 
-        private readonly SshSettingsRepository settingsRepository;
-
-        private bool isDirty;
-
-        public SshOptionsViewModel(
-            SshSettingsRepository settingsRepository)
+        public SshOptionsViewModel(SshSettingsRepository settingsRepository)
+            : base("SSH", settingsRepository)
         {
-            this.settingsRepository = settingsRepository;
+            base.OnInitializationCompleted();
+        }
 
-            //
-            // Read current settings.
-            //
-            // NB. Do not hold on to the settings object because other tabs
-            // might apply changes to other application settings.
-            //
-            var settings = this.settingsRepository.GetSettings();
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
+        protected override void Load(SshSettings settings)
+        {
             this.IsPropagateLocaleEnabled =
                 settings.IsPropagateLocaleEnabled.BoolValue;
 
@@ -71,61 +63,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 
             this.publicKeyType = settings.PublicKeyType.EnumValue;
             this.IsPublicKeyTypeEditable = !settings.PublicKeyType.IsReadOnly;
-
-            this.isDirty = false;
         }
 
-        //---------------------------------------------------------------------
-        // IOptionsDialogPane.
-        //---------------------------------------------------------------------
-
-        public string Title => "SSH";
-
-        public bool IsDirty
+        protected override void Save(SshSettings settings)
         {
-            get => this.isDirty;
-            set
-            {
-                this.isDirty = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public DialogResult ApplyChanges()
-        {
-            Debug.Assert(this.IsDirty);
-
-            //
-            // Save settings.
-            //
-            var settings = this.settingsRepository.GetSettings();
+            Debug.Assert(this.IsDirty.Value);
 
             settings.IsPropagateLocaleEnabled.BoolValue =
                 this.IsPropagateLocaleEnabled;
             settings.PublicKeyValidity.IntValue =
                 (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays).TotalSeconds;
             settings.PublicKeyType.EnumValue = this.PublicKeyType;
-
-            this.settingsRepository.SetSettings(settings);
-
-            this.IsDirty = false;
-
-            return DialogResult.OK;
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public bool IsPublicKeyValidityInDaysEditable { get; }
-        public bool IsPublicKeyTypeEditable { get; }
+        public bool IsPublicKeyValidityInDaysEditable { get; private set; }
+        public bool IsPublicKeyTypeEditable { get; private set; }
 
         public bool IsPropagateLocaleEnabled
         {
             get => this.isPropagateLocaleEnabled;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.isPropagateLocaleEnabled = value;
                 RaisePropertyChange();
             }
@@ -136,7 +99,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.publicKeyType;
             set
             {
-                this.IsDirty = true;
+                if (value == this.publicKeyType)
+                {
+                    return;
+                }
+                    
+                this.IsDirty.Value = true;
                 this.publicKeyType = value;
                 RaisePropertyChange();
             }
@@ -153,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             get => this.publicKeyValidityInDays;
             set
             {
-                this.IsDirty = true;
+                this.IsDirty.Value = true;
                 this.publicKeyValidityInDays = (int)value;
                 RaisePropertyChange();
             }

@@ -36,25 +36,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             InitializeComponent();
         }
 
-        public void Bind(NewCredentialsViewModel viewModel)
+        public void Bind(
+            NewCredentialsViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.usernameText.BindProperty(
                 c => c.Text,
                 viewModel,
                 m => m.Username,
-                this.components);
+                bindingContext);
             this.usernameReservedLabel.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsUsernameReserved,
-                this.components);
+                bindingContext);
 
             // Bind buttons.
             this.okButton.BindReadonlyProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsOkButtonEnabled,
-                this.components);
+                bindingContext);
 
             this.usernameText.KeyPress += (_, e) =>
             {

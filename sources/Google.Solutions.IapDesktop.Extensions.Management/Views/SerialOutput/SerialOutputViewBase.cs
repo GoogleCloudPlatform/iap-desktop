@@ -49,43 +49,51 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             InitializeComponent();
         }
 
-        public void Bind(SerialOutputViewModel viewModel)
+        public void Bind(
+            SerialOutputViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
             viewModel.SerialPortNumber = this.portNumber;
 
-            this.components.Add(this.viewModel.OnPropertyChange(
+            this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
+                    //
                     // NB. Update properties separately instead of using multi-assignment,
                     // otherwise the title does not update properly.
+                    //
                     this.TabText = title;
                     this.Text = title;
-                }));
-            this.components.Add(this.viewModel.OnPropertyChange(
+                },
+                bindingContext);
+            this.viewModel.OnPropertyChange(
                 m => m.Output,
                 text =>
                 {
                     this.output.Clear();
                     if (!string.IsNullOrEmpty(text))
                     {
+                        //
                         // Use AppendText so that the control auto-scrolls to
                         // the bottom.
+                        //
                         this.output.AppendText(text);
                     }
-                }));
+                },
+                bindingContext);
 
             this.enableTailButton.BindProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsTailEnabled,
-                this.components);
+                bindingContext);
             this.enableTailButton.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsEnableTailingButtonEnabled,
-                this.components);
+                bindingContext);
 
             this.viewModel.NewOutputAvailable += (sender, output) =>
             {

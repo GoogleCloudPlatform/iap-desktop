@@ -50,13 +50,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             this.list.AddCopyCommands();
         }
 
-        public void Bind(EventLogViewModel viewModel)
+        public void Bind(
+            EventLogViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
 
             this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AvailableTimeframes.ToArray());
 
-            this.components.Add(this.viewModel.OnPropertyChange(
+            this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
@@ -64,64 +66,65 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                     // otherwise the title does not update properly.
                     this.TabText = title;
                     this.Text = title;
-                }));
+                },
+                bindingContext);
 
             // Bind toolbar buttons.
             this.timeFrameComboBox.BindProperty(
                 c => c.SelectedIndex,
                 this.viewModel,
                 m => m.SelectedTimeframeIndex,
-                this.components);
+                bindingContext);
             this.timeFrameComboBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsTimeframeComboBoxEnabled,
-                this.components);
+                bindingContext);
 
             this.refreshButton.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsRefreshButtonEnabled,
-                this.components);
+                bindingContext);
 
             this.includeLifecycleEventsButton.BindProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsIncludeLifecycleEventsButtonChecked,
-                this.components);
+                bindingContext);
             this.includeSystemEventsButton.BindProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsIncludeSystemEventsButtonChecked,
-                this.components);
+                bindingContext);
             this.includeAccessEventsButton.BindProperty(
                 c => c.Checked,
                 this.viewModel,
                 m => m.IsIncludeAccessEventsButtonChecked,
-                this.components);
+                bindingContext);
 
             this.openInCloudConsoleToolStripMenuItem.BindReadonlyProperty(
                 b => b.Enabled,
                 this.viewModel,
                 m => m.IsOpenSelectedEventInCloudConsoleButtonEnabled,
-                this.components);
+                bindingContext);
             this.openLogsButton.BindReadonlyProperty(
                 b => b.Enabled,
                 this.viewModel,
                 m => m.IsOpenSelectedEventInCloudConsoleButtonEnabled,
-                this.components);
+                bindingContext);
 
             // Bind list.
             this.list.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsEventListEnabled,
-                this.components);
+                bindingContext);
             this.list.BindProperty(
                 c => c.SelectedModelItem,
                 this.viewModel,
                 m => m.SelectedEvent,
-                this.components);
+                bindingContext);
 
             this.list.BindColumn(0, e => e.Timestamp.ToString());
             this.list.BindColumn(1, e => GetInstanceName(e));

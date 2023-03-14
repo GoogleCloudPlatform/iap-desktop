@@ -54,7 +54,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             this.packageList.List.AddCopyCommands();
         }
 
-        public void Bind(PackageInventoryViewModel viewModel)
+        public void Bind(
+            PackageInventoryViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.viewModel = viewModel;
             viewModel.InventoryType = this.inventoryType;
@@ -63,16 +65,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 c => c.Text,
                 this.viewModel,
                 m => m.InformationText,
-                this.components);
-            this.components.Add(this.viewModel.OnPropertyChange(
+                bindingContext);
+            this.viewModel.OnPropertyChange(
                 m => m.IsInformationBarVisible,
                 visible =>
                 {
                     this.splitContainer.Panel1Collapsed = !visible;
                     this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
-                }));
+                },
+                bindingContext);
 
-            this.components.Add(this.viewModel.OnPropertyChange(
+            this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title =>
                 {
@@ -80,7 +83,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                     // otherwise the title does not update properly.
                     this.TabText = title;
                     this.Text = title;
-                }));
+                },
+                bindingContext);
             this.viewModel.ResetWindowTitle();  // Fire event to set initial window title.
 
             // Bind list.
@@ -88,19 +92,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsPackageListEnabled,
-                this.components);
+                bindingContext);
 
             this.packageList.List.BindCollection(this.viewModel.FilteredPackages);
             this.packageList.BindProperty(
                 c => c.SearchTerm,
                 this.viewModel,
                 m => m.Filter,
-                this.components);
+                bindingContext);
             this.packageList.BindProperty(
                 c => c.Loading,
                 this.viewModel,
                 m => m.IsLoading,
-                this.components);
+                bindingContext);
             this.packageList.SearchOnKeyDown = true;
 
             var openUrl = new ToolStripMenuItem(

@@ -20,8 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,7 +28,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Google.Solutions.Mvvm.Commands
+namespace Google.Solutions.Mvvm.Binding.Commands
 {
     /// <summary>
     /// Set of commands.
@@ -40,10 +38,10 @@ namespace Google.Solutions.Mvvm.Commands
         where TContext : class
     {
         ICommandContainer<TContext> AddCommand(
-            ICommand<TContext> command);
+            IContextCommand<TContext> command);
 
         ICommandContainer<TContext> AddCommand(
-            ICommand<TContext> command,
+            IContextCommand<TContext> command,
             int? index);
 
         void AddSeparator(int? index = null);
@@ -54,77 +52,70 @@ namespace Google.Solutions.Mvvm.Commands
 
         void BindTo(
             ToolStripDropDownMenu menu,
-            IContainer container = null);
+            IBindingContext bindingContext);
 
         void BindTo(
             ToolStripMenuItem menu,
-            IContainer container = null);
+            IBindingContext bindingContext);
     }
 
     public sealed class CommandContainer<TContext> : ICommandContainer<TContext>, IDisposable
         where TContext : class
     {
-        private readonly IDisposable binding;
         private readonly ToolStripItemDisplayStyle displayStyle;
         private readonly ObservableCollection<MenuItemViewModelBase> menuItems;
         private readonly CommandContainer<TContext> parent;
+        private readonly IBindingContext bindingContext;
 
-        internal ICommandContextSource<TContext> ContextSource { get; }
+        internal IContextSource<TContext> ContextSource { get; }
 
         internal ObservableCollection<MenuItemViewModelBase> MenuItems => this.menuItems;
 
-        public event EventHandler<ExceptionEventArgs> CommandFailed;
-
         private CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
-            ICommandContextSource<TContext> contextSource,
+            IContextSource<TContext> contextSource,
             CommandContainer<TContext> parent,
-            ObservableCollection<MenuItemViewModelBase> items)
+            ObservableCollection<MenuItemViewModelBase> items,
+            IBindingContext bindingContext)
         {
             this.parent = parent;
             this.displayStyle = displayStyle;
             this.menuItems = items;
             this.ContextSource = contextSource;
+            this.bindingContext = bindingContext;
         }
 
         public CommandContainer(
             ToolStripItemDisplayStyle displayStyle,
-            ICommandContextSource<TContext> contextSource)
+            IContextSource<TContext> contextSource,
+            IBindingContext bindingContext)
             : this(
                   displayStyle,
                   contextSource,
                   null,
-                  new ObservableCollection<MenuItemViewModelBase>())
+                  new ObservableCollection<MenuItemViewModelBase>(),
+                  bindingContext)
         {
             if (this.ContextSource is INotifyPropertyChanged observable)
             {
-                this.binding = observable.OnPropertyChange(
-                    s => ((ICommandContextSource<TContext>)s).Context,
+                observable.OnPropertyChange(
+                    s => ((IContextSource<TContext>)s).Context,
                     context =>
                     {
                         MenuItemViewModel.OnContextUpdated(this.menuItems);
-                    });
+                    },
+                    bindingContext);
             }
         }
 
-        private void OnCommandFailed(ICommand<TContext> command, Exception e)
+        private void OnCommandFailed(IContextCommand<TContext> command, Exception e)
         {
-            if (this.parent != null)
-            {
-                //
-                // Bubble up to topmost container.
-                //
-                this.parent.OnCommandFailed(command, e);
-            }
-            else
-            {
-                this.CommandFailed?.Invoke(command, new ExceptionEventArgs(e));
-            }
+            this.bindingContext.OnCommandFailed(command, e);
         }
 
         public void BindTo(
             ToolStripItemCollection view,
-            IContainer container = null)
+            IBindingContext bindingContext)
         {
             view.BindCollection(
                 this.menuItems,
@@ -138,7 +129,7 @@ namespace Google.Solutions.Mvvm.Commands
                 m => m.DisplayStyle,
                 m => m.Children,
                 m => m.Invoke(),
-                container);
+                bindingContext);
         }
 
         public void ForceRefresh()
@@ -152,7 +143,6 @@ namespace Google.Solutions.Mvvm.Commands
 
         public void Dispose()
         {
-            this.binding?.Dispose();
         }
 
         //---------------------------------------------------------------------
@@ -161,9 +151,9 @@ namespace Google.Solutions.Mvvm.Commands
 
         public void BindTo(
             ToolStripDropDownMenu menu,
-            IContainer container = null)
+            IBindingContext bindingContext)
         {
-            BindTo(menu.Items, container);
+            BindTo(menu.Items, bindingContext);
 
             if (!(this.ContextSource is INotifyPropertyChanged))
             {
@@ -177,9 +167,9 @@ namespace Google.Solutions.Mvvm.Commands
 
         public void BindTo(
             ToolStripMenuItem menu,
-            IContainer container = null)
+            IBindingContext bindingContext)
         {
-            BindTo(menu.DropDownItems, container);
+            BindTo(menu.DropDownItems, bindingContext);
 
             if (!(this.ContextSource is INotifyPropertyChanged))
             {
@@ -191,10 +181,10 @@ namespace Google.Solutions.Mvvm.Commands
             }
         }
 
-        public ICommandContainer<TContext> AddCommand(ICommand<TContext> command)
+        public ICommandContainer<TContext> AddCommand(IContextCommand<TContext> command)
             => AddCommand(command, null);
 
-        public ICommandContainer<TContext> AddCommand(ICommand<TContext> command, int? index)
+        public ICommandContainer<TContext> AddCommand(IContextCommand<TContext> command, int? index)
         {
             var item = new MenuItemViewModel(
                 this.displayStyle,
@@ -218,7 +208,8 @@ namespace Google.Solutions.Mvvm.Commands
                 this.displayStyle,
                 this.ContextSource,
                 this,
-                item.Children);
+                item.Children,
+                this.bindingContext);
         }
 
         public void AddSeparator(int? index = null)
@@ -325,12 +316,12 @@ namespace Google.Solutions.Mvvm.Commands
 
         internal class MenuItemViewModel : MenuItemViewModelBase
         {
-            private readonly ICommand<TContext> command;
+            private readonly IContextCommand<TContext> command;
             private readonly CommandContainer<TContext> container;
 
             public MenuItemViewModel(
                 ToolStripItemDisplayStyle displayStyle,
-                ICommand<TContext> command,
+                IContextCommand<TContext> command,
                 CommandContainer<TContext> container)
                 : base(displayStyle)
             {
@@ -377,7 +368,7 @@ namespace Google.Solutions.Mvvm.Commands
 
             public override string ToolTip
                 => this.DisplayStyle == ToolStripItemDisplayStyle.Image
-                    ? command.Text.Replace("&", "")
+                    ? this.command.Text.Replace("&", "")
                     : null;
 
             public override Image Image => this.command.Image;
@@ -394,7 +385,9 @@ namespace Google.Solutions.Mvvm.Commands
             {
                 try
                 {
-                    await this.command.ExecuteAsync(this.container.ContextSource.Context);
+                    await this.command
+                        .ExecuteAsync(this.container.ContextSource.Context)
+                        .ConfigureAwait(true);
                 }
                 catch (Exception e) when (e.IsCancellation())
                 {

@@ -21,9 +21,9 @@
 
 using Google.Solutions.Mvvm.Controls;
 
-namespace Google.Solutions.IapDesktop.Application.Views.Properties
+namespace Google.Solutions.Mvvm.Binding
 {
-    partial class PropertiesDialog
+    partial class PropertiesView
     {
         /// <summary>
         /// Required designer variable.
@@ -89,7 +89,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.applyButton.TabIndex = 2;
             this.applyButton.Text = "Apply";
             this.applyButton.UseVisualStyleBackColor = true;
-            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
             // cancelButton
             // 
@@ -101,7 +100,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // okButton
             // 
@@ -112,7 +110,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.okButton.TabIndex = 0;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // PropertiesDialog
             // 

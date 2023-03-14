@@ -100,5 +100,12 @@ namespace Google.Solutions.Mvvm.Controls
                 !duplicateTabIndexes.Any(),
                 $"{control} has duplicate tab indexes: {string.Join(", ", duplicateTabIndexes)}");
         }
+
+        public static void AttachDisposable(
+            this IComponent component,
+            IDisposable disposable)
+        {
+            component.Disposed += (_, __) => disposable.Dispose();
+        }
     }
 }

@@ -33,25 +33,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             InitializeComponent();
         }
 
-        public void Bind(NewProfileViewModel viewModel)
+        public void Bind(
+            NewProfileViewModel viewModel,
+            IBindingContext bindingContext)
         {
             this.profileNameTextBox.BindProperty(
                 c => c.Text,
                 viewModel,
                 m => m.ProfileName,
-                this.components);
+                bindingContext);
             this.profileNameInvalidLabel.BindReadonlyProperty(
                 c => c.Visible,
                 viewModel,
                 m => m.IsProfileNameInvalid,
-                this.components);
+                bindingContext);
 
             // Bind buttons.
             this.okButton.BindReadonlyProperty(
                 c => c.Enabled,
                 viewModel,
                 m => m.IsOkButtonEnabled,
-                this.components);
+                bindingContext);
         }
     }
 }

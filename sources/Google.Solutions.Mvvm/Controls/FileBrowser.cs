@@ -173,7 +173,7 @@ namespace Google.Solutions.Mvvm.Controls
             OnCurrentDirectoryChanged();
         }
 
-        public void Bind(IFileSystem fileSystem)
+        public void Bind(IFileSystem fileSystem, IBindingContext bindingContext)
         {
             fileSystem.ThrowIfNull(nameof(fileSystem));
 
@@ -207,7 +207,7 @@ namespace Google.Solutions.Mvvm.Controls
             });
             this.directoryTree.BindImageIndex(i => GetImageIndex(i.Type), true);
             this.directoryTree.BindSelectedImageIndex(i => GetImageIndex(i.Type), true);
-            this.directoryTree.Bind(this.fileSystem.Root);
+            this.directoryTree.Bind(this.fileSystem.Root, bindingContext);
 
             this.root = new Breadcrumb(
                 null,

@@ -22,37 +22,29 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
-using Google.Solutions.Mvvm.Binding;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    public class ScreenOptionsViewModel : ViewModelBase, IPropertiesSheetViewModel
+    internal class ScreenOptionsViewModel : OptionsViewModelBase<ApplicationSettings>
     {
-        private readonly ApplicationSettingsRepository settingsRepository;
-
-        private bool isDirty;
-
-        public ScreenOptionsViewModel(
-            ApplicationSettingsRepository settingsRepository)
+        public ScreenOptionsViewModel(ApplicationSettingsRepository settingsRepository)
+            : base("Display", settingsRepository)
         {
-            this.settingsRepository = settingsRepository;
+            base.OnInitializationCompleted();
+        }
 
-            //
-            // Read current settings.
-            //
-            // NB. Do not hold on to the settings object because other tabs
-            // might apply changes to other application settings.
-            //
+        //---------------------------------------------------------------------
+        // Overrides.
+        //---------------------------------------------------------------------
 
-            var fullScreenDevices = (this.settingsRepository.GetSettings()
-                .FullScreenDevices
-                .StringValue ?? string.Empty)
+        protected override void Load(ApplicationSettings settings)
+        {
+            var fullScreenDevices = 
+                (settings.FullScreenDevices.StringValue ?? string.Empty)
                     .Split(ApplicationSettings.FullScreenDevicesSeparator)
                     .ToHashSet();
 
@@ -61,57 +53,26 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 {
                     IsSelected = fullScreenDevices.Contains(s.DeviceName)
                 }));
-
-            this.isDirty = false;
         }
 
-        //---------------------------------------------------------------------
-        // IPropertiesSheetViewModel.
-        //---------------------------------------------------------------------
-
-        public string Title => "Display";
-
-        public bool IsDirty
+        protected override void Save(ApplicationSettings settings)
         {
-            get => this.isDirty;
-            set
-            {
-                this.isDirty = value;
-                RaisePropertyChange();
-            }
-        }
-
-        public DialogResult ApplyChanges()
-        {
-            Debug.Assert(this.IsDirty);
-
-            //
-            // Validate ans save settings.
-            //
             var selectedDevices = this.Devices
                 .Where(d => d.IsSelected)
                 .Select(d => d.DeviceName);
-
-            var settings = this.settingsRepository.GetSettings();
 
             settings.FullScreenDevices.StringValue = selectedDevices.Any()
                 ? string.Join(
                     ApplicationSettings.FullScreenDevicesSeparator.ToString(),
                     selectedDevices)
                 : null;
-
-            this.settingsRepository.SetSettings(settings);
-
-            this.IsDirty = false;
-
-            return DialogResult.OK;
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public ObservableCollection<ScreenDevice> Devices { get; }
+        public ObservableCollection<ScreenDevice> Devices { get; private set; }
 
         //---------------------------------------------------------------------
         // Actions.
@@ -134,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 set
                 {
                     this.isSelected = value;
-                    this.model.IsDirty = true;
+                    this.model.IsDirty.Value = true;
                 }
             }
 
