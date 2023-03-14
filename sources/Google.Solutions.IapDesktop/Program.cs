@@ -352,6 +352,7 @@ namespace Google.Solutions.IapDesktop
                 preAuthLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
                 preAuthLayer.AddTransient<IOperationProgressDialog, OperationProgressDialog>();
 
+                preAuthLayer.AddSingleton<IExternalRestAdapter, ExternalRestAdapter>();
                 preAuthLayer.AddTransient<HelpAdapter>();
                 preAuthLayer.AddTransient<IGithubAdapter, GithubAdapter>();
                 preAuthLayer.AddTransient<BuganizerAdapter>();

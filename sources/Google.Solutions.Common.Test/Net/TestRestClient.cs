@@ -28,8 +28,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-#pragma warning disable CA1034 // Class nesting
-
 namespace Google.Solutions.Common.Test.Net
 {
     [TestFixture]
@@ -37,6 +35,8 @@ namespace Google.Solutions.Common.Test.Net
     {
         private const string SampleRestUrl = "https://accounts.google.com/.well-known/openid-configuration";
         private const string NotFoundUrl = "http://accounts.google.com/.well-known/openid-configuration";
+        private const string NoContentUrl = "https://gstatic.com/generate_204";
+        private static readonly UserAgent userAgent = new UserAgent("test", new Version(1, 0));
 
         public class SampleResource
         {
@@ -47,7 +47,7 @@ namespace Google.Solutions.Common.Test.Net
         [Test]
         public async Task WhenUrlPointsToJson_ThenGetAsyncReturnsObject()
         {
-            var client = new RestClient();
+            var client = new RestClient(userAgent);
             var result = await client.GetAsync<SampleResource>(
                     SampleRestUrl,
                     CancellationToken.None)
@@ -57,10 +57,22 @@ namespace Google.Solutions.Common.Test.Net
         }
 
         [Test]
+        public async Task WhenUrlPointsToNoContent_ThenGetAsyncReturnsNull()
+        {
+            var client = new RestClient(userAgent);
+            var result = await client.GetAsync<SampleResource>(
+                    NoContentUrl,
+                    CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.IsNull(result);
+        }
+
+        [Test]
         [Ignore("Unreliable in CI")]
         public void WhenUrReturns404_ThenHttpExceptionIsThrown()
         {
-            var client = new RestClient();
+            var client = new RestClient(userAgent);
 
             try
             {
