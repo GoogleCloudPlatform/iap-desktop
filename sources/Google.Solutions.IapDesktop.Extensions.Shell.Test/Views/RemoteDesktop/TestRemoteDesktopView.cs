@@ -22,10 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
@@ -186,6 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
+            var windowsCredentials = await GenerateWindowsCredentials(locator).ConfigureAwait(true);
 
             // To avoid excessive combinations, combine some settings.
             var redirectPrinter = (RdpRedirectPrinter)(int)redirectClipboard;
@@ -198,14 +196,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var credentials = await GenerateWindowsCredentials(locator)
-                    .ConfigureAwait(true);
-
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
-                settings.RdpUsername.StringValue = credentials.UserName;
-                settings.RdpPassword.Value = credentials.SecurePassword;
+                settings.RdpUsername.StringValue = windowsCredentials.UserName;
+                settings.RdpPassword.Value = windowsCredentials.SecurePassword;
                 settings.RdpConnectionBar.EnumValue = connectionBarState;
                 settings.RdpDesktopSize.EnumValue = desktopSize;
                 settings.RdpAudioMode.EnumValue = audioMode;
@@ -247,22 +242,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
+            var windowsCredentials = await GenerateWindowsCredentials(locator).ConfigureAwait(true);
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
-                var credentials = await GenerateWindowsCredentials(locator)
-                    .ConfigureAwait(true);
-
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
-                settings.RdpUsername.StringValue = credentials.UserName;
-                settings.RdpPassword.Value = credentials.SecurePassword;
+                settings.RdpUsername.StringValue = windowsCredentials.UserName;
+                settings.RdpPassword.Value = windowsCredentials.SecurePassword;
 
                 var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
-
 
                 RemoteDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(() =>
@@ -300,19 +292,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var serviceProvider = CreateServiceProvider(await credential);
             var locator = await testInstance;
+            var windowsCredentials = await GenerateWindowsCredentials(locator).ConfigureAwait(true);
 
             using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
-                var credentials = await GenerateWindowsCredentials(locator)
-                    .ConfigureAwait(true);
-
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
-                settings.RdpUsername.StringValue = credentials.UserName;
-                settings.RdpPassword.Value = credentials.SecurePassword;
+                settings.RdpUsername.StringValue = windowsCredentials.UserName;
+                settings.RdpPassword.Value = windowsCredentials.SecurePassword;
                 settings.RdpAuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
                 settings.RdpBitmapPersistence.EnumValue = RdpBitmapPersistence.Disabled;
                 settings.RdpDesktopSize.EnumValue = RdpDesktopSize.ClientSize;
