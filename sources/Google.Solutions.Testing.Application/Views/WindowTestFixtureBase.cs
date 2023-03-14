@@ -20,18 +20,22 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common.Integration;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -212,6 +216,19 @@ namespace Google.Solutions.Testing.Application.Views
             authorization.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
 
             return authorization;
+        }
+
+        protected async Task<NetworkCredential> GenerateWindowsCredentials(InstanceLocator locator)
+        {
+            var credentialAdapter = new WindowsCredentialService(
+                new ComputeEngineAdapter(TestProject.GetAdminCredential()));
+            return await credentialAdapter.CreateWindowsCredentialsAsync(
+                    locator,
+                    CreateRandomUsername(),
+                    UserFlags.AddToAdministrators,
+                    TimeSpan.FromSeconds(60),
+                    CancellationToken.None)
+                .ConfigureAwait(true);
         }
     }
 }

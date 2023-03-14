@@ -56,19 +56,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         }
 
         private async Task<InstanceConnectionSettings> CreateSettingsAsync(
-            IServiceProvider serviceProvider,
             InstanceLocator instanceLocator)
         {
-            var credentialAdapter = new WindowsCredentialService(
-                new ComputeEngineAdapter(serviceProvider.GetService<IAuthorization>()));
+            var credentialAdapter = new WindowsCredentialService (
+                new ComputeEngineAdapter(TestProject.GetAdminCredential()));
 
-            var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
-                instanceLocator,
-                CreateRandomUsername(),
-                UserFlags.AddToAdministrators,
-                TimeSpan.FromSeconds(60),
-                CancellationToken.None)
-            .ConfigureAwait(true);
+            var credentials = await GenerateWindowsCredentials(instanceLocator).ConfigureAwait(true);
 
             var settings = InstanceConnectionSettings.CreateNew(instanceLocator);
             settings.RdpUsername.Value = credentials.UserName;
@@ -93,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var serviceProvider = CreateServiceProvider(credential);
             var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
-            var settings = await CreateSettingsAsync(serviceProvider, instanceLocator).ConfigureAwait(true);
+            var settings = await CreateSettingsAsync(instanceLocator).ConfigureAwait(true);
 
             return rdpService.Connect(
                 instanceLocator,
@@ -137,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var settings = await CreateSettingsAsync(serviceProvider, locator).ConfigureAwait(true);
+                var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
                 settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
 
                 var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
@@ -169,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var settings = await CreateSettingsAsync(serviceProvider, locator).ConfigureAwait(true);
+                var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
                 settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
 
                 var rdpService = new RemoteDesktopSessionBroker(serviceProvider);

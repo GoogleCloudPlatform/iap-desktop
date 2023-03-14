@@ -86,14 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var credentialAdapter = new WindowsCredentialService(
-                    new ComputeEngineAdapter(serviceProvider.GetService<IAuthorization>()));
-                var credentials = await credentialAdapter.CreateWindowsCredentialsAsync(
-                        locator,
-                        CreateRandomUsername(),
-                        UserFlags.AddToAdministrators,
-                        TimeSpan.FromSeconds(60),
-                        CancellationToken.None)
+                var credentials = await GenerateWindowsCredentials(locator)
                     .ConfigureAwait(true);
 
                 var settings = InstanceConnectionSettings.CreateNew(
