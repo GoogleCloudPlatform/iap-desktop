@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -134,12 +135,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public async Task WhenSessionExists_ThenActivateOrConnectInstanceAsyncActivatesSession()
         {
+            var activeSession = (ISession)new Mock<ISshTerminalSession>().Object;
             var sessionBroker = new Mock<ISshTerminalSessionBroker>();
             sessionBroker.Setup(b => b.TryActivate(
-                    It.Is<InstanceLocator>(l => l == SampleLocator)))
+                    It.Is<InstanceLocator>(l => l == SampleLocator),
+                    out activeSession))
                 .Returns(true);
-            sessionBroker.SetupGet(b => b.ActiveSession)
-                .Returns(new Mock<ISshTerminalSession>().Object);
 
             var vmNode = CreateInstanceNodeMock();
 
@@ -160,9 +161,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 .ConfigureAwait(false);
 
             Assert.IsNotNull(session);
-
-            sessionBroker.Verify(b => b.TryActivate(
-                It.Is<InstanceLocator>(l => l == SampleLocator)), Times.Once);
         }
 
         [Test]
@@ -439,9 +437,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public async Task WhenSessionExists_ThenConnectInstanceAsyncCreatesNewSessionSession()
         {
+            ISession nullSession = null;
             var sessionBroker = new Mock<ISshTerminalSessionBroker>();
             sessionBroker
-                .Setup(b => b.TryActivate(It.Is<InstanceLocator>(l => l == SampleLocator)))
+                .Setup(b => b.TryActivate(It.Is<InstanceLocator>(l => l == SampleLocator),
+                out nullSession))
                 .Returns(false);
             sessionBroker
                 .Setup(b => b.ConnectAsync(

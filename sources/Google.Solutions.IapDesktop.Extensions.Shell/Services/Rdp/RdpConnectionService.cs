@@ -151,11 +151,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         {
             Debug.Assert(vmNode.IsRdpSupported());
 
-            if (this.sessionBroker.TryActivate(vmNode.Instance))
+            if (this.sessionBroker.TryActivate(vmNode.Instance, out var activeSession))
             {
                 // RDP session was active, nothing left to do.
-                var activeSession = this.sessionBroker.ActiveSession;
-
                 Debug.Assert(activeSession != null);
                 Debug.Assert(activeSession is IRemoteDesktopSession);
 
@@ -202,11 +200,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
 
         public async Task<IRemoteDesktopSession> ActivateOrConnectInstanceAsync(IapRdpUrl url)
         {
-            if (this.sessionBroker.TryActivate(url.Instance))
+            if (this.sessionBroker.TryActivate(url.Instance, out var activeSession))
             {
                 // RDP session was active, nothing left to do.
-                var activeSession = this.sessionBroker.ActiveSession;
-
                 Debug.Assert(activeSession != null);
                 Debug.Assert(activeSession is IRemoteDesktopSession);
 

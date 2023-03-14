@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
+using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
@@ -53,7 +54,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         /// <summary>
         /// Activate session to VM instance, if any.
         /// </summary>
-        bool TryActivate(InstanceLocator vmInstance);
+        bool TryActivate(
+            InstanceLocator vmInstance,
+            out ISession session);
     }
 
     public interface IGlobalSessionBroker : ISessionBroker
@@ -87,17 +90,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             return false;
         }
 
-        public bool TryActivate(InstanceLocator vmInstance)
+        public bool TryActivate(
+            InstanceLocator vmInstance,
+            out ISession session)
         {
             foreach (var broker in this.serviceProvider
                 .GetServicesByCategory<ISessionBroker>())
             {
-                if (broker.TryActivate(vmInstance))
+                if (broker.TryActivate(vmInstance, out session))
                 {
+                    Debug.Assert(session != null);
                     return true;
                 }
             }
 
+            session = null;
             return false;
         }
 

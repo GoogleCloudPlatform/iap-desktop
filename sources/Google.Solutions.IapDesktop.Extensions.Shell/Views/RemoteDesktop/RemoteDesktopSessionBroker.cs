@@ -87,7 +87,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 vmInstance) != null;
         }
 
-        public bool TryActivate(InstanceLocator vmInstance)
+        public bool TryActivate(
+            InstanceLocator vmInstance,
+            out ISession session)
         {
             // Check if there is an existing session/pane.
             var rdpPane = RemoteDesktopView.TryGetExistingPane(
@@ -97,10 +99,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             {
                 // Pane found, activate.
                 rdpPane.SwitchToDocument();
+                session = rdpPane;
                 return true;
             }
             else
             {
+                session = null;
                 return false;
             }
         }

@@ -100,11 +100,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         {
             Debug.Assert(vmNode.IsSshSupported());
 
-            if (this.sessionBroker.TryActivate(vmNode.Instance))
+            if (this.sessionBroker.TryActivate(vmNode.Instance, out var activeSession))
             {
                 // SSH session was active, nothing left to do.
-                var activeSession = this.sessionBroker.ActiveSession;
-
                 Debug.Assert(activeSession != null);
                 Debug.Assert(activeSession is ISshTerminalSession);
 

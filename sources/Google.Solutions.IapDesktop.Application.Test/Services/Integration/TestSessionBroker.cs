@@ -106,15 +106,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             var registry = new ServiceRegistry();
             var broker = new GlobalSessionBroker(registry);
 
-            Assert.IsFalse(broker.IsConnected(SampleLocator));
+            Assert.IsFalse(broker.TryActivate(SampleLocator, out var _));
         }
 
         [Test]
         public void WhenServicesRegistered_ThenTryActivateReturnsResult()
         {
+            var activeSession = new Mock<ISession>().Object;
             var service = new Mock<ISessionBroker>();
-            service.Setup(s => s.TryActivate(
-                    It.Is<InstanceLocator>(l => l.Equals(SampleLocator))))
+            service
+                .Setup(s => s.TryActivate(
+                    It.Is<InstanceLocator>(l => l.Equals(SampleLocator)),
+                    out activeSession))
                 .Returns(true);
 
             var registry = new ServiceRegistry();
@@ -123,10 +126,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             var broker = new GlobalSessionBroker(registry);
 
-            Assert.IsTrue(broker.TryActivate(SampleLocator));
-
-            service.Verify(s => s.TryActivate(
-                    It.Is<InstanceLocator>(l => l.Equals(SampleLocator))), Times.Once);
+            Assert.IsTrue(broker.TryActivate(SampleLocator, out var session));
+            Assert.IsNotNull(session);
         }
     }
 }
