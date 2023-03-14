@@ -528,6 +528,20 @@ namespace Google.Solutions.IapDesktop
                 System.Windows.Forms.Application.ThreadException += (_, exArgs)
                     => ShowFatalError(exArgs.Exception);
 
+
+                mainForm.Shown += (_, __) =>
+                {
+                    //
+                    // Try to force the window into the foreground. This might
+                    // not be allowed in all circumstances, but ensures that the
+                    // window becomes visible after the user has completed a
+                    // (browser-based) authorization.
+                    //
+                    TrySetForegroundWindow(Process.GetCurrentProcess().Id);
+                };
+                //
+                // Show the main window.
+                //
                 System.Windows.Forms.Application.Run(mainForm);
 
                 //
