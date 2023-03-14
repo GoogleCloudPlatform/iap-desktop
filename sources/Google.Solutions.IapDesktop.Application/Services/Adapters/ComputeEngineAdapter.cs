@@ -32,6 +32,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System;
 using System.Collections.Generic;
@@ -81,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             : this(credential, null)
         {
             // This constructor should only be used for test cases
-            Debug.Assert(Globals.IsTestCase);
+            Debug.Assert(Install.IsExecutingTests);
         }
 
         public ComputeEngineAdapter(IAuthorization authorization)

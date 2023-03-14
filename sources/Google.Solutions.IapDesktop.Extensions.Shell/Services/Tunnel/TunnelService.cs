@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapTunneling.Iap;
@@ -70,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
                     tunnelEndpoint.Instance,
                     tunnelEndpoint.RemotePort,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Globals.UserAgent,
+                    Install.UserAgent,
                     clientCertificate);
 
                 // Start listener to enable clients to connect. Do not await

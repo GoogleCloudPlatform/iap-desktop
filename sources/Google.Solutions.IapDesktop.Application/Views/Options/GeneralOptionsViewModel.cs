@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.Mvvm.Binding;
@@ -99,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             {
                 this.protocolRegistry.Register(
                     IapRdpUrl.Scheme,
-                    Globals.FriendlyName,
+                    Install.FriendlyName,
                     ExecutableLocation);
             }
             else

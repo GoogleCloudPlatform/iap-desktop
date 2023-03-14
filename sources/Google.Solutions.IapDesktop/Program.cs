@@ -335,6 +335,8 @@ namespace Google.Solutions.IapDesktop
             var install = new Install(Install.DefaultBaseKeyPath);
             using (var profile = LoadProfileOrExit(install, this.commandLineOptions))
             {
+                Debug.Assert(!Install.IsExecutingTests);
+
                 // 
                 // Load pre-auth layer: Platform abstractions, API adapters.
                 //
@@ -369,7 +371,7 @@ namespace Google.Solutions.IapDesktop
                     // If there are policies in place, mark the UA as
                     // Enterprise-managed.
                     //
-                    Globals.UserAgent.Extensions = "Enterprise";
+                    Install.UserAgent.Extensions = "Enterprise";
                 }
 
                 preAuthLayer.AddSingleton<IBindingContext, ViewBindingContext>();

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Options;
@@ -320,7 +321,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             this.protocolRegistryMock.Verify(r => r.Register(
                     It.Is<string>(s => s == IapRdpUrl.Scheme),
-                    It.Is<string>(s => s == Globals.FriendlyName),
+                    It.Is<string>(s => s == Install.FriendlyName),
                     It.IsAny<string>()),
                 Times.Once);
         }

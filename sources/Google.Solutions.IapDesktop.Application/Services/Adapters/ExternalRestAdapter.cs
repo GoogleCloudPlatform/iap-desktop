@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Net;
+using Google.Solutions.IapDesktop.Application.Host;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Use the same client for all connections to benefit
         // from connection pooling.
         //
-        private readonly RestClient client = new RestClient(Globals.UserAgent);
+        private readonly RestClient client = new RestClient(Install.UserAgent);
 
 
         public async Task<TModel> GetAsync<TModel>(string url, CancellationToken cancellationToken)
