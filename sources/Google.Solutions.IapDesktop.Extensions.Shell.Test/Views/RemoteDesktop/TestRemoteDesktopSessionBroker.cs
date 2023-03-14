@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var serviceProvider = CreateServiceProvider();
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
             var broker = new RemoteDesktopSessionBroker(serviceProvider);
-            Assert.IsFalse(broker.TryActivate(sampleLocator));
+            Assert.IsFalse(broker.TryActivate(sampleLocator, out var _));
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 Assert.AreSame(session, RemoteDesktopView.TryGetActivePane(this.MainWindow));
                 Assert.AreSame(session, RemoteDesktopView.TryGetExistingPane(this.MainWindow, locator));
                 Assert.IsTrue(broker.IsConnected(locator));
-                Assert.IsTrue(broker.TryActivate(locator));
+                Assert.IsTrue(broker.TryActivate(locator, out var _));
 
                 await AssertRaisesEventAsync<SessionEndedEvent>(
                         () => session.Close())
