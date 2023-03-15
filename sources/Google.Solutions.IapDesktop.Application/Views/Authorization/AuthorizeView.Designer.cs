@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             this.spinner.Speed = 3;
             this.spinner.TabIndex = 2;
             this.spinner.TabStop = false;
-            this.spinner.Value = 85;
+            this.spinner.Value = 0;
             // 
             // headerLabel
             // 
@@ -206,7 +206,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "AuthorizeView";
             this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sign in";

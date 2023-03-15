@@ -59,6 +59,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
         }
 
         //---------------------------------------------------------------------
+        // WindowTitle.
+        //---------------------------------------------------------------------
+
+        public void WindowTitle()
+        {
+            using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter())
+            {
+                StringAssert.StartsWith("Sign in - ", viewModel.WindowTitle.Value);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // TryLoadExistingAuthorization.
         //---------------------------------------------------------------------
 

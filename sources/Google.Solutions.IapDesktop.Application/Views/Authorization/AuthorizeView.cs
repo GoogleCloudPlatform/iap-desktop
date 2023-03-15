@@ -51,6 +51,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             //
             // Bind controls.
             //
+            this.BindReadonlyObservableProperty(
+                c => c.Text,
+                viewModel,
+                m => m.WindowTitle,
+                bindingContext);
             this.spinner.BindReadonlyObservableProperty(
                 c => c.Visible,
                 viewModel,

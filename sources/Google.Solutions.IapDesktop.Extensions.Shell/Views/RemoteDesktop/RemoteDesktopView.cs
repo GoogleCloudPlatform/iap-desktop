@@ -25,6 +25,7 @@ using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
@@ -223,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // Because we're not initializing controls in the constructor, the
                 // theme isn't applied by default.
                 //
-                Debug.Assert(this.theme != null || Globals.IsTestCase);
+                Debug.Assert(this.theme != null || Install.IsExecutingTests);
 
                 SuspendLayout();
                 this.theme?.ApplyTo(this);
