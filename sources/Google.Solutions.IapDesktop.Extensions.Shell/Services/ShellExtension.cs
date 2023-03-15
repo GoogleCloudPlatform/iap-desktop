@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Shell.Commands;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
@@ -33,6 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
@@ -389,7 +389,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 11);
 #if DEBUG
             projectExplorer.ContextMenuCommands.AddCommand(
-                serviceProvider.GetService<GenerateHtmlPageCommand>());
+                serviceProvider.GetService<DiagnosticsCommands.GenerateHtmlPage>());
 #endif
 
             //
