@@ -152,7 +152,7 @@
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\ConnectionSettings\HtmlPageGenerator.cs" />
+    <Compile Include="Commands\GenerateHtmlPageCommand.cs" />
     <Compile Include="Views\Credentials\AuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\ConfigureCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\NewCredentialsDialog.cs" />

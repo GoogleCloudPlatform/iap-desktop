@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Diagnostics;
@@ -35,35 +34,32 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-#if DEBUG
-
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Commands
 {
     [SkipCodeCoverage("For testing only")]
-    [Service(ServiceLifetime.Singleton, DelayCreation = false)]
-    public class HtmlPageGenerator
+    [Service]
+    public class GenerateHtmlPageCommand : CommandBase, IContextCommand<IProjectModelNode>
     {
         private readonly IConnectionSettingsService settingsService;
         private readonly IProjectModelService projectModelService;
 
-        public HtmlPageGenerator(
-            IConnectionSettingsService settingsService,
-            IProjectModelService projectModelService,
-            IProjectExplorer projectExplorer)
+        public GenerateHtmlPageCommand(
+            IConnectionSettingsService settingsService, 
+            IProjectModelService projectModelService)
         {
             this.settingsService = settingsService;
             this.projectModelService = projectModelService;
-
-            projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Generate HTML page",
-                    context => context is IProjectModelProjectNode
-                        ? CommandState.Enabled
-                        : CommandState.Unavailable,
-                    context => GenerateHtmlPageAsync((IProjectModelProjectNode)context)));
+            this.Text = "Generate HTML page";
         }
 
-        private async Task GenerateHtmlPageAsync(IProjectModelProjectNode context)
+        public CommandState QueryState(IProjectModelNode context)
+        {
+            return context is IProjectModelProjectNode
+                ? CommandState.Enabled
+                : CommandState.Unavailable;
+        }
+
+        public async Task ExecuteAsync(IProjectModelNode context)
         {
             Debug.Assert(context is IProjectModelProjectNode);
             var projectNode = (IProjectModelProjectNode)context;
@@ -75,8 +71,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 
             buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.Project.ProjectId)}</h1>");
 
-            var zones = await this.projectModelService.GetZoneNodesAsync(
-                    context.Project,
+            var zones = await this.projectModelService
+                .GetZoneNodesAsync(
+                    projectNode.Project,
                     false,
                     CancellationToken.None)
                 .ConfigureAwait(true);
@@ -111,4 +108,3 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         }
     }
 }
-#endif

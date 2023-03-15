@@ -20,6 +20,8 @@
 //
 
 using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding.Commands
 {
@@ -44,5 +46,11 @@ namespace Google.Solutions.Mvvm.Binding.Commands
                 this.activityText = value;
             }
         }
+
+        public virtual Image Image => null;
+
+        public virtual Keys ShortcutKeys => Keys.None;
+
+        public virtual bool IsDefault => false;
     }
 }
