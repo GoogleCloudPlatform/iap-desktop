@@ -19,7 +19,10 @@
 // under the License.
 //
 
+using Google.Apis.Util;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
+using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -78,6 +81,37 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public virtual void Execute(TContext context)
         {
+        }
+    }
+
+    public class OpenToolWindowCommand<TContext, TView, TViewModel> : ToolContextCommand<TContext>
+        where TView : ToolWindow, IView<TViewModel>
+        where TViewModel : ViewModelBase
+    {
+        private readonly Func<TContext, bool> isAvailableFunc;
+        private readonly IServiceProvider serviceProvider;
+
+        public OpenToolWindowCommand(
+            IServiceProvider serviceProvider,
+            string text,
+            Func<TContext, bool> isAvailableFunc)
+            : base(text)
+        {
+            this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
+            this.isAvailableFunc = isAvailableFunc.ThrowIfNull(nameof(isAvailableFunc));
+        }
+
+        public override Task ExecuteAsync(TContext context)
+        {
+            ToolWindow
+                .GetWindow<TView, TViewModel>(serviceProvider)
+                .Show();
+            return Task.CompletedTask;
+        }
+
+        protected override bool IsAvailable(TContext context)
+        {
+            return this.isAvailableFunc(context);
         }
     }
 }

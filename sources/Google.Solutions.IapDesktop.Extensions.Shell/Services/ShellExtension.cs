@@ -352,16 +352,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // Authorized keys.
             //
+            var authorizedKeyCommands = serviceProvider.GetService<AuthorizedPublicKeysCommands>();
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Authorized SSH &keys",
-                    node => AuthorizedPublicKeysViewModel.GetCommandState(node),
-                    _ => ToolWindow
-                        .GetWindow<AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.AuthorizedKey_16
-                },
+                authorizedKeyCommands.ContextMenuOpen,
                 11);
 #if DEBUG
             projectExplorer.ContextMenuCommands.AddCommand(
@@ -383,17 +376,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.T
                 },
                 1);
-            mainForm.ViewMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "Authorized SSH &keys",
-                    _ => CommandState.Enabled,
-                    _ => ToolWindow
-                        .GetWindow<AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.AuthorizedKey_16,
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.K
-                });
+            mainForm.ViewMenu.AddCommand(authorizedKeyCommands.WindowMenuOpen);
 
             //
             // Session menu.

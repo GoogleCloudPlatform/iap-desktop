@@ -204,6 +204,7 @@
     <Compile Include="Views\SessionViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Views\SshKeys\AuthorizedPublicKeysCommands.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysModel.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysViewModel.cs" />
     <Compile Include="Views\SshKeys\AuthorizedPublicKeysView.cs">

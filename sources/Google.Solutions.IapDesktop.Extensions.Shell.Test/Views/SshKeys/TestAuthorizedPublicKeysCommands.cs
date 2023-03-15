@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2023 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,25 +19,31 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.Testing.Common.Mocks;
-using Microsoft.Win32;
+using Google.Solutions.Testing.Application.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
 {
     [TestFixture]
-    public class TestConnectionSettingsCommands
+    public class TestAuthorizedPublicKeysCommands
     {
         //---------------------------------------------------------------------
         // ContextMenuOpen.
@@ -47,12 +53,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         public void WhenApplicable_ThenContextMenuOpenIsEnabled()
         {
             var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.AddMock<IConnectionSettingsService>()
-                .Setup(s => s.IsConnectionSettingsAvailable(It.IsAny<IProjectModelNode>()))
-                .Returns(true);
-            var context = new Mock<IProjectModelNode>();
+            var context = new Mock<IProjectModelProjectNode>();
 
-            var commands = new ConnectionSettingsCommands(serviceProvider.Object);
+            var commands = new AuthorizedPublicKeysCommands(serviceProvider.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled, 
@@ -63,12 +66,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         public void WhenNotApplicable_ThenContextMenuOpenIsUnavailable()
         {
             var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.AddMock<IConnectionSettingsService>()
-                .Setup(s => s.IsConnectionSettingsAvailable(It.IsAny<IProjectModelNode>()))
-                .Returns(false);
             var context = new Mock<IProjectModelNode>();
 
-            var commands = new ConnectionSettingsCommands(serviceProvider.Object);
+            var commands = new AuthorizedPublicKeysCommands(serviceProvider.Object);
 
             Assert.AreEqual(
                 CommandState.Unavailable, 
@@ -76,39 +76,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         }
 
         //---------------------------------------------------------------------
-        // ToolbarOpen.
+        // WindowMenuOpen.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicable_ThenToolbarOpenIsEnabled()
+        public void WindowMenuOpenIsEnabled()
         {
             var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.AddMock<IConnectionSettingsService>()
-                .Setup(s => s.IsConnectionSettingsAvailable(It.IsAny<IProjectModelNode>()))
-                .Returns(true);
-            var context = new Mock<IProjectModelNode>();
+            var context = new Mock<IMainWindow>();
 
-            var commands = new ConnectionSettingsCommands(serviceProvider.Object);
+            var commands = new AuthorizedPublicKeysCommands(serviceProvider.Object);
 
             Assert.AreEqual(
-                CommandState.Enabled, 
-                commands.ToolbarOpen.QueryState(context.Object));
-        }
-
-        [Test]
-        public void WhenNotApplicable_ThenToolbarOpenIsDisabled()
-        {
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.AddMock<IConnectionSettingsService>()
-                .Setup(s => s.IsConnectionSettingsAvailable(It.IsAny<IProjectModelNode>()))
-                .Returns(false);
-            var context = new Mock<IProjectModelNode>();
-
-            var commands = new ConnectionSettingsCommands(serviceProvider.Object);
-
-            Assert.AreEqual(
-                CommandState.Disabled, 
-                commands.ToolbarOpen.QueryState(context.Object));
+                CommandState.Enabled,
+                commands.WindowMenuOpen.QueryState(context.Object));
         }
     }
 }

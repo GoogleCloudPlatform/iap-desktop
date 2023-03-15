@@ -133,17 +133,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
         }
 
         //---------------------------------------------------------------------
-        // Static helpers.
-        //---------------------------------------------------------------------
-
-        internal static CommandState GetCommandState(IProjectModelNode node)
-        {
-            return AuthorizedPublicKeysModel.IsNodeSupported(node)
-                ? CommandState.Enabled
-                : CommandState.Unavailable;
-        }
-
-        //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
 
