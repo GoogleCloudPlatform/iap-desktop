@@ -148,6 +148,7 @@
     <Compile Include="Services\Ssh\SshConnectionService.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
+    <Compile Include="Views\ConnectionSettings\ConnectionSettingsCommands.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsViewModel.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsView.cs">
       <SubType>Form</SubType>

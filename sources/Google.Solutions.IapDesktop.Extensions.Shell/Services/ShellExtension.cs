@@ -231,13 +231,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             }
         }
 
-        private void OpenConnectionSettings()
-        {
-            ToolWindow
-                .GetWindow<ConnectionSettingsView, ConnectionSettingsViewModel>(serviceProvider)
-                .Show();
-        }
-
         //---------------------------------------------------------------------
         // Setup
         //---------------------------------------------------------------------
@@ -347,30 +340,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // Connection settings.
             //
-            var settingsService = serviceProvider.GetService<IConnectionSettingsService>();
+            var connectionSettingsCommands = serviceProvider.GetService<ConnectionSettingsCommands>();
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Connection settings",
-                    node => settingsService.IsConnectionSettingsAvailable(node)
-                        ? CommandState.Enabled
-                        : CommandState.Unavailable,
-                    _ => OpenConnectionSettings())
-                {
-                    ShortcutKeys = Keys.F4,
-                    Image = Resources.Settings_16
-                },
+                connectionSettingsCommands.ContextMenuOpen,
                 4);
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Connection &settings",
-                    node => settingsService.IsConnectionSettingsAvailable(node)
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    _ => OpenConnectionSettings())
-                {
-                    Image = Resources.Settings_16
-                },
+                connectionSettingsCommands.ToolbarOpen,
                 3);
 
             //
@@ -389,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 11);
 #if DEBUG
             projectExplorer.ContextMenuCommands.AddCommand(
-                serviceProvider.GetService<DiagnosticsCommands.GenerateHtmlPage>());
+                serviceProvider.GetService<DiagnosticsCommands>().GenerateHtmlPage);
 #endif
 
             //

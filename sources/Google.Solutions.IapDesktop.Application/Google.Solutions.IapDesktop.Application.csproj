@@ -197,6 +197,7 @@
       <DependentUpon>DebugOptionsSheet.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Diagnostics\DebugOptionsSheetViewModel.cs" />
+    <Compile Include="Views\ToolContextCommand.cs" />
     <Compile Include="Views\ViewBindingContext.cs" />
     <Compile Include="Views\Diagnostics\DebugCommonControlsView.cs">
       <SubType>Form</SubType>

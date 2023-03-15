@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Diagnostics;
@@ -37,35 +38,57 @@ using System.Web;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
 {
     [SkipCodeCoverage("For testing only")]
-    public static class DiagnosticsCommands
+    [Service]
+    public class DiagnosticsCommands
     {
+        public DiagnosticsCommands(
+            IConnectionSettingsService settingsService,
+            IProjectModelService projectModelService)
+        {
+            this.GenerateHtmlPage = new GenerateHtmlPageCommand(
+                settingsService, 
+                projectModelService);
+        }
+
+        //---------------------------------------------------------------------
+        // Context commands.
+        //---------------------------------------------------------------------
+
+        public IContextCommand<IProjectModelNode> GenerateHtmlPage { get; }
+
+        //---------------------------------------------------------------------
+        // Command classes.
+        //---------------------------------------------------------------------
+
         /// <summary>
         /// Generate a HTML page that contains iap-rdp:// links for all
         /// Windows VMs in a project.
         /// </summary>
-        [Service]
-        public class GenerateHtmlPage : CommandBase, IContextCommand<IProjectModelNode>
+        private class GenerateHtmlPageCommand : ToolContextCommand<IProjectModelNode>
         {
             private readonly IConnectionSettingsService settingsService;
             private readonly IProjectModelService projectModelService;
 
-            public GenerateHtmlPage(
+            public GenerateHtmlPageCommand(
                 IConnectionSettingsService settingsService,
                 IProjectModelService projectModelService)
+                : base("Generate HTML page")
             {
                 this.settingsService = settingsService;
                 this.projectModelService = projectModelService;
-                this.Text = "Generate HTML page";
             }
 
-            public CommandState QueryState(IProjectModelNode context)
+            //-----------------------------------------------------------------
+            // Overrides.
+            //-----------------------------------------------------------------
+
+            protected override bool IsAvailable(IProjectModelNode context)
             {
-                return context is IProjectModelProjectNode
-                    ? CommandState.Enabled
-                    : CommandState.Unavailable;
+                return context is IProjectModelProjectNode;
             }
 
-            public async Task ExecuteAsync(IProjectModelNode context)
+
+            public override async Task ExecuteAsync(IProjectModelNode context)
             {
                 Debug.Assert(context is IProjectModelProjectNode);
                 var projectNode = (IProjectModelProjectNode)context;
