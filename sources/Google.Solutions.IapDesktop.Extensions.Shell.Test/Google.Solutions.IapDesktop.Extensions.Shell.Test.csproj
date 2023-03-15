@@ -148,6 +148,7 @@
     <Compile Include="Services\Tunnel\TestTcpTable.cs" />
     <Compile Include="Services\Tunnel\TestTunnelServiceWithMtls.cs" />
     <Compile Include="ShellFixtureBase.cs" />
+    <Compile Include="Views\ConnectionSettings\TestConnectionSettingsCommands.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
     <Compile Include="Views\Credentials\TestAuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\TestSelectCredentialsWorkflow.cs" />
