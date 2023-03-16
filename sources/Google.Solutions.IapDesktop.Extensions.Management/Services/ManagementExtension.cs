@@ -178,6 +178,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
+            var eventLogCommands = serviceProvider.GetService<EventLogCommands>();
+
             //
             // Add commands to project explorer tool bar.
             //
@@ -320,15 +322,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 },
                 9);
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Show &event log",
-                    EventLogViewModel.GetCommandState,
-                    context => ToolWindow
-                        .GetWindow<EventLogView, EventLogViewModel>(this.serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.EventLog_16
-                },
+                eventLogCommands.ContextMenuOpen,
                 10);
 
             var osCommand = projectExplorer.ContextMenuCommands.AddCommand(
@@ -375,17 +369,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             // Add commands to main menu.
             //
             var mainForm = serviceProvider.GetService<IMainWindow>();
-            mainForm.ViewMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "&Event log",
-                    pseudoContext => CommandState.Enabled,
-                    pseudoContext => ToolWindow
-                        .GetWindow<EventLogView, EventLogViewModel>(this.serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.EventLog_16,
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.E
-                });
+            
+            mainForm.ViewMenu.AddCommand(eventLogCommands.WindowMenuOpen);
 
             var serialPortMenu = mainForm.ViewMenu.AddCommand(
                 new ContextCommand<IMainWindow>(

@@ -170,6 +170,7 @@
     <Compile Include="Views\SshTerminal\TestSshTerminalSessionBroker.cs" />
     <Compile Include="Views\SshTerminal\TestSshTerminalPaneViewModel.cs" />
     <Compile Include="Views\TestSessionPaneBase.cs" />
+    <Compile Include="Views\TunnelsViewer\TestTunnelsViewCommands.cs" />
     <Compile Include="Views\TunnelsViewer\TestTunnelsViewModel.cs" />
     <Compile Include="Services\Tunnel\TestTunnelBrokerService.cs" />
     <Compile Include="Services\Tunnel\TestTunnelService.cs" />

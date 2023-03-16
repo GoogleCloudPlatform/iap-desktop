@@ -160,6 +160,7 @@
       <DependentUpon>JoinView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ActiveDirectory\JoinViewModel.cs" />
+    <Compile Include="Views\EventLog\EventLogCommands.cs" />
     <Compile Include="Views\EventLog\EventLogModel.cs" />
     <Compile Include="Views\EventLog\EventLogViewModel.cs" />
     <Compile Include="Views\EventLog\EventLogView.cs">

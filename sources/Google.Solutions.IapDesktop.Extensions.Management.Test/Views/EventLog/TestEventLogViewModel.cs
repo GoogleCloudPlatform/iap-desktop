@@ -179,13 +179,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
             this.viewModel = new EventLogViewModel(registry);
         }
 
-        [Test]
-        public void WhenNodeIsCloudNode_ThenCommandStateIsUnavailable()
-        {
-            var node = new Mock<IProjectModelCloudNode>().Object;
-            Assert.AreEqual(CommandState.Unavailable, EventLogViewModel.GetCommandState(node));
-        }
-
         //---------------------------------------------------------------------
         // Model switching.
         //---------------------------------------------------------------------
