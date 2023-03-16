@@ -179,21 +179,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             var eventLogCommands = serviceProvider.GetService<EventLogCommands>();
+            var instancePropertiesCommands = serviceProvider.GetService<InstancePropertiesInspectorCommands>();
 
             //
             // Add commands to project explorer tool bar.
             //
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Properties",
-                    InstancePropertiesInspectorViewModel.GetToolbarCommandState,
-                    context => ToolWindow
-                        .GetWindow<InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.ComputerDetails_16
-                },
+                instancePropertiesCommands.ToolbarOpen,
                 4);
 
             //
@@ -353,16 +346,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 });
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "P&roperties",
-                    InstancePropertiesInspectorViewModel.GetContextMenuCommandState,
-                    context => ToolWindow
-                        .GetWindow<InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.ComputerDetails_16,
-                    ShortcutKeys = Keys.Alt | Keys.Enter
-                },
+                instancePropertiesCommands.ContextMenuOpen,
                 12);
 
             //
@@ -413,17 +397,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 });
 
 
-            mainForm.ViewMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "&Instance properties",
-                    _ => CommandState.Enabled,
-                    _ => ToolWindow
-                        .GetWindow<InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.ComputerDetails_16,
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.I
-                });
+            mainForm.ViewMenu.AddCommand(instancePropertiesCommands.WindowMenuOpen);
             mainForm.ViewMenu.AddCommand(
                 new ContextCommand<IMainWindow>(
                     "I&nstalled packages",

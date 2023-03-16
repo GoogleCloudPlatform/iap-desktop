@@ -91,20 +91,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        public static CommandState GetContextMenuCommandState(IProjectModelNode node)
-        {
-            return node is IProjectModelInstanceNode
-                ? CommandState.Enabled
-                : CommandState.Unavailable;
-        }
-
-        public static CommandState GetToolbarCommandState(IProjectModelNode node)
-        {
-            return node is IProjectModelInstanceNode
-                ? CommandState.Enabled
-                : CommandState.Disabled;
-        }
-
         protected override async Task<InstancePropertiesInspectorModel> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)

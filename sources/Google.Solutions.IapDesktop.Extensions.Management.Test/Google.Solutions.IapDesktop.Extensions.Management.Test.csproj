@@ -153,6 +153,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\Logs\TestAuditLogRecord.cs" />
     <Compile Include="Data\Logs\TestLogRecord.cs" />
+    <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorCommands.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorViewModel.cs" />
     <Compile Include="Views\PackageInventory\TestPackageInventoryModel.cs" />
