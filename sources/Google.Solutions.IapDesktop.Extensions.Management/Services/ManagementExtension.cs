@@ -180,6 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 
             var eventLogCommands = serviceProvider.GetService<EventLogCommands>();
             var instancePropertiesCommands = serviceProvider.GetService<InstancePropertiesInspectorCommands>();
+            var serialOutputCommands = serviceProvider.GetService<SerialOutputCommands>();
 
             //
             // Add commands to project explorer tool bar.
@@ -304,15 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 });
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Show serial port &output (COM1)",
-                    SerialOutputViewModel.GetCommandState,
-                    context => ToolWindow
-                        .GetWindow<SerialOutputViewCom1, SerialOutputViewModel>(this.serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.Log_16
-                },
+                serialOutputCommands.ContextMenuOpenCom1,
                 9);
             projectExplorer.ContextMenuCommands.AddCommand(
                 eventLogCommands.ContextMenuOpen,
@@ -364,38 +357,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                 {
                     Image = Resources.Log_16,
                 });
-            serialPortMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "COM&1 (log)",
-                    pseudoContext => CommandState.Enabled,
-                    pseudoContext => ToolWindow
-                        .GetWindow<SerialOutputViewCom1, SerialOutputViewModel>(this.serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.Log_16,
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.O
-                });
-            serialPortMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "COM&3 (setup log)",
-                    pseudoContext => CommandState.Enabled,
-                    pseudoContext => ToolWindow
-                        .GetWindow<SerialOutputViewCom3, SerialOutputViewModel>(this.serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.Log_16,
-                });
-            serialPortMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "COM&4 (agent)",
-                    pseudoContext => CommandState.Enabled,
-                    pseudoContext => ToolWindow
-                        .GetWindow<SerialOutputViewCom4, SerialOutputViewModel>(this.serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.Log_16,
-                });
-
+            serialPortMenu.AddCommand(serialOutputCommands.WindowMenuOpenCom1);
+            serialPortMenu.AddCommand(serialOutputCommands.WindowMenuOpenCom3);
+            serialPortMenu.AddCommand(serialOutputCommands.WindowMenuOpenCom4);
 
             mainForm.ViewMenu.AddCommand(instancePropertiesCommands.WindowMenuOpen);
             mainForm.ViewMenu.AddCommand(

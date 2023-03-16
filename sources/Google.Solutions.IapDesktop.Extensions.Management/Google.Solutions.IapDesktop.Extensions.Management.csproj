@@ -204,6 +204,7 @@
     <Compile Include="Views\PackageInventory\PackageList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Views\SerialOutput\SerialOutputCommands.cs" />
     <Compile Include="Views\SerialOutput\SerialOutputWindowComX.cs">
       <SubType>Form</SubType>
     </Compile>

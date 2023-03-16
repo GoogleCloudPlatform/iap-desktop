@@ -158,6 +158,7 @@
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorViewModel.cs" />
     <Compile Include="Views\PackageInventory\TestPackageInventoryModel.cs" />
     <Compile Include="Views\PackageInventory\TestPackageInventoryViewModel.cs" />
+    <Compile Include="Views\SerialOutput\TestSerialOutputCommands.cs" />
     <Compile Include="Views\SerialOutput\TestXtermReader.cs" />
     <Compile Include="Views\SerialOutput\TestSerialOutputModel.cs" />
     <Compile Include="Views\SerialOutput\TestSerialOutputViewModel.cs" />
