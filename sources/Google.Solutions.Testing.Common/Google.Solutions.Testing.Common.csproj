@@ -103,6 +103,7 @@
     <Compile Include="Integration\PredefinedRole.cs" />
     <Compile Include="Integration\ResourceTask.cs" />
     <Compile Include="Integration\TestProject.cs" />
+    <Compile Include="Mock\ServiceProviderMocks.cs" />
     <Compile Include="Net\InprocHttpProxy.cs" />
     <Compile Include="Net\NetTracing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

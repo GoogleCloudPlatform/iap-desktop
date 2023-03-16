@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
@@ -230,13 +231,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             }
         }
 
-        private void OpenConnectionSettings()
-        {
-            ToolWindow
-                .GetWindow<ConnectionSettingsView, ConnectionSettingsViewModel>(serviceProvider)
-                .Show();
-        }
-
         //---------------------------------------------------------------------
         // Setup
         //---------------------------------------------------------------------
@@ -346,73 +340,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // Connection settings.
             //
-            var settingsService = serviceProvider.GetService<IConnectionSettingsService>();
+            var connectionSettingsCommands = serviceProvider.GetService<ConnectionSettingsCommands>();
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Connection settings",
-                    node => settingsService.IsConnectionSettingsAvailable(node)
-                        ? CommandState.Enabled
-                        : CommandState.Unavailable,
-                    _ => OpenConnectionSettings())
-                {
-                    ShortcutKeys = Keys.F4,
-                    Image = Resources.Settings_16
-                },
+                connectionSettingsCommands.ContextMenuOpen,
                 4);
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Connection &settings",
-                    node => settingsService.IsConnectionSettingsAvailable(node)
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    _ => OpenConnectionSettings())
-                {
-                    Image = Resources.Settings_16
-                },
+                connectionSettingsCommands.ToolbarOpen,
                 3);
 
             //
             // Authorized keys.
             //
+            var authorizedKeyCommands = serviceProvider.GetService<AuthorizedPublicKeysCommands>();
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Authorized SSH &keys",
-                    node => AuthorizedPublicKeysViewModel.GetCommandState(node),
-                    _ => ToolWindow
-                        .GetWindow<AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.AuthorizedKey_16
-                },
+                authorizedKeyCommands.ContextMenuOpen,
                 11);
+#if DEBUG
+            projectExplorer.ContextMenuCommands.AddCommand(
+                serviceProvider.GetService<DiagnosticsCommands>().GenerateHtmlPage);
+#endif
 
             //
             // View menu.
             //
+            var tunnelsViewCommands = serviceProvider.GetService<TunnelsViewCommands>();
             mainForm.ViewMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "Active IAP &tunnels",
-                    pseudoContext => CommandState.Enabled,
-                    pseudoContext => ToolWindow
-                        .GetWindow<TunnelsView, TunnelsViewModel>(this.serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.Tunnel_16,
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.T
-                },
+                tunnelsViewCommands.WindowMenuOpen,
                 1);
-            mainForm.ViewMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "Authorized SSH &keys",
-                    _ => CommandState.Enabled,
-                    _ => ToolWindow
-                        .GetWindow<AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.AuthorizedKey_16,
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.K
-                });
+            mainForm.ViewMenu.AddCommand(authorizedKeyCommands.WindowMenuOpen);
 
             //
             // Session menu.

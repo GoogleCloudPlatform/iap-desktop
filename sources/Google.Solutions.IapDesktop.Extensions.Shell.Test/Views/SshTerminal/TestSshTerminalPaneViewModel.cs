@@ -35,6 +35,7 @@ using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Common.Integration;
 using Moq;
 using NUnit.Framework;

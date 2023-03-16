@@ -226,20 +226,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        public static CommandState GetCommandState(IProjectModelNode node)
-        {
-            if (node is IProjectModelProjectNode
-                || node is IProjectModelZoneNode
-                || node is IProjectModelInstanceNode)
-            {
-                return CommandState.Enabled;
-            }
-            else
-            {
-                return CommandState.Unavailable;
-            }
-        }
-
         protected override async Task<EventLogModel> LoadModelAsync(
             IProjectModelNode node,
             CancellationToken token)

@@ -160,47 +160,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
         }
 
         //---------------------------------------------------------------------
-        // Command state.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenNodeIsCloudNode_ThenCommandStateIsUnavailable()
-        {
-            var node = new Mock<IProjectModelCloudNode>().Object;
-            Assert.AreEqual(CommandState.Unavailable, SerialOutputViewModel.GetCommandState(node));
-        }
-
-        [Test]
-        public void WhenNodeIsProjectNode_ThenCommandStateIsUnavailable()
-        {
-            var node = new Mock<IProjectModelProjectNode>().Object;
-            Assert.AreEqual(CommandState.Unavailable, SerialOutputViewModel.GetCommandState(node));
-        }
-
-        [Test]
-        public void WhenNodeIsZoneNode_ThenCommandStateIsUnavailable()
-        {
-            var node = new Mock<IProjectModelZoneNode>().Object;
-            Assert.AreEqual(CommandState.Unavailable, SerialOutputViewModel.GetCommandState(node));
-        }
-
-        [Test]
-        public void WhenNodeIsVmNodeAndRunning_ThenCommandStateIsEnabled()
-        {
-            var node = new Mock<IProjectModelInstanceNode>();
-            node.SetupGet(n => n.IsRunning).Returns(true);
-            Assert.AreEqual(CommandState.Enabled, SerialOutputViewModel.GetCommandState(node.Object));
-        }
-
-        [Test]
-        public void WhenNodeIsVmNodeAndStopped_ThenCommandStateIsEnabled()
-        {
-            var node = new Mock<IProjectModelInstanceNode>();
-            node.SetupGet(n => n.IsRunning).Returns(false);
-            Assert.AreEqual(CommandState.Disabled, SerialOutputViewModel.GetCommandState(node.Object));
-        }
-
-        //---------------------------------------------------------------------
         // Model switching.
         //---------------------------------------------------------------------
 

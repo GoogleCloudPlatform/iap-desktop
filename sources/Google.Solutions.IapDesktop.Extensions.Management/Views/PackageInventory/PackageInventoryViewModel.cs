@@ -152,19 +152,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             }
         }
 
-
         //---------------------------------------------------------------------
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
-
-        internal static CommandState GetCommandState(IProjectModelNode node)
-        {
-            return (node is IProjectModelInstanceNode ||
-                    node is IProjectModelZoneNode ||
-                    node is IProjectModelProjectNode)
-                ? CommandState.Enabled
-                : CommandState.Unavailable;
-        }
 
         protected override async Task<PackageInventoryModel> LoadModelAsync(
             IProjectModelNode node,

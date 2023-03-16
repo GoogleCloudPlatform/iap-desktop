@@ -22,9 +22,9 @@
 using Moq;
 using System;
 
-namespace Google.Solutions.Mvvm.Test
+namespace Google.Solutions.Testing.Common.Mocks
 {
-    internal static class Mocks
+    public static class ServiceProviderMocks
     {
         public static void Add<TService>(
             this Mock<IServiceProvider> serviceProvider,

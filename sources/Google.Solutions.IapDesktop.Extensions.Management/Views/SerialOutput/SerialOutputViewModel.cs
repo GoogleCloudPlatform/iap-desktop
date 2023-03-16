@@ -185,24 +185,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
         }
 
         //---------------------------------------------------------------------
-        // Actions.
-        //---------------------------------------------------------------------
-
-        //---------------------------------------------------------------------
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
-
-        public static CommandState GetCommandState(IProjectModelNode node)
-        {
-            if (node is IProjectModelInstanceNode vmNode)
-            {
-                return vmNode.IsRunning ? CommandState.Enabled : CommandState.Disabled;
-            }
-            else
-            {
-                return CommandState.Unavailable;
-            }
-        }
 
         protected override async Task<SerialOutputModel> LoadModelAsync(
             IProjectModelNode node,

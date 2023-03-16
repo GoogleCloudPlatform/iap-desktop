@@ -169,7 +169,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(CommandState.Unavailable, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsFalse(viewModel.IsPackageListEnabled.Value);
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.AreEqual("Installed packages", viewModel.WindowTitle.Value);
@@ -198,7 +197,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
             Assert.IsNull(viewModel.InformationText.Value);
             StringAssert.Contains("project-1", viewModel.WindowTitle.Value);
@@ -227,7 +225,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
             Assert.IsNull(viewModel.InformationText.Value);
             StringAssert.Contains("zone-1", viewModel.WindowTitle.Value);
@@ -257,7 +254,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
             Assert.IsNull(viewModel.InformationText.Value);
             StringAssert.Contains("instance-1", viewModel.WindowTitle.Value);
@@ -287,7 +283,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
                 .SwitchToModelAsync(node.Object)
                 .ConfigureAwait(true);
 
-            Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled.Value);
             Assert.AreEqual(
                 PackageInventoryViewModel.OsInventoryNotAvailableWarning,
