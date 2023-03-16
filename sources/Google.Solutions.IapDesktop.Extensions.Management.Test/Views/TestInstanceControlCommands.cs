@@ -1,0 +1,370 @@
+﻿//
+// Copyright 2023 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Management;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Management.Views;
+using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Testing.Application.Mocks;
+using Google.Solutions.Testing.Common.Mocks;
+using Moq;
+using NUnit.Framework;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
+{
+    [TestFixture]
+    public class TestInstanceControlCommands
+    {
+        private static readonly InstanceLocator SampleLocator =
+            new InstanceLocator("project-1", "zone-1", "instance-1");
+
+        //---------------------------------------------------------------------
+        // ContextMenuStart.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenInstanceStartable_ThenContextMenuStartIsEnabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var startableVm = new Mock<IProjectModelInstanceNode>();
+            startableVm.SetupGet(n => n.CanStart).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                commands.ContextMenuStart.QueryState(startableVm.Object));
+        }
+
+        [Test]
+        public void WhenInstanceNotStartable_ThenContextMenuStartIsDisabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var nonStartableVm = new Mock<IProjectModelInstanceNode>();
+            nonStartableVm.SetupGet(n => n.CanStart).Returns(false);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                commands.ContextMenuStart.QueryState(nonStartableVm.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenContextMenuStartIsUnavailable()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuStart.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuStart.QueryState(new Mock<IProjectModelProjectNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuStart.QueryState(new Mock<IProjectModelZoneNode>().Object));
+        }
+
+        //---------------------------------------------------------------------
+        // ContextMenuResume.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenInstanceResumeable_ThenContextMenuResumeIsEnabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var resumableVm = new Mock<IProjectModelInstanceNode>();
+            resumableVm.SetupGet(n => n.CanResume).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                commands.ContextMenuResume.QueryState(resumableVm.Object));
+        }
+
+        [Test]
+        public void WhenInstanceNotResumeable_ThenContextMenuResumeIsDisabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var nonResumableVm = new Mock<IProjectModelInstanceNode>();
+            nonResumableVm.SetupGet(n => n.CanResume).Returns(false);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                commands.ContextMenuResume.QueryState(nonResumableVm.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenContextMenuResumeIsUnavailable()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuResume.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuResume.QueryState(new Mock<IProjectModelProjectNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuResume.QueryState(new Mock<IProjectModelZoneNode>().Object));
+        }
+
+        //---------------------------------------------------------------------
+        // ContextMenuStop.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenInstanceStopable_ThenContextMenuStopIsEnabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var stoppableVm = new Mock<IProjectModelInstanceNode>();
+            stoppableVm.SetupGet(n => n.CanStop).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                commands.ContextMenuStop.QueryState(stoppableVm.Object));
+        }
+
+        [Test]
+        public void WhenInstanceNotStopable_ThenContextMenuStopIsDisabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var nonStoppableVm = new Mock<IProjectModelInstanceNode>();
+            nonStoppableVm.SetupGet(n => n.CanStop).Returns(false);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                commands.ContextMenuStop.QueryState(nonStoppableVm.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenContextMenuStopIsUnavailable()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuStop.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuStop.QueryState(new Mock<IProjectModelProjectNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuStop.QueryState(new Mock<IProjectModelZoneNode>().Object));
+        }
+
+        //---------------------------------------------------------------------
+        // ContextMenuSuspend.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenInstanceSuspendable_ThenContextMenuSuspendIsEnabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var stoppableVm = new Mock<IProjectModelInstanceNode>();
+            stoppableVm.SetupGet(n => n.CanSuspend).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                commands.ContextMenuSuspend.QueryState(stoppableVm.Object));
+        }
+
+        [Test]
+        public void WhenInstanceNotSuspendable_ThenContextMenuSuspendIsDisabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var nonSuspendableVm = new Mock<IProjectModelInstanceNode>();
+            nonSuspendableVm.SetupGet(n => n.CanSuspend).Returns(false);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                commands.ContextMenuSuspend.QueryState(nonSuspendableVm.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenContextMenuSuspendIsUnavailable()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuSuspend.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuSuspend.QueryState(new Mock<IProjectModelProjectNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuSuspend.QueryState(new Mock<IProjectModelZoneNode>().Object));
+        }
+
+        //---------------------------------------------------------------------
+        // ContextMenuReset.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenInstanceResetable_ThenContextMenuResetIsEnabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var stoppableVm = new Mock<IProjectModelInstanceNode>();
+            stoppableVm.SetupGet(n => n.CanReset).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                commands.ContextMenuReset.QueryState(stoppableVm.Object));
+        }
+
+        [Test]
+        public void WhenInstanceNotResetable_ThenContextMenuResetIsDisabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var nonResettableVm = new Mock<IProjectModelInstanceNode>();
+            nonResettableVm.SetupGet(n => n.CanReset).Returns(false);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                commands.ContextMenuReset.QueryState(nonResettableVm.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenContextMenuResetIsUnavailable()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuReset.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuReset.QueryState(new Mock<IProjectModelProjectNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuReset.QueryState(new Mock<IProjectModelZoneNode>().Object));
+        }
+
+        //---------------------------------------------------------------------
+        // ControlInstanceCommand.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenNotConfirmed_ThenStartCommandDoesNothing()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var confirmation = serviceProvider.AddMock<IConfirmationDialog>();
+            confirmation
+                .Setup(d => d.Confirm(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Returns(DialogResult.Cancel);
+
+            var command = new InstanceControlCommands.ControlInstanceCommand(
+                "mock",
+                InstanceControlCommand.Start,
+                serviceProvider.Object);
+
+            var startableVm = new Mock<IProjectModelInstanceNode>();
+            startableVm.SetupGet(n => n.CanStart).Returns(true);
+            startableVm.SetupGet(n => n.Instance).Returns(SampleLocator);
+            await command
+                .ExecuteAsync(startableVm.Object)
+                .ConfigureAwait(false);
+
+            confirmation.Verify(
+                d => d.Confirm(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()),
+                Times.Once());
+            serviceProvider.Verify(
+                s => s.GetService(It.Is<Type>(t => t == typeof(IJobService))), 
+                Times.Never);
+        }
+
+        [Test]
+        public async Task WhenConfirmed_ThenStartCommandStartsInstance()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Add<IJobService>(new SynchronousJobService());
+
+            var confirmation = serviceProvider.AddMock<IConfirmationDialog>();
+            confirmation
+                .Setup(d => d.Confirm(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Returns(DialogResult.Yes);
+
+            var controlService = serviceProvider.AddMock<IInstanceControlService>();
+
+            var command = new InstanceControlCommands.ControlInstanceCommand(
+                "mock",
+                InstanceControlCommand.Start,
+                serviceProvider.Object);
+
+            var startableVm = new Mock<IProjectModelInstanceNode>();
+            startableVm.SetupGet(n => n.CanStart).Returns(true);
+            startableVm.SetupGet(n => n.Instance).Returns(SampleLocator);
+            await command
+                .ExecuteAsync(startableVm.Object)
+                .ConfigureAwait(false);
+
+            controlService.Verify(
+                s => s.ControlInstanceAsync(
+                    It.Is<InstanceLocator>(loc => loc == SampleLocator),
+                    InstanceControlCommand.Start,
+                    It.IsAny<CancellationToken>()),
+                Times.Once());
+        }
+    }
+}

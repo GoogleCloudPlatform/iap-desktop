@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Management.Properties;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
+using Google.Solutions.IapDesktop.Extensions.Management.Views;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
@@ -182,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             var eventLogCommands = serviceProvider.GetService<EventLogCommands>();
             var instancePropertiesCommands = serviceProvider.GetService<InstancePropertiesInspectorCommands>();
             var serialOutputCommands = serviceProvider.GetService<SerialOutputCommands>();
-
+            var instanceControlCommands = serviceProvider.GetService<InstanceControlCommands>();
             //
             // Add commands to project explorer tool bar.
             //
@@ -221,76 +222,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
                         : CommandState.Unavailable,
                     context => { }),
                 7);
-            controlContainer.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "&Start",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanStart
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    node => ControlInstanceAsync(
-                        ((IProjectModelInstanceNode)node).Instance,
-                        "Starting",
-                        InstanceControlCommand.Start))
-                {
-                    Image = Resources.Start_16,
-                    ActivityText = "Starting VM instance"
-                });
-            controlContainer.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "&Resume",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanResume
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    node => ControlInstanceAsync(
-                        ((IProjectModelInstanceNode)node).Instance,
-                        "Resuming",
-                        InstanceControlCommand.Resume))
-                {
-                    Image = Resources.Start_16,
-                    ActivityText = "Resuming VM instance"
-                });
-            controlContainer.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Sto&p",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanStop
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    node => ControlInstanceAsync(
-                        ((IProjectModelInstanceNode)node).Instance,
-                        "Stopping",
-                        InstanceControlCommand.Stop))
-                {
-                    Image = Resources.Stop_16,
-                    ActivityText = "Stopping VM instance"
-                });
-            controlContainer.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Suspe&nd",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanSuspend
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    node => ControlInstanceAsync(
-                        ((IProjectModelInstanceNode)node).Instance,
-                        "Suspending",
-                        InstanceControlCommand.Suspend))
-                {
-                    Image = Resources.Pause_16,
-                    ActivityText = "Suspending VM instance"
-                });
-            controlContainer.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Rese&t",
-                    node => node is IProjectModelInstanceNode vmNode && vmNode.CanReset
-                        ? CommandState.Enabled
-                        : CommandState.Disabled,
-                    node => ControlInstanceAsync(
-                        ((IProjectModelInstanceNode)node).Instance,
-                        "Resetting",
-                        InstanceControlCommand.Reset))
-                {
-                    Image = Resources.Reset_16,
-                    ActivityText = "Resetting VM instance"
-                });
+            controlContainer.AddCommand(instanceControlCommands.ContextMenuStart);
+            controlContainer.AddCommand(instanceControlCommands.ContextMenuResume);
+            controlContainer.AddCommand(instanceControlCommands.ContextMenuStop);
+            controlContainer.AddCommand(instanceControlCommands.ContextMenuSuspend);
+            controlContainer.AddCommand(instanceControlCommands.ContextMenuReset);
 
             controlContainer.AddSeparator();
             controlContainer.AddCommand(

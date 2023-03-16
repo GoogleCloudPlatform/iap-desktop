@@ -24,9 +24,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services
+namespace Google.Solutions.Testing.Application.Mocks
 {
-    internal class SynchronousJobService : IJobService
+    public class SynchronousJobService : IJobService
     {
         public Task<T> RunInBackground<T>(JobDescription jobDescription, Func<CancellationToken, Task<T>> jobFunc)
         {

@@ -163,6 +163,7 @@
     <Compile Include="Views\SerialOutput\TestXtermReader.cs" />
     <Compile Include="Views\SerialOutput\TestSerialOutputModel.cs" />
     <Compile Include="Views\SerialOutput\TestSerialOutputViewModel.cs" />
+    <Compile Include="Views\TestInstanceControlCommands.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
