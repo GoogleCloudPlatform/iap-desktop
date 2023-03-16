@@ -178,6 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
+            var packageInventoryCommands = serviceProvider.GetService<PackageInventoryCommands>();
             var eventLogCommands = serviceProvider.GetService<EventLogCommands>();
             var instancePropertiesCommands = serviceProvider.GetService<InstancePropertiesInspectorCommands>();
             var serialOutputCommands = serviceProvider.GetService<SerialOutputCommands>();
@@ -314,29 +315,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             var osCommand = projectExplorer.ContextMenuCommands.AddCommand(
                 new ContextCommand<IProjectModelNode>(
                     "Soft&ware packages",
-                    PackageInventoryViewModel.GetCommandState,
+                    packageInventoryCommands.ContextMenuOpenInstalledPackages.QueryState,
                     context => { }),
                 11);
-            osCommand.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Show &installed packages",
-                    PackageInventoryViewModel.GetCommandState,
-                    context => ToolWindow
-                        .GetWindow<InstalledPackageInventoryView, PackageInventoryViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.PackageInspect_16
-                });
-            osCommand.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Show &available updates",
-                    PackageInventoryViewModel.GetCommandState,
-                    context => ToolWindow
-                        .GetWindow<AvailablePackageInventoryView, PackageInventoryViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.PackageUpdate_16
-                });
+            osCommand.AddCommand(packageInventoryCommands.ContextMenuOpenInstalledPackages);
+            osCommand.AddCommand(packageInventoryCommands.ContextMenuOpenAvailablePackages);
 
             projectExplorer.ContextMenuCommands.AddCommand(
                 instancePropertiesCommands.ContextMenuOpen,
@@ -362,28 +345,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             serialPortMenu.AddCommand(serialOutputCommands.WindowMenuOpenCom4);
 
             mainForm.ViewMenu.AddCommand(instancePropertiesCommands.WindowMenuOpen);
-            mainForm.ViewMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "I&nstalled packages",
-                    _ => CommandState.Enabled,
-                    _ => ToolWindow
-                        .GetWindow<InstalledPackageInventoryView, PackageInventoryViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.PackageInspect_16,
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
-                });
-            mainForm.ViewMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "&Available updates",
-                    _ => CommandState.Enabled,
-                    _ => ToolWindow
-                        .GetWindow<AvailablePackageInventoryView, PackageInventoryViewModel>(serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.PackageUpdate_16,
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.U
-                });
+            mainForm.ViewMenu.AddCommand(packageInventoryCommands.WindowMenuOpenInstalledPackages);
+            mainForm.ViewMenu.AddCommand(packageInventoryCommands.WindowMenuOpenAvailablePackages);
         }
     }
 }

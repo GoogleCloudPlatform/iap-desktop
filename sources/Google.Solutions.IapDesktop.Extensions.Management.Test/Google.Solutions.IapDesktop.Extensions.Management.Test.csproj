@@ -156,6 +156,7 @@
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorCommands.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorViewModel.cs" />
+    <Compile Include="Views\PackageInventory\TestPackageInventoryCommands.cs" />
     <Compile Include="Views\PackageInventory\TestPackageInventoryModel.cs" />
     <Compile Include="Views\PackageInventory\TestPackageInventoryViewModel.cs" />
     <Compile Include="Views\SerialOutput\TestSerialOutputCommands.cs" />
