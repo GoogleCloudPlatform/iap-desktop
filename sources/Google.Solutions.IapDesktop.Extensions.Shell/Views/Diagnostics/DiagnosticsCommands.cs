@@ -87,6 +87,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
                 return context is IProjectModelProjectNode;
             }
 
+            protected override bool IsEnabled(IProjectModelNode context)
+            {
+                return true;
+            }
 
             public override async Task ExecuteAsync(IProjectModelNode context)
             {

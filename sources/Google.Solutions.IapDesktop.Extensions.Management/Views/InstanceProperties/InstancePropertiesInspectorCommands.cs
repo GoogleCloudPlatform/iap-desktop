@@ -38,7 +38,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
                 <IProjectModelNode, InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(
                     serviceProvider,
                     "P&roperties",
-                    context => context is IProjectModelInstanceNode)
+                    context => context is IProjectModelInstanceNode,
+                    _ => true)
             {
                 Image = Resources.ComputerDetails_16,
                 ShortcutKeys = Keys.Alt | Keys.Enter
@@ -48,9 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
                 <IProjectModelNode, InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(
                     serviceProvider,
                     "Properties",
+                    _ => true,
                     context => context is IProjectModelInstanceNode)
             {
-                UnavailableState = CommandState.Disabled,
                 Image = Resources.ComputerDetails_16
             };
 
@@ -58,7 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
                 <IMainWindow, InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(
                     serviceProvider,
                     "&Instance properties",
-                    context => true)
+                    _ => true,
+                    _ => true)
             {
                 Image = Resources.ComputerDetails_16,
                 ShortcutKeys = Keys.Control | Keys.Alt | Keys.I

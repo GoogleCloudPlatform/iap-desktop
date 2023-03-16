@@ -40,9 +40,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                     "Show &event log",
                     context => context is IProjectModelProjectNode
                         || context is IProjectModelZoneNode
-                        || context is IProjectModelInstanceNode)
+                        || context is IProjectModelInstanceNode,
+                    _ => true)
             {
-                UnavailableState = CommandState.Unavailable,
                 Image = Resources.EventLog_16
             };
 
@@ -50,7 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
                 <IMainWindow, EventLogView, EventLogViewModel>(
                     serviceProvider,
                     "&Event log",
-                    context => true)
+                    _ => true,
+                    _ => true)
             {
                 Image = Resources.EventLog_16,
                 ShortcutKeys = Keys.Control | Keys.Alt | Keys.E

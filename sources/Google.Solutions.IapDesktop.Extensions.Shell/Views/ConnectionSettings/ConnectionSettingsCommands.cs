@@ -35,16 +35,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
     {
         public ConnectionSettingsCommands(IServiceProvider serviceProvider)
         {
-            this.ContextMenuOpen = new OpenCommand(serviceProvider, "Connection settings")
+            var settingsService = serviceProvider.GetService<IConnectionSettingsService>();
+
+            this.ContextMenuOpen = new OpenToolWindowCommand
+                <IProjectModelNode, ConnectionSettingsView, ConnectionSettingsViewModel>(
+                    serviceProvider,
+                    "Connection &settings",
+                    context => settingsService.IsConnectionSettingsAvailable(context),
+                    _ => true)
             {
-                UnavailableState = CommandState.Unavailable,
                 ShortcutKeys = Keys.F4,
                 Image = Resources.Settings_16
             };
 
-            this.ToolbarOpen = new OpenCommand(serviceProvider, "Connection &settings")
+            this.ToolbarOpen = new OpenToolWindowCommand
+                <IProjectModelNode, ConnectionSettingsView, ConnectionSettingsViewModel>(
+                    serviceProvider,
+                    "Connection settings",
+                    _ => true,
+                    context => settingsService.IsConnectionSettingsAvailable(context))
             {
-                UnavailableState = CommandState.Disabled,
                 Image = Resources.Settings_16
             };
         }
@@ -56,39 +66,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         public IContextCommand<IProjectModelNode> ContextMenuOpen { get; }
         public IContextCommand<IProjectModelNode> ToolbarOpen { get; }
 
-        //---------------------------------------------------------------------
-        // Command classes.
-        //---------------------------------------------------------------------
-
-        private class OpenCommand : ToolContextCommand<IProjectModelNode>
-        {
-            private readonly IServiceProvider serviceProvider;
-            private readonly IConnectionSettingsService settingsService;
-
-            public OpenCommand(
-                IServiceProvider serviceProvider,
-                string text)
-                : base(text)
-            {
-                this.serviceProvider = serviceProvider;
-                this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
-            }
-
-            //-----------------------------------------------------------------
-            // Overrides.
-            //-----------------------------------------------------------------
-
-            protected override bool IsAvailable(IProjectModelNode context)
-            {
-                return this.settingsService.IsConnectionSettingsAvailable(context);
-            }
-
-            public override void Execute(IProjectModelNode context)
-            {
-                ToolWindow
-                    .GetWindow<ConnectionSettingsView, ConnectionSettingsViewModel>(this.serviceProvider)
-                    .Show();
-            }
-        }
     }
 }

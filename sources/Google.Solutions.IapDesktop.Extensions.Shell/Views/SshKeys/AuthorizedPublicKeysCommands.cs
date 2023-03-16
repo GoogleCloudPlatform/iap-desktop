@@ -38,9 +38,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 <IProjectModelNode, AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(
                     serviceProvider,
                     "Authorized SSH &keys",
-                    context => AuthorizedPublicKeysModel.IsNodeSupported(context))
+                    context => AuthorizedPublicKeysModel.IsNodeSupported(context),
+                    _ => true)
             {
-                UnavailableState = CommandState.Unavailable,
                 Image = Resources.AuthorizedKey_16
             };
 
@@ -48,7 +48,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 <IMainWindow, AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(
                     serviceProvider,
                     "Authorized SSH &keys",
-                    context => true)
+                    _ => true,
+                    _ => true)
             {
                 Image = Resources.AuthorizedKey_16,
                 ShortcutKeys = Keys.Control | Keys.Alt | Keys.K

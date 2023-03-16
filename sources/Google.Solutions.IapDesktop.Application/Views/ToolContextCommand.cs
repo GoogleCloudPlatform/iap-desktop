@@ -37,20 +37,16 @@ namespace Google.Solutions.IapDesktop.Application.Views
     public abstract class ToolContextCommand<TContext> : CommandBase, IContextCommand<TContext>
     {
         /// <summary>
-        /// State to apply when command is available.
-        /// </summary>
-        public CommandState AvailableState { get; set; } = CommandState.Enabled;
-
-        /// <summary>
-        /// State to apply when command is unavailable.
-        /// </summary>
-        public CommandState UnavailableState { get; set; } = CommandState.Unavailable;
-
-        /// <summary>
         /// Check if command should be made available for this context.
         /// </summary>
         /// <param name="context"></param>
         protected abstract bool IsAvailable(TContext context);
+
+        /// <summary>
+        /// Check if command a command that's available should be enabled.
+        /// </summary>
+        /// <param name="context"></param>
+        protected abstract bool IsEnabled(TContext context);
 
         public ToolContextCommand(string text)
         {
@@ -69,9 +65,18 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public CommandState QueryState(TContext context)
         {
-            return this.IsAvailable(context)
-                ? this.AvailableState
-                : this.UnavailableState;
+            if (!this.IsAvailable(context))
+            {
+                return CommandState.Unavailable;
+            }
+            else if (this.IsEnabled(context))
+            {
+                return CommandState.Enabled;
+            }
+            else
+            {
+                return CommandState.Disabled;
+            }
         }
 
         public virtual Task ExecuteAsync(TContext context)
@@ -90,21 +95,24 @@ namespace Google.Solutions.IapDesktop.Application.Views
         where TViewModel : ViewModelBase
     {
         private readonly Func<TContext, bool> isAvailableFunc;
+        private readonly Func<TContext, bool> isEnabledFunc;
         private readonly IServiceProvider serviceProvider;
 
         public OpenToolWindowCommand(
             IServiceProvider serviceProvider,
             string text,
-            Func<TContext, bool> isAvailableFunc)
+            Func<TContext, bool> isAvailableFunc,
+            Func<TContext, bool> isEnabledFunc)
             : base(text)
         {
             this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
             this.isAvailableFunc = isAvailableFunc.ThrowIfNull(nameof(isAvailableFunc));
+            this.isEnabledFunc = isEnabledFunc.ThrowIfNull(nameof(isEnabledFunc));
         }
 
         public override Task ExecuteAsync(TContext context)
         {
-            Debug.Assert(IsAvailable(context));
+            Debug.Assert(IsAvailable(context) && IsEnabled(context));
 
             ToolWindow
                 .GetWindow<TView, TViewModel>(serviceProvider)
@@ -115,6 +123,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
         protected override bool IsAvailable(TContext context)
         {
             return this.isAvailableFunc(context);
+        }
+
+        protected override bool IsEnabled(TContext context)
+        {
+            Debug.Assert(IsAvailable(context));
+            return this.isEnabledFunc(context);
         }
     }
 }

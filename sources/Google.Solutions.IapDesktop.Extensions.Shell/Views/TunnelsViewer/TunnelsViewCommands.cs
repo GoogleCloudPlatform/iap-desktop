@@ -37,7 +37,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
                 <IMainWindow, TunnelsView, TunnelsViewModel>(
                     serviceProvider,
                     "Active IAP &tunnels",
-                    context => true)
+                    _ => true,
+                    _ => true)
             {
                 Image = Resources.Tunnel_16,
                 ShortcutKeys = Keys.Control | Keys.Alt | Keys.T
