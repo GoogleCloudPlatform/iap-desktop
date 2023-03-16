@@ -54,85 +54,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
     {
         private readonly IServiceProvider serviceProvider;
 
-        private readonly ViewFactory<JoinView, JoinViewModel> joinDialogFactory;
-
-        private async Task JoinDomainAsync(
-            IProjectModelInstanceNode instance)
-        {
-            var mainWindow = this.serviceProvider.GetService<IMainWindow>();
-
-            string domainName;
-            string newComputerName;
-
-            using (var dialog = this.joinDialogFactory.CreateDialog())
-            {
-                dialog.ViewModel.ComputerName.Value = instance.DisplayName;
-
-                if (dialog.ShowDialog(mainWindow) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                domainName = dialog.ViewModel.DomainName.Value.Trim();
-                var computerName = dialog.ViewModel.ComputerName.Value.Trim();
-
-                //
-                // Only specify a "new" computer name if it's different.
-                //
-                newComputerName = computerName
-                    .Equals(instance.DisplayName, StringComparison.OrdinalIgnoreCase)
-                        ? null
-                        : computerName;
-            }
-
-            //
-            // Prompt for credentials.
-            //
-            if (this.serviceProvider.GetService<ICredentialDialog>()
-                .PromptForWindowsCredentials(
-                    mainWindow,
-                    $"Join {instance.DisplayName} to domain",
-                    $"Enter Active Directory credentials for {domainName}.\n\n" +
-                        "The credentials will be used to join the computer to the " +
-                        "domain and will not be saved.",
-                    AuthenticationPackage.Kerberos,
-                    out var credential) != DialogResult.OK)
-            {
-                return;
-            }
-
-            //
-            // Perform join in background job.
-            //
-            await this.serviceProvider
-                .GetService<IJobService>()
-                .RunInBackground<object>(
-                    new JobDescription(
-                        $"Joining {instance.DisplayName} to {domainName}...",
-                        JobUserFeedbackType.BackgroundFeedback),
-                    async jobToken =>
-                    {
-                        await this.serviceProvider
-                            .GetService<IDomainJoinService>()
-                            .JoinDomainAsync(
-                                instance.Instance,
-                                domainName,
-                                newComputerName,
-                                credential,
-                                jobToken)
-                        .ConfigureAwait(false);
-
-                        return null;
-                    })
-                .ConfigureAwait(true);  // Back to original (UI) thread.
-        }
-
         public ManagementExtension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-
-            this.joinDialogFactory = this.serviceProvider.GetViewFactory<JoinView, JoinViewModel>();
-            this.joinDialogFactory.Theme = this.serviceProvider.GetService<IThemeService>().DialogTheme;
 
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
@@ -141,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             var instancePropertiesCommands = serviceProvider.GetService<InstancePropertiesInspectorCommands>();
             var serialOutputCommands = serviceProvider.GetService<SerialOutputCommands>();
             var instanceControlCommands = serviceProvider.GetService<InstanceControlCommands>();
+
             //
             // Add commands to project explorer tool bar.
             //
@@ -184,19 +109,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             controlContainer.AddCommand(instanceControlCommands.ContextMenuStop);
             controlContainer.AddCommand(instanceControlCommands.ContextMenuSuspend);
             controlContainer.AddCommand(instanceControlCommands.ContextMenuReset);
-
             controlContainer.AddSeparator();
-            controlContainer.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "&Join to Active Directory",
-                    node => node is IProjectModelInstanceNode vmNode &&
-                            vmNode.OperatingSystem == OperatingSystems.Windows
-                        ? (vmNode.IsRunning ? CommandState.Enabled : CommandState.Disabled)
-                        : CommandState.Unavailable,
-                    node => JoinDomainAsync((IProjectModelInstanceNode)node))
-                {
-                    ActivityText = "Joining to Active Directory"
-                });
+            controlContainer.AddCommand(instanceControlCommands.ContextMenuJoinToActiveDirectory);
 
             projectExplorer.ContextMenuCommands.AddCommand(
                 serialOutputCommands.ContextMenuOpenCom1,

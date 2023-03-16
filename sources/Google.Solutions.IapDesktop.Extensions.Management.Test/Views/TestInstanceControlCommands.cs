@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Management;
@@ -82,12 +83,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
 
-            var startableVm = new Mock<IProjectModelInstanceNode>();
-            startableVm.SetupGet(n => n.CanStart).Returns(true);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanStart).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Enabled,
-                commands.ContextMenuStart.QueryState(startableVm.Object));
+                commands.ContextMenuStart.QueryState(vm.Object));
         }
 
         [Test]
@@ -96,12 +97,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
 
-            var nonStartableVm = new Mock<IProjectModelInstanceNode>();
-            nonStartableVm.SetupGet(n => n.CanStart).Returns(false);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanStart).Returns(false);
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                commands.ContextMenuStart.QueryState(nonStartableVm.Object));
+                commands.ContextMenuStart.QueryState(vm.Object));
         }
 
         //---------------------------------------------------------------------
@@ -114,12 +115,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
 
-            var resumableVm = new Mock<IProjectModelInstanceNode>();
-            resumableVm.SetupGet(n => n.CanResume).Returns(true);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanResume).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Enabled,
-                commands.ContextMenuResume.QueryState(resumableVm.Object));
+                commands.ContextMenuResume.QueryState(vm.Object));
         }
 
         [Test]
@@ -128,12 +129,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
 
-            var nonResumableVm = new Mock<IProjectModelInstanceNode>();
-            nonResumableVm.SetupGet(n => n.CanResume).Returns(false);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanResume).Returns(false);
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                commands.ContextMenuResume.QueryState(nonResumableVm.Object));
+                commands.ContextMenuResume.QueryState(vm.Object));
         }
 
         //---------------------------------------------------------------------
@@ -146,12 +147,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
 
-            var stoppableVm = new Mock<IProjectModelInstanceNode>();
-            stoppableVm.SetupGet(n => n.CanStop).Returns(true);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanStop).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Enabled,
-                commands.ContextMenuStop.QueryState(stoppableVm.Object));
+                commands.ContextMenuStop.QueryState(vm.Object));
         }
 
         [Test]
@@ -160,12 +161,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
 
-            var nonStoppableVm = new Mock<IProjectModelInstanceNode>();
-            nonStoppableVm.SetupGet(n => n.CanStop).Returns(false);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanStop).Returns(false);
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                commands.ContextMenuStop.QueryState(nonStoppableVm.Object));
+                commands.ContextMenuStop.QueryState(vm.Object));
         }
 
         //---------------------------------------------------------------------
@@ -178,12 +179,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
 
-            var stoppableVm = new Mock<IProjectModelInstanceNode>();
-            stoppableVm.SetupGet(n => n.CanSuspend).Returns(true);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanSuspend).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Enabled,
-                commands.ContextMenuSuspend.QueryState(stoppableVm.Object));
+                commands.ContextMenuSuspend.QueryState(vm.Object));
         }
 
         [Test]
@@ -192,12 +193,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
 
-            var nonSuspendableVm = new Mock<IProjectModelInstanceNode>();
-            nonSuspendableVm.SetupGet(n => n.CanSuspend).Returns(false);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanSuspend).Returns(false);
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                commands.ContextMenuSuspend.QueryState(nonSuspendableVm.Object));
+                commands.ContextMenuSuspend.QueryState(vm.Object));
         }
 
         //---------------------------------------------------------------------
@@ -210,12 +211,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
 
-            var stoppableVm = new Mock<IProjectModelInstanceNode>();
-            stoppableVm.SetupGet(n => n.CanReset).Returns(true);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanReset).Returns(true);
 
             Assert.AreEqual(
                 CommandState.Enabled,
-                commands.ContextMenuReset.QueryState(stoppableVm.Object));
+                commands.ContextMenuReset.QueryState(vm.Object));
         }
 
         [Test]
@@ -224,12 +225,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             var serviceProvider = new Mock<IServiceProvider>();
             var commands = new InstanceControlCommands(serviceProvider.Object);
 
-            var nonResettableVm = new Mock<IProjectModelInstanceNode>();
-            nonResettableVm.SetupGet(n => n.CanReset).Returns(false);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanReset).Returns(false);
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                commands.ContextMenuReset.QueryState(nonResettableVm.Object));
+                commands.ContextMenuReset.QueryState(vm.Object));
         }
 
         //---------------------------------------------------------------------
@@ -341,6 +342,64 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
                     controlCommand,
                     It.IsAny<CancellationToken>()),
                 Times.Once());
+        }
+
+        //---------------------------------------------------------------------
+        // ContextMenuJoinToActiveDirectory.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenInstanceIsWindowsAndRunning_ThenContextMenuJoinToActiveDirectoryIsEnabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
+            vm.SetupGet(n => n.IsRunning).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                commands.ContextMenuJoinToActiveDirectory.QueryState(vm.Object));
+        }
+
+        [Test]
+        public void WhenInstanceIsWindowsButNotRunning_ThenContextMenuJoinToActiveDirectoryIsDisabled()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
+            vm.SetupGet(n => n.IsRunning).Returns(false);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                commands.ContextMenuJoinToActiveDirectory.QueryState(vm.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenContextMenuJoinToActiveDirectoryIsUnavailable()
+        {
+            var serviceProvider = new Mock<IServiceProvider>();
+            var commands = new InstanceControlCommands(serviceProvider.Object);
+
+            var linuxVm = new Mock<IProjectModelInstanceNode>();
+            linuxVm.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Linux);
+            linuxVm.SetupGet(n => n.IsRunning).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuJoinToActiveDirectory.QueryState(linuxVm.Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelProjectNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuJoinToActiveDirectory.QueryState(new Mock<IProjectModelZoneNode>().Object));
         }
     }
 }
