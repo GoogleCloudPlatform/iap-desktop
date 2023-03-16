@@ -44,6 +44,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
 
+        private static IContextCommand<IProjectModelNode> CreateCommand(
+            IServiceProvider serviceProvider,
+            InstanceControlCommand controlCommand)
+        {
+            var commands = new InstanceControlCommands(serviceProvider);
+            switch (controlCommand)
+            {
+                case InstanceControlCommand.Start:
+                    return commands.ContextMenuStart;
+
+                case InstanceControlCommand.Stop:
+                    return commands.ContextMenuStop;
+
+                case InstanceControlCommand.Suspend:
+                    return commands.ContextMenuSuspend;
+
+                case InstanceControlCommand.Resume:
+                    return commands.ContextMenuResume;
+
+                case InstanceControlCommand.Reset:
+                    return commands.ContextMenuReset;
+
+                default:
+                    throw new ArgumentException(
+                        "Unknown InstanceControlCommand: " + controlCommand);
+            }
+        }
+
         //---------------------------------------------------------------------
         // ContextMenuStart.
         //---------------------------------------------------------------------
@@ -74,23 +102,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             Assert.AreEqual(
                 CommandState.Disabled,
                 commands.ContextMenuStart.QueryState(nonStartableVm.Object));
-        }
-
-        [Test]
-        public void WhenNotApplicable_ThenContextMenuStartIsUnavailable()
-        {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new InstanceControlCommands(serviceProvider.Object);
-
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuStart.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuStart.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuStart.QueryState(new Mock<IProjectModelZoneNode>().Object));
         }
 
         //---------------------------------------------------------------------
@@ -125,23 +136,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
                 commands.ContextMenuResume.QueryState(nonResumableVm.Object));
         }
 
-        [Test]
-        public void WhenNotApplicable_ThenContextMenuResumeIsUnavailable()
-        {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new InstanceControlCommands(serviceProvider.Object);
-
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuResume.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuResume.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuResume.QueryState(new Mock<IProjectModelZoneNode>().Object));
-        }
-
         //---------------------------------------------------------------------
         // ContextMenuStop.
         //---------------------------------------------------------------------
@@ -172,23 +166,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
             Assert.AreEqual(
                 CommandState.Disabled,
                 commands.ContextMenuStop.QueryState(nonStoppableVm.Object));
-        }
-
-        [Test]
-        public void WhenNotApplicable_ThenContextMenuStopIsUnavailable()
-        {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new InstanceControlCommands(serviceProvider.Object);
-
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuStop.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuStop.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuStop.QueryState(new Mock<IProjectModelZoneNode>().Object));
         }
 
         //---------------------------------------------------------------------
@@ -223,23 +200,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
                 commands.ContextMenuSuspend.QueryState(nonSuspendableVm.Object));
         }
 
-        [Test]
-        public void WhenNotApplicable_ThenContextMenuSuspendIsUnavailable()
-        {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new InstanceControlCommands(serviceProvider.Object);
-
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuSuspend.QueryState(new Mock<IProjectModelCloudNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuSuspend.QueryState(new Mock<IProjectModelProjectNode>().Object));
-            Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ContextMenuSuspend.QueryState(new Mock<IProjectModelZoneNode>().Object));
-        }
-
         //---------------------------------------------------------------------
         // ContextMenuReset.
         //---------------------------------------------------------------------
@@ -272,31 +232,45 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
                 commands.ContextMenuReset.QueryState(nonResettableVm.Object));
         }
 
+        //---------------------------------------------------------------------
+        // ContextMenuXxx.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenNotApplicable_ThenContextMenuResetIsUnavailable()
+        public void WhenNotApplicable_ThenContextMenuXxxIsUnavailable(
+            [Values(
+                InstanceControlCommand.Start,
+                InstanceControlCommand.Stop,
+                InstanceControlCommand.Suspend,
+                InstanceControlCommand.Resume,
+                InstanceControlCommand.Reset)] InstanceControlCommand controlCommand)
         {
             var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new InstanceControlCommands(serviceProvider.Object);
+            var command = CreateCommand(serviceProvider.Object, controlCommand);
 
             Assert.AreEqual(
                 CommandState.Unavailable,
-                commands.ContextMenuReset.QueryState(new Mock<IProjectModelCloudNode>().Object));
+                command.QueryState(new Mock<IProjectModelCloudNode>().Object));
             Assert.AreEqual(
                 CommandState.Unavailable,
-                commands.ContextMenuReset.QueryState(new Mock<IProjectModelProjectNode>().Object));
+                command.QueryState(new Mock<IProjectModelProjectNode>().Object));
             Assert.AreEqual(
                 CommandState.Unavailable,
-                commands.ContextMenuReset.QueryState(new Mock<IProjectModelZoneNode>().Object));
+                command.QueryState(new Mock<IProjectModelZoneNode>().Object));
         }
 
-        //---------------------------------------------------------------------
-        // ControlInstanceCommand.
-        //---------------------------------------------------------------------
-
         [Test]
-        public async Task WhenNotConfirmed_ThenStartCommandDoesNothing()
+        public async Task WhenNotConfirmed_ThenContextMenuXxxDoesNothing(
+            [Values(
+                InstanceControlCommand.Start,
+                InstanceControlCommand.Stop,
+                InstanceControlCommand.Suspend,
+                InstanceControlCommand.Resume,
+                InstanceControlCommand.Reset)] InstanceControlCommand controlCommand)
         {
             var serviceProvider = new Mock<IServiceProvider>();
+            var command = CreateCommand(serviceProvider.Object, controlCommand);
+
             var confirmation = serviceProvider.AddMock<IConfirmationDialog>();
             confirmation
                 .Setup(d => d.Confirm(
@@ -305,11 +279,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(DialogResult.Cancel);
-
-            var command = new InstanceControlCommands.ControlInstanceCommand(
-                "mock",
-                InstanceControlCommand.Start,
-                serviceProvider.Object);
 
             var startableVm = new Mock<IProjectModelInstanceNode>();
             startableVm.SetupGet(n => n.CanStart).Returns(true);
@@ -331,9 +300,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
         }
 
         [Test]
-        public async Task WhenConfirmed_ThenStartCommandStartsInstance()
+        public async Task WhenConfirmed_ThenContextMenuXxxControlsInstance(
+            [Values(
+                InstanceControlCommand.Start,
+                InstanceControlCommand.Stop,
+                InstanceControlCommand.Suspend,
+                InstanceControlCommand.Resume,
+                InstanceControlCommand.Reset)] InstanceControlCommand controlCommand)
         {
             var serviceProvider = new Mock<IServiceProvider>();
+            var command = CreateCommand(serviceProvider.Object, controlCommand);
+
             serviceProvider.Add<IJobService>(new SynchronousJobService());
 
             var confirmation = serviceProvider.AddMock<IConfirmationDialog>();
@@ -347,22 +324,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
 
             var controlService = serviceProvider.AddMock<IInstanceControlService>();
 
-            var command = new InstanceControlCommands.ControlInstanceCommand(
-                "mock",
-                InstanceControlCommand.Start,
-                serviceProvider.Object);
-
-            var startableVm = new Mock<IProjectModelInstanceNode>();
-            startableVm.SetupGet(n => n.CanStart).Returns(true);
-            startableVm.SetupGet(n => n.Instance).Returns(SampleLocator);
+            var vm = new Mock<IProjectModelInstanceNode>();
+            vm.SetupGet(n => n.CanStart).Returns(true);
+            vm.SetupGet(n => n.CanStop).Returns(true);
+            vm.SetupGet(n => n.CanSuspend).Returns(true);
+            vm.SetupGet(n => n.CanResume).Returns(true);
+            vm.SetupGet(n => n.CanReset).Returns(true);
+            vm.SetupGet(n => n.Instance).Returns(SampleLocator);
             await command
-                .ExecuteAsync(startableVm.Object)
+                .ExecuteAsync(vm.Object)
                 .ConfigureAwait(false);
 
             controlService.Verify(
                 s => s.ControlInstanceAsync(
-                    It.Is<InstanceLocator>(loc => loc == SampleLocator),
-                    InstanceControlCommand.Start,
+                    SampleLocator,
+                    controlCommand,
                     It.IsAny<CancellationToken>()),
                 Times.Once());
         }

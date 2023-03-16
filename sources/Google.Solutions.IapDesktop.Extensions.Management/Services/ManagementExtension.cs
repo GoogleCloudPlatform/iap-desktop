@@ -56,49 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 
         private readonly ViewFactory<JoinView, JoinViewModel> joinDialogFactory;
 
-        private async Task ControlInstanceAsync(
-            InstanceLocator instance,
-            string action,
-            InstanceControlCommand command)
-        {
-            var mainWindow = this.serviceProvider.GetService<IMainWindow>();
-
-            if (this.serviceProvider.GetService<IConfirmationDialog>()
-                .Confirm(
-                    mainWindow,
-                    "Are you you sure you want to " +
-                        $"{command.ToString().ToLower()} {instance.Name}?",
-                    $"{command} {instance.Name}?",
-                    $"{command} VM instance") != DialogResult.Yes)
-            {
-                return;
-            }
-
-            //
-            // Load data using a job so that the task is retried in case
-            // of authentication issues.
-            //
-            await this.serviceProvider
-                .GetService<IJobService>()
-                .RunInBackground<object>(
-                    new JobDescription(
-                        $"{action} {instance.Name}...",
-                        JobUserFeedbackType.BackgroundFeedback),
-                    async jobToken =>
-                    {
-                        await this.serviceProvider
-                            .GetService<IInstanceControlService>()
-                            .ControlInstanceAsync(
-                                    instance,
-                                    command,
-                                    jobToken)
-                            .ConfigureAwait(false);
-
-                        return null;
-                    })
-                .ConfigureAwait(true);  // Back to original (UI) thread.
-        }
-
         private async Task JoinDomainAsync(
             IProjectModelInstanceNode instance)
         {
