@@ -364,17 +364,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // View menu.
             //
+            var tunnelsViewCommands = serviceProvider.GetService<TunnelsViewCommands>();
             mainForm.ViewMenu.AddCommand(
-                new ContextCommand<IMainWindow>(
-                    "Active IAP &tunnels",
-                    pseudoContext => CommandState.Enabled,
-                    pseudoContext => ToolWindow
-                        .GetWindow<TunnelsView, TunnelsViewModel>(this.serviceProvider)
-                        .Show())
-                {
-                    Image = Resources.Tunnel_16,
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.T
-                },
+                tunnelsViewCommands.WindowMenuOpen,
                 1);
             mainForm.ViewMenu.AddCommand(authorizedKeyCommands.WindowMenuOpen);
 

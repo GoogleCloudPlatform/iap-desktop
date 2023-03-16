@@ -23,6 +23,7 @@ using Google.Apis.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -103,6 +104,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public override Task ExecuteAsync(TContext context)
         {
+            Debug.Assert(IsAvailable(context));
+
             ToolWindow
                 .GetWindow<TView, TViewModel>(serviceProvider)
                 .Show();

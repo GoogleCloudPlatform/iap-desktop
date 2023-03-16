@@ -244,6 +244,7 @@
     <Compile Include="Views\SshTerminal\SshTerminalViewModel.cs" />
     <Compile Include="Views\SshTerminal\SshTerminalSessionBroker.cs" />
     <Compile Include="Views\SshTerminal\TerminalViewModelBase.cs" />
+    <Compile Include="Views\TunnelsViewer\TunnelsViewCommands.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsViewModel.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsView.cs">
       <SubType>Form</SubType>
