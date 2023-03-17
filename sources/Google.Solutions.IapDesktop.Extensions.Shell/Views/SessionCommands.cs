@@ -72,6 +72,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 "Show &security screen (send Ctrl+Alt+Esc)");
             this.ShowTaskManager = new ShowTaskManagerCommand(
                 "Open &task manager (send Ctrl+Shift+Esc)");
+            this.DownloadFiles = new DownloadFilesCommand("Do&wnload files...")
+            {
+                Image = Resources.DownloadFile_16,
+                ActivityText = "Downloading files"
+            };
         }
 
         //---------------------------------------------------------------------
@@ -83,6 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
         public IContextCommand<ISession> Disconnect { get; }
         public IContextCommand<ISession> ShowSecurityScreen { get; }
         public IContextCommand<ISession> ShowTaskManager { get; }
+        public IContextCommand<ISession> DownloadFiles { get; }
 
         //---------------------------------------------------------------------
         // Generic session commands.
@@ -229,5 +235,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
         // SSH session commands.
         //---------------------------------------------------------------------
 
+        private class DownloadFilesCommand : ToolContextCommand<ISession>
+        {
+            public DownloadFilesCommand(string text) : base(text)
+            {
+            }
+
+            protected override bool IsAvailable(ISession session)
+            {
+                return true;
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session != null &&
+                    session is ISshTerminalSession sshSession &&
+                    sshSession.IsConnected;
+            }
+
+            public override Task ExecuteAsync(ISession session)
+            {
+                var sshSession = (ISshTerminalSession)session;
+                return sshSession.DownloadFilesAsync();
+            }
+        }
     }
 }

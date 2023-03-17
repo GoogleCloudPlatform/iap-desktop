@@ -389,17 +389,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 });
             this.sessionCommands.AddCommand(sessionCommands.Disconnect);
             this.sessionCommands.AddSeparator();
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "Do&wnload files...",
-                    session => GetSessionMenuCommandState<ISshTerminalSession>(
-                        session,
-                        sshSession => sshSession.IsConnected),
-                    session => (session as ISshTerminalSession)?.DownloadFilesAsync())
-                {
-                    Image = Resources.DownloadFile_16,
-                    ActivityText = "Downloading files"
-                });
+            this.sessionCommands.AddCommand(sessionCommands.DownloadFiles);
             this.sessionCommands.AddCommand(sessionCommands.ShowSecurityScreen);
             this.sessionCommands.AddCommand(sessionCommands.ShowTaskManager);
         }

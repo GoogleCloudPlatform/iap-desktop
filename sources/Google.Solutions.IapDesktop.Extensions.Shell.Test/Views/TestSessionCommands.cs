@@ -261,5 +261,45 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
                 CommandState.Disabled,
                 sessionCommands.ShowTaskManager.QueryState(sshSession.Object));
         }
+
+        //---------------------------------------------------------------------
+        // DownloadFiles.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicable_ThenDownloadFilesIsEnabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new UrlCommands(),
+                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+
+            var connectedSession = new Mock<ISshTerminalSession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.DownloadFiles.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenDownloadFilesIsDisabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new UrlCommands(),
+                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+
+            var disconnectedSession = new Mock<ISshTerminalSession>();
+            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+
+            var rdpSession = new Mock<IRemoteDesktopSession>();
+            rdpSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.DownloadFiles.QueryState(disconnectedSession.Object));
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.DownloadFiles.QueryState(rdpSession.Object));
+        }
     }
 }
