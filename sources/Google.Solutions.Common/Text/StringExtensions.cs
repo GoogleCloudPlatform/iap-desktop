@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Common.Text
 {
     public static class StringExtensions
     {

@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Common.Text;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Util
+namespace Google.Solutions.Common.Test.Text
 {
     [TestFixture]
     public class TestStringExtensions
