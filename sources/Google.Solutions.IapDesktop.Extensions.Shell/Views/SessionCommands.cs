@@ -22,7 +22,6 @@
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
@@ -91,34 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
         public IContextCommand<ISession> DownloadFiles { get; }
 
         //---------------------------------------------------------------------
-        // Generic session commands.
-        //---------------------------------------------------------------------
-
-        private class DisconnectCommand : ToolContextCommand<ISession>
-        {
-            public DisconnectCommand(string text) : base(text)
-            {
-            }
-
-            protected override bool IsAvailable(ISession session)
-            {
-                return true;
-            }
-
-            protected override bool IsEnabled(ISession session)
-            {
-                return session != null &&
-                    session.IsConnected;
-            }
-
-            public override void Execute(ISession session)
-            {
-                session.Close();
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // RDP session commands.
+        // RDP URL commands.
         //---------------------------------------------------------------------
 
         private class LaunchRdpUrlCommand : ToolContextCommand<IapRdpUrl>
@@ -150,7 +122,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
             }
         }
 
-        private class FullScreenCommand : ToolContextCommand<ISession>
+        //---------------------------------------------------------------------
+        // Generic session commands.
+        //---------------------------------------------------------------------
+
+        private abstract class SessionCommandBase : ToolContextCommand<ISession>
+        {
+            protected SessionCommandBase(string text) : base(text)
+            {
+            }
+
+            protected override bool IsAvailable(ISession session)
+            {
+                return true; // Always available, but possibly disabled.
+            }
+        }
+
+        private class DisconnectCommand : SessionCommandBase
+        {
+            public DisconnectCommand(string text) : base(text)
+            {
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session != null && session.IsConnected;
+            }
+
+            public override void Execute(ISession session)
+            {
+                session.Close();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // RDP session commands.
+        //---------------------------------------------------------------------
+
+        private class FullScreenCommand : SessionCommandBase
         {
             private readonly FullScreenMode mode;
 
@@ -159,11 +168,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 FullScreenMode mode) : base(text)
             {
                 this.mode = mode;
-            }
-
-            protected override bool IsAvailable(ISession session)
-            {
-                return true;
             }
 
             protected override bool IsEnabled(ISession session)
@@ -181,15 +185,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
             }
         }
 
-        private class ShowSecurityScreenCommand : ToolContextCommand<ISession>
+        private class ShowSecurityScreenCommand : SessionCommandBase
         {
             public ShowSecurityScreenCommand(string text) : base(text)
             {
-            }
-
-            protected override bool IsAvailable(ISession session)
-            {
-                return true;
             }
 
             protected override bool IsEnabled(ISession session)
@@ -206,15 +205,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
             }
         }
 
-        private class ShowTaskManagerCommand : ToolContextCommand<ISession>
+        private class ShowTaskManagerCommand : SessionCommandBase
         {
             public ShowTaskManagerCommand(string text) : base(text)
             {
-            }
-
-            protected override bool IsAvailable(ISession session)
-            {
-                return true;
             }
 
             protected override bool IsEnabled(ISession session)
@@ -235,15 +229,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
         // SSH session commands.
         //---------------------------------------------------------------------
 
-        private class DownloadFilesCommand : ToolContextCommand<ISession>
+        private class DownloadFilesCommand : SessionCommandBase
         {
             public DownloadFilesCommand(string text) : base(text)
             {
-            }
-
-            protected override bool IsAvailable(ISession session)
-            {
-                return true;
             }
 
             protected override bool IsEnabled(ISession session)
