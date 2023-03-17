@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
             this.ToolbarOpen = new OpenToolWindowCommand
                 <IProjectModelNode, InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(
                     serviceProvider,
-                    "Properties",
+                    "P&roperties",
                     _ => true,
                     context => context is IProjectModelInstanceNode)
             {

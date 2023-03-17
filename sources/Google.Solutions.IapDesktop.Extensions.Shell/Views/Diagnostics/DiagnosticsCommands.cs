@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
             public GenerateHtmlPageCommand(
                 IConnectionSettingsService settingsService,
                 IProjectModelService projectModelService)
-                : base("Generate HTML page")
+                : base("Generate &HTML page")
             {
                 this.settingsService = settingsService;
                 this.projectModelService = projectModelService;
