@@ -141,7 +141,6 @@
     <Compile Include="Util\TestFilename.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Util\TestStringExtensions.cs" />
-    <Compile Include="Util\TestTypographicQuotes.cs" />
     <Compile Include="Views\About\TestAboutViewModel.cs" />
     <Compile Include="Views\Authorization\TestAuthorizeViewModel.cs" />
     <Compile Include="Views\Authorization\TestDeviceFlyoutViewModel.cs" />

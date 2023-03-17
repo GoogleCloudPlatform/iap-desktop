@@ -21,7 +21,7 @@
 
 using System.Threading;
 
-namespace Google.Solutions.Common.Util
+namespace Google.Solutions.Common.Threading
 {
     public static class CancellationTokenExtensions
     {
