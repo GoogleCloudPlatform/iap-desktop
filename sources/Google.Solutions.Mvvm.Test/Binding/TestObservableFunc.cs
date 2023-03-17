@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 
 namespace Google.Solutions.Mvvm.Test.Binding

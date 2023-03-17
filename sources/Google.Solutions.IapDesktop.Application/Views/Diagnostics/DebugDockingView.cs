@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         }
 
         public void Bind(
-            DebugDockingViewModel viewModel, 
+            DebugDockingViewModel viewModel,
             IBindingContext bindingContext)
         {
             this.output.BindReadonlyObservableProperty(

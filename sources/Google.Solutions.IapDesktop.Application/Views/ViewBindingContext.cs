@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             Debug.Assert(this.errorReportingOwner != null);
             this.exceptionDialog.Show(
                 this.errorReportingOwner,
-                command.ActivityText, 
+                command.ActivityText,
                 exception);
         }
     }

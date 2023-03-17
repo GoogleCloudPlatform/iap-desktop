@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             viewModel.ConnectionLimit = 4;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
-            
+
             await viewModel.ApplyChangesAsync();
 
             Assert.IsFalse(viewModel.IsDirty.Value);

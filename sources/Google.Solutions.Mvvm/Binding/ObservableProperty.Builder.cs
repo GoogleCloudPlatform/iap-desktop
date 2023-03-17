@@ -20,7 +20,6 @@
 //
 
 using System;
-using System.ComponentModel;
 
 namespace Google.Solutions.Mvvm.Binding
 {
@@ -39,7 +38,7 @@ namespace Google.Solutions.Mvvm.Binding
         /// on a certain thread context.
         /// <returns></returns>
         public static ObservableProperty<T> Build<T>(
-            T initialValue, 
+            T initialValue,
             ViewModelBase viewModel)
         {
             return new ThreadSafeObservableProperty<T>(viewModel, initialValue);

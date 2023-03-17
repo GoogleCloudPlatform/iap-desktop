@@ -296,7 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views
                     It.IsAny<string>()),
                 Times.Once());
             serviceProvider.Verify(
-                s => s.GetService(It.Is<Type>(t => t == typeof(IJobService))), 
+                s => s.GetService(It.Is<Type>(t => t == typeof(IJobService))),
                 Times.Never);
         }
 

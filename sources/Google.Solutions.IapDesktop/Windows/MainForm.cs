@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewMenuContextSource,
                 bindingContext);
             this.viewMenuCommands.BindTo(
-                this.viewToolStripMenuItem, 
+                this.viewToolStripMenuItem,
                 this.bindingContext);
 
             //
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.windowMenuContextSource,
                 bindingContext);
             this.windowMenuCommands.BindTo(
-                this.windowToolStripMenuItem, 
+                this.windowToolStripMenuItem,
                 this.bindingContext);
 
             //
@@ -626,7 +626,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     this.serviceProvider
                         .GetService<IExceptionDialog>()
                         .Show(
-                            this, 
+                            this,
                             $"Connecting to the VM instance {url.Instance.Name} failed", e);
                 }
             }

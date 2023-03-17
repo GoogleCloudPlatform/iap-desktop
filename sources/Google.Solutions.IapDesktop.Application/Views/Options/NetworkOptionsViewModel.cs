@@ -21,11 +21,8 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
-using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 #pragma warning disable CA1822 // Mark members as static
 
@@ -57,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         //---------------------------------------------------------------------
 
         protected override void Load(ApplicationSettings settings)
-        { 
+        {
             this.connectionLimit = settings.ConnectionLimit.IntValue;
             this.IsProxyEditable =
                 !settings.ProxyUrl.IsReadOnly &&

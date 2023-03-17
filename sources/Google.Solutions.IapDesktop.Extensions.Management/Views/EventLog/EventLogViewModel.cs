@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Cache;
 using System;
 using System.Collections.Generic;

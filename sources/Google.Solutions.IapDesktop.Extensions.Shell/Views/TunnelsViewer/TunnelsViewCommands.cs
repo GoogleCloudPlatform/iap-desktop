@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
         //---------------------------------------------------------------------
         // Context commands.
         //---------------------------------------------------------------------
-        
+
         public IContextCommand<IMainWindow> WindowMenuOpen { get; }
     }
 }

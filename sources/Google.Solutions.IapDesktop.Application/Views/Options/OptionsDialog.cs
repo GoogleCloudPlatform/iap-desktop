@@ -30,7 +30,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    public static class OptionsDialog 
+    public static class OptionsDialog
     {
         public static DialogResult Show(
             IWin32Window parent,

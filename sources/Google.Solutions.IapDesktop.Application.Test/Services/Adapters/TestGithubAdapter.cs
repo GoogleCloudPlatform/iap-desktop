@@ -128,8 +128,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     It.IsNotNull<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubAdapter.Release(
-                    "1.2.3.4", 
-                    null, 
+                    "1.2.3.4",
+                    null,
                     new System.Collections.Generic.List<GithubAdapter.ReleaseAsset>()
                     {
                         new GithubAdapter.ReleaseAsset("http://example.com/test.txt")

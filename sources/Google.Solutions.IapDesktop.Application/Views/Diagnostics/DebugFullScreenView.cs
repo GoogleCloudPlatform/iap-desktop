@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         }
 
         public void Bind(
-            DebugFullScreenViewModel viewModel, 
+            DebugFullScreenViewModel viewModel,
             IBindingContext bindingContext)
         {
             this.sizeLabel.BindReadonlyObservableProperty(

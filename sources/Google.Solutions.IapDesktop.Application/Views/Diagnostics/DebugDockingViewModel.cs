@@ -21,7 +21,6 @@
 
 using Google.Solutions.Mvvm.Binding;
 using System.Diagnostics;
-using System.Text;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics

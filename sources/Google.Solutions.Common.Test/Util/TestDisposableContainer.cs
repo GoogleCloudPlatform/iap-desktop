@@ -58,7 +58,7 @@ namespace Google.Solutions.Common.Test.Util
         {
             var disposable1 = new Mock<IDisposable>();
             var disposable2 = new Mock<IDisposable>();
-            
+
             using (var container = new DisposableContainer(disposable1.Object))
             {
                 container.Add(disposable2.Object);

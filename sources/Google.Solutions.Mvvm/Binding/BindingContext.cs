@@ -22,7 +22,6 @@
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
 using System.ComponentModel;
-using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
 {

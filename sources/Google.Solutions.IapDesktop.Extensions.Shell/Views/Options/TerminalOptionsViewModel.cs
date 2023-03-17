@@ -36,17 +36,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             : base("Terminal", settingsRepository)
         {
             this.IsCopyPasteUsingCtrlCAndCtrlVEnabled = ObservableProperty.Build(false);
-            this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled  = ObservableProperty.Build(false);
-            this.IsSelectAllUsingCtrlAEnabled  = ObservableProperty.Build(false);
-            this.IsSelectUsingShiftArrrowEnabled  = ObservableProperty.Build(false);
-            this.IsQuoteConvertionOnPasteEnabled  = ObservableProperty.Build(false);
-            this.IsNavigationUsingControlArrrowEnabled  = ObservableProperty.Build(false);
-            this.IsScrollingUsingCtrlUpDownEnabled  = ObservableProperty.Build(false);
-            this.IsScrollingUsingCtrlHomeEndEnabled  = ObservableProperty.Build(false);
-            this.TerminalFont  = ObservableProperty.Build<Font>(null);
-            this.TerminalForegroundColor  = ObservableProperty.Build<Color>(Color.White);
-            this.TerminalBackgroundColor  = ObservableProperty.Build<Color>(Color.Black);
-            
+            this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled = ObservableProperty.Build(false);
+            this.IsSelectAllUsingCtrlAEnabled = ObservableProperty.Build(false);
+            this.IsSelectUsingShiftArrrowEnabled = ObservableProperty.Build(false);
+            this.IsQuoteConvertionOnPasteEnabled = ObservableProperty.Build(false);
+            this.IsNavigationUsingControlArrrowEnabled = ObservableProperty.Build(false);
+            this.IsScrollingUsingCtrlUpDownEnabled = ObservableProperty.Build(false);
+            this.IsScrollingUsingCtrlHomeEndEnabled = ObservableProperty.Build(false);
+            this.TerminalFont = ObservableProperty.Build<Font>(null);
+            this.TerminalForegroundColor = ObservableProperty.Build<Color>(Color.White);
+            this.TerminalBackgroundColor = ObservableProperty.Build<Color>(Color.Black);
+
             MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingCtrlCAndCtrlVEnabled);
             MarkDirtyWhenPropertyChanges(this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled);
             MarkDirtyWhenPropertyChanges(this.IsSelectAllUsingCtrlAEnabled);

@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
             viewModel.IsUpdateCheckEnabled.Value = false;
-            
+
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
@@ -262,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
             viewModel.IsDeviceCertificateAuthenticationEnabled.Value = false;
-            
+
             await viewModel.ApplyChangesAsync();
 
             settings = settingsRepository.GetSettings();
@@ -280,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsDeviceCertificateAuthenticationEnabled.Value = 
+            viewModel.IsDeviceCertificateAuthenticationEnabled.Value =
                 !viewModel.IsDeviceCertificateAuthenticationEnabled.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
@@ -301,7 +301,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsBrowserIntegrationEnabled.Value = 
+            viewModel.IsBrowserIntegrationEnabled.Value =
                 !viewModel.IsBrowserIntegrationEnabled.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
@@ -316,7 +316,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
             viewModel.IsBrowserIntegrationEnabled.Value = true;
-            
+
             await viewModel.ApplyChangesAsync();
 
             this.protocolRegistryMock.Verify(r => r.Register(
@@ -335,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 this.protocolRegistryMock.Object,
                 new HelpAdapter());
             viewModel.IsBrowserIntegrationEnabled.Value = false;
-            
+
             await viewModel.ApplyChangesAsync();
 
             this.protocolRegistryMock.Verify(r => r.Unregister(

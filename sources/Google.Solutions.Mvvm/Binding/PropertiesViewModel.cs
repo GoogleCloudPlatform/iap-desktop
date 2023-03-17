@@ -59,7 +59,7 @@ namespace Google.Solutions.Mvvm.Binding
                     .ViewModel
                     .ApplyChangesAsync()
                     .ConfigureAwait(true);
-                
+
                 Debug.Assert(!sheet.ViewModel.IsDirty.Value);
             }
         }
@@ -92,7 +92,7 @@ namespace Google.Solutions.Mvvm.Binding
             PropertiesSheetViewModelBase viewModel)
         {
             Precondition.Expect(
-                view.ViewModel == viewModel.GetType(), 
+                view.ViewModel == viewModel.GetType(),
                 "The view model must match the view");
             Precondition.Expect(
                 viewModel.View == null,

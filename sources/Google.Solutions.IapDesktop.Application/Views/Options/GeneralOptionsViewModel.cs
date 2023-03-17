@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             this.OpenSecureConnectHelp = ObservableCommand.Build(
                 string.Empty,
-                () =>  helpService.OpenTopic(HelpTopics.SecureConnectDcaOverview));
+                () => helpService.OpenTopic(HelpTopics.SecureConnectDcaOverview));
             this.OpenBrowserIntegrationHelp = ObservableCommand.Build(
                 string.Empty,
                 () => helpService.OpenTopic(HelpTopics.BrowserIntegration));
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.IsUpdateCheckEnabled.Value = settings.IsUpdateCheckEnabled.BoolValue;
             this.IsUpdateCheckEditable.Value = !settings.IsUpdateCheckEnabled.IsReadOnly;
 
-            this.IsDeviceCertificateAuthenticationEnabled.Value = 
+            this.IsDeviceCertificateAuthenticationEnabled.Value =
                 settings.IsDeviceCertificateAuthenticationEnabled.BoolValue;
             this.IsDeviceCertificateAuthenticationEditable.Value =
                 !settings.IsDeviceCertificateAuthenticationEnabled.IsReadOnly;
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         protected override void Save(ApplicationSettings settings)
         {
-            settings.IsUpdateCheckEnabled.BoolValue = 
+            settings.IsUpdateCheckEnabled.BoolValue =
                 this.IsUpdateCheckEnabled.Value;
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue =
                 this.IsDeviceCertificateAuthenticationEnabled.Value;

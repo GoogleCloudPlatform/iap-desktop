@@ -23,7 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 

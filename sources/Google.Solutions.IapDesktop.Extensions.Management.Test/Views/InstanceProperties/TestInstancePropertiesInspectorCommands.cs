@@ -19,22 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
 using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.Testing.Application.Test;
-using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceProperties
 {

@@ -231,7 +231,7 @@ namespace Google.Solutions.Mvvm.Test.Format
             Assert.IsTrue(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("1. i"));
             Assert.IsTrue(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("123345.        \ti"));
             Assert.IsTrue(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("0. i"));
-            
+
             Assert.IsFalse(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("-1. i"));
             Assert.IsFalse(MarkdownDocument.OrderedListItemNode.IsOrderedListItemNode("1 i"));
         }
@@ -522,7 +522,7 @@ namespace Google.Solutions.Mvvm.Test.Format
                 new[]
                 {
                     new MarkdownDocument.Token(MarkdownDocument.TokenType.Text, "t")
-                }, 
+                },
                 tokens);
         }
 

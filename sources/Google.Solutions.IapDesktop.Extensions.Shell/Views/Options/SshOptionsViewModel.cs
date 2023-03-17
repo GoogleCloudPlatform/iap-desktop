@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 {
                     return;
                 }
-                    
+
                 this.IsDirty.Value = true;
                 this.publicKeyType = value;
                 RaisePropertyChange();

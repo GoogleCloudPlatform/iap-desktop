@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Options;
-using Google.Solutions.Testing.Common;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Drawing;
@@ -97,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value = 
+            viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value =
                 !viewModel.IsCopyPasteUsingCtrlCAndCtrlVEnabled.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
@@ -154,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value = 
+            viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value =
                 !viewModel.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
@@ -210,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsSelectAllUsingCtrlAEnabled.Value = 
+            viewModel.IsSelectAllUsingCtrlAEnabled.Value =
                 !viewModel.IsSelectAllUsingCtrlAEnabled.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
@@ -266,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsSelectUsingShiftArrrowEnabled.Value = 
+            viewModel.IsSelectUsingShiftArrrowEnabled.Value =
                 !viewModel.IsSelectUsingShiftArrrowEnabled.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
@@ -322,7 +321,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsQuoteConvertionOnPasteEnabled.Value = 
+            viewModel.IsQuoteConvertionOnPasteEnabled.Value =
                 !viewModel.IsQuoteConvertionOnPasteEnabled.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
@@ -379,7 +378,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsScrollingUsingCtrlUpDownEnabled.Value = 
+            viewModel.IsScrollingUsingCtrlUpDownEnabled.Value =
                 !viewModel.IsScrollingUsingCtrlUpDownEnabled.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);
@@ -435,7 +434,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 
             Assert.IsFalse(viewModel.IsDirty.Value);
 
-            viewModel.IsScrollingUsingCtrlHomeEndEnabled.Value = 
+            viewModel.IsScrollingUsingCtrlHomeEndEnabled.Value =
                 !viewModel.IsScrollingUsingCtrlHomeEndEnabled.Value;
 
             Assert.IsTrue(viewModel.IsDirty.Value);

@@ -58,7 +58,7 @@ namespace Google.Solutions.Mvvm.Shell
 
             Debug.Assert(source == null ||
                 source == DefaultSource ||
-                source.Scheme.StartsWith("http") || 
+                source.Scheme.StartsWith("http") ||
                 source.Scheme == "file");
 
             //

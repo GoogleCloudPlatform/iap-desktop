@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Test.Services;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Application.ObjectModel;

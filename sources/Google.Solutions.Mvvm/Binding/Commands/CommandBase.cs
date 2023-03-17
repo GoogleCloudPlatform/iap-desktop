@@ -20,8 +20,6 @@
 //
 
 using System.Diagnostics;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding.Commands
 {

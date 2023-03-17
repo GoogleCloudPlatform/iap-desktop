@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.IsNull(viewModel.InspectedObject.Value);
             Assert.AreEqual(
-                ConnectionSettingsViewModel.DefaultWindowTitle, 
+                ConnectionSettingsViewModel.DefaultWindowTitle,
                 viewModel.WindowTitle.Value);
         }
 
@@ -166,10 +166,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
 
             Assert.IsNotNull(viewModel.InspectedObject.Value);
             StringAssert.Contains(
-                ConnectionSettingsViewModel.DefaultWindowTitle, 
+                ConnectionSettingsViewModel.DefaultWindowTitle,
                 viewModel.WindowTitle.Value);
             StringAssert.Contains(
-                "display", 
+                "display",
                 viewModel.WindowTitle.Value);
         }
 
@@ -199,10 +199,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
 
             Assert.IsNotNull(viewModel.InspectedObject.Value);
             StringAssert.Contains(
-                ConnectionSettingsViewModel.DefaultWindowTitle, 
+                ConnectionSettingsViewModel.DefaultWindowTitle,
                 viewModel.WindowTitle.Value);
             StringAssert.Contains(
-                "display", 
+                "display",
                 viewModel.WindowTitle.Value);
         }
 
@@ -234,10 +234,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
 
             Assert.IsNotNull(viewModel.InspectedObject.Value);
             StringAssert.Contains(
-                ConnectionSettingsViewModel.DefaultWindowTitle, 
+                ConnectionSettingsViewModel.DefaultWindowTitle,
                 viewModel.WindowTitle.Value);
             StringAssert.Contains(
-                "display", 
+                "display",
                 viewModel.WindowTitle.Value);
         }
     }

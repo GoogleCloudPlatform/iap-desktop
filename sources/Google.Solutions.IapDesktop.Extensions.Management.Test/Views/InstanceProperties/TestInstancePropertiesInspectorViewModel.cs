@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.IsNull(viewModel.InspectedObject.Value);
             Assert.AreEqual(
-                InstancePropertiesInspectorViewModel.DefaultWindowTitle, 
+                InstancePropertiesInspectorViewModel.DefaultWindowTitle,
                 viewModel.WindowTitle.Value);
         }
 
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.IsNull(viewModel.InspectedObject.Value);
             Assert.AreEqual(
-                InstancePropertiesInspectorViewModel.DefaultWindowTitle, 
+                InstancePropertiesInspectorViewModel.DefaultWindowTitle,
                 viewModel.WindowTitle.Value);
         }
 
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.IsNull(viewModel.InspectedObject.Value);
             Assert.AreEqual(
-                InstancePropertiesInspectorViewModel.DefaultWindowTitle, 
+                InstancePropertiesInspectorViewModel.DefaultWindowTitle,
                 viewModel.WindowTitle.Value);
         }
 
@@ -155,10 +155,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
 
             Assert.IsNotNull(viewModel.InspectedObject.Value);
             StringAssert.Contains(
-                InstancePropertiesInspectorViewModel.DefaultWindowTitle, 
+                InstancePropertiesInspectorViewModel.DefaultWindowTitle,
                 viewModel.WindowTitle.Value);
             StringAssert.Contains(
-                "instance-1", 
+                "instance-1",
                 viewModel.WindowTitle.Value);
         }
 
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
             Assert.IsNull(viewModel.InformationText.Value);
             Assert.IsNull(viewModel.InspectedObject.Value);
             Assert.AreEqual(
-                InstancePropertiesInspectorViewModel.DefaultWindowTitle, 
+                InstancePropertiesInspectorViewModel.DefaultWindowTitle,
                 viewModel.WindowTitle.Value);
         }
     }

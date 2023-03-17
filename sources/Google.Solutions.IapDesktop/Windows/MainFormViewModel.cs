@@ -20,8 +20,6 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;

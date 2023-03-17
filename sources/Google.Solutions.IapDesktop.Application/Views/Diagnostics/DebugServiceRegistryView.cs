@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         }
 
         public void Bind(
-            DebugServiceRegistryViewModel viewModel, 
+            DebugServiceRegistryViewModel viewModel,
             IBindingContext bindingContext)
         {
             this.list.BindColumn(0, t => t.ServiceType.Assembly.GetName().Name);

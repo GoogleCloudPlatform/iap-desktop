@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
             IProjectModelService projectModelService)
         {
             this.GenerateHtmlPage = new GenerateHtmlPageCommand(
-                settingsService, 
+                settingsService,
                 projectModelService);
         }
 

@@ -89,7 +89,7 @@ namespace Google.Solutions.Mvvm.Format
         public void FontTable(FontFamily[] fonts)
         {
             this.writer.Write("{\\fonttbl");
-            
+
             for (int i = 0; i < fonts.Length; i++)
             {
                 this.writer.Write("{\\f");
@@ -209,17 +209,17 @@ namespace Google.Solutions.Mvvm.Format
         }
 
         public void EndHyperlink()
-        { 
+        {
             this.writer.Write("}}}");
             this.writer.WriteLine();
         }
 
         public void UnorderedListItem(
-            int firstLineIndent, 
+            int firstLineIndent,
             int blockIndent,
             uint symbolFont)
         {
-            this.writer.Write("{\\pntext\\f"+ symbolFont + "\\'B7\\f0\\tab}");
+            this.writer.Write("{\\pntext\\f" + symbolFont + "\\'B7\\f0\\tab}");
             this.writer.Write("{\\*\\pn\\pnlvlblt\\pnf2\\pnindent0{\\pntxtb\\bullet}}");
             this.writer.Write("\\fi");
             this.writer.Write(firstLineIndent.ToString());
