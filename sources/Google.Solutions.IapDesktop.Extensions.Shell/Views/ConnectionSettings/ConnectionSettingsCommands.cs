@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
             this.ToolbarOpen = new OpenToolWindowCommand
                 <IProjectModelNode, ConnectionSettingsView, ConnectionSettingsViewModel>(
                     serviceProvider,
-                    "Connection settings",
+                    "Connection &settings",
                     _ => true,
                     context => settingsService.IsConnectionSettingsAvailable(context))
             {

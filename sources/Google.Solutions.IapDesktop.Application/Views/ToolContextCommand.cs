@@ -50,6 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public ToolContextCommand(string text)
         {
+            Debug.Assert(text.Contains("&"), "Command text should have a mnemonic");
             this.Text = text;
         }
 
