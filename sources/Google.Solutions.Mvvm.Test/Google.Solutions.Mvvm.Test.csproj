@@ -95,6 +95,7 @@
     <Compile Include="Controls\TestProgressBar.cs" />
     <Compile Include="Controls\TestFileBrowser.cs" />
     <Compile Include="Controls\TestFileBrowserUi.cs" />
+    <Compile Include="Controls\TestScreenPicker.cs" />
     <Compile Include="Controls\TestVerticalTabControl.cs" />
     <Compile Include="Controls\TestHtmlClipboardFormat.cs" />
     <Compile Include="Controls\TestListViewExtensions.cs" />

@@ -84,12 +84,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\ScreenPicker.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ScreenPicker.Designer.cs">
-      <DependentUpon>ScreenPicker.cs</DependentUpon>
-    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Host\CommandLineOptions.cs" />
     <Compile Include="Host\Install.cs" />
@@ -367,9 +361,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="Controls\ScreenPicker.resx">
-      <DependentUpon>ScreenPicker.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\About.rtf" />
     <None Include="packages.config" />
     <None Include="Services\Adapters\README.md" />

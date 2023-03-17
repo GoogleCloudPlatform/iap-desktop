@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.Mvvm.Controls;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer

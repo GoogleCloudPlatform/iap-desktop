@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.Mvvm.Controls;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;

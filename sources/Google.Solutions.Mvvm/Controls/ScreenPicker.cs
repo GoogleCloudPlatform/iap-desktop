@@ -28,7 +28,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Controls
+namespace Google.Solutions.Mvvm.Controls
 {
     /// <summary>
     /// Control for picking screens, similar to the one used in

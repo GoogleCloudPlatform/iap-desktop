@@ -107,6 +107,12 @@
     <Compile Include="Controls\RichTextBox50.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ScreenPicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ScreenPicker.Designer.cs">
+      <DependentUpon>ScreenPicker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Drawing\BadgeIcon.cs" />
     <Compile Include="Drawing\FontExtensions.cs" />
     <Compile Include="Controls\ProgressBar.cs">
@@ -190,6 +196,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MarkdownViewer.resx">
       <DependentUpon>MarkdownViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ScreenPicker.resx">
+      <DependentUpon>ScreenPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SearchableList.resx">
       <DependentUpon>SearchableList.cs</DependentUpon>
