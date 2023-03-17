@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;

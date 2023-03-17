@@ -22,7 +22,7 @@
 using System.Net;
 using System.Security;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Common.Security
 {
     public static class SecureStringExtensions
     {
