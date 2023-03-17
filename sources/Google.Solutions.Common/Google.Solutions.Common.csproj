@@ -106,6 +106,7 @@
     <Compile Include="Threading\AsyncLock.cs" />
     <Compile Include="Threading\RundownProtection.cs" />
     <Compile Include="Threading\SingleThreadSynchronizationContext.cs" />
+    <Compile Include="Threading\StaTask.cs" />
     <Compile Include="Threading\SynchronizationContextExtensions.cs" />
     <Compile Include="Threading\WaitHandleExtensions.cs" />
     <Compile Include="Util\CancellationTokenExtensions.cs" />

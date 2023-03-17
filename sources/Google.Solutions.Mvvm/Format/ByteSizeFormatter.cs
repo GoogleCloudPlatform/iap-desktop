@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.Mvvm.Shell.Util
+namespace Google.Solutions.Mvvm.Format
 {
     public static class ByteSizeFormatter
     {

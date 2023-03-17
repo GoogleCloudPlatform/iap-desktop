@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Mvvm.Shell.Util;
+using Google.Solutions.Mvvm.Format;
 using NUnit.Framework;
 
-namespace Google.Solutions.Mvvm.Test.Util
+namespace Google.Solutions.Mvvm.Test.Format
 {
     [TestFixture]
     public class TestByteSizeFormatter

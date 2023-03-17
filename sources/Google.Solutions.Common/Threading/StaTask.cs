@@ -23,9 +23,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Mvvm.Util
+namespace Google.Solutions.Common.Threading
 {
-    internal static class StaTask
+    public static class StaTask
     {
         /// <summary>
         /// Run a function on a STA background thread.

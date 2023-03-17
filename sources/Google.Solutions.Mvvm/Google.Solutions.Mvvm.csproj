@@ -160,8 +160,7 @@
     <Compile Include="Theme\IControlTheme.cs" />
     <Compile Include="Theme\ToolStripItemTheme.cs" />
     <Compile Include="Theme\WindowsRuleSet.cs" />
-    <Compile Include="Util\ByteSizeFormatter.cs" />
-    <Compile Include="Util\StaTask.cs" />
+    <Compile Include="Format\ByteSizeFormatter.cs" />
     <Compile Include="Binding\PropertiesSheetView.cs" />
     <Compile Include="Binding\PropertiesView.cs">
       <SubType>Form</SubType>
@@ -207,9 +206,7 @@
   <ItemGroup>
     <None Include="Resources\Search_16.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Windows\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>

@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.Mvvm.Util;
+using Google.Solutions.Common.Threading;
 using System;
 using System.Diagnostics;
 using System.IO;
