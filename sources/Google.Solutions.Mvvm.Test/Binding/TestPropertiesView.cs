@@ -19,13 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Common.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;
-using Google.Solutions.Mvvm.Binding;
 using System.Windows.Forms;
-using Google.Solutions.Testing.Common.Integration;
-using Google.Solutions.Testing.Common.Mocks;
 
 namespace Google.Solutions.Mvvm.Test.Binding
 {

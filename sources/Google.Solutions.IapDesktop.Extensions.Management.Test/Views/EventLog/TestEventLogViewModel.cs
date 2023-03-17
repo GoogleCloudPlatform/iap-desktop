@@ -31,7 +31,6 @@ using Google.Solutions.IapDesktop.Extensions.Management.Data.Logs;
 using Google.Solutions.IapDesktop.Extensions.Management.History;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
-using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Test;
 using Moq;

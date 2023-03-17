@@ -107,7 +107,7 @@ namespace Google.Solutions.Mvvm.Format
                     }
                     else
                     {
-                        for (var block = this.firstChild; block != null;  block = block.next)
+                        for (var block = this.firstChild; block != null; block = block.next)
                         {
                             yield return block;
                         }
@@ -196,7 +196,7 @@ namespace Google.Solutions.Mvvm.Format
             public override string ToString()
             {
                 var buffer = new StringBuilder();
-                
+
                 void Visit(Node block, int level)
                 {
                     buffer.Append(new string(' ', level));
@@ -322,7 +322,7 @@ namespace Google.Solutions.Mvvm.Format
                 }
             }
 
-            protected override string Summary 
+            protected override string Summary
                 => $"[OrderedListItem indent={this.indent.Length}]";
         }
 
@@ -336,8 +336,8 @@ namespace Google.Solutions.Mvvm.Format
 
             public static bool IsUnorderedListItemNode(string line)
             {
-                return line.Length >= 3 && 
-                    UnorderedListBullets.Contains(line[0]) && 
+                return line.Length >= 3 &&
+                    UnorderedListBullets.Contains(line[0]) &&
                     NonLineBreakingWhitespace.Contains(line[1]);
             }
 
@@ -393,7 +393,7 @@ namespace Google.Solutions.Mvvm.Format
         /// <summary>
         /// Document, this forms the root of the tree.
         /// </summary>
-        public class DocumentNode : Node 
+        public class DocumentNode : Node
         {
             protected override Node CreateNode(string line)
             {
@@ -499,7 +499,7 @@ namespace Google.Solutions.Mvvm.Format
                             //
                             // Delimeter.
                             //
-                            if (textStart >= 0 && i - textStart > 0 )
+                            if (textStart >= 0 && i - textStart > 0)
                             {
                                 //
                                 // Flush previous text token, if non-empty.
@@ -541,7 +541,7 @@ namespace Google.Solutions.Mvvm.Format
                     token.Value == this.Value;
             }
 
-            public static bool operator==(Token lhs, Token rhs)
+            public static bool operator ==(Token lhs, Token rhs)
             {
                 if (lhs is null)
                 {
@@ -583,7 +583,7 @@ namespace Google.Solutions.Mvvm.Format
                 {
                     return new TextNode(token.Value, true);
                 }
-                
+
                 if ((token.Value == "_" || token.Value == "*" || token.Value == "**" || token.Value == "`") &&
                     remainder.FirstOrDefault() is Token next &&
                     next != null &&
@@ -643,7 +643,7 @@ namespace Google.Solutions.Mvvm.Format
 
             protected virtual bool TryConsumeToken(Token token, IEnumerable<Token> remainder)
             {
-                if (this.lastChild != null && 
+                if (this.lastChild != null &&
                     ((SpanNode)this.lastChild).TryConsumeToken(token, remainder))
                 {
                     //
@@ -708,7 +708,7 @@ namespace Google.Solutions.Mvvm.Format
             private bool bodyCompleted = false;
 
             public string Text { get; protected set; }
-            
+
             public bool IsStrong => this.delimiter == "**";
             public bool IsCode => this.delimiter == "`";
 

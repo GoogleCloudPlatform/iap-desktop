@@ -27,7 +27,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 {
@@ -154,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
                 repository.Object);
 
             optionsViewModel.MarkDirty();
-            
+
             await optionsViewModel.ApplyChangesAsync();
         }
 

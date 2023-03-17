@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         }
 
         public void Bind(
-            DebugCommonControlsViewModel viewModel, 
+            DebugCommonControlsViewModel viewModel,
             IBindingContext bindingContext)
         {
             this.richTextBox.Rtf =

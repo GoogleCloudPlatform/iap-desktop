@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
 using Google.Solutions.Mvvm.Binding;
-using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Cache;
 using System;
 using System.Diagnostics;
@@ -40,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
 {
     [Service]
     public class InstancePropertiesInspectorViewModel
-        : ModelCachingViewModelBase<IProjectModelNode, InstancePropertiesInspectorModel>, 
+        : ModelCachingViewModelBase<IProjectModelNode, InstancePropertiesInspectorModel>,
           IPropertiesInspectorViewModel
     {
         private const string OsInventoryNotAvailableWarning = "OS inventory data not available";

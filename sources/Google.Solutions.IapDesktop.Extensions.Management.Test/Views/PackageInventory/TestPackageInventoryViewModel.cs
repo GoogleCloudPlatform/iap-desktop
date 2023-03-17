@@ -27,7 +27,6 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
-using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;

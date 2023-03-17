@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             this.SignInWithDefaultBrowserCommand = ObservableCommand.Build(
                 string.Empty,
                 () => SignInAsync(BrowserPreference.Default));
-            this.SignInWithChromeCommand= ObservableCommand.Build(
+            this.SignInWithChromeCommand = ObservableCommand.Build(
                 string.Empty,
                 () => SignInAsync(BrowserPreference.Chrome),
                 this.IsChromeSingnInButtonEnabled);

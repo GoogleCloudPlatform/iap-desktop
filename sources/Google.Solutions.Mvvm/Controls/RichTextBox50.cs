@@ -104,8 +104,8 @@ namespace Google.Solutions.Mvvm.Controls
 
                     var len = NativeMethods.SendMessage(
                         this.Handle,
-                        NativeMethods.EM_GETTEXTRANGE, 
-                        IntPtr.Zero, 
+                        NativeMethods.EM_GETTEXTRANGE,
+                        IntPtr.Zero,
                         txrg);
                     if (len != IntPtr.Zero)
                     {
@@ -115,7 +115,7 @@ namespace Google.Solutions.Mvvm.Controls
                     }
                 }
             }
-                
+
             return string.Empty;
         }
 
@@ -200,7 +200,7 @@ namespace Google.Solutions.Mvvm.Controls
                 public CHARRANGE chrg;
 
                 // NB. Allocated by caller, zero terminated by RichEdit
-                public IntPtr lpstrText; 
+                public IntPtr lpstrText;
             }
 
             [DllImport("user32.dll")]
@@ -211,7 +211,7 @@ namespace Google.Solutions.Mvvm.Controls
                 TEXTRANGE lparam);
 
             [DllImport(
-                "kernel32.dll", 
+                "kernel32.dll",
                 EntryPoint = "LoadLibraryW",
                 CharSet = CharSet.Unicode,
                 SetLastError = true)]

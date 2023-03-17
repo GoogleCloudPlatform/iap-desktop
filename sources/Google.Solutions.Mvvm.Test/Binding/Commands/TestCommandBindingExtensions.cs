@@ -117,7 +117,8 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             var button = new Button();
             var command = ObservableCommand.Build(
                 "Command name",
-                () => {
+                () =>
+                {
                     Assert.IsFalse(button.Enabled);
                     return Task.CompletedTask;
                 });
@@ -302,7 +303,7 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
                 form.Controls.Add(toolStrip);
                 var button = new ToolStripButton();
                 toolStrip.Items.Add(button);
-                
+
                 button.BindObservableCommand(
                     viewModel,
                     m => m.Command,
@@ -360,7 +361,8 @@ namespace Google.Solutions.Mvvm.Test.Binding.Commands
             var button = new ToolStripButton();
             var command = ObservableCommand.Build(
                 "Command name",
-                () => {
+                () =>
+                {
                     Assert.IsFalse(button.Enabled);
                     return Task.CompletedTask;
                 });

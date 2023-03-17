@@ -21,7 +21,6 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
@@ -92,13 +91,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public class Release : IGitHubRelease
         {
             [JsonProperty("tag_name")]
-            public string TagName { get;  }
+            public string TagName { get; }
 
             [JsonProperty("html_url")]
-            public string HtmlUrl { get;  }
+            public string HtmlUrl { get; }
 
             [JsonProperty("assets")]
-            public List<ReleaseAsset> Assets { get;  }
+            public List<ReleaseAsset> Assets { get; }
 
             [JsonConstructor]
             public Release(

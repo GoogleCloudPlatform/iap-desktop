@@ -257,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // All commands added, apply to menu.
             //
             this.contextMenuCommands.BindTo(
-                this.contextMenu.Items, 
+                this.contextMenu.Items,
                 bindingContext);
             this.toolbarCommands.BindTo(
                 this.toolStrip.Items,

@@ -19,20 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Testing.Common.Mocks;
-using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSettings
 {
@@ -55,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             var commands = new ConnectionSettingsCommands(serviceProvider.Object);
 
             Assert.AreEqual(
-                CommandState.Enabled, 
+                CommandState.Enabled,
                 commands.ContextMenuOpen.QueryState(context.Object));
         }
 
@@ -71,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             var commands = new ConnectionSettingsCommands(serviceProvider.Object);
 
             Assert.AreEqual(
-                CommandState.Unavailable, 
+                CommandState.Unavailable,
                 commands.ContextMenuOpen.QueryState(context.Object));
         }
 
@@ -91,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             var commands = new ConnectionSettingsCommands(serviceProvider.Object);
 
             Assert.AreEqual(
-                CommandState.Enabled, 
+                CommandState.Enabled,
                 commands.ToolbarOpen.QueryState(context.Object));
         }
 
@@ -107,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             var commands = new ConnectionSettingsCommands(serviceProvider.Object);
 
             Assert.AreEqual(
-                CommandState.Disabled, 
+                CommandState.Disabled,
                 commands.ToolbarOpen.QueryState(context.Object));
         }
     }

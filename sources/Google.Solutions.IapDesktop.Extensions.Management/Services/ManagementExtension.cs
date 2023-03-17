@@ -19,30 +19,19 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Management;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Management.Properties;
-using Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirectory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views;
-using Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirectory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
-using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Services
 {
@@ -136,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services
             // Add commands to main menu.
             //
             var mainForm = serviceProvider.GetService<IMainWindow>();
-            
+
             mainForm.ViewMenu.AddCommand(eventLogCommands.WindowMenuOpen);
 
             var serialPortMenu = mainForm.ViewMenu.AddCommand(

@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
             var commands = new AuthorizedPublicKeysCommands(serviceProvider.Object);
 
             Assert.AreEqual(
-                CommandState.Enabled, 
+                CommandState.Enabled,
                 commands.ContextMenuOpen.QueryState(context.Object));
         }
 
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
             var commands = new AuthorizedPublicKeysCommands(serviceProvider.Object);
 
             Assert.AreEqual(
-                CommandState.Unavailable, 
+                CommandState.Unavailable,
                 commands.ContextMenuOpen.QueryState(context.Object));
         }
 

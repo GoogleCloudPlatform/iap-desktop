@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         protected override void Load(ApplicationSettings settings)
         {
-            var fullScreenDevices = 
+            var fullScreenDevices =
                 (settings.FullScreenDevices.StringValue ?? string.Empty)
                     .Split(ApplicationSettings.FullScreenDevicesSeparator)
                     .ToHashSet();

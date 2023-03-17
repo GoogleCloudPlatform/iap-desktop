@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             viewModel.Devices.First().IsSelected = true;
             viewModel.Devices.First().IsSelected = false;
-            
+
             await viewModel.ApplyChangesAsync();
 
             Assert.IsNull(this.settingsRepository.GetSettings().FullScreenDevices.StringValue);

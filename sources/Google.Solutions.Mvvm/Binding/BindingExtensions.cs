@@ -20,14 +20,12 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace Google.Solutions.Mvvm.Binding
 {
@@ -155,7 +153,7 @@ namespace Google.Solutions.Mvvm.Binding
         //---------------------------------------------------------------------
         // Binding for bare properties.
         //---------------------------------------------------------------------
-        
+
         public static void BindProperty<TControl, TProperty, TModel>(
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
@@ -224,7 +222,7 @@ namespace Google.Solutions.Mvvm.Binding
                 model,
                 modelProperty,
                 CreateSetter(control, controlProperty));
-            
+
             control.AttachDisposable(binding);
             bindingContext.OnBindingCreated(control, binding);
         }

@@ -21,13 +21,11 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -132,9 +130,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
 
             protected override bool IsEnabled(ISession session)
             {
-                return session != null && 
+                return session != null &&
                     session is IRemoteDesktopSession rdpSession &&
-                    rdpSession.IsConnected && 
+                    rdpSession.IsConnected &&
                     rdpSession.CanEnterFullScreen;
             }
 
