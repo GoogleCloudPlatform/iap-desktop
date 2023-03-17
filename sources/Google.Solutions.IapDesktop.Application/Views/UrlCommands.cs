@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,12 +19,29 @@
 // under the License.
 //
 
-using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Data
+using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.Mvvm.Binding.Commands;
+
+namespace Google.Solutions.IapDesktop.Application.Views
 {
-    public interface IIapUrlHandler
+    public class UrlCommands
     {
-        Task ActivateOrConnectInstanceAsync(IapRdpUrl url);
+        public UrlCommands()
+        {
+            this.LaunchRdpUrl = new ContextCommand<IapRdpUrl>(
+                string.Empty,
+                _ => CommandState.Unavailable,
+                _ => { });
+        }
+
+        //---------------------------------------------------------------------
+        // Context commands.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Command to launch a URL. Can be replaced by extensions.
+        /// </summary>
+        public IContextCommand<IapRdpUrl> LaunchRdpUrl { get; set; }
     }
 }

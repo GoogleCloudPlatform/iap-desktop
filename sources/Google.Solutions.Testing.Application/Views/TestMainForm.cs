@@ -51,11 +51,6 @@ namespace Google.Solutions.Testing.Application.Views
         public DockPanel MainPanel => this.dockPanel;
         public ICommandContainer<IMainWindow> ViewMenu => null;
 
-        public void SetUrlHandler(IIapUrlHandler handler)
-        {
-            throw new NotImplementedException();
-        }
-
         public ICommandContainer<TContext> AddMenu<TContext>(
             string caption,
             int? index,

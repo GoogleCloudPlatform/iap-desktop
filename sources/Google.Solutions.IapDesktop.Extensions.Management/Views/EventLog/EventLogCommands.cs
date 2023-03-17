@@ -58,7 +58,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
             };
         }
 
-
         //---------------------------------------------------------------------
         // Context commands.
         //---------------------------------------------------------------------

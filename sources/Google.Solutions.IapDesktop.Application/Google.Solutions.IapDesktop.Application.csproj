@@ -198,6 +198,7 @@
     </Compile>
     <Compile Include="Views\Diagnostics\DebugOptionsSheetViewModel.cs" />
     <Compile Include="Views\ToolContextCommand.cs" />
+    <Compile Include="Views\UrlCommands.cs" />
     <Compile Include="Views\ViewBindingContext.cs" />
     <Compile Include="Views\Diagnostics\DebugCommonControlsView.cs">
       <SubType>Form</SubType>
@@ -243,7 +244,6 @@
     <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingView.Designer.cs">
       <DependentUpon>DebugProjectExplorerTrackingView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\IIapUrlHandler.cs" />
     <Compile Include="Views\Dialog\CredentialDialog.cs" />
     <Compile Include="Views\Dialog\OperationProgressDialog.cs" />
     <Compile Include="Views\Dialog\UnsafeNativeMethods.cs" />

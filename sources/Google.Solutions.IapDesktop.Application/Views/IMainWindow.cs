@@ -54,7 +54,5 @@ namespace Google.Solutions.IapDesktop.Application.Views
             int? index,
             Func<TContext> queryCurrentContextFunc)
             where TContext : class;
-
-        void SetUrlHandler(IIapUrlHandler handler);
     }
 }

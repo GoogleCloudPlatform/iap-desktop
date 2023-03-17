@@ -75,8 +75,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IServiceProvider serviceProvider;
         private readonly IBindingContext bindingContext;
 
-        private IIapUrlHandler urlHandler;
-
         private readonly ContextSource<IMainWindow> viewMenuContextSource;
         private readonly ContextSource<ToolWindow> windowMenuContextSource;
 
@@ -609,26 +607,35 @@ namespace Google.Solutions.IapDesktop.Windows
             this.windowMenuCommands.ForceRefresh();
         }
 
-        internal void ConnectToUrl(IapRdpUrl url)
+        private async Task ConnectToUrlAsync(IapRdpUrl url)
         {
-            if (this.urlHandler != null)
+            var command = this.serviceProvider.GetService<UrlCommands>().LaunchRdpUrl;
+            if (command.QueryState(url) == CommandState.Enabled)
             {
                 try
                 {
-                    this.urlHandler
-                        .ActivateOrConnectInstanceAsync(url)
-                        .ContinueWith(t => this.serviceProvider
-                                .GetService<IExceptionDialog>()
-                                .Show(this, "Failed to connect to VM instance", t.Exception),
-                            CancellationToken.None,
-                            TaskContinuationOptions.OnlyOnFaulted,
-                            TaskScheduler.FromCurrentSynchronizationContext());
+                    await command
+                        .ExecuteAsync(url)
+                        .ConfigureAwait(true);
                 }
                 catch (Exception e) when (e.IsCancellation())
                 {
                     // The user cancelled, nervemind.
                 }
+                catch (Exception e)
+                {
+                    this.serviceProvider
+                        .GetService<IExceptionDialog>()
+                        .Show(
+                            this, 
+                            $"Connecting to the VM instance {url.Instance.Name} failed", e);
+                }
             }
+        }
+
+        internal void ConnectToUrl(IapRdpUrl url)
+        {
+            ConnectToUrlAsync(url).ContinueWith(_ => { });
         }
 
         private void dockPanel_ActiveContentChanged(object sender, EventArgs e)
@@ -659,12 +666,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public IWin32Window Window => this;
         public DockPanel MainPanel => this.dockPanel;
-
-        public void SetUrlHandler(IIapUrlHandler handler)
-        {
-            Utilities.ThrowIfNull(handler, nameof(handler));
-            this.urlHandler = handler;
-        }
 
         public ICommandContainer<TContext> AddMenu<TContext>(
             string caption,

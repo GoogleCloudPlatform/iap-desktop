@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -39,6 +40,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -235,21 +237,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         // Setup
         //---------------------------------------------------------------------
 
-        private class UrlHandler : IIapUrlHandler
-        {
-            private readonly IServiceProvider serviceProvider;
-
-            public UrlHandler(IServiceProvider serviceProvider)
-            {
-                this.serviceProvider = serviceProvider;
-            }
-
-            public Task ActivateOrConnectInstanceAsync(IapRdpUrl url)
-                => this.serviceProvider
-                    .GetService<IRdpConnectionService>()
-                    .ActivateOrConnectInstanceAsync(url);
-        }
-
         public ShellExtension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
@@ -259,11 +246,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // Let this extension handle all URL activations.
             //
-            // NB. We cannot instantiate the service here because we 
-            // are in a constructor. So pass a delegate object that
-            // instantiates the object lazily.
-            //
-            mainForm.SetUrlHandler(new UrlHandler(serviceProvider));
+            var connectionCommands = new ConnectionCommands(
+                serviceProvider.GetService<UrlCommands>(),
+                serviceProvider.GetService<Service<IRdpConnectionService>>());
+            Debug.Assert(serviceProvider
+                .GetService<UrlCommands>()
+                .LaunchRdpUrl.QueryState(new IapRdpUrl(
+                    new InstanceLocator("project", "zone", "name"),
+                    new NameValueCollection()))
+                == CommandState.Enabled,
+                "URL command installed");
 
             this.window = mainForm;
 
