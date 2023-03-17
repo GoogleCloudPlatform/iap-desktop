@@ -342,7 +342,7 @@
     <Compile Include="Views\WaitDialog.Designer.cs">
       <DependentUpon>WaitDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Util\SingletonApplicationBase.cs" />
+    <Compile Include="Host\SingletonApplicationBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">

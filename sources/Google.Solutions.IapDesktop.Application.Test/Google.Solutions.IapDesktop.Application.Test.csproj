@@ -156,7 +156,7 @@
     <Compile Include="Views\ProjectPicker\TestProjectPickerDialog.cs" />
     <Compile Include="Views\ProjectPicker\TestProjectPickerViewModel.cs" />
     <Compile Include="Views\Properties\TestPropertiesInspectorWindow.cs" />
-    <Compile Include="Util\TestSingletonApplicationBase.cs" />
+    <Compile Include="Host\TestSingletonApplicationBase.cs" />
     <Compile Include="Views\TestToolWindow.cs" />
   </ItemGroup>
   <ItemGroup>
