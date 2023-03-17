@@ -147,5 +147,119 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
                 CommandState.Disabled,
                 GetFullScreenCommand(sessionCommands, mode).QueryState(sshSession.Object));
         }
+
+        //---------------------------------------------------------------------
+        // Disconnect.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicable_ThenDisconnectIsEnabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new UrlCommands(),
+                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+
+            var connectedSession = new Mock<ISession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.Disconnect.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenDisconnectIsDisabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new UrlCommands(),
+                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+
+            var disconnectedSession = new Mock<ISession>();
+            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.Disconnect.QueryState(disconnectedSession.Object));
+        }
+
+        //---------------------------------------------------------------------
+        // ShowSecurityScreen.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicable_ThenShowSecurityScreenIsEnabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new UrlCommands(),
+                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+
+            var connectedSession = new Mock<IRemoteDesktopSession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.ShowSecurityScreen.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenShowSecurityScreenIsDisabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new UrlCommands(),
+                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+
+            var disconnectedSession = new Mock<IRemoteDesktopSession>();
+            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+
+            var sshSession = new Mock<ISshTerminalSession>();
+            sshSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.ShowSecurityScreen.QueryState(disconnectedSession.Object));
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.ShowSecurityScreen.QueryState(sshSession.Object));
+        }
+
+        //---------------------------------------------------------------------
+        // ShowTaskManager.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicable_ThenShowTaskManagerIsEnabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new UrlCommands(),
+                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+
+            var connectedSession = new Mock<IRemoteDesktopSession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.ShowTaskManager.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenShowTaskManagerIsDisabled()
+        {
+            var sessionCommands = new SessionCommands(
+                new UrlCommands(),
+                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+
+            var disconnectedSession = new Mock<IRemoteDesktopSession>();
+            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+
+            var sshSession = new Mock<ISshTerminalSession>();
+            sshSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.ShowTaskManager.QueryState(disconnectedSession.Object));
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.ShowTaskManager.QueryState(sshSession.Object));
+        }
     }
 }

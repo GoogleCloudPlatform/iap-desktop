@@ -387,18 +387,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     Image = Resources.Duplicate,
                     ActivityText = "Duplicating session"
                 });
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "&Disconnect",
-                    session => GetSessionMenuCommandState<ISession>(
-                        session,
-                        anySession => anySession.IsConnected),
-                    session => session.Close())
-                {
-                    Image = Resources.Disconnect_16,
-                    ShortcutKeys = Keys.Control | Keys.F4,
-                    ActivityText = "Disconnecting"
-                });
+            this.sessionCommands.AddCommand(sessionCommands.Disconnect);
             this.sessionCommands.AddSeparator();
             this.sessionCommands.AddCommand(
                 new ContextCommand<ISession>(
@@ -411,20 +400,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     Image = Resources.DownloadFile_16,
                     ActivityText = "Downloading files"
                 });
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "Show &security screen (send Ctrl+Alt+Esc)",
-                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
-                        session,
-                        rdpSession => rdpSession.IsConnected),
-                    session => (session as IRemoteDesktopSession)?.ShowSecurityScreen()));
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "Open &task manager (send Ctrl+Shift+Esc)",
-                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
-                        session,
-                        rdpSession => rdpSession.IsConnected),
-                    session => (session as IRemoteDesktopSession)?.ShowTaskManager()));
+            this.sessionCommands.AddCommand(sessionCommands.ShowSecurityScreen);
+            this.sessionCommands.AddCommand(sessionCommands.ShowTaskManager);
         }
     }
 }

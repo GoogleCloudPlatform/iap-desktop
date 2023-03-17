@@ -22,10 +22,12 @@
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -60,6 +62,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 ShortcutKeys = Keys.F11 | Keys.Shift,
                 ActivityText = "Activating full screen"
             };
+            this.Disconnect = new DisconnectCommand("&Disconnect")
+            {
+                Image = Resources.Disconnect_16,
+                ShortcutKeys = Keys.Control | Keys.F4,
+                ActivityText = "Disconnecting"
+            };
+            this.ShowSecurityScreen = new ShowSecurityScreenCommand(
+                "Show &security screen (send Ctrl+Alt+Esc)");
+            this.ShowTaskManager = new ShowTaskManagerCommand(
+                "Open &task manager (send Ctrl+Shift+Esc)");
         }
 
         //---------------------------------------------------------------------
@@ -68,9 +80,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
 
         public IContextCommand<ISession> EnterFullScreenOnSingleScreen { get; }
         public IContextCommand<ISession> EnterFullScreenOnAllScreens { get; }
+        public IContextCommand<ISession> Disconnect { get; }
+        public IContextCommand<ISession> ShowSecurityScreen { get; }
+        public IContextCommand<ISession> ShowTaskManager { get; }
 
         //---------------------------------------------------------------------
-        // Commands classes
+        // Generic session commands.
+        //---------------------------------------------------------------------
+
+        private class DisconnectCommand : ToolContextCommand<ISession>
+        {
+            public DisconnectCommand(string text) : base(text)
+            {
+            }
+
+            protected override bool IsAvailable(ISession session)
+            {
+                return true;
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session != null &&
+                    session.IsConnected;
+            }
+
+            public override void Execute(ISession session)
+            {
+                session.Close();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // RDP session commands.
         //---------------------------------------------------------------------
 
         private class LaunchRdpUrlCommand : ToolContextCommand<IapRdpUrl>
@@ -86,12 +128,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
 
             protected override bool IsAvailable(IapRdpUrl url)
             {
-                return true;
+                return url != null;
             }
 
             protected override bool IsEnabled(IapRdpUrl url)
             {
-                return true;
+                return url != null;
             }
 
             public override Task ExecuteAsync(IapRdpUrl url)
@@ -120,7 +162,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
 
             protected override bool IsEnabled(ISession session)
             {
-                return session is IRemoteDesktopSession rdpSession &&
+                return session != null && 
+                    session is IRemoteDesktopSession rdpSession &&
                     rdpSession.IsConnected && 
                     rdpSession.CanEnterFullScreen;
             }
@@ -131,5 +174,60 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 rdpSession.TrySetFullscreen(this.mode);
             }
         }
+
+        private class ShowSecurityScreenCommand : ToolContextCommand<ISession>
+        {
+            public ShowSecurityScreenCommand(string text) : base(text)
+            {
+            }
+
+            protected override bool IsAvailable(ISession session)
+            {
+                return true;
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session != null &&
+                    session is IRemoteDesktopSession rdpSession &&
+                    rdpSession.IsConnected;
+            }
+
+            public override void Execute(ISession session)
+            {
+                var rdpSession = (IRemoteDesktopSession)session;
+                rdpSession.ShowSecurityScreen();
+            }
+        }
+
+        private class ShowTaskManagerCommand : ToolContextCommand<ISession>
+        {
+            public ShowTaskManagerCommand(string text) : base(text)
+            {
+            }
+
+            protected override bool IsAvailable(ISession session)
+            {
+                return true;
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session != null &&
+                    session is IRemoteDesktopSession rdpSession &&
+                    rdpSession.IsConnected;
+            }
+
+            public override void Execute(ISession session)
+            {
+                var rdpSession = (IRemoteDesktopSession)session;
+                rdpSession.ShowTaskManager();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // SSH session commands.
+        //---------------------------------------------------------------------
+
     }
 }
