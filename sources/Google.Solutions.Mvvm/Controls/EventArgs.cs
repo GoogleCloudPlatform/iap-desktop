@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Mvvm.Controls
 {
     public class EventArgs<T> : System.EventArgs
     {

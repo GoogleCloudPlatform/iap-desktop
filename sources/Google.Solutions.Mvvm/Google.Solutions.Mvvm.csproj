@@ -94,6 +94,7 @@
     <Compile Include="Controls\DropDownButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\EventArgs.cs" />
     <Compile Include="Controls\MarkdownViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>

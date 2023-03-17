@@ -155,7 +155,6 @@
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Theme\VSThemeExtensions.cs" />
     <Compile Include="Theme\VSThemeRuleSet.cs" />
-    <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Data\IHelpTopic.cs" />
     <Compile Include="Util\StringExtensions.cs" />
     <Compile Include="Util\TypographicQuotes.cs" />
