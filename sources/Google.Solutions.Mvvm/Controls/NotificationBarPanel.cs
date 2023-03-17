@@ -70,7 +70,15 @@ namespace Google.Solutions.Mvvm.Controls
         protected override void OnLayout(LayoutEventArgs e)
         {
             base.OnLayout(e);
-            this.infoLabel.Size = new Size(this.Width - 40, this.SplitterDistance - 10);
+
+            if (this.Width > 0)
+            {
+                //
+                // NB. Width can be 0 if the panel os on an AutoHide
+                // tool window.
+                //
+                this.infoLabel.Size = new Size(this.Width - 40, this.SplitterDistance - 10);
+            }
         }
 
         protected override void OnSizeChanged(EventArgs e)
