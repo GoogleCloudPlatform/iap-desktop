@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Security;
-using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;

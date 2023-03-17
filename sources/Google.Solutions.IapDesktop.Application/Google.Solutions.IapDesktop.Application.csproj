@@ -149,7 +149,6 @@
     <Compile Include="Theme\VSThemeExtensions.cs" />
     <Compile Include="Theme\VSThemeRuleSet.cs" />
     <Compile Include="Data\IHelpTopic.cs" />
-    <Compile Include="Util\Filename.cs" />
     <Compile Include="Views\About\AboutViewModel.cs" />
     <Compile Include="Views\Authorization\AuthorizeView.cs">
       <SubType>Form</SubType>

@@ -24,7 +24,6 @@ using Google.Apis.Util;
 using Google.Apis.Util.Store;
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Security.Cryptography;

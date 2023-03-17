@@ -138,8 +138,7 @@
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Theme\TestThemeSettingsRepository.cs" />
     <Compile Include="Theme\TestVSTheme.cs" />
-    <Compile Include="Util\TestFilename.cs" />
-    <Compile Include="Util\TestIapRdpUrl.cs" />
+    <Compile Include="Data\TestIapRdpUrl.cs" />
     <Compile Include="Views\About\TestAboutViewModel.cs" />
     <Compile Include="Views\Authorization\TestAuthorizeViewModel.cs" />
     <Compile Include="Views\Authorization\TestDeviceFlyoutViewModel.cs" />

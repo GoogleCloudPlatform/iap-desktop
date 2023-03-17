@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
@@ -29,7 +30,6 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
@@ -440,7 +440,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                                     //
                                     var targetFile = new FileInfo(Path.Combine(
                                         targetDirectory.FullName,
-                                        Filename.EscapeFilename(file.Name)));
+                                        WindowsFilename.EscapeFilename(file.Name)));
                                     using (var fileStream = targetFile.OpenWrite())
                                     {
                                         await fsChannel.DownloadFileAsync(
