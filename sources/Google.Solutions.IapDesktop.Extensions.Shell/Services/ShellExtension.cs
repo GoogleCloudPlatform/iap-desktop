@@ -58,14 +58,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         private readonly IWin32Window window;
         private readonly ICommandContainer<ISession> sessionCommands;
 
-        private static CommandState GetToolbarCommandStateWhenRunningInstanceRequired(
-            IProjectModelNode node)
-        {
-            return node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
-                ? CommandState.Enabled
-                : CommandState.Disabled;
-        }
-
         private static CommandState GetToolbarCommandStateWhenRunningWindowsInstanceRequired(
             IProjectModelNode node)
         {
@@ -76,38 +68,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 : CommandState.Disabled;
         }
 
-        private static CommandState GetContextMenuCommandStateWhenRunningInstanceRequired(IProjectModelNode node)
-        {
-            if (node is IProjectModelInstanceNode vmNode)
-            {
-                return vmNode.IsRunning
-                    ? CommandState.Enabled
-                    : CommandState.Disabled;
-            }
-            else
-            {
-                return CommandState.Unavailable;
-            }
-        }
-
         private static CommandState GetContextMenuCommandStateWhenRunningWindowsInstanceRequired(IProjectModelNode node)
         {
             if (node is IProjectModelInstanceNode vmNode && vmNode.IsWindowsInstance())
-            {
-                return vmNode.IsRunning
-                    ? CommandState.Enabled
-                    : CommandState.Disabled;
-            }
-            else
-            {
-                return CommandState.Unavailable;
-            }
-        }
-
-
-        private static CommandState GetContextMenuCommandStateWhenRunningSshInstanceRequired(IProjectModelNode node)
-        {
-            if (node is IProjectModelInstanceNode vmNode && vmNode.IsSshSupported())
             {
                 return vmNode.IsRunning
                     ? CommandState.Enabled
@@ -279,37 +242,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                connectCommands.ActivateOrConnectInstance,
+                connectCommands.ContextMenuActivateOrConnectInstance,
                 0);
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Connect &as user...",
-                    GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,   // Windows/RDP only.
-                    node => ConnectAsync(node, false, false))
-                {
-                    Image = Resources.Connect_16,
-                    ActivityText = "Connecting to VM instance"
-                },
+                connectCommands.ContextMenuConnectRdpAsUser,
                 1);
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Connect in &new terminal",
-                    GetContextMenuCommandStateWhenRunningSshInstanceRequired,   // Linux/SSH only.
-                    node => ConnectAsync(node, false, true))
-                {
-                    Image = Resources.Connect_16,
-                    ActivityText = "Connecting to VM instance"
-                },
+                connectCommands.ContextMenuConnectSshInNewTerminal,
                 2);
             projectExplorer.ToolbarCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Connect",
-                    GetToolbarCommandStateWhenRunningInstanceRequired,
-                    node => ConnectAsync(node, true, false))
-                {
-                    Image = Resources.Connect_16,
-                    ActivityText = "Connecting to VM instance"
-                });
+                connectCommands.ToolbarActivateOrConnectInstance);
 
             //
             // Generate credentials (Windows/RDP only).

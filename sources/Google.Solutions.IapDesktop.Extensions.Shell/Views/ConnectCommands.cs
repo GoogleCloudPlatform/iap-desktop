@@ -48,7 +48,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
             //
             urlCommands.LaunchRdpUrl = new LaunchRdpUrlCommand(rdpConnectionService);
 
-            this.ActivateOrConnectInstance = new ActivateOrConnectInstanceCommand(
+            this.ToolbarActivateOrConnectInstance = new ActivateOrConnectInstanceCommand(
+                "&Connect",
+                sessionContextMenu,
+                rdpConnectionService,
+                sshConnectionService)
+            {
+                AlwaysAvailable = true,                 // Never hide to avoid flicker.
+                AvailableForSsh = true,
+                AvailableForRdp = true,
+                Image = Resources.Connect_16,
+                ActivityText = "Connecting to VM instance"
+            };
+            this.ContextMenuActivateOrConnectInstance = new ActivateOrConnectInstanceCommand(
                 "&Connect",
                 sessionContextMenu,
                 rdpConnectionService,
@@ -60,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 IsDefault = true,
                 ActivityText = "Connecting to VM instance"
             };
-            this.ConnectAsUser = new ActivateOrConnectInstanceCommand(
+            this.ContextMenuConnectRdpAsUser = new ActivateOrConnectInstanceCommand(
                 "Connect &as user...",
                 sessionContextMenu,
                 rdpConnectionService,
@@ -68,7 +80,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
             {
                 AvailableForSsh = false,
                 AvailableForRdp = true,                 // Windows/RDP only.
-                AllowPersistentCredentials = false,     // Force auth prompt.
+                AllowPersistentRdpCredentials = false,  // Force auth prompt.
+                Image = Resources.Connect_16,
+                ActivityText = "Connecting to VM instance"
+            };
+            this.ContextMenuConnectSshInNewTerminal = new ActivateOrConnectInstanceCommand(
+                "Connect in &new terminal",
+                sessionContextMenu,
+                rdpConnectionService,
+                sshConnectionService)
+            {
+                AvailableForSsh = true,                 // Linux/SSH only.
+                AvailableForRdp = false,
+                ForceNewSshConnection = true,           // Force new.
                 Image = Resources.Connect_16,
                 ActivityText = "Connecting to VM instance"
             };
@@ -78,8 +102,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
         // Context commands.
         //---------------------------------------------------------------------
 
-        public IContextCommand<IProjectModelNode> ActivateOrConnectInstance { get; }
-        public IContextCommand<IProjectModelNode> ConnectAsUser { get; }
+        public IContextCommand<IProjectModelNode> ToolbarActivateOrConnectInstance { get; }
+        public IContextCommand<IProjectModelNode> ContextMenuActivateOrConnectInstance { get; }
+        public IContextCommand<IProjectModelNode> ContextMenuConnectRdpAsUser { get; }
+        public IContextCommand<IProjectModelNode> ContextMenuConnectSshInNewTerminal { get; }
 
         //---------------------------------------------------------------------
         // RDP URL commands.
@@ -127,10 +153,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
             private readonly Service<IRdpConnectionService> rdpConnectionService;
             private readonly Service<ISshConnectionService> sshConnectionService;
 
+            public bool AlwaysAvailable { get; set; } = false;
             public bool AvailableForSsh { get; set; } = false;
             public bool AvailableForRdp { get; set; } = false;
-            public bool AllowPersistentCredentials { get; set; } = true;
-            public bool ForceNewConnection { get; set; } = false;
+            public bool AllowPersistentRdpCredentials { get; set; } = true;
+            public bool ForceNewSshConnection { get; set; } = false;
 
             public ActivateOrConnectInstanceCommand(
                 string text,
@@ -146,15 +173,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
 
             protected override bool IsAvailable(IProjectModelNode node)
             {
-                return node != null &&
-                    node is IProjectModelInstanceNode instanceNode &&
-                    ((this.AvailableForSsh && instanceNode.IsSshSupported()) || 
-                     (this.AvailableForRdp && instanceNode.IsRdpSupported()));
+                if (this.AlwaysAvailable) // For toolbars.
+                {
+                    return true;
+                }
+                else
+                {
+                    return node != null &&
+                        node is IProjectModelInstanceNode instanceNode &&
+                        ((this.AvailableForSsh && instanceNode.IsSshSupported()) ||
+                         (this.AvailableForRdp && instanceNode.IsRdpSupported()));
+                }
             }
 
             protected override bool IsEnabled(IProjectModelNode node)
             {
-                return ((IProjectModelInstanceNode)node).IsRunning;
+                return node != null &&
+                    node is IProjectModelInstanceNode instanceNode &&
+                    ((this.AvailableForSsh && instanceNode.IsSshSupported()) ||
+                     (this.AvailableForRdp && instanceNode.IsRdpSupported())) &&
+                    instanceNode.IsRunning;
             }
 
             public override async Task ExecuteAsync(IProjectModelNode node)
@@ -166,14 +204,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                         .GetInstance()
                         .ActivateOrConnectInstanceAsync(
                             rdpNode,
-                            this.AllowPersistentCredentials)
+                            this.AllowPersistentRdpCredentials)
                         .ConfigureAwait(true);
 
                     Debug.Assert(session != null);
                 }
                 else if (node is IProjectModelInstanceNode sshNode && sshNode.IsSshSupported())
                 {
-                    if (this.ForceNewConnection)
+                    if (this.ForceNewSshConnection)
                     {
                         session = await this.sshConnectionService
                             .GetInstance()

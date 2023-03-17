@@ -106,11 +106,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         }
 
         //---------------------------------------------------------------------
-        // ActivateOrConnectInstance.
+        // ToolbarActivateOrConnect.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicableAndVmRunning_ThenActivateOrConnectInstanceIsEnabled(
+        public void WhenApplicableAndVmRunning_ThenToolbarActivateOrConnectInstanceIsEnabled(
             [Values(
                 OperatingSystems.Windows,
                 OperatingSystems.Linux)] OperatingSystems os)
@@ -126,11 +126,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
 
             Assert.AreEqual(
                 CommandState.Enabled,
-                commands.ActivateOrConnectInstance.QueryState(runningInstance.Object));
+                commands.ToolbarActivateOrConnectInstance.QueryState(runningInstance.Object));
         }
 
         [Test]
-        public void WhenApplicableButVmNotRunning_ThenActivateOrConnectInstanceIsDisabled(
+        public void WhenApplicableButVmNotRunning_ThenToolbarActivateOrConnectInstanceIsDisabled(
             [Values(
                 OperatingSystems.Windows,
                 OperatingSystems.Linux)] OperatingSystems os)
@@ -146,11 +146,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                commands.ActivateOrConnectInstance.QueryState(stoppedInstance.Object));
+                commands.ToolbarActivateOrConnectInstance.QueryState(stoppedInstance.Object));
         }
 
         [Test]
-        public void WhenNotApplicable_ThenActivateOrConnectInstanceIsUnavailable()
+        public void WhenNotApplicable_ThenToolbarActivateOrConnectInstanceIsDisabled()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -158,18 +158,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
                 new Mock<IRdpConnectionService>());
 
             Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ActivateOrConnectInstance.QueryState(new Mock<IProjectModelCloudNode>().Object));
+                CommandState.Disabled,
+                commands.ToolbarActivateOrConnectInstance.QueryState(new Mock<IProjectModelCloudNode>().Object));
             Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ActivateOrConnectInstance.QueryState(new Mock<IProjectModelProjectNode>().Object));
+                CommandState.Disabled,
+                commands.ToolbarActivateOrConnectInstance.QueryState(new Mock<IProjectModelProjectNode>().Object));
             Assert.AreEqual(
-                CommandState.Unavailable,
-                commands.ActivateOrConnectInstance.QueryState(new Mock<IProjectModelZoneNode>().Object));
+                CommandState.Disabled,
+                commands.ToolbarActivateOrConnectInstance.QueryState(new Mock<IProjectModelZoneNode>().Object));
         }
 
         [Test]
-        public async Task WhenInstanceSupportsRdp_ThenActivateOrConnectInstanceUsesRdp()
+        public async Task WhenInstanceSupportsRdp_ThenToolbarActivateOrConnectInstanceUsesRdp()
         {
             var rdpConnectionService = new Mock<IRdpConnectionService>();
             rdpConnectionService
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             runningInstance.Setup(s => s.IsRunning).Returns(true);
             runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Windows);
 
-            await commands.ActivateOrConnectInstance
+            await commands.ToolbarActivateOrConnectInstance
                 .ExecuteAsync(runningInstance.Object)
                 .ConfigureAwait(false);
 
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         }
 
         [Test]
-        public async Task WhenInstanceSupportsSsh_ThenActivateOrConnectInstanceUsesSsh()
+        public async Task WhenInstanceSupportsSsh_ThenToolbarActivateOrConnectInstanceUsesSsh()
         {
             var sshConnectionService = new Mock<ISshConnectionService>();
             sshConnectionService
@@ -213,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             runningInstance.Setup(s => s.IsRunning).Returns(true);
             runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
 
-            await commands.ActivateOrConnectInstance
+            await commands.ToolbarActivateOrConnectInstance
                 .ExecuteAsync(runningInstance.Object)
                 .ConfigureAwait(false);
 
@@ -226,11 +226,131 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         }
 
         //---------------------------------------------------------------------
-        // ConnectAsUser.
+        // ContextMenuActivateOrConnect.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenApplicableAndVmRunning_ThenConnectAsUserIsEnabled()
+        public void WhenApplicableAndVmRunning_ThenContextMenuActivateOrConnectInstanceIsEnabled(
+            [Values(
+                OperatingSystems.Windows,
+                OperatingSystems.Linux)] OperatingSystems os)
+        {
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                new Mock<IRdpConnectionService>());
+
+            var runningInstance = new Mock<IProjectModelInstanceNode>();
+            runningInstance.Setup(s => s.IsRunning).Returns(true);
+            runningInstance.SetupGet(s => s.OperatingSystem).Returns(os);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                commands.ContextMenuActivateOrConnectInstance.QueryState(runningInstance.Object));
+        }
+
+        [Test]
+        public void WhenApplicableButVmNotRunning_ThenContextMenuActivateOrConnectInstanceIsDisabled(
+            [Values(
+                OperatingSystems.Windows,
+                OperatingSystems.Linux)] OperatingSystems os)
+        {
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                new Mock<IRdpConnectionService>());
+
+            var stoppedInstance = new Mock<IProjectModelInstanceNode>();
+            stoppedInstance.Setup(s => s.IsRunning).Returns(false);
+            stoppedInstance.SetupGet(s => s.OperatingSystem).Returns(os);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                commands.ContextMenuActivateOrConnectInstance.QueryState(stoppedInstance.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenContextMenuActivateOrConnectInstanceIsUnavailable()
+        {
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                new Mock<IRdpConnectionService>());
+
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuActivateOrConnectInstance.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuActivateOrConnectInstance.QueryState(new Mock<IProjectModelProjectNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuActivateOrConnectInstance.QueryState(new Mock<IProjectModelZoneNode>().Object));
+        }
+
+        [Test]
+        public async Task WhenInstanceSupportsRdp_ThenContextMenuActivateOrConnectInstanceUsesRdp()
+        {
+            var rdpConnectionService = new Mock<IRdpConnectionService>();
+            rdpConnectionService
+                .Setup(s => s.ActivateOrConnectInstanceAsync(
+                    It.IsAny<IProjectModelInstanceNode>(),
+                    true))
+                .ReturnsAsync(new Mock<IRemoteDesktopSession>().Object);
+
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                rdpConnectionService);
+
+            var runningInstance = new Mock<IProjectModelInstanceNode>();
+            runningInstance.Setup(s => s.IsRunning).Returns(true);
+            runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Windows);
+
+            await commands.ContextMenuActivateOrConnectInstance
+                .ExecuteAsync(runningInstance.Object)
+                .ConfigureAwait(false);
+
+            rdpConnectionService.Verify(
+                s => s.ActivateOrConnectInstanceAsync(runningInstance.Object, true),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task WhenInstanceSupportsSsh_ThenContextMenuActivateOrConnectInstanceUsesSsh()
+        {
+            var sshConnectionService = new Mock<ISshConnectionService>();
+            sshConnectionService
+                .Setup(s => s.ActivateOrConnectInstanceAsync(It.IsAny<IProjectModelInstanceNode>()))
+                .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
+
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                sshConnectionService,
+                new Mock<IRdpConnectionService>());
+
+            var runningInstance = new Mock<IProjectModelInstanceNode>();
+            runningInstance.Setup(s => s.IsRunning).Returns(true);
+            runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
+
+            await commands.ContextMenuActivateOrConnectInstance
+                .ExecuteAsync(runningInstance.Object)
+                .ConfigureAwait(false);
+
+            sshConnectionService.Verify(
+                s => s.ActivateOrConnectInstanceAsync(runningInstance.Object),
+                Times.Once);
+            sshConnectionService.Verify(
+                s => s.ConnectInstanceAsync(runningInstance.Object),
+                Times.Never);
+        }
+
+        //---------------------------------------------------------------------
+        // ContextMenuConnectAsUser.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicableAndVmRunning_ThenContextMenuConnectAsUserIsEnabled()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -243,11 +363,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
 
             Assert.AreEqual(
                 CommandState.Enabled,
-                commands.ConnectAsUser.QueryState(runningInstance.Object));
+                commands.ContextMenuConnectRdpAsUser.QueryState(runningInstance.Object));
         }
 
         [Test]
-        public void WhenApplicableButVmNotRunning_ThenConnectAsUserIsDisabled()
+        public void WhenApplicableButVmNotRunning_ThenContextMenuConnectAsUserIsDisabled()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -260,11 +380,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
 
             Assert.AreEqual(
                 CommandState.Disabled,
-                commands.ConnectAsUser.QueryState(stoppedInstance.Object));
+                commands.ContextMenuConnectRdpAsUser.QueryState(stoppedInstance.Object));
         }
 
         [Test]
-        public void WhenNotApplicable_ThenConnectAsUserIsUnavailable()
+        public void WhenNotApplicable_ThenConnectRdpAsUserIsUnavailable()
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
@@ -277,20 +397,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
 
             Assert.AreEqual(
                 CommandState.Unavailable,
-                commands.ConnectAsUser.QueryState(runningLinuxInstance.Object));
+                commands.ContextMenuConnectRdpAsUser.QueryState(runningLinuxInstance.Object));
             Assert.AreEqual(
                 CommandState.Unavailable,
-                commands.ConnectAsUser.QueryState(new Mock<IProjectModelCloudNode>().Object));
+                commands.ContextMenuConnectRdpAsUser.QueryState(new Mock<IProjectModelCloudNode>().Object));
             Assert.AreEqual(
                 CommandState.Unavailable,
-                commands.ConnectAsUser.QueryState(new Mock<IProjectModelProjectNode>().Object));
+                commands.ContextMenuConnectRdpAsUser.QueryState(new Mock<IProjectModelProjectNode>().Object));
             Assert.AreEqual(
                 CommandState.Unavailable,
-                commands.ConnectAsUser.QueryState(new Mock<IProjectModelZoneNode>().Object));
+                commands.ContextMenuConnectRdpAsUser.QueryState(new Mock<IProjectModelZoneNode>().Object));
         }
 
         [Test]
-        public async Task ConnectAsUserDisallowsPersistentCredentials()
+        public async Task ContextMenuConnectAsUserDisallowsPersistentCredentials()
         {
             var rdpConnectionService = new Mock<IRdpConnectionService>();
             rdpConnectionService
@@ -308,7 +428,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             runningInstance.Setup(s => s.IsRunning).Returns(true);
             runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Windows);
 
-            await commands.ConnectAsUser
+            await commands.ContextMenuConnectRdpAsUser
                 .ExecuteAsync(runningInstance.Object)
                 .ConfigureAwait(false);
 
@@ -318,6 +438,99 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             rdpConnectionService.Verify(
                 s => s.ActivateOrConnectInstanceAsync(runningInstance.Object, true),
                 Times.Never);
+        }
+
+        //---------------------------------------------------------------------
+        // ContextConnectSshInNewTerminal.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicableAndVmRunning_ThenContextConnectSshInNewTerminalIsEnabled()
+        {
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                new Mock<IRdpConnectionService>());
+
+            var runningInstance = new Mock<IProjectModelInstanceNode>();
+            runningInstance.Setup(s => s.IsRunning).Returns(true);
+            runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(runningInstance.Object));
+        }
+
+        [Test]
+        public void WhenApplicableButVmNotRunning_ThenContextConnectSshInNewTerminalIsDisabled()
+        {
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                new Mock<IRdpConnectionService>());
+
+            var stoppedInstance = new Mock<IProjectModelInstanceNode>();
+            stoppedInstance.Setup(s => s.IsRunning).Returns(false);
+            stoppedInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(stoppedInstance.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenContextConnectSshInNewTerminalIsUnavailable()
+        {
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                new Mock<IRdpConnectionService>());
+
+            var runningWindowsInstance = new Mock<IProjectModelInstanceNode>();
+            runningWindowsInstance.Setup(s => s.IsRunning).Returns(true);
+            runningWindowsInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Windows);
+
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(runningWindowsInstance.Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(new Mock<IProjectModelProjectNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ContextMenuConnectSshInNewTerminal.QueryState(new Mock<IProjectModelZoneNode>().Object));
+        }
+
+        [Test]
+        public async Task ContextMenuConnectSshInNewTerminalForcesNewConnection()
+        {
+            var sshConnectionService = new Mock<ISshConnectionService>();
+            sshConnectionService
+                .Setup(s => s.ConnectInstanceAsync(It.IsAny<IProjectModelInstanceNode>()))
+                .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
+
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                sshConnectionService,
+                new Mock<IRdpConnectionService>());
+
+            var runningInstance = new Mock<IProjectModelInstanceNode>();
+            runningInstance.Setup(s => s.IsRunning).Returns(true);
+            runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
+
+            await commands.ContextMenuConnectSshInNewTerminal
+                .ExecuteAsync(runningInstance.Object)
+                .ConfigureAwait(false);
+
+            sshConnectionService.Verify(
+                s => s.ActivateOrConnectInstanceAsync(runningInstance.Object),
+                Times.Never);
+            sshConnectionService.Verify(
+                s => s.ConnectInstanceAsync(runningInstance.Object),
+                Times.Once);
         }
     }
 }
