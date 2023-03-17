@@ -84,7 +84,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\BadgeIcon.cs" />
     <Compile Include="Controls\ScreenPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -494,9 +493,7 @@
   <ItemGroup>
     <None Include="Resources\AddProject_16.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\LogoWatermark_180.png" />
   </ItemGroup>

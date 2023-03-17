@@ -98,6 +98,7 @@
     <Compile Include="Controls\TestVerticalTabControl.cs" />
     <Compile Include="Controls\TestHtmlClipboardFormat.cs" />
     <Compile Include="Controls\TestListViewExtensions.cs" />
+    <Compile Include="Drawing\TestBadgeIcon.cs" />
     <Compile Include="Drawing\TestColorExtensions.cs" />
     <Compile Include="Drawing\TestFontExtensions.cs" />
     <Compile Include="Drawing\TestHslColor.cs" />

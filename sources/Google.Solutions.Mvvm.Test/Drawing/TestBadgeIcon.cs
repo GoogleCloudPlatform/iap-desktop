@@ -19,16 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Drawing;
 using NUnit.Framework;
 using System;
 using System.Drawing;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Controls
+namespace Google.Solutions.Mvvm.Test.Drawing
 {
     [TestFixture]
-    public class TestBadgeIcon : ApplicationFixtureBase
+    public class TestBadgeIcon
     {
         [Test]
         public void WhenTextIsNullOrEmpty_ThenForTextInitialThrowsException()
