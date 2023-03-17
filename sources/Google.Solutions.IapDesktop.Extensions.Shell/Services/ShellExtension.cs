@@ -58,14 +58,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         private readonly IWin32Window window;
         private readonly ICommandContainer<ISession> sessionCommands;
 
-        private static CommandState GetToolbarCommandStateWhenRunningInstanceRequired(
-            IProjectModelNode node)
-        {
-            return node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
-                ? CommandState.Enabled
-                : CommandState.Disabled;
-        }
-
         private static CommandState GetToolbarCommandStateWhenRunningWindowsInstanceRequired(
             IProjectModelNode node)
         {
@@ -74,20 +66,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                         vmNode.IsWindowsInstance()
                 ? CommandState.Enabled
                 : CommandState.Disabled;
-        }
-
-        private static CommandState GetContextMenuCommandStateWhenRunningInstanceRequired(IProjectModelNode node)
-        {
-            if (node is IProjectModelInstanceNode vmNode)
-            {
-                return vmNode.IsRunning
-                    ? CommandState.Enabled
-                    : CommandState.Disabled;
-            }
-            else
-            {
-                return CommandState.Unavailable;
-            }
         }
 
         private static CommandState GetContextMenuCommandStateWhenRunningWindowsInstanceRequired(IProjectModelNode node)
@@ -101,42 +79,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             else
             {
                 return CommandState.Unavailable;
-            }
-        }
-
-
-        private static CommandState GetContextMenuCommandStateWhenRunningSshInstanceRequired(IProjectModelNode node)
-        {
-            if (node is IProjectModelInstanceNode vmNode && vmNode.IsSshSupported())
-            {
-                return vmNode.IsRunning
-                    ? CommandState.Enabled
-                    : CommandState.Disabled;
-            }
-            else
-            {
-                return CommandState.Unavailable;
-            }
-        }
-
-        private CommandState GetSessionMenuCommandState<TRequiredSession>(
-            ISession session,
-            Predicate<TRequiredSession> predicate)
-            where TRequiredSession : class, ISession
-        {
-            if (session is TRequiredSession typedSession)
-            {
-                return predicate(typedSession)
-                    ? CommandState.Enabled
-                    : CommandState.Disabled;
-            }
-            else
-            {
-                //
-                // If it doesn't apply, we're still showing it as
-                // disabled.
-                //
-                return CommandState.Disabled;
             }
         }
 
@@ -244,11 +186,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             var mainForm = serviceProvider.GetService<IMainWindow>();
 
             //
+            // Session menu.
+            //
+            // On pop-up of the menu, query the active session and use it as context.
+            //
+            this.sessionCommands = mainForm.AddMenu(
+                "&Session", 1,
+                () => this.serviceProvider
+                    .GetService<IGlobalSessionBroker>()
+                    .ActiveSession);
+
+            //
             // Let this extension handle all URL activations.
             //
-            var connectionCommands = new ConnectionCommands(
+            var sessionCommands = new SessionCommands();
+            var connectCommands = new ConnectCommands(
                 serviceProvider.GetService<UrlCommands>(),
-                serviceProvider.GetService<Service<IRdpConnectionService>>());
+                serviceProvider.GetService<Service<IRdpConnectionService>>(),
+                serviceProvider.GetService<Service<ISshConnectionService>>(),
+                serviceProvider.GetService<Service<IProjectModelService>>(),
+                this.sessionCommands);
             Debug.Assert(serviceProvider
                 .GetService<UrlCommands>()
                 .LaunchRdpUrl.QueryState(new IapRdpUrl(
@@ -265,45 +222,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "&Connect",
-                    GetContextMenuCommandStateWhenRunningInstanceRequired,
-                    node => ConnectAsync(node, true, false))
-                {
-                    Image = Resources.Connect_16,
-                    IsDefault = true,
-                    ActivityText = "Connecting to VM instance"
-                },
+                connectCommands.ContextMenuActivateOrConnectInstance,
                 0);
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Connect &as user...",
-                    GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,   // Windows/RDP only.
-                    node => ConnectAsync(node, false, false))
-                {
-                    Image = Resources.Connect_16,
-                    ActivityText = "Connecting to VM instance"
-                },
+                connectCommands.ContextMenuConnectRdpAsUser,
                 1);
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Connect in &new terminal",
-                    GetContextMenuCommandStateWhenRunningSshInstanceRequired,   // Linux/SSH only.
-                    node => ConnectAsync(node, false, true))
-                {
-                    Image = Resources.Connect_16,
-                    ActivityText = "Connecting to VM instance"
-                },
+                connectCommands.ContextMenuConnectSshInNewTerminal,
                 2);
             projectExplorer.ToolbarCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "Connect",
-                    GetToolbarCommandStateWhenRunningInstanceRequired,
-                    node => ConnectAsync(node, true, false))
-                {
-                    Image = Resources.Connect_16,
-                    ActivityText = "Connecting to VM instance"
-                });
+                connectCommands.ToolbarActivateOrConnectInstance);
 
             //
             // Generate credentials (Windows/RDP only).
@@ -365,87 +293,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // Session menu.
             //
-            // On pop-up of the menu, query the active session and use it as context.
-            //
-            this.sessionCommands = mainForm.AddMenu(
-                "&Session", 1,
-                () => this.serviceProvider
-                    .GetService<IGlobalSessionBroker>()
-                    .ActiveSession);
 
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "&Full screen",
-                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
-                        session,
-                        rdpSession => rdpSession.IsConnected && rdpSession.CanEnterFullScreen),
-                    session => (session as IRemoteDesktopSession)?.TrySetFullscreen(FullScreenMode.SingleScreen))
-                {
-                    Image = Resources.Fullscreen_16,
-                    ShortcutKeys = DocumentWindow.EnterFullScreenHotKey,
-                    ActivityText = "Activating full screen"
-                });
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "&Full screen (multiple displays)",
-                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
-                        session,
-                        rdpSession => rdpSession.IsConnected && rdpSession.CanEnterFullScreen),
-                    session => (session as IRemoteDesktopSession)?.TrySetFullscreen(FullScreenMode.AllScreens))
-                {
-                    Image = Resources.Fullscreen_16,
-                    ShortcutKeys = Keys.F11 | Keys.Shift,
-                    ActivityText = "Activating full screen"
-                });
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "D&uplicate",
-                    session => GetSessionMenuCommandState<ISshTerminalSession>(
-                        session,
-                        sshSession => sshSession.IsConnected),
-                    session => DuplicateSessionAsync((ISshTerminalSession)session))
-                {
-                    Image = Resources.Duplicate,
-                    ActivityText = "Duplicating session"
-                });
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "&Disconnect",
-                    session => GetSessionMenuCommandState<ISession>(
-                        session,
-                        anySession => anySession.IsConnected),
-                    session => session.Close())
-                {
-                    Image = Resources.Disconnect_16,
-                    ShortcutKeys = Keys.Control | Keys.F4,
-                    ActivityText = "Disconnecting"
-                });
+            this.sessionCommands.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
+            this.sessionCommands.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
+            this.sessionCommands.AddCommand(connectCommands.DuplicateSession);
+            this.sessionCommands.AddCommand(sessionCommands.Disconnect);
             this.sessionCommands.AddSeparator();
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "Do&wnload files...",
-                    session => GetSessionMenuCommandState<ISshTerminalSession>(
-                        session,
-                        sshSession => sshSession.IsConnected),
-                    session => (session as ISshTerminalSession)?.DownloadFilesAsync())
-                {
-                    Image = Resources.DownloadFile_16,
-                    ActivityText = "Downloading files"
-                });
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "Show &security screen (send Ctrl+Alt+Esc)",
-                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
-                        session,
-                        rdpSession => rdpSession.IsConnected),
-                    session => (session as IRemoteDesktopSession)?.ShowSecurityScreen()));
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "Open &task manager (send Ctrl+Shift+Esc)",
-                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
-                        session,
-                        rdpSession => rdpSession.IsConnected),
-                    session => (session as IRemoteDesktopSession)?.ShowTaskManager()));
+            this.sessionCommands.AddCommand(sessionCommands.DownloadFiles);
+            this.sessionCommands.AddCommand(sessionCommands.ShowSecurityScreen);
+            this.sessionCommands.AddCommand(sessionCommands.ShowTaskManager);
         }
     }
 }
