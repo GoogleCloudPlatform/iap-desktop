@@ -479,6 +479,7 @@ namespace Google.Solutions.IapDesktop
                 mainLayer.AddSingleton<IProjectExplorer, ProjectExplorer>();
                 mainLayer.AddSingleton<ProjectExplorerView>();
                 mainLayer.AddTransient<ProjectExplorerViewModel>();
+                mainLayer.AddSingleton<UrlCommands>();
 
 #if DEBUG
                 mainLayer.AddSingleton<DebugProjectExplorerTrackingView>();
