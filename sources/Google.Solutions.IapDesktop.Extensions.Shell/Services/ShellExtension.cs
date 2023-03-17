@@ -244,12 +244,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             var mainForm = serviceProvider.GetService<IMainWindow>();
 
             //
+            // Session menu.
+            //
+            // On pop-up of the menu, query the active session and use it as context.
+            //
+            this.sessionCommands = mainForm.AddMenu(
+                "&Session", 1,
+                () => this.serviceProvider
+                    .GetService<IGlobalSessionBroker>()
+                    .ActiveSession);
+
+            //
             // Let this extension handle all URL activations.
             //
             var sessionCommands = new SessionCommands();
             var connectCommands = new ConnectCommands(
                 serviceProvider.GetService<UrlCommands>(),
-                serviceProvider.GetService<Service<IRdpConnectionService>>());
+                serviceProvider.GetService<Service<IRdpConnectionService>>(),
+                serviceProvider.GetService<Service<ISshConnectionService>>(),
+                this.sessionCommands);
             Debug.Assert(serviceProvider
                 .GetService<UrlCommands>()
                 .LaunchRdpUrl.QueryState(new IapRdpUrl(
@@ -266,15 +279,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new ContextCommand<IProjectModelNode>(
-                    "&Connect",
-                    GetContextMenuCommandStateWhenRunningInstanceRequired,
-                    node => ConnectAsync(node, true, false))
-                {
-                    Image = Resources.Connect_16,
-                    IsDefault = true,
-                    ActivityText = "Connecting to VM instance"
-                },
+                connectCommands.ActivateOrConnectInstance,
                 0);
             projectExplorer.ContextMenuCommands.AddCommand(
                 new ContextCommand<IProjectModelNode>(
@@ -366,13 +371,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // Session menu.
             //
-            // On pop-up of the menu, query the active session and use it as context.
-            //
-            this.sessionCommands = mainForm.AddMenu(
-                "&Session", 1,
-                () => this.serviceProvider
-                    .GetService<IGlobalSessionBroker>()
-                    .ActiveSession);
 
             this.sessionCommands.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
             this.sessionCommands.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);

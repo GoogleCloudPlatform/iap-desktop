@@ -21,8 +21,15 @@
 
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.Mvvm.Binding.Commands;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
@@ -32,13 +39,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
     {
         public ConnectCommands(
             UrlCommands urlCommands,
-            Service<IRdpConnectionService> connectionService)
+            Service<IRdpConnectionService> rdpConnectionService,
+            Service<ISshConnectionService> sshConnectionService,
+            ICommandContainer<ISession> sessionContextMenu)
         {
             //
             // Install command for launching URLs.
             //
-            urlCommands.LaunchRdpUrl = new LaunchRdpUrlCommand(connectionService);
+            urlCommands.LaunchRdpUrl = new LaunchRdpUrlCommand(rdpConnectionService);
+
+            this.ActivateOrConnectInstance = new ActivateOrConnectInstanceCommand(
+                "&Connect",
+                sessionContextMenu,
+                rdpConnectionService,
+                sshConnectionService)
+            {
+                Image = Resources.Connect_16,
+                IsDefault = true,
+                ActivityText = "Connecting to VM instance"
+            };
+
         }
+
+        //---------------------------------------------------------------------
+        // Context commands.
+        //---------------------------------------------------------------------
+
+        public IContextCommand<IProjectModelNode> ActivateOrConnectInstance { get; }
 
         //---------------------------------------------------------------------
         // RDP URL commands.
@@ -70,6 +97,92 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 return this.connectionService
                     .GetInstance()
                     .ActivateOrConnectInstanceAsync(url);
+            }
+        }
+
+        private abstract class ConnectInstanceCommandBase : ToolContextCommand<IProjectModelNode>
+        {
+            protected ConnectInstanceCommandBase(string text) : base(text)
+            {
+            }
+        }
+
+        private class ActivateOrConnectInstanceCommand : ConnectInstanceCommandBase
+        {
+            private readonly ICommandContainer<ISession> sessionContextMenu;
+            private readonly Service<IRdpConnectionService> rdpConnectionService;
+            private readonly Service<ISshConnectionService> sshConnectionService;
+
+            public bool AllowPersistentCredentials { get; set; } = true;
+            public bool ForceNewConnection { get; set; } = false;
+
+            public ActivateOrConnectInstanceCommand(
+                string text,
+                ICommandContainer<ISession> sessionContextMenu,
+                Service<IRdpConnectionService> rdpConnectionService,
+                Service<ISshConnectionService> sshConnectionService)
+                : base(text)
+            {
+                this.sessionContextMenu = sessionContextMenu;
+                this.rdpConnectionService = rdpConnectionService;
+                this.sshConnectionService = sshConnectionService;
+            }
+
+            protected override bool IsAvailable(IProjectModelNode node)
+            {
+                return node != null &&
+                    node is IProjectModelInstanceNode instanceNode &&
+                    (instanceNode.IsSshSupported() || instanceNode.IsRdpSupported());
+            }
+
+            protected override bool IsEnabled(IProjectModelNode node)
+            {
+                return ((IProjectModelInstanceNode)node).IsRunning;
+            }
+
+            public override async Task ExecuteAsync(IProjectModelNode node)
+            {
+                ISession session = null;
+                if (node is IProjectModelInstanceNode rdpNode && rdpNode.IsRdpSupported())
+                {
+                    session = await this.rdpConnectionService
+                        .GetInstance()
+                        .ActivateOrConnectInstanceAsync(
+                            rdpNode,
+                            this.AllowPersistentCredentials)
+                        .ConfigureAwait(true);
+
+                    Debug.Assert(session != null);
+                }
+                else if (node is IProjectModelInstanceNode sshNode && sshNode.IsSshSupported())
+                {
+                    if (this.ForceNewConnection)
+                    {
+                        session = await this.sshConnectionService
+                            .GetInstance()
+                            .ConnectInstanceAsync(sshNode)
+                            .ConfigureAwait(true);
+                    }
+                    else
+                    {
+                        session = await this.sshConnectionService
+                            .GetInstance()
+                            .ActivateOrConnectInstanceAsync(sshNode)
+                            .ConfigureAwait(true);
+                    }
+
+                    Debug.Assert(session != null);
+                }
+
+                if (session is SessionViewBase sessionPane &&
+                    sessionPane.ContextCommands == null)
+                {
+                    //
+                    // Use commands from Session menu as
+                    // context menu.
+                    //
+                    sessionPane.ContextCommands = this.sessionContextMenu;
+                }
             }
         }
     }
