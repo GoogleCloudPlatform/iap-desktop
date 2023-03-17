@@ -54,11 +54,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 rdpConnectionService,
                 sshConnectionService)
             {
+                AvailableForSsh = true,
+                AvailableForRdp = true,
                 Image = Resources.Connect_16,
                 IsDefault = true,
                 ActivityText = "Connecting to VM instance"
             };
-
+            this.ConnectAsUser = new ActivateOrConnectInstanceCommand(
+                "Connect &as user...",
+                sessionContextMenu,
+                rdpConnectionService,
+                sshConnectionService)
+            {
+                AvailableForSsh = false,
+                AvailableForRdp = true,                 // Windows/RDP only.
+                AllowPersistentCredentials = false,     // Force auth prompt.
+                Image = Resources.Connect_16,
+                ActivityText = "Connecting to VM instance"
+            };
         }
 
         //---------------------------------------------------------------------
@@ -66,6 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
         //---------------------------------------------------------------------
 
         public IContextCommand<IProjectModelNode> ActivateOrConnectInstance { get; }
+        public IContextCommand<IProjectModelNode> ConnectAsUser { get; }
 
         //---------------------------------------------------------------------
         // RDP URL commands.
@@ -113,6 +127,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
             private readonly Service<IRdpConnectionService> rdpConnectionService;
             private readonly Service<ISshConnectionService> sshConnectionService;
 
+            public bool AvailableForSsh { get; set; } = false;
+            public bool AvailableForRdp { get; set; } = false;
             public bool AllowPersistentCredentials { get; set; } = true;
             public bool ForceNewConnection { get; set; } = false;
 
@@ -132,7 +148,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
             {
                 return node != null &&
                     node is IProjectModelInstanceNode instanceNode &&
-                    (instanceNode.IsSshSupported() || instanceNode.IsRdpSupported());
+                    ((this.AvailableForSsh && instanceNode.IsSshSupported()) || 
+                     (this.AvailableForRdp && instanceNode.IsRdpSupported()));
             }
 
             protected override bool IsEnabled(IProjectModelNode node)
@@ -174,7 +191,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                     Debug.Assert(session != null);
                 }
 
-                if (session is SessionViewBase sessionPane &&
+                if (session != null &&
+                    session is SessionViewBase sessionPane &&
                     sessionPane.ContextCommands == null)
                 {
                     //

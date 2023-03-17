@@ -224,5 +224,100 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
                 s => s.ConnectInstanceAsync(runningInstance.Object),
                 Times.Never);
         }
+
+        //---------------------------------------------------------------------
+        // ConnectAsUser.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicableAndVmRunning_ThenConnectAsUserIsEnabled()
+        {
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                new Mock<IRdpConnectionService>());
+
+            var runningInstance = new Mock<IProjectModelInstanceNode>();
+            runningInstance.Setup(s => s.IsRunning).Returns(true);
+            runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Windows);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                commands.ConnectAsUser.QueryState(runningInstance.Object));
+        }
+
+        [Test]
+        public void WhenApplicableButVmNotRunning_ThenConnectAsUserIsDisabled()
+        {
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                new Mock<IRdpConnectionService>());
+
+            var stoppedInstance = new Mock<IProjectModelInstanceNode>();
+            stoppedInstance.Setup(s => s.IsRunning).Returns(false);
+            stoppedInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Windows);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                commands.ConnectAsUser.QueryState(stoppedInstance.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenConnectAsUserIsUnavailable()
+        {
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                new Mock<IRdpConnectionService>());
+
+            var runningLinuxInstance = new Mock<IProjectModelInstanceNode>();
+            runningLinuxInstance.Setup(s => s.IsRunning).Returns(true);
+            runningLinuxInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
+
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ConnectAsUser.QueryState(runningLinuxInstance.Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ConnectAsUser.QueryState(new Mock<IProjectModelCloudNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ConnectAsUser.QueryState(new Mock<IProjectModelProjectNode>().Object));
+            Assert.AreEqual(
+                CommandState.Unavailable,
+                commands.ConnectAsUser.QueryState(new Mock<IProjectModelZoneNode>().Object));
+        }
+
+        [Test]
+        public async Task ConnectAsUserDisallowsPersistentCredentials()
+        {
+            var rdpConnectionService = new Mock<IRdpConnectionService>();
+            rdpConnectionService
+                .Setup(s => s.ActivateOrConnectInstanceAsync(
+                    It.IsAny<IProjectModelInstanceNode>(),
+                    false))
+                .ReturnsAsync(new Mock<IRemoteDesktopSession>().Object);
+
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                new Mock<ISshConnectionService>(),
+                rdpConnectionService);
+
+            var runningInstance = new Mock<IProjectModelInstanceNode>();
+            runningInstance.Setup(s => s.IsRunning).Returns(true);
+            runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Windows);
+
+            await commands.ConnectAsUser
+                .ExecuteAsync(runningInstance.Object)
+                .ConfigureAwait(false);
+
+            rdpConnectionService.Verify(
+                s => s.ActivateOrConnectInstanceAsync(runningInstance.Object, false),
+                Times.Once);
+            rdpConnectionService.Verify(
+                s => s.ActivateOrConnectInstanceAsync(runningInstance.Object, true),
+                Times.Never);
+        }
     }
 }
