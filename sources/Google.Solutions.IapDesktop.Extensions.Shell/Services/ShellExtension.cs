@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // Let this extension handle all URL activations.
             //
-            var connectionCommands = new ConnectionCommands(
+            var sessionCommands = new SessionCommands(
                 serviceProvider.GetService<UrlCommands>(),
                 serviceProvider.GetService<Service<IRdpConnectionService>>());
             Debug.Assert(serviceProvider
@@ -373,30 +373,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                     .GetService<IGlobalSessionBroker>()
                     .ActiveSession);
 
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "&Full screen",
-                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
-                        session,
-                        rdpSession => rdpSession.IsConnected && rdpSession.CanEnterFullScreen),
-                    session => (session as IRemoteDesktopSession)?.TrySetFullscreen(FullScreenMode.SingleScreen))
-                {
-                    Image = Resources.Fullscreen_16,
-                    ShortcutKeys = DocumentWindow.EnterFullScreenHotKey,
-                    ActivityText = "Activating full screen"
-                });
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "&Full screen (multiple displays)",
-                    session => GetSessionMenuCommandState<IRemoteDesktopSession>(
-                        session,
-                        rdpSession => rdpSession.IsConnected && rdpSession.CanEnterFullScreen),
-                    session => (session as IRemoteDesktopSession)?.TrySetFullscreen(FullScreenMode.AllScreens))
-                {
-                    Image = Resources.Fullscreen_16,
-                    ShortcutKeys = Keys.F11 | Keys.Shift,
-                    ActivityText = "Activating full screen"
-                });
+            this.sessionCommands.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
+            this.sessionCommands.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
+
             this.sessionCommands.AddCommand(
                 new ContextCommand<ISession>(
                     "D&uplicate",

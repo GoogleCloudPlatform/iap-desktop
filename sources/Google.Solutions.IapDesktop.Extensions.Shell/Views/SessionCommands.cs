@@ -21,16 +21,21 @@
 
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
 {
     [Service]
-    public class ConnectionCommands
+    public class SessionCommands
     {
-        public ConnectionCommands(
+        public SessionCommands(
             UrlCommands urlCommands,
             Service<IRdpConnectionService> connectionService)
         {
@@ -38,7 +43,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
             // Install command for launching URLs.
             //
             urlCommands.LaunchRdpUrl = new LaunchRdpUrlCommand(connectionService);
+
+            this.EnterFullScreenOnSingleScreen = new FullScreenCommand(
+                "&Full screen",
+                FullScreenMode.SingleScreen)
+            {
+                Image = Resources.Fullscreen_16,
+                ShortcutKeys = DocumentWindow.EnterFullScreenHotKey,
+                ActivityText = "Activating full screen"
+            };
+            this.EnterFullScreenOnAllScreens = new FullScreenCommand(
+                "&Full screen (multiple displays)",
+                FullScreenMode.AllScreens)
+            {
+                Image = Resources.Fullscreen_16,
+                ShortcutKeys = Keys.F11 | Keys.Shift,
+                ActivityText = "Activating full screen"
+            };
         }
+
+        //---------------------------------------------------------------------
+        // Context commands.
+        //---------------------------------------------------------------------
+
+        public IContextCommand<ISession> EnterFullScreenOnSingleScreen { get; }
+        public IContextCommand<ISession> EnterFullScreenOnAllScreens { get; }
 
         //---------------------------------------------------------------------
         // Commands classes
@@ -70,6 +99,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 return this.connectionService
                     .GetInstance()
                     .ActivateOrConnectInstanceAsync(url);
+            }
+        }
+
+        private class FullScreenCommand : ToolContextCommand<ISession>
+        {
+            private readonly FullScreenMode mode;
+
+            public FullScreenCommand(
+                string text,
+                FullScreenMode mode) : base(text)
+            {
+                this.mode = mode;
+            }
+
+            protected override bool IsAvailable(ISession session)
+            {
+                return true;
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session is IRemoteDesktopSession rdpSession &&
+                    rdpSession.IsConnected && 
+                    rdpSession.CanEnterFullScreen;
+            }
+
+            public override void Execute(ISession session)
+            {
+                var rdpSession = (IRemoteDesktopSession)session;
+                rdpSession.TrySetFullscreen(this.mode);
             }
         }
     }
