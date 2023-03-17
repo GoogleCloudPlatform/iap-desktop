@@ -51,51 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         }
 
         //---------------------------------------------------------------------
-        // LaunchRdpUrl.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void LaunchRdpUrlIsEnabled()
-        {
-            var urlCommands = new UrlCommands();
-            var sessionCommands = new SessionCommands(
-                urlCommands,
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
-
-            var url = new IapRdpUrl(
-                new InstanceLocator("project", "zone", "name"),
-                new NameValueCollection());
-
-            Assert.AreEqual(
-                CommandState.Enabled,
-                urlCommands.LaunchRdpUrl.QueryState(url));
-        }
-
-        [Test]
-        public async Task LaunchRdpUrlCommandActivatesInstance()
-        {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var connectionService = serviceProvider.AddMock<IRdpConnectionService>();
-
-            var urlCommands = new UrlCommands();
-            var sessionCommands = new SessionCommands(
-                urlCommands,
-                new Service<IRdpConnectionService>(serviceProvider.Object));
-
-            var url = new IapRdpUrl(
-                new InstanceLocator("project", "zone", "name"),
-                new NameValueCollection());
-
-            await urlCommands.LaunchRdpUrl
-                .ExecuteAsync(url)
-                .ConfigureAwait(false);
-
-            connectionService.Verify(
-                s => s.ActivateOrConnectInstanceAsync(url),
-                Times.Once);
-        }
-
-        //---------------------------------------------------------------------
         // EnterFullScreen.
         //---------------------------------------------------------------------
 
@@ -105,9 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
                 FullScreenMode.SingleScreen,
                 FullScreenMode.AllScreens)] FullScreenMode mode)
         {
-            var sessionCommands = new SessionCommands(
-                new UrlCommands(),
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+            var sessionCommands = new SessionCommands();
 
             var connectedRdpSession = new Mock<IRemoteDesktopSession>();
             connectedRdpSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -124,9 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
                 FullScreenMode.SingleScreen,
                 FullScreenMode.AllScreens)] FullScreenMode mode)
         {
-            var sessionCommands = new SessionCommands(
-                new UrlCommands(),
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+            var sessionCommands = new SessionCommands();
 
             var connectedFullScreenRdpSession = new Mock<IRemoteDesktopSession>();
             connectedFullScreenRdpSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -155,9 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         [Test]
         public void WhenApplicable_ThenDisconnectIsEnabled()
         {
-            var sessionCommands = new SessionCommands(
-                new UrlCommands(),
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+            var sessionCommands = new SessionCommands();
 
             var connectedSession = new Mock<ISession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -170,9 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         [Test]
         public void WhenNotApplicable_ThenDisconnectIsDisabled()
         {
-            var sessionCommands = new SessionCommands(
-                new UrlCommands(),
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+            var sessionCommands = new SessionCommands();
 
             var disconnectedSession = new Mock<ISession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
@@ -189,9 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         [Test]
         public void WhenApplicable_ThenShowSecurityScreenIsEnabled()
         {
-            var sessionCommands = new SessionCommands(
-                new UrlCommands(),
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+            var sessionCommands = new SessionCommands();
 
             var connectedSession = new Mock<IRemoteDesktopSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -204,9 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         [Test]
         public void WhenNotApplicable_ThenShowSecurityScreenIsDisabled()
         {
-            var sessionCommands = new SessionCommands(
-                new UrlCommands(),
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+            var sessionCommands = new SessionCommands();
 
             var disconnectedSession = new Mock<IRemoteDesktopSession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
@@ -229,9 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         [Test]
         public void WhenApplicable_ThenShowTaskManagerIsEnabled()
         {
-            var sessionCommands = new SessionCommands(
-                new UrlCommands(),
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+            var sessionCommands = new SessionCommands();
 
             var connectedSession = new Mock<IRemoteDesktopSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -244,9 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         [Test]
         public void WhenNotApplicable_ThenShowTaskManagerIsDisabled()
         {
-            var sessionCommands = new SessionCommands(
-                new UrlCommands(),
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+            var sessionCommands = new SessionCommands();
 
             var disconnectedSession = new Mock<IRemoteDesktopSession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
@@ -269,9 +208,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         [Test]
         public void WhenApplicable_ThenDownloadFilesIsEnabled()
         {
-            var sessionCommands = new SessionCommands(
-                new UrlCommands(),
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+            var sessionCommands = new SessionCommands();
 
             var connectedSession = new Mock<ISshTerminalSession>();
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
@@ -284,9 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         [Test]
         public void WhenNotApplicable_ThenDownloadFilesIsDisabled()
         {
-            var sessionCommands = new SessionCommands(
-                new UrlCommands(),
-                new Service<IRdpConnectionService>(new Mock<IServiceProvider>().Object));
+            var sessionCommands = new SessionCommands();
 
             var disconnectedSession = new Mock<ISshTerminalSession>();
             disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);

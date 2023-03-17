@@ -19,12 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -36,15 +34,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
     [Service]
     public class SessionCommands
     {
-        public SessionCommands(
-            UrlCommands urlCommands,
-            Service<IRdpConnectionService> connectionService)
+        public SessionCommands()
         {
-            //
-            // Install command for launching URLs.
-            //
-            urlCommands.LaunchRdpUrl = new LaunchRdpUrlCommand(connectionService);
-
             this.EnterFullScreenOnSingleScreen = new FullScreenCommand(
                 "&Full screen",
                 FullScreenMode.SingleScreen)
@@ -88,39 +79,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
         public IContextCommand<ISession> ShowSecurityScreen { get; }
         public IContextCommand<ISession> ShowTaskManager { get; }
         public IContextCommand<ISession> DownloadFiles { get; }
-
-        //---------------------------------------------------------------------
-        // RDP URL commands.
-        //---------------------------------------------------------------------
-
-        private class LaunchRdpUrlCommand : ToolContextCommand<IapRdpUrl>
-        {
-            private readonly Service<IRdpConnectionService> connectionService;
-
-            public LaunchRdpUrlCommand(
-                Service<IRdpConnectionService> connectionService)
-                : base("Launch &RDP URL")
-            {
-                this.connectionService = connectionService;
-            }
-
-            protected override bool IsAvailable(IapRdpUrl url)
-            {
-                return url != null;
-            }
-
-            protected override bool IsEnabled(IapRdpUrl url)
-            {
-                return url != null;
-            }
-
-            public override Task ExecuteAsync(IapRdpUrl url)
-            {
-                return this.connectionService
-                    .GetInstance()
-                    .ActivateOrConnectInstanceAsync(url);
-            }
-        }
 
         //---------------------------------------------------------------------
         // Generic session commands.

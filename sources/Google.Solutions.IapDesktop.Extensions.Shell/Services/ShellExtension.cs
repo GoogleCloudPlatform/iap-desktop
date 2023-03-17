@@ -246,7 +246,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // Let this extension handle all URL activations.
             //
-            var sessionCommands = new SessionCommands(
+            var sessionCommands = new SessionCommands();
+            var connectCommands = new ConnectCommands(
                 serviceProvider.GetService<UrlCommands>(),
                 serviceProvider.GetService<Service<IRdpConnectionService>>());
             Debug.Assert(serviceProvider
