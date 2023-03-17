@@ -28,8 +28,10 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
@@ -41,6 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
             UrlCommands urlCommands,
             Service<IRdpConnectionService> rdpConnectionService,
             Service<ISshConnectionService> sshConnectionService,
+            Service<IProjectModelService> modelService,
             ICommandContainer<ISession> sessionContextMenu)
         {
             //
@@ -54,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 rdpConnectionService,
                 sshConnectionService)
             {
-                AlwaysAvailable = true,                 // Never hide to avoid flicker.
+                AlwaysAvailable = true,                  // Never hide to avoid flicker.
                 AvailableForSsh = true,
                 AvailableForRdp = true,
                 Image = Resources.Connect_16,
@@ -79,8 +82,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 sshConnectionService)
             {
                 AvailableForSsh = false,
-                AvailableForRdp = true,                 // Windows/RDP only.
-                AllowPersistentRdpCredentials = false,  // Force auth prompt.
+                AvailableForRdp = true,                  // Windows/RDP only.
+                AllowPersistentRdpCredentials = false,   // Force auth prompt.
                 Image = Resources.Connect_16,
                 ActivityText = "Connecting to VM instance"
             };
@@ -90,11 +93,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                 rdpConnectionService,
                 sshConnectionService)
             {
-                AvailableForSsh = true,                 // Linux/SSH only.
+                AvailableForSsh = true,                  // Linux/SSH only.
                 AvailableForRdp = false,
-                ForceNewSshConnection = true,           // Force new.
+                ForceNewSshConnection = true,            // Force new.
                 Image = Resources.Connect_16,
                 ActivityText = "Connecting to VM instance"
+            };
+
+            //
+            // Session commands.
+            //
+            this.DuplicateSession = new DuplicateSessionCommand(
+                "D&uplicate",
+                modelService,
+                this.ContextMenuConnectSshInNewTerminal) // Forward.
+            {
+                Image = Resources.Duplicate,
+                ActivityText = "Duplicating session"
             };
         }
 
@@ -106,6 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
         public IContextCommand<IProjectModelNode> ContextMenuActivateOrConnectInstance { get; }
         public IContextCommand<IProjectModelNode> ContextMenuConnectRdpAsUser { get; }
         public IContextCommand<IProjectModelNode> ContextMenuConnectSshInNewTerminal { get; }
+        public IContextCommand<ISession> DuplicateSession { get; }
 
         //---------------------------------------------------------------------
         // RDP URL commands.
@@ -238,6 +254,58 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
                     // context menu.
                     //
                     sessionPane.ContextCommands = this.sessionContextMenu;
+                }
+            }
+        }
+
+        private class DuplicateSessionCommand : ToolContextCommand<ISession>
+        {
+            private readonly Service<IProjectModelService> modelService;
+            private IContextCommand<IProjectModelNode> connectInNewTerminalCommand;
+
+            public DuplicateSessionCommand(
+                string text,
+                Service<IProjectModelService> modelService,
+                IContextCommand<IProjectModelNode> connectInNewTerminalCommand)
+                : base(text)
+            {
+                this.modelService = modelService;
+                this.connectInNewTerminalCommand = connectInNewTerminalCommand;
+            }
+
+            protected override bool IsAvailable(ISession context)
+            {
+                return true;
+            }
+
+            protected override bool IsEnabled(ISession session)
+            {
+                return session != null &&
+                    session is ISshTerminalSession sshSession &&
+                    sshSession.IsConnected;
+            }
+
+            public override async Task ExecuteAsync(ISession session)
+            {
+                var sshSession = (ISshTerminalSession)session;
+
+                //
+                // Try to lookup node for this session. In some cases,
+                // we might not find it (for example, if the project has
+                // been unloaded in the meantime).
+                //
+                var node = await this.modelService
+                    .GetInstance()
+                    .GetNodeAsync(sshSession.Instance, CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                if (node is IProjectModelInstanceNode vmNode &&
+                    vmNode != null &&
+                    this.connectInNewTerminalCommand.QueryState(vmNode) == CommandState.Enabled)
+                {
+                    await this.connectInNewTerminalCommand
+                        .ExecuteAsync(vmNode)
+                        .ConfigureAwait(true);
                 }
             }
         }

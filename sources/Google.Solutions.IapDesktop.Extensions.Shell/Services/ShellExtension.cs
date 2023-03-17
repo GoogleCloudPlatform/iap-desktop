@@ -82,27 +82,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             }
         }
 
-        private CommandState GetSessionMenuCommandState<TRequiredSession>(
-            ISession session,
-            Predicate<TRequiredSession> predicate)
-            where TRequiredSession : class, ISession
-        {
-            if (session is TRequiredSession typedSession)
-            {
-                return predicate(typedSession)
-                    ? CommandState.Enabled
-                    : CommandState.Disabled;
-            }
-            else
-            {
-                //
-                // If it doesn't apply, we're still showing it as
-                // disabled.
-                //
-                return CommandState.Disabled;
-            }
-        }
-
         //---------------------------------------------------------------------
         // Commands.
         //---------------------------------------------------------------------
@@ -225,6 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 serviceProvider.GetService<UrlCommands>(),
                 serviceProvider.GetService<Service<IRdpConnectionService>>(),
                 serviceProvider.GetService<Service<ISshConnectionService>>(),
+                serviceProvider.GetService<Service<IProjectModelService>>(),
                 this.sessionCommands);
             Debug.Assert(serviceProvider
                 .GetService<UrlCommands>()
@@ -316,18 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 
             this.sessionCommands.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
             this.sessionCommands.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
-
-            this.sessionCommands.AddCommand(
-                new ContextCommand<ISession>(
-                    "D&uplicate",
-                    session => GetSessionMenuCommandState<ISshTerminalSession>(
-                        session,
-                        sshSession => sshSession.IsConnected),
-                    session => DuplicateSessionAsync((ISshTerminalSession)session))
-                {
-                    Image = Resources.Duplicate,
-                    ActivityText = "Duplicating session"
-                });
+            this.sessionCommands.AddCommand(connectCommands.DuplicateSession);
             this.sessionCommands.AddCommand(sessionCommands.Disconnect);
             this.sessionCommands.AddSeparator();
             this.sessionCommands.AddCommand(sessionCommands.DownloadFiles);

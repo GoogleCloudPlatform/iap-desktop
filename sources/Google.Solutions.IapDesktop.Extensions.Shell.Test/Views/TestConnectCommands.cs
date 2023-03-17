@@ -36,6 +36,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Specialized;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
@@ -46,16 +47,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
         private static ConnectCommands CreateConnectCommands(
             UrlCommands urlCommands,
             Mock<ISshConnectionService> sshConnectionService,
-            Mock<IRdpConnectionService> rdpConnectionService)
+            Mock<IRdpConnectionService> rdpConnectionService,
+            Mock<IProjectModelService> modelService)
         {
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Add(sshConnectionService.Object);
             serviceProvider.Add(rdpConnectionService.Object);
+            serviceProvider.Add(modelService.Object);
 
             return new ConnectCommands(
                 urlCommands,
                 new Service<IRdpConnectionService>(serviceProvider.Object),
                 new Service<ISshConnectionService>(serviceProvider.Object),
+                new Service<IProjectModelService>(serviceProvider.Object),
                 new Mock<ICommandContainer<ISession>>().Object);
         }
 
@@ -70,7 +74,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             CreateConnectCommands(
                 urlCommands,
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var url = new IapRdpUrl(
                 new InstanceLocator("project", "zone", "name"),
@@ -90,7 +95,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             CreateConnectCommands(
                 urlCommands,
                 new Mock<ISshConnectionService>(),
-                connectionService);
+                connectionService,
+                new Mock<IProjectModelService>());
 
             var url = new IapRdpUrl(
                 new InstanceLocator("project", "zone", "name"),
@@ -118,7 +124,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -138,7 +145,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
@@ -155,7 +163,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             Assert.AreEqual(
                 CommandState.Disabled,
@@ -181,7 +190,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                rdpConnectionService);
+                rdpConnectionService,
+                new Mock<IProjectModelService>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -207,7 +217,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 sshConnectionService,
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -238,7 +249,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -258,7 +270,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
@@ -275,7 +288,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             Assert.AreEqual(
                 CommandState.Unavailable,
@@ -301,7 +315,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                rdpConnectionService);
+                rdpConnectionService,
+                new Mock<IProjectModelService>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -327,7 +342,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 sshConnectionService,
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -355,7 +371,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -372,7 +389,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
@@ -389,7 +407,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var runningLinuxInstance = new Mock<IProjectModelInstanceNode>();
             runningLinuxInstance.Setup(s => s.IsRunning).Returns(true);
@@ -422,7 +441,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                rdpConnectionService);
+                rdpConnectionService,
+                new Mock<IProjectModelService>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -450,7 +470,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -467,7 +488,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
@@ -484,7 +506,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var runningWindowsInstance = new Mock<IProjectModelInstanceNode>();
             runningWindowsInstance.Setup(s => s.IsRunning).Returns(true);
@@ -515,7 +538,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
             var commands = CreateConnectCommands(
                 new UrlCommands(),
                 sshConnectionService,
-                new Mock<IRdpConnectionService>());
+                new Mock<IRdpConnectionService>(),
+                new Mock<IProjectModelService>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -523,6 +547,81 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
 
             await commands.ContextMenuConnectSshInNewTerminal
                 .ExecuteAsync(runningInstance.Object)
+                .ConfigureAwait(false);
+
+            sshConnectionService.Verify(
+                s => s.ActivateOrConnectInstanceAsync(runningInstance.Object),
+                Times.Never);
+            sshConnectionService.Verify(
+                s => s.ConnectInstanceAsync(runningInstance.Object),
+                Times.Once);
+        }
+
+        //---------------------------------------------------------------------
+        // DuplicateSession.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenApplicable_ThenDuplicateSessionIsEnabled()
+        {
+            var sessionCommands = new SessionCommands();
+
+            var connectedSession = new Mock<ISession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+
+            Assert.AreEqual(
+                CommandState.Enabled,
+                sessionCommands.Disconnect.QueryState(connectedSession.Object));
+        }
+
+        [Test]
+        public void WhenNotApplicable_ThenDuplicateSessionIsDisabled()
+        {
+            var sessionCommands = new SessionCommands();
+
+            var disconnectedSession = new Mock<ISession>();
+            disconnectedSession.SetupGet(s => s.IsConnected).Returns(false);
+
+            Assert.AreEqual(
+                CommandState.Disabled,
+                sessionCommands.Disconnect.QueryState(disconnectedSession.Object));
+        }
+
+        [Test]
+        public async Task DuplicateSessionForcesNewConnection()
+        {
+            var sessionCommands = new SessionCommands();
+
+            var locator = new InstanceLocator("project-1", "zone-1", "instance-1");
+
+            var runningInstance = new Mock<IProjectModelInstanceNode>();
+            runningInstance.Setup(s => s.IsRunning).Returns(true);
+            runningInstance.SetupGet(s => s.OperatingSystem).Returns(OperatingSystems.Linux);
+
+            var modelService = new Mock<IProjectModelService>();
+            modelService
+                .Setup(s => s.GetNodeAsync(
+                    locator,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(runningInstance.Object);
+
+            var connectedSession = new Mock<ISshTerminalSession>();
+            connectedSession.SetupGet(s => s.IsConnected).Returns(true);
+            connectedSession.SetupGet(s => s.Instance).Returns(locator);
+
+            var sshConnectionService = new Mock<ISshConnectionService>();
+            sshConnectionService
+                .Setup(s => s.ConnectInstanceAsync(runningInstance.Object))
+                .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
+
+            var commands = CreateConnectCommands(
+                new UrlCommands(),
+                sshConnectionService,
+                new Mock<IRdpConnectionService>(),
+                modelService);
+
+            await commands.DuplicateSession
+                .ExecuteAsync(connectedSession.Object)
                 .ConfigureAwait(false);
 
             sshConnectionService.Verify(
