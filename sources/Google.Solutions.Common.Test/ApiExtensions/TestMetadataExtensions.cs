@@ -175,6 +175,146 @@ namespace Google.Solutions.Common.Test.ApiExtensions
 
 
         //---------------------------------------------------------------------
+        // GetValue.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenMetadataIsNull_ThenGetValueReturnsNull()
+        {
+            var metadata = new Metadata();
+            Assert.IsNull(metadata.GetValue("key"));
+        }
+
+        [Test]
+        public void WhenItemNotPresent_ThenGetValueReturnsNull()
+        {
+            var metadata = new Metadata()
+            {
+                Items = new[]
+                {
+                    new Metadata.ItemsData()
+                    {
+                        Key = "key"
+                    }
+                }
+            };
+
+            Assert.IsNull(metadata.GetValue("key"));
+        }
+
+        [Test]
+        public void WhenItemPresent_ThenGetValueReturnsValue()
+        {
+
+            var metadata = new Metadata()
+            {
+                Items = new[]
+                {
+                    new Metadata.ItemsData()
+                    {
+                        Key = "key",
+                        Value = "value"
+                    }
+                }
+            };
+
+            Assert.AreEqual("value", metadata.GetValue("key"));
+        }
+
+        //---------------------------------------------------------------------
+        // GetValue (Metadata).
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenMetadataIsNull_ThenGetFlagReturnsNull()
+        {
+            Assert.IsNull(MetadataExtensions.GetFlag((Metadata)null, "flag"));
+        }
+
+        [Test]
+        public void WhenMetadataItemsIsNull_ThenGetFlagReturnsNull()
+        {
+            Assert.IsNull(new Metadata().GetFlag("flag"));
+        }
+
+        [Test]
+        public void WhenValueNull_ThenGetFlagReturnsNull()
+        {
+            var metadata = new Metadata()
+            {
+                Items = new[]
+                {
+                    new Metadata.ItemsData()
+                    {
+                        Key = "flag",
+                        Value = null
+                    }
+                }
+            };
+
+            Assert.IsNull(metadata.GetFlag("flag"));
+        }
+
+        [Test]
+        public void WhenValueIsTruthy_ThenGetFlagReturnsTrue(
+            [Values("Y", "y\n", "True ", " 1 ")] string truthyValue)
+        {
+            var metadata = new Metadata()
+            {
+                Items = new[]
+                {
+                    new Metadata.ItemsData()
+                    {
+                        Key = "flag",
+                        Value = truthyValue
+                    }
+                }
+            };
+
+            Assert.IsTrue(metadata.GetFlag("flag"));
+        }
+
+        [Test]
+        public void WhenValueIsNotTruthy_ThenGetFlagReturnsFalse(
+            [Values("N", " no\n", "FALSE", " 0 ")] string untruthyValue)
+        {
+
+            var metadata = new Metadata()
+            {
+                Items = new[]
+                {
+                    new Metadata.ItemsData()
+                    {
+                        Key = "flag",
+                        Value = untruthyValue
+                    }
+                }
+            };
+
+            Assert.IsFalse(metadata.GetFlag("flag"));
+        }
+
+        [Test]
+        public void WhenValueIsJunk_ThenGetFlagReturnsNull(
+            [Values(null, "", "junk")] string untruthyValue)
+        {
+
+            var metadata = new Metadata()
+            {
+                Items = new[]
+                {
+                    new Metadata.ItemsData()
+                    {
+                        Key = "flag",
+                        Value = untruthyValue
+                    }
+                }
+            };
+
+            Assert.IsNull(metadata.GetFlag("flag"));
+        }
+
+        //---------------------------------------------------------------------
         // AsString
         //---------------------------------------------------------------------
 

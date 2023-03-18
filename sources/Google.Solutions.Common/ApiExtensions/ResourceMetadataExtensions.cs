@@ -105,7 +105,7 @@ namespace Google.Solutions.Common.ApiExtensions
         }
 
         //---------------------------------------------------------------------
-        // Project metadata.
+        // Extension methods for modifying project metadata.
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace Google.Solutions.Common.ApiExtensions
         }
 
         //---------------------------------------------------------------------
-        // Instance metadata.
+        // Extension methods for modifying instance metadata.
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -278,6 +278,37 @@ namespace Google.Solutions.Common.ApiExtensions
                     existingMetadata.Add(metadata);
                 },
                 token);
+        }
+
+        //---------------------------------------------------------------------
+        // Extension methods for reading metadata.
+        //---------------------------------------------------------------------
+
+        public static bool? GetFlag(this Instance instance, Project project, string flag)
+        {
+            //
+            // NB. The instance value always takes precedence,
+            // even if it's false.
+            //
+
+            var instanceValue = instance.Metadata.GetFlag(flag);
+            if (instanceValue != null)
+            {
+                return instanceValue.Value;
+            }
+
+            var projectValue = project.CommonInstanceMetadata.GetFlag(flag);
+            if (projectValue != null)
+            {
+                return projectValue.Value;
+            }
+
+            return null;
+        }
+
+        public static bool? GetFlag(this Project project, string flag)
+        {
+            return project.CommonInstanceMetadata.GetFlag(flag);
         }
     }
 }

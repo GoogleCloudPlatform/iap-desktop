@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,6 +29,10 @@ namespace Google.Solutions.Common.ApiExtensions
 {
     public static class MetadataExtensions
     {
+        //---------------------------------------------------------------------
+        // Extension methods for modifying metadata.
+        //---------------------------------------------------------------------
+
         public static void Add(
             this Metadata metadata,
             string key,
@@ -63,6 +68,65 @@ namespace Google.Solutions.Common.ApiExtensions
                 metadata.Add(item.Key, item.Value);
             }
         }
+
+        //---------------------------------------------------------------------
+        // Extension methods for reading metadata.
+        //---------------------------------------------------------------------
+
+        public static Metadata.ItemsData GetItem(this Metadata metadata, string key)
+        {
+            return metadata?.Items
+                .EnsureNotNull()
+                .FirstOrDefault(item =>
+                    item.Key != null &&
+                    item.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static string GetValue(this Metadata metadata, string key)
+        {
+            return GetItem(metadata, key)?.Value;
+        }
+
+        public static bool? GetFlag(this Metadata metadata, string flag)
+        {
+            var value = metadata?.GetValue(flag);
+
+            if (value == null)
+            {
+                //
+                // Undefined.
+                //
+                return null;
+            }
+            else
+            {
+                //
+                // Evaluate "truthyness" using same rules as
+                // CheckMetadataFeatureEnabled()
+                //
+                switch (value.Trim().ToLower())
+                {
+                    case "true":
+                    case "1":
+                    case "y":
+                    case "yes":
+                        return true;
+
+                    case "false":
+                    case "0":
+                    case "n":
+                    case "no":
+                        return false;
+
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Other extension methods.
+        //---------------------------------------------------------------------
 
         public static string AsString(
             this Metadata metadata)
