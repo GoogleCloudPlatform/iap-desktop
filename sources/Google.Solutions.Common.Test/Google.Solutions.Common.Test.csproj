@@ -92,8 +92,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiExtensions\Instance\TestAddMetadata.cs" />
-    <Compile Include="ApiExtensions\Instance\TestMetadataExtensions.cs" />
+    <Compile Include="ApiExtensions\TestResourceMetadataExtensions.cs" />
+    <Compile Include="ApiExtensions\TestMetadataExtensions.cs" />
     <Compile Include="ApiExtensions\TestRequestExtensions.cs" />
     <Compile Include="Diagnostics\TestBugReport.cs" />
     <Compile Include="Diagnostics\TestClrVersion.cs" />

@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Common.ApiExtensions.Instance
 {
     /// <summary>
-    /// Extension methods for mutating instance metadata.
+    /// Extension methods for mutating project and instance metadata.
     /// </summary>
     public static class AddMetadataExtensions
     {

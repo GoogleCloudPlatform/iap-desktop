@@ -24,7 +24,7 @@ using Google.Solutions.Common.Util;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.Common.ApiExtensions.Instance
+namespace Google.Solutions.Common.ApiExtensions
 {
     public static class MetadataExtensions
     {

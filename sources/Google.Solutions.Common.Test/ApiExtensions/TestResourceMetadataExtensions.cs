@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Compute.v1;
-using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;
@@ -34,7 +33,7 @@ namespace Google.Solutions.Common.Test.Extensions
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestAddMetadata : CommonFixtureBase
+    public class TestResourceMetadataExtensions : CommonFixtureBase
     {
         private InstancesResource instancesResource;
         private ProjectsResource projectsResource;
