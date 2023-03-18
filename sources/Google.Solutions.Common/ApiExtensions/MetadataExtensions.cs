@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -22,12 +22,57 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Util;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Data
+namespace Google.Solutions.Common.ApiExtensions
 {
     public static class MetadataExtensions
     {
+        //---------------------------------------------------------------------
+        // Extension methods for modifying metadata.
+        //---------------------------------------------------------------------
+
+        public static void Add(
+            this Metadata metadata,
+            string key,
+            string value)
+        {
+            if (metadata.Items == null)
+            {
+                metadata.Items = new List<Metadata.ItemsData>();
+            }
+
+            var existingEntry = metadata.Items
+                .Where(i => i.Key == key)
+                .FirstOrDefault();
+            if (existingEntry != null)
+            {
+                existingEntry.Value = value;
+            }
+            else
+            {
+                metadata.Items.Add(new Metadata.ItemsData()
+                {
+                    Key = key,
+                    Value = value
+                });
+            }
+        }
+        public static void Add(
+            this Metadata metadata,
+            Metadata additionalMetadata)
+        {
+            foreach (var item in additionalMetadata.Items.EnsureNotNull())
+            {
+                metadata.Add(item.Key, item.Value);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Extension methods for reading metadata.
+        //---------------------------------------------------------------------
+
         public static Metadata.ItemsData GetItem(this Metadata metadata, string key)
         {
             return metadata?.Items
@@ -79,31 +124,20 @@ namespace Google.Solutions.IapDesktop.Application.Data
             }
         }
 
-        public static bool? GetFlag(this Instance instance, Project project, string flag)
+        //---------------------------------------------------------------------
+        // Other extension methods.
+        //---------------------------------------------------------------------
+
+        public static string AsString(
+            this Metadata metadata)
         {
-            //
-            // NB. The instance value always takes precedence,
-            // even if it's false.
-            //
-
-            var instanceValue = instance.Metadata.GetFlag(flag);
-            if (instanceValue != null)
-            {
-                return instanceValue.Value;
-            }
-
-            var projectValue = project.CommonInstanceMetadata.GetFlag(flag);
-            if (projectValue != null)
-            {
-                return projectValue.Value;
-            }
-
-            return null;
-        }
-
-        public static bool? GetFlag(this Project project, string flag)
-        {
-            return project.CommonInstanceMetadata.GetFlag(flag);
+            return "[" +
+                string.Join(
+                    ", ",
+                    metadata
+                        .Items
+                        .EnsureNotNull()
+                        .Select(i => $"{i.Key}={i.Value}")) + "]";
         }
     }
 }

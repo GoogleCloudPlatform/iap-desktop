@@ -66,10 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiExtensions\GoogleApiExceptionExtensions.cs" />
-    <Compile Include="ApiExtensions\Instance\AddMetadata.cs" />
-    <Compile Include="ApiExtensions\Instance\MetadataExtensions.cs" />
-    <Compile Include="ApiExtensions\Request\AwaitOperation.cs" />
-    <Compile Include="ApiExtensions\Request\ExecuteAsStreamExtensions.cs" />
+    <Compile Include="ApiExtensions\ResourceMetadataExtensions.cs" />
+    <Compile Include="ApiExtensions\MetadataExtensions.cs" />
+    <Compile Include="ApiExtensions\RequestExtensions.cs" />
     <Compile Include="Diagnostics\BugReport.cs" />
     <Compile Include="Diagnostics\ClrVersion.cs" />
     <Compile Include="Diagnostics\SkipCodeCoverageAttribute.cs" />

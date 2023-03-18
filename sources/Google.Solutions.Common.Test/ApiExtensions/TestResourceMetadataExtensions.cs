@@ -20,7 +20,8 @@
 //
 
 using Google.Apis.Compute.v1;
-using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;
@@ -34,7 +35,7 @@ namespace Google.Solutions.Common.Test.Extensions
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestAddMetadata : CommonFixtureBase
+    public class TestResourceMetadataExtensions : CommonFixtureBase
     {
         private InstancesResource instancesResource;
         private ProjectsResource projectsResource;
@@ -49,7 +50,7 @@ namespace Google.Solutions.Common.Test.Extensions
         }
 
         //---------------------------------------------------------------------
-        // Instance metadata.
+        // AddMetadata (instance).
         //---------------------------------------------------------------------
 
         [Test]
@@ -184,7 +185,7 @@ namespace Google.Solutions.Common.Test.Extensions
         }
 
         //---------------------------------------------------------------------
-        // Project metadata.
+        // AddMetadata (project).
         //---------------------------------------------------------------------
 
         [Test]
@@ -295,6 +296,140 @@ namespace Google.Solutions.Common.Test.Extensions
                     },
                     CancellationToken.None,
                     1).Wait());
+        }
+
+        //---------------------------------------------------------------------
+        // GetValue (project).
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProjectMetadataIsNull_ThenGetFlagReturnsNull()
+        {
+            Assert.IsNull(new Project().GetFlag("flag"));
+        }
+
+        //---------------------------------------------------------------------
+        // GetValue (instance).
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenInstanceMetadataIsNull_ThenGetFlagReturnsNull()
+        {
+            Assert.IsNull(new Instance().GetFlag(new Project(), "flag"));
+        }
+
+        [Test]
+        public void WhenInstanceFlagTrue_ThenGetFlagReturnsTrue()
+        {
+            var project = new Project();
+            var instance = new Instance()
+            {
+                Metadata = new Metadata()
+                {
+                    Items = new[]
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "flag",
+                            Value = "true"
+                        }
+                    }
+                }
+            };
+
+            Assert.IsTrue(instance.GetFlag(project, "flag"));
+        }
+
+        [Test]
+        public void WhenProjectFlagTrueAndInstanceFlagNull_ThenGetFlagReturnsTrue()
+        {
+            var project = new Project()
+            {
+                CommonInstanceMetadata = new Metadata()
+                {
+                    Items = new[]
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "flag",
+                            Value = "true"
+                        }
+                    }
+                }
+            };
+            var instance = new Instance();
+
+            Assert.IsTrue(instance.GetFlag(project, "flag"));
+        }
+
+        [Test]
+        public void WhenProjectFlagTrueAndInstanceFlagFalse_ThenGetFlagReturnsFalse()
+        {
+            var project = new Project()
+            {
+                CommonInstanceMetadata = new Metadata()
+                {
+                    Items = new[]
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "flag",
+                            Value = "true"
+                        }
+                    }
+                }
+            };
+            var instance = new Instance()
+            {
+                Metadata = new Metadata()
+                {
+                    Items = new[]
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "flag",
+                            Value = "FALSE"
+                        }
+                    }
+                }
+            };
+
+            Assert.IsFalse(instance.GetFlag(project, "flag"));
+        }
+
+        [Test]
+        public void WhenProjectFlagFalseAndInstanceFlagTrue_ThenGetFlagReturnsTrue()
+        {
+            var project = new Project()
+            {
+                CommonInstanceMetadata = new Metadata()
+                {
+                    Items = new[]
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "flag",
+                            Value = "false"
+                        }
+                    }
+                }
+            };
+            var instance = new Instance()
+            {
+                Metadata = new Metadata()
+                {
+                    Items = new[]
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "flag",
+                            Value = "true"
+                        }
+                    }
+                }
+            };
+
+            Assert.IsTrue(instance.GetFlag(project, "flag"));
         }
     }
 }

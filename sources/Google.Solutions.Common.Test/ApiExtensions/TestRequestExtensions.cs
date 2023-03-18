@@ -22,14 +22,14 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Services;
-using Google.Solutions.Common.ApiExtensions.Request;
+using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Test.Extensions
+namespace Google.Solutions.Common.Test.ApiExtensions
 {
     [TestFixture]
     [UsesCloudResources]

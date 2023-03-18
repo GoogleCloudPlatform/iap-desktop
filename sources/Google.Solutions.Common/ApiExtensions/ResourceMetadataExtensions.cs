@@ -21,7 +21,6 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using System;
@@ -29,12 +28,12 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.ApiExtensions.Instance
+namespace Google.Solutions.Common.ApiExtensions
 {
     /// <summary>
-    /// Extension methods for mutating instance metadata.
+    /// Extension methods for mutating project and instance metadata.
     /// </summary>
-    public static class AddMetadataExtensions
+    public static class ResourceMetadataExtensions
     {
         private const uint DefaultAttempts = 6;
 
@@ -106,7 +105,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         }
 
         //---------------------------------------------------------------------
-        // Project metadata.
+        // Extension methods for modifying project metadata.
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -192,7 +191,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         }
 
         //---------------------------------------------------------------------
-        // Instance metadata.
+        // Extension methods for modifying instance metadata.
         //---------------------------------------------------------------------
 
         /// <summary>
@@ -279,6 +278,37 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                     existingMetadata.Add(metadata);
                 },
                 token);
+        }
+
+        //---------------------------------------------------------------------
+        // Extension methods for reading metadata.
+        //---------------------------------------------------------------------
+
+        public static bool? GetFlag(this Instance instance, Project project, string flag)
+        {
+            //
+            // NB. The instance value always takes precedence,
+            // even if it's false.
+            //
+
+            var instanceValue = instance.Metadata.GetFlag(flag);
+            if (instanceValue != null)
+            {
+                return instanceValue.Value;
+            }
+
+            var projectValue = project.CommonInstanceMetadata.GetFlag(flag);
+            if (projectValue != null)
+            {
+                return projectValue.Value;
+            }
+
+            return null;
+        }
+
+        public static bool? GetFlag(this Project project, string flag)
+        {
+            return project.CommonInstanceMetadata.GetFlag(flag);
         }
     }
 }

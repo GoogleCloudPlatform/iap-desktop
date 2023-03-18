@@ -25,8 +25,6 @@ using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
 using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions;
-using Google.Solutions.Common.ApiExtensions.Instance;
-using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Net;
