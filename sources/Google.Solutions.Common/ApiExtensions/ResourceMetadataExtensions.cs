@@ -28,12 +28,12 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.ApiExtensions.Instance
+namespace Google.Solutions.Common.ApiExtensions
 {
     /// <summary>
     /// Extension methods for mutating project and instance metadata.
     /// </summary>
-    public static class AddMetadataExtensions
+    public static class ResourceMetadataExtensions
     {
         private const uint DefaultAttempts = 6;
 

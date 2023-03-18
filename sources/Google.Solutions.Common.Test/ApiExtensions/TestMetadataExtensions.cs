@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.ApiExtensions;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;

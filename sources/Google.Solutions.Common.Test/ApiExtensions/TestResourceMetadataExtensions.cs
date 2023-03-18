@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1;
+using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;
