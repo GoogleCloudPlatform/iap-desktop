@@ -22,8 +22,8 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.Mvvm.Format;
 using Google.Solutions.Mvvm.Shell;
-using Google.Solutions.Mvvm.Shell.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

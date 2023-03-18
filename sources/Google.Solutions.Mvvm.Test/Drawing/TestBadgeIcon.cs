@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,19 +19,31 @@
 // under the License.
 //
 
-using System.Threading;
+using Google.Solutions.Mvvm.Drawing;
+using NUnit.Framework;
+using System;
+using System.Drawing;
 
-namespace Google.Solutions.Common.Util
+namespace Google.Solutions.Mvvm.Test.Drawing
 {
-    public static class CancellationTokenExtensions
+    [TestFixture]
+    public class TestBadgeIcon
     {
-        public static CancellationTokenSource Combine(
-            this CancellationToken firstToken,
-            CancellationToken secondToken)
+        [Test]
+        public void WhenTextIsNullOrEmpty_ThenForTextInitialThrowsException()
         {
-            return CancellationTokenSource.CreateLinkedTokenSource(
-                firstToken,
-                secondToken);
+            Assert.Throws<ArgumentException>(() => BadgeIcon.ForTextInitial(null));
+            Assert.Throws<ArgumentException>(() => BadgeIcon.ForTextInitial(string.Empty));
+        }
+
+        [Test]
+        public void WhenTextValid_ThenIconHasBackColor()
+        {
+            using (var icon = BadgeIcon.ForTextInitial("Test"))
+            {
+                Assert.AreNotEqual(Color.White, icon.BackColor);
+                Assert.AreNotEqual(Color.Black, icon.BackColor);
+            }
         }
     }
 }

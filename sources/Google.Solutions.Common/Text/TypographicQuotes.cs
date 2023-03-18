@@ -22,7 +22,7 @@
 using Google.Apis.Util;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Common.Text
 {
     public static class TypographicQuotes
     {

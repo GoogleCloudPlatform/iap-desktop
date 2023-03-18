@@ -95,9 +95,11 @@
     <Compile Include="Controls\TestProgressBar.cs" />
     <Compile Include="Controls\TestFileBrowser.cs" />
     <Compile Include="Controls\TestFileBrowserUi.cs" />
+    <Compile Include="Controls\TestScreenPicker.cs" />
     <Compile Include="Controls\TestVerticalTabControl.cs" />
     <Compile Include="Controls\TestHtmlClipboardFormat.cs" />
     <Compile Include="Controls\TestListViewExtensions.cs" />
+    <Compile Include="Drawing\TestBadgeIcon.cs" />
     <Compile Include="Drawing\TestColorExtensions.cs" />
     <Compile Include="Drawing\TestFontExtensions.cs" />
     <Compile Include="Drawing\TestHslColor.cs" />
@@ -119,7 +121,7 @@
     <Compile Include="Theme\TestCommonControlTheme.cs" />
     <Compile Include="Theme\TestControlTheme.cs" />
     <Compile Include="Theme\TestToolStripItemTheme.cs" />
-    <Compile Include="Util\TestByteSizeFormatter.cs" />
+    <Compile Include="Format\TestByteSizeFormatter.cs" />
     <Compile Include="Binding\TestPropertiesView.cs" />
     <Compile Include="Binding\TestPropertiesViewModel.cs" />
   </ItemGroup>
@@ -152,9 +154,7 @@
       <DependentUpon>TestIconInverter.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Windows\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

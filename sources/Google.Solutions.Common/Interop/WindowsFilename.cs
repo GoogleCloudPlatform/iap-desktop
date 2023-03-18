@@ -22,9 +22,12 @@
 using System.IO;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Common.Interop
 {
-    public static class Filename
+    /// <summary>
+    /// Utility methods for dealing with Win32 filenames.
+    /// </summary>
+    public static class WindowsFilename
     {
         private static readonly string[] DosDevices =
         {

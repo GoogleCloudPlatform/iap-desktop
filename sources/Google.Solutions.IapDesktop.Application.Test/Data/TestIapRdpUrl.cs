@@ -24,7 +24,7 @@ using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Util
+namespace Google.Solutions.IapDesktop.Application.Test.Data
 {
     [TestFixture]
     public class TestIapRdpUrl : ApplicationFixtureBase

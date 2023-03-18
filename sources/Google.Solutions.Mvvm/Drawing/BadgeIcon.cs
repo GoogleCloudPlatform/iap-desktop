@@ -23,7 +23,7 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.IapDesktop.Application.Controls
+namespace Google.Solutions.Mvvm.Drawing
 {
     /// <summary>
     /// 16x16 icon that can be used as overlay.

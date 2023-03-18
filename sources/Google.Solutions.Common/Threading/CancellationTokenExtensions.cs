@@ -19,21 +19,19 @@
 // under the License.
 //
 
-using System.Net;
-using System.Security;
+using System.Threading;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Common.Threading
 {
-    public static class SecureStringExtensions
+    public static class CancellationTokenExtensions
     {
-        public static string AsClearText(this SecureString secureString)
+        public static CancellationTokenSource Combine(
+            this CancellationToken firstToken,
+            CancellationToken secondToken)
         {
-            return new NetworkCredential(string.Empty, secureString).Password;
-        }
-
-        public static SecureString FromClearText(string plaintextString)
-        {
-            return new NetworkCredential(string.Empty, plaintextString).SecurePassword;
+            return CancellationTokenSource.CreateLinkedTokenSource(
+                firstToken,
+                secondToken);
         }
     }
 }

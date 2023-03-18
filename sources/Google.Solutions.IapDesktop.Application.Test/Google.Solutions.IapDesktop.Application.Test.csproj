@@ -96,8 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CertificateUtil.cs" />
-    <Compile Include="Controls\TestBadgeIcon.cs" />
-    <Compile Include="Controls\TestScreenPicker.cs" />
     <Compile Include="Host\TestInstall.cs" />
     <Compile Include="Host\TestProfile.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
@@ -140,10 +138,7 @@
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Theme\TestThemeSettingsRepository.cs" />
     <Compile Include="Theme\TestVSTheme.cs" />
-    <Compile Include="Util\TestFilename.cs" />
-    <Compile Include="Util\TestIapRdpUrl.cs" />
-    <Compile Include="Util\TestStringExtensions.cs" />
-    <Compile Include="Util\TestTypographicQuotes.cs" />
+    <Compile Include="Data\TestIapRdpUrl.cs" />
     <Compile Include="Views\About\TestAboutViewModel.cs" />
     <Compile Include="Views\Authorization\TestAuthorizeViewModel.cs" />
     <Compile Include="Views\Authorization\TestDeviceFlyoutViewModel.cs" />
@@ -159,7 +154,7 @@
     <Compile Include="Views\ProjectPicker\TestProjectPickerDialog.cs" />
     <Compile Include="Views\ProjectPicker\TestProjectPickerViewModel.cs" />
     <Compile Include="Views\Properties\TestPropertiesInspectorWindow.cs" />
-    <Compile Include="Util\TestSingletonApplicationBase.cs" />
+    <Compile Include="Host\TestSingletonApplicationBase.cs" />
     <Compile Include="Views\TestToolWindow.cs" />
   </ItemGroup>
   <ItemGroup>

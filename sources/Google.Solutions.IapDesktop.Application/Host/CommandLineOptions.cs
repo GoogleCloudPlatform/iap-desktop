@@ -19,8 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;

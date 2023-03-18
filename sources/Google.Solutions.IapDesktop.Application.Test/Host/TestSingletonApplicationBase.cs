@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Host;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Util
+namespace Google.Solutions.IapDesktop.Application.Test.Host
 {
     [TestFixture]
     public class TestSingletonApplicationBase

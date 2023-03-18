@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Util;
-using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Common.Text;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;

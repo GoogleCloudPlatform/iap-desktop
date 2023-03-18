@@ -84,13 +84,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\BadgeIcon.cs" />
-    <Compile Include="Controls\ScreenPicker.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ScreenPicker.Designer.cs">
-      <DependentUpon>ScreenPicker.cs</DependentUpon>
-    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Host\CommandLineOptions.cs" />
     <Compile Include="Host\Install.cs" />
@@ -155,11 +148,7 @@
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Theme\VSThemeExtensions.cs" />
     <Compile Include="Theme\VSThemeRuleSet.cs" />
-    <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Data\IHelpTopic.cs" />
-    <Compile Include="Util\StringExtensions.cs" />
-    <Compile Include="Util\TypographicQuotes.cs" />
-    <Compile Include="Util\Filename.cs" />
     <Compile Include="Views\About\AboutViewModel.cs" />
     <Compile Include="Views\Authorization\AuthorizeView.cs">
       <SubType>Form</SubType>
@@ -315,7 +304,6 @@
     <Compile Include="Views\Dialog\TaskDialog.cs" />
     <Compile Include="Services\UpdateService.cs" />
     <Compile Include="ApplicationTraceSources.cs" />
-    <Compile Include="Util\SecureStringExtensions.cs" />
     <Compile Include="Data\IapRdpUrl.cs" />
     <Compile Include="Views\About\AboutView.cs">
       <SubType>Form</SubType>
@@ -351,7 +339,7 @@
     <Compile Include="Views\WaitDialog.Designer.cs">
       <DependentUpon>WaitDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Util\SingletonApplicationBase.cs" />
+    <Compile Include="Host\SingletonApplicationBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
@@ -369,9 +357,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="Controls\ScreenPicker.resx">
-      <DependentUpon>ScreenPicker.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\About.rtf" />
     <None Include="packages.config" />
     <None Include="Services\Adapters\README.md" />
@@ -495,9 +480,7 @@
   <ItemGroup>
     <None Include="Resources\AddProject_16.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\LogoWatermark_180.png" />
   </ItemGroup>

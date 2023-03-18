@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Controls;
-
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 {
     partial class TunnelsView

@@ -94,6 +94,7 @@
     <Compile Include="Controls\DropDownButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\EventArgs.cs" />
     <Compile Include="Controls\MarkdownViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -106,6 +107,13 @@
     <Compile Include="Controls\RichTextBox50.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ScreenPicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ScreenPicker.Designer.cs">
+      <DependentUpon>ScreenPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Drawing\BadgeIcon.cs" />
     <Compile Include="Drawing\FontExtensions.cs" />
     <Compile Include="Controls\ProgressBar.cs">
       <SubType>Component</SubType>
@@ -154,13 +162,13 @@
     <Compile Include="Shell\KnownFolders.cs" />
     <Compile Include="Shell\Quarantine.cs" />
     <Compile Include="Shell\StockIcons.cs" />
+    <Compile Include="Shell\TaskBarList.cs" />
     <Compile Include="Theme\CommonControlRuleSet.cs" />
     <Compile Include="Theme\ControlTheme.cs" />
     <Compile Include="Theme\IControlTheme.cs" />
     <Compile Include="Theme\ToolStripItemTheme.cs" />
     <Compile Include="Theme\WindowsRuleSet.cs" />
-    <Compile Include="Util\ByteSizeFormatter.cs" />
-    <Compile Include="Util\StaTask.cs" />
+    <Compile Include="Format\ByteSizeFormatter.cs" />
     <Compile Include="Binding\PropertiesSheetView.cs" />
     <Compile Include="Binding\PropertiesView.cs">
       <SubType>Form</SubType>
@@ -189,6 +197,9 @@
     <EmbeddedResource Include="Controls\MarkdownViewer.resx">
       <DependentUpon>MarkdownViewer.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ScreenPicker.resx">
+      <DependentUpon>ScreenPicker.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\SearchableList.resx">
       <DependentUpon>SearchableList.cs</DependentUpon>
     </EmbeddedResource>
@@ -206,9 +217,7 @@
   <ItemGroup>
     <None Include="Resources\Search_16.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Windows\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>

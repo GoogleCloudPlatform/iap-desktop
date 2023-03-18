@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 #pragma warning disable CA1712 // Do not prefix enum values with type name
 #pragma warning disable CA1714 // Flags enums should have plural names
 
-namespace Google.Solutions.IapDesktop.Interop
+namespace Google.Solutions.Mvvm.Shell
 {
     [Flags]
     public enum TBPF
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Interop
     [Guid("56FDF344-FD6D-11d0-958A-006097C9A090")]
     [ClassInterface(ClassInterfaceType.None)]
     [ComImport]
-    internal class TaskbarList
+    public class TaskbarList
     {
     }
 }

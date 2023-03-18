@@ -33,7 +33,7 @@ using System.Windows.Forms;
 
 #pragma warning disable CA1031 // catch Exception
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.IapDesktop.Application.Host
 {
     public abstract class SingletonApplicationBase
     {

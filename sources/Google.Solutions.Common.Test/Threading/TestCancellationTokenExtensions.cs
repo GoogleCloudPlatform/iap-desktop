@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
+using Google.Solutions.Common.Threading;
 using NUnit.Framework;
 using System.Threading;
 
-namespace Google.Solutions.Common.Test.Util
+namespace Google.Solutions.Common.Test.Threading
 {
     [TestFixture]
     public class TestCancellationTokenExtensions : CommonFixtureBase

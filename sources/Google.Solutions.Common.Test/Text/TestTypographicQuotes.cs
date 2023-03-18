@@ -19,14 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Common.Text;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Util
+namespace Google.Solutions.Common.Test.Text
 {
     [TestFixture]
-    public class TestTypographicQuotes : ApplicationFixtureBase
+    public class TestTypographicQuotes
     {
         [Test]
         public void WhenStringContainsNoTypograhicQuotes_ThenToAsciiQuotesReturnsSameString()

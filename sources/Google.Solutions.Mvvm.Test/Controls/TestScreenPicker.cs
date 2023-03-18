@@ -19,8 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Mvvm.Controls;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -28,11 +27,11 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Controls
+namespace Google.Solutions.Mvvm.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestScreenPicker : ApplicationFixtureBase
+    public class TestScreenPicker
     {
         private Form form;
 
