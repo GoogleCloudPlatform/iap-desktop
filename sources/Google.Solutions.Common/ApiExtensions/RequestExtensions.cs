@@ -21,13 +21,15 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Requests;
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.ApiExtensions.Request
+namespace Google.Solutions.Common.ApiExtensions
 {
     public static class AwaitOperation
     {
@@ -35,6 +37,91 @@ namespace Google.Solutions.Common.ApiExtensions.Request
 
         private const string DoneStatus = "DONE";
         private static readonly List<SingleError> NoErrors = new List<SingleError>();
+
+        //---------------------------------------------------------------------
+        // Extension methods for executing requests and reading the response
+        // as stream.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Like ExecuteAsStream, but catch non-success HTTP codes and convert them
+        /// into an exception.
+        /// </summary>
+        public static async Task<Stream> ExecuteAsStreamOrThrowAsync<TResponse>(
+            this IClientServiceRequest<TResponse> request,
+            CancellationToken cancellationToken)
+        {
+            using (var httpRequest = request.CreateRequest())
+            {
+                var httpResponse = await request.Service.HttpClient
+                    .SendAsync(httpRequest, cancellationToken)
+                    .ConfigureAwait(false);
+
+                // NB. ExecuteAsStream does not do this check.
+                if (!httpResponse.IsSuccessStatusCode)
+                {
+                    var error = await request.Service
+                        .DeserializeError(httpResponse)
+                        .ConfigureAwait(false);
+
+                    throw new GoogleApiException(request.Service.Name, error.ToString())
+                    {
+                        Error = error,
+                        HttpStatusCode = httpResponse.StatusCode
+                    };
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+                return await httpResponse.Content
+                    .ReadAsStreamAsync()
+                    .ConfigureAwait(false);
+            }
+        }
+
+        public static async Task<Stream> ExecuteAsStreamWithRetryAsync<TResponse>(
+            this IClientServiceRequest<TResponse> request,
+            ExponentialBackOff backOff,
+            CancellationToken cancellationToken)
+        {
+            int retries = 0;
+            while (true)
+            {
+                try
+                {
+                    return await request
+                        .ExecuteAsStreamOrThrowAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 429)
+                {
+                    //
+                    // Too many requests.
+                    //
+                    if (retries < backOff.MaxNumOfRetries)
+                    {
+                        CommonTraceSources.Default.TraceWarning(
+                            "Too many requests - backing of and retrying...", retries);
+
+                        retries++;
+                        await Task
+                            .Delay(backOff.GetNextBackOff(retries))
+                            .ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        //
+                        // Retried too often already.
+                        //
+                        CommonTraceSources.Default.TraceWarning("Giving up after {0} retries", retries);
+                        throw;
+                    }
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Extension methods for requests that return an operation.
+        //---------------------------------------------------------------------
 
         public static async Task ExecuteAndAwaitOperationAsync(
             this IClientServiceRequest<Google.Apis.Compute.v1.Data.Operation> request,
