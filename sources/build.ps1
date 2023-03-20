@@ -30,8 +30,11 @@ ${env:__BUILD_ENV_INITIALIZED} = "1"
 # Find MSBuild and add to PATH
 #------------------------------------------------------------------------------
 
-$Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 
-	'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin', 'msbuild.exe'))).Path | Select-Object -Last 1
+$MsBuildCandidates = `
+    "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe",
+    "C:\VS\MSBuild\Current\Bin\"
+
+$Msbuild = $MsBuildCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -Last 1
 if ($Msbuild)
 {
 	$MsbuildDir = (Split-Path $Msbuild -Parent)
@@ -47,8 +50,10 @@ else
 # Find nmake and add to PATH
 #------------------------------------------------------------------------------
 
-$Nmake = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 
-	'Microsoft Visual Studio', '*', '*', 'VC', 'Tools', 'MSVC', '*' , 'bin', 'Hostx86', '*' , 'nmake.exe'))).Path | Select-Object -Last 1
+$NmakeCandidates = `
+    "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe",
+    "c:\VS\VC\Tools\MSVC\*\bin\Hostx86\*\nmake.exe"
+$Nmake = $NmakeCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -Last 1
 if ($Nmake)
 {
 	$NMakeDir = (Split-Path $NMake -Parent)
