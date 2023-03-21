@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
     public class TestIapRdpUrlConnectionSettings
     {
         //---------------------------------------------------------------------
-        // Query string generation.
+        // ToUrlQuery.
         //---------------------------------------------------------------------
 
         [Test]
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         }
 
         //---------------------------------------------------------------------
-        // Query string parsing.
+        // FromUrl.
         //---------------------------------------------------------------------
 
         [Test]

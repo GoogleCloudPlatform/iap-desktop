@@ -215,12 +215,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                 .ConfigureAwait(true);
             if (existingNode is IProjectModelInstanceNode vmNode)
             {
+                //
                 // We have a full set of settings for this VM, so use that as basis
+                //
                 settings = (InstanceConnectionSettings)
                     this.settingsService.GetConnectionSettings(vmNode).TypedCollection;
 
+                //
                 // Apply parameters from URL on top.
-                settings.ApplyUrlQuery(url.Parameters);
+                //
+                settings.ApplySettingsFromUrl(url);
             }
             else
             {

@@ -23,6 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
@@ -50,13 +51,17 @@ namespace Google.Solutions.IapDesktop.Application.Data
         private static readonly Regex InstanceNamePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?|[1-9][0-9]{0,19}");
 
         public InstanceLocator Instance { get; }
-        public NameValueCollection Parameters { get; }
+        public IDictionary<string, string> Parameters { get; }
 
-        public IapRdpUrl(InstanceLocator instance, NameValueCollection parameters)
+        public IapRdpUrl(InstanceLocator instance, IDictionary<string, string> parameters)
         {
             this.Instance = instance;
             this.Parameters = parameters;
         }
+
+        public IapRdpUrl(InstanceLocator instance, NameValueCollection parameters)
+            : this(instance, parameters.AllKeys.ToDictionary(k => k, k => parameters[k]))
+        { }
 
         private static InstanceLocator CreateVmInstanceReferenceFromPath(string absolutePath)
         {
@@ -127,9 +132,8 @@ namespace Google.Solutions.IapDesktop.Application.Data
             if (includeQuery)
             {
                 var formattedParameters = this.Parameters
-                    .ToKeyValuePairs()
                     .Select(p => p.Key + "=" + HttpUtility.UrlEncode(p.Value));
-                url += $"?{String.Join("&", formattedParameters)}";
+                url += $"?{string.Join("&", formattedParameters)}";
             }
 
             return url;
