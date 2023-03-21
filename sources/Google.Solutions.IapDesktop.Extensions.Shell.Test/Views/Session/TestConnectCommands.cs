@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Testing.Common.Mocks;
@@ -39,7 +40,7 @@ using System.Collections.Specialized;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {
     [TestFixture]
     public class TestConnectCommands
