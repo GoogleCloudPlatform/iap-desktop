@@ -40,13 +40,13 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {
     [TestFixture]
-    public class TestConnectCommands_ActivateOrConnectInstance
+    public class TestActivateOrConnectInstanceComand
     {
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
 
-        private static ConnectCommands.ActivateOrConnectInstanceCommand CreateCommand(
+        private static ActivateOrConnectInstanceCommand CreateCommand(
             Mock<ISshConnectionService> sshConnectionService,
             Mock<IRdpConnectionService> rdpConnectionService,
             Mock<IGlobalSessionBroker> sessionBroker)
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             serviceProvider.Add(rdpConnectionService.Object);
             serviceProvider.Add(sessionBroker.Object);
 
-            return new ConnectCommands.ActivateOrConnectInstanceCommand(
+            return new ActivateOrConnectInstanceCommand(
                 "&test",
                 new Mock<ICommandContainer<ISession>>().Object,
                 new Service<IRdpConnectionService>(serviceProvider.Object),

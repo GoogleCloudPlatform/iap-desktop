@@ -160,7 +160,7 @@
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopView.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopViewWithGroupPolicies.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopSessionBroker.cs" />
-    <Compile Include="Views\Session\TestConnectCommands.ActivateOrConnectInstance.cs" />
+    <Compile Include="Views\Session\TestActivateOrConnectInstanceComand.cs" />
     <Compile Include="Views\SshKeys\TestAuthorizedPublicKeysCommands.cs" />
     <Compile Include="Views\SshKeys\TestAuthorizedPublicKeysModel.cs" />
     <Compile Include="Views\SshKeys\TestAuthorizedPublicKeysViewModel.cs" />
@@ -180,7 +180,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <Compile Include="Views\Session\TestConnectCommands.LaunchUrl.cs" />
+    <Compile Include="Views\Session\TestLaunchRdpUrlCommand.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .Setup(s => s.TryActivate(SampleLocator, out session))
                 .Returns(true);
 
-            var command = new ConnectCommands.LaunchRdpUrlCommand(
+            var command = new LaunchRdpUrlCommand(
                 new Service<IRdpConnectionService>(serviceProvider.Object),
                 new Service<IGlobalSessionBroker>(serviceProvider.Object));
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .Setup(s => s.TryActivate(SampleLocator, out nullSession))
                 .Returns(false);
 
-            var command = new ConnectCommands.LaunchRdpUrlCommand(
+            var command = new LaunchRdpUrlCommand(
                 new Service<IRdpConnectionService>(serviceProvider.Object),
                 new Service<IGlobalSessionBroker>(serviceProvider.Object));
 

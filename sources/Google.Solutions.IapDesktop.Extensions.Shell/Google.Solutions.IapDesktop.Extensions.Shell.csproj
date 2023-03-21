@@ -148,7 +148,7 @@
     <Compile Include="Services\Ssh\SshConnectionService.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
-    <Compile Include="Views\Session\ConnectCommands.ActivateOrConnectInstance.cs" />
+    <Compile Include="Views\Session\ActivateOrConnectInstanceCommand.cs" />
     <Compile Include="Views\Session\ConnectCommands.cs" />
     <Compile Include="Views\Session\SessionCommands.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsCommands.cs" />
@@ -261,7 +261,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <Compile Include="Views\Session\ConnectCommands.LaunchRdpUrl.cs" />
+    <Compile Include="Views\Session\LaunchRdpUrlCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">

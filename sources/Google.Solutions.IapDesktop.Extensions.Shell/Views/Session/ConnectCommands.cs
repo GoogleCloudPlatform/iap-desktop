@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 {
     [Service]
-    public partial class ConnectCommands
+    public class ConnectCommands
     {
         public ConnectCommands(
             UrlCommands urlCommands,
