@@ -120,17 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             }
             else if (node is IProjectModelInstanceNode sshNode && sshNode.IsSshSupported())
             {
-                if (this.ForceNewSshConnection)
-                {
-                    //
-                    // Create new session (event if there is one already).
-                    //
-                    session = await this.sshConnectionService
-                        .GetInstance()
-                        .ConnectInstanceAsync(sshNode)
-                        .ConfigureAwait(true);
-                }
-                else if (this.sessionBroker
+                if (!this.ForceNewSshConnection && this.sessionBroker
                     .GetInstance()
                     .TryActivate(sshNode.Instance, out session))
                 {
