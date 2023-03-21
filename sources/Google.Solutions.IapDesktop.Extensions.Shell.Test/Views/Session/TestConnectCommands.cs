@@ -241,9 +241,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             sshConnectionService.Verify(
                 s => s.ConnectInstanceAsync(runningInstance.Object),
                 Times.Once);
-            sshConnectionService.Verify(
-                s => s.ConnectInstanceAsync(runningInstance.Object),
-                Times.Never);
         }
 
         //---------------------------------------------------------------------
@@ -371,9 +368,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             sshConnectionService.Verify(
                 s => s.ConnectInstanceAsync(runningInstance.Object),
                 Times.Once);
-            sshConnectionService.Verify(
-                s => s.ConnectInstanceAsync(runningInstance.Object),
-                Times.Never);
         }
 
         //---------------------------------------------------------------------
@@ -574,9 +568,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             sshConnectionService.Verify(
                 s => s.ConnectInstanceAsync(runningInstance.Object),
-                Times.Never);
-            sshConnectionService.Verify(
-                s => s.ConnectInstanceAsync(runningInstance.Object),
                 Times.Once);
         }
 
@@ -648,9 +639,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ExecuteAsync(connectedSession.Object)
                 .ConfigureAwait(false);
 
-            sshConnectionService.Verify(
-                s => s.ConnectInstanceAsync(runningInstance.Object),
-                Times.Never);
             sshConnectionService.Verify(
                 s => s.ConnectInstanceAsync(runningInstance.Object),
                 Times.Once);
