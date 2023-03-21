@@ -30,14 +30,13 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 {
     public partial class ConnectCommands
     {
-        private class ActivateOrConnectInstanceCommand : ToolContextCommand<IProjectModelNode>
+        internal class ActivateOrConnectInstanceCommand : ToolContextCommand<IProjectModelNode>
         {
             private readonly ICommandContainer<ISession> sessionContextMenu;
             private readonly Service<IRdpConnectionService> rdpConnectionService;
@@ -90,12 +89,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
             public override async Task ExecuteAsync(IProjectModelNode node)
             {
+                Debug.Assert(IsAvailable(node));
+                Debug.Assert(IsEnabled(node));
+
                 ISession session = null;
                 if (node is IProjectModelInstanceNode rdpNode && rdpNode.IsRdpSupported())
                 {
                     if (this.sessionBroker
                         .GetInstance()
-                        .TryActivate(rdpNode.Instance, out session)) // TODO: test branch
+                        .TryActivate(rdpNode.Instance, out session)) 
                     {
                         //
                         // There is an existing session, and it's now active.

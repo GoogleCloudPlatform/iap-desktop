@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 {
     public partial class ConnectCommands
     {
-        private class LaunchRdpUrlCommand : ToolContextCommand<IapRdpUrl>
+        internal class LaunchRdpUrlCommand : ToolContextCommand<IapRdpUrl>
         {
             private readonly Service<IRdpConnectionService> connectionService;
             private readonly Service<IGlobalSessionBroker> sessionBroker;
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             {
                 if (this.sessionBroker
                     .GetInstance()
-                    .TryActivate(url.Instance, out var activeSession)) // TODO: test branch
+                    .TryActivate(url.Instance, out var activeSession))
                 {
                     //
                     // There is an existing session, and it's now active.
