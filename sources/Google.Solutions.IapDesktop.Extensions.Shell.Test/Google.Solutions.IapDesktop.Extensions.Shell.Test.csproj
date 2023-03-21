@@ -124,6 +124,7 @@
     <Compile Include="Controls\TestTerminalFont.cs" />
     <Compile Include="Controls\TestVirtualTerminal.cs" />
     <Compile Include="Controls\TestVirtualTerminalKeyHandler.cs" />
+    <Compile Include="Data\TestSamAccountName.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IapTunnel.cs" />
@@ -149,7 +150,6 @@
     <Compile Include="ShellFixtureBase.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsCommands.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
-    <Compile Include="Views\Credentials\TestAuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\TestSelectCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\TestCreateCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\TestGenerateCredentialsViewModel.cs" />
