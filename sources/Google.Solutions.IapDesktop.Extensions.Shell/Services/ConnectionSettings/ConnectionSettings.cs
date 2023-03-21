@@ -603,13 +603,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         // To/from URL.
         //-------------------------------------------------------------------------
 
-        public void ApplyUrlQuery(NameValueCollection parameters)
+        internal void ApplySettingsFromUrl(IapRdpUrl url)
         {
+            Debug.Assert(this.InstanceName == url.Instance.Name);
+            Debug.Assert(this.ProjectId == url.Instance.ProjectId);
+
+            //
             // NB. Ignore passwords in URLs.
+            //
             foreach (var setting in this.Settings
                 .Where(s => !(s is RegistrySecureStringSetting)))
             {
-                var value = parameters.Get(setting.Key);
+                var value = url.Parameters.Get(setting.Key);
                 if (value != null)
                 {
                     try
@@ -630,7 +635,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 url.Instance.ProjectId,
                 url.Instance.Name);
 
-            settings.ApplyUrlQuery(url.Parameters);
+            settings.ApplySettingsFromUrl(url);
 
             return settings;
         }

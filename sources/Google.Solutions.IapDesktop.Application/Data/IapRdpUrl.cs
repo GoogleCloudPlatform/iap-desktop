@@ -26,7 +26,6 @@ using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -49,7 +48,16 @@ namespace Google.Solutions.IapDesktop.Application.Data
         private static readonly Regex ZonePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
         private static readonly Regex InstanceNamePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?|[1-9][0-9]{0,19}");
 
+        /// <summary>
+        /// Instance referenced by this URL.
+        /// </summary>
         public InstanceLocator Instance { get; }
+
+        /// <summary>
+        /// Query string paramaters that might contain connection settings.
+        /// 
+        /// NB. The NameValueCollection is case-insensitive.
+        /// </summary>
         public NameValueCollection Parameters { get; }
 
         public IapRdpUrl(InstanceLocator instance, NameValueCollection parameters)
@@ -137,8 +145,6 @@ namespace Google.Solutions.IapDesktop.Application.Data
         public override string ToString() => ToString(true);
     }
 
-    [Serializable]
-    [ComVisible(false)]
     public class IapRdpUrlFormatException : UriFormatException, IExceptionWithHelpTopic
     {
         public IHelpTopic Help => HelpTopics.BrowserIntegration;
