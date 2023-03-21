@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 new Mock<ISelectCredentialsWorkflow>().Object);
 
             var session = await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object, false)
+                .ConnectInstanceAsync(vmNode.Object, false)
                 .ConfigureAwait(false);
             Assert.IsNotNull(session);
 
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 new Mock<ISelectCredentialsWorkflow>().Object);
 
             var session = await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object, true)
+                .ConnectInstanceAsync(vmNode.Object, true)
                 .ConfigureAwait(false);
             Assert.IsNotNull(session);
 
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 credentialPrompt.Object);
 
             var session = await service
-                .ActivateOrConnectInstanceAsync(
+                .ConnectInstanceAsync(
                     IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"))
                 .ConfigureAwait(false);
             Assert.IsNotNull(session);
@@ -276,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 credentialPrompt.Object);
 
             var session = await service
-                .ActivateOrConnectInstanceAsync(
+                .ConnectInstanceAsync(
                     IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"))
                 .ConfigureAwait(false);
             Assert.IsNotNull(session);
@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 credentialPrompt.Object);
 
             var session = await service
-                .ActivateOrConnectInstanceAsync(
+                .ConnectInstanceAsync(
                     IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe"))
                 .ConfigureAwait(false);
             Assert.IsNotNull(session);

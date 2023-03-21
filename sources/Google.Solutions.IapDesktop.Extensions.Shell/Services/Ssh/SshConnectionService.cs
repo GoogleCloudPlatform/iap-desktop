@@ -46,9 +46,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
     public interface ISshConnectionService
     {
-        Task<ISshTerminalSession> ActivateOrConnectInstanceAsync(
-            IProjectModelInstanceNode vmNode);
-
         Task<ISshTerminalSession> ConnectInstanceAsync(
             IProjectModelInstanceNode vmNode);
     }
@@ -94,23 +91,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         //---------------------------------------------------------------------
         // ISshConnectionService.
         //---------------------------------------------------------------------
-
-        public async Task<ISshTerminalSession> ActivateOrConnectInstanceAsync(
-            IProjectModelInstanceNode vmNode)
-        {
-            Debug.Assert(vmNode.IsSshSupported());
-
-            if (this.sessionBroker.TryActivate(vmNode.Instance, out var activeSession))
-            {
-                // SSH session was active, nothing left to do.
-                Debug.Assert(activeSession != null);
-                Debug.Assert(activeSession is ISshTerminalSession);
-
-                return (ISshTerminalSession)activeSession;
-            }
-
-            return await ConnectInstanceAsync(vmNode).ConfigureAwait(true);
-        }
 
         public async Task<ISshTerminalSession> ConnectInstanceAsync(
             IProjectModelInstanceNode vmNode)

@@ -43,11 +43,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
 {
     public interface IRdpConnectionService
     {
-        Task<IRemoteDesktopSession> ActivateOrConnectInstanceAsync(
+        Task<IRemoteDesktopSession> ConnectInstanceAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials);
 
-        Task<IRemoteDesktopSession> ActivateOrConnectInstanceAsync(IapRdpUrl url);
+        Task<IRemoteDesktopSession> ConnectInstanceAsync(IapRdpUrl url);
     }
 
     [Service(typeof(IRdpConnectionService))]
@@ -145,20 +145,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         // IRdpConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task<IRemoteDesktopSession> ActivateOrConnectInstanceAsync(
+        public async Task<IRemoteDesktopSession> ConnectInstanceAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials)
         {
             Debug.Assert(vmNode.IsRdpSupported());
-
-            if (this.sessionBroker.TryActivate(vmNode.Instance, out var activeSession))
-            {
-                // RDP session was active, nothing left to do.
-                Debug.Assert(activeSession != null);
-                Debug.Assert(activeSession is IRemoteDesktopSession);
-
-                return (IRemoteDesktopSession)activeSession;
-            }
 
             // Select node so that tracking windows are updated.
             await this.projectModelService.SetActiveNodeAsync(
@@ -198,17 +189,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                 .ConfigureAwait(true);
         }
 
-        public async Task<IRemoteDesktopSession> ActivateOrConnectInstanceAsync(IapRdpUrl url)
+        public async Task<IRemoteDesktopSession> ConnectInstanceAsync(IapRdpUrl url)
         {
-            if (this.sessionBroker.TryActivate(url.Instance, out var activeSession))
-            {
-                // RDP session was active, nothing left to do.
-                Debug.Assert(activeSession != null);
-                Debug.Assert(activeSession is IRemoteDesktopSession);
-
-                return (IRemoteDesktopSession)activeSession;
-            }
-
             InstanceConnectionSettings settings;
             var existingNode = await this.projectModelService
                 .GetNodeAsync(url.Instance, CancellationToken.None)

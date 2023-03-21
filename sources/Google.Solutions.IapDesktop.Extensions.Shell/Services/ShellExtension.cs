@@ -107,73 +107,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             }
         }
 
-        private async Task ConnectAsync(
-            IProjectModelNode node,
-            bool allowPersistentCredentials,
-            bool forceNewConnection)
-        {
-            ISession session = null;
-            if (node is IProjectModelInstanceNode rdpNode && rdpNode.IsRdpSupported())
-            {
-                session = await this.serviceProvider
-                    .GetService<IRdpConnectionService>()
-                    .ActivateOrConnectInstanceAsync(
-                        rdpNode,
-                        allowPersistentCredentials)
-                    .ConfigureAwait(true);
-
-                Debug.Assert(session != null);
-            }
-            else if (node is IProjectModelInstanceNode sshNode && sshNode.IsSshSupported())
-            {
-                if (forceNewConnection)
-                {
-                    session = await this.serviceProvider
-                        .GetService<ISshConnectionService>()
-                        .ConnectInstanceAsync(sshNode)
-                        .ConfigureAwait(true);
-                }
-                else
-                {
-                    session = await this.serviceProvider
-                        .GetService<ISshConnectionService>()
-                        .ActivateOrConnectInstanceAsync(sshNode)
-                        .ConfigureAwait(true);
-                }
-
-                Debug.Assert(session != null);
-            }
-
-            if (session is SessionViewBase sessionPane &&
-                sessionPane.ContextCommands == null)
-            {
-                //
-                // Use commands from Session menu as
-                // context menu.
-                //
-                sessionPane.ContextCommands = this.sessionCommands;
-            }
-        }
-
-        private async Task DuplicateSessionAsync(ISshTerminalSession session)
-        {
-            //
-            // Try to lookup node for this session. In some cases,
-            // we might not find it (for example, if the project has
-            // been unloaded in the meantime).
-            //
-            var node = await this.serviceProvider
-                .GetService<IProjectModelService>()
-                .GetNodeAsync(session.Instance, CancellationToken.None)
-                .ConfigureAwait(true);
-
-            if (node is IProjectModelInstanceNode vmNode && vmNode != null)
-            {
-                await ConnectAsync(vmNode, false, true)
-                    .ConfigureAwait(true);
-            }
-        }
-
         //---------------------------------------------------------------------
         // Setup
         //---------------------------------------------------------------------
@@ -204,6 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 serviceProvider.GetService<Service<IRdpConnectionService>>(),
                 serviceProvider.GetService<Service<ISshConnectionService>>(),
                 serviceProvider.GetService<Service<IProjectModelService>>(),
+                serviceProvider.GetService<Service<IGlobalSessionBroker>>(),
                 this.sessionCommands);
             Debug.Assert(serviceProvider
                 .GetService<UrlCommands>()

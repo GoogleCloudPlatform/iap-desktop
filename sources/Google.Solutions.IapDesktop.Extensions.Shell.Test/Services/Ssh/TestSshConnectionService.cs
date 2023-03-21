@@ -125,42 +125,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         //---------------------------------------------------------------------
-        // ActivateOrConnectInstanceAsync.
+        // ConnectInstanceAsync.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSessionExists_ThenActivateOrConnectInstanceAsyncActivatesSession()
-        {
-            var activeSession = (ISession)new Mock<ISshTerminalSession>().Object;
-            var sessionBroker = new Mock<ISshTerminalSessionBroker>();
-            sessionBroker.Setup(b => b.TryActivate(
-                    It.Is<InstanceLocator>(l => l == SampleLocator),
-                    out activeSession))
-                .Returns(true);
-
-            var vmNode = CreateInstanceNodeMock();
-
-            var service = new SshConnectionService(
-                new Mock<IMainWindow>().Object,
-                CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock().Object,
-                sessionBroker.Object,
-                CreateTunnelBrokerServiceMock().Object,
-                new Mock<IConnectionSettingsService>().Object,
-                new Mock<IKeyAuthorizationService>().Object,
-                CreateKeyStoreAdapterMock().Object,
-                CreateSshSettingsRepository(),
-                new SynchronousJobService());
-
-            var session = await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object)
-                .ConfigureAwait(false);
-
-            Assert.IsNotNull(session);
-        }
-
-        [Test]
-        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncOpensSshKey()
+        public async Task ConnectInstanceAsyncOpensSshKey()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
@@ -185,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
             keyStore.Verify(k => k.OpenSshKeyPair(
@@ -196,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
-        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncConnectsToConfiguredPort()
+        public async Task ConnectInstanceAsyncConnectsToConfiguredPort()
         {
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
             settings.SshPort.IntValue = 2222;
@@ -222,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
             tunnelBrokerService.Verify(s => s.ConnectAsync(
@@ -232,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
-        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncUsesPreferredUsername()
+        public async Task ConnectInstanceAsyncUsesPreferredUsername()
         {
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
             settings.SshPort.IntValue = 2222;
@@ -259,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
             authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
@@ -272,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
-        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncUsesKeyValidityFromSettings()
+        public async Task ConnectInstanceAsyncUsesKeyValidityFromSettings()
         {
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
             settings.SshPort.IntValue = 2222;
@@ -304,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
             authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
@@ -317,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
-        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncUsesConnectionTimeout()
+        public async Task ConnectInstanceAsyncUsesConnectionTimeout()
         {
             var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
             settings.SshPort.IntValue = 2222;
@@ -344,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object)
+                .ConnectInstanceAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
             tunnelBrokerService.Verify(s => s.ConnectAsync(
@@ -354,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
-        public void WhenTunnelUnauthorized_ThenActivateOrConnectInstanceAsyncActivatesSessionThrowsConnectionFailedException()
+        public void WhenTunnelUnauthorized_ThenConnectInstanceAsyncActivatesSessionThrowsConnectionFailedException()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
@@ -385,11 +354,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             ExceptionAssert.ThrowsAggregateException<ConnectionFailedException>(
-                () => service.ActivateOrConnectInstanceAsync(vmNode.Object).Wait());
+                () => service.ConnectInstanceAsync(vmNode.Object).Wait());
         }
 
         [Test]
-        public void WhenKeyAuthorizationFails_ThenActivateOrConnectInstanceAsyncActivatesSessionThrowsSshKeyPushFailedException()
+        public void WhenKeyAuthorizationFails_ThenConnectInstanceAsyncActivatesSessionThrowsSshKeyPushFailedException()
         {
             var settingsService = new Mock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
@@ -423,63 +392,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             ExceptionAssert.ThrowsAggregateException<SshKeyPushFailedException>(
-                () => service.ActivateOrConnectInstanceAsync(vmNode.Object).Wait());
-        }
-
-        //---------------------------------------------------------------------
-        // ConnectInstanceAsync.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenSessionExists_ThenConnectInstanceAsyncCreatesNewSessionSession()
-        {
-            ISession nullSession = null;
-            var sessionBroker = new Mock<ISshTerminalSessionBroker>();
-            sessionBroker
-                .Setup(b => b.TryActivate(It.Is<InstanceLocator>(l => l == SampleLocator),
-                out nullSession))
-                .Returns(false);
-            sessionBroker
-                .Setup(b => b.ConnectAsync(
-                    It.IsAny<InstanceLocator>(),
-                    It.IsAny<IPEndPoint>(),
-                    It.IsAny<AuthorizedKeyPair>(),
-                    It.IsAny<CultureInfo>(),
-                    It.IsAny<TimeSpan>()))
-                .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
-
-            var settingsService = new Mock<IConnectionSettingsService>();
-            settingsService
-                .Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
-                .Returns(
-                    InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
-                        .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
-
-            var vmNode = CreateInstanceNodeMock();
-            var tunnelBrokerService = CreateTunnelBrokerServiceMock();
-
-            var service = new SshConnectionService(
-                new Mock<IMainWindow>().Object,
-                CreateAuthorizationMock().Object,
-                CreateProjectModelServiceMock().Object,
-                sessionBroker.Object,
-                tunnelBrokerService.Object,
-                settingsService.Object,
-                new Mock<IKeyAuthorizationService>().Object,
-                CreateKeyStoreAdapterMock().Object,
-                CreateSshSettingsRepository(),
-                new SynchronousJobService());
-
-            var session = await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object)
-                .ConfigureAwait(false);
-
-            Assert.IsNotNull(session);
-
-            tunnelBrokerService.Verify(s => s.ConnectAsync(
-                It.Is<TunnelDestination>(d => d.RemotePort == 22),
-                It.IsAny<ISshRelayPolicy>(),
-                It.IsAny<TimeSpan>()), Times.Once);
+                () => service.ConnectInstanceAsync(vmNode.Object).Wait());
         }
     }
 }
