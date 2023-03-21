@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 connectionService,
                 new Mock<IRdpConnectionService>(),
                 sessionBroker);
-            command.ForceNewSshConnection = false;
+            command.ForceNewConnection = false;
 
             var instance = CreateInstanceNode(OperatingSystems.Linux).Object;
 
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 connectionService,
                 new Mock<IRdpConnectionService>(),
                 sessionBroker);
-            command.ForceNewSshConnection = true;
+            command.ForceNewConnection = true;
 
             await command
                 .ExecuteAsync(instance)

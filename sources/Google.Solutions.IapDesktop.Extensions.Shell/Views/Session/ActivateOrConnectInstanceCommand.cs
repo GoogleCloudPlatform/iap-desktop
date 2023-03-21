@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public bool AvailableForSsh { get; set; } = false;
         public bool AvailableForRdp { get; set; } = false;
         public bool AllowPersistentRdpCredentials { get; set; } = true;
-        public bool ForceNewSshConnection { get; set; } = false;
+        public bool ForceNewConnection { get; set; } = false;
 
         public ActivateOrConnectInstanceCommand(
             string text,
@@ -90,59 +90,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             Debug.Assert(IsAvailable(node));
             Debug.Assert(IsEnabled(node));
 
+            var instanceNode = (IProjectModelInstanceNode)node;
             ISession session = null;
-            if (node is IProjectModelInstanceNode rdpNode && rdpNode.IsRdpSupported())
-            {
-                if (this.sessionBroker
-                    .GetInstance()
-                    .TryActivate(rdpNode.Instance, out session)) 
-                {
-                    //
-                    // There is an existing session, and it's now active.
-                    //
-                    Debug.Assert(session != null);
-                    Debug.Assert(session is IRemoteDesktopSession);
-                }
-                else
-                {
-                    //
-                    // Create new session.
-                    //
-                    session = await this.rdpConnectionService
-                        .GetInstance()
-                        .ConnectInstanceAsync(
-                            rdpNode,
-                            this.AllowPersistentRdpCredentials)
-                        .ConfigureAwait(true);
-                }
 
-                Debug.Assert(session != null);
-            }
-            else if (node is IProjectModelInstanceNode sshNode && sshNode.IsSshSupported())
+            if (!this.ForceNewConnection && this.sessionBroker
+                .GetInstance()
+                .TryActivate(instanceNode.Instance, out session))
             {
-                if (!this.ForceNewSshConnection && this.sessionBroker
-                    .GetInstance()
-                    .TryActivate(sshNode.Instance, out session))
-                {
-                    //
-                    // There is an existing session, and it's now active.
-                    //
-                    Debug.Assert(session != null);
-                    Debug.Assert(session is ISshTerminalSession);
-                }
-                else
-                {
-                    //
-                    // Create new session.
-                    //
-                    session = await this.sshConnectionService
-                        .GetInstance()
-                        .ConnectInstanceAsync(sshNode)
-                        .ConfigureAwait(true);
-                }
-
+                //
+                // There is an existing session, and it's now active.
+                //
                 Debug.Assert(session != null);
+                Debug.Assert(
+                    (instanceNode.IsRdpSupported() && session is IRemoteDesktopSession) ||
+                    (instanceNode.IsSshSupported() && session is ISshTerminalSession));
+                return;
             }
+
+            //
+            // Create new session.
+            //
+            if (instanceNode.IsRdpSupported())
+            {
+                session = await this.rdpConnectionService
+                    .GetInstance()
+                    .ConnectInstanceAsync(
+                        instanceNode,
+                        this.AllowPersistentRdpCredentials)
+                    .ConfigureAwait(true);
+            }
+            else if (instanceNode.IsSshSupported())
+            {
+                session = await this.sshConnectionService
+                    .GetInstance()
+                    .ConnectInstanceAsync(instanceNode)
+                    .ConfigureAwait(true);
+            }
+
+            Debug.Assert(session != null);
 
             if (session != null &&
                 session is SessionViewBase sessionPane &&

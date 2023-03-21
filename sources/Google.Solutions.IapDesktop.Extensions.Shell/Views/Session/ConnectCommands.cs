@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             {
                 AvailableForSsh = true,                  // Linux/SSH only.
                 AvailableForRdp = false,
-                ForceNewSshConnection = true,            // Force new.
+                ForceNewConnection = true,            // Force new.
                 Image = Resources.Connect_16,
                 ActivityText = "Connecting to VM instance"
             };
