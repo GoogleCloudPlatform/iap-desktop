@@ -44,11 +44,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
 {
     public interface IRdpConnectionService
     {
-        Task<IRemoteDesktopSession> ConnectInstanceAsync(
+        Task<RdpConnectionTemplate> ConnectInstanceAsync(// TODO: Rename to PrepareConnectionAsync
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials);
 
-        Task<IRemoteDesktopSession> ConnectInstanceAsync(IapRdpUrl url);
+        Task<RdpConnectionTemplate> ConnectInstanceAsync(IapRdpUrl url);// TODO: Rename to PrepareConnectionAsync
     }
 
     [Service(typeof(IRdpConnectionService))]
@@ -80,10 +80,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             this.credentialPrompt = credentialPrompt.ThrowIfNull(nameof(credentialPrompt));
         }
 
-        private async Task<IRemoteDesktopSession> ConnectInstanceAsync(
+        private async Task<RdpConnectionTemplate> ConnectInstanceAsync(// TODO: Rename to PrepareConnectionAsync
             InstanceLocator instance,
             InstanceConnectionSettings settings)
         {
+            var timeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
             var tunnel = await this.jobService.RunInBackground(
                 new JobDescription(
                     $"Opening Cloud IAP tunnel to {instance.Name}...",
@@ -98,7 +99,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
 
                         // Give IAP the same timeout for probing as RDP itself.
                         // Note that the timeouts are not additive.
-                        var timeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
 
                         return await this.tunnelBroker.ConnectAsync(
                                 destination,
@@ -135,10 +135,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                     }
                 }).ConfigureAwait(true);
 
-            return this.sessionBroker.Connect(
+            return new RdpConnectionTemplate(
                 instance,
+                true,
                 "localhost",
                 (ushort)tunnel.LocalPort,
+                timeout,
                 settings);
         }
 
@@ -146,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         // IRdpConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task<IRemoteDesktopSession> ConnectInstanceAsync(
+        public async Task<RdpConnectionTemplate> ConnectInstanceAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials)
         {
@@ -190,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                 .ConfigureAwait(true);
         }
 
-        public async Task<IRemoteDesktopSession> ConnectInstanceAsync(IapRdpUrl url)
+        public async Task<RdpConnectionTemplate> ConnectInstanceAsync(IapRdpUrl url)
         {
             InstanceConnectionSettings settings;
             var existingNode = await this.projectModelService

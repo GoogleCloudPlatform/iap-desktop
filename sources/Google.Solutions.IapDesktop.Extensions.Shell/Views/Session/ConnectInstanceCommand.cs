@@ -42,7 +42,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         private readonly ICommandContainer<ISession> sessionContextMenu;
         private readonly Service<IRdpConnectionService> rdpConnectionService;
         private readonly Service<ISshConnectionService> sshConnectionService;
-        private readonly Service<IGlobalSessionBroker> sessionBroker;
+        private readonly Service<IRemoteDesktopSessionBroker> rdpSessionBroker;
+        private readonly Service<ISshTerminalSessionBroker> sshSessionBroker;
+        private readonly Service<IGlobalSessionBroker> globalSessionBroker;
 
         public bool AlwaysAvailable { get; set; } = false;
         public bool AvailableForSsh { get; set; } = false;
@@ -55,13 +57,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             ICommandContainer<ISession> sessionContextMenu,
             Service<IRdpConnectionService> rdpConnectionService,
             Service<ISshConnectionService> sshConnectionService,
-            Service<IGlobalSessionBroker> sessionBroker)
+            Service<IRemoteDesktopSessionBroker> rdpSessionBroker,
+            Service<ISshTerminalSessionBroker> sshSessionBroker,
+            Service<IGlobalSessionBroker> globalSessionBroker)
             : base(text)
         {
             this.sessionContextMenu = sessionContextMenu;
             this.rdpConnectionService = rdpConnectionService;
             this.sshConnectionService = sshConnectionService;
-            this.sessionBroker = sessionBroker;
+            this.rdpSessionBroker = rdpSessionBroker;
+            this.sshSessionBroker = sshSessionBroker;
+            this.globalSessionBroker = globalSessionBroker;
         }
 
         protected override bool IsAvailable(IProjectModelNode node)
@@ -96,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             var instanceNode = (IProjectModelInstanceNode)node;
             ISession session = null;
 
-            if (!this.ForceNewConnection && this.sessionBroker
+            if (!this.ForceNewConnection && this.globalSessionBroker
                 .GetInstance()
                 .TryActivate(instanceNode.Instance, out session))
             {
@@ -115,18 +121,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             //
             if (instanceNode.IsRdpSupported())
             {
-                session = await this.rdpConnectionService
+                var template = await this.rdpConnectionService
                     .GetInstance()
                     .ConnectInstanceAsync(
                         instanceNode,
                         this.AllowPersistentRdpCredentials)
                     .ConfigureAwait(true);
+
+                session = this.rdpSessionBroker
+                    .GetInstance()
+                    .Connect(template);
             }
             else if (instanceNode.IsSshSupported())
             {
-                session = await this.sshConnectionService
+                var template = await this.sshConnectionService
                     .GetInstance()
                     .ConnectInstanceAsync(instanceNode)
+                    .ConfigureAwait(true);
+
+                session = await this.sshSessionBroker
+                    .GetInstance()
+                    .ConnectAsync(template)
                     .ConfigureAwait(true);
             }
 

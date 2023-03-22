@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
     public interface ISshConnectionService
     {
-        Task<ISshTerminalSession> ConnectInstanceAsync(
+        Task<SshConnectionTemplate> ConnectInstanceAsync( // TODO: Rename to PrepareConnectionAsync
             IProjectModelInstanceNode vmNode);
     }
 
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // ISshConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task<ISshTerminalSession> ConnectInstanceAsync(
+        public async Task<SshConnectionTemplate> ConnectInstanceAsync(
             IProjectModelInstanceNode vmNode)
         {
             Debug.Assert(vmNode.IsSshSupported());
@@ -212,16 +212,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                      : null;
 
                 //
-                // NB. ConnectAsync takes ownership of the key and will retain
+                // NB. The template takes ownership of the key and will retain
                 // it for the lifetime of the session.
                 //
-                return await this.sessionBroker.ConnectAsync(
-                        instance,
-                        new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
-                        authorizedKeyTask.Result,
-                        language,
-                        timeout)
-                    .ConfigureAwait(true);
+                return new SshConnectionTemplate(
+                    instance,
+                    true,
+                    new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
+                    timeout,
+                    authorizedKeyTask.Result,
+                    language);
             }
             catch (Exception)
             {

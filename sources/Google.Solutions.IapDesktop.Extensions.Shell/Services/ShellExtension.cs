@@ -34,6 +34,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
@@ -138,6 +139,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 serviceProvider.GetService<Service<IRdpConnectionService>>(),
                 serviceProvider.GetService<Service<ISshConnectionService>>(),
                 serviceProvider.GetService<Service<IProjectModelService>>(),
+                serviceProvider.GetService<Service<IRemoteDesktopSessionBroker>>(),
+                serviceProvider.GetService<Service<ISshTerminalSessionBroker>>(),
                 serviceProvider.GetService<Service<IGlobalSessionBroker>>(),
                 this.sessionCommands);
             Debug.Assert(serviceProvider

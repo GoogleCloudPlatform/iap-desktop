@@ -23,10 +23,8 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using System;
-using System.Globalization;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
@@ -42,12 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
     {
         ISshTerminalSession ActiveSshTerminalSession { get; }
 
-        Task<ISshTerminalSession> ConnectAsync(
-            InstanceLocator vmInstance,
-            IPEndPoint endpoint,
-            AuthorizedKeyPair authorizedKey,
-            CultureInfo language,
-            TimeSpan connectionTimeout);
+        Task<ISshTerminalSession> ConnectAsync(SshConnectionTemplate template);
     }
 
     [Service(typeof(ISshTerminalSessionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
@@ -106,19 +99,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
         }
 
-        public async Task<ISshTerminalSession> ConnectAsync(
-            InstanceLocator vmInstance,
-            IPEndPoint endpoint,
-            AuthorizedKeyPair authorizedKey,
-            CultureInfo language,
-            TimeSpan connectionTimeout)
+        public async Task<ISshTerminalSession> ConnectAsync(SshConnectionTemplate template)
         {
             var window = ToolWindow.GetWindow<SshTerminalView, SshTerminalViewModel>(this.serviceProvider);
-            window.ViewModel.Instance = vmInstance;
-            window.ViewModel.Endpoint = endpoint;
-            window.ViewModel.AuthorizedKey = authorizedKey;
-            window.ViewModel.Language = language;
-            window.ViewModel.ConnectionTimeout = connectionTimeout;
+            window.ViewModel.Instance = template.Instance;
+            window.ViewModel.Endpoint = template.Endpoint;
+            window.ViewModel.AuthorizedKey = template.AuthorizedKey;
+            window.ViewModel.Language = template.Language;
+            window.ViewModel.ConnectionTimeout = template.ConnectionTimeout;
 
             var pane = window.Bind();
             window.Show();

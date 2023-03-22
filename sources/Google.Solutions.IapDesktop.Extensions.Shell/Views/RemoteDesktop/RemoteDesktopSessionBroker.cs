@@ -23,7 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
@@ -50,11 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
     {
         IRemoteDesktopSession ActiveRemoteDesktopSession { get; }
 
-        IRemoteDesktopSession Connect(
-            InstanceLocator vmInstance,
-            string server,
-            ushort port,
-            InstanceConnectionSettings settings);
+        IRemoteDesktopSession Connect(RdpConnectionTemplate template);
     }
 
     [Service(typeof(IRemoteDesktopSessionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
@@ -109,17 +105,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             }
         }
 
-        public IRemoteDesktopSession Connect(
-            InstanceLocator vmInstance,
-            string server,
-            ushort port,
-            InstanceConnectionSettings settings)
+        public IRemoteDesktopSession Connect(RdpConnectionTemplate template) 
         {
             var window = ToolWindow.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(this.serviceProvider);
-            window.ViewModel.Instance = vmInstance;
-            window.ViewModel.Server = server;
-            window.ViewModel.Port = port;
-            window.ViewModel.Settings = settings;
+            window.ViewModel.Instance = template.Instance;
+            window.ViewModel.Server = template.Endpoint;
+            window.ViewModel.Port = template.EndpointPort;
+            window.ViewModel.Settings = template.Settings;
 
             var pane = window.Bind();
             window.Show();

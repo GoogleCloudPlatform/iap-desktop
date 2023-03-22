@@ -37,11 +37,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     internal class ConnectRdpUrlCommand : ConnectInstanceCommandBase<IapRdpUrl>
     {
         private readonly Service<IRdpConnectionService> connectionService;
-        private readonly Service<IGlobalSessionBroker> sessionBroker;
+        private readonly Service<IRemoteDesktopSessionBroker> sessionBroker;
 
         public ConnectRdpUrlCommand(
             Service<IRdpConnectionService> connectionService,
-            Service<IGlobalSessionBroker> sessionBroker)
+            Service<IRemoteDesktopSessionBroker> sessionBroker)
             : base("Launch &RDP URL")
         {
             this.connectionService = connectionService;
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             return url != null;
         }
 
-        public override Task ExecuteAsync(IapRdpUrl url)
+        public override async Task ExecuteAsync(IapRdpUrl url)
         {
             if (this.sessionBroker
                 .GetInstance()
@@ -69,16 +69,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 //
                 Debug.Assert(activeSession != null);
                 Debug.Assert(activeSession is IRemoteDesktopSession);
-                return Task.CompletedTask;
             }
             else
             {
                 //
                 // Create new session.
                 //
-                return this.connectionService
+                var template = await this.connectionService
                     .GetInstance()
-                    .ConnectInstanceAsync(url);
+                    .ConnectInstanceAsync(url)
+                    .ConfigureAwait(true);
+
+                var session = this.sessionBroker
+                    .GetInstance()
+                    .Connect(template);
+
+                Debug.Assert(session != null);
             }
         }
     }

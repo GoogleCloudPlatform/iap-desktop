@@ -45,11 +45,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         public bool IsTunnelled { get; protected set; }
 
         /// <summary>
-        /// Endpoint to connect to. This might be a localhost endpoint.
-        /// </summary>
-        public IPEndPoint Endpoint { get; protected set; }
-
-        /// <summary>
         /// Timeout to use for the initial connection attempt.
         /// </summary>
         public TimeSpan ConnectionTimeout { get; protected set; }
@@ -60,24 +55,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         /// <summary>
         /// Windows credentials, might be null.
         /// </summary>
-        public NetworkCredential LogonCredentials { get; }
+        //public NetworkCredential LogonCredentials { get; } // TODO: Use NetworkCreds
 
         public InstanceConnectionSettings Settings { get; } // TODO: Inline.
+
+        /// <summary>
+        /// Endpoint to connect to. This might be a localhost endpoint.
+        /// </summary>
+        public string Endpoint { get; protected set; }
+
+        /// <summary>
+        /// Endpoint to connect to. This might be a localhost endpoint.
+        /// </summary>
+        public ushort EndpointPort { get; protected set; }
 
         public RdpConnectionTemplate(
             InstanceLocator instance,
             bool isTunnelled,
-            IPEndPoint endpoint,
+            string endpoint,
+            ushort endpointPort,
             TimeSpan connectionTimeout,
-            NetworkCredential logonCredentials,
             InstanceConnectionSettings settings)
         {
             this.Instance = instance;
             this.IsTunnelled = isTunnelled;
             this.Endpoint = endpoint;
+            this.EndpointPort = endpointPort;
             this.ConnectionTimeout = connectionTimeout;
 
-            this.LogonCredentials = logonCredentials;
             this.Settings = settings;
         }
     }
@@ -92,7 +97,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         /// <summary>
         /// Terminal locale.
         /// </summary>
-        public CultureInfo Locale { get; }
+        public CultureInfo Language { get; }
+
+        public IPEndPoint Endpoint { get; }
 
         public SshConnectionTemplate(
             InstanceLocator instance,
@@ -100,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             IPEndPoint endpoint,
             TimeSpan connectionTimeout,
             AuthorizedKeyPair authorizedKey,
-            CultureInfo locale)
+            CultureInfo language)
         {
             this.Instance = instance;
             this.IsTunnelled = isTunnelled;
@@ -108,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             this.ConnectionTimeout = connectionTimeout;
 
             this.AuthorizedKey = authorizedKey;
-            this.Locale = locale;
+            this.Language = language;
         }
     }
 }
