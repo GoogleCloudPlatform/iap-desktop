@@ -48,11 +48,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             //
             // Install command for launching URLs.
             //
-            urlCommands.LaunchRdpUrl = new LaunchRdpUrlCommand(
+            urlCommands.LaunchRdpUrl = new ConnectRdpUrlCommand(
                 rdpConnectionService,
                 sessionBroker);
 
-            this.ToolbarActivateOrConnectInstance = new ActivateOrConnectInstanceCommand(
+            this.ToolbarActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
                 sessionContextMenu,
                 rdpConnectionService,
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 Image = Resources.Connect_16,
                 ActivityText = "Connecting to VM instance"
             };
-            this.ContextMenuActivateOrConnectInstance = new ActivateOrConnectInstanceCommand(
+            this.ContextMenuActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
                 sessionContextMenu,
                 rdpConnectionService,
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 IsDefault = true,
                 ActivityText = "Connecting to VM instance"
             };
-            this.ContextMenuConnectRdpAsUser = new ActivateOrConnectInstanceCommand(
+            this.ContextMenuConnectRdpAsUser = new ConnectInstanceCommand(
                 "Connect &as user...",
                 sessionContextMenu,
                 rdpConnectionService,
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 Image = Resources.Connect_16,
                 ActivityText = "Connecting to VM instance"
             };
-            this.ContextMenuConnectSshInNewTerminal = new ActivateOrConnectInstanceCommand(
+            this.ContextMenuConnectSshInNewTerminal = new ConnectInstanceCommand(
                 "Connect in &new terminal",
                 sessionContextMenu,
                 rdpConnectionService,

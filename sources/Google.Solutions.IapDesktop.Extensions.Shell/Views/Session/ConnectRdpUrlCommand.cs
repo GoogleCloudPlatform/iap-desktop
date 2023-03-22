@@ -30,12 +30,16 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 {
-    internal class LaunchRdpUrlCommand : ToolContextCommand<IapRdpUrl>
+    /// <summary>
+    /// Connect to a VM by iap-rdp:/// URL, or activate an existing session
+    /// if present.
+    /// </summary>
+    internal class ConnectRdpUrlCommand : ConnectInstanceCommandBase<IapRdpUrl>
     {
         private readonly Service<IRdpConnectionService> connectionService;
         private readonly Service<IGlobalSessionBroker> sessionBroker;
 
-        public LaunchRdpUrlCommand(
+        public ConnectRdpUrlCommand(
             Service<IRdpConnectionService> connectionService,
             Service<IGlobalSessionBroker> sessionBroker)
             : base("Launch &RDP URL")

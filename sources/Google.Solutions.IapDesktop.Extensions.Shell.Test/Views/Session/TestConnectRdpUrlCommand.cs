@@ -36,7 +36,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {
     [TestFixture]
-    public class TestConnectCommands_LaunchUrl
+    public class TestConnectRdpUrlCommand
     {
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .Setup(s => s.TryActivate(SampleLocator, out session))
                 .Returns(true);
 
-            var command = new LaunchRdpUrlCommand(
+            var command = new ConnectRdpUrlCommand(
                 new Service<IRdpConnectionService>(serviceProvider.Object),
                 new Service<IGlobalSessionBroker>(serviceProvider.Object));
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .Setup(s => s.TryActivate(SampleLocator, out nullSession))
                 .Returns(false);
 
-            var command = new LaunchRdpUrlCommand(
+            var command = new ConnectRdpUrlCommand(
                 new Service<IRdpConnectionService>(serviceProvider.Object),
                 new Service<IGlobalSessionBroker>(serviceProvider.Object));
 

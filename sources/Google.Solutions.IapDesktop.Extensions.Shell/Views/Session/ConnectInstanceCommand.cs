@@ -34,7 +34,11 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 {
-    internal class ActivateOrConnectInstanceCommand : ToolContextCommand<IProjectModelNode>
+    /// <summary>
+    /// Connect to a VM by model node, or activate an existing session
+    /// if present.
+    /// </summary>
+    internal class ConnectInstanceCommand : ConnectInstanceCommandBase<IProjectModelNode>
     {
         private readonly ICommandContainer<ISession> sessionContextMenu;
         private readonly Service<IRdpConnectionService> rdpConnectionService;
@@ -47,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public bool AllowPersistentRdpCredentials { get; set; } = true;
         public bool ForceNewConnection { get; set; } = false;
 
-        public ActivateOrConnectInstanceCommand(
+        public ConnectInstanceCommand(
             string text,
             ICommandContainer<ISession> sessionContextMenu,
             Service<IRdpConnectionService> rdpConnectionService,

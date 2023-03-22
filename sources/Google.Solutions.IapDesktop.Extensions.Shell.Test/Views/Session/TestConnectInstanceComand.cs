@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
-using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
@@ -40,13 +39,13 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {
     [TestFixture]
-    public class TestActivateOrConnectInstanceComand
+    public class TestConnectInstanceComand
     {
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
 
-        private static ActivateOrConnectInstanceCommand CreateCommand(
+        private static ConnectInstanceCommand CreateCommand(
             Mock<ISshConnectionService> sshConnectionService,
             Mock<IRdpConnectionService> rdpConnectionService,
             Mock<IGlobalSessionBroker> sessionBroker)
@@ -56,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             serviceProvider.Add(rdpConnectionService.Object);
             serviceProvider.Add(sessionBroker.Object);
 
-            return new ActivateOrConnectInstanceCommand(
+            return new ConnectInstanceCommand(
                 "&test",
                 new Mock<ICommandContainer<ISession>>().Object,
                 new Service<IRdpConnectionService>(serviceProvider.Object),
