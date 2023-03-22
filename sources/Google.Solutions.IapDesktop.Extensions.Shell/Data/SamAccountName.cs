@@ -19,13 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
 {
     internal static class SamAccountName
     {
-        public static string FromGoogleEmailAddress(string email)
+        public static string SuggestFromGoogleEmailAddress(IAuthorization authorization)
         {
             //
             // Criteria for local Windows user accounts:
@@ -45,6 +46,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             // - We must truncate to 20 chars.
             //
 
+            var email = authorization.Email;
+
             int atIndex;
             if (!string.IsNullOrEmpty(email) && (atIndex = email.IndexOf('@')) > 0)
             {
@@ -52,7 +55,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             }
             else
             {
-                throw new ArgumentException($"{email} is not a valid email address");
+                //
+                // Such an email should never surface, but revert
+                // to using the local Windows username then.
+                //
+                return Environment.UserName;
             }
         }
     }

@@ -156,7 +156,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\Diagnostics\DiagnosticsCommands.cs" />
-    <Compile Include="Views\Credentials\AuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\ConfigureCredentialsWorkflow.cs" />
     <Compile Include="Views\Credentials\NewCredentialsDialog.cs" />
     <Compile Include="Views\Credentials\SelectCredentialsWorkflow.cs" />
@@ -168,7 +167,7 @@
       <DependentUpon>NewCredentialsView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Credentials\NewCredentialsViewModel.cs" />
-    <Compile Include="Views\Credentials\SamAccountName.cs" />
+    <Compile Include="Data\SamAccountName.cs" />
     <Compile Include="Views\Credentials\ShowCredentialsView.cs">
       <SubType>Form</SubType>
     </Compile>
