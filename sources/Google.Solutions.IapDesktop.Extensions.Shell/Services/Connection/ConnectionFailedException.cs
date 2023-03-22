@@ -25,7 +25,7 @@ using System;
 #pragma warning disable CA1058 // Types should not extend certain base types
 #pragma warning disable CA2237 // Mark ISerializable types with serializable
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 {
     public class ConnectionFailedException : ApplicationException, IExceptionWithHelpTopic
     {
