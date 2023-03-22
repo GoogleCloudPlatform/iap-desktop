@@ -145,53 +145,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                     .ConfigureAwait(true);
             }
         }
-
-        [Test]
-        public async Task WhenSshSessionExists_ThenGetActivePaneReturnsPane(
-            [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
-        {
-            var serviceProvider = CreateServiceProvider(await credential);
-            var locator = await testInstance;
-
-            using (var tunnel = IapTunnel.ForRdp(
-                locator,
-                await credential))
-            {
-                var credentials = await GenerateWindowsCredentials(locator)
-                    .ConfigureAwait(true);
-
-                var settings = InstanceConnectionSettings.CreateNew(
-                    locator.ProjectId,
-                    locator.Name);
-                settings.RdpUsername.StringValue = credentials.UserName;
-                settings.RdpPassword.Value = credentials.SecurePassword;
-
-                var template = new RdpConnectionTemplate(
-                    locator,
-                    true,
-                    "localhost",
-                    (ushort)tunnel.LocalPort,
-                    settings);
-
-                // Connect
-                var broker = new InstanceSessionBroker(serviceProvider);
-                IRemoteDesktopSession session = null;
-                await AssertRaisesEventAsync<SessionStartedEvent>(
-                        () => session = (RemoteDesktopView)broker.Connect(template))
-                    .ConfigureAwait(true);
-
-                Assert.IsNull(this.ExceptionShown);
-
-                Assert.AreSame(session, RemoteDesktopView.TryGetActivePane(this.MainWindow));
-                Assert.AreSame(session, RemoteDesktopView.TryGetExistingPane(this.MainWindow, locator));
-                Assert.IsTrue(broker.IsConnected(locator));
-                Assert.IsTrue(broker.TryActivate(locator, out var _));
-
-                await AssertRaisesEventAsync<SessionEndedEvent>(
-                        () => session.Close())
-                    .ConfigureAwait(true);
-            }
-        }
     }
 }
