@@ -56,7 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     {
         private readonly IWin32Window window;
         private readonly IJobService jobService;
-        private readonly ISshTerminalSessionBroker sessionBroker;
         private readonly ITunnelBrokerService tunnelBroker;
         private readonly IConnectionSettingsService settingsService;
         private readonly IKeyAuthorizationService authorizedKeyService;
@@ -69,7 +68,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             IMainWindow window,
             IAuthorization authorization,
             IProjectModelService projectModelService,
-            ISshTerminalSessionBroker sessionBroker,
             ITunnelBrokerService tunnelBroker,
             IConnectionSettingsService settingsService,
             IKeyAuthorizationService authorizedKeyService,
@@ -80,7 +78,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.window = window.ThrowIfNull(nameof(window));
             this.authorization = authorization.ThrowIfNull(nameof(authorization));
             this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
-            this.sessionBroker = sessionBroker.ThrowIfNull(nameof(sessionBroker));
             this.tunnelBroker = tunnelBroker.ThrowIfNull(nameof(tunnelBroker));
             this.settingsService = settingsService.ThrowIfNull(nameof(settingsService));
             this.authorizedKeyService = authorizedKeyService.ThrowIfNull(nameof(authorizedKeyService));

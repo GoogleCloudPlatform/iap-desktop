@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
@@ -73,9 +74,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var serviceProvider = CreateServiceProvider();
             var settings = InstanceConnectionSettings.CreateNew(this.SampleLocator);
 
-            var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
 
-            await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
+            await AssertRaisesEventAsync<SessionAbortedEvent>(() => broker.Connect(
                     new RdpConnectionTemplate(
                         this.SampleLocator,
                         true,
@@ -95,9 +96,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var settings = InstanceConnectionSettings.CreateNew(this.SampleLocator);
             settings.RdpConnectionTimeout.IntValue = 5;
 
-            var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
 
-            await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
+            await AssertRaisesEventAsync<SessionAbortedEvent>(() => broker.Connect(
                     new RdpConnectionTemplate(
                         this.SampleLocator,
                         true,
@@ -117,8 +118,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var serviceProvider = CreateServiceProvider();
             var settings = InstanceConnectionSettings.CreateNew(this.SampleLocator);
 
-            var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
-            await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
+            var broker = new InstanceSessionBroker(serviceProvider);
+
+            await AssertRaisesEventAsync<SessionAbortedEvent>(() => broker.Connect(
                     new RdpConnectionTemplate(
                         this.SampleLocator,
                         true,
@@ -156,9 +158,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpUserAuthenticationBehavior.EnumValue = RdpUserAuthenticationBehavior.AbortOnFailure;
                 settings.RdpDesktopSize.EnumValue = RdpDesktopSize.ClientSize;
 
-                var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
+                var broker = new InstanceSessionBroker(serviceProvider);
 
-                await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
+                await AssertRaisesEventAsync<SessionAbortedEvent>(() => broker.Connect(
                         new RdpConnectionTemplate(
                             locator,
                             true,
@@ -223,12 +225,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpRedirectDrive.EnumValue = redirectDrive;
                 settings.RdpRedirectDevice.EnumValue = redirectDevice;
 
-                var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
+                var broker = new InstanceSessionBroker(serviceProvider);
 
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(() =>
                     {
-                        session = rdpService.Connect(new RdpConnectionTemplate(
+                        session = broker.Connect(new RdpConnectionTemplate(
                             locator,
                             true,
                             "localhost",
@@ -264,12 +266,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpUsername.StringValue = windowsCredentials.UserName;
                 settings.RdpPassword.Value = windowsCredentials.SecurePassword;
 
-                var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
+                var broker = new InstanceSessionBroker(serviceProvider);
 
                 RemoteDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(() =>
                     {
-                        session = (RemoteDesktopView)rdpService.Connect(
+                        session = (RemoteDesktopView)broker.Connect(
                             new RdpConnectionTemplate(
                                 locator,
                                 true,
@@ -319,12 +321,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpBitmapPersistence.EnumValue = RdpBitmapPersistence.Disabled;
                 settings.RdpDesktopSize.EnumValue = RdpDesktopSize.ClientSize;
 
-                var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
+                var broker = new InstanceSessionBroker(serviceProvider);
 
                 RemoteDesktopView session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(() =>
                     {
-                        session = (RemoteDesktopView)rdpService.Connect(
+                        session = (RemoteDesktopView)broker.Connect(
                             new RdpConnectionTemplate(
                                 locator,
                                 true,

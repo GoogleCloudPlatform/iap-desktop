@@ -37,11 +37,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     internal class ConnectRdpUrlCommand : ConnectInstanceCommandBase<IapRdpUrl>
     {
         private readonly Service<IRdpConnectionService> connectionService;
-        private readonly Service<IRemoteDesktopSessionBroker> sessionBroker;
+        private readonly Service<IInstanceSessionBroker> sessionBroker;
 
         public ConnectRdpUrlCommand(
             Service<IRdpConnectionService> connectionService,
-            Service<IRemoteDesktopSessionBroker> sessionBroker)
+            Service<IInstanceSessionBroker> sessionBroker)
             : base("Launch &RDP URL")
         {
             this.connectionService = connectionService;

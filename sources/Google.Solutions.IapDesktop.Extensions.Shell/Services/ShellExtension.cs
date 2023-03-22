@@ -139,9 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 serviceProvider.GetService<Service<IRdpConnectionService>>(),
                 serviceProvider.GetService<Service<ISshConnectionService>>(),
                 serviceProvider.GetService<Service<IProjectModelService>>(),
-                serviceProvider.GetService<Service<IRemoteDesktopSessionBroker>>(),
-                serviceProvider.GetService<Service<ISshTerminalSessionBroker>>(),
-                serviceProvider.GetService<Service<IGlobalSessionBroker>>(),
+                serviceProvider.GetService<Service<IInstanceSessionBroker>>(),
                 this.sessionCommands);
             Debug.Assert(serviceProvider
                 .GetService<UrlCommands>()

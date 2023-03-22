@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -27,19 +27,21 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Google.Solutions.Testing.Common.Integration;
+using Google.Solutions.Testing.Common.Mocks;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {
     [TestFixture]
-    [UsesCloudResources]
-    public class TestRemoteDesktopSessionBroker : WindowTestFixtureBase
+    [UsesCloudResourcesAttribute]
+    public class TestInstanceSessionBroker : WindowTestFixtureBase
     {
         // Use a larger machine type as all this RDP'ing consumes a fair
         // amount of memory.
@@ -58,6 +60,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         }
 
         //---------------------------------------------------------------------
+        // IsConnected.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNotConnected_ThenIsConnectedIsFalse()
+        {
+            var serviceProvider = CreateServiceProvider();
+            var sampleLocator = new InstanceLocator("project", "zone", "instance");
+            var broker = new InstanceSessionBroker(serviceProvider);
+            Assert.IsFalse(broker.IsConnected(sampleLocator));
+        }
+
+        //---------------------------------------------------------------------
+        // ActiveSession.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNotConnected_ThenActiveSessionReturnsNull()
+        {
+            var serviceProvider = CreateServiceProvider();
+            var broker = new InstanceSessionBroker(serviceProvider);
+            Assert.IsNull(broker.ActiveSession);
+        }
+
+        //---------------------------------------------------------------------
         // TryActivate
         //---------------------------------------------------------------------
 
@@ -66,12 +93,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var serviceProvider = CreateServiceProvider();
             var sampleLocator = new InstanceLocator("project", "zone", "instance");
-            var broker = new RemoteDesktopSessionBroker(serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
             Assert.IsFalse(broker.TryActivate(sampleLocator, out var _));
+
         }
 
         [Test]
-        public async Task WhenConnected_ThenGetActivePaneReturnsPane(
+        public async Task WhenRdpSessionExists_ThenTryActivateSucceeds(
             [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
@@ -99,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                     settings);
 
                 // Connect
-                var broker = new RemoteDesktopSessionBroker(serviceProvider);
+                var broker = new InstanceSessionBroker(serviceProvider);
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
                         () => session = (RemoteDesktopView)broker.Connect(template))
@@ -118,29 +146,52 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             }
         }
 
-        //---------------------------------------------------------------------
-        // IsConnected.
-        //---------------------------------------------------------------------
-
         [Test]
-        public void WhenNotConnected_ThenIsConnectedIsFalse()
+        public async Task WhenSshSessionExists_ThenGetActivePaneReturnsPane(
+            [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var serviceProvider = CreateServiceProvider();
-            var sampleLocator = new InstanceLocator("project", "zone", "instance");
-            var broker = new RemoteDesktopSessionBroker(serviceProvider);
-            Assert.IsFalse(broker.IsConnected(sampleLocator));
-        }
+            var serviceProvider = CreateServiceProvider(await credential);
+            var locator = await testInstance;
 
-        //---------------------------------------------------------------------
-        // ActiveSession.
-        //---------------------------------------------------------------------
+            using (var tunnel = IapTunnel.ForRdp(
+                locator,
+                await credential))
+            {
+                var credentials = await GenerateWindowsCredentials(locator)
+                    .ConfigureAwait(true);
 
-        [Test]
-        public void WhenNotConnected_ThenActiveSessionReturnsNull()
-        {
-            var serviceProvider = CreateServiceProvider();
-            var broker = new RemoteDesktopSessionBroker(serviceProvider);
-            Assert.IsNull(broker.ActiveSession);
+                var settings = InstanceConnectionSettings.CreateNew(
+                    locator.ProjectId,
+                    locator.Name);
+                settings.RdpUsername.StringValue = credentials.UserName;
+                settings.RdpPassword.Value = credentials.SecurePassword;
+
+                var template = new RdpConnectionTemplate(
+                    locator,
+                    true,
+                    "localhost",
+                    (ushort)tunnel.LocalPort,
+                    settings);
+
+                // Connect
+                var broker = new InstanceSessionBroker(serviceProvider);
+                IRemoteDesktopSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(
+                        () => session = (RemoteDesktopView)broker.Connect(template))
+                    .ConfigureAwait(true);
+
+                Assert.IsNull(this.ExceptionShown);
+
+                Assert.AreSame(session, RemoteDesktopView.TryGetActivePane(this.MainWindow));
+                Assert.AreSame(session, RemoteDesktopView.TryGetExistingPane(this.MainWindow, locator));
+                Assert.IsTrue(broker.IsConnected(locator));
+                Assert.IsTrue(broker.TryActivate(locator, out var _));
+
+                await AssertRaisesEventAsync<SessionEndedEvent>(
+                        () => session.Close())
+                    .ConfigureAwait(true);
+            }
         }
     }
 }

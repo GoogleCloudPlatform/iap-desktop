@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
@@ -79,10 +80,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             ICredential credential)
         {
             var serviceProvider = CreateServiceProvider(credential);
-            var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
             var settings = await CreateSettingsAsync(instanceLocator).ConfigureAwait(true);
 
-            return rdpService.Connect(
+            return broker.Connect(
                 new RdpConnectionTemplate(
                     instanceLocator,
                     true,
@@ -129,9 +130,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
                 settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
 
-                var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
+                var broker = new InstanceSessionBroker(serviceProvider);
 
-                await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
+                await AssertRaisesEventAsync<SessionAbortedEvent>(() => broker.Connect(
                         new RdpConnectionTemplate(
                             locator,
                             true,
@@ -163,8 +164,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
                 settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
 
-                var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
-                var session = rdpService.Connect(
+                var broker = new InstanceSessionBroker(serviceProvider);
+                var session = broker.Connect(
                     new RdpConnectionTemplate(
                         locator,
                         true,

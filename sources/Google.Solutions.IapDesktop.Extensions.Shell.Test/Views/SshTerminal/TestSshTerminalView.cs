@@ -34,6 +34,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
@@ -122,8 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            var broker = new SshTerminalSessionBroker(
-                serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
 
             var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
@@ -200,8 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var serviceProvider = CreateServiceProvider();
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
-            var broker = new SshTerminalSessionBroker(
-                serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
 
             var template = new SshConnectionTemplate(
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
@@ -229,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var serviceProvider = CreateServiceProvider();
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
-            var broker = new SshTerminalSessionBroker(serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
 
             var template = new SshConnectionTemplate(
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
@@ -260,8 +259,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var instanceLocator = await instanceLocatorTask;
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
-            var broker = new SshTerminalSessionBroker(
-                serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
 
             var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);

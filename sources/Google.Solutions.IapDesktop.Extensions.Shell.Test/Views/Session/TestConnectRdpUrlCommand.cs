@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var serviceProvider = new Mock<IServiceProvider>();
             var rdpConnectionService = serviceProvider.AddMock<IRdpConnectionService>();
-            var sessionBroker = serviceProvider.AddMock<IRemoteDesktopSessionBroker>();
+            var sessionBroker = serviceProvider.AddMock<IInstanceSessionBroker>();
 
             var session = (ISession)new Mock<IRemoteDesktopSession>().Object;
             sessionBroker
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var command = new ConnectRdpUrlCommand(
                 new Service<IRdpConnectionService>(serviceProvider.Object),
-                new Service<IRemoteDesktopSessionBroker>(serviceProvider.Object));
+                new Service<IInstanceSessionBroker>(serviceProvider.Object));
 
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
             await command
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ReturnsAsync(RdpConnectionTemplate);
 
             ISession nullSession;
-            var rdpSessionBroker = serviceProvider.AddMock<IRemoteDesktopSessionBroker>();
+            var rdpSessionBroker = serviceProvider.AddMock<IInstanceSessionBroker>();
             rdpSessionBroker
                 .Setup(s => s.Connect(RdpConnectionTemplate))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var command = new ConnectRdpUrlCommand(
                 new Service<IRdpConnectionService>(serviceProvider.Object),
-                new Service<IRemoteDesktopSessionBroker>(serviceProvider.Object));
+                new Service<IInstanceSessionBroker>(serviceProvider.Object));
 
             await command
                 .ExecuteAsync(SampleUrl)

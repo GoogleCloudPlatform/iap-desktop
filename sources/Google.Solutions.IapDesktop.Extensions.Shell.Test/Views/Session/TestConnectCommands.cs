@@ -76,16 +76,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             Mock<ISshConnectionService> sshConnectionService,
             Mock<IRdpConnectionService> rdpConnectionService,
             Mock<IProjectModelService> modelService,
-            Mock<IRemoteDesktopSessionBroker> rdpSessionBroker,
-            Mock<ISshTerminalSessionBroker> sshSessionBroker,
-            Mock<IGlobalSessionBroker> sessionBroker)
+            Mock<IInstanceSessionBroker> sessionBroker)
         {
             var serviceProvider = new Mock<IServiceProvider>();
             serviceProvider.Add(sshConnectionService.Object);
             serviceProvider.Add(rdpConnectionService.Object);
             serviceProvider.Add(modelService.Object);
-            serviceProvider.Add(rdpSessionBroker.Object);
-            serviceProvider.Add(sshSessionBroker.Object);
             serviceProvider.Add(sessionBroker.Object);
 
             return new ConnectCommands(
@@ -93,9 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Service<IRdpConnectionService>(serviceProvider.Object),
                 new Service<ISshConnectionService>(serviceProvider.Object),
                 new Service<IProjectModelService>(serviceProvider.Object),
-                new Service<IRemoteDesktopSessionBroker>(serviceProvider.Object),
-                new Service<ISshTerminalSessionBroker>(serviceProvider.Object),
-                new Service<IGlobalSessionBroker>(serviceProvider.Object),
+                new Service<IInstanceSessionBroker>(serviceProvider.Object),
                 new Mock<ICommandContainer<ISession>>().Object);
         }
 
@@ -112,9 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -129,8 +121,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .Setup(s => s.PrepareConnectionAsync(SampleUrl))
                 .ReturnsAsync(RdpConnectionTemplate);
 
-            var rdpSessionBroker = new Mock<IRemoteDesktopSessionBroker>();
-            rdpSessionBroker
+            var sessionBroker = new Mock<IInstanceSessionBroker>();
+            sessionBroker
                 .Setup(s => s.Connect(RdpConnectionTemplate))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
@@ -140,9 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 rdpConnectionService,
                 new Mock<IProjectModelService>(),
-                rdpSessionBroker,
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                sessionBroker);
 
             await urlCommands.LaunchRdpUrl
                 .ExecuteAsync(SampleUrl)
@@ -168,9 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -192,9 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
@@ -213,9 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             Assert.AreEqual(
                 CommandState.Disabled,
@@ -238,8 +222,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                     true))
                 .ReturnsAsync(RdpConnectionTemplate);
 
-            var rdpSessionBroker = new Mock<IRemoteDesktopSessionBroker>();
-            rdpSessionBroker
+            var sessionBroker = new Mock<IInstanceSessionBroker>();
+            sessionBroker
                 .Setup(s => s.Connect(RdpConnectionTemplate))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
@@ -248,9 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 rdpConnectionService,
                 new Mock<IProjectModelService>(),
-                rdpSessionBroker,
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -273,8 +255,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .Setup(s => s.PrepareConnectionAsync(It.IsAny<IProjectModelInstanceNode>()))
                 .ReturnsAsync(SshConnectionTemplate);
 
-            var sshSessionBroker = new Mock<ISshTerminalSessionBroker>();
-            sshSessionBroker
+            var sessionBroker = new Mock<IInstanceSessionBroker>();
+            sessionBroker
                 .Setup(s => s.ConnectAsync(SshConnectionTemplate))
                 .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
 
@@ -283,9 +265,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 sshConnectionService,
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                sshSessionBroker,
-                new Mock<IGlobalSessionBroker>());
+                sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -315,9 +295,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -339,9 +317,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
@@ -360,9 +336,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             Assert.AreEqual(
                 CommandState.Unavailable,
@@ -385,8 +359,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                     true))
                 .ReturnsAsync(RdpConnectionTemplate);
 
-            var rdpSessionBroker = new Mock<IRemoteDesktopSessionBroker>();
-            rdpSessionBroker
+            var sessionBroker = new Mock<IInstanceSessionBroker>();
+            sessionBroker
                 .Setup(s => s.Connect(RdpConnectionTemplate))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
@@ -395,9 +369,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 rdpConnectionService,
                 new Mock<IProjectModelService>(),
-                rdpSessionBroker,
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -420,8 +392,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .Setup(s => s.PrepareConnectionAsync(It.IsAny<IProjectModelInstanceNode>()))
                 .ReturnsAsync(SshConnectionTemplate);
 
-            var sshSessionBroker = new Mock<ISshTerminalSessionBroker>();
-            sshSessionBroker
+            var sessionBroker = new Mock<IInstanceSessionBroker>();
+            sessionBroker
                 .Setup(s => s.ConnectAsync(SshConnectionTemplate))
                 .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
 
@@ -430,9 +402,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 sshConnectionService,
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                sshSessionBroker,
-                new Mock<IGlobalSessionBroker>());
+                sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -459,9 +429,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -480,9 +448,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
@@ -501,9 +467,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             var runningLinuxInstance = new Mock<IProjectModelInstanceNode>();
             runningLinuxInstance.Setup(s => s.IsRunning).Returns(true);
@@ -533,8 +497,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                     false))
                 .ReturnsAsync(RdpConnectionTemplate);
 
-            var rdpSessionBroker = new Mock<IRemoteDesktopSessionBroker>();
-            rdpSessionBroker
+            var sessionBroker = new Mock<IInstanceSessionBroker>();
+            sessionBroker
                 .Setup(s => s.Connect(RdpConnectionTemplate))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
@@ -543,9 +507,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 rdpConnectionService,
                 new Mock<IProjectModelService>(),
-                rdpSessionBroker,
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -575,9 +537,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -596,9 +556,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             var stoppedInstance = new Mock<IProjectModelInstanceNode>();
             stoppedInstance.Setup(s => s.IsRunning).Returns(false);
@@ -617,9 +575,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Mock<ISshConnectionService>(),
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                new Mock<ISshTerminalSessionBroker>(),
-                new Mock<IGlobalSessionBroker>());
+                new Mock<IInstanceSessionBroker>());
 
             var runningWindowsInstance = new Mock<IProjectModelInstanceNode>();
             runningWindowsInstance.Setup(s => s.IsRunning).Returns(true);
@@ -647,8 +603,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .Setup(s => s.PrepareConnectionAsync(It.IsAny<IProjectModelInstanceNode>()))
                 .ReturnsAsync(SshConnectionTemplate);
 
-            var sshSessionBroker = new Mock<ISshTerminalSessionBroker>();
-            sshSessionBroker
+            var sessionBroker = new Mock<IInstanceSessionBroker>();
+            sessionBroker
                 .Setup(s => s.ConnectAsync(SshConnectionTemplate))
                 .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
 
@@ -657,9 +613,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 sshConnectionService,
                 new Mock<IRdpConnectionService>(),
                 new Mock<IProjectModelService>(),
-                new Mock<IRemoteDesktopSessionBroker>(),
-                sshSessionBroker,
-                new Mock<IGlobalSessionBroker>());
+                sessionBroker);
 
             var runningInstance = new Mock<IProjectModelInstanceNode>();
             runningInstance.Setup(s => s.IsRunning).Returns(true);
@@ -731,8 +685,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .Setup(s => s.PrepareConnectionAsync(runningInstance.Object))
                 .ReturnsAsync(SshConnectionTemplate);
 
-            var sshSessionBroker = new Mock<ISshTerminalSessionBroker>();
-            sshSessionBroker
+            var sessionBroker = new Mock<IInstanceSessionBroker>();
+            sessionBroker
                 .Setup(s => s.ConnectAsync(SshConnectionTemplate))
                 .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
 
@@ -741,9 +695,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 sshConnectionService,
                 new Mock<IRdpConnectionService>(),
                 modelService,
-                new Mock<IRemoteDesktopSessionBroker>(),
-                sshSessionBroker,
-                new Mock<IGlobalSessionBroker>());
+                sessionBroker);
 
             await commands.DuplicateSession
                 .ExecuteAsync(connectedSession.Object)

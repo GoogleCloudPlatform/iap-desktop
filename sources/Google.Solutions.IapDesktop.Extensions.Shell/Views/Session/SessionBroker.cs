@@ -24,33 +24,35 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using System;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 {
-    public interface ISshTerminalSession : ISession
+    public interface IInstanceSessionBroker : ISessionBroker
     {
-        InstanceLocator Instance { get; }
-
-        Task DownloadFilesAsync();
-    }
-
-    public interface ISshTerminalSessionBroker : ISessionBroker
-    {
-        ISshTerminalSession ActiveSshTerminalSession { get; }
-
+        /// <summary>
+        /// Create a new SSH session.
+        /// </summary>
         Task<ISshTerminalSession> ConnectAsync(SshConnectionTemplate template);
+
+        /// <summary>
+        /// Create a new RDP session.
+        /// </summary>
+        IRemoteDesktopSession Connect(RdpConnectionTemplate template);
     }
 
-    [Service(typeof(ISshTerminalSessionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
+    [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
     [ServiceCategory(typeof(ISessionBroker))]
-    public class SshTerminalSessionBroker : ISshTerminalSessionBroker
+    public class InstanceSessionBroker : IInstanceSessionBroker
     {
+
         private readonly IServiceProvider serviceProvider;
         private readonly IMainWindow mainForm;
 
-        public SshTerminalSessionBroker(IServiceProvider serviceProvider)
+        public InstanceSessionBroker(IServiceProvider serviceProvider)
         {
             this.mainForm = serviceProvider.GetService<IMainWindow>();
             this.serviceProvider = serviceProvider;
@@ -60,36 +62,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         }
 
         //---------------------------------------------------------------------
-        // Public
+        // ISessionBroker.
         //---------------------------------------------------------------------
 
-        public ISshTerminalSession ActiveSshTerminalSession
+        public ISession ActiveSession
         {
-            get => SshTerminalView.TryGetActivePane(this.mainForm);
+            get => (ISession)RemoteDesktopView.TryGetActivePane(this.mainForm)
+                    ?? SshTerminalView.TryGetActivePane(this.mainForm)
+                    ?? null;
         }
-
-        public ISession ActiveSession => this.ActiveSshTerminalSession;
 
         public bool IsConnected(InstanceLocator vmInstance)
         {
-            return SshTerminalView.TryGetExistingPane(
-                this.mainForm,
-                vmInstance) != null;
+            return 
+                RemoteDesktopView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
+                SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) != null;
         }
 
-        public bool TryActivate(
-            InstanceLocator vmInstance,
-            out ISession session)
+        public bool TryActivate(InstanceLocator vmInstance, out ISession session)
         {
-            // Check if there is an existing session/pane.
-            var pane = SshTerminalView.TryGetExistingPane(
-                this.mainForm,
-                vmInstance);
-            if (pane != null)
+            if (RemoteDesktopView.TryGetExistingPane(this.mainForm, vmInstance) is
+                RemoteDesktopView existingRdpSession && 
+                existingRdpSession != null)
             {
                 // Pane found, activate.
-                pane.SwitchToDocument();
-                session = pane;
+                existingRdpSession.SwitchToDocument();
+                session = existingRdpSession;
+                return true;
+            }
+            else if (SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) is
+                SshTerminalView existingSshSession &&
+                existingSshSession != null)
+            {
+                // Pane found, activate.
+                existingSshSession.SwitchToDocument();
+                session = existingSshSession;
                 return true;
             }
             else
@@ -98,6 +105,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 return false;
             }
         }
+
+        //---------------------------------------------------------------------
+        // IInstanceSessionBroker.
+        //---------------------------------------------------------------------
 
         public async Task<ISshTerminalSession> ConnectAsync(SshConnectionTemplate template)
         {
@@ -113,6 +124,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             await pane.ConnectAsync()
                 .ConfigureAwait(false);
+
+            return pane;
+        }
+
+        public IRemoteDesktopSession Connect(RdpConnectionTemplate template)
+        {
+            var window = ToolWindow.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(this.serviceProvider);
+            window.ViewModel.Instance = template.Instance;
+            window.ViewModel.Server = template.Endpoint;
+            window.ViewModel.Port = template.EndpointPort;
+            window.ViewModel.Settings = template.Settings;
+
+            var pane = window.Bind();
+            window.Show();
+
+            pane.Connect();
 
             return pane;
         }

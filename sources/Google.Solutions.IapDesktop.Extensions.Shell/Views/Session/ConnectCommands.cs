@@ -43,9 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             Service<IRdpConnectionService> rdpConnectionService,
             Service<ISshConnectionService> sshConnectionService,
             Service<IProjectModelService> modelService,
-            Service<IRemoteDesktopSessionBroker> rdpSessionBroker,
-            Service<ISshTerminalSessionBroker> sshSessionBroker,
-            Service<IGlobalSessionBroker> sessionBroker,
+            Service<IInstanceSessionBroker> sessionBroker,
             ICommandContainer<ISession> sessionContextMenu)
         {
             //
@@ -53,15 +51,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             //
             urlCommands.LaunchRdpUrl = new ConnectRdpUrlCommand(
                 rdpConnectionService,
-                rdpSessionBroker);
+                sessionBroker);
 
             this.ToolbarActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
                 sessionContextMenu,
                 rdpConnectionService,
                 sshConnectionService,
-                rdpSessionBroker,
-                sshSessionBroker,
                 sessionBroker)
             {
                 AlwaysAvailable = true,                  // Never hide to avoid flicker.
@@ -75,8 +71,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 sessionContextMenu,
                 rdpConnectionService,
                 sshConnectionService,
-                rdpSessionBroker,
-                sshSessionBroker,
                 sessionBroker)
             {
                 AvailableForSsh = true,
@@ -90,8 +84,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 sessionContextMenu,
                 rdpConnectionService,
                 sshConnectionService,
-                rdpSessionBroker,
-                sshSessionBroker,
                 sessionBroker)
             {
                 AvailableForSsh = false,
@@ -105,8 +97,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 sessionContextMenu,
                 rdpConnectionService,
                 sshConnectionService,
-                rdpSessionBroker,
-                sshSessionBroker,
                 sessionBroker)
             {
                 AvailableForSsh = true,                  // Linux/SSH only.
