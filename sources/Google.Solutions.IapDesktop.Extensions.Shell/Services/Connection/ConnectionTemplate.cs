@@ -43,11 +43,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         /// Indicates whether a IAP-TCP tunnel is used.
         /// </summary>
         public bool IsTunnelled { get; protected set; }
-
-        /// <summary>
-        /// Timeout to use for the initial connection attempt.
-        /// </summary>
-        public TimeSpan ConnectionTimeout { get; protected set; }
     }
 
     public class RdpConnectionTemplate : ConnectionTemplateBase
@@ -55,9 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         /// <summary>
         /// Windows credentials, might be null.
         /// </summary>
-        //public NetworkCredential LogonCredentials { get; } // TODO: Use NetworkCreds
 
-        public InstanceConnectionSettings Settings { get; } // TODO: Inline.
+        public InstanceConnectionSettings Settings { get; }
 
         /// <summary>
         /// Endpoint to connect to. This might be a localhost endpoint.
@@ -74,14 +68,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             bool isTunnelled,
             string endpoint,
             ushort endpointPort,
-            TimeSpan connectionTimeout,
             InstanceConnectionSettings settings)
         {
             this.Instance = instance;
             this.IsTunnelled = isTunnelled;
             this.Endpoint = endpoint;
             this.EndpointPort = endpointPort;
-            this.ConnectionTimeout = connectionTimeout;
 
             this.Settings = settings;
         }
@@ -101,13 +93,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 
         public IPEndPoint Endpoint { get; }
 
+        /// <summary>
+        /// Timeout to use for the initial connection attempt.
+        /// </summary>
+        public TimeSpan ConnectionTimeout { get; protected set; }
+
         public SshConnectionTemplate(
             InstanceLocator instance,
             bool isTunnelled,
             IPEndPoint endpoint,
-            TimeSpan connectionTimeout,
             AuthorizedKeyPair authorizedKey,
-            CultureInfo language)
+            CultureInfo language,
+            TimeSpan connectionTimeout)
         {
             this.Instance = instance;
             this.IsTunnelled = isTunnelled;

@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             await service
-                .ConnectInstanceAsync(vmNode.Object)
+                .PrepareConnectionAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
             keyStore.Verify(k => k.OpenSshKeyPair(
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             await service
-                .ConnectInstanceAsync(vmNode.Object)
+                .PrepareConnectionAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
             tunnelBrokerService.Verify(s => s.ConnectAsync(
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             await service
-                .ConnectInstanceAsync(vmNode.Object)
+                .PrepareConnectionAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
             authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
@@ -274,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             await service
-                .ConnectInstanceAsync(vmNode.Object)
+                .PrepareConnectionAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
             authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
@@ -314,7 +314,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             await service
-                .ConnectInstanceAsync(vmNode.Object)
+                .PrepareConnectionAsync(vmNode.Object)
                 .ConfigureAwait(false);
 
             tunnelBrokerService.Verify(s => s.ConnectAsync(
@@ -355,7 +355,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             ExceptionAssert.ThrowsAggregateException<ConnectionFailedException>(
-                () => service.ConnectInstanceAsync(vmNode.Object).Wait());
+                () => service.PrepareConnectionAsync(vmNode.Object).Wait());
         }
 
         [Test]
@@ -393,7 +393,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 new SynchronousJobService());
 
             ExceptionAssert.ThrowsAggregateException<SshKeyPushFailedException>(
-                () => service.ConnectInstanceAsync(vmNode.Object).Wait());
+                () => service.PrepareConnectionAsync(vmNode.Object).Wait());
         }
     }
 }

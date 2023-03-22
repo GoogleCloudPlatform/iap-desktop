@@ -24,6 +24,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.Mvvm.Binding;
@@ -82,10 +83,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var settings = await CreateSettingsAsync(instanceLocator).ConfigureAwait(true);
 
             return rdpService.Connect(
-                instanceLocator,
-                "localhost",
-                (ushort)tunnel.LocalPort,
-                settings);
+                new RdpConnectionTemplate(
+                    instanceLocator,
+                    true,
+                    "localhost",
+                    (ushort)tunnel.LocalPort,
+                    settings));
         }
 
         [Test]
@@ -129,10 +132,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
 
                 await AssertRaisesEventAsync<SessionAbortedEvent>(() => rdpService.Connect(
-                        locator,
-                        "localhost",
-                        (ushort)tunnel.LocalPort,
-                        settings))
+                        new RdpConnectionTemplate(
+                            locator,
+                            true,
+                            "localhost",
+                            (ushort)tunnel.LocalPort,
+                            settings)))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(this.ExceptionShown);
@@ -160,10 +165,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
                 var rdpService = new RemoteDesktopSessionBroker(serviceProvider);
                 var session = rdpService.Connect(
-                    locator,
-                    "localhost",
-                    (ushort)tunnel.LocalPort,
-                    settings);
+                    new RdpConnectionTemplate(
+                        locator,
+                        true,
+                        "localhost",
+                        (ushort)tunnel.LocalPort,
+                        settings));
 
                 bool serverAuthWarningIsDisplayed = false;
                 ((RemoteDesktopView)session).AuthenticationWarningDisplayed += (sender, args) =>

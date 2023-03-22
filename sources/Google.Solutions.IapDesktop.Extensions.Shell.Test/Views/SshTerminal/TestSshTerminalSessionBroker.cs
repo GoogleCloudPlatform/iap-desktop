@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
@@ -119,15 +120,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             // Connect
             var broker = new SshTerminalSessionBroker(serviceProvider);
 
+            var template = new SshConnectionTemplate(
+                locator,
+                true,
+                new IPEndPoint(instance.PublicAddress(), 22),
+                authorizedKey,
+                null,
+                TimeSpan.FromSeconds(10));
+
             ISshTerminalSession session = null;
             await AssertRaisesEventAsync<SessionStartedEvent>(
-                async () => session = await broker.ConnectAsync(
-                    locator,
-                    new IPEndPoint(instance.PublicAddress(), 22),
-                    authorizedKey,
-                    null,
-                    TimeSpan.FromSeconds(10))
-                .ConfigureAwait(true))
+                async () => session = await broker
+                    .ConnectAsync(template)
+                    .ConfigureAwait(true))
                 .ConfigureAwait(true);
 
             Assert.IsNull(this.ExceptionShown);

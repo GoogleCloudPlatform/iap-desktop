@@ -24,6 +24,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.Mvvm.Binding;
@@ -90,15 +91,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 settings.RdpUsername.StringValue = credentials.UserName;
                 settings.RdpPassword.Value = credentials.SecurePassword;
 
+                var template = new RdpConnectionTemplate(
+                    locator,
+                    true,
+                    "localhost",
+                    (ushort)tunnel.LocalPort,
+                    settings);
+
                 // Connect
                 var broker = new RemoteDesktopSessionBroker(serviceProvider);
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
-                        () => session = (RemoteDesktopView)broker.Connect(
-                            locator,
-                            "localhost",
-                            (ushort)tunnel.LocalPort,
-                            settings))
+                        () => session = (RemoteDesktopView)broker.Connect(template))
                     .ConfigureAwait(true);
 
                 Assert.IsNull(this.ExceptionShown);

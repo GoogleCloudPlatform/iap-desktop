@@ -44,11 +44,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
 {
     public interface IRdpConnectionService
     {
-        Task<RdpConnectionTemplate> ConnectInstanceAsync(// TODO: Rename to PrepareConnectionAsync
+        Task<RdpConnectionTemplate> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials);
 
-        Task<RdpConnectionTemplate> ConnectInstanceAsync(IapRdpUrl url);// TODO: Rename to PrepareConnectionAsync
+        Task<RdpConnectionTemplate> PrepareConnectionAsync(IapRdpUrl url);
     }
 
     [Service(typeof(IRdpConnectionService))]
@@ -56,7 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
     {
         private readonly IWin32Window window;
         private readonly IJobService jobService;
-        private readonly IRemoteDesktopSessionBroker sessionBroker;
         private readonly ITunnelBrokerService tunnelBroker;
         private readonly ISelectCredentialsWorkflow credentialPrompt;
         private readonly IProjectModelService projectModelService;
@@ -65,7 +64,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         public RdpConnectionService(
             IMainWindow window,
             IProjectModelService projectModelService,
-            IRemoteDesktopSessionBroker sessionBroker,
             ITunnelBrokerService tunnelBroker,
             IJobService jobService,
             IConnectionSettingsService settingsService,
@@ -73,14 +71,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         {
             this.window = window.ThrowIfNull(nameof(window));
             this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
-            this.sessionBroker = sessionBroker.ThrowIfNull(nameof(sessionBroker));
             this.tunnelBroker = tunnelBroker.ThrowIfNull(nameof(tunnelBroker));
             this.jobService = jobService.ThrowIfNull(nameof(jobService));
-            this.settingsService = settingsService.ThrowIfNull(nameof(sessionBroker));
+            this.settingsService = settingsService.ThrowIfNull(nameof(settingsService));
             this.credentialPrompt = credentialPrompt.ThrowIfNull(nameof(credentialPrompt));
         }
 
-        private async Task<RdpConnectionTemplate> ConnectInstanceAsync(// TODO: Rename to PrepareConnectionAsync
+        private async Task<RdpConnectionTemplate> PrepareConnectionAsync(
             InstanceLocator instance,
             InstanceConnectionSettings settings)
         {
@@ -140,7 +137,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                 true,
                 "localhost",
                 (ushort)tunnel.LocalPort,
-                timeout,
                 settings);
         }
 
@@ -148,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         // IRdpConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task<RdpConnectionTemplate> ConnectInstanceAsync(
+        public async Task<RdpConnectionTemplate> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials)
         {
@@ -186,13 +182,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                 settings.TypedCollection.RdpPassword.Value = string.Empty;
             }
 
-            return await ConnectInstanceAsync(
+            return await PrepareConnectionAsync(
                     vmNode.Instance,
                     (InstanceConnectionSettings)settings.TypedCollection)
                 .ConfigureAwait(true);
         }
 
-        public async Task<RdpConnectionTemplate> ConnectInstanceAsync(IapRdpUrl url)
+        public async Task<RdpConnectionTemplate> PrepareConnectionAsync(IapRdpUrl url)
         {
             InstanceConnectionSettings settings;
             var existingNode = await this.projectModelService
@@ -226,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                     false)
                 .ConfigureAwait(true);
 
-            return await ConnectInstanceAsync(
+            return await PrepareConnectionAsync(
                     url.Instance,
                     settings)
                 .ConfigureAwait(true);

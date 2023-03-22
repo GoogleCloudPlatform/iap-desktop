@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 //
                 var template = await this.connectionService
                     .GetInstance()
-                    .ConnectInstanceAsync(url)
+                    .PrepareConnectionAsync(url)
                     .ConfigureAwait(true);
 
                 var session = this.sessionBroker

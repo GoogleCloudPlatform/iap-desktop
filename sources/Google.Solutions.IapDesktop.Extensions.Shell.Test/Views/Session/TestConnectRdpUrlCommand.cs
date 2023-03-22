@@ -32,6 +32,8 @@ using Google.Solutions.IapDesktop.Application.Data;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {
@@ -41,6 +43,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
+        private static readonly IapRdpUrl SampleUrl = new IapRdpUrl(
+            SampleLocator,
+            new NameValueCollection());
+
+        private static readonly RdpConnectionTemplate RdpConnectionTemplate =
+            new RdpConnectionTemplate(
+                SampleLocator,
+                true,
+                "localhost",
+                13389,
+                InstanceConnectionSettings.CreateNew(SampleLocator));
+
         //---------------------------------------------------------------------
         // ExecuteAsync.
         //---------------------------------------------------------------------
@@ -49,8 +63,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         public async Task WhenSessionFound_ThenExecuteDoesNotCreateNewSession()
         {
             var serviceProvider = new Mock<IServiceProvider>();
-            var connectionService = serviceProvider.AddMock<IRdpConnectionService>();
-            var sessionBroker = serviceProvider.AddMock<IGlobalSessionBroker>();
+            var rdpConnectionService = serviceProvider.AddMock<IRdpConnectionService>();
+            var sessionBroker = serviceProvider.AddMock<IRemoteDesktopSessionBroker>();
 
             var session = (ISession)new Mock<IRemoteDesktopSession>().Object;
             sessionBroker
@@ -59,15 +73,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var command = new ConnectRdpUrlCommand(
                 new Service<IRdpConnectionService>(serviceProvider.Object),
-                new Service<IGlobalSessionBroker>(serviceProvider.Object));
+                new Service<IRemoteDesktopSessionBroker>(serviceProvider.Object));
 
             var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
             await command
                 .ExecuteAsync(url)
                 .ConfigureAwait(false);
 
-            connectionService.Verify(
-                s => s.ConnectInstanceAsync(It.IsAny<IapRdpUrl>()),
+            rdpConnectionService.Verify(
+                s => s.PrepareConnectionAsync(It.IsAny<IapRdpUrl>()),
                 Times.Never);
         }
 
@@ -75,25 +89,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         public async Task WhenNoSessionFound_ThenExecuteCreatesNewSession()
         {
             var serviceProvider = new Mock<IServiceProvider>();
-            var connectionService = serviceProvider.AddMock<IRdpConnectionService>();
-            var sessionBroker = serviceProvider.AddMock<IGlobalSessionBroker>();
+
+            var rdpConnectionService = serviceProvider.AddMock<IRdpConnectionService>();
+            rdpConnectionService
+                .Setup(s => s.PrepareConnectionAsync(SampleUrl))
+                .ReturnsAsync(RdpConnectionTemplate);
 
             ISession nullSession;
-            sessionBroker
+            var rdpSessionBroker = serviceProvider.AddMock<IRemoteDesktopSessionBroker>();
+            rdpSessionBroker
+                .Setup(s => s.Connect(RdpConnectionTemplate))
+                .Returns(new Mock<IRemoteDesktopSession>().Object);
+            rdpSessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out nullSession))
                 .Returns(false);
 
             var command = new ConnectRdpUrlCommand(
                 new Service<IRdpConnectionService>(serviceProvider.Object),
-                new Service<IGlobalSessionBroker>(serviceProvider.Object));
+                new Service<IRemoteDesktopSessionBroker>(serviceProvider.Object));
 
-            var url = new IapRdpUrl(SampleLocator, new NameValueCollection());
             await command
-                .ExecuteAsync(url)
+                .ExecuteAsync(SampleUrl)
                 .ConfigureAwait(false);
 
-            connectionService.Verify(
-                s => s.ConnectInstanceAsync(url),
+            rdpConnectionService.Verify(
+                s => s.PrepareConnectionAsync(SampleUrl),
                 Times.Once);
         }
     }

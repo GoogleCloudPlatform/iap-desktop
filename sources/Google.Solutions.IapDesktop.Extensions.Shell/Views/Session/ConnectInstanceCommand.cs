@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             {
                 var template = await this.rdpConnectionService
                     .GetInstance()
-                    .ConnectInstanceAsync(
+                    .PrepareConnectionAsync(
                         instanceNode,
                         this.AllowPersistentRdpCredentials)
                     .ConfigureAwait(true);
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             {
                 var template = await this.sshConnectionService
                     .GetInstance()
-                    .ConnectInstanceAsync(instanceNode)
+                    .PrepareConnectionAsync(instanceNode)
                     .ConfigureAwait(true);
 
                 session = await this.sshSessionBroker

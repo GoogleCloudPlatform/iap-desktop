@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
     public interface ISshConnectionService
     {
-        Task<SshConnectionTemplate> ConnectInstanceAsync( // TODO: Rename to PrepareConnectionAsync
+        Task<SshConnectionTemplate> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode);
     }
 
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // ISshConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task<SshConnectionTemplate> ConnectInstanceAsync(
+        public async Task<SshConnectionTemplate> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode)
         {
             Debug.Assert(vmNode.IsSshSupported());
@@ -219,9 +219,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     instance,
                     true,
                     new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
-                    timeout,
                     authorizedKeyTask.Result,
-                    language);
+                    language,
+                    timeout);
             }
             catch (Exception)
             {
