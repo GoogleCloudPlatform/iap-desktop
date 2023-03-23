@@ -29,7 +29,7 @@ using Google.Solutions.Mvvm.Binding.Commands;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Views
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 {
     [Service]
     public class SessionCommands

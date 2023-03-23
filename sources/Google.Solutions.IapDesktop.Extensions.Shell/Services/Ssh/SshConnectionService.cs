@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
@@ -46,10 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
     public interface ISshConnectionService
     {
-        Task<ISshTerminalSession> ActivateOrConnectInstanceAsync(
-            IProjectModelInstanceNode vmNode);
-
-        Task<ISshTerminalSession> ConnectInstanceAsync(
+        Task<SshConnectionTemplate> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode);
     }
 
@@ -58,7 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     {
         private readonly IWin32Window window;
         private readonly IJobService jobService;
-        private readonly ISshTerminalSessionBroker sessionBroker;
         private readonly ITunnelBrokerService tunnelBroker;
         private readonly IConnectionSettingsService settingsService;
         private readonly IKeyAuthorizationService authorizedKeyService;
@@ -71,7 +68,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             IMainWindow window,
             IAuthorization authorization,
             IProjectModelService projectModelService,
-            ISshTerminalSessionBroker sessionBroker,
             ITunnelBrokerService tunnelBroker,
             IConnectionSettingsService settingsService,
             IKeyAuthorizationService authorizedKeyService,
@@ -82,7 +78,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.window = window.ThrowIfNull(nameof(window));
             this.authorization = authorization.ThrowIfNull(nameof(authorization));
             this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
-            this.sessionBroker = sessionBroker.ThrowIfNull(nameof(sessionBroker));
             this.tunnelBroker = tunnelBroker.ThrowIfNull(nameof(tunnelBroker));
             this.settingsService = settingsService.ThrowIfNull(nameof(settingsService));
             this.authorizedKeyService = authorizedKeyService.ThrowIfNull(nameof(authorizedKeyService));
@@ -95,24 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // ISshConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task<ISshTerminalSession> ActivateOrConnectInstanceAsync(
-            IProjectModelInstanceNode vmNode)
-        {
-            Debug.Assert(vmNode.IsSshSupported());
-
-            if (this.sessionBroker.TryActivate(vmNode.Instance, out var activeSession))
-            {
-                // SSH session was active, nothing left to do.
-                Debug.Assert(activeSession != null);
-                Debug.Assert(activeSession is ISshTerminalSession);
-
-                return (ISshTerminalSession)activeSession;
-            }
-
-            return await ConnectInstanceAsync(vmNode).ConfigureAwait(true);
-        }
-
-        public async Task<ISshTerminalSession> ConnectInstanceAsync(
+        public async Task<SshConnectionTemplate> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode)
         {
             Debug.Assert(vmNode.IsSshSupported());
@@ -231,16 +209,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                      : null;
 
                 //
-                // NB. ConnectAsync takes ownership of the key and will retain
+                // NB. The template takes ownership of the key and will retain
                 // it for the lifetime of the session.
                 //
-                return await this.sessionBroker.ConnectAsync(
-                        instance,
-                        new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
-                        authorizedKeyTask.Result,
-                        language,
-                        timeout)
-                    .ConfigureAwait(true);
+                return new SshConnectionTemplate(
+                    instance,
+                    true,
+                    new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
+                    authorizedKeyTask.Result,
+                    language,
+                    timeout);
             }
             catch (Exception)
             {

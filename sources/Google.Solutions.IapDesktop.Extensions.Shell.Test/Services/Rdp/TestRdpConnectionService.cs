@@ -93,35 +93,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(vmNode.Object);
 
-            var sessionBroker = new Mock<IRemoteDesktopSessionBroker>();
-            sessionBroker.Setup(s => s.Connect(
-                    It.IsAny<InstanceLocator>(),
-                    "localhost",
-                    It.IsAny<ushort>(),
-                    It.IsAny<InstanceConnectionSettings>()))
-                .Returns(new Mock<IRemoteDesktopSession>().Object);
-
             var service = new RdpConnectionService(
                 new Mock<IMainWindow>().Object,
                 modelService.Object,
-                sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
                 new Mock<ISelectCredentialsWorkflow>().Object);
 
-            var session = await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object, false)
+            var template = await service
+                .PrepareConnectionAsync(vmNode.Object, false)
                 .ConfigureAwait(false);
-            Assert.IsNotNull(session);
+            Assert.IsNotNull(template);
 
-            sessionBroker.Verify(s => s.Connect(
-                It.IsAny<InstanceLocator>(),
-                "localhost",
-                It.IsAny<ushort>(),
-                It.Is<InstanceConnectionSettings>(i =>
-                    i.RdpUsername.StringValue == "existinguser" &&
-                    i.RdpPassword.ClearTextValue == "")), Times.Once);
+            Assert.AreEqual("localhost", template.Endpoint);
+            Assert.AreEqual("existinguser", template.Settings.RdpUsername.StringValue);
+            Assert.AreEqual("", template.Settings.RdpPassword.ClearTextValue);
         }
 
         [Test]
@@ -147,36 +134,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(vmNode.Object);
 
-            var sessionBroker = new Mock<IRemoteDesktopSessionBroker>();
-            sessionBroker
-                .Setup(s => s.Connect(
-                    It.IsAny<InstanceLocator>(),
-                    "localhost",
-                    It.IsAny<ushort>(),
-                    It.IsAny<InstanceConnectionSettings>()))
-                .Returns(new Mock<IRemoteDesktopSession>().Object);
-
             var service = new RdpConnectionService(
                 new Mock<IMainWindow>().Object,
                 modelService.Object,
-                sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
                 new Mock<ISelectCredentialsWorkflow>().Object);
 
-            var session = await service
-                .ActivateOrConnectInstanceAsync(vmNode.Object, true)
+            var template = await service
+                .PrepareConnectionAsync(vmNode.Object, true)
                 .ConfigureAwait(false);
-            Assert.IsNotNull(session);
+            Assert.IsNotNull(template);
 
-            sessionBroker.Verify(s => s.Connect(
-                It.IsAny<InstanceLocator>(),
-                "localhost",
-                It.IsAny<ushort>(),
-                It.Is<InstanceConnectionSettings>(i =>
-                    i.RdpUsername.StringValue == "existinguser" &&
-                    i.RdpPassword.ClearTextValue == "password")), Times.Once);
+            Assert.AreEqual("localhost", template.Endpoint);
+            Assert.AreEqual("existinguser", template.Settings.RdpUsername.StringValue);
+            Assert.AreEqual("password", template.Settings.RdpPassword.ClearTextValue);
 
             Assert.IsTrue(settingsSaved);
         }
@@ -204,35 +177,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IProjectModelNode)null); // Not found
 
-            var sessionBroker = new Mock<IRemoteDesktopSessionBroker>();
-            sessionBroker
-                .Setup(s => s.Connect(
-                    It.IsAny<InstanceLocator>(),
-                    "localhost",
-                    It.IsAny<ushort>(),
-                    It.IsAny<InstanceConnectionSettings>()))
-                .Returns(new Mock<IRemoteDesktopSession>().Object);
-
             var service = new RdpConnectionService(
                 new Mock<IMainWindow>().Object,
                 modelService.Object,
-                sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
                 credentialPrompt.Object);
 
-            var session = await service
-                .ActivateOrConnectInstanceAsync(
+            var template = await service
+                .PrepareConnectionAsync(
                     IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"))
                 .ConfigureAwait(false);
-            Assert.IsNotNull(session);
+            Assert.IsNotNull(template);
 
-            sessionBroker.Verify(s => s.Connect(
-                It.IsAny<InstanceLocator>(),
-                "localhost",
-                It.IsAny<ushort>(),
-                It.Is<InstanceConnectionSettings>(i => i.RdpUsername.Value == null)), Times.Once);
+            Assert.AreEqual("localhost", template.Endpoint);
+            Assert.IsNull(template.Settings.RdpUsername.StringValue);
+
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectModelNode>()), Times.Never);
         }
@@ -257,35 +218,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IProjectModelNode)null); // Not found
 
-            var sessionBroker = new Mock<IRemoteDesktopSessionBroker>();
-            sessionBroker
-                .Setup(s => s.Connect(
-                    It.IsAny<InstanceLocator>(),
-                    "localhost",
-                    It.IsAny<ushort>(),
-                    It.IsAny<InstanceConnectionSettings>()))
-                .Returns(new Mock<IRemoteDesktopSession>().Object);
-
             var service = new RdpConnectionService(
                 new Mock<IMainWindow>().Object,
                 modelService.Object,
-                sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
                 credentialPrompt.Object);
 
-            var session = await service
-                .ActivateOrConnectInstanceAsync(
+            var template = await service
+                .PrepareConnectionAsync(
                     IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"))
                 .ConfigureAwait(false);
-            Assert.IsNotNull(session);
+            Assert.IsNotNull(template);
 
-            sessionBroker.Verify(s => s.Connect(
-                It.IsAny<InstanceLocator>(),
-                "localhost",
-                It.IsAny<ushort>(),
-                It.Is<InstanceConnectionSettings>(i => i.RdpUsername.StringValue == "john doe")), Times.Once);
+            Assert.AreEqual("localhost", template.Endpoint);
+            Assert.AreEqual("john doe", template.Settings.RdpUsername.StringValue);
+
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectModelNode>()), Times.Never);
         }
@@ -321,34 +270,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(vmNode.Object);
 
-            var sessionBroker = new Mock<IRemoteDesktopSessionBroker>();
-            sessionBroker.Setup(s => s.Connect(
-                    It.IsAny<InstanceLocator>(),
-                    "localhost",
-                    It.IsAny<ushort>(),
-                    It.IsAny<InstanceConnectionSettings>()))
-                .Returns(new Mock<IRemoteDesktopSession>().Object);
-
             var service = new RdpConnectionService(
                 new Mock<IMainWindow>().Object,
                 modelService.Object,
-                sessionBroker.Object,
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
                 credentialPrompt.Object);
 
-            var session = await service
-                .ActivateOrConnectInstanceAsync(
+            var template = await service
+                .PrepareConnectionAsync(
                     IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe"))
                 .ConfigureAwait(false);
-            Assert.IsNotNull(session);
+            Assert.IsNotNull(template);
 
-            sessionBroker.Verify(s => s.Connect(
-                It.IsAny<InstanceLocator>(),
-                "localhost",
-                It.IsAny<ushort>(),
-                It.Is<InstanceConnectionSettings>(i => i.RdpUsername.StringValue == "john doe")), Times.Once);
+            Assert.AreEqual("localhost", template.Endpoint);
+            Assert.AreEqual("john doe", template.Settings.RdpUsername.StringValue);
+
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectModelNode>()), Times.Once);
         }

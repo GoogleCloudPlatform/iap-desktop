@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,32 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Data;
-using System;
+using Google.Solutions.IapDesktop.Application.Views;
 
-#pragma warning disable CA1058 // Types should not extend certain base types
-#pragma warning disable CA2237 // Mark ISerializable types with serializable
-
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 {
-    public class ConnectionFailedException : ApplicationException, IExceptionWithHelpTopic
+    internal abstract class ConnectInstanceCommandBase<TContext>
+        : ToolContextCommand<TContext>
     {
-        public IHelpTopic Help { get; }
-
-        public ConnectionFailedException(
-            string message,
-            IHelpTopic helpTopic) : base(message)
+        protected ConnectInstanceCommandBase(string text) : base(text)
         {
-            this.Help = helpTopic;
-        }
-
-        public ConnectionFailedException(
-            string message,
-            IHelpTopic helpTopic,
-            Exception innerException)
-            : base(message, innerException)
-        {
-            this.Help = helpTopic;
         }
     }
 }

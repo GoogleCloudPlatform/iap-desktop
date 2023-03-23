@@ -30,9 +30,11 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Download;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
@@ -121,22 +123,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     CancellationToken.None)
                 .ConfigureAwait(true);
 
-            var broker = new SshTerminalSessionBroker(
-                serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
 
             var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
+
+            var template = new SshConnectionTemplate(
+                instanceLocator,
+                true,
+                new IPEndPoint(address, 22),
+                authorizedKey,
+                language,
+                TimeSpan.FromSeconds(10));
 
             SshTerminalView pane = null;
             await AssertRaisesEventAsync<SessionStartedEvent>(
                 async () =>
                 {
-                    pane = (SshTerminalView)await broker.ConnectAsync(
-                            instanceLocator,
-                            new IPEndPoint(address, 22),
-                            authorizedKey,
-                            language,
-                            TimeSpan.FromSeconds(10))
+                    pane = (SshTerminalView)await broker
+                        .ConnectAsync(template)
                         .ConfigureAwait(true);
                 })
                 .ConfigureAwait(true);
@@ -195,16 +200,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var serviceProvider = CreateServiceProvider();
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
-            var broker = new SshTerminalSessionBroker(
-                serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
+
+            var template = new SshConnectionTemplate(
+                new InstanceLocator("project-1", "zone-1", "instance-1"),
+                true,
+                this.UnboundEndpoint,
+                AuthorizedKeyPair.ForMetadata(key, "test", true, null),
+                null,
+                TimeSpan.FromSeconds(10));
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectAsync(
-                    new InstanceLocator("project-1", "zone-1", "instance-1"),
-                    this.UnboundEndpoint,
-                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                    null,
-                    TimeSpan.FromSeconds(10)))
+                () => broker.ConnectAsync(template))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
@@ -221,15 +228,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var serviceProvider = CreateServiceProvider();
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
-            var broker = new SshTerminalSessionBroker(serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
+
+            var template = new SshConnectionTemplate(
+                new InstanceLocator("project-1", "zone-1", "instance-1"),
+                true,
+                this.NonSshEndpoint,
+                AuthorizedKeyPair.ForMetadata(key, "test", true, null),
+                null,
+                TimeSpan.FromSeconds(10));
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectAsync(
-                    new InstanceLocator("project-1", "zone-1", "instance-1"),
-                    this.NonSshEndpoint,
-                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                    null,
-                    TimeSpan.FromSeconds(10)))
+                () => broker.ConnectAsync(template))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
@@ -249,19 +259,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var instanceLocator = await instanceLocatorTask;
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
 
-            var broker = new SshTerminalSessionBroker(
-                serviceProvider);
+            var broker = new InstanceSessionBroker(serviceProvider);
 
             var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
 
+            var template = new SshConnectionTemplate(
+                instanceLocator,
+                true,
+                new IPEndPoint(address, 22),
+                AuthorizedKeyPair.ForMetadata(key, "test", true, null),
+                null,
+                TimeSpan.FromSeconds(10));
+
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectAsync(
-                    instanceLocator,
-                    new IPEndPoint(address, 22),
-                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                    null,
-                    TimeSpan.FromSeconds(10)))
+                () => broker.ConnectAsync(template))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(MetadataKeyAuthenticationFailedException), this.ExceptionShown);

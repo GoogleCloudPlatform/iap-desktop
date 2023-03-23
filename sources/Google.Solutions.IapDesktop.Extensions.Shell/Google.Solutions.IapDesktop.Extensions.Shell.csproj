@@ -128,11 +128,12 @@
     </Compile>
     <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
     <Compile Include="Services\Adapter\QuarantineAdapter.cs" />
+    <Compile Include="Services\Connection\ConnectionTemplate.cs" />
     <Compile Include="Services\Ssh\IAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeySet.cs" />
     <Compile Include="Services\Adapter\OsLoginAdapter.cs" />
-    <Compile Include="Services\ConnectionFailedException.cs" />
+    <Compile Include="Services\Connection\ConnectionFailedException.cs" />
     <Compile Include="Services\ConnectionSettings\ProjectExplorerNodeExtensions.cs" />
     <Compile Include="Services\Settings\SshSettings.cs" />
     <Compile Include="Services\Settings\TerminalSettings.cs" />
@@ -148,8 +149,11 @@
     <Compile Include="Services\Ssh\SshConnectionService.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
-    <Compile Include="Views\ConnectCommands.cs" />
-    <Compile Include="Views\SessionCommands.cs" />
+    <Compile Include="Views\Session\ConnectInstanceCommandBase.cs" />
+    <Compile Include="Views\Session\ConnectInstanceCommand.cs" />
+    <Compile Include="Views\Session\ConnectCommands.cs" />
+    <Compile Include="Views\Session\SessionBroker.cs" />
+    <Compile Include="Views\Session\SessionCommands.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsCommands.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsViewModel.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsView.cs">
@@ -192,7 +196,7 @@
     <Compile Include="Views\RemoteDesktop\MsRdpClient.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Views\RemoteDesktop\RemoteDesktopSessionBroker.cs" />
+    <Compile Include="Views\RemoteDesktop\IRemoteDesktopSession.cs" />
     <Compile Include="Views\RemoteDesktop\RdpClientExtensions.cs" />
     <Compile Include="Views\RemoteDesktop\RdpExceptions.cs" />
     <Compile Include="Views\RemoteDesktop\RemoteDesktopView.cs">
@@ -243,7 +247,7 @@
       <DependentUpon>TerminalPaneBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\SshTerminal\SshTerminalViewModel.cs" />
-    <Compile Include="Views\SshTerminal\SshTerminalSessionBroker.cs" />
+    <Compile Include="Views\SshTerminal\ISshTerminalSession.cs" />
     <Compile Include="Views\SshTerminal\TerminalViewModelBase.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsViewCommands.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsViewModel.cs" />
@@ -259,6 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Compile Include="Views\Session\ConnectRdpUrlCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
