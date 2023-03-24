@@ -34,6 +34,7 @@ using Google.Solutions.Testing.Application.Views;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
@@ -84,12 +85,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var settings = await CreateSettingsAsync(instanceLocator).ConfigureAwait(true);
 
             return broker.Connect(
-                new RdpConnectionTemplate(
-                    instanceLocator,
-                    true,
-                    "localhost",
-                    (ushort)tunnel.LocalPort,
-                    settings));
+                new ConnectionTemplate<RdpSessionParameters>(
+                    new TransportParameters(
+                        TransportParameters.TransportType.IapTunnel,
+                        instanceLocator,
+                        new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort)),
+                    new RdpSessionParameters(settings)));
         }
 
         [Test]
@@ -132,13 +133,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
-                await AssertRaisesEventAsync<SessionAbortedEvent>(() => broker.Connect(
-                        new RdpConnectionTemplate(
-                            locator,
-                            true,
-                            "localhost",
-                            (ushort)tunnel.LocalPort,
-                            settings)))
+                await AssertRaisesEventAsync<SessionAbortedEvent>(
+                    () => broker.Connect(
+                        new ConnectionTemplate<RdpSessionParameters>(
+                            new TransportParameters(
+                                TransportParameters.TransportType.IapTunnel,
+                                locator,
+                                new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort)),
+                            new RdpSessionParameters(settings))))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(this.ExceptionShown);
@@ -166,12 +168,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
 
                 var broker = new InstanceSessionBroker(serviceProvider);
                 var session = broker.Connect(
-                    new RdpConnectionTemplate(
-                        locator,
-                        true,
-                        "localhost",
-                        (ushort)tunnel.LocalPort,
-                        settings));
+                    new ConnectionTemplate<RdpSessionParameters>(
+                        new TransportParameters(
+                            TransportParameters.TransportType.IapTunnel,
+                            locator,
+                            new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort)),
+                        new RdpSessionParameters(settings)));
 
                 bool serverAuthWarningIsDisplayed = false;
                 ((RemoteDesktopView)session).AuthenticationWarningDisplayed += (sender, args) =>

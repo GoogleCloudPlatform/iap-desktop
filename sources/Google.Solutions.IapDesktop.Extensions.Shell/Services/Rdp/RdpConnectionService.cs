@@ -36,6 +36,7 @@ using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -44,11 +45,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
 {
     public interface IRdpConnectionService
     {
-        Task<RdpConnectionTemplate> PrepareConnectionAsync(
+        Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials);
 
-        Task<RdpConnectionTemplate> PrepareConnectionAsync(IapRdpUrl url);
+        Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(IapRdpUrl url);
     }
 
     [Service(typeof(IRdpConnectionService))]
@@ -77,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             this.credentialPrompt = credentialPrompt.ThrowIfNull(nameof(credentialPrompt));
         }
 
-        private async Task<RdpConnectionTemplate> PrepareConnectionAsync(
+        private async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(
             InstanceLocator instance,
             InstanceConnectionSettings settings)
         {
@@ -132,19 +133,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                     }
                 }).ConfigureAwait(true);
 
-            return new RdpConnectionTemplate(
-                instance,
-                true,
-                "localhost",
-                (ushort)tunnel.LocalPort,
-                settings);
+            return new ConnectionTemplate<RdpSessionParameters>(
+                new TransportParameters(
+                    TransportParameters.TransportType.IapTunnel,
+                    instance,
+                    new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort)),
+                new RdpSessionParameters(settings));
         }
 
         //---------------------------------------------------------------------
         // IRdpConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task<RdpConnectionTemplate> PrepareConnectionAsync(
+        public async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials)
         {
@@ -188,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                 .ConfigureAwait(true);
         }
 
-        public async Task<RdpConnectionTemplate> PrepareConnectionAsync(IapRdpUrl url)
+        public async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(IapRdpUrl url)
         {
             InstanceConnectionSettings settings;
             var existingNode = await this.projectModelService

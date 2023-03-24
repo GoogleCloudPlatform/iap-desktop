@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {
@@ -47,13 +48,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             SampleLocator,
             new NameValueCollection());
 
-        private static readonly RdpConnectionTemplate RdpConnectionTemplate =
-            new RdpConnectionTemplate(
-                SampleLocator,
-                true,
-                "localhost",
-                13389,
-                InstanceConnectionSettings.CreateNew(SampleLocator));
+        private static readonly ConnectionTemplate<RdpSessionParameters> RdpConnectionTemplate =
+            new ConnectionTemplate<RdpSessionParameters>(
+                new TransportParameters(
+                    TransportParameters.TransportType.IapTunnel,
+                    SampleLocator,
+                    new IPEndPoint(IPAddress.Loopback, 1234)),
+                new RdpSessionParameters(InstanceConnectionSettings.CreateNew(SampleLocator)));
 
         //---------------------------------------------------------------------
         // ExecuteAsync.

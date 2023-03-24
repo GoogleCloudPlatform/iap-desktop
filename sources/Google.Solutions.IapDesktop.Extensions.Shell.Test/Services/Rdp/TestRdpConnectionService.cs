@@ -35,6 +35,7 @@ using Google.Solutions.Testing.Application.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -106,9 +107,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .ConfigureAwait(false);
             Assert.IsNotNull(template);
 
-            Assert.AreEqual("localhost", template.Endpoint);
-            Assert.AreEqual("existinguser", template.Settings.RdpUsername.StringValue);
-            Assert.AreEqual("", template.Settings.RdpPassword.ClearTextValue);
+            Assert.IsTrue(IPAddress.IsLoopback(template.Transport.Endpoint.Address));
+            Assert.AreEqual("existinguser", template.Session.Settings.RdpUsername.StringValue);
+            Assert.AreEqual("", template.Session.Settings.RdpPassword.ClearTextValue);
         }
 
         [Test]
@@ -147,9 +148,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .ConfigureAwait(false);
             Assert.IsNotNull(template);
 
-            Assert.AreEqual("localhost", template.Endpoint);
-            Assert.AreEqual("existinguser", template.Settings.RdpUsername.StringValue);
-            Assert.AreEqual("password", template.Settings.RdpPassword.ClearTextValue);
+            Assert.IsTrue(IPAddress.IsLoopback(template.Transport.Endpoint.Address));
+            Assert.AreEqual("existinguser", template.Session.Settings.RdpUsername.StringValue);
+            Assert.AreEqual("password", template.Session.Settings.RdpPassword.ClearTextValue);
 
             Assert.IsTrue(settingsSaved);
         }
@@ -191,8 +192,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .ConfigureAwait(false);
             Assert.IsNotNull(template);
 
-            Assert.AreEqual("localhost", template.Endpoint);
-            Assert.IsNull(template.Settings.RdpUsername.StringValue);
+            Assert.IsTrue(IPAddress.IsLoopback(template.Transport.Endpoint.Address));
+            Assert.IsNull(template.Session.Settings.RdpUsername.StringValue);
 
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectModelNode>()), Times.Never);
@@ -232,8 +233,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .ConfigureAwait(false);
             Assert.IsNotNull(template);
 
-            Assert.AreEqual("localhost", template.Endpoint);
-            Assert.AreEqual("john doe", template.Settings.RdpUsername.StringValue);
+            Assert.IsTrue(IPAddress.IsLoopback(template.Transport.Endpoint.Address));
+            Assert.AreEqual("john doe", template.Session.Settings.RdpUsername.StringValue);
 
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectModelNode>()), Times.Never);
@@ -284,8 +285,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .ConfigureAwait(false);
             Assert.IsNotNull(template);
 
-            Assert.AreEqual("localhost", template.Endpoint);
-            Assert.AreEqual("john doe", template.Settings.RdpUsername.StringValue);
+            Assert.IsTrue(IPAddress.IsLoopback(template.Transport.Endpoint.Address));
+            Assert.AreEqual("john doe", template.Session.Settings.RdpUsername.StringValue);
 
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectModelNode>()), Times.Once);
