@@ -59,6 +59,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                     $"and no credentials were obtained",
                     e);
             }
+            catch (JsonException e)
+            {
+                throw new CredentialCallbackException(
+                    $"The credential callback endpoint at {callbackUrl} returned " +
+                    $"an invalid result",
+                    e);
+            }
         }
 
         //---------------------------------------------------------------------
