@@ -55,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         private readonly ISelectCredentialsWorkflow credentialPrompt;
         private readonly IProjectModelService projectModelService;
         private readonly IConnectionSettingsService settingsService;
+        private readonly IRdpCredentialCallbackService credentialCallbackService;
 
         public RdpConnectionService(
             IMainWindow window,
@@ -62,19 +63,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             ITunnelBrokerService tunnelBroker,
             IJobService jobService,
             IConnectionSettingsService settingsService,
-            ISelectCredentialsWorkflow credentialPrompt)
+            ISelectCredentialsWorkflow credentialPrompt,
+            IRdpCredentialCallbackService credentialCallbackService)
             : base(jobService, tunnelBroker)
         {
             this.window = window.ThrowIfNull(nameof(window));
             this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
             this.settingsService = settingsService.ThrowIfNull(nameof(settingsService));
             this.credentialPrompt = credentialPrompt.ThrowIfNull(nameof(credentialPrompt));
+            this.credentialCallbackService = credentialCallbackService.ThrowIfNull(nameof(credentialCallbackService));
         }
 
         private async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(
             InstanceLocator instance,
-            InstanceConnectionSettings settings,
-            bool allowPersistentCredentials)
+            InstanceConnectionSettings settings)
         {
             var timeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
 
@@ -84,14 +86,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                     timeout)
                 .ConfigureAwait(false);
 
-            var credentials = new RdpCredentials(
+            var rdpParameters = new RdpSessionParameters(new RdpCredentials(
                 settings.RdpUsername.StringValue,
                 settings.RdpDomain.StringValue,
-                allowPersistentCredentials
-                    ? (SecureString)settings.RdpPassword.Value
-                    : null);
-
-            var rdpParameters = new RdpSessionParameters(credentials)
+                (SecureString)settings.RdpPassword.Value))
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue),
 
@@ -141,6 +139,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 
             if (allowPersistentCredentials)
             {
+                //
+                // Show prompt, and persist any generated credentials.
+                //
                 await this.credentialPrompt.SelectCredentialsAsync(
                         this.window,
                         vmNode.Instance,
@@ -149,17 +150,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                         true)
                     .ConfigureAwait(true);
 
-                // Persist new credentials.
                 settings.Save();
             }
 
-            // TODO: Reset password instead of passing flag
-
-            return await PrepareConnectionAsync(
+            var template = await PrepareConnectionAsync(
                     vmNode.Instance,
-                    (InstanceConnectionSettings)settings.TypedCollection,
-                    allowPersistentCredentials) 
+                    (InstanceConnectionSettings)settings.TypedCollection) 
                 .ConfigureAwait(true);
+
+            if (!allowPersistentCredentials)
+            {
+                //
+                // Clear the password to force the default RDP logon
+                // screen to appear.
+                //
+                template.Session.Credentials = new RdpCredentials(
+                    template.Session.Credentials.User,
+                    template.Session.Credentials.Domain,
+                    null);
+            }
+
+            return template;
         }
 
         public async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(IapRdpUrl url)
@@ -186,19 +197,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                 settings = InstanceConnectionSettings.FromUrl(url);
             }
 
-            // TODO: use const
             if (url.TryGetParameter("CredentialCallbackUrl", out string callbackUrlRaw) &&
                 Uri.TryCreate(callbackUrlRaw, UriKind.Absolute, out var callbackUrl))
             {
                 var template = await PrepareConnectionAsync(
                         url.Instance,
-                        settings,
-                        true)
+                        settings)
                     .ConfigureAwait(true);
 
-                // TODO: Invoke callback
-                // TODO: Update template.Session.Credentials
-                
+                //
+                // Invoke callback and replace existing credentials.
+                //
+                template.Session.Credentials = await this.credentialCallbackService
+                    .GetCredentialsAsync(callbackUrl,
+                    CancellationToken.None);
+
                 return template;
             }
             else
@@ -223,8 +236,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 
                 return await PrepareConnectionAsync(
                         url.Instance,
-                        settings,
-                        true)
+                        settings)
                     .ConfigureAwait(true);
             }
         }

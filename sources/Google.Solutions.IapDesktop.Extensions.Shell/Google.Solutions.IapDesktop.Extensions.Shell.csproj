@@ -133,6 +133,7 @@
     <Compile Include="Services\Connection\ConnectionTemplate.cs" />
     <Compile Include="Data\RdpSessionParameters.cs" />
     <Compile Include="Data\SshSessionParameters.cs" />
+    <Compile Include="Services\Connection\RdpCredentialCallbackService.cs" />
     <Compile Include="Services\Ssh\IAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeySet.cs" />

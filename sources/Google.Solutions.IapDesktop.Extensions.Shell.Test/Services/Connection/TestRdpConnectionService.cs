@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Testing.Application.Mocks;
+using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -100,7 +101,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
-                new Mock<ISelectCredentialsWorkflow>().Object);
+                new Mock<ISelectCredentialsWorkflow>().Object,
+                new Mock<IRdpCredentialCallbackService>().Object);
 
             var template = await service
                 .PrepareConnectionAsync(vmNode.Object, false)
@@ -141,7 +143,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
-                new Mock<ISelectCredentialsWorkflow>().Object);
+                new Mock<ISelectCredentialsWorkflow>().Object,
+                new Mock<IRdpCredentialCallbackService>().Object);
 
             var template = await service
                 .PrepareConnectionAsync(vmNode.Object, true)
@@ -179,13 +182,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IProjectModelNode)null); // Not found
 
+            var callbackService = new Mock<IRdpCredentialCallbackService>();
+
             var service = new RdpConnectionService(
                 new Mock<IMainWindow>().Object,
                 modelService.Object,
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
-                credentialPrompt.Object);
+                credentialPrompt.Object,
+                callbackService.Object);
 
             var template = await service
                 .PrepareConnectionAsync(
@@ -198,6 +204,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
 
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectModelNode>()), Times.Never);
+            callbackService.Verify(s => s.GetCredentialsAsync(
+                It.IsAny<Uri>(),
+                It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
@@ -221,13 +230,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IProjectModelNode)null); // Not found
 
+            var callbackService = new Mock<IRdpCredentialCallbackService>();
+
             var service = new RdpConnectionService(
                 new Mock<IMainWindow>().Object,
                 modelService.Object,
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
-                credentialPrompt.Object);
+                credentialPrompt.Object,
+                callbackService.Object);
 
             var template = await service
                 .PrepareConnectionAsync(
@@ -240,6 +252,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
 
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectModelNode>()), Times.Never);
+            callbackService.Verify(s => s.GetCredentialsAsync(
+                It.IsAny<Uri>(),
+                It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
@@ -274,13 +289,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(vmNode.Object);
 
+            var callbackService = new Mock<IRdpCredentialCallbackService>();
+
             var service = new RdpConnectionService(
                 new Mock<IMainWindow>().Object,
                 modelService.Object,
                 CreateTunnelBrokerServiceMock().Object,
                 new SynchronousJobService(),
                 settingsService.Object,
-                credentialPrompt.Object);
+                credentialPrompt.Object,
+                callbackService.Object);
 
             var template = await service
                 .PrepareConnectionAsync(
@@ -293,6 +311,79 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
 
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectModelNode>()), Times.Once);
+            callbackService.Verify(s => s.GetCredentialsAsync(
+                It.IsAny<Uri>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        //---------------------------------------------------------------------
+        // Connect by URL (with credential callback).
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenConnectingByUrlAndCredentialCallbackFails_ThenPrepareConnectionThrowsException()
+        {
+            var callbackService = new Mock<IRdpCredentialCallbackService>();
+            callbackService.Setup(
+                s => s.GetCredentialsAsync(
+                    It.IsAny<Uri>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ArgumentException("mock"));
+
+            var service = new RdpConnectionService(
+                new Mock<IMainWindow>().Object,
+                new Mock<IProjectModelService>().Object,
+                CreateTunnelBrokerServiceMock().Object,
+                new SynchronousJobService(),
+                new Mock<IConnectionSettingsService>().Object,
+                new Mock<ISelectCredentialsWorkflow>().Object,
+                callbackService.Object);
+
+            var url = IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?CredentialCallbackUrl=http://mock");
+
+            ExceptionAssert.ThrowsAggregateException<ArgumentException>(
+                () => service.PrepareConnectionAsync(url).Wait());
+
+            callbackService.Verify(s => s.GetCredentialsAsync(
+                new Uri("http://mock"),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenConnectingByUrlAndCredentialCallbackSucceeds_ThenConnectionIsMadeWithCallbackCredentials()
+        {
+            var callbackService = new Mock<IRdpCredentialCallbackService>();
+            callbackService.Setup(
+                s => s.GetCredentialsAsync(
+                    It.IsAny<Uri>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new RdpCredentials(
+                    "user",
+                    "domain",
+                    SecureStringExtensions.FromClearText("password")));
+
+            var service = new RdpConnectionService(
+                new Mock<IMainWindow>().Object,
+                new Mock<IProjectModelService>().Object,
+                CreateTunnelBrokerServiceMock().Object,
+                new SynchronousJobService(),
+                new Mock<IConnectionSettingsService>().Object,
+                new Mock<ISelectCredentialsWorkflow>().Object,
+                callbackService.Object);
+
+            var url = IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe&CredentialCallbackUrl=http://mock");
+
+            var template = await service
+                .PrepareConnectionAsync(url)
+                .ConfigureAwait(false);
+            Assert.IsNotNull(template);
+            Assert.AreEqual("user", template.Session.Credentials.User);
+            Assert.AreEqual("domain", template.Session.Credentials.Domain);
+            Assert.AreEqual("password", template.Session.Credentials.Password.AsClearText());
+
+            callbackService.Verify(s => s.GetCredentialsAsync(
+                new Uri("http://mock"),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
