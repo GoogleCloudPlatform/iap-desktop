@@ -86,7 +86,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
             Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
             Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
             Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
-            Assert.IsTrue(settings.RdpCredentialGenerationBehavior.IsDefault);
         }
 
         [Test]
@@ -171,7 +170,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
             Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
             Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
             Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
-            Assert.IsTrue(settings.RdpCredentialGenerationBehavior.IsDefault);
         }
 
         [Test]
@@ -234,7 +232,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
             Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
             Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
             Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
-            Assert.IsTrue(settings.RdpCredentialGenerationBehavior.IsDefault);
             Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
             Assert.IsTrue(settings.RdpRedirectPrinter.IsDefault);
             Assert.IsTrue(settings.RdpRedirectSmartCard.IsDefault);

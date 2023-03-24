@@ -53,7 +53,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
         public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
 
         public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; } = RdpUserAuthenticationBehavior._Default;
-        public RdpCredentialGenerationBehavior CredentialGenerationBehavior { get; set; } = RdpCredentialGenerationBehavior._Default;
 
         public RdpSessionParameters(RdpCredentials credentials)
         {

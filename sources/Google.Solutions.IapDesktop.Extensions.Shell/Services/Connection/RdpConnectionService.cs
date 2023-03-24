@@ -104,7 +104,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                 NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.EnumValue,
 
                 UserAuthenticationBehavior = settings.RdpUserAuthenticationBehavior.EnumValue,
-                CredentialGenerationBehavior = settings.RdpCredentialGenerationBehavior.EnumValue,
                 
                 RedirectClipboard = settings.RdpRedirectClipboard.EnumValue,
                 RedirectPrinter = settings.RdpRedirectPrinter.EnumValue,
@@ -146,6 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                         this.window,
                         vmNode.Instance,
                         settings.TypedCollection,
+                        RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound,
                         true)
                     .ConfigureAwait(true);
 
@@ -203,6 +203,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             }
             else
             {
+                if (!url.TryGetParameter<RdpCredentialGenerationBehavior>(
+                    "CredentialGenerationBehavior", 
+                    out var allowedBehavior))
+                {
+                    allowedBehavior = RdpCredentialGenerationBehavior._Default;
+                }
+
                 //
                 // Show prompt, but don't persist any generated credentials.
                 //
@@ -210,6 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                         this.window,
                         url.Instance,
                         settings,
+                        allowedBehavior,
                         false)
                     .ConfigureAwait(true);
 

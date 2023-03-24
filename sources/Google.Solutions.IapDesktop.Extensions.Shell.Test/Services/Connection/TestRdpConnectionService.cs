@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
@@ -168,6 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
+                    RdpCredentialGenerationBehavior._Default,
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
 
             var modelService = new Mock<IProjectModelService>();
@@ -209,6 +211,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
+                    RdpCredentialGenerationBehavior._Default,
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
 
             var modelService = new Mock<IProjectModelService>();
@@ -261,6 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
+                    RdpCredentialGenerationBehavior._Default,
                     It.IsAny<bool>()));
 
             var modelService = new Mock<IProjectModelService>();

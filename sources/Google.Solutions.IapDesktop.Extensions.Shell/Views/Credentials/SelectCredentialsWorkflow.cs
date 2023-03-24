@@ -40,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
            IWin32Window owner,
            InstanceLocator instanceLocator,
            ConnectionSettingsBase settings,
+           RdpCredentialGenerationBehavior allowedBehavior,
            bool allowJumpToSettings);
     }
 
@@ -80,6 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             IWin32Window owner,
             InstanceLocator instanceLocator,
             ConnectionSettingsBase settings,
+            RdpCredentialGenerationBehavior allowedBehavior,
             bool allowJumpToSettings)
         {
             var credentialsService = this.serviceProvider.GetService<ICreateCredentialsWorkflow>();
@@ -91,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 !string.IsNullOrEmpty(settings.RdpUsername.StringValue) &&
                 !string.IsNullOrEmpty(settings.RdpPassword.ClearTextValue);
 
-            if (settings.RdpCredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Force
+            if (allowedBehavior == RdpCredentialGenerationBehavior.Force
                 && await IsGrantedPermissionToGenerateCredentials(
                             credentialsService,
                             instanceLocator)
@@ -109,12 +111,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 
             var options = new List<CredentialOption>();
             if ((!credentialsExist
-                    && settings.RdpCredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
+                    && allowedBehavior == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
                     && await IsGrantedPermissionToGenerateCredentials(
                                 credentialsService,
                                 instanceLocator)
                             .ConfigureAwait(true))
-                || settings.RdpCredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Allow)
+                || allowedBehavior == RdpCredentialGenerationBehavior.Allow)
             {
                 options.Add(
                     new CredentialOption()
