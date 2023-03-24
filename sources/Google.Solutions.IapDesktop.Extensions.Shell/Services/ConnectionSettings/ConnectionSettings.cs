@@ -451,7 +451,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 .Where(s => !(s is RegistrySecureStringSetting)))
             {
                 var value = url.Parameters.Get(setting.Key);
-                if (value != null)
+                if (!string.IsNullOrEmpty(value))
                 {
                     try
                     {
