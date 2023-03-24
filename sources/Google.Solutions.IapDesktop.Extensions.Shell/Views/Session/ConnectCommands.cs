@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 sshConnectionService,
                 sessionBroker)
             {
-                AlwaysAvailable = true,                  // Never hide to avoid flicker.
+                IsToolbarCommand = true,                  // Never hide to avoid flicker.
                 AvailableForSsh = true,
                 AvailableForRdp = true,
                 Image = Resources.Connect_16,

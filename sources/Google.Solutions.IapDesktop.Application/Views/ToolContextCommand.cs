@@ -37,6 +37,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
     public abstract class ToolContextCommand<TContext> : CommandBase, IContextCommand<TContext>
     {
         /// <summary>
+        /// If true, the command is never reported as Unavailable,
+        /// but only as Disabled.
+        /// </summary>
+        public bool IsToolbarCommand { get; set; } = false;
+
+        /// <summary>
         /// Check if command should be made available for this context.
         /// </summary>
         /// <param name="context"></param>
@@ -68,7 +74,20 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             if (!this.IsAvailable(context))
             {
-                return CommandState.Unavailable;
+                if (this.IsToolbarCommand)
+                {
+                    //
+                    // Report as Disabled even if it's Unavailable.
+                    // This is needed for toolbar commands to prevent
+                    // icons from being rearranged when the context
+                    // changes.
+                    //
+                    return CommandState.Disabled;
+                }
+                else
+                {
+                    return CommandState.Unavailable;
+                }
             }
             else if (this.IsEnabled(context))
             {

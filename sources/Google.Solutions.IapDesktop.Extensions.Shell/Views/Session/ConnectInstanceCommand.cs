@@ -44,7 +44,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         private readonly Service<ISshConnectionService> sshConnectionService;
         private readonly Service<IInstanceSessionBroker> sessionBroker;
 
-        public bool AlwaysAvailable { get; set; } = false;
         public bool AvailableForSsh { get; set; } = false;
         public bool AvailableForRdp { get; set; } = false;
         public bool AllowPersistentRdpCredentials { get; set; } = true;
@@ -66,26 +65,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
         protected override bool IsAvailable(IProjectModelNode node)
         {
-            if (this.AlwaysAvailable) // For toolbars.
-            {
-                return true;
-            }
-            else
-            {
-                return node != null &&
-                    node is IProjectModelInstanceNode instanceNode &&
-                    ((this.AvailableForSsh && instanceNode.IsSshSupported()) ||
-                        (this.AvailableForRdp && instanceNode.IsRdpSupported()));
-            }
+            return node != null &&
+                node is IProjectModelInstanceNode instanceNode &&
+                ((this.AvailableForSsh && instanceNode.IsSshSupported()) ||
+                    (this.AvailableForRdp && instanceNode.IsRdpSupported()));
         }
 
         protected override bool IsEnabled(IProjectModelNode node)
         {
-            return node != null &&
-                node is IProjectModelInstanceNode instanceNode &&
-                ((this.AvailableForSsh && instanceNode.IsSshSupported()) ||
-                    (this.AvailableForRdp && instanceNode.IsRdpSupported())) &&
-                instanceNode.IsRunning;
+            Debug.Assert(IsAvailable(node));
+            return ((IProjectModelInstanceNode)node).IsRunning;
         }
 
         public override async Task ExecuteAsync(IProjectModelNode node)
