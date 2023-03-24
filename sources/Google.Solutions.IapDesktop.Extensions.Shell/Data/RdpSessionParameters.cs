@@ -24,7 +24,7 @@ using System;
 using System.ComponentModel;
 using System.Security;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
 {
     /// <summary>
     /// Parameters for establishing an RDP session.

@@ -35,6 +35,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using System.Net;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {

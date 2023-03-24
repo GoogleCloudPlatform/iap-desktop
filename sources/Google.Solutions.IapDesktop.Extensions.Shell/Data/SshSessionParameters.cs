@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using System;
 using System.Globalization;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
 {
     /// <summary>
     /// Parameters for establishing an SSH session.

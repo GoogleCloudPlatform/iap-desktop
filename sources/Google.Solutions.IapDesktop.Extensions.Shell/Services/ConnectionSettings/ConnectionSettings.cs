@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Microsoft.Win32;
@@ -168,42 +169,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 "Desktop size",
                 "Size of remote desktop.",
                 Categories.RdpDisplay,
-                Connection.RdpDesktopSize._Default,
+                Data.RdpDesktopSize._Default,
                 key);
             this.RdpAuthenticationLevel = RegistryEnumSetting<RdpAuthenticationLevel>.FromKey(
                 "AuthenticationLevel",
                 "Server authentication",
                 "Require server authentication when connecting.",
                 Categories.RdpAdvanced,
-                Connection.RdpAuthenticationLevel._Default,
+                Data.RdpAuthenticationLevel._Default,
                 key);
             this.RdpColorDepth = RegistryEnumSetting<RdpColorDepth>.FromKey(
                 "ColorDepth",
                 "Color depth",
                 "Color depth of remote desktop.",
                 Categories.RdpDisplay,
-                Connection.RdpColorDepth._Default,
+                Data.RdpColorDepth._Default,
                 key);
             this.RdpAudioMode = RegistryEnumSetting<RdpAudioMode>.FromKey(
                 "AudioMode",
                 "Audio mode",
                 "Redirect audio when playing on server.",
                 Categories.RdpResources,
-                Connection.RdpAudioMode._Default,
+                Data.RdpAudioMode._Default,
                 key);
             this.RdpUserAuthenticationBehavior = RegistryEnumSetting<RdpUserAuthenticationBehavior>.FromKey(
                 "RdpUserAuthenticationBehavior",
                 null, // Hidden.
                 null, // Hidden.
                 null, // Hidden.
-                Connection.RdpUserAuthenticationBehavior._Default,
+                Data.RdpUserAuthenticationBehavior._Default,
                 key);
             this.RdpBitmapPersistence = RegistryEnumSetting<RdpBitmapPersistence>.FromKey(
                 "BitmapPersistence",
                 "Bitmap caching",
                 "Use persistent bitmap cache. Enabling caching substantially increases memory usage.",
                 Categories.RdpAdvanced,
-                Connection.RdpBitmapPersistence._Default,
+                Data.RdpBitmapPersistence._Default,
                 key);
             this.RdpNetworkLevelAuthentication = RegistryEnumSetting<RdpNetworkLevelAuthentication>.FromKey(
                 "NetworkLevelAuthentication",
@@ -212,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                     "Disable NLA only if the server uses a custom credential service provider." +
                     "Disabling NLA automatically enables server authentication.",
                 Categories.RdpAdvanced,
-                Connection.RdpNetworkLevelAuthentication._Default,
+                Data.RdpNetworkLevelAuthentication._Default,
                 key);
             this.RdpConnectionTimeout = RegistryDwordSetting.FromKey(
                 "ConnectionTimeout",
@@ -228,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 null, // Hidden.
                 null, // Hidden.
                 null, // Hidden.
-                Connection.RdpCredentialGenerationBehavior._Default,
+                Data.RdpCredentialGenerationBehavior._Default,
                 key);
             this.RdpPort = RegistryDwordSetting.FromKey(
                 "RdpPort",
@@ -244,49 +245,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 "Redirect clipboard",
                 "Allow clipboard contents to be shared with remote desktop.",
                 Categories.RdpResources,
-                Connection.RdpRedirectClipboard._Default,
+                Data.RdpRedirectClipboard._Default,
                 key);
             this.RdpRedirectPrinter = RegistryEnumSetting<RdpRedirectPrinter>.FromKey(
                 "RdpRedirectPrinter",
                 "Redirect printers",
                 "Share local printers with remote desktop.",
                 Categories.RdpResources,
-                Connection.RdpRedirectPrinter._Default,
+                Data.RdpRedirectPrinter._Default,
                 key);
             this.RdpRedirectSmartCard = RegistryEnumSetting<RdpRedirectSmartCard>.FromKey(
                 "RdpRedirectSmartCard",
                 "Redirect smart cards",
                 "Share local smart carrds with remote desktop.",
                 Categories.RdpResources,
-                Connection.RdpRedirectSmartCard._Default,
+                Data.RdpRedirectSmartCard._Default,
                 key);
             this.RdpRedirectPort = RegistryEnumSetting<RdpRedirectPort>.FromKey(
                 "RdpRedirectPort",
                 "Redirect local ports",
                 "Share local ports (COM, LPT) with remote desktop.",
                 Categories.RdpResources,
-                Connection.RdpRedirectPort._Default,
+                Data.RdpRedirectPort._Default,
                 key);
             this.RdpRedirectDrive = RegistryEnumSetting<RdpRedirectDrive>.FromKey(
                 "RdpRedirectDrive",
                 "Redirect drives",
                 "Share local drives with remote desktop.",
                 Categories.RdpResources,
-                Connection.RdpRedirectDrive._Default,
+                Data.RdpRedirectDrive._Default,
                 key);
             this.RdpRedirectDevice = RegistryEnumSetting<RdpRedirectDevice>.FromKey(
                 "RdpRedirectDevice",
                 "Redirect devices",
                 "Share local devices with remote desktop.",
                 Categories.RdpResources,
-                Connection.RdpRedirectDevice._Default,
+                Data.RdpRedirectDevice._Default,
                 key);
             this.RdpHookWindowsKeys = RegistryEnumSetting<RdpHookWindowsKeys>.FromKey(
                 "RdpHookWindowsKeys",
                 "Enable Windows shortcuts",
                 "Enable Windows shortcuts (like Win+R)",
                 Categories.RdpAdvanced,
-                Connection.RdpHookWindowsKeys._Default,
+                Data.RdpHookWindowsKeys._Default,
                 key);
 
             //

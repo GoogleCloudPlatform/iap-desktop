@@ -40,6 +40,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using System.Net;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {
