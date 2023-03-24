@@ -22,12 +22,12 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
@@ -36,172 +36,7 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings
 {
-    //
-    // NB. The values do not map to RDP interface values. But the numeric values
-    // must be kept unchanged as they are persisted in the registry.
-    //
 
-    public enum RdpConnectionBarState
-    {
-        AutoHide = 0,
-        Pinned = 1,
-        Off = 2,
-
-        [Browsable(false)]
-        _Default = AutoHide
-    }
-
-    public enum RdpDesktopSize
-    {
-        ClientSize = 0,
-        ScreenSize = 1,
-        AutoAdjust = 2,
-
-        [Browsable(false)]
-        _Default = AutoAdjust
-    }
-
-    public enum RdpAuthenticationLevel
-    {
-        // Likely to fail when using IAP unless the cert has been issued
-        // for "localhost".
-        AttemptServerAuthentication = 0,
-
-        // Almsot guaranteed to fail, so do not even display it.
-        [Browsable(false)]
-        RequireServerAuthentication = 1,
-
-        NoServerAuthentication = 3,
-
-        [Browsable(false)]
-        _Default = NoServerAuthentication
-    }
-
-    public enum RdpColorDepth
-    {
-        HighColor = 0,
-        TrueColor = 1,
-        DeepColor = 2,
-
-        [Browsable(false)]
-        _Default = TrueColor
-    }
-
-    public enum RdpAudioMode
-    {
-        PlayLocally = 0,
-        PlayOnServer = 1,
-        DoNotPlay = 2,
-
-        [Browsable(false)]
-        _Default = PlayLocally
-    }
-
-    public enum RdpRedirectClipboard
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Enabled
-    }
-
-    public enum RdpUserAuthenticationBehavior
-    {
-        PromptOnFailure = 0,
-        AbortOnFailure = 1,
-
-        [Browsable(false)]
-        _Default = PromptOnFailure
-    }
-
-    public enum RdpBitmapPersistence
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpCredentialGenerationBehavior
-    {
-        Allow = 0,
-        AllowIfNoCredentialsFound = 1,
-        Disallow = 2,
-        Force = 3,
-
-        [Browsable(false)]
-        _Default = AllowIfNoCredentialsFound
-    }
-
-    public enum RdpRedirectPrinter
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpRedirectSmartCard
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpRedirectPort
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpRedirectDrive
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpRedirectDevice
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Disabled
-    }
-
-    public enum RdpNetworkLevelAuthentication
-    {
-        Disabled = 0,
-        Enabled = 1,
-
-        [Browsable(false)]
-        _Default = Enabled
-    }
-
-    public enum RdpHookWindowsKeys
-    {
-        //
-        // NB. Values correspond to IMsRdpClientSecuredSettings::KeyboardHookMode.
-        //
-        Never = 0,
-        Always = 1,
-        FullScreenOnly = 2,
-
-
-        [Browsable(false)]
-        _Default = FullScreenOnly
-    }
 
     public abstract class ConnectionSettingsBase : IRegistrySettingsCollection
     {
@@ -333,42 +168,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 "Desktop size",
                 "Size of remote desktop.",
                 Categories.RdpDisplay,
-                ConnectionSettings.RdpDesktopSize._Default,
+                Connection.RdpDesktopSize._Default,
                 key);
             this.RdpAuthenticationLevel = RegistryEnumSetting<RdpAuthenticationLevel>.FromKey(
                 "AuthenticationLevel",
                 "Server authentication",
                 "Require server authentication when connecting.",
                 Categories.RdpAdvanced,
-                ConnectionSettings.RdpAuthenticationLevel._Default,
+                Connection.RdpAuthenticationLevel._Default,
                 key);
             this.RdpColorDepth = RegistryEnumSetting<RdpColorDepth>.FromKey(
                 "ColorDepth",
                 "Color depth",
                 "Color depth of remote desktop.",
                 Categories.RdpDisplay,
-                ConnectionSettings.RdpColorDepth._Default,
+                Connection.RdpColorDepth._Default,
                 key);
             this.RdpAudioMode = RegistryEnumSetting<RdpAudioMode>.FromKey(
                 "AudioMode",
                 "Audio mode",
                 "Redirect audio when playing on server.",
                 Categories.RdpResources,
-                ConnectionSettings.RdpAudioMode._Default,
+                Connection.RdpAudioMode._Default,
                 key);
             this.RdpUserAuthenticationBehavior = RegistryEnumSetting<RdpUserAuthenticationBehavior>.FromKey(
                 "RdpUserAuthenticationBehavior",
                 null, // Hidden.
                 null, // Hidden.
                 null, // Hidden.
-                ConnectionSettings.RdpUserAuthenticationBehavior._Default,
+                Connection.RdpUserAuthenticationBehavior._Default,
                 key);
             this.RdpBitmapPersistence = RegistryEnumSetting<RdpBitmapPersistence>.FromKey(
                 "BitmapPersistence",
                 "Bitmap caching",
                 "Use persistent bitmap cache. Enabling caching substantially increases memory usage.",
                 Categories.RdpAdvanced,
-                ConnectionSettings.RdpBitmapPersistence._Default,
+                Connection.RdpBitmapPersistence._Default,
                 key);
             this.RdpNetworkLevelAuthentication = RegistryEnumSetting<RdpNetworkLevelAuthentication>.FromKey(
                 "NetworkLevelAuthentication",
@@ -377,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                     "Disable NLA only if the server uses a custom credential service provider." +
                     "Disabling NLA automatically enables server authentication.",
                 Categories.RdpAdvanced,
-                ConnectionSettings.RdpNetworkLevelAuthentication._Default,
+                Connection.RdpNetworkLevelAuthentication._Default,
                 key);
             this.RdpConnectionTimeout = RegistryDwordSetting.FromKey(
                 "ConnectionTimeout",
@@ -385,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 "Timeout for establishing a Remote Desktop connection, in seconds. " +
                     "Use a timeout that allows sufficient time for credential prompts.",
                 Categories.RdpAdvanced,
-                30,
+                RdpSessionParameters.DefaultTimeoutInSeconds,
                 key,
                 0, 300);
             this.RdpCredentialGenerationBehavior = RegistryEnumSetting<RdpCredentialGenerationBehavior>.FromKey(
@@ -393,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 null, // Hidden.
                 null, // Hidden.
                 null, // Hidden.
-                ConnectionSettings.RdpCredentialGenerationBehavior._Default,
+                Connection.RdpCredentialGenerationBehavior._Default,
                 key);
             this.RdpPort = RegistryDwordSetting.FromKey(
                 "RdpPort",
@@ -409,49 +244,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 "Redirect clipboard",
                 "Allow clipboard contents to be shared with remote desktop.",
                 Categories.RdpResources,
-                ConnectionSettings.RdpRedirectClipboard._Default,
+                Connection.RdpRedirectClipboard._Default,
                 key);
             this.RdpRedirectPrinter = RegistryEnumSetting<RdpRedirectPrinter>.FromKey(
                 "RdpRedirectPrinter",
                 "Redirect printers",
                 "Share local printers with remote desktop.",
                 Categories.RdpResources,
-                ConnectionSettings.RdpRedirectPrinter._Default,
+                Connection.RdpRedirectPrinter._Default,
                 key);
             this.RdpRedirectSmartCard = RegistryEnumSetting<RdpRedirectSmartCard>.FromKey(
                 "RdpRedirectSmartCard",
                 "Redirect smart cards",
                 "Share local smart carrds with remote desktop.",
                 Categories.RdpResources,
-                ConnectionSettings.RdpRedirectSmartCard._Default,
+                Connection.RdpRedirectSmartCard._Default,
                 key);
             this.RdpRedirectPort = RegistryEnumSetting<RdpRedirectPort>.FromKey(
                 "RdpRedirectPort",
                 "Redirect local ports",
                 "Share local ports (COM, LPT) with remote desktop.",
                 Categories.RdpResources,
-                ConnectionSettings.RdpRedirectPort._Default,
+                Connection.RdpRedirectPort._Default,
                 key);
             this.RdpRedirectDrive = RegistryEnumSetting<RdpRedirectDrive>.FromKey(
                 "RdpRedirectDrive",
                 "Redirect drives",
                 "Share local drives with remote desktop.",
                 Categories.RdpResources,
-                ConnectionSettings.RdpRedirectDrive._Default,
+                Connection.RdpRedirectDrive._Default,
                 key);
             this.RdpRedirectDevice = RegistryEnumSetting<RdpRedirectDevice>.FromKey(
                 "RdpRedirectDevice",
                 "Redirect devices",
                 "Share local devices with remote desktop.",
                 Categories.RdpResources,
-                ConnectionSettings.RdpRedirectDevice._Default,
+                Connection.RdpRedirectDevice._Default,
                 key);
             this.RdpHookWindowsKeys = RegistryEnumSetting<RdpHookWindowsKeys>.FromKey(
                 "RdpHookWindowsKeys",
                 "Enable Windows shortcuts",
                 "Enable Windows shortcuts (like Win+R)",
                 Categories.RdpAdvanced,
-                ConnectionSettings.RdpHookWindowsKeys._Default,
+                Connection.RdpHookWindowsKeys._Default,
                 key);
 
             //

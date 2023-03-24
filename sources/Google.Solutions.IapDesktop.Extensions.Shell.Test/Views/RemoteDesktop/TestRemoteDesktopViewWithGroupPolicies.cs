@@ -54,25 +54,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             return registry;
         }
 
-        private async Task<InstanceConnectionSettings> CreateSettingsAsync(
+        private async Task<RdpSessionParameters> CreateSessionParametersAsync(
             InstanceLocator instanceLocator)
         {
-            var credentials = await GenerateWindowsCredentials(instanceLocator).ConfigureAwait(true);
+            var windowsCredentials = await GenerateWindowsCredentials(instanceLocator)
+                .ConfigureAwait(true);
 
-            var settings = InstanceConnectionSettings.CreateNew(instanceLocator);
-            settings.RdpUsername.Value = credentials.UserName;
-            settings.RdpPassword.Value = credentials.SecurePassword;
-            settings.RdpAuthenticationLevel.Value = RdpAuthenticationLevel.NoServerAuthentication;
-            settings.RdpBitmapPersistence.Value = RdpBitmapPersistence.Disabled;
-            settings.RdpDesktopSize.Value = RdpDesktopSize.ClientSize;
-            settings.RdpRedirectClipboard.Value = RdpRedirectClipboard.Enabled;
-            settings.RdpRedirectPrinter.Value = RdpRedirectPrinter.Enabled;
-            settings.RdpRedirectPort.Value = RdpRedirectPort.Enabled;
-            settings.RdpRedirectSmartCard.Value = RdpRedirectSmartCard.Enabled;
-            settings.RdpRedirectDrive.Value = RdpRedirectDrive.Enabled;
-            settings.RdpRedirectDevice.Value = RdpRedirectDevice.Enabled;
-
-            return settings;
+            return new RdpSessionParameters(
+                new RdpCredentials(
+                    windowsCredentials.UserName,
+                    windowsCredentials.Domain,
+                    windowsCredentials.SecurePassword))
+            {
+                AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
+                BitmapPersistence = RdpBitmapPersistence.Disabled,
+                DesktopSize = RdpDesktopSize.ClientSize,
+                RedirectClipboard = RdpRedirectClipboard.Enabled,
+                RedirectPrinter = RdpRedirectPrinter.Enabled,
+                RedirectPort = RdpRedirectPort.Enabled,
+                RedirectSmartCard = RdpRedirectSmartCard.Enabled,
+                RedirectDrive = RdpRedirectDrive.Enabled,
+                RedirectDevice = RdpRedirectDevice.Enabled,
+            };
         }
 
         private async Task<IRemoteDesktopSession> ConnectAsync(
@@ -82,7 +85,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var serviceProvider = CreateServiceProvider(credential);
             var broker = new InstanceSessionBroker(serviceProvider);
-            var settings = await CreateSettingsAsync(instanceLocator).ConfigureAwait(true);
+            var parameters = await CreateSessionParametersAsync(instanceLocator)
+                .ConfigureAwait(true);
 
             return broker.Connect(
                 new ConnectionTemplate<RdpSessionParameters>(
@@ -90,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                         TransportParameters.TransportType.IapTunnel,
                         instanceLocator,
                         new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort)),
-                    new RdpSessionParameters(settings)));
+                    parameters));
         }
 
         [Test]
@@ -128,8 +132,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
-                settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
+                var parameters = await CreateSessionParametersAsync(locator).ConfigureAwait(true);
+                parameters.NetworkLevelAuthentication = RdpNetworkLevelAuthentication.Disabled;
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
@@ -140,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                                 TransportParameters.TransportType.IapTunnel,
                                 locator,
                                 new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort)),
-                            new RdpSessionParameters(settings))))
+                            parameters)))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(this.ExceptionShown);
@@ -163,8 +167,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var settings = await CreateSettingsAsync(locator).ConfigureAwait(true);
-                settings.RdpNetworkLevelAuthentication.EnumValue = RdpNetworkLevelAuthentication.Disabled;
+                var parameters = await CreateSessionParametersAsync(locator).ConfigureAwait(true);
+                parameters.NetworkLevelAuthentication = RdpNetworkLevelAuthentication.Disabled;
 
                 var broker = new InstanceSessionBroker(serviceProvider);
                 var session = broker.Connect(
@@ -173,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                             TransportParameters.TransportType.IapTunnel,
                             locator,
                             new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort)),
-                        new RdpSessionParameters(settings)));
+                        parameters));
 
                 bool serverAuthWarningIsDisplayed = false;
                 ((RemoteDesktopView)session).AuthenticationWarningDisplayed += (sender, args) =>

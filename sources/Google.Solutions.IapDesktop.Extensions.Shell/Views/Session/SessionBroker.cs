@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 ? "localhost" 
                 : template.Transport.Endpoint.Address.ToString();
             window.ViewModel.Port = (ushort)template.Transport.Endpoint.Port;
-            window.ViewModel.Settings = template.Session.Settings;
+            window.ViewModel.Parameters = template.Session;
 
             var pane = window.Bind();
             window.Show();

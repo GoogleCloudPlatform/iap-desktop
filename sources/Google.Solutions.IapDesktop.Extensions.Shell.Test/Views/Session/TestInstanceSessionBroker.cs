@@ -114,18 +114,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 var credentials = await GenerateWindowsCredentials(locator)
                     .ConfigureAwait(true);
 
-                var settings = InstanceConnectionSettings.CreateNew(
-                    locator.ProjectId,
-                    locator.Name);
-                settings.RdpUsername.StringValue = credentials.UserName;
-                settings.RdpPassword.Value = credentials.SecurePassword;
+                var parameters = new RdpSessionParameters(
+                    new RdpCredentials(
+                        credentials.UserName,
+                        credentials.Domain,
+                        credentials.SecurePassword));
 
                 var template = new ConnectionTemplate<RdpSessionParameters>(
                     new TransportParameters(
                         TransportParameters.TransportType.IapTunnel,
                         locator,
                         new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort)),
-                    new RdpSessionParameters(settings));
+                    parameters);
 
                 // Connect
                 var broker = new InstanceSessionBroker(serviceProvider);

@@ -129,6 +129,8 @@
     <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
     <Compile Include="Services\Adapter\QuarantineAdapter.cs" />
     <Compile Include="Services\Connection\ConnectionTemplate.cs" />
+    <Compile Include="Services\Connection\RdpSessionParameters.cs" />
+    <Compile Include="Services\Connection\SshSessionParameters.cs" />
     <Compile Include="Services\Ssh\IAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKey.cs" />
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeySet.cs" />

@@ -21,10 +21,6 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using System;
-using System.Globalization;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
@@ -80,45 +76,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         {
             this.Transport = transport.ExpectNotNull(nameof(transport));
             this.Session = session.ExpectNotNull(nameof(session));
-        }
-    }
-
-    public struct SshSessionParameters
-    {
-        /// <summary>
-        /// Key to authenticate with.
-        /// </summary>
-        public AuthorizedKeyPair AuthorizedKey { get; }
-
-        /// <summary>
-        /// Terminal locale.
-        /// </summary>
-        public CultureInfo Language { get; }
-
-        /// <summary>
-        /// Timeout to use for SSH connections.
-        /// </summary>
-        public TimeSpan ConnectionTimeout { get; }
-
-        public SshSessionParameters(
-            AuthorizedKeyPair authorizedKey, 
-            CultureInfo language, 
-            TimeSpan connectionTimeout)
-        {
-            this.AuthorizedKey = authorizedKey;
-            this.Language = language;
-            this.ConnectionTimeout = connectionTimeout;
-        }
-    }
-
-    public struct RdpSessionParameters
-    {
-        public InstanceConnectionSettings Settings { get; }
-
-        public RdpSessionParameters(
-            InstanceConnectionSettings settings)
-        {
-            this.Settings = settings.ExpectNotNull(nameof(settings));
         }
     }
 }

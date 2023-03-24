@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.Mvvm.Binding;
 
@@ -52,13 +53,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         public InstanceLocator Instance { get; set; }
         public string Server { get; set; }
         public ushort Port { get; set; }
-        public InstanceConnectionSettings Settings { get; set; }
+        public RdpSessionParameters Parameters { get; set; }
 
         protected override void OnValidate()
         {
             this.Instance.ThrowIfNull(nameof(this.Instance));
             this.Server.ThrowIfNull(nameof(this.Server));
-            this.Settings.ThrowIfNull(nameof(this.Settings));
+            this.Parameters.ThrowIfNull(nameof(this.Parameters));
         }
 
         //---------------------------------------------------------------------

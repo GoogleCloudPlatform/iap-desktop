@@ -37,6 +37,7 @@ using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Diagnostics;
 using System.Net;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -133,12 +134,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                     }
                 }).ConfigureAwait(true);
 
+            var rdpParameters = new RdpSessionParameters(
+                new RdpCredentials(
+                    settings.RdpUsername.StringValue,
+                    settings.RdpDomain.StringValue,
+                    (SecureString)settings.RdpPassword.Value))
+            {
+                ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue),
+
+                ConnectionBar = settings.RdpConnectionBar.EnumValue,
+                DesktopSize = settings.RdpDesktopSize.EnumValue,
+                AuthenticationLevel = settings.RdpAuthenticationLevel.EnumValue,
+                ColorDepth = settings.RdpColorDepth.EnumValue,
+                AudioMode = settings.RdpAudioMode.EnumValue,
+                BitmapPersistence = settings.RdpBitmapPersistence.EnumValue,
+                NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.EnumValue,
+
+                UserAuthenticationBehavior = settings.RdpUserAuthenticationBehavior.EnumValue,
+                CredentialGenerationBehavior = settings.RdpCredentialGenerationBehavior.EnumValue,
+                
+                RedirectClipboard = settings.RdpRedirectClipboard.EnumValue,
+                RedirectPrinter = settings.RdpRedirectPrinter.EnumValue,
+                RedirectSmartCard = settings.RdpRedirectSmartCard.EnumValue,
+                RedirectPort = settings.RdpRedirectPort.EnumValue,
+                RedirectDrive = settings.RdpRedirectDrive.EnumValue,
+                RedirectDevice = settings.RdpRedirectDevice.EnumValue,
+                HookWindowsKeys = settings.RdpHookWindowsKeys.EnumValue,
+            };
+
             return new ConnectionTemplate<RdpSessionParameters>(
                 new TransportParameters(
                     TransportParameters.TransportType.IapTunnel,
                     instance,
                     new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort)),
-                new RdpSessionParameters(settings));
+                rdpParameters);
         }
 
         //---------------------------------------------------------------------
