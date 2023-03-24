@@ -124,6 +124,7 @@
     <Compile Include="Controls\TestTerminalFont.cs" />
     <Compile Include="Controls\TestVirtualTerminal.cs" />
     <Compile Include="Controls\TestVirtualTerminalKeyHandler.cs" />
+    <Compile Include="Data\TestIapRdpUrlExtensions.cs" />
     <Compile Include="Data\TestSamAccountName.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

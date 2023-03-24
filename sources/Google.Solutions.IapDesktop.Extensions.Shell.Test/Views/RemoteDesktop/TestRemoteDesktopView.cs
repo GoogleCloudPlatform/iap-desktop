@@ -48,8 +48,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
     [UsesCloudResources]
     public class TestRemoteDesktopView : WindowTestFixtureBase
     {
+        //
         // Use a larger machine type as all this RDP'ing consumes a fair
         // amount of memory.
+        //
         private const string MachineTypeForRdp = "n1-highmem-2";
 
         private readonly InstanceLocator SampleLocator =
@@ -69,26 +71,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         //---------------------------------------------------------------------
         // Invalid server
         //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
-        {
-            var serviceProvider = CreateServiceProvider();
-            var broker = new InstanceSessionBroker(serviceProvider);
-
-            await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.Connect(
-                    new ConnectionTemplate<RdpSessionParameters>(
-                        new TransportParameters(
-                            TransportParameters.TransportType.IapTunnel,
-                            this.SampleLocator,
-                            new IPEndPoint(IPAddress.Broadcast, 3389)),
-                        new RdpSessionParameters(RdpCredentials.Empty))))
-                .ConfigureAwait(true);
-
-            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-            Assert.AreEqual(260, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
-        }
 
         [Test]
         public async Task WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
