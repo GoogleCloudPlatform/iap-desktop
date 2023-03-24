@@ -73,7 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 
         private async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(
             InstanceLocator instance,
-            InstanceConnectionSettings settings)
+            InstanceConnectionSettings settings,
+            bool allowPersistentCredentials)
         {
             var timeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
 
@@ -83,11 +84,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                     timeout)
                 .ConfigureAwait(false);
 
-            var rdpParameters = new RdpSessionParameters(
-                new RdpCredentials(
-                    settings.RdpUsername.StringValue,
-                    settings.RdpDomain.StringValue,
-                    (SecureString)settings.RdpPassword.Value))
+            var credentials = new RdpCredentials(
+                settings.RdpUsername.StringValue,
+                settings.RdpDomain.StringValue,
+                allowPersistentCredentials
+                    ? (SecureString)settings.RdpPassword.Value
+                    : null);
+
+            var rdpParameters = new RdpSessionParameters(credentials)
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue),
 
@@ -146,21 +150,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                 // Persist new credentials.
                 settings.Save();
             }
-            else
-            {
-                //
-                // Temporarily clear persisted credentials so that the
-                // default credential prompt is triggered.
-                //
-                // NB. Use an empty string (as opposed to null) to
-                // avoid an inherited setting from kicking in.
-                //
-                settings.TypedCollection.RdpPassword.Value = string.Empty;
-            }
 
             return await PrepareConnectionAsync(
                     vmNode.Instance,
-                    (InstanceConnectionSettings)settings.TypedCollection)
+                    (InstanceConnectionSettings)settings.TypedCollection,
+                    allowPersistentCredentials)
                 .ConfigureAwait(true);
         }
 
@@ -200,7 +194,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 
             return await PrepareConnectionAsync(
                     url.Instance,
-                    settings)
+                    settings,
+                    true)
                 .ConfigureAwait(true);
         }
     }

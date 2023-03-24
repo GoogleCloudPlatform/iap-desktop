@@ -110,6 +110,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                         this.AllowPersistentRdpCredentials)
                     .ConfigureAwait(true);
 
+                Debug.Assert(this.AllowPersistentRdpCredentials || template.Session.Credentials.Password == null);
+
                 session = this.sessionBroker
                     .GetInstance()
                     .Connect(template);
