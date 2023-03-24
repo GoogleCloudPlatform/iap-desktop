@@ -28,6 +28,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
 {
     internal static class IapRdpUrlExtensions
     {
+        public static bool TryGetParameter(
+            this IapRdpUrl url,
+            string queryParameterName,
+            out ushort value)
+        {
+            value = 0;
+
+            var rawValue = url.Parameters.Get(queryParameterName);
+            return !string.IsNullOrWhiteSpace(rawValue) &&
+                ushort.TryParse(rawValue, out value);
+        }
+        public static bool TryGetParameter(
+            this IapRdpUrl url,
+            string queryParameterName,
+            out string value)
+        {
+            value = url.Parameters.Get(queryParameterName);
+            return !string.IsNullOrWhiteSpace(value);
+        }
+
+        public static bool TryGetParameter<TEnum>(
+            this IapRdpUrl url,
+            string queryParameterName,
+            out TEnum value)
+            where TEnum : struct
+        {
+            var rawValue = url.Parameters.Get(queryParameterName);
+            if (!string.IsNullOrWhiteSpace(rawValue) &&
+                Enum.TryParse<TEnum>(rawValue, out var parsedValue) &&
+                Enum.IsDefined(typeof(TEnum), parsedValue))
+            {
+                value = parsedValue;
+                return true;
+            }
+            else
+            {
+                value = default(TEnum);
+                return false;
+            }
+        }
+
         public static void ApplyUrlParameterIfSet<TEnum>(
             this RdpSessionParameters parameters,
             IapRdpUrl url,
@@ -40,12 +81,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
             Precondition.ExpectNotNull(queryParameterName, nameof(queryParameterName));
             Precondition.ExpectNotNull(apply, nameof(apply));
 
-            var value = url.Parameters.Get(queryParameterName);
-            if (!string.IsNullOrWhiteSpace(value) &&
-                Enum.TryParse<TEnum>(value, out var parsedValue) &&
-                Enum.IsDefined(typeof(TEnum), parsedValue))
+            if (TryGetParameter<TEnum>(url, queryParameterName, out var value))
             {
-                apply(parameters, parsedValue);
+                apply(parameters, value);
             }
         }
     }
