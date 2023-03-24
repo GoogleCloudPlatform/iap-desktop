@@ -27,6 +27,8 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.Mvvm.Binding.Commands;
+using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -98,11 +100,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
                 var projectNode = (IProjectModelProjectNode)context;
 
                 var buffer = new StringBuilder();
-                buffer.Append("<html>");
-                buffer.Append("<head><style>body { font-family: Arial, Helvetica }</style></head>");
-                buffer.Append("<body>");
+                buffer.AppendLine("<html>");
+                buffer.AppendLine("<head>");
+                buffer.AppendLine(@"<style>
+                    body {
+                        font-family: Arial, Helvetica
+                    }
+                    label {
+                        font-size: 9px;
+                    }
+                    .input-wrapper {
+                        display: block;
+                        text-align: left;
+                        padding: 3px;
+                    }
+                    .button {
+                        background: none !important;
+                        border: none;
+                        padding: 0 !important;
+                        /*optional*/
+                        font-family: arial, sans-serif;
+                        color: #069;
+                        text-decoration: underline;
+                        cursor: pointer;
+                    }
+                    </style>");
+                buffer.AppendLine("</head>");
+                buffer.AppendLine("<body>");
 
                 buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.Project.ProjectId)}</h1>");
+
+                buffer.AppendLine("<form method='GET'>");
+
+                WriteTextbox("Username");
+                WriteTextbox("Domain");
+                WriteTextbox("RdpPort");
+                WriteCombobox<RdpConnectionBarState>("ConnectionBarState");
+                WriteCombobox<RdpDesktopSize>("DesktopSize");
+                WriteCombobox<RdpColorDepth>("ColorDepth");
+                WriteCombobox<RdpAudioMode>("AudioMode");
+                WriteCombobox<RdpRedirectClipboard>("RedirectClipboard");
+                WriteCombobox<RdpCredentialGenerationBehavior>("CredentialGenerationBehavior");
 
                 var zones = await this.projectModelService
                     .GetZoneNodesAsync(
@@ -113,31 +151,73 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
 
                 foreach (var zone in zones)
                 {
-                    buffer.Append($"<h2>{HttpUtility.HtmlEncode(zone.Zone.Name)}</h2>");
-
+                    buffer.Append($"<p>{HttpUtility.HtmlEncode(zone.Zone.Name)}</p>");
                     buffer.Append($"<ul>");
 
                     foreach (var vmNode in zone.Instances.Where(i => i.IsWindowsInstance()))
                     {
-                        var settings = (InstanceConnectionSettings)this.settingsService
-                            .GetConnectionSettings(vmNode)
-                            .TypedCollection;
-
-                        buffer.Append($"<li>");
-                        buffer.Append($"<a href='{new IapRdpUrl(vmNode.Instance, settings.ToUrlQuery())}'>");
-                        buffer.Append($"{HttpUtility.HtmlEncode(vmNode.Instance.Name)}</a>");
-                        buffer.Append($"</li>");
+                        WriteInstance(vmNode);
                     }
 
                     buffer.Append($"</ul>");
                 }
 
-                buffer.Append("</body></html>");
+                buffer.AppendLine("</form>");
+                buffer.AppendLine("</body></html>");
 
                 var tempFile = Path.GetTempFileName() + ".html";
                 File.WriteAllText(tempFile, buffer.ToString());
 
                 Browser.Default.Navigate(tempFile);
+
+                void WriteInstance(IProjectModelInstanceNode node)
+                {
+                    var name = HttpUtility.HtmlEncode(node.Instance.Name);
+                    var url = new IapRdpUrl(node.Instance, new NameValueCollection());
+
+                    buffer.AppendLine("<li>");
+                    buffer.AppendLine($"<input type='submit' formaction='{url}' value='{name}' class='button' /> ");
+                    buffer.AppendLine($"<input type='submit' formaction='data:{url}' value='(URL)' class='button' />");
+                    if (node.IsRunning)
+                    {
+                        buffer.AppendLine(" &#x25ba;");
+                    }
+                    else
+                    {
+                        buffer.AppendLine(" &#x25a0;");
+                    }
+                    buffer.AppendLine("</li>");
+                }
+
+
+                void WriteTextbox(string fieldName)
+                {
+                    buffer.AppendLine("<div class='input-wrapper'>");
+                    buffer.AppendLine($"<label for='name'>{fieldName}</label>");
+                    buffer.AppendLine("<br />");
+                    buffer.AppendLine($"<input name='{fieldName}' size='20' />");
+                    buffer.AppendLine("</div>");
+                }
+
+                void WriteCombobox<TEnum>(string fieldName) where TEnum : struct
+                {
+                    buffer.AppendLine("<div class='input-wrapper'>");
+                    buffer.AppendLine($"<label for='{fieldName}'>{typeof(TEnum).Name}</label>");
+                    buffer.AppendLine("<br />");
+                    buffer.AppendLine($"<select name='{fieldName}'>");
+                    buffer.AppendLine($"<option value=''></option>");
+
+                    foreach (var name in Enum
+                        .GetNames(typeof(TEnum))
+                        .Where(n => n != "_Default"))
+                    {
+                        var value = (TEnum)Enum.Parse(typeof(TEnum), name);
+                        buffer.AppendLine($"<option value='{(int)(object)value}'>{name}</option>");
+                    }
+
+                    buffer.AppendLine("</select>");
+                    buffer.AppendLine("</div>");
+                }
             }
         }
     }
