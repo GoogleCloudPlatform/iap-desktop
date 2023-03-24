@@ -21,6 +21,8 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using NUnit.Framework;
 

@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
@@ -128,13 +129,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
 
-            var template = new SshConnectionTemplate(
-                instanceLocator,
-                true,
-                new IPEndPoint(address, 22),
-                authorizedKey,
-                language,
-                TimeSpan.FromSeconds(10));
+            var template = new ConnectionTemplate<SshSessionParameters>(
+                new TransportParameters(
+                    TransportParameters.TransportType.IapTunnel,
+                    instanceLocator,
+                    new IPEndPoint(address, 22)),
+                new SshSessionParameters(
+                    authorizedKey,
+                    language,
+                    TimeSpan.FromSeconds(10)));
 
             SshTerminalView pane = null;
             await AssertRaisesEventAsync<SessionStartedEvent>(
@@ -202,13 +205,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             var broker = new InstanceSessionBroker(serviceProvider);
 
-            var template = new SshConnectionTemplate(
-                new InstanceLocator("project-1", "zone-1", "instance-1"),
-                true,
-                this.UnboundEndpoint,
-                AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                null,
-                TimeSpan.FromSeconds(10));
+            var template = new ConnectionTemplate<SshSessionParameters>(
+                new TransportParameters(
+                    TransportParameters.TransportType.IapTunnel,
+                    new InstanceLocator("project-1", "zone-1", "instance-1"),
+                    this.UnboundEndpoint),
+                new SshSessionParameters(
+                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
+                    null,
+                    TimeSpan.FromSeconds(10)));
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectAsync(template))
@@ -230,13 +235,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var key = SshKeyPair.NewEphemeralKeyPair(keyType);
             var broker = new InstanceSessionBroker(serviceProvider);
 
-            var template = new SshConnectionTemplate(
-                new InstanceLocator("project-1", "zone-1", "instance-1"),
-                true,
-                this.NonSshEndpoint,
-                AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                null,
-                TimeSpan.FromSeconds(10));
+            var template = new ConnectionTemplate<SshSessionParameters>(
+                new TransportParameters(
+                    TransportParameters.TransportType.IapTunnel,
+                    new InstanceLocator("project-1", "zone-1", "instance-1"),
+                    this.NonSshEndpoint),
+                new SshSessionParameters(
+                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
+                    null,
+                    TimeSpan.FromSeconds(10)));
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectAsync(template))
@@ -264,13 +271,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             var address = await PublicAddressFromLocator(instanceLocator)
                 .ConfigureAwait(true);
 
-            var template = new SshConnectionTemplate(
-                instanceLocator,
-                true,
-                new IPEndPoint(address, 22),
-                AuthorizedKeyPair.ForMetadata(key, "test", true, null),
-                null,
-                TimeSpan.FromSeconds(10));
+            var template = new ConnectionTemplate<SshSessionParameters>(
+                new TransportParameters(
+                    TransportParameters.TransportType.IapTunnel,
+                    instanceLocator,
+                    new IPEndPoint(address, 22)),
+                new SshSessionParameters(
+                    AuthorizedKeyPair.ForMetadata(key, "test", true, null),
+                    null,
+                    TimeSpan.FromSeconds(10)));
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
                 () => broker.ConnectAsync(template))

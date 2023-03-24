@@ -23,40 +23,35 @@ using Google.Apis.Util;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
-using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Diagnostics;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 {
     public interface IRdpConnectionService
     {
-        Task<RdpConnectionTemplate> PrepareConnectionAsync(
+        Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials);
 
-        Task<RdpConnectionTemplate> PrepareConnectionAsync(IapRdpUrl url);
+        Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(IapRdpUrl url);
     }
 
     [Service(typeof(IRdpConnectionService))]
-    public class RdpConnectionService : IRdpConnectionService
+    public class RdpConnectionService : ConnectionServiceBase, IRdpConnectionService
     {
         private readonly IWin32Window window;
-        private readonly IJobService jobService;
-        private readonly ITunnelBrokerService tunnelBroker;
         private readonly ISelectCredentialsWorkflow credentialPrompt;
         private readonly IProjectModelService projectModelService;
         private readonly IConnectionSettingsService settingsService;
@@ -68,83 +63,64 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             IJobService jobService,
             IConnectionSettingsService settingsService,
             ISelectCredentialsWorkflow credentialPrompt)
+            : base(jobService, tunnelBroker)
         {
             this.window = window.ThrowIfNull(nameof(window));
             this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
-            this.tunnelBroker = tunnelBroker.ThrowIfNull(nameof(tunnelBroker));
-            this.jobService = jobService.ThrowIfNull(nameof(jobService));
             this.settingsService = settingsService.ThrowIfNull(nameof(settingsService));
             this.credentialPrompt = credentialPrompt.ThrowIfNull(nameof(credentialPrompt));
         }
 
-        private async Task<RdpConnectionTemplate> PrepareConnectionAsync(
+        private async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(
             InstanceLocator instance,
             InstanceConnectionSettings settings)
         {
             var timeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
-            var tunnel = await this.jobService.RunInBackground(
-                new JobDescription(
-                    $"Opening Cloud IAP tunnel to {instance.Name}...",
-                    JobUserFeedbackType.BackgroundFeedback),
-                async token =>
-                {
-                    try
-                    {
-                        var destination = new TunnelDestination(
-                            instance,
-                            (ushort)settings.RdpPort.IntValue);
 
-                        // Give IAP the same timeout for probing as RDP itself.
-                        // Note that the timeouts are not additive.
+            var transportParameters = await PrepareTransportAsync(
+                    instance,
+                    (ushort)settings.RdpPort.IntValue,
+                    timeout)
+                .ConfigureAwait(false);
 
-                        return await this.tunnelBroker.ConnectAsync(
-                                destination,
-                                new SameProcessRelayPolicy(),
-                                timeout)
-                            .ConfigureAwait(false);
-                    }
-                    catch (SshRelayDeniedException e)
-                    {
-                        throw new ConnectionFailedException(
-                            "You are not authorized to connect to this VM instance.\n\n" +
-                            $"Verify that the Cloud IAP API is enabled in the project {instance.ProjectId} " +
-                            "and that your user has the 'IAP-secured Tunnel User' role.",
-                            HelpTopics.IapAccess,
-                            e);
-                    }
-                    catch (NetworkStreamClosedException e)
-                    {
-                        throw new ConnectionFailedException(
-                            "Connecting to the instance failed. Make sure that you have " +
-                            "configured your firewall rules to permit Cloud IAP access " +
-                            $"to {instance.Name}",
-                            HelpTopics.CreateIapFirewallRule,
-                            e);
-                    }
-                    catch (WebSocketConnectionDeniedException)
-                    {
-                        throw new ConnectionFailedException(
-                            "Establishing an IAP tunnel failed because the server " +
-                            "denied access.\n\n" +
-                            "If you are using a proxy server, make sure that the proxy " +
-                            "server allows WebSocket connections.",
-                            HelpTopics.ProxyConfiguration);
-                    }
-                }).ConfigureAwait(true);
+            var rdpParameters = new RdpSessionParameters(
+                new RdpCredentials(
+                    settings.RdpUsername.StringValue,
+                    settings.RdpDomain.StringValue,
+                    (SecureString)settings.RdpPassword.Value))
+            {
+                ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue),
 
-            return new RdpConnectionTemplate(
-                instance,
-                true,
-                "localhost",
-                (ushort)tunnel.LocalPort,
-                settings);
+                ConnectionBar = settings.RdpConnectionBar.EnumValue,
+                DesktopSize = settings.RdpDesktopSize.EnumValue,
+                AuthenticationLevel = settings.RdpAuthenticationLevel.EnumValue,
+                ColorDepth = settings.RdpColorDepth.EnumValue,
+                AudioMode = settings.RdpAudioMode.EnumValue,
+                BitmapPersistence = settings.RdpBitmapPersistence.EnumValue,
+                NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.EnumValue,
+
+                UserAuthenticationBehavior = settings.RdpUserAuthenticationBehavior.EnumValue,
+                CredentialGenerationBehavior = settings.RdpCredentialGenerationBehavior.EnumValue,
+                
+                RedirectClipboard = settings.RdpRedirectClipboard.EnumValue,
+                RedirectPrinter = settings.RdpRedirectPrinter.EnumValue,
+                RedirectSmartCard = settings.RdpRedirectSmartCard.EnumValue,
+                RedirectPort = settings.RdpRedirectPort.EnumValue,
+                RedirectDrive = settings.RdpRedirectDrive.EnumValue,
+                RedirectDevice = settings.RdpRedirectDevice.EnumValue,
+                HookWindowsKeys = settings.RdpHookWindowsKeys.EnumValue,
+            };
+
+            return new ConnectionTemplate<RdpSessionParameters>(
+                transportParameters,
+                rdpParameters);
         }
 
         //---------------------------------------------------------------------
         // IRdpConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task<RdpConnectionTemplate> PrepareConnectionAsync(
+        public async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials)
         {
@@ -188,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                 .ConfigureAwait(true);
         }
 
-        public async Task<RdpConnectionTemplate> PrepareConnectionAsync(IapRdpUrl url)
+        public async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(IapRdpUrl url)
         {
             InstanceConnectionSettings settings;
             var existingNode = await this.projectModelService

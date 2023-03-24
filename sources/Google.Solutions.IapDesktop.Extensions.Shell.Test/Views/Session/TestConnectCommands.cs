@@ -25,10 +25,8 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
@@ -54,22 +52,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             SampleLocator,
             new NameValueCollection());
 
-        private static readonly RdpConnectionTemplate RdpConnectionTemplate = 
-            new RdpConnectionTemplate(
+        private static TransportParameters SampleTransportParameters =
+            new TransportParameters(
+                TransportParameters.TransportType.IapTunnel,
                 SampleLocator,
-                true,
-                "localhost",
-                13389,
-                InstanceConnectionSettings.CreateNew(SampleLocator));
+                new IPEndPoint(IPAddress.Loopback, 1234));
 
-        private static readonly SshConnectionTemplate SshConnectionTemplate =
-            new SshConnectionTemplate(
-                SampleLocator,
-                true,
-                new System.Net.IPEndPoint(IPAddress.Loopback, 122),
-                null,
-                null,
-                TimeSpan.MaxValue);
+        private static readonly ConnectionTemplate<RdpSessionParameters> RdpConnectionTemplate = 
+            new ConnectionTemplate<RdpSessionParameters>(
+                SampleTransportParameters,
+                new RdpSessionParameters(RdpCredentials.Empty));
+
+        private static readonly ConnectionTemplate<SshSessionParameters> SshConnectionTemplate =
+            new ConnectionTemplate<SshSessionParameters>(
+                SampleTransportParameters,
+                new SshSessionParameters(
+                    null,
+                    null,
+                    TimeSpan.MaxValue));
 
         private static ConnectCommands CreateConnectCommands(
             UrlCommands urlCommands,

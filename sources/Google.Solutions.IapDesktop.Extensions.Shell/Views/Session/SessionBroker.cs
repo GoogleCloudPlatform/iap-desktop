@@ -23,10 +23,12 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
@@ -36,12 +38,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         /// <summary>
         /// Create a new SSH session.
         /// </summary>
-        Task<ISshTerminalSession> ConnectAsync(SshConnectionTemplate template);
+        Task<ISshTerminalSession> ConnectAsync(
+            ConnectionTemplate<SshSessionParameters> template); // TODO: Rename method
 
         /// <summary>
         /// Create a new RDP session.
         /// </summary>
-        IRemoteDesktopSession Connect(RdpConnectionTemplate template);
+        IRemoteDesktopSession Connect(
+            ConnectionTemplate<RdpSessionParameters> template);
     }
 
     [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
@@ -110,14 +114,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         // IInstanceSessionBroker.
         //---------------------------------------------------------------------
 
-        public async Task<ISshTerminalSession> ConnectAsync(SshConnectionTemplate template)
+        public async Task<ISshTerminalSession> ConnectAsync(
+            ConnectionTemplate<SshSessionParameters> template)
         {
             var window = ToolWindow.GetWindow<SshTerminalView, SshTerminalViewModel>(this.serviceProvider);
-            window.ViewModel.Instance = template.Instance;
-            window.ViewModel.Endpoint = template.Endpoint;
-            window.ViewModel.AuthorizedKey = template.AuthorizedKey;
-            window.ViewModel.Language = template.Language;
-            window.ViewModel.ConnectionTimeout = template.ConnectionTimeout;
+            window.ViewModel.Instance = template.Transport.Instance;
+            window.ViewModel.Endpoint = template.Transport.Endpoint;
+            window.ViewModel.AuthorizedKey = template.Session.AuthorizedKey;
+            window.ViewModel.Language = template.Session.Language;
+            window.ViewModel.ConnectionTimeout = template.Session.ConnectionTimeout;
 
             var pane = window.Bind();
             window.Show();
@@ -128,13 +133,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             return pane;
         }
 
-        public IRemoteDesktopSession Connect(RdpConnectionTemplate template)
+        public IRemoteDesktopSession Connect(
+            ConnectionTemplate<RdpSessionParameters> template)
         {
             var window = ToolWindow.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(this.serviceProvider);
-            window.ViewModel.Instance = template.Instance;
-            window.ViewModel.Server = template.Endpoint;
-            window.ViewModel.Port = template.EndpointPort;
-            window.ViewModel.Settings = template.Settings;
+            window.ViewModel.Instance = template.Transport.Instance;
+            window.ViewModel.Server = IPAddress.IsLoopback(template.Transport.Endpoint.Address) 
+                ? "localhost" 
+                : template.Transport.Endpoint.Address.ToString();
+            window.ViewModel.Port = (ushort)template.Transport.Endpoint.Port;
+            window.ViewModel.Parameters = template.Session;
 
             var pane = window.Bind();
             window.Show();

@@ -20,99 +20,62 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using System;
-using System.Globalization;
+using Google.Solutions.Common.Util;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 {
-    /// <summary>
-    /// Contains all parameters to connect to a VM instance and establish
-    /// one or more sessions.
-    /// </summary>
-    public abstract class ConnectionTemplateBase
+    public struct TransportParameters
     {
         /// <summary>
         /// Connection target.
         /// </summary>
-        public InstanceLocator Instance { get; protected set; }
+        public InstanceLocator Instance { get; }
 
         /// <summary>
-        /// Indicates whether a IAP-TCP tunnel is used.
+        /// Type of transport.
         /// </summary>
-        public bool IsTunnelled { get; protected set; }
-    }
-
-    public class RdpConnectionTemplate : ConnectionTemplateBase
-    { 
-        /// <summary>
-        /// Windows credentials, might be null.
-        /// </summary>
-
-        public InstanceConnectionSettings Settings { get; }
+        public TransportType Type { get; }
 
         /// <summary>
         /// Endpoint to connect to. This might be a localhost endpoint.
         /// </summary>
-        public string Endpoint { get; protected set; }
+        public IPEndPoint Endpoint { get; }
 
-        /// <summary>
-        /// Endpoint to connect to. This might be a localhost endpoint.
-        /// </summary>
-        public ushort EndpointPort { get; protected set; }
-
-        public RdpConnectionTemplate(
+        public TransportParameters(
+            TransportType type,
             InstanceLocator instance,
-            bool isTunnelled,
-            string endpoint,
-            ushort endpointPort,
-            InstanceConnectionSettings settings)
+            IPEndPoint endpoint)
         {
-            this.Instance = instance;
-            this.IsTunnelled = isTunnelled;
-            this.Endpoint = endpoint;
-            this.EndpointPort = endpointPort;
+            this.Type = type;
+            this.Instance = instance.ExpectNotNull(nameof(instance));
+            this.Endpoint = endpoint.ExpectNotNull(nameof(endpoint));
+        }
 
-            this.Settings = settings;
+        public enum TransportType
+        {
+            IapTunnel
         }
     }
 
-    public class SshConnectionTemplate : ConnectionTemplateBase
+    public struct ConnectionTemplate<TSessionParameters>
     {
         /// <summary>
-        /// Key to authenticate with.
+        /// Transport to use.
         /// </summary>
-        public AuthorizedKeyPair AuthorizedKey { get; }
+        public TransportParameters Transport { get; }
 
         /// <summary>
-        /// Terminal locale.
+        /// Parameters for sessions.
         /// </summary>
-        public CultureInfo Language { get; }
+        public TSessionParameters Session { get; }
 
-        public IPEndPoint Endpoint { get; }
-
-        /// <summary>
-        /// Timeout to use for the initial connection attempt.
-        /// </summary>
-        public TimeSpan ConnectionTimeout { get; protected set; }
-
-        public SshConnectionTemplate(
-            InstanceLocator instance,
-            bool isTunnelled,
-            IPEndPoint endpoint,
-            AuthorizedKeyPair authorizedKey,
-            CultureInfo language,
-            TimeSpan connectionTimeout)
+        public ConnectionTemplate(
+            TransportParameters transport, 
+            TSessionParameters session)
         {
-            this.Instance = instance;
-            this.IsTunnelled = isTunnelled;
-            this.Endpoint = endpoint;
-            this.ConnectionTimeout = connectionTimeout;
-
-            this.AuthorizedKey = authorizedKey;
-            this.Language = language;
+            this.Transport = transport.ExpectNotNull(nameof(transport));
+            this.Session = session.ExpectNotNull(nameof(session));
         }
     }
 }

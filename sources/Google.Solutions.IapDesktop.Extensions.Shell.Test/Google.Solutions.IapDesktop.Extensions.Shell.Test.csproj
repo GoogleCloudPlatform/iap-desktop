@@ -124,6 +124,7 @@
     <Compile Include="Controls\TestTerminalFont.cs" />
     <Compile Include="Controls\TestVirtualTerminal.cs" />
     <Compile Include="Controls\TestVirtualTerminalKeyHandler.cs" />
+    <Compile Include="Data\TestIapRdpUrlExtensions.cs" />
     <Compile Include="Data\TestSamAccountName.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -140,9 +141,9 @@
     <Compile Include="Services\Ssh\TestAuthorizedKey.cs" />
     <Compile Include="Services\Ssh\TestKeyAuthorizationService.cs" />
     <Compile Include="Services\Ssh\TestOsLoginService.cs" />
-    <Compile Include="Services\Ssh\TestSshConnectionService.cs" />
+    <Compile Include="Services\Connection\TestSshConnectionService.cs" />
     <Compile Include="Services\ConnectionSettings\TestConnectionSettingsService.cs" />
-    <Compile Include="Services\Rdp\TestRdpConnectionService.cs" />
+    <Compile Include="Services\Connection\TestRdpConnectionService.cs" />
     <Compile Include="Services\ConnectionSettings\TestConnectionSettingsRepository.cs" />
     <Compile Include="Services\ConnectionSettings\TestIapRdpUrlConnectionSettings.cs" />
     <Compile Include="Services\Tunnel\TestTcpTable.cs" />

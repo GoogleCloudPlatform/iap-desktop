@@ -27,12 +27,12 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using System;
@@ -43,20 +43,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 {
     public interface ISshConnectionService
     {
-        Task<SshConnectionTemplate> PrepareConnectionAsync(
+        Task<ConnectionTemplate<SshSessionParameters>> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode);
     }
 
     [Service(typeof(ISshConnectionService))]
-    public class SshConnectionService : ISshConnectionService
+    public class SshConnectionService : ConnectionServiceBase, ISshConnectionService
     {
         private readonly IWin32Window window;
         private readonly IJobService jobService;
-        private readonly ITunnelBrokerService tunnelBroker;
         private readonly IConnectionSettingsService settingsService;
         private readonly IKeyAuthorizationService authorizedKeyService;
         private readonly IKeyStoreAdapter keyStoreAdapter;
@@ -74,11 +73,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             IKeyStoreAdapter keyStoreAdapter,
             SshSettingsRepository sshSettingsRepository,
             IJobService jobService)
+            : base(jobService, tunnelBroker)
         {
             this.window = window.ThrowIfNull(nameof(window));
             this.authorization = authorization.ThrowIfNull(nameof(authorization));
             this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
-            this.tunnelBroker = tunnelBroker.ThrowIfNull(nameof(tunnelBroker));
             this.settingsService = settingsService.ThrowIfNull(nameof(settingsService));
             this.authorizedKeyService = authorizedKeyService.ThrowIfNull(nameof(authorizedKeyService));
             this.keyStoreAdapter = keyStoreAdapter.ThrowIfNull(nameof(keyStoreAdapter));
@@ -90,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // ISshConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task<SshConnectionTemplate> PrepareConnectionAsync(
+        public async Task<ConnectionTemplate<SshSessionParameters>> PrepareConnectionAsync(
             IProjectModelInstanceNode vmNode)
         {
             Debug.Assert(vmNode.IsSshSupported());
@@ -110,55 +109,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             //
             // Start job to create IAP tunnel.
             //
-
-            var tunnelTask = this.jobService.RunInBackground(
-                new JobDescription(
-                    $"Opening Cloud IAP tunnel to {instance.Name}...",
-                    JobUserFeedbackType.BackgroundFeedback),
-                async token =>
-                {
-                    try
-                    {
-                        var destination = new TunnelDestination(
-                            vmNode.Instance,
-                            (ushort)settings.SshPort.IntValue);
-
-                        // NB. Give IAP the same timeout for probing as SSH itself.
-                        return await this.tunnelBroker.ConnectAsync(
-                                destination,
-                                new SameProcessRelayPolicy(),
-                                timeout)
-                            .ConfigureAwait(false);
-                    }
-                    catch (SshRelayDeniedException e)
-                    {
-                        throw new ConnectionFailedException(
-                            "You are not authorized to connect to this VM instance.\n\n" +
-                            $"Verify that the Cloud IAP API is enabled in the project {instance.ProjectId} " +
-                            "and that your user has the 'IAP-secured Tunnel User' role.",
-                            HelpTopics.IapAccess,
-                            e);
-                    }
-                    catch (NetworkStreamClosedException e)
-                    {
-                        throw new ConnectionFailedException(
-                            "Connecting to the instance failed. Make sure that you have " +
-                            "configured your firewall rules to permit Cloud IAP access " +
-                            $"to {instance.Name}",
-                            HelpTopics.CreateIapFirewallRule,
-                            e);
-                    }
-                    catch (WebSocketConnectionDeniedException)
-                    {
-                        throw new ConnectionFailedException(
-                            "Establishing an IAP tunnel failed because the server " +
-                            "denied access.\n\n" +
-                            "If you are using a proxy server, make sure that the proxy " +
-                            "server allows WebSocket connections.",
-                            HelpTopics.ProxyConfiguration);
-                    }
-                });
-
+            var tunnelTask = PrepareTransportAsync(
+                vmNode.Instance,
+                (ushort)settings.SshPort.IntValue,
+                timeout);
 
             //
             // Load persistent CNG key. This must be done on the UI thread.
@@ -212,13 +166,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 // NB. The template takes ownership of the key and will retain
                 // it for the lifetime of the session.
                 //
-                return new SshConnectionTemplate(
-                    instance,
-                    true,
-                    new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
-                    authorizedKeyTask.Result,
-                    language,
-                    timeout);
+                return new ConnectionTemplate<SshSessionParameters>(
+                    tunnelTask.Result,
+                    new SshSessionParameters(
+                        authorizedKeyTask.Result,
+                        language,
+                        timeout));
             }
             catch (Exception)
             {
