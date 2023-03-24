@@ -50,7 +50,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
 {
     [TestFixture]
     public class TestSshConnectionService : ShellFixtureBase

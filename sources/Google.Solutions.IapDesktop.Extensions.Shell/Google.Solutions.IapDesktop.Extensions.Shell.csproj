@@ -146,10 +146,10 @@
     <Compile Include="Services\Ssh\MetadataAuthorizedPublicKeyProcessor.cs" />
     <Compile Include="Services\Ssh\OsLoginService.cs" />
     <Compile Include="Services\ConnectionSettings\ConnectionSettingsService.cs" />
-    <Compile Include="Services\Rdp\RdpConnectionService.cs" />
+    <Compile Include="Services\Connection\RdpConnectionService.cs" />
     <Compile Include="Services\ConnectionSettings\ConnectionSettings.cs" />
     <Compile Include="Services\ConnectionSettings\ConnectionSettingsRepository.cs" />
-    <Compile Include="Services\Ssh\SshConnectionService.cs" />
+    <Compile Include="Services\Connection\SshConnectionService.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Views\Session\ConnectInstanceCommandBase.cs" />
@@ -411,6 +411,7 @@
   <ItemGroup>
     <None Include="Resources\BackgroundColor_16.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)

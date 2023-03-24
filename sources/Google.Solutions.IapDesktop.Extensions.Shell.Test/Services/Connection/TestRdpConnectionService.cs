@@ -25,11 +25,10 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Testing.Application.Mocks;
 using Moq;
@@ -40,7 +39,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
 {
     [TestFixture]
     public class TestRdpConnectionService : ShellFixtureBase
