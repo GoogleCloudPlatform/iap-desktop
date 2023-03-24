@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
     {
         internal static readonly int DefaultTimeoutInSeconds = 30;
 
-        public RdpCredentials Credentials { get; }
+        public RdpCredentials Credentials { get; set; }
 
         public TimeSpan ConnectionTimeout { get; set;  } = TimeSpan.FromSeconds(DefaultTimeoutInSeconds);
 

@@ -25,14 +25,18 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using NUnit.Framework;
+using System.Collections.Specialized;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionSettings
 {
     [TestFixture]
     public class TestIapRdpUrlConnectionSettings
     {
+        private static readonly InstanceLocator SampleLocator =
+            new InstanceLocator("project-1", "zone-1", "instance-1");
+
         //---------------------------------------------------------------------
-        // Query string generation.
+        // ToUrlQuery.
         //---------------------------------------------------------------------
 
         [Test]
@@ -109,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         }
 
         //---------------------------------------------------------------------
-        // Query string parsing.
+        // FromUrl.
         //---------------------------------------------------------------------
 
         [Test]
@@ -197,6 +201,65 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
             Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RdpRedirectClipboard.Value);
             Assert.AreEqual(RdpCredentialGenerationBehavior.Allow, settings.RdpCredentialGenerationBehavior.Value);
             Assert.AreEqual(13389, settings.RdpPort.Value);
+        }
+
+        //---------------------------------------------------------------------
+        // ApplySettingsFromUrl.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenUrlParaneterIsNullOrEmpty_ThenSettingIsLeftUnchanged(
+            [Values(null, "", " ")] string emptyValue)
+        {
+            var queryParameters = new NameValueCollection();
+            queryParameters.Add("AudioMode", emptyValue);
+
+            var url = new IapRdpUrl(SampleLocator, queryParameters);
+
+            var settings = InstanceConnectionSettings.CreateNew(
+                SampleLocator.ProjectId,
+                SampleLocator.Name);
+            settings.RdpAudioMode.EnumValue = RdpAudioMode.PlayOnServer;
+
+            settings.ApplySettingsFromUrl(url);
+
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, settings.RdpAudioMode.EnumValue);
+        }
+
+        [Test]
+        public void WhenUrlParaneterOutOfRange_ThenSettingIsLeftUnchanged(
+            [Values("-1", "invalid", "999999999")] string invalidValue)
+        {
+            var queryParameters = new NameValueCollection();
+            queryParameters.Add("AudioMode", invalidValue);
+
+            var url = new IapRdpUrl(SampleLocator, queryParameters);
+
+            var settings = InstanceConnectionSettings.CreateNew(
+                SampleLocator.ProjectId,
+                SampleLocator.Name);
+            settings.RdpAudioMode.EnumValue = RdpAudioMode.PlayOnServer;
+
+            settings.ApplySettingsFromUrl(url);
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, settings.RdpAudioMode.EnumValue);
+        }
+
+        [Test]
+        public void WhenUrlParaneterValid_ThenSettingIsUpdated()
+        {
+            var queryParameters = new NameValueCollection();
+            queryParameters.Add("AudioMode", "2");
+
+            var url = new IapRdpUrl(SampleLocator, queryParameters);
+
+            var settings = InstanceConnectionSettings.CreateNew(
+                SampleLocator.ProjectId,
+                SampleLocator.Name);
+            settings.RdpAudioMode.EnumValue = RdpAudioMode.PlayOnServer;
+
+            settings.ApplySettingsFromUrl(url);
+
+            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.RdpAudioMode.EnumValue);
         }
     }
 }

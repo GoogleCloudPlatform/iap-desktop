@@ -153,10 +153,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                 settings.Save();
             }
 
+            // TODO: Reset password instead of passing flag
+
             return await PrepareConnectionAsync(
                     vmNode.Instance,
                     (InstanceConnectionSettings)settings.TypedCollection,
-                    allowPersistentCredentials)
+                    allowPersistentCredentials) 
                 .ConfigureAwait(true);
         }
 
@@ -184,21 +186,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                 settings = InstanceConnectionSettings.FromUrl(url);
             }
 
-            //
-            // Show prompt, but don't persist any generated credentials.
-            //
-            await this.credentialPrompt.SelectCredentialsAsync(
-                    this.window,
-                    url.Instance,
-                    settings,
-                    false)
-                .ConfigureAwait(true);
+            // TODO: use const
+            if (url.TryGetParameter("CredentialCallbackUrl", out string callbackUrlRaw) &&
+                Uri.TryCreate(callbackUrlRaw, UriKind.Absolute, out var callbackUrl))
+            {
+                var template = await PrepareConnectionAsync(
+                        url.Instance,
+                        settings,
+                        true)
+                    .ConfigureAwait(true);
 
-            return await PrepareConnectionAsync(
-                    url.Instance,
-                    settings,
-                    true)
-                .ConfigureAwait(true);
+                // TODO: Invoke callback
+                // TODO: Update template.Session.Credentials
+                
+                return template;
+            }
+            else
+            {
+                //
+                // Show prompt, but don't persist any generated credentials.
+                //
+                await this.credentialPrompt.SelectCredentialsAsync(
+                        this.window,
+                        url.Instance,
+                        settings,
+                        false)
+                    .ConfigureAwait(true);
+
+                return await PrepareConnectionAsync(
+                        url.Instance,
+                        settings,
+                        true)
+                    .ConfigureAwait(true);
+            }
         }
     }
 }
