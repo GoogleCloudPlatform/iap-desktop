@@ -77,6 +77,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
             this.Password = password;
             this.Domain = domain;
         }
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrEmpty(this.Domain) && !string.IsNullOrEmpty(this.User))
+            {
+                return $"{this.Domain}\\{this.User}";
+            }
+            else if (!string.IsNullOrEmpty(this.User))
+            {
+                return this.User;
+            }
+            else
+            {
+                return "(empty)";
+            }
+        }
     }
 
     //-------------------------------------------------------------------------

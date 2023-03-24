@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.Testing.Common;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Net.Http;
@@ -66,6 +67,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                     SampleCallbackUrl,
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new HttpRequestException());
+
+            var service = new RdpCredentialCallbackService(adapter.Object);
+
+            ExceptionAssert.ThrowsAggregateException<CredentialCallbackException>(
+                () => service.GetCredentialsAsync(SampleCallbackUrl, CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public void WhenServerReturnsInvalidResponse_ThenGetCredentialsThrowsException()
+        {
+            var adapter = new Mock<IExternalRestAdapter>();
+            adapter
+                .Setup(a => a.GetAsync<RdpCredentialCallbackService.CredentialCallbackResponse>(
+                    SampleCallbackUrl,
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new JsonReaderException());
 
             var service = new RdpCredentialCallbackService(adapter.Object);
 

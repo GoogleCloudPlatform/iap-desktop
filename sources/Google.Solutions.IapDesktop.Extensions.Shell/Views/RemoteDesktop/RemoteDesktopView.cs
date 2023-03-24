@@ -195,13 +195,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 #if DEBUG
             var statusLabel = new Label()
             {
-                Location = Point.Empty
+                Location = Point.Empty,
+                Font = new Font(FontFamily.GenericSansSerif, 7f),
+                AutoSize = false,
+                Size = new Size(210, 270)
             };
             this.Controls.Add(statusLabel);
             statusLabel.BindReadonlyObservableProperty(
                 c => c.Text,
                 viewModel,
-                m => m.StatusText,
+                m => m.DiagnosticsStatusText,
                 bindingContext);
 #endif
         }
