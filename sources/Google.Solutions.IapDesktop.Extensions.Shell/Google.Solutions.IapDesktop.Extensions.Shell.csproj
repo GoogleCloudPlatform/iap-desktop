@@ -129,6 +129,7 @@
     </Compile>
     <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
     <Compile Include="Services\Adapter\QuarantineAdapter.cs" />
+    <Compile Include="Services\Connection\ConnectionServiceBase.cs" />
     <Compile Include="Services\Connection\ConnectionTemplate.cs" />
     <Compile Include="Data\RdpSessionParameters.cs" />
     <Compile Include="Data\SshSessionParameters.cs" />

@@ -23,7 +23,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using Google.Solutions.Testing.Common.Mocks;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -31,15 +30,11 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using System.Net;
-using Google.Solutions.Ssh.Auth;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
