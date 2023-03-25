@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -169,8 +169,8 @@ namespace Google.Solutions.Common.Threading
                 SendOrPostCallback callback,
                 object state)
             {
-                this.executionContext = executionContext.ThrowIfNull(nameof(executionContext));
-                this.callback = callback.ThrowIfNull(nameof(callback));
+                this.executionContext = executionContext.ExpectNotNull(nameof(executionContext));
+                this.callback = callback.ExpectNotNull(nameof(callback));
                 this.state = state;
             }
 

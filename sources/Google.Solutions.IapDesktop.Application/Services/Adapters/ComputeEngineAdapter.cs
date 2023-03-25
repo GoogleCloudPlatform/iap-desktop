@@ -23,7 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ICredential credential,
             IDeviceEnrollment deviceEnrollment)
         {
-            credential.ThrowIfNull(nameof(credential));
+            credential.ExpectNotNull(nameof(credential));
 
             this.service = new ComputeService(
                 ClientServiceFactory.ForMtlsEndpoint(

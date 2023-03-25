@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -64,9 +64,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
         protected override void OnValidate()
         {
-            this.Instance.ThrowIfNull(nameof(this.Instance));
-            this.Server.ThrowIfNull(nameof(this.Server));
-            this.Parameters.ThrowIfNull(nameof(this.Parameters));
+            this.Instance.ExpectNotNull(nameof(this.Instance));
+            this.Server.ExpectNotNull(nameof(this.Server));
+            this.Parameters.ExpectNotNull(nameof(this.Parameters));
         }
 
         //---------------------------------------------------------------------

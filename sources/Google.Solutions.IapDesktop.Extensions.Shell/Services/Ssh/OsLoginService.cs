@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
         public OsLoginService(IOsLoginAdapter adapter)
         {
-            this.adapter = adapter.ThrowIfNull(nameof(adapter));
+            this.adapter = adapter.ExpectNotNull(nameof(adapter));
         }
 
         //---------------------------------------------------------------------
@@ -98,8 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             TimeSpan validity,
             CancellationToken token)
         {
-            Utilities.ThrowIfNull(project, nameof(project));
-            Utilities.ThrowIfNull(key, nameof(key));
+            Precondition.ExpectNotNull(project, nameof(project));
+            Precondition.ExpectNotNull(key, nameof(key));
 
             if (os != OsLoginSystemType.Linux)
             {
@@ -218,10 +218,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 string publicKey,
                 DateTime? expiresOn)
             {
-                this.Fingerprint = fingerprint.ThrowIfNull(nameof(fingerprint));
-                this.Email = email.ThrowIfNullOrEmpty(nameof(email));
-                this.KeyType = keyType.ThrowIfNullOrEmpty(nameof(keyType));
-                this.PublicKey = publicKey.ThrowIfNullOrEmpty(nameof(publicKey));
+                this.Fingerprint = fingerprint.ExpectNotNull(nameof(fingerprint));
+                this.Email = email.ExpectNotEmpty(nameof(email));
+                this.KeyType = keyType.ExpectNotEmpty(nameof(keyType));
+                this.PublicKey = publicKey.ExpectNotEmpty(nameof(publicKey));
                 this.ExpireOn = expiresOn;
             }
 

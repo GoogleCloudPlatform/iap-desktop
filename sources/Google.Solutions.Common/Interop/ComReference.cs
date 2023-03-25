@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 using System.Runtime.InteropServices;
 
@@ -31,7 +31,7 @@ namespace Google.Solutions.Common.Interop
 
         internal ComReference(T obj)
         {
-            this.Object = obj.ThrowIfNull(nameof(obj));
+            this.Object = obj.ExpectNotNull(nameof(obj));
         }
 
         public void Dispose()

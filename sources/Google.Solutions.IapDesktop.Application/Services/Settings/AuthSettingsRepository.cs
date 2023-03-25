@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Json;
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Apis.Util.Store;
 using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.Settings;
@@ -40,8 +40,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public AuthSettingsRepository(RegistryKey baseKey, string credentialStoreKey) : base(baseKey)
         {
-            Utilities.ThrowIfNull(baseKey, nameof(baseKey));
-            Utilities.ThrowIfNullOrEmpty(credentialStoreKey, nameof(credentialStoreKey));
+            Precondition.ExpectNotNull(baseKey, nameof(baseKey));
+            Precondition.ExpectNotEmpty(credentialStoreKey, nameof(credentialStoreKey));
 
             this.CredentialStoreKey = credentialStoreKey;
         }
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public Task DeleteAsync<T>(string key)
         {
-            Utilities.ThrowIfNullOrEmpty(key, nameof(key));
+            Precondition.ExpectNotEmpty(key, nameof(key));
 
             if (key == CredentialStoreKey)
             {
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public Task<T> GetAsync<T>(string key)
         {
-            Utilities.ThrowIfNullOrEmpty(key, nameof(key));
+            Precondition.ExpectNotEmpty(key, nameof(key));
 
             if (key == CredentialStoreKey)
             {
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public Task StoreAsync<T>(string key, T value)
         {
-            Utilities.ThrowIfNullOrEmpty(key, nameof(key));
+            Precondition.ExpectNotEmpty(key, nameof(key));
 
             if (key == CredentialStoreKey)
             {

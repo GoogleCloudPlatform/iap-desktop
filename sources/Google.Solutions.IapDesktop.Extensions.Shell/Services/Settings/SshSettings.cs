@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
             RegistryKey userPolicyKey,
             Profile.SchemaVersion schemaVersion) : base(settingsKey, machinePolicyKey, userPolicyKey)
         {
-            Utilities.ThrowIfNull(settingsKey, nameof(settingsKey));
+            Precondition.ExpectNotNull(settingsKey, nameof(settingsKey));
             this.schemaVersion = schemaVersion;
         }
 
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                   profile.UserPolicyKey?.OpenSubKey("Ssh"),
                   profile.Version)
         {
-            profile.ThrowIfNull(nameof(profile));
+            profile.ExpectNotNull(nameof(profile));
         }
 
         protected override SshSettings LoadSettings(

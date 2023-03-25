@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -67,11 +67,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             IRdpCredentialCallbackService credentialCallbackService)
             : base(jobService, tunnelBroker)
         {
-            this.window = window.ThrowIfNull(nameof(window));
-            this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
-            this.settingsService = settingsService.ThrowIfNull(nameof(settingsService));
-            this.credentialPrompt = credentialPrompt.ThrowIfNull(nameof(credentialPrompt));
-            this.credentialCallbackService = credentialCallbackService.ThrowIfNull(nameof(credentialCallbackService));
+            this.window = window.ExpectNotNull(nameof(window));
+            this.projectModelService = projectModelService.ExpectNotNull(nameof(projectModelService));
+            this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
+            this.credentialPrompt = credentialPrompt.ExpectNotNull(nameof(credentialPrompt));
+            this.credentialCallbackService = credentialCallbackService.ExpectNotNull(nameof(credentialCallbackService));
         }
 
         private async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(

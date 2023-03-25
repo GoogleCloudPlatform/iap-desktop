@@ -22,7 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Net;
@@ -42,6 +42,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Apis.Util;
 
 namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
 {
@@ -74,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             ICredential credential,
             IDeviceEnrollment deviceEnrollment)
         {
-            credential.ThrowIfNull(nameof(credential));
+            credential.ExpectNotNull(nameof(credential));
 
             this.service = new LoggingService(
                 ClientServiceFactory.ForMtlsEndpoint(
@@ -201,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             IEventProcessor processor,
             CancellationToken cancellationToken)
         {
-            Utilities.ThrowIfNull(projectIds, nameof(projectIds));
+            Precondition.ExpectNotNull(projectIds, nameof(projectIds));
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
                 string.Join(", ", projectIds),

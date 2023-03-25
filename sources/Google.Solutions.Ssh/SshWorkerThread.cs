@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
@@ -87,9 +87,9 @@ namespace Google.Solutions.Ssh
             ISshAuthenticator authenticator,
             SynchronizationContext callbackContext)
         {
-            this.endpoint = endpoint.ThrowIfNull(nameof(endpoint));
-            this.authenticator = authenticator.ThrowIfNull(nameof(authenticator));
-            this.CallbackContext = callbackContext.ThrowIfNull(nameof(callbackContext));
+            this.endpoint = endpoint.ExpectNotNull(nameof(endpoint));
+            this.authenticator = authenticator.ExpectNotNull(nameof(authenticator));
+            this.CallbackContext = callbackContext.ExpectNotNull(nameof(callbackContext));
 
             this.readyToSend = UnsafeNativeMethods.WSACreateEvent();
 
@@ -471,8 +471,8 @@ namespace Google.Solutions.Ssh
                 ISshAuthenticator authenticator,
                 SynchronizationContext context)
             {
-                this.authenticator = authenticator.ThrowIfNull(nameof(authenticator));
-                this.context = context.ThrowIfNull(nameof(context));
+                this.authenticator = authenticator.ExpectNotNull(nameof(authenticator));
+                this.context = context.ExpectNotNull(nameof(context));
             }
 
             public string Username => this.authenticator.Username;

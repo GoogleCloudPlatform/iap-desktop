@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Newtonsoft.Json;
 using System;
@@ -45,7 +45,7 @@ namespace Google.Solutions.Common.Net
             UserAgent userAgent,
             X509Certificate2 clientCertificate)
         {
-            this.UserAgent = userAgent.ThrowIfNull(nameof(userAgent));
+            this.UserAgent = userAgent.ExpectNotNull(nameof(userAgent));
             this.ClientCertificate = clientCertificate;
 
             if (this.ClientCertificate != null)

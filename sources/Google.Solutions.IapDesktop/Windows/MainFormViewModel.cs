@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -64,12 +64,12 @@ namespace Google.Solutions.IapDesktop.Windows
             ApplicationSettingsRepository applicationSettings,
             IThemeService themeService)
         {
-            this.View = view.ThrowIfNull(nameof(view));
-            this.install = install.ThrowIfNull(nameof(install));
-            this.profile = profile.ThrowIfNull(nameof(profile));
-            this.authorization = authorization.ThrowIfNull(nameof(authorization));
-            this.applicationSettings = applicationSettings.ThrowIfNull(nameof(applicationSettings));
-            this.themeService = themeService.ThrowIfNull(nameof(themeService));
+            this.View = view.ExpectNotNull(nameof(view));
+            this.install = install.ExpectNotNull(nameof(install));
+            this.profile = profile.ExpectNotNull(nameof(profile));
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
+            this.applicationSettings = applicationSettings.ExpectNotNull(nameof(applicationSettings));
+            this.themeService = themeService.ExpectNotNull(nameof(themeService));
 
             this.ProfileStateCaption = $"{this.profile.Name}: {this.authorization.Email}";
             this.DeviceStateCaption = "Endpoint Verification";

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System.Collections.Generic;
 
 namespace Google.Solutions.Common.Text
@@ -45,7 +45,7 @@ namespace Google.Solutions.Common.Text
 
         public static string ToAsciiQuotes(string s)
         {
-            Utilities.ThrowIfNull(s, nameof(s));
+            Precondition.ExpectNotNull(s, nameof(s));
 
             var sanitized = new char[s.Length];
             for (int i = 0; i < s.Length; i++)

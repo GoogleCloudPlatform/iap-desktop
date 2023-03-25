@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Drawing;
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
         protected VSThemeRuleSetBase(VSTheme theme)
         {
-            this.theme = theme.ThrowIfNull(nameof(theme));
+            this.theme = theme.ExpectNotNull(nameof(theme));
             this.darkModeIconInverter = new IconInverter()
             {
                 //
@@ -379,7 +379,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// </summary>
         public override void AddRules(ControlTheme controlTheme)
         {
-            controlTheme.ThrowIfNull(nameof(controlTheme));
+            controlTheme.ExpectNotNull(nameof(controlTheme));
             controlTheme.AddRule<Form>(c => StyleDialog(c));
 
             base.AddRules(controlTheme);
@@ -427,7 +427,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
         /// </summary>
         public override void AddRules(ControlTheme controlTheme)
         {
-            controlTheme.ThrowIfNull(nameof(controlTheme));
+            controlTheme.ExpectNotNull(nameof(controlTheme));
             controlTheme.AddRule<Form>(c => StyleDockWindow(c));
             controlTheme.AddRule<DockPanel>(c => StyleDockPanel(c));
             controlTheme.AddRule<ToolWindow>(c => StyleToolWindow(c, controlTheme));

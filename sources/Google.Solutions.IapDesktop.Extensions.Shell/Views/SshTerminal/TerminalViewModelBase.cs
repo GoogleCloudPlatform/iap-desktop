@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.Mvvm.Binding;
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         protected TerminalViewModelBase(IEventService eventService)
         {
-            this.eventService = eventService.ThrowIfNull(nameof(eventService));
+            this.eventService = eventService.ExpectNotNull(nameof(eventService));
         }
 
         //---------------------------------------------------------------------
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         protected override void OnValidate()
         {
-            this.Instance.ThrowIfNull(nameof(this.Instance));
+            this.Instance.ExpectNotNull(nameof(this.Instance));
         }
 
         //---------------------------------------------------------------------

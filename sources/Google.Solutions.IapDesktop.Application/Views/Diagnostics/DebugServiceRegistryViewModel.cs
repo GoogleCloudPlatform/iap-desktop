@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding;
 using System;
@@ -54,8 +54,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         {
             public Service(Type serviceType, ServiceLifetime lifetime)
             {
-                this.ServiceType = serviceType.ThrowIfNull(nameof(serviceType));
-                this.Lifetime = lifetime.ThrowIfNull(nameof(lifetime));
+                this.ServiceType = serviceType.ExpectNotNull(nameof(serviceType));
+                this.Lifetime = lifetime.ExpectNotNull(nameof(lifetime));
             }
 
             public Type ServiceType { get; }

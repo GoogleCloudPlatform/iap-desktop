@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
@@ -53,8 +53,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
             HelpAdapter helpAdapter,
             BuganizerAdapter buganizerAdapter)
         {
-            this.helpAdapter = helpAdapter.ThrowIfNull(nameof(helpAdapter));
-            this.buganizerAdapter = buganizerAdapter.ThrowIfNull(nameof(buganizerAdapter));
+            this.helpAdapter = helpAdapter.ExpectNotNull(nameof(helpAdapter));
+            this.buganizerAdapter = buganizerAdapter.ExpectNotNull(nameof(buganizerAdapter));
         }
 
         private static bool ShouldShowBugReportLink(Exception e)

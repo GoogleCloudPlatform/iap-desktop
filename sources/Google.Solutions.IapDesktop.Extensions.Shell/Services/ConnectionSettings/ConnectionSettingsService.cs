@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         public ConnectionSettingsService(
             ConnectionSettingsRepository settingsRepository)
         {
-            this.repository = settingsRepository.ThrowIfNull(nameof(settingsRepository));
+            this.repository = settingsRepository.ExpectNotNull(nameof(settingsRepository));
         }
 
         //---------------------------------------------------------------------

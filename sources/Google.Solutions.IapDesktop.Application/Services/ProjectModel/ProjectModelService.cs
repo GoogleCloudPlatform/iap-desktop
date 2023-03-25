@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Threading;
@@ -248,10 +248,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             IProjectRepository projectRepository,
             IEventService eventService)
         {
-            this.computeEngineAdapter = computeEngineAdapter.ThrowIfNull(nameof(computeEngineAdapter));
-            this.resourceManagerAdapter = resourceManagerAdapter.ThrowIfNull(nameof(resourceManagerAdapter));
-            this.projectRepository = projectRepository.ThrowIfNull(nameof(projectRepository));
-            this.eventService = eventService.ThrowIfNull(nameof(eventService));
+            this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            this.resourceManagerAdapter = resourceManagerAdapter.ExpectNotNull(nameof(resourceManagerAdapter));
+            this.projectRepository = projectRepository.ExpectNotNull(nameof(projectRepository));
+            this.eventService = eventService.ExpectNotNull(nameof(eventService));
         }
 
         //---------------------------------------------------------------------

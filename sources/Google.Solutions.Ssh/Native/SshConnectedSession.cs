@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
@@ -246,7 +246,7 @@ namespace Google.Solutions.Ssh.Native
         public SshAuthenticatedSession Authenticate(ISshAuthenticator authenticator)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNull(authenticator, nameof(authenticator));
+            Precondition.ExpectNotNull(authenticator, nameof(authenticator));
 
             Exception interactiveCallbackException = null;
 

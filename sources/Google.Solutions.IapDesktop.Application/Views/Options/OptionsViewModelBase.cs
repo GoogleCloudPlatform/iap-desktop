@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.Mvvm.Binding;
@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             SettingsRepositoryBase<TSettings> settingsRepository)
             : base(title)
         {
-            this.settingsRepository = settingsRepository.ThrowIfNull(nameof(settingsRepository));
+            this.settingsRepository = settingsRepository.ExpectNotNull(nameof(settingsRepository));
 
             this.IsDirty = ObservableProperty.Build(false);
         }

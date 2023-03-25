@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
@@ -264,7 +264,7 @@ namespace Google.Solutions.Mvvm.Theme
         /// </summary>
         public void AddRules(ControlTheme controlTheme)
         {
-            controlTheme.ThrowIfNull(nameof(controlTheme));
+            controlTheme.ExpectNotNull(nameof(controlTheme));
 
             controlTheme.AddRule<Form>(
                 c => StyleTitleBar(c),

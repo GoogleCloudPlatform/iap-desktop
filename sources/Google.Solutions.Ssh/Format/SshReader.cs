@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -39,7 +39,7 @@ namespace Google.Solutions.Ssh.Format
         public SshReader(Stream stream)
         {
             Debug.Assert(stream.CanRead);
-            this.stream = stream.ThrowIfNull(nameof(stream));
+            this.stream = stream.ExpectNotNull(nameof(stream));
         }
 
         //---------------------------------------------------------------------

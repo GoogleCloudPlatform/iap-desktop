@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Locator;
 using Newtonsoft.Json;
 using System;
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory
             InstanceLocator instanceLocator,
             IList<GuestAttributesEntry> guestAttributes)
         {
-            Utilities.ThrowIfNull(guestAttributes, nameof(guestAttributes));
+            Precondition.ExpectNotNull(guestAttributes, nameof(guestAttributes));
 
             var lastUpdated = guestAttributes.FirstOrDefault(a => a.Key == "LastUpdated")?.Value;
             var installedPackages = guestAttributes.FirstOrDefault(a => a.Key == "InstalledPackages")?.Value;

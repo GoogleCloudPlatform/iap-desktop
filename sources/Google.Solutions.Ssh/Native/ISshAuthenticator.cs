@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Auth;
 using System;
 
@@ -65,8 +65,8 @@ namespace Google.Solutions.Ssh.Native
             string username,
             ISshKeyPair keyPair)
         {
-            this.Username = username.ThrowIfNull(nameof(username));
-            this.KeyPair = keyPair.ThrowIfNull(nameof(KeyPair));
+            this.Username = username.ExpectNotNull(nameof(username));
+            this.KeyPair = keyPair.ExpectNotNull(nameof(KeyPair));
         }
 
         public virtual string Prompt(

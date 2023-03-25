@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -176,8 +176,8 @@ namespace Google.Solutions.Mvvm.Theme
             this ControlTheme controlTheme,
             ToolStripItemTheme toolStripItemTheme)
         {
-            controlTheme.ThrowIfNull(nameof(controlTheme));
-            toolStripItemTheme.ThrowIfNull(nameof(toolStripItemTheme));
+            controlTheme.ExpectNotNull(nameof(controlTheme));
+            toolStripItemTheme.ExpectNotNull(nameof(toolStripItemTheme));
 
             controlTheme.AddRule<ToolStrip>(c => toolStripItemTheme.ApplyTo(c));
         }

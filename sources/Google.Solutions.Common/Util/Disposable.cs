@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;
 
@@ -63,7 +63,7 @@ namespace Google.Solutions.Common
 
             public DisposableComponent(IDisposable disposable)
             {
-                this.disposable = disposable.ThrowIfNull(nameof(disposable));
+                this.disposable = disposable.ExpectNotNull(nameof(disposable));
             }
 
             protected override void Dispose(bool disposing)

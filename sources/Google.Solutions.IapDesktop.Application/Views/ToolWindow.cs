@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -472,9 +472,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 IBindingContext bindingContext,
                 IControlTheme theme)
             {
-                this.view = view.ThrowIfNull(nameof(view));
-                this.ViewModel = viewModel.ThrowIfNull(nameof(viewModel));
-                this.bindingContext = bindingContext.ThrowIfNull(nameof(bindingContext));
+                this.view = view.ExpectNotNull(nameof(view));
+                this.ViewModel = viewModel.ExpectNotNull(nameof(viewModel));
+                this.bindingContext = bindingContext.ExpectNotNull(nameof(bindingContext));
                 this.theme = theme;
             }
 

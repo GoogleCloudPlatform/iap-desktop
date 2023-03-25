@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -62,8 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
             ITunnelService tunnelService,
             IEventService eventService)
         {
-            this.tunnelService = tunnelService.ThrowIfNull(nameof(tunnelService));
-            this.eventService = eventService.ThrowIfNull(nameof(eventService));
+            this.tunnelService = tunnelService.ExpectNotNull(nameof(tunnelService));
+            this.eventService = eventService.ExpectNotNull(nameof(eventService));
         }
 
         public IEnumerable<ITunnel> OpenTunnels =>
