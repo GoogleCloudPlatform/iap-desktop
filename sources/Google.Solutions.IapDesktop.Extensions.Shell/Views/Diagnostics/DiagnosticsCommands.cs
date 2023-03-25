@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
                 WriteTextbox("Domain");
                 WriteTextbox("RdpPort");
                 WriteTextbox("CredentialCallbackUrl");
-                WriteCombobox<RdpConnectionBarState>("ConnectionBarState");
+                WriteCombobox<RdpConnectionBarState>("ConnectionBar");
                 WriteCombobox<RdpDesktopSize>("DesktopSize");
                 WriteCombobox<RdpColorDepth>("ColorDepth");
                 WriteCombobox<RdpAudioMode>("AudioMode");
