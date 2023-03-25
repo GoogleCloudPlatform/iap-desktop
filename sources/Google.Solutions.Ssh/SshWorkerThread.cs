@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Auth;
 using Google.Solutions.Ssh.Native;
 using System;

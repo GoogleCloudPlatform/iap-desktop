@@ -20,9 +20,9 @@
 //
 
 using Google.Apis.Json;
-using Google.Solutions.Common.Util;
 using Google.Apis.Util.Store;
 using Google.Solutions.Common.Security;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using System.Collections.Generic;

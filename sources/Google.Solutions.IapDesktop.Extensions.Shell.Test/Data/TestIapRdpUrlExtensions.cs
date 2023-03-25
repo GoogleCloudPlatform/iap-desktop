@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Data
             Assert.IsTrue(url.TryGetParameter("RdpPort", out ushort value));
             Assert.AreEqual(3389, value);
         }
-        
+
         //---------------------------------------------------------------------
         // TryGetParameter<string>.
         //---------------------------------------------------------------------

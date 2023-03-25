@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         private class DuplicateSessionCommand : ToolContextCommand<ISession>
         {
             private readonly Service<IProjectModelService> modelService;
-            private IContextCommand<IProjectModelNode> connectInNewTerminalCommand;
+            private readonly IContextCommand<IProjectModelNode> connectInNewTerminalCommand;
 
             public DuplicateSessionCommand(
                 string text,

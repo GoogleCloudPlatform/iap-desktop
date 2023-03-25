@@ -35,7 +35,7 @@ namespace Google.Solutions.Mvvm.Drawing
     /// </summary>
     public class IconInverter
     {
-        private static object invertedTag = new object();
+        private static readonly object invertedTag = new object();
         private float grayFactor = 1;
         private float colorFactor = 1;
 

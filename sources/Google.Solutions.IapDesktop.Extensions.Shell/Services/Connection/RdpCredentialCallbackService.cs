@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         }
 
         public async Task<RdpCredentials> GetCredentialsAsync( // TODO: Test
-            Uri callbackUrl, 
+            Uri callbackUrl,
             CancellationToken cancellationToken)
         {
             try
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
     public class CredentialCallbackException : Exception
     {
         public CredentialCallbackException(
-            string message, 
+            string message,
             Exception innerException) : base(message, innerException)
         {
         }

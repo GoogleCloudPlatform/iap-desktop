@@ -19,23 +19,23 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.Mvvm.Binding.Commands;
+using Google.Solutions.Testing.Common.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;
-using Google.Solutions.Testing.Common.Mocks;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.Data;
-using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
-using Google.Solutions.Mvvm.Binding.Commands;
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using System.Net;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private static TransportParameters SampleTransportParameters =
+        private static readonly TransportParameters SampleTransportParameters =
             new TransportParameters(
                 TransportParameters.TransportType.IapTunnel,
                 SampleLocator,

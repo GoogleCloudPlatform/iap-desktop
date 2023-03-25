@@ -37,7 +37,7 @@ namespace Google.Solutions.Common.Test.Diagnostics
         public void WhenObjectIsNotNull_ThenDumpPropertiesReturnsString()
         {
             Assert.AreEqual(
-                "Foo: 1\nBar: test\nQuux: System.Object\n", 
+                "Foo: 1\nBar: test\nQuux: System.Object\n",
                 new {
                     Foo = 1,
                     Bar = "test",

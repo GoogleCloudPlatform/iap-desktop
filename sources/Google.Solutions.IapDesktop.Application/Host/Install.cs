@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;

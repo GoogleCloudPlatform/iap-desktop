@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
-using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;

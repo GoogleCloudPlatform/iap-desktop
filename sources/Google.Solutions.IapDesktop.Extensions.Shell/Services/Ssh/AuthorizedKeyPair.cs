@@ -21,7 +21,6 @@
 
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Solutions.Common.Util;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.Ssh.Auth;
 using System;

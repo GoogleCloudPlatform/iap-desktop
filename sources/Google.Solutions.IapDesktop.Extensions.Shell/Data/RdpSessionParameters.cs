@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
 
         public RdpCredentials Credentials { get; set; }
 
-        public TimeSpan ConnectionTimeout { get; set;  } = TimeSpan.FromSeconds(DefaultTimeoutInSeconds);
+        public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromSeconds(DefaultTimeoutInSeconds);
 
         public RdpConnectionBarState ConnectionBar { get; set; } = RdpConnectionBarState._Default;
         public RdpDesktopSize DesktopSize { get; set; } = RdpDesktopSize._Default;
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
         public string Domain { get; }
 
         public RdpCredentials(
-            string user, 
+            string user,
             string domain,
             SecureString password)
         {

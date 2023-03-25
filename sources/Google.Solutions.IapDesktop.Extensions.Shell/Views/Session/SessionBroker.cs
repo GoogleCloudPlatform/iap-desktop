@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
         public bool IsConnected(InstanceLocator vmInstance)
         {
-            return 
+            return
                 RemoteDesktopView.TryGetExistingPane(this.mainForm, vmInstance) != null ||
                 SshTerminalView.TryGetExistingPane(this.mainForm, vmInstance) != null;
         }
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public bool TryActivate(InstanceLocator vmInstance, out ISession session)
         {
             if (RemoteDesktopView.TryGetExistingPane(this.mainForm, vmInstance) is
-                RemoteDesktopView existingRdpSession && 
+                RemoteDesktopView existingRdpSession &&
                 existingRdpSession != null)
             {
                 // Pane found, activate.
@@ -138,8 +138,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         {
             var window = ToolWindow.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(this.serviceProvider);
             window.ViewModel.Instance = template.Transport.Instance;
-            window.ViewModel.Server = IPAddress.IsLoopback(template.Transport.Endpoint.Address) 
-                ? "localhost" 
+            window.ViewModel.Server = IPAddress.IsLoopback(template.Transport.Endpoint.Address)
+                ? "localhost"
                 : template.Transport.Endpoint.Address.ToString();
             window.ViewModel.Port = (ushort)template.Transport.Endpoint.Port;
             window.ViewModel.Parameters = template.Session;

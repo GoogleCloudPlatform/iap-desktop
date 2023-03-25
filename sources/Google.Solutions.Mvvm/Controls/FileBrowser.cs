@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Format;
 using Google.Solutions.Mvvm.Shell;
