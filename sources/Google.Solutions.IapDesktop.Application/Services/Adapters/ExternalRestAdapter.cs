@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         /// </summary>
         /// <returns>null if not found or empty</returns>
         Task<TModel> GetAsync<TModel>(
-            string url,
+            Uri url,
             CancellationToken cancellationToken);
     }
 
@@ -51,12 +51,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         private readonly RestClient client = new RestClient(Install.UserAgent);
 
 
-        public async Task<TModel> GetAsync<TModel>(string url, CancellationToken cancellationToken)
+        public async Task<TModel> GetAsync<TModel>(Uri url, CancellationToken cancellationToken)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(url))
             {
                 return await this.client
-                    .GetAsync<TModel>(url, null, cancellationToken)
+                    .GetAsync<TModel>(url.ToString(), null, cancellationToken)
                     .ConfigureAwait(false);
             }
         }

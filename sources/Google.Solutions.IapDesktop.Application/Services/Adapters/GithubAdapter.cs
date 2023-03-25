@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 var latestRelease = await this.restAdapter
                     .GetAsync<Release>(
-                        $"https://api.github.com/repos/{RepositoryName}/releases/latest",
+                        new Uri($"https://api.github.com/repos/{RepositoryName}/releases/latest"),
                         cancellationToken)
                     .ConfigureAwait(false);
 

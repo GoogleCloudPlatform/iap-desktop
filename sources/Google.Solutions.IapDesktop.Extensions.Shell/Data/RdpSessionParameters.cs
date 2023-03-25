@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
     {
         internal static readonly int DefaultTimeoutInSeconds = 30;
 
-        public RdpCredentials Credentials { get; }
+        public RdpCredentials Credentials { get; set; }
 
         public TimeSpan ConnectionTimeout { get; set;  } = TimeSpan.FromSeconds(DefaultTimeoutInSeconds);
 
@@ -53,7 +53,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
         public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
 
         public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; } = RdpUserAuthenticationBehavior._Default;
-        public RdpCredentialGenerationBehavior CredentialGenerationBehavior { get; set; } = RdpCredentialGenerationBehavior._Default;
 
         public RdpSessionParameters(RdpCredentials credentials)
         {
@@ -77,6 +76,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
             this.User = user;
             this.Password = password;
             this.Domain = domain;
+        }
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrEmpty(this.Domain) && !string.IsNullOrEmpty(this.User))
+            {
+                return $"{this.Domain}\\{this.User}";
+            }
+            else if (!string.IsNullOrEmpty(this.User))
+            {
+                return this.User;
+            }
+            else
+            {
+                return "(empty)";
+            }
         }
     }
 

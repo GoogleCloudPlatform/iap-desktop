@@ -137,6 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
                 WriteTextbox("Username");
                 WriteTextbox("Domain");
                 WriteTextbox("RdpPort");
+                WriteTextbox("CredentialCallbackUrl");
                 WriteCombobox<RdpConnectionBarState>("ConnectionBarState");
                 WriteCombobox<RdpDesktopSize>("DesktopSize");
                 WriteCombobox<RdpColorDepth>("ColorDepth");
@@ -197,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
                     buffer.AppendLine("<div class='input-wrapper'>");
                     buffer.AppendLine($"<label for='name'>{fieldName}</label>");
                     buffer.AppendLine("<br />");
-                    buffer.AppendLine($"<input name='{fieldName}' size='20' />");
+                    buffer.AppendLine($"<input name='{fieldName}' size='40' />");
                     buffer.AppendLine("</div>");
                 }
 

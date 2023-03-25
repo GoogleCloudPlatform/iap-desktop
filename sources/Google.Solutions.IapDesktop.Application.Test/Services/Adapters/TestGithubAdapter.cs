@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var restAdapter = new Mock<IExternalRestAdapter>();
             restAdapter
                 .Setup(a => a.GetAsync<GithubAdapter.Release>(
-                    It.IsNotNull<string>(),
+                    It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new HttpRequestException("mock"));
 
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var restAdapter = new Mock<IExternalRestAdapter>();
             restAdapter
                 .Setup(a => a.GetAsync<GithubAdapter.Release>(
-                    It.IsNotNull<string>(),
+                    It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((GithubAdapter.Release)null);
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var restAdapter = new Mock<IExternalRestAdapter>();
             restAdapter
                 .Setup(a => a.GetAsync<GithubAdapter.Release>(
-                    It.IsNotNull<string>(),
+                    It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubAdapter.Release("1.2.3.4", null, null));
 
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var restAdapter = new Mock<IExternalRestAdapter>();
             restAdapter
                 .Setup(a => a.GetAsync<GithubAdapter.Release>(
-                    It.IsNotNull<string>(),
+                    It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubAdapter.Release("not a version", null, null));
 
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var restAdapter = new Mock<IExternalRestAdapter>();
             restAdapter
                 .Setup(a => a.GetAsync<GithubAdapter.Release>(
-                    It.IsNotNull<string>(),
+                    It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubAdapter.Release(
                     "1.2.3.4",
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var restAdapter = new Mock<IExternalRestAdapter>();
             restAdapter
                 .Setup(a => a.GetAsync<GithubAdapter.Release>(
-                    It.IsNotNull<string>(),
+                    It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubAdapter.Release(
                     "1.2.3.4",

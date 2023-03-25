@@ -57,7 +57,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         public RegistryEnumSetting<RdpBitmapPersistence> RdpBitmapPersistence { get; private set; }
         public RegistryEnumSetting<RdpNetworkLevelAuthentication> RdpNetworkLevelAuthentication { get; private set; }
         public RegistryDwordSetting RdpConnectionTimeout { get; private set; }
-        public RegistryEnumSetting<RdpCredentialGenerationBehavior> RdpCredentialGenerationBehavior { get; private set; }
         public RegistryDwordSetting RdpPort { get; private set; }
         public RegistryEnumSetting<RdpRedirectClipboard> RdpRedirectClipboard { get; private set; }
         public RegistryEnumSetting<RdpRedirectPrinter> RdpRedirectPrinter { get; private set; }
@@ -81,7 +80,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
             this.RdpBitmapPersistence,
             this.RdpNetworkLevelAuthentication,
             this.RdpConnectionTimeout,
-            this.RdpCredentialGenerationBehavior,
             this.RdpPort,
             this.RdpRedirectClipboard,
             this.RdpRedirectPrinter,
@@ -224,13 +222,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 RdpSessionParameters.DefaultTimeoutInSeconds,
                 key,
                 0, 300);
-            this.RdpCredentialGenerationBehavior = RegistryEnumSetting<RdpCredentialGenerationBehavior>.FromKey(
-                "CredentialGenerationBehavior",
-                null, // Hidden.
-                null, // Hidden.
-                null, // Hidden.
-                Data.RdpCredentialGenerationBehavior._Default,
-                key);
             this.RdpPort = RegistryDwordSetting.FromKey(
                 "RdpPort",
                 "Server port",
@@ -353,8 +344,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 baseSettings.RdpNetworkLevelAuthentication.OverlayBy(overlaySettings.RdpNetworkLevelAuthentication);
             prototype.RdpConnectionTimeout = (RegistryDwordSetting)
                 baseSettings.RdpConnectionTimeout.OverlayBy(overlaySettings.RdpConnectionTimeout);
-            prototype.RdpCredentialGenerationBehavior = (RegistryEnumSetting<RdpCredentialGenerationBehavior>)
-                baseSettings.RdpCredentialGenerationBehavior.OverlayBy(overlaySettings.RdpCredentialGenerationBehavior);
             prototype.RdpPort = (RegistryDwordSetting)
                 baseSettings.RdpPort.OverlayBy(overlaySettings.RdpPort);
             prototype.RdpRedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
@@ -451,7 +440,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 .Where(s => !(s is RegistrySecureStringSetting)))
             {
                 var value = url.Parameters.Get(setting.Key);
-                if (value != null)
+                if (!string.IsNullOrEmpty(value))
                 {
                     try
                     {

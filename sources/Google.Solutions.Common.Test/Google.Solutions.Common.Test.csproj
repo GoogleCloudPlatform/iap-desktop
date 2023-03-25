@@ -98,6 +98,7 @@
     <Compile Include="Diagnostics\TestBugReport.cs" />
     <Compile Include="Diagnostics\TestClrVersion.cs" />
     <Compile Include="CommonFixtureBase.cs" />
+    <Compile Include="Diagnostics\TestDumpObjectExtensions.cs" />
     <Compile Include="Diagnostics\TestTraceSourceExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Interop\TestCoTaskMemAllocSafeHandle.cs" />

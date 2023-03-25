@@ -94,7 +94,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         {
             Debug.Assert(vmNode.IsSshSupported());
 
+            //
             // Select node so that tracking windows are updated.
+            //
             await this.projectModelService.SetActiveNodeAsync(
                     vmNode,
                     CancellationToken.None)
