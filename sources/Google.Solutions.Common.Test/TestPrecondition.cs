@@ -23,7 +23,7 @@ using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Common.Test.Util
+namespace Google.Solutions.Common.Test
 {
     [TestFixture]
     public class TestPrecondition

@@ -22,13 +22,10 @@
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.Common.Util
+namespace Google.Solutions.Common
 {
     public static class Precondition
     {
-        /// <summary>
-        /// Verify that the argument is not null.
-        /// </summary>
         public static T ExpectNotNull<T>(
             this T value,
             string argumentName)
@@ -42,9 +39,6 @@ namespace Google.Solutions.Common.Util
             return value;
         }
 
-        /// <summary>
-        /// Verify that the argument is not null, and not an empty string.
-        /// </summary>
         public static string ExpectNotEmpty(
             this string value,
             string argumentName)
@@ -58,9 +52,6 @@ namespace Google.Solutions.Common.Util
             return value;
         }
 
-        /// <summary>
-        /// Verify that the condition is true.
-        /// </summary>
         public static void Expect(
             bool condition,
             string message)
@@ -71,9 +62,6 @@ namespace Google.Solutions.Common.Util
             }
         }
 
-        /// <summary>
-        /// Verify that the argument is within a range.
-        /// </summary>
         public static float ExpectInRange(
             this float value,
             float min,
