@@ -19,10 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Text;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
@@ -33,12 +32,9 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
-using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;

@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                 NetworkLevelAuthentication = settings.RdpNetworkLevelAuthentication.EnumValue,
 
                 UserAuthenticationBehavior = settings.RdpUserAuthenticationBehavior.EnumValue,
-                
+
                 RedirectClipboard = settings.RdpRedirectClipboard.EnumValue,
                 RedirectPrinter = settings.RdpRedirectPrinter.EnumValue,
                 RedirectSmartCard = settings.RdpRedirectSmartCard.EnumValue,
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 
             var template = await PrepareConnectionAsync(
                     vmNode.Instance,
-                    (InstanceConnectionSettings)settings.TypedCollection) 
+                    (InstanceConnectionSettings)settings.TypedCollection)
                 .ConfigureAwait(true);
 
             if (!allowPersistentCredentials)
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             else
             {
                 if (!url.TryGetParameter<RdpCredentialGenerationBehavior>(
-                    "CredentialGenerationBehavior", 
+                    "CredentialGenerationBehavior",
                     out var allowedBehavior))
                 {
                     allowedBehavior = RdpCredentialGenerationBehavior._Default;

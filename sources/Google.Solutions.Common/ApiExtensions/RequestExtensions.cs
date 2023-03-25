@@ -21,14 +21,13 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Requests;
-using Google.Solutions.Common.Util;
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Apis.Util;
 
 namespace Google.Solutions.Common.ApiExtensions
 {

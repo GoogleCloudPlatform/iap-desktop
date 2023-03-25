@@ -20,8 +20,8 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
 using System.IO;

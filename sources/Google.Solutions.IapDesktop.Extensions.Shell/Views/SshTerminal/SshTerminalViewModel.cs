@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Text;

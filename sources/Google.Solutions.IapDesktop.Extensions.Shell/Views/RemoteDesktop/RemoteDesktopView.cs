@@ -33,8 +33,6 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Theme;
 using MSTSCLib;

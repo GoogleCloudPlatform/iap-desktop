@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
 
         private class BrowserCodeReceiver : LocalServerCodeReceiver
         {
-            private BrowserPreference browserPreference;
+            private readonly BrowserPreference browserPreference;
 
             public BrowserCodeReceiver(BrowserPreference browserPreference)
                 : base(Resources.AuthorizationSuccessful)

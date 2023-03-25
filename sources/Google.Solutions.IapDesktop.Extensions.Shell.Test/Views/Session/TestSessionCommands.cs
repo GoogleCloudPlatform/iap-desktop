@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;

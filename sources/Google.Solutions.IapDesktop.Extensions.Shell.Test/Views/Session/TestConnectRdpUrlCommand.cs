@@ -19,21 +19,21 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
+using Google.Solutions.Testing.Common.Mocks;
 using Moq;
 using NUnit.Framework;
 using System;
-using Google.Solutions.Testing.Common.Mocks;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.Data;
 using System.Collections.Specialized;
-using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using System.Net;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 {

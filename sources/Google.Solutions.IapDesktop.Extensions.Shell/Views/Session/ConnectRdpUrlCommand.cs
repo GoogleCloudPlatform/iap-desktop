@@ -21,8 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using System.Diagnostics;

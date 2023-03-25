@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Threading;
+using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
 using System.IO;

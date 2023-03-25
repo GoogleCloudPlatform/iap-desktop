@@ -23,7 +23,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Theme;
-using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.Mvvm.Binding;
 using System.Linq;
 using System.Windows.Forms;

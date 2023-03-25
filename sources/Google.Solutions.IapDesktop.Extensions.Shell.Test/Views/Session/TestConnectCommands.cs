@@ -52,13 +52,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             SampleLocator,
             new NameValueCollection());
 
-        private static TransportParameters SampleTransportParameters =
+        private static readonly TransportParameters SampleTransportParameters =
             new TransportParameters(
                 TransportParameters.TransportType.IapTunnel,
                 SampleLocator,
                 new IPEndPoint(IPAddress.Loopback, 1234));
 
-        private static readonly ConnectionTemplate<RdpSessionParameters> RdpConnectionTemplate = 
+        private static readonly ConnectionTemplate<RdpSessionParameters> RdpConnectionTemplate =
             new ConnectionTemplate<RdpSessionParameters>(
                 SampleTransportParameters,
                 new RdpSessionParameters(RdpCredentials.Empty));

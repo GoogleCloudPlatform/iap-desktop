@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         public TSessionParameters Session { get; }
 
         public ConnectionTemplate(
-            TransportParameters transport, 
+            TransportParameters transport,
             TSessionParameters session)
         {
             this.Transport = transport.ExpectNotNull(nameof(transport));

@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Interop;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
 using Google.Solutions.Ssh;

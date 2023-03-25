@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
+using Google.Apis.Util;
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
@@ -40,7 +40,6 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
-using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -60,7 +59,6 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
-using Google.Apis.Util;
 
 #pragma warning disable CA1031 // Do not catch general exception types
 
