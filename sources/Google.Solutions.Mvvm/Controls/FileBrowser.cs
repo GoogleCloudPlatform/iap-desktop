@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Format;
@@ -175,7 +175,7 @@ namespace Google.Solutions.Mvvm.Controls
 
         public void Bind(IFileSystem fileSystem, IBindingContext bindingContext)
         {
-            fileSystem.ThrowIfNull(nameof(fileSystem));
+            fileSystem.ExpectNotNull(nameof(fileSystem));
 
             if (this.fileSystem != null)
             {
@@ -400,7 +400,7 @@ namespace Google.Solutions.Mvvm.Controls
                 BindableTreeView<IFileItem>.Node treeNode)
             {
                 this.Parent = parent;
-                this.TreeNode = treeNode.ThrowIfNull(nameof(treeNode));
+                this.TreeNode = treeNode.ExpectNotNull(nameof(treeNode));
             }
 
             public IEnumerable<string> Path

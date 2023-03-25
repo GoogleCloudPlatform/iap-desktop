@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public GithubAdapter(IExternalRestAdapter restAdapter)
         {
-            this.restAdapter = restAdapter.ThrowIfNull(nameof(restAdapter));
+            this.restAdapter = restAdapter.ExpectNotNull(nameof(restAdapter));
         }
 
         public async Task<IGitHubRelease> FindLatestReleaseAsync(

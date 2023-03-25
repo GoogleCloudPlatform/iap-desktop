@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public ProjectExplorer(IServiceProvider serviceProvider)
         {
-            serviceProvider.ThrowIfNull(nameof(serviceProvider));
+            serviceProvider.ExpectNotNull(nameof(serviceProvider));
 
             var window = ToolWindow
                 .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(serviceProvider);

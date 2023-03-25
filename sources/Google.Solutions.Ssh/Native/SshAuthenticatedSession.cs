@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Collections.Generic;
@@ -144,7 +144,7 @@ namespace Google.Solutions.Ssh.Native
             IEnumerable<EnvironmentVariable> environmentVariables = null)
         {
             this.Session.Handle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNull(term, nameof(term));
+            Precondition.ExpectNotNull(term, nameof(term));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(
                 term,

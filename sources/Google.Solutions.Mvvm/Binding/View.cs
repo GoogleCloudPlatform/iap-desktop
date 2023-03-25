@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Theme;
 using System;
 using System.Diagnostics;
@@ -145,7 +145,7 @@ namespace Google.Solutions.Mvvm.Binding
 
         internal ViewFactory(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
+            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
         }
 
         public Dialog<TView, TViewModel> CreateDialog(TViewModel viewModel)

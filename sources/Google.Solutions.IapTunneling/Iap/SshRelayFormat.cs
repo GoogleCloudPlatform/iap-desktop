@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 byte[] messageBuffer,
                 string sid)
             {
-                sid.ThrowIfNullOrEmpty(nameof(sid));
+                sid.ExpectNotEmpty(nameof(sid));
 
                 var sidBytes = Encoding.ASCII.GetBytes(sid);
                 var requiredSize = sizeof(ushort) + sizeof(uint) + (uint)sidBytes.Length;

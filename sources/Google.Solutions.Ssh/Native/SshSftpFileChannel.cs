@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
@@ -68,7 +68,7 @@ namespace Google.Solutions.Ssh.Native
         public uint Read(byte[] buffer)
         {
             this.fileHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNull(buffer, nameof(buffer));
+            Precondition.ExpectNotNull(buffer, nameof(buffer));
 
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -91,7 +91,7 @@ namespace Google.Solutions.Ssh.Native
         public void Write(byte[] buffer, int length)
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNull(buffer, nameof(buffer));
+            Precondition.ExpectNotNull(buffer, nameof(buffer));
 
             Debug.Assert(length <= buffer.Length);
 

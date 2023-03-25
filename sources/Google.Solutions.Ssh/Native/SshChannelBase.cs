@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
@@ -77,7 +77,7 @@ namespace Google.Solutions.Ssh.Native
             LIBSSH2_STREAM streamId = LIBSSH2_STREAM.NORMAL)
         {
             this.ChannelHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNull(buffer, nameof(buffer));
+            Precondition.ExpectNotNull(buffer, nameof(buffer));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
             {
@@ -110,7 +110,7 @@ namespace Google.Solutions.Ssh.Native
             LIBSSH2_STREAM streamId = LIBSSH2_STREAM.NORMAL)
         {
             this.ChannelHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNull(buffer, nameof(buffer));
+            Precondition.ExpectNotNull(buffer, nameof(buffer));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
             {

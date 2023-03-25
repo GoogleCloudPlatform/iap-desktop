@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Text;
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirec
 
         public DomainJoinService(Service<IComputeEngineAdapter> computeEngineAdapter)
         {
-            this.computeEngineAdapter = computeEngineAdapter.ThrowIfNull(nameof(computeEngineAdapter));
+            this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
         }
 
         //---------------------------------------------------------------------
@@ -143,9 +143,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirec
             NetworkCredential domainCredential,
             CancellationToken cancellationToken)
         {
-            domain.ThrowIfNullOrEmpty(nameof(domain));
-            domainCredential?.UserName.ThrowIfNull("username");
-            domainCredential?.Password.ThrowIfNull("password");
+            domain.ExpectNotEmpty(nameof(domain));
+            domainCredential?.UserName.ExpectNotNull("username");
+            domainCredential?.Password.ExpectNotNull("password");
 
             //
             // Swap existing startup scripts against the

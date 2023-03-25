@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public ViewBindingContext(IExceptionDialog exceptionDialog)
         {
-            this.exceptionDialog = exceptionDialog.ThrowIfNull(nameof(exceptionDialog));
+            this.exceptionDialog = exceptionDialog.ExpectNotNull(nameof(exceptionDialog));
         }
 
         //---------------------------------------------------------------------

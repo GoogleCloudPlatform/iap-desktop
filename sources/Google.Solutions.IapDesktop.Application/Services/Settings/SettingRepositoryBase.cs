@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using System;
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             RegistryKey machinePolicyKey,
             RegistryKey userPolicyKey) : base(settingsKey)
         {
-            Utilities.ThrowIfNull(settingsKey, nameof(settingsKey));
+            Precondition.ExpectNotNull(settingsKey, nameof(settingsKey));
 
             this.machinePolicyKey = machinePolicyKey;
             this.userPolicyKey = userPolicyKey;

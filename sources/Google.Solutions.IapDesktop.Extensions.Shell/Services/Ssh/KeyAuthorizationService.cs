@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
@@ -52,10 +52,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             IResourceManagerAdapter resourceManagerAdapter,
             IOsLoginService osLoginService)
         {
-            this.authorization = authorization.ThrowIfNull(nameof(authorization));
-            this.computeEngineAdapter = computeEngineAdapter.ThrowIfNull(nameof(computeEngineAdapter));
-            this.resourceManagerAdapter = resourceManagerAdapter.ThrowIfNull(nameof(resourceManagerAdapter));
-            this.osLoginService = osLoginService.ThrowIfNull(nameof(osLoginService));
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
+            this.computeEngineAdapter = computeEngineAdapter.ExpectNotNull(nameof(computeEngineAdapter));
+            this.resourceManagerAdapter = resourceManagerAdapter.ExpectNotNull(nameof(resourceManagerAdapter));
+            this.osLoginService = osLoginService.ExpectNotNull(nameof(osLoginService));
         }
 
         //---------------------------------------------------------------------
@@ -70,8 +70,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             KeyAuthorizationMethods allowedMethods,
             CancellationToken token)
         {
-            Utilities.ThrowIfNull(instance, nameof(instance));
-            Utilities.ThrowIfNull(key, nameof(key));
+            Precondition.ExpectNotNull(instance, nameof(instance));
+            Precondition.ExpectNotNull(key, nameof(key));
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
             {

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public Install(string baseKeyPath)
         {
-            this.BaseKeyPath = baseKeyPath.ThrowIfNull(nameof(baseKeyPath));
+            this.BaseKeyPath = baseKeyPath.ExpectNotNull(nameof(baseKeyPath));
 
             //
             // Create or amend version history.

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
     {
         public ThemeSettingsRepository(RegistryKey baseKey) : base(baseKey)
         {
-            Utilities.ThrowIfNull(baseKey, nameof(baseKey));
+            Precondition.ExpectNotNull(baseKey, nameof(baseKey));
         }
 
         protected override ThemeSettings LoadSettings(RegistryKey key)

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Text;
 using Newtonsoft.Json;
 using System;
@@ -73,8 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             string keyType,
             string key)
         {
-            Utilities.ThrowIfNullOrEmpty(keyType, nameof(keyType));
-            Utilities.ThrowIfNullOrEmpty(key, nameof(key));
+            Precondition.ExpectNotEmpty(keyType, nameof(keyType));
+            Precondition.ExpectNotEmpty(key, nameof(key));
 
             this.PosixUsername = posixUsername;
             this.KeyType = keyType;
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             string username)
             : base(posixUsername, keyType, key)
         {
-            Utilities.ThrowIfNullOrEmpty(username, nameof(username));
+            Precondition.ExpectNotEmpty(username, nameof(username));
 
             this.Email = username;
         }
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             PublicKeyMetadata metadata)
             : base(loginUsername, keyType, key)
         {
-            Utilities.ThrowIfNull(metadata, nameof(metadata));
+            Precondition.ExpectNotNull(metadata, nameof(metadata));
             Debug.Assert(metadata.Email.Contains("@"));
             Debug.Assert(metadata.ExpireOn.Kind == DateTimeKind.Utc);
 

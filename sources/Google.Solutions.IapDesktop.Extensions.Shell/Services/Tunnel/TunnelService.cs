@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
 
         public TunnelService(IAuthorization authorization)
         {
-            this.authorization = authorization.ThrowIfNull(nameof(authorization));
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
         }
 
         public Task<ITunnel> CreateTunnelAsync(

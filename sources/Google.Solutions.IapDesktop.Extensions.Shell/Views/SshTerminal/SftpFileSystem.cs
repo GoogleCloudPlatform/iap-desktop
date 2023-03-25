@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Mvvm.Shell;
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public SftpFileSystem(RemoteFileSystemChannel channel)
             : this((path) => channel.ListFilesAsync(path))
         {
-            channel.ThrowIfNull(nameof(channel));
+            channel.ExpectNotNull(nameof(channel));
         }
 
         //---------------------------------------------------------------------
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public async Task<ObservableCollection<FileBrowser.IFileItem>> ListFilesAsync(
             FileBrowser.IFileItem directory)
         {
-            directory.ThrowIfNull(nameof(directory));
+            directory.ExpectNotNull(nameof(directory));
             Debug.Assert(!directory.Type.IsFile);
 
             var remotePath = directory == this.Root

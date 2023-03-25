@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using System;
@@ -240,7 +240,7 @@ namespace Google.Solutions.Ssh.Native
             }
 
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(banner, nameof(banner));
+            Precondition.ExpectNotEmpty(banner, nameof(banner));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(banner))
             {
@@ -416,7 +416,7 @@ namespace Google.Solutions.Ssh.Native
             Action<string> handler)
         {
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNull(handler, nameof(handler));
+            Precondition.ExpectNotNull(handler, nameof(handler));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(mask))
             {

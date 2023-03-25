@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Native;
 using System;
 using System.Collections.Generic;
@@ -98,7 +98,7 @@ namespace Google.Solutions.Ssh
         public Task<IReadOnlyCollection<SshSftpFileInfo>> ListFilesAsync(
             string remotePath)
         {
-            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
+            Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));
 
             return this.Connection
                 .RunThrowingOperationAsync(c =>
@@ -120,9 +120,9 @@ namespace Google.Solutions.Ssh
             IProgress<uint> progress,
             CancellationToken cancellationToken)
         {
-            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
-            Utilities.ThrowIfNull(source, nameof(source));
-            Utilities.ThrowIfNull(progress, nameof(progress));
+            Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));
+            Precondition.ExpectNotNull(source, nameof(source));
+            Precondition.ExpectNotNull(progress, nameof(progress));
 
             Debug.Assert(source.CanRead);
 
@@ -166,9 +166,9 @@ namespace Google.Solutions.Ssh
             IProgress<uint> progress,
             CancellationToken cancellationToken)
         {
-            Utilities.ThrowIfNullOrEmpty(remotePath, nameof(remotePath));
-            Utilities.ThrowIfNull(target, nameof(target));
-            Utilities.ThrowIfNull(progress, nameof(progress));
+            Precondition.ExpectNotEmpty(remotePath, nameof(remotePath));
+            Precondition.ExpectNotNull(target, nameof(target));
+            Precondition.ExpectNotNull(progress, nameof(progress));
 
             Debug.Assert(target.CanWrite);
 

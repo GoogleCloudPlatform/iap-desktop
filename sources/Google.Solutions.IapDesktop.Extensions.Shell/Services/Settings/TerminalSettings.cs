@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -45,13 +45,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
 
         public TerminalSettingsRepository(RegistryKey baseKey) : base(baseKey)
         {
-            Utilities.ThrowIfNull(baseKey, nameof(baseKey));
+            Precondition.ExpectNotNull(baseKey, nameof(baseKey));
         }
 
         public TerminalSettingsRepository(Profile profile)
             : this(profile.SettingsKey.CreateSubKey("Terminal"))
         {
-            profile.ThrowIfNull(nameof(profile));
+            profile.ExpectNotNull(nameof(profile));
         }
 
         protected override TerminalSettings LoadSettings(RegistryKey key)

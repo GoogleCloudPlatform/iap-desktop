@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Threading;
 using System;
 using System.Diagnostics;
@@ -53,8 +53,8 @@ namespace Google.Solutions.Mvvm.Shell
             Uri source,
             Guid clientGuid)
         {
-            filePath.ThrowIfNull(nameof(filePath));
-            source.ThrowIfNull(nameof(source));
+            filePath.ExpectNotNull(nameof(filePath));
+            source.ExpectNotNull(nameof(source));
 
             Debug.Assert(source == null ||
                 source == DefaultSource ||

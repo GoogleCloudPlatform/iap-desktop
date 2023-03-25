@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using System;
@@ -53,7 +53,7 @@ namespace Google.Solutions.Ssh.Native
         public IReadOnlyCollection<SshSftpFileInfo> ListFiles(string path)
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(path, nameof(path));
+            Precondition.ExpectNotEmpty(path, nameof(path));
 
             var files = new LinkedList<SshSftpFileInfo>();
 
@@ -120,7 +120,7 @@ namespace Google.Solutions.Ssh.Native
             FilePermissions filePermissions)
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(path, nameof(path));
+            Precondition.ExpectNotEmpty(path, nameof(path));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(path))
             {
@@ -149,7 +149,7 @@ namespace Google.Solutions.Ssh.Native
         public void DeleteDirectory(string path)
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(path, nameof(path));
+            Precondition.ExpectNotEmpty(path, nameof(path));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(path))
             {
@@ -180,7 +180,7 @@ namespace Google.Solutions.Ssh.Native
             FilePermissions mode)
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(path, nameof(path));
+            Precondition.ExpectNotEmpty(path, nameof(path));
 
             using (SshTraceSources.Default.TraceMethod()
                 .WithParameters(path, flags, mode))
@@ -215,7 +215,7 @@ namespace Google.Solutions.Ssh.Native
         public void DeleteFile(string path)
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
-            Utilities.ThrowIfNullOrEmpty(path, nameof(path));
+            Precondition.ExpectNotEmpty(path, nameof(path));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(path))
             {

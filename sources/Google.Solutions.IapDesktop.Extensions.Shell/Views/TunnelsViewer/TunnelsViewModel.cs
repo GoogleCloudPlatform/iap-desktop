@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -70,8 +70,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
             IConfirmationDialog confirmationDialog,
             IEventService eventService)
         {
-            this.tunnelBrokerService = tunnelBrokerService.ThrowIfNull(nameof(tunnelBrokerService));
-            this.confirmationDialog = confirmationDialog.ThrowIfNull(nameof(confirmationDialog));
+            this.tunnelBrokerService = tunnelBrokerService.ExpectNotNull(nameof(tunnelBrokerService));
+            this.confirmationDialog = confirmationDialog.ExpectNotNull(nameof(confirmationDialog));
 
             // Keep the model up to date.
             eventService.BindHandler<TunnelOpenedEvent>(_ => RefreshTunnels());

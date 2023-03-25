@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System.Diagnostics;
 
 namespace Google.Solutions.Common.Locator
@@ -53,8 +53,8 @@ namespace Google.Solutions.Common.Locator
             string projectId,
             string resourceName)
         {
-            Utilities.ThrowIfNull(projectId, nameof(projectId));
-            Utilities.ThrowIfNull(resourceName, nameof(resourceName));
+            Precondition.ExpectNotNull(projectId, nameof(projectId));
+            Precondition.ExpectNotNull(resourceName, nameof(resourceName));
 
             Debug.Assert(!long.TryParse(projectId, out long _));
             Debug.Assert(!long.TryParse(resourceName, out long _));

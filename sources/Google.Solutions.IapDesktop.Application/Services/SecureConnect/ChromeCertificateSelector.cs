@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
         public static ChromeCertificateSelector Parse(string json)
         {
-            Utilities.ThrowIfNullOrEmpty(json, nameof(json));
+            Precondition.ExpectNotEmpty(json, nameof(json));
             return JsonConvert.DeserializeObject<ChromeCertificateSelector>(json);
         }
 

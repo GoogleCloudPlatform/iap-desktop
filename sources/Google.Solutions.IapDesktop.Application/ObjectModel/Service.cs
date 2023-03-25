@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         public Service(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
+            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
         }
 
         public TService GetInstance()

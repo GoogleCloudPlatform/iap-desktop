@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
         public static MetadataAuthorizedPublicKeySet FromMetadata(Metadata.ItemsData data)
         {
-            Utilities.ThrowIfNull(data, nameof(data));
+            Precondition.ExpectNotNull(data, nameof(data));
             if (data.Key != MetadataKey)
             {
                 throw new ArgumentException("Not a valid metadata key");

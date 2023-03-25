@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 
 namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
         public static ChromePolicyUrlPattern Parse(string pattern)
         {
-            Utilities.ThrowIfNullOrEmpty(pattern, nameof(pattern));
+            Precondition.ExpectNotEmpty(pattern, nameof(pattern));
 
             pattern = pattern.ToLower();
 

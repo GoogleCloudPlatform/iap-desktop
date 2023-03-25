@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
@@ -98,7 +98,7 @@ namespace Google.Solutions.Common.Diagnostics
 
             public ForwardingListener(TraceSource destination)
             {
-                this.destination = destination.ThrowIfNull(nameof(destination));
+                this.destination = destination.ExpectNotNull(nameof(destination));
             }
 
             public override void Flush() => this.destination.Flush();

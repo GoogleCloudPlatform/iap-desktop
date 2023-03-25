@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System;
@@ -125,9 +125,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
             Func<TContext, bool> isEnabledFunc)
             : base(text)
         {
-            this.serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
-            this.isAvailableFunc = isAvailableFunc.ThrowIfNull(nameof(isAvailableFunc));
-            this.isEnabledFunc = isEnabledFunc.ThrowIfNull(nameof(isEnabledFunc));
+            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
+            this.isAvailableFunc = isAvailableFunc.ExpectNotNull(nameof(isAvailableFunc));
+            this.isEnabledFunc = isEnabledFunc.ExpectNotNull(nameof(isEnabledFunc));
         }
 
         public override Task ExecuteAsync(TContext context)

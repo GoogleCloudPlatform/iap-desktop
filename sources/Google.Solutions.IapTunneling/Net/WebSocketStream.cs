@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapTunneling.Net
                 throw new ArgumentException("Web socket must be open");
             }
 
-            this.socket = socket.ThrowIfNull(nameof(socket));
+            this.socket = socket.ExpectNotNull(nameof(socket));
         }
 
         //---------------------------------------------------------------------

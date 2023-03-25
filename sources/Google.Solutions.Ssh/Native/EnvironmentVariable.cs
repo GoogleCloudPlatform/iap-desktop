@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 
 namespace Google.Solutions.Ssh.Native
@@ -32,7 +32,7 @@ namespace Google.Solutions.Ssh.Native
 
         internal EnvironmentVariable(string name, string value, bool required)
         {
-            Utilities.ThrowIfNullOrEmpty(name, nameof(name));
+            Precondition.ExpectNotEmpty(name, nameof(name));
 
             this.Name = name;
             this.Value = value;

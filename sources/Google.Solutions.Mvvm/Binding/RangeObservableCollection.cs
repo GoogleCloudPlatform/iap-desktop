@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -40,7 +40,7 @@ namespace Google.Solutions.Mvvm.Binding
 
         public void AddRange(IEnumerable<T> list)
         {
-            Utilities.ThrowIfNull(list, nameof(list));
+            Precondition.ExpectNotNull(list, nameof(list));
 
             suppressNotification = true;
 

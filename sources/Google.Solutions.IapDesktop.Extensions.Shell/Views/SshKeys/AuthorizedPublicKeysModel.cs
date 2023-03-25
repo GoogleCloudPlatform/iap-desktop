@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             IEnumerable<Item> items,
             IEnumerable<string> warnings)
         {
-            this.DisplayName = displayName.ThrowIfNull(nameof(displayName));
+            this.DisplayName = displayName.ExpectNotNull(nameof(displayName));
             this.Items = items.EnsureNotNull();
             this.Warnings = warnings.EnsureNotNull();
         }
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             Item item,
             CancellationToken cancellationToken)
         {
-            Utilities.ThrowIfNull(item, nameof(item));
+            Precondition.ExpectNotNull(item, nameof(item));
 
             if (item.AuthorizationMethod == KeyAuthorizationMethods.Oslogin)
             {
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
             Item item,
             CancellationToken cancellationToken)
         {
-            Utilities.ThrowIfNull(item, nameof(item));
+            Precondition.ExpectNotNull(item, nameof(item));
 
             if (item.AuthorizationMethod == KeyAuthorizationMethods.ProjectMetadata &&
                 item.Key is MetadataAuthorizedPublicKey projectMetadataKey)
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
                 KeyAuthorizationMethods method)
             {
                 Debug.Assert(method.IsSingleFlag());
-                this.Key = key.ThrowIfNull(nameof(key));
+                this.Key = key.ExpectNotNull(nameof(key));
                 this.AuthorizationMethod = method;
             }
         }

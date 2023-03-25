@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -138,9 +138,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             InstanceLocator instance,
             CancellationToken token)
         {
-            Utilities.ThrowIfNull(computeEngineAdapter, nameof(computeEngineAdapter));
-            Utilities.ThrowIfNull(resourceManagerAdapter, nameof(resourceManagerAdapter));
-            Utilities.ThrowIfNull(instance, nameof(instance));
+            Precondition.ExpectNotNull(computeEngineAdapter, nameof(computeEngineAdapter));
+            Precondition.ExpectNotNull(resourceManagerAdapter, nameof(resourceManagerAdapter));
+            Precondition.ExpectNotNull(instance, nameof(instance));
 
             //
             // Query metadata for instance and project in parallel.
@@ -167,8 +167,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             ProjectLocator project,
             CancellationToken token)
         {
-            Utilities.ThrowIfNull(computeEngineAdapter, nameof(computeEngineAdapter));
-            Utilities.ThrowIfNull(project, nameof(project));
+            Precondition.ExpectNotNull(computeEngineAdapter, nameof(computeEngineAdapter));
+            Precondition.ExpectNotNull(project, nameof(project));
 
             var projectDetails = await computeEngineAdapter.GetProjectAsync(
                     project.ProjectId,

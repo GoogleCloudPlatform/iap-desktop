@@ -47,6 +47,25 @@ namespace Google.Solutions.Common.Test.Util
         }
 
         //---------------------------------------------------------------------
+        // ExpectNotEmpty.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNullOrEmpty_ThenExpectNotEmptyThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => ((string)null).ExpectNotEmpty("test"));
+            Assert.Throws<ArgumentNullException>(
+                () => string.Empty.ExpectNotEmpty("test"));
+        }
+
+        [Test]
+        public void WhenNotEmpty_ThenExpectNotNullReturnsValue()
+        {
+            Assert.AreEqual("value", "value".ExpectNotEmpty("test"));
+        }
+
+        //---------------------------------------------------------------------
         // Expect.
         //---------------------------------------------------------------------
 

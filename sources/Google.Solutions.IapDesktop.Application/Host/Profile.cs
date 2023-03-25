@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 using System;
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             Install install,
             string name)
         {
-            install.ThrowIfNull(nameof(install));
+            install.ExpectNotNull(nameof(install));
             if (!IsValidProfileName(name))
             {
                 throw new ArgumentException("Invalid profile name");
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             Install install,
             string name)
         {
-            install.ThrowIfNull(nameof(install));
+            install.ExpectNotNull(nameof(install));
             if (name != null && !IsValidProfileName(name))
             {
                 throw new ArgumentException($"Invalid profile name: {name}");
@@ -211,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             Install install,
             string name)
         {
-            install.ThrowIfNull(nameof(install));
+            install.ExpectNotNull(nameof(install));
 
             using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
             {
@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
 
         public static IEnumerable<string> ListProfiles(Install install)
         {
-            install.ThrowIfNull(nameof(install));
+            install.ExpectNotNull(nameof(install));
 
             using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default))
             using (var profiles = hkcu.OpenSubKey(install.BaseKeyPath))

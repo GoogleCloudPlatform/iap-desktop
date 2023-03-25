@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -63,7 +63,7 @@ namespace Google.Solutions.Mvvm.Shell
             FileAttributes fileAttributes,
             IconFlags iconFlags)
         {
-            filePath.ThrowIfNull(nameof(filePath));
+            filePath.ExpectNotNull(nameof(filePath));
 
             //
             // NB. The file might not exist, so pass the

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -37,7 +37,7 @@ namespace Google.Solutions.Ssh.Format
         public SshWriter(Stream stream)
         {
             Debug.Assert(stream.CanWrite);
-            this.stream = stream.ThrowIfNull(nameof(stream));
+            this.stream = stream.ExpectNotNull(nameof(stream));
         }
 
         //---------------------------------------------------------------------

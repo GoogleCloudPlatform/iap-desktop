@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.Ssh.Auth;
@@ -86,8 +86,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             ISshKeyPair key,
             PosixAccount posixAccount)
         {
-            Utilities.ThrowIfNull(key, nameof(key));
-            Utilities.ThrowIfNull(posixAccount, nameof(posixAccount));
+            Precondition.ExpectNotNull(key, nameof(key));
+            Precondition.ExpectNotNull(posixAccount, nameof(posixAccount));
 
             Debug.Assert(IsValidUsername(posixAccount.Username));
 
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             bool useInstanceKeySet,
             IAuthorization authorization)
         {
-            Utilities.ThrowIfNull(key, nameof(key));
+            Precondition.ExpectNotNull(key, nameof(key));
 
             if (preferredUsername != null)
             {
@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             }
             else
             {
-                Utilities.ThrowIfNull(authorization, nameof(authorization));
+                Precondition.ExpectNotNull(authorization, nameof(authorization));
 
                 // 
                 // No preferred username provided, so derive one

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -75,14 +75,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             IJobService jobService)
             : base(jobService, tunnelBroker)
         {
-            this.window = window.ThrowIfNull(nameof(window));
-            this.authorization = authorization.ThrowIfNull(nameof(authorization));
-            this.projectModelService = projectModelService.ThrowIfNull(nameof(projectModelService));
-            this.settingsService = settingsService.ThrowIfNull(nameof(settingsService));
-            this.authorizedKeyService = authorizedKeyService.ThrowIfNull(nameof(authorizedKeyService));
-            this.keyStoreAdapter = keyStoreAdapter.ThrowIfNull(nameof(keyStoreAdapter));
-            this.sshSettingsRepository = sshSettingsRepository.ThrowIfNull(nameof(sshSettingsRepository));
-            this.jobService = jobService.ThrowIfNull(nameof(jobService));
+            this.window = window.ExpectNotNull(nameof(window));
+            this.authorization = authorization.ExpectNotNull(nameof(authorization));
+            this.projectModelService = projectModelService.ExpectNotNull(nameof(projectModelService));
+            this.settingsService = settingsService.ExpectNotNull(nameof(settingsService));
+            this.authorizedKeyService = authorizedKeyService.ExpectNotNull(nameof(authorizedKeyService));
+            this.keyStoreAdapter = keyStoreAdapter.ExpectNotNull(nameof(keyStoreAdapter));
+            this.sshSettingsRepository = sshSettingsRepository.ExpectNotNull(nameof(sshSettingsRepository));
+            this.jobService = jobService.ExpectNotNull(nameof(jobService));
         }
 
         //---------------------------------------------------------------------

@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -70,10 +71,10 @@ namespace Google.Solutions.IapDesktop.Application.Services
             ITaskDialog taskDialog,
             IClock clock)
         {
-            this.install = install.ThrowIfNull(nameof(install));
-            this.githubAdapter = githubAdapter.ThrowIfNull(nameof(githubAdapter));
-            this.taskDialog = taskDialog.ThrowIfNull(nameof(taskDialog));
-            this.clock = clock.ThrowIfNull(nameof(clock));
+            this.install = install.ExpectNotNull(nameof(install));
+            this.githubAdapter = githubAdapter.ExpectNotNull(nameof(githubAdapter));
+            this.taskDialog = taskDialog.ExpectNotNull(nameof(taskDialog));
+            this.clock = clock.ExpectNotNull(nameof(clock));
         }
 
         public bool IsUpdateCheckDue(DateTime lastCheck)

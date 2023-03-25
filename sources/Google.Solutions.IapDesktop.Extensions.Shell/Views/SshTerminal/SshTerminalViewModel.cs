@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
 using Google.Solutions.Common.Text;
@@ -103,9 +103,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             base.OnValidate();
 
-            this.Endpoint.ThrowIfNull(nameof(this.Endpoint));
-            this.AuthorizedKey.ThrowIfNull(nameof(this.AuthorizedKey));
-            this.ConnectionTimeout.ThrowIfNull(nameof(this.ConnectionTimeout));
+            this.Endpoint.ExpectNotNull(nameof(this.Endpoint));
+            this.AuthorizedKey.ExpectNotNull(nameof(this.AuthorizedKey));
+            this.ConnectionTimeout.ExpectNotNull(nameof(this.ConnectionTimeout));
         }
 
         //---------------------------------------------------------------------
