@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
@@ -44,6 +45,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
         private class AuthorizeViewModelWithMockSigninAdapter : AuthorizeViewModel
         {
             public Mock<ISignInAdapter> SignInAdapter = new Mock<ISignInAdapter>();
+
+            public AuthorizeViewModelWithMockSigninAdapter()
+                : base(new Mock<IInstall>().Object)
+            {
+            }
 
             protected override ISignInAdapter CreateSignInAdapter(BrowserPreference preference)
             {

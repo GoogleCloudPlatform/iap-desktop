@@ -41,13 +41,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
     {
         private CancellationTokenSource cancelCurrentSignin = null;
 
-        public AuthorizeViewModel()
+        public AuthorizeViewModel(IInstall install)
         {
             //
             // NB. Properties are access from a non-GUI thrad, so
             // they must be thread-safe.
             //
             this.WindowTitle = ObservableProperty.Build($"Sign in - {Install.FriendlyName}");
+            this.Version = ObservableProperty.Build($"Version {install.CurrentVersion}");
             this.Authorization = ObservableProperty.Build<IAuthorization>(null, this);
             this.IsWaitControlVisible = ObservableProperty.Build(false, this);
             this.IsSignOnControlVisible = ObservableProperty.Build(false, this);
@@ -116,6 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         //---------------------------------------------------------------------
 
         public ObservableProperty<string> WindowTitle { get; }
+        public ObservableProperty<string> Version { get; }
 
         public ObservableProperty<bool> IsWaitControlVisible { get; set; }
 

@@ -66,6 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             this.watermarkPictureBox = new System.Windows.Forms.PictureBox();
             this.gradient = new System.Windows.Forms.PictureBox();
             this.signInButton = new Google.Solutions.Mvvm.Controls.DropDownButton();
+            this.versionLabel = new System.Windows.Forms.Label();
             this.signInMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.watermarkPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gradient)).BeginInit();
@@ -190,11 +191,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             this.signInButton.UseVisualStyleBackColor = false;
             this.signInButton.Visible = false;
             // 
+            // versionLabel
+            // 
+            this.versionLabel.ForeColor = System.Drawing.Color.Gray;
+            this.versionLabel.Location = new System.Drawing.Point(231, 427);
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(100, 13);
+            this.versionLabel.TabIndex = 9;
+            this.versionLabel.Text = "(..)";
+            this.versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // AuthorizeView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(334, 451);
+            this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.headerLabel);
             this.Controls.Add(this.gradient);
             this.Controls.Add(this.introLabel);
@@ -231,5 +243,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
         private System.Windows.Forms.PictureBox gradient;
         private Mvvm.Controls.HeaderLabel headerLabel;
         private System.Windows.Forms.PictureBox watermarkPictureBox;
+        private System.Windows.Forms.Label versionLabel;
     }
 }

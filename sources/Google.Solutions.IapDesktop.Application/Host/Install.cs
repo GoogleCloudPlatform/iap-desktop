@@ -36,7 +36,26 @@ namespace Google.Solutions.IapDesktop.Application.Host
     /// in the registry. This history is used to distinguish between "fresh"
     /// instals and upgraded installs.
     /// </summary>
-    public class Install
+    public interface IInstall
+    {
+        /// <summary>
+        /// Currently installed and running version.
+        /// </summary>
+        Version CurrentVersion { get; }
+
+        /// <summary>
+        /// Version that was installed initially. This may be different from the
+        /// current version.
+        /// </summary>
+        Version InitialVersion { get; }
+
+        /// <summary>
+        /// Base registry key for profiles, etc.
+        /// </summary>
+        string BaseKeyPath { get; }
+    }
+
+    public class Install : IInstall
     {
         public const string FriendlyName = "IAP Desktop";
 
@@ -68,14 +87,8 @@ namespace Google.Solutions.IapDesktop.Application.Host
         // Public properties (based on registry data).
         //---------------------------------------------------------------------
 
-        /// <summary>
-        /// Currently installed and running version.
-        /// </summary>
         public Version CurrentVersion => assemblyVersion;
 
-        /// <summary>
-        /// Base registry key for profiles, etc.
-        /// </summary>
         public string BaseKeyPath { get; }
 
         public Install(string baseKeyPath)

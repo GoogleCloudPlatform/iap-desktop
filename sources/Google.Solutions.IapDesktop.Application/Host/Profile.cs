@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
             }
         }
 
-        public static IEnumerable<string> ListProfiles(Install install)
+        public static IEnumerable<string> ListProfiles(IInstall install)
         {
             install.ExpectNotNull(nameof(install));
 
