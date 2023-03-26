@@ -58,9 +58,13 @@ namespace Google.Solutions.Common.Diagnostics
                 text.Append("\n\n");
             }
 
+            var cpuArchitecture = Assembly.GetEntryAssembly()?.GetName().ProcessorArchitecture.ToString() ?? "unknown";
+            var processBitness = Environment.Is64BitProcess ? 64 : 32;
+
             text.Append($"Installed version: {GetType().Assembly.GetName().Version}\n");
-            text.Append($".NET Version: {ClrVersion.Version}\n");
+            text.Append($"Runtime Version: {ClrVersion.Version}\n");
             text.Append($"OS Version: {Environment.OSVersion}\n");
+            text.Append($"Architecture: {cpuArchitecture} ({processBitness} bit)");
 
             return text.ToString();
         }
