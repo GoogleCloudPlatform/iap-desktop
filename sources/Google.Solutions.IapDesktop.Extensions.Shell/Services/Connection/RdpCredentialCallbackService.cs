@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             this.restAdapter = restAdapter;
         }
 
-        public async Task<RdpCredentials> GetCredentialsAsync( // TODO: Test
+        public async Task<RdpCredentials> GetCredentialsAsync(
             Uri callbackUrl,
             CancellationToken cancellationToken)
         {
@@ -83,6 +83,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                     $"The credential callback endpoint at {callbackUrl} returned " +
                     $"an invalid result",
                     e);
+            }
+            catch (Exception e)
+            {
+                throw new CredentialCallbackException(
+                    $"Obtaining credentials from the callback endpoint at {callbackUrl} failed", e);
             }
         }
 
