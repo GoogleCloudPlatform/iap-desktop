@@ -36,6 +36,11 @@ namespace Google.Solutions.Common.Net
     public class RestClient : IDisposable
     {
         //
+        // Use a custom timeout (default is 100sec).
+        //
+        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(10);
+
+        //
         // Underlying HTTP client. We keep using the same client so
         // that we can benefit from the underlying connection pool.
         //
@@ -58,6 +63,8 @@ namespace Google.Solutions.Common.Net
             {
                 this.client = new HttpClient();
             }
+
+            this.client.Timeout = DefaultTimeout;
         }
 
         public RestClient(UserAgent userAgent) : this(userAgent, null)
@@ -108,20 +115,37 @@ namespace Google.Solutions.Common.Net
                         accessToken);
                 }
 
-                using (var response = await client.SendAsync(
-                    request,
-                    HttpCompletionOption.ResponseHeadersRead,
-                    cancellationToken).ConfigureAwait(false))
+                try
                 {
-                    response.EnsureSuccessStatusCode();
-
-                    var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-
-                    using (var reader = new StreamReader(stream))
-                    using (var jsonReader = new JsonTextReader(reader))
+                    using (var response = await this.client
+                        .SendAsync(
+                            request,
+                            HttpCompletionOption.ResponseHeadersRead,
+                            cancellationToken)
+                        .ConfigureAwait(false))
                     {
-                        return new JsonSerializer().Deserialize<TModel>(jsonReader);
+                        response.EnsureSuccessStatusCode();
+
+                        var stream = await response.Content
+                            .ReadAsStreamAsync()
+                            .ConfigureAwait(false);
+
+                        using (var reader = new StreamReader(stream))
+                        using (var jsonReader = new JsonTextReader(reader))
+                        {
+                            return new JsonSerializer().Deserialize<TModel>(jsonReader);
+                        }
                     }
+                }
+                catch (OperationCanceledException) 
+                    when (!cancellationToken.IsCancellationRequested)
+                {
+                    //
+                    // NB. SendAsync throws a TaskCanceledException (subclass of OperationCanceledException)
+                    // if a timeout occurs.
+                    //
+                    throw new TimeoutException(
+                        $"The request to {url} did not complete within the allotted time");
                 }
             }
         }

@@ -91,6 +91,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
         }
 
         [Test]
+        public void WhenServerRequestTimesOut_ThenGetCredentialsThrowsException()
+        {
+            var adapter = new Mock<IExternalRestAdapter>();
+            adapter
+                .Setup(a => a.GetAsync<RdpCredentialCallbackService.CredentialCallbackResponse>(
+                    SampleCallbackUrl,
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new TimeoutException());
+
+            var service = new RdpCredentialCallbackService(adapter.Object);
+
+            ExceptionAssert.ThrowsAggregateException<CredentialCallbackException>(
+                () => service.GetCredentialsAsync(SampleCallbackUrl, CancellationToken.None).Wait());
+        }
+
+        [Test]
         public async Task WhenServerReturnsResult_ThenGetCredentialsReturnsCredentials()
         {
             var adapter = new Mock<IExternalRestAdapter>();
