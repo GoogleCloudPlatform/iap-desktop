@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// Create a new (secondary) profile.
         /// </summary>
         public static Profile CreateProfile(
-            Install install,
+            IInstall install,
             string name)
         {
             install.ExpectNotNull(nameof(install));
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         /// is created automatically if it doesn't exist yet.
         /// </summary>
         public static Profile OpenProfile(
-            Install install,
+            IInstall install,
             string name)
         {
             install.ExpectNotNull(nameof(install));
@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Application.Host
         }
 
         public static void DeleteProfile(
-            Install install,
+            IInstall install,
             string name)
         {
             install.ExpectNotNull(nameof(install));

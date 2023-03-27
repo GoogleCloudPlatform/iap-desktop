@@ -755,7 +755,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         // isn't currently being used by another instance.
                         //
                         Profile.DeleteProfile(
-                            this.serviceProvider.GetService<Install>(),
+                            this.serviceProvider.GetService<IInstall>(),
                             profile.Name);
 
                         //
@@ -904,7 +904,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
                         using (var profile = Profile.CreateProfile(
-                            this.serviceProvider.GetService<Install>(),
+                            this.serviceProvider.GetService<IInstall>(),
                             dialog.ViewModel.ProfileName))
                         {
                             this.viewModel.LaunchInstanceWithProfile(profile.Name);
