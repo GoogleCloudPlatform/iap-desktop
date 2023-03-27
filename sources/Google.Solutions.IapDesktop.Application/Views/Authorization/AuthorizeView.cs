@@ -84,6 +84,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                 viewModel,
                 m => m.IsCancelButtonVisible,
                 bindingContext);
+            this.versionLabel.BindReadonlyObservableProperty(
+                c => c.Text,
+                viewModel,
+                m => m.Version,
+                bindingContext);
 
             //
             // Bind sign-in commands.

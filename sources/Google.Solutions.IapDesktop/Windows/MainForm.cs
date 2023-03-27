@@ -34,6 +34,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.About;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
+using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -181,10 +182,9 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             this.viewModel = new MainFormViewModel(
                 this,
-                this.serviceProvider.GetService<Install>(),
+                this.serviceProvider.GetService<IInstall>(),
                 this.serviceProvider.GetService<Profile>(),
                 this.serviceProvider.GetService<IAuthorization>(),
-                this.serviceProvider.GetService<ApplicationSettingsRepository>(),
                 this.themeService);
 
             this.BindProperty(
@@ -755,7 +755,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         // isn't currently being used by another instance.
                         //
                         Profile.DeleteProfile(
-                            this.serviceProvider.GetService<Install>(),
+                            this.serviceProvider.GetService<IInstall>(),
                             profile.Name);
 
                         //
@@ -904,7 +904,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
                         using (var profile = Profile.CreateProfile(
-                            this.serviceProvider.GetService<Install>(),
+                            this.serviceProvider.GetService<IInstall>(),
                             dialog.ViewModel.ProfileName))
                         {
                             this.viewModel.LaunchInstanceWithProfile(profile.Name);

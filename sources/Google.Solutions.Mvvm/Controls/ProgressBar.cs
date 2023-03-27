@@ -89,7 +89,7 @@ namespace Google.Solutions.Mvvm.Controls
                     this.timer = new Timer()
                     {
                         Interval = 50,
-                        Enabled = this.Visible
+                        Enabled = this.Visible && !this.DesignMode
                     };
                     this.timer.Tick += (_, __) =>
                     {
@@ -130,7 +130,7 @@ namespace Google.Solutions.Mvvm.Controls
                 // Only run the timer when the control is
                 // visible.
                 //
-                this.timer.Enabled = this.Visible;
+                this.timer.Enabled = this.Visible && !this.DesignMode;
             }
         }
     }

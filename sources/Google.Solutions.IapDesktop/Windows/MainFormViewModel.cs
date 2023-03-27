@@ -40,8 +40,7 @@ namespace Google.Solutions.IapDesktop.Windows
     internal class MainFormViewModel : ViewModelBase
     {
         private readonly IThemeService themeService;
-        private readonly ApplicationSettingsRepository applicationSettings;
-        private readonly Install install;
+        private readonly IInstall install;
         private readonly Profile profile;
         private readonly IAuthorization authorization;
 
@@ -58,17 +57,15 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public MainFormViewModel(
             Control view,
-            Install install,
+            IInstall install,
             Profile profile,
             IAuthorization authorization,
-            ApplicationSettingsRepository applicationSettings,
             IThemeService themeService)
         {
             this.View = view.ExpectNotNull(nameof(view));
             this.install = install.ExpectNotNull(nameof(install));
             this.profile = profile.ExpectNotNull(nameof(profile));
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
-            this.applicationSettings = applicationSettings.ExpectNotNull(nameof(applicationSettings));
             this.themeService = themeService.ExpectNotNull(nameof(themeService));
 
             this.ProfileStateCaption = $"{this.profile.Name}: {this.authorization.Email}";

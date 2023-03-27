@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         /// </summary>
         public const int DaysBetweenUpdateChecks = 10;
 
-        private readonly Install install;
+        private readonly IInstall install;
         private readonly IGithubAdapter githubAdapter;
         private readonly ITaskDialog taskDialog;
         private readonly IClock clock;
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         public Version InstalledVersion => this.install.CurrentVersion;
 
         public UpdateService(
-            Install install,
+            IInstall install,
             IGithubAdapter githubAdapter,
             ITaskDialog taskDialog,
             IClock clock)
