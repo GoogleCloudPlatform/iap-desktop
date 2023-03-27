@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                        "+ What's the observed behavior?\n\n" +
                        "+ Does the issue occur every time or only occasionally?\n\n" +
                        "\n" +
-                       "```\n" + report + "```";
+                       "```\n" + report + "\n```";
 
             Browser.Default.Navigate(
                 $"{BaseUrl}/issues/new?component={component}&template={template}&description={WebUtility.UrlEncode(body)}&format=MARKDOWN");
