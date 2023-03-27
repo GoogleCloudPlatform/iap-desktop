@@ -46,8 +46,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
         {
             public Mock<ISignInAdapter> SignInAdapter = new Mock<ISignInAdapter>();
 
+            public AuthorizeViewModelWithMockSigninAdapter(Mock<IInstall> install)
+                : base(install.Object)
+            {
+            }
+
             public AuthorizeViewModelWithMockSigninAdapter()
-                : base(new Mock<IInstall>().Object)
+                : this(new Mock<IInstall>())
             {
             }
 
@@ -73,6 +78,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authorization
             using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter())
             {
                 StringAssert.StartsWith("Sign in - ", viewModel.WindowTitle.Value);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Version.
+        //---------------------------------------------------------------------
+
+        public void Version()
+        {
+            var install = new Mock<IInstall>();
+            install.SetupGet(i => i.CurrentVersion).Returns(new Version(1, 2, 3, 4));
+            using (var viewModel = new AuthorizeViewModelWithMockSigninAdapter())
+            {
+                StringAssert.StartsWith("Version 1.2.3.4", viewModel.Version.Value);
             }
         }
 
