@@ -194,9 +194,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
             // versionLabel
             // 
             this.versionLabel.ForeColor = System.Drawing.Color.Gray;
-            this.versionLabel.Location = new System.Drawing.Point(231, 427);
+            this.versionLabel.Location = new System.Drawing.Point(208, 426);
             this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(100, 13);
+            this.versionLabel.Size = new System.Drawing.Size(120, 13);
             this.versionLabel.TabIndex = 9;
             this.versionLabel.Text = "(..)";
             this.versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
