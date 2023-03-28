@@ -172,13 +172,13 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                 };
                 this.TabSelectedActiveAccent2 = new TabPalette()
                 {
-                    Background = GetColor(xml, "Environment", "VizSurfaceSteelBlueDark", "Background"),
+                    Background = GetColor(xml, "Environment", "VizSurfacePlumDark", "Background"),
                     Text = this.TabSelectedActive.Text,
                     Button = this.TabSelectedActive.Button
                 };
                 this.TabSelectedActiveAccent3 = new TabPalette()
                 {
-                    Background = GetColor(xml, "Environment", "VizSurfacePlumDark", "Background"),
+                    Background = GetColor(xml, "Environment", "VizSurfaceGreenDark", "Background"),
                     Text = this.TabSelectedActive.Text,
                     Button = this.TabSelectedActive.Button
                 };

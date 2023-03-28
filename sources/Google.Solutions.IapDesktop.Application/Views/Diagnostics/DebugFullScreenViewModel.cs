@@ -20,7 +20,9 @@
 //
 
 using Google.Solutions.Mvvm.Binding;
+using System.ComponentModel.DataAnnotations;
 using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
@@ -29,6 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         public DebugFullScreenViewModel()
         {
             this.SizeLabel = ObservableProperty.Build(string.Empty);
+            this.TabAccentColor = ObservableProperty.Build(AccentColor.None);
         }
 
         //---------------------------------------------------------------------
@@ -36,6 +39,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         //---------------------------------------------------------------------
 
         public ObservableProperty<string> SizeLabel { get; }
+
+        public ObservableProperty<AccentColor> TabAccentColor { get; }
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -51,6 +56,24 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                     $"ClientSize: {window.ClientSize}\n" +
                     $"DisplayRectangle:{window.DisplayRectangle}";
             }
+        }
+
+        public enum AccentColor
+        {
+            [Display(Name = "None")]
+            None = TabAccentColorIndex.None,
+
+            [Display(Name = "Hightlight 1")]
+            Hightlight1 = TabAccentColorIndex.Hightlight1,
+
+            [Display(Name = "Hightlight 2")]
+            Hightlight2 = TabAccentColorIndex.Hightlight2,
+
+            [Display(Name = "Hightlight 3")]
+            Hightlight3 = TabAccentColorIndex.Hightlight3,
+
+            [Display(Name = "Hightlight 4")]
+            Hightlight4 = TabAccentColorIndex.Hightlight4,
         }
     }
 }

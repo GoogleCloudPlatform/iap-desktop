@@ -53,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.allScreensCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox = new System.Windows.Forms.GroupBox();
             this.sizeLabel = new System.Windows.Forms.Label();
+            this.tabAccentColorComboBox = new Google.Solutions.Mvvm.Controls.BindableComboBox();
             this.groupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -97,15 +98,26 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.sizeLabel.TabIndex = 3;
             this.sizeLabel.Text = "(Size)";
             // 
-            // DebugFullScreenPane
+            // tabAccentColorComboBox
+            // 
+            this.tabAccentColorComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabAccentColorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.tabAccentColorComboBox.FormattingEnabled = true;
+            this.tabAccentColorComboBox.Location = new System.Drawing.Point(621, 12);
+            this.tabAccentColorComboBox.Name = "tabAccentColorComboBox";
+            this.tabAccentColorComboBox.Size = new System.Drawing.Size(167, 21);
+            this.tabAccentColorComboBox.TabIndex = 4;
+            // 
+            // DebugFullScreenView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.tabAccentColorComboBox);
             this.Controls.Add(this.groupBox);
             this.Controls.Add(this.allScreensCheckBox);
             this.Controls.Add(this.fullScreenToggleButton);
-            this.Name = "DebugFullScreenPane";
+            this.Name = "DebugFullScreenView";
             this.Text = "DebugFullScreenPane";
             this.groupBox.ResumeLayout(false);
             this.groupBox.PerformLayout();
@@ -120,5 +132,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.CheckBox allScreensCheckBox;
         private System.Windows.Forms.GroupBox groupBox;
         private System.Windows.Forms.Label sizeLabel;
+        private Mvvm.Controls.BindableComboBox tabAccentColorComboBox;
     }
 }
