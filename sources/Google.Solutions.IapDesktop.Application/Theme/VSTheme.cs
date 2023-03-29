@@ -164,6 +164,30 @@ namespace Google.Solutions.IapDesktop.Application.Theme
                     MouseOverTabBackground = GetColor(xml, "ProjectDesigner", "MouseOverCategoryTab", "Background"),
                     MouseOverTabText = GetColor(xml, "ProjectDesigner", "MouseOverCategoryTab", "Foreground"),
                 };
+                this.TabSelectedActiveAccent1 = new TabPalette()
+                {
+                    Background = GetColor(xml, "Environment", "VizSurfaceDarkGoldDark", "Background"),
+                    Text = this.TabSelectedActive.Text,
+                    Button = this.TabSelectedActive.Button
+                };
+                this.TabSelectedActiveAccent2 = new TabPalette()
+                {
+                    Background = GetColor(xml, "Environment", "VizSurfacePlumDark", "Background"),
+                    Text = this.TabSelectedActive.Text,
+                    Button = this.TabSelectedActive.Button
+                };
+                this.TabSelectedActiveAccent3 = new TabPalette()
+                {
+                    Background = GetColor(xml, "Environment", "VizSurfaceGreenDark", "Background"),
+                    Text = this.TabSelectedActive.Text,
+                    Button = this.TabSelectedActive.Button
+                };
+                this.TabSelectedActiveAccent4 = new TabPalette()
+                {
+                    Background = GetColor(xml, "Environment", "VizSurfaceBrownDark", "Background"),
+                    Text = this.TabSelectedActive.Text,
+                    Button = this.TabSelectedActive.Button
+                };
             }
 
             protected static Color GetColor(

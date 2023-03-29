@@ -24,6 +24,7 @@ using Google.Solutions.Mvvm.Binding;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
@@ -53,6 +54,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             //
             this.groupBox.SizeChanged += (ctl, __) => viewModel.OnWindowSizeChanged(((Control)ctl).FindForm());
             this.groupBox.ParentChanged += (ctl, __) => viewModel.OnWindowSizeChanged(((Control)ctl).FindForm());
+
+            this.tabAccentColorComboBox.BindObservableProperty(
+                viewModel.TabAccentColor,
+                bindingContext);
+
+            viewModel.TabAccentColor.PropertyChanged += (_, __) =>
+            {
+                this.DockHandler.TabAccentColor = 
+                    (TabAccentColorIndex)viewModel.TabAccentColor.Value;
+            };
         }
 
         //---------------------------------------------------------------------
