@@ -64,6 +64,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         private readonly IMainWindow mainForm;
 
 
+        private void OnSessionConnected(SessionViewBase session)
+        {
+            //
+            // Add context menu.
+            //
+            Debug.Assert(session.ContextCommands == null);
+            session.ContextCommands = this.SessionMenu;
+        }
+
         public InstanceSessionBroker(IServiceProvider serviceProvider)
         {
             this.mainForm = serviceProvider.GetService<IMainWindow>();
@@ -153,8 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             await session.ConnectAsync()
                 .ConfigureAwait(false);
 
-            Debug.Assert(session.ContextCommands == null);
-            session.ContextCommands = this.SessionMenu;
+            OnSessionConnected(session);
 
             return session;
         }
@@ -177,8 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
             session.Connect();
 
-            Debug.Assert(session.ContextCommands == null);
-            session.ContextCommands = this.SessionMenu;
+            OnSessionConnected(session);
 
             return session;
         }
