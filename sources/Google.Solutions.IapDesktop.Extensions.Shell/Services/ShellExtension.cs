@@ -52,7 +52,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IWin32Window window;
-        private readonly ICommandContainer<ISession> sessionCommands;
 
         private static CommandState GetToolbarCommandStateWhenRunningWindowsInstanceRequired(
             IProjectModelNode node)
@@ -115,27 +114,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             var mainForm = serviceProvider.GetService<IMainWindow>();
 
             //
-            // Session menu.
-            //
-            // On pop-up of the menu, query the active session and use it as context.
-            //
-            this.sessionCommands = mainForm.AddMenu(
-                "&Session", 1,
-                () => this.serviceProvider
-                    .GetService<IGlobalSessionBroker>()
-                    .ActiveSession);
-
-            //
             // Let this extension handle all URL activations.
             //
-            var sessionCommands = new SessionCommands();
             var connectCommands = new ConnectCommands(
                 serviceProvider.GetService<UrlCommands>(),
                 serviceProvider.GetService<Service<IRdpConnectionService>>(),
                 serviceProvider.GetService<Service<ISshConnectionService>>(),
                 serviceProvider.GetService<Service<IProjectModelService>>(),
-                serviceProvider.GetService<Service<IInstanceSessionBroker>>(),
-                this.sessionCommands);
+                serviceProvider.GetService<Service<IInstanceSessionBroker>>());
             Debug.Assert(serviceProvider
                 .GetService<UrlCommands>()
                 .LaunchRdpUrl.QueryState(new IapRdpUrl(
@@ -223,15 +209,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             // Session menu.
             //
-
-            this.sessionCommands.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
-            this.sessionCommands.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
-            this.sessionCommands.AddCommand(connectCommands.DuplicateSession);
-            this.sessionCommands.AddCommand(sessionCommands.Disconnect);
-            this.sessionCommands.AddSeparator();
-            this.sessionCommands.AddCommand(sessionCommands.DownloadFiles);
-            this.sessionCommands.AddCommand(sessionCommands.ShowSecurityScreen);
-            this.sessionCommands.AddCommand(sessionCommands.ShowTaskManager);
+            var sessionCommands = new SessionCommands();
+            var menu = serviceProvider.GetService<IInstanceSessionBroker>().SessionMenu;
+            menu.AddCommand(sessionCommands.EnterFullScreenOnSingleScreen);
+            menu.AddCommand(sessionCommands.EnterFullScreenOnAllScreens);
+            menu.AddCommand(connectCommands.DuplicateSession);
+            menu.AddCommand(sessionCommands.Disconnect);
+            menu.AddSeparator();
+            menu.AddCommand(sessionCommands.DownloadFiles);
+            menu.AddCommand(sessionCommands.ShowSecurityScreen);
+            menu.AddCommand(sessionCommands.ShowTaskManager);
         }
     }
 }

@@ -38,7 +38,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     /// </summary>
     internal class ConnectInstanceCommand : ConnectInstanceCommandBase<IProjectModelNode>
     {
-        private readonly ICommandContainer<ISession> sessionContextMenu;
         private readonly Service<IRdpConnectionService> rdpConnectionService;
         private readonly Service<ISshConnectionService> sshConnectionService;
         private readonly Service<IInstanceSessionBroker> sessionBroker;
@@ -50,13 +49,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
         public ConnectInstanceCommand(
             string text,
-            ICommandContainer<ISession> sessionContextMenu,
             Service<IRdpConnectionService> rdpConnectionService,
             Service<ISshConnectionService> sshConnectionService,
             Service<IInstanceSessionBroker> sessionBroker)
             : base(text)
         {
-            this.sessionContextMenu = sessionContextMenu;
             this.rdpConnectionService = rdpConnectionService;
             this.sshConnectionService = sshConnectionService;
             this.sessionBroker = sessionBroker;
@@ -130,16 +127,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             }
 
             Debug.Assert(session != null);
-
-            if (session != null &&
-                session is SessionViewBase sessionPane &&
-                sessionPane.ContextCommands == null)
-            {
-                //
-                // Use commands from Session menu as context menu.
-                //
-                sessionPane.ContextCommands = this.sessionContextMenu;
-            }
         }
     }
 }

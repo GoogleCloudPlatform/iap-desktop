@@ -89,8 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Service<IRdpConnectionService>(serviceProvider.Object),
                 new Service<ISshConnectionService>(serviceProvider.Object),
                 new Service<IProjectModelService>(serviceProvider.Object),
-                new Service<IInstanceSessionBroker>(serviceProvider.Object),
-                new Mock<ICommandContainer<ISession>>().Object);
+                new Service<IInstanceSessionBroker>(serviceProvider.Object));
         }
 
         //---------------------------------------------------------------------

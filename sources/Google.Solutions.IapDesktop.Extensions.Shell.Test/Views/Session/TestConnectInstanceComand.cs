@@ -76,7 +76,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             return new ConnectInstanceCommand(
                 "&test",
-                new Mock<ICommandContainer<ISession>>().Object,
                 new Service<IRdpConnectionService>(serviceProvider.Object),
                 new Service<ISshConnectionService>(serviceProvider.Object),
                 new Service<IInstanceSessionBroker>(serviceProvider.Object))
