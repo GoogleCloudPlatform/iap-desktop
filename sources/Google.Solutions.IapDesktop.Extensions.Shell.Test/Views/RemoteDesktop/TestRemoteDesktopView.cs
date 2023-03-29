@@ -85,7 +85,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                             TransportParameters.TransportType.IapTunnel,
                             this.SampleLocator,
                             new IPEndPoint(IPAddress.Loopback, 1)),
-                        new RdpSessionParameters(RdpCredentials.Empty)
+                        new RdpSessionParameters(
+                            RdpSessionParameters.ParameterSources.Inventory,
+                            RdpCredentials.Empty)
                         {
                             ConnectionTimeout = TimeSpan.FromSeconds(5)
                         })))
@@ -109,7 +111,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                             TransportParameters.TransportType.IapTunnel,
                             this.SampleLocator,
                             new IPEndPoint(IPAddress.Loopback, 135)),// That one will be listening, but it is RPC, not RDP.
-                        new RdpSessionParameters(RdpCredentials.Empty))))
+                        new RdpSessionParameters(
+                            RdpSessionParameters.ParameterSources.Inventory, 
+                            RdpCredentials.Empty))))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
@@ -133,6 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 await credential))
             {
                 var parameters = new RdpSessionParameters(
+                    RdpSessionParameters.ParameterSources.Inventory, 
                     new RdpCredentials(
                         "wrong",
                         null,
@@ -194,6 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 await credential))
             {
                 var parameters = new RdpSessionParameters(
+                    RdpSessionParameters.ParameterSources.Inventory,
                     new RdpCredentials(
                         windowsCredentials.UserName,
                         windowsCredentials.Domain,
@@ -249,10 +255,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 await credential))
             {
                 var parameters = new RdpSessionParameters(
-                     new RdpCredentials(
-                         windowsCredentials.UserName,
-                         windowsCredentials.Domain,
-                         windowsCredentials.SecurePassword));
+                    RdpSessionParameters.ParameterSources.Inventory,
+                    new RdpCredentials(
+                        windowsCredentials.UserName,
+                        windowsCredentials.Domain,
+                        windowsCredentials.SecurePassword));
 
                 var broker = new InstanceSessionBroker(serviceProvider);
 
@@ -300,6 +307,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 await credential))
             {
                 var parameters = new RdpSessionParameters(
+                    RdpSessionParameters.ParameterSources.Inventory,
                     new RdpCredentials(
                         windowsCredentials.UserName,
                         windowsCredentials.Domain,

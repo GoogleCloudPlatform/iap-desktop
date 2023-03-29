@@ -115,6 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                     .ConfigureAwait(true);
 
                 var parameters = new RdpSessionParameters(
+                    RdpSessionParameters.ParameterSources.Inventory, 
                     new RdpCredentials(
                         credentials.UserName,
                         credentials.Domain,
