@@ -38,6 +38,7 @@ namespace Google.Solutions.Mvvm.Binding
 
             this.IsDirty = new ObservableFunc<bool>(
                 () => this.Sheets.Any(s => s.ViewModel.IsDirty.Value));
+            this.WindowTitle = ObservableProperty.Build("Properties");
 
             this.ApplyCommand = ObservableCommand.Build(
                 "&Apply",
@@ -69,6 +70,8 @@ namespace Google.Solutions.Mvvm.Binding
         //---------------------------------------------------------------------
 
         internal IObservableProperty<bool> IsDirty { get; }
+
+        public ObservableProperty<string> WindowTitle { get; }
 
         //---------------------------------------------------------------------
         // Commands.
