@@ -61,7 +61,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         private static readonly ConnectionTemplate<RdpSessionParameters> RdpConnectionTemplate =
             new ConnectionTemplate<RdpSessionParameters>(
                 SampleTransportParameters,
-                new RdpSessionParameters(RdpCredentials.Empty));
+                new RdpSessionParameters(
+                    RdpSessionParameters.ParameterSources.Inventory, 
+                    RdpCredentials.Empty));
 
         private static readonly ConnectionTemplate<SshSessionParameters> SshConnectionTemplate =
             new ConnectionTemplate<SshSessionParameters>(

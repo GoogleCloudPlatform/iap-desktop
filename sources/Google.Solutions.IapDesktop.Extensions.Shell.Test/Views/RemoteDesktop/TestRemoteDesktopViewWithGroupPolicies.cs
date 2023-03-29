@@ -61,6 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 .ConfigureAwait(true);
 
             return new RdpSessionParameters(
+                RdpSessionParameters.ParameterSources.Inventory, 
                 new RdpCredentials(
                     windowsCredentials.UserName,
                     windowsCredentials.Domain,

@@ -53,7 +53,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                     TransportParameters.TransportType.IapTunnel,
                     SampleLocator,
                     new IPEndPoint(IPAddress.Loopback, 1234)),
-                new RdpSessionParameters(RdpCredentials.Empty));
+                new RdpSessionParameters(
+                    RdpSessionParameters.ParameterSources.Inventory, 
+                    RdpCredentials.Empty));
 
         //---------------------------------------------------------------------
         // ExecuteAsync.

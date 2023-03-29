@@ -32,6 +32,7 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 {
@@ -60,9 +61,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     [ServiceCategory(typeof(ISessionBroker))]
     public class InstanceSessionBroker : IInstanceSessionBroker
     {
+        private const TabAccentColorIndex AccentColorForUrlBasedSessions 
+            = TabAccentColorIndex.Hightlight2;
+
         private readonly IServiceProvider serviceProvider;
         private readonly IMainWindow mainForm;
-
 
         private void OnSessionConnected(SessionViewBase session)
         {
@@ -181,8 +184,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             window.ViewModel.Parameters = template.Session;
 
             var session = window.Bind();
-            window.Show();
 
+            //
+            // Apply accent color if the session was initiated from a URL.
+            //
+            if (template.Session.Sources.HasFlag(RdpSessionParameters.ParameterSources.Url))
+            {
+                session.DockHandler.TabAccentColor = AccentColorForUrlBasedSessions;
+            }
+
+            window.Show();
             session.Connect();
 
             OnSessionConnected(session);

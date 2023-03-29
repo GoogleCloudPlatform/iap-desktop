@@ -109,6 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                 .ConfigureAwait(false);
             Assert.IsNotNull(template);
 
+            Assert.AreEqual(RdpSessionParameters.ParameterSources.Inventory, template.Session.Sources);
             Assert.IsTrue(IPAddress.IsLoopback(template.Transport.Endpoint.Address));
             Assert.AreEqual("existinguser", template.Session.Credentials.User);
             Assert.AreEqual("", template.Session.Credentials.Password.AsClearText());
@@ -151,6 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                 .ConfigureAwait(false);
             Assert.IsNotNull(template);
 
+            Assert.AreEqual(RdpSessionParameters.ParameterSources.Inventory, template.Session.Sources);
             Assert.IsTrue(IPAddress.IsLoopback(template.Transport.Endpoint.Address));
             Assert.AreEqual("existinguser", template.Session.Credentials.User);
             Assert.AreEqual("password", template.Session.Credentials.Password.AsClearText());
@@ -199,6 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                 .ConfigureAwait(false);
             Assert.IsNotNull(template);
 
+            Assert.AreEqual(RdpSessionParameters.ParameterSources.Url, template.Session.Sources);
             Assert.IsTrue(IPAddress.IsLoopback(template.Transport.Endpoint.Address));
             Assert.IsNull(template.Session.Credentials.User);
 
@@ -247,6 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                 .ConfigureAwait(false);
             Assert.IsNotNull(template);
 
+            Assert.AreEqual(RdpSessionParameters.ParameterSources.Url, template.Session.Sources);
             Assert.IsTrue(IPAddress.IsLoopback(template.Transport.Endpoint.Address));
             Assert.AreEqual("john doe", template.Session.Credentials.User);
 
@@ -306,6 +310,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                 .ConfigureAwait(false);
             Assert.IsNotNull(template);
 
+            Assert.AreEqual(
+                RdpSessionParameters.ParameterSources.Inventory | RdpSessionParameters.ParameterSources.Url, 
+                template.Session.Sources);
             Assert.IsTrue(IPAddress.IsLoopback(template.Transport.Endpoint.Address));
             Assert.AreEqual("john doe", template.Session.Credentials.User);
 
@@ -376,7 +383,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
             var template = await service
                 .PrepareConnectionAsync(url)
                 .ConfigureAwait(false);
+
             Assert.IsNotNull(template);
+            Assert.AreEqual(RdpSessionParameters.ParameterSources.Url, template.Session.Sources);
             Assert.AreEqual("user", template.Session.Credentials.User);
             Assert.AreEqual("domain", template.Session.Credentials.Domain);
             Assert.AreEqual("password", template.Session.Credentials.Password.AsClearText());

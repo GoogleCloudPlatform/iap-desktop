@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Security;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
@@ -32,6 +33,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
     public class RdpSessionParameters
     {
         internal static readonly int DefaultTimeoutInSeconds = 30;
+
+        /// <summary>
+        /// Source of these parameters.
+        /// </summary>
+        public ParameterSources Sources { get; }
 
         public RdpCredentials Credentials { get; set; }
 
@@ -54,9 +60,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
 
         public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; } = RdpUserAuthenticationBehavior._Default;
 
-        public RdpSessionParameters(RdpCredentials credentials)
+        public RdpSessionParameters(
+            ParameterSources sources,
+            RdpCredentials credentials)
         {
             this.Credentials = credentials.ExpectNotNull(nameof(credentials));
+            this.Sources = sources;
+        }
+
+        [Flags]
+        public enum ParameterSources
+        {
+            /// <summary>
+            /// One or more parameter is sourced from a iap-rdp:/// URL.
+            /// </summary>
+            Url = 1,
+
+            /// <summary>
+            ///One or more parameter is sourced from the inventory.
+            /// </summary>
+            Inventory = 2
         }
     }
 
@@ -94,6 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
             }
         }
     }
+
 
     //-------------------------------------------------------------------------
     // Enums.

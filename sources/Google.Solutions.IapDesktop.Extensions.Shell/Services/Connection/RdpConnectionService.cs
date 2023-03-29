@@ -75,6 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
         }
 
         private async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(
+            RdpSessionParameters.ParameterSources sources,
             InstanceLocator instance,
             InstanceConnectionSettings settings)
         {
@@ -86,10 +87,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                     timeout)
                 .ConfigureAwait(false);
 
-            var rdpParameters = new RdpSessionParameters(new RdpCredentials(
-                settings.RdpUsername.StringValue,
-                settings.RdpDomain.StringValue,
-                (SecureString)settings.RdpPassword.Value))
+            var rdpParameters = new RdpSessionParameters(
+                sources, 
+                new RdpCredentials(
+                    settings.RdpUsername.StringValue,
+                    settings.RdpDomain.StringValue,
+                    (SecureString)settings.RdpPassword.Value))
             {
                 ConnectionTimeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue),
 
@@ -154,6 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             }
 
             var template = await PrepareConnectionAsync(
+                    RdpSessionParameters.ParameterSources.Inventory,
                     vmNode.Instance,
                     (InstanceConnectionSettings)settings.TypedCollection)
                 .ConfigureAwait(true);
@@ -175,6 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 
         public async Task<ConnectionTemplate<RdpSessionParameters>> PrepareConnectionAsync(IapRdpUrl url)
         {
+            RdpSessionParameters.ParameterSources sources;
             InstanceConnectionSettings settings;
             var existingNode = await this.projectModelService
                 .GetNodeAsync(url.Instance, CancellationToken.None)
@@ -191,16 +196,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                 // Apply parameters from URL on top.
                 //
                 settings.ApplySettingsFromUrl(url);
+
+                sources = RdpSessionParameters.ParameterSources.Inventory
+                    | RdpSessionParameters.ParameterSources.Url;
             }
             else
             {
+                //
+                // We don't have that VM in the inventory, all we have is the URL.
+                //
                 settings = InstanceConnectionSettings.FromUrl(url);
+                sources = RdpSessionParameters.ParameterSources.Url;
             }
 
             if (url.TryGetParameter("CredentialCallbackUrl", out string callbackUrlRaw) &&
                 Uri.TryCreate(callbackUrlRaw, UriKind.Absolute, out var callbackUrl))
             {
                 var template = await PrepareConnectionAsync(
+                        sources,
                         url.Instance,
                         settings)
                     .ConfigureAwait(true);
@@ -235,6 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                     .ConfigureAwait(true);
 
                 return await PrepareConnectionAsync(
+                        sources,
                         url.Instance,
                         settings)
                     .ConfigureAwait(true);
