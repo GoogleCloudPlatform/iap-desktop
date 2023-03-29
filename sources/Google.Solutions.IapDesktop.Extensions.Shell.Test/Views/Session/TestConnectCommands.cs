@@ -89,8 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 new Service<IRdpConnectionService>(serviceProvider.Object),
                 new Service<ISshConnectionService>(serviceProvider.Object),
                 new Service<IProjectModelService>(serviceProvider.Object),
-                new Service<IInstanceSessionBroker>(serviceProvider.Object),
-                new Mock<ICommandContainer<ISession>>().Object);
+                new Service<IInstanceSessionBroker>(serviceProvider.Object));
         }
 
         //---------------------------------------------------------------------
@@ -123,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.Connect(RdpConnectionTemplate))
+                .Setup(s => s.ConnectRdpSession(RdpConnectionTemplate))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
             var urlCommands = new UrlCommands();
@@ -224,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.Connect(RdpConnectionTemplate))
+                .Setup(s => s.ConnectRdpSession(RdpConnectionTemplate))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
             var commands = CreateConnectCommands(
@@ -257,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectAsync(SshConnectionTemplate))
+                .Setup(s => s.ConnectSshSessionAsync(SshConnectionTemplate))
                 .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
 
             var commands = CreateConnectCommands(
@@ -361,7 +360,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.Connect(RdpConnectionTemplate))
+                .Setup(s => s.ConnectRdpSession(RdpConnectionTemplate))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
             var commands = CreateConnectCommands(
@@ -394,7 +393,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectAsync(SshConnectionTemplate))
+                .Setup(s => s.ConnectSshSessionAsync(SshConnectionTemplate))
                 .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
 
             var commands = CreateConnectCommands(
@@ -499,7 +498,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.Connect(RdpConnectionTemplate))
+                .Setup(s => s.ConnectRdpSession(RdpConnectionTemplate))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
 
             var commands = CreateConnectCommands(
@@ -605,7 +604,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectAsync(SshConnectionTemplate))
+                .Setup(s => s.ConnectSshSessionAsync(SshConnectionTemplate))
                 .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
 
             var commands = CreateConnectCommands(
@@ -687,7 +686,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectAsync(SshConnectionTemplate))
+                .Setup(s => s.ConnectSshSessionAsync(SshConnectionTemplate))
                 .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
 
             var commands = CreateConnectCommands(

@@ -21,7 +21,9 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
+using Moq;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,7 +53,10 @@ namespace Google.Solutions.Testing.Application.Views
             Func<TContext> queryCurrentContextFunc)
             where TContext : class
         {
-            throw new NotImplementedException();
+            return new CommandContainer<TContext>(
+                ToolStripItemDisplayStyle.Text, 
+                new Mock<IContextSource<TContext>>().Object,
+                new Mock<IBindingContext>().Object);
         }
 
         public void Minimize()

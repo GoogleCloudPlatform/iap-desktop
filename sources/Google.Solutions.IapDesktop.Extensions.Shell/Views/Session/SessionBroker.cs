@@ -27,7 +27,9 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
+using Google.Solutions.Mvvm.Binding.Commands;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -38,31 +40,57 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         /// <summary>
         /// Create a new SSH session.
         /// </summary>
-        Task<ISshTerminalSession> ConnectAsync(
-            ConnectionTemplate<SshSessionParameters> template); // TODO: Rename method
+        Task<ISshTerminalSession> ConnectSshSessionAsync(
+            ConnectionTemplate<SshSessionParameters> template);
 
         /// <summary>
         /// Create a new RDP session.
         /// </summary>
-        IRemoteDesktopSession Connect(
+        IRemoteDesktopSession ConnectRdpSession(
             ConnectionTemplate<RdpSessionParameters> template);
+
+        /// <summary>
+        /// Command menu for sessions, exposed in the main menu
+        /// and as context menu.
+        /// </summary>
+        ICommandContainer<ISession> SessionMenu { get; }
     }
 
     [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
     [ServiceCategory(typeof(ISessionBroker))]
     public class InstanceSessionBroker : IInstanceSessionBroker
     {
-
         private readonly IServiceProvider serviceProvider;
         private readonly IMainWindow mainForm;
+
+
+        private void OnSessionConnected(SessionViewBase session)
+        {
+            //
+            // Add context menu.
+            //
+            Debug.Assert(session.ContextCommands == null);
+            session.ContextCommands = this.SessionMenu;
+        }
 
         public InstanceSessionBroker(IServiceProvider serviceProvider)
         {
             this.mainForm = serviceProvider.GetService<IMainWindow>();
             this.serviceProvider = serviceProvider;
 
+            //
             // NB. The ServiceCategory attribute causes this class to be 
             // announced to the global connection broker.
+            //
+
+            //
+            // Register Session menu.
+            //
+            // On pop-up of the menu, query the active session and use it as context.
+            //
+            this.SessionMenu = this.mainForm.AddMenu(
+                "&Session", 1,
+                () => this.ActiveSession);
         }
 
         //---------------------------------------------------------------------
@@ -114,29 +142,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         // IInstanceSessionBroker.
         //---------------------------------------------------------------------
 
-        public async Task<ISshTerminalSession> ConnectAsync(
+        public ICommandContainer<ISession> SessionMenu { get; }
+
+        public async Task<ISshTerminalSession> ConnectSshSessionAsync(
             ConnectionTemplate<SshSessionParameters> template)
         {
-            var window = ToolWindow.GetWindow<SshTerminalView, SshTerminalViewModel>(this.serviceProvider);
+            var window = ToolWindow.GetWindow<SshTerminalView, SshTerminalViewModel>(
+                this.serviceProvider);
+
             window.ViewModel.Instance = template.Transport.Instance;
             window.ViewModel.Endpoint = template.Transport.Endpoint;
             window.ViewModel.AuthorizedKey = template.Session.AuthorizedKey;
             window.ViewModel.Language = template.Session.Language;
             window.ViewModel.ConnectionTimeout = template.Session.ConnectionTimeout;
 
-            var pane = window.Bind();
+            var session = window.Bind();
             window.Show();
 
-            await pane.ConnectAsync()
+            await session.ConnectAsync()
                 .ConfigureAwait(false);
 
-            return pane;
+            OnSessionConnected(session);
+
+            return session;
         }
 
-        public IRemoteDesktopSession Connect(
+        public IRemoteDesktopSession ConnectRdpSession(
             ConnectionTemplate<RdpSessionParameters> template)
         {
-            var window = ToolWindow.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(this.serviceProvider);
+            var window = ToolWindow.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(
+                this.serviceProvider);
+
             window.ViewModel.Instance = template.Transport.Instance;
             window.ViewModel.Server = IPAddress.IsLoopback(template.Transport.Endpoint.Address)
                 ? "localhost"
@@ -144,12 +180,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             window.ViewModel.Port = (ushort)template.Transport.Endpoint.Port;
             window.ViewModel.Parameters = template.Session;
 
-            var pane = window.Bind();
+            var session = window.Bind();
             window.Show();
 
-            pane.Connect();
+            session.Connect();
 
-            return pane;
+            OnSessionConnected(session);
+
+            return session;
         }
     }
 }

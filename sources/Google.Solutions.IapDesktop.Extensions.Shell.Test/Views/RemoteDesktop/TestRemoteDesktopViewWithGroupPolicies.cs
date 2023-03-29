@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             var parameters = await CreateSessionParametersAsync(instanceLocator)
                 .ConfigureAwait(true);
 
-            return broker.Connect(
+            return broker.ConnectRdpSession(
                 new ConnectionTemplate<RdpSessionParameters>(
                     new TransportParameters(
                         TransportParameters.TransportType.IapTunnel,
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 var broker = new InstanceSessionBroker(serviceProvider);
 
                 await AssertRaisesEventAsync<SessionAbortedEvent>(
-                    () => broker.Connect(
+                    () => broker.ConnectRdpSession(
                         new ConnectionTemplate<RdpSessionParameters>(
                             new TransportParameters(
                                 TransportParameters.TransportType.IapTunnel,
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                 parameters.NetworkLevelAuthentication = RdpNetworkLevelAuthentication.Disabled;
 
                 var broker = new InstanceSessionBroker(serviceProvider);
-                var session = broker.Connect(
+                var session = broker.ConnectRdpSession(
                     new ConnectionTemplate<RdpSessionParameters>(
                         new TransportParameters(
                             TransportParameters.TransportType.IapTunnel,

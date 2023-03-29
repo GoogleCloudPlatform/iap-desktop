@@ -40,8 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             Service<IRdpConnectionService> rdpConnectionService,
             Service<ISshConnectionService> sshConnectionService,
             Service<IProjectModelService> modelService,
-            Service<IInstanceSessionBroker> sessionBroker,
-            ICommandContainer<ISession> sessionContextMenu)
+            Service<IInstanceSessionBroker> sessionBroker)
         {
             //
             // Install command for launching URLs.
@@ -52,7 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
             this.ToolbarActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
-                sessionContextMenu,
                 rdpConnectionService,
                 sshConnectionService,
                 sessionBroker)
@@ -65,7 +63,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             };
             this.ContextMenuActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
-                sessionContextMenu,
                 rdpConnectionService,
                 sshConnectionService,
                 sessionBroker)
@@ -78,7 +75,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             };
             this.ContextMenuConnectRdpAsUser = new ConnectInstanceCommand(
                 "Connect &as user...",
-                sessionContextMenu,
                 rdpConnectionService,
                 sshConnectionService,
                 sessionBroker)
@@ -91,7 +87,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             };
             this.ContextMenuConnectSshInNewTerminal = new ConnectInstanceCommand(
                 "Connect in &new terminal",
-                sessionContextMenu,
                 rdpConnectionService,
                 sshConnectionService,
                 sessionBroker)
