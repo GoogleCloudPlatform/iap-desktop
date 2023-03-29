@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             ISession nullSession;
             var rdpSessionBroker = serviceProvider.AddMock<IInstanceSessionBroker>();
             rdpSessionBroker
-                .Setup(s => s.Connect(RdpConnectionTemplate))
+                .Setup(s => s.ConnectRdpSession(RdpConnectionTemplate))
                 .Returns(new Mock<IRemoteDesktopSession>().Object);
             rdpSessionBroker
                 .Setup(s => s.TryActivate(SampleLocator, out nullSession))

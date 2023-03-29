@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
                 var session = this.sessionBroker
                     .GetInstance()
-                    .Connect(template);
+                    .ConnectRdpSession(template);
 
                 Debug.Assert(session != null);
             }

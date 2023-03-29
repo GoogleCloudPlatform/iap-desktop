@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 var broker = new InstanceSessionBroker(serviceProvider);
                 IRemoteDesktopSession session = null;
                 await AssertRaisesEventAsync<SessionStartedEvent>(
-                        () => session = (RemoteDesktopView)broker.Connect(template))
+                        () => session = (RemoteDesktopView)broker.ConnectRdpSession(template))
                     .ConfigureAwait(true);
 
                 Assert.IsNull(this.ExceptionShown);

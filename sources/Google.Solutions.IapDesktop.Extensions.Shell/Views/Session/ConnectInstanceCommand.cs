@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
                 session = this.sessionBroker
                     .GetInstance()
-                    .Connect(template);
+                    .ConnectRdpSession(template);
             }
             else if (instanceNode.IsSshSupported())
             {
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
                 session = await this.sessionBroker
                     .GetInstance()
-                    .ConnectAsync(template)
+                    .ConnectSshSessionAsync(template)
                     .ConfigureAwait(true);
             }
 

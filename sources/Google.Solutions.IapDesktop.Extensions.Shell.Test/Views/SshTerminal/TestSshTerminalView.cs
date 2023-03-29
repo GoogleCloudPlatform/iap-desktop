@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 async () =>
                 {
                     pane = (SshTerminalView)await broker
-                        .ConnectAsync(template)
+                        .ConnectSshSessionAsync(template)
                         .ConfigureAwait(true);
                 })
                 .ConfigureAwait(true);
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     TimeSpan.FromSeconds(10)));
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectAsync(template))
+                () => broker.ConnectSshSessionAsync(template))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     TimeSpan.FromSeconds(10)));
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectAsync(template))
+                () => broker.ConnectSshSessionAsync(template))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
@@ -282,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     TimeSpan.FromSeconds(10)));
 
             await AssertRaisesEventAsync<SessionAbortedEvent>(
-                () => broker.ConnectAsync(template))
+                () => broker.ConnectSshSessionAsync(template))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(MetadataKeyAuthenticationFailedException), this.ExceptionShown);

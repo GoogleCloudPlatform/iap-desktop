@@ -40,13 +40,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         /// <summary>
         /// Create a new SSH session.
         /// </summary>
-        Task<ISshTerminalSession> ConnectAsync(
-            ConnectionTemplate<SshSessionParameters> template); // TODO: Rename method
+        Task<ISshTerminalSession> ConnectSshSessionAsync(
+            ConnectionTemplate<SshSessionParameters> template);
 
         /// <summary>
         /// Create a new RDP session.
         /// </summary>
-        IRemoteDesktopSession Connect(
+        IRemoteDesktopSession ConnectRdpSession(
             ConnectionTemplate<RdpSessionParameters> template);
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
         public ICommandContainer<ISession> SessionMenu { get; }
 
-        public async Task<ISshTerminalSession> ConnectAsync(
+        public async Task<ISshTerminalSession> ConnectSshSessionAsync(
             ConnectionTemplate<SshSessionParameters> template)
         {
             var window = ToolWindow.GetWindow<SshTerminalView, SshTerminalViewModel>(
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             return session;
         }
 
-        public IRemoteDesktopSession Connect(
+        public IRemoteDesktopSession ConnectRdpSession(
             ConnectionTemplate<RdpSessionParameters> template)
         {
             var window = ToolWindow.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(
