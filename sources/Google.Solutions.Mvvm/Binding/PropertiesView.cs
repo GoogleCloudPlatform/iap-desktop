@@ -41,6 +41,12 @@ namespace Google.Solutions.Mvvm.Binding
 
         public void Bind(PropertiesViewModel viewModel, IBindingContext bindingContext)
         {
+            this.BindReadonlyObservableProperty(
+                c => c.Text,
+                viewModel,
+                m => m.WindowTitle,
+                bindingContext);
+
             //
             // Bind commands.
             //

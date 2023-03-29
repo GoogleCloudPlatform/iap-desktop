@@ -80,6 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 dialog.ViewModel.AddSheet(new DebugOptionsSheet(), new DebugOptionsSheetViewModel());
 #endif
 
+                dialog.ViewModel.WindowTitle.Value = "Options";
                 return dialog.ShowDialog(parent);
             }
         }
