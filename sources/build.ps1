@@ -32,7 +32,7 @@ ${env:__BUILD_ENV_INITIALIZED} = "1"
 
 $MsBuildCandidates = `
     "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe",
-    "C:\VS\MSBuild\Current\Bin\"
+    "c:\VS\MSBuild\Current\Bin\"
 
 $Msbuild = $MsBuildCandidates | Resolve-Path  -ErrorAction Ignore | Select-Object -ExpandProperty Path -Last 1
 if ($Msbuild)
