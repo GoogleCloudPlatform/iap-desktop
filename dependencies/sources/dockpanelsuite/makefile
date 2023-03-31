@@ -27,7 +27,7 @@ DOCKPANELSUITE_TAG = Release_3.0.6
 DOCKPANELSUITE_URL = https://github.com/dockpanelsuite/dockpanelsuite.git
 DOCKPANELSUITE_VERSION = 3.0.6.$(TAG)
 
-MSBUILD_PROPERTIES=Configuration=$(CONFIGURATION);Platform=Any CPU;TargetFrameworkVersion=4.0;OutputPath=bin\$(CONFIGURATION);AllowUnsafeBlocks=true
+MSBUILD_PROPERTIES=Configuration=$(CONFIGURATION);Platform=Any CPU;TargetFrameworkProfile=;TargetFrameworkVersion=4.6.2;OutputPath=bin\$(CONFIGURATION);AllowUnsafeBlocks=true
 
 default: package
 
