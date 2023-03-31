@@ -68,7 +68,7 @@ $(MAKEDIR)\obj\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nup
 
 	msbuild \
 		/t:Restore;Build \
-		"/p:Configuration=$(CONFIGURATION);Platform=Any CPU;AssemblyName=vtnetcore;Version=$(VTNETCORE_VERSION);OutputPath=bin\$(CONFIGURATION)" \
+		"/p:Configuration=$(CONFIGURATION);TargetFrameworks=net462;TargetFrameworkVersion=v4.6.2;Platform=Any CPU;AssemblyName=vtnetcore;Version=$(VTNETCORE_VERSION);OutputPath=bin\$(CONFIGURATION)" \
 		"$(MAKEDIR)\obj\VtNetCore\VtNetCore.csproj"
 
 	cd $(MAKEDIR)
