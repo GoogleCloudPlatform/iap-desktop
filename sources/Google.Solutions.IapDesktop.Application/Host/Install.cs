@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Net;
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
 using Microsoft.Win32;
 using System;

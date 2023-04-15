@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Apis.Client;
-using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;

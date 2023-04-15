@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Format;
 using Google.Solutions.Common.Util;
 using System;
 using System.Diagnostics;

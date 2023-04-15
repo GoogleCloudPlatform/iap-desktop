@@ -44,12 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Diagnostics\BugReport.cs" />
     <Compile Include="Diagnostics\ClrVersion.cs" />
     <Compile Include="Diagnostics\DumpObjectExtensions.cs" />
     <Compile Include="Diagnostics\SkipCodeCoverageAttribute.cs" />
     <Compile Include="Diagnostics\TraceCallScope.cs" />
     <Compile Include="Diagnostics\TraceSourceExtensions.cs" />
+    <Compile Include="Format\BigEndian.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Interop\ComReference.cs" />
     <Compile Include="Interop\CoTaskMemAllocSafeHandle.cs" />
@@ -57,9 +57,7 @@
     <Compile Include="Interop\HRESULT.cs" />
     <Compile Include="Interop\LocalAllocSafeHandle.cs" />
     <Compile Include="Interop\WindowsFilename.cs" />
-    <Compile Include="Net\HttpClientHandlerExtensions.cs" />
     <Compile Include="Text\IAsyncReader.cs" />
-    <Compile Include="Net\UserAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommonTraceSources.cs" />
     <Compile Include="Security\SecureStringExtensions.cs" />

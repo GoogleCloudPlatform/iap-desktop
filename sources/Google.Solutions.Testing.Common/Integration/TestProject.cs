@@ -25,7 +25,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Iam.v1;
 using Google.Apis.IAMCredentials.v1;
 using Google.Apis.Services;
-using Google.Solutions.Common.Net;
+using Google.Solutions.Apis.Client;
 using System;
 using System.Linq;
 using System.Net;

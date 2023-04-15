@@ -35,6 +35,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Apis;
+using Google.Solutions.Apis.Compute;
 
 namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {

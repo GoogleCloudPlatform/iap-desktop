@@ -19,15 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using NUnit.Framework;
 using System;
 using System.Reflection;
 
-namespace Google.Solutions.Common.Test.Diagnostics
+namespace Google.Solutions.IapDesktop.Application.Test.Diagnostics
 {
     [TestFixture]
-    public class TestBugReport : CommonFixtureBase
+    public class TestBugReport
     {
         [Test]
         public void WhenExceptionIsNull_ThenToStringContainsVersionDetails()

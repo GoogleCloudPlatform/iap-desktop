@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CertificateUtil.cs" />
+    <Compile Include="Diagnostics\TestBugReport.cs" />
     <Compile Include="Host\TestInstall.cs" />
     <Compile Include="Host\TestProfile.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />

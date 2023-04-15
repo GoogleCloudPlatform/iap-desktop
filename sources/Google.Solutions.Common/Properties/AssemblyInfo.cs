@@ -22,11 +22,11 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Common")]
-[assembly: AssemblyDescription("Library providing common functionality")]
+[assembly: AssemblyTitle("Google.Solutions.Common")]
+[assembly: AssemblyDescription("Base class library")]
 [assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright © 2023")]
 [assembly: AssemblyTrademark("Google LLC")]
 
 [assembly: AssemblyVersion("1.0.1.0")]

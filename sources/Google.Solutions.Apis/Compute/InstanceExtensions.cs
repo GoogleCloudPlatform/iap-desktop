@@ -25,7 +25,7 @@ using Google.Solutions.Common.Util;
 using System.Linq;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Application.Data
+namespace Google.Solutions.Apis.Compute
 {
     public static class InstanceExtensions
     {

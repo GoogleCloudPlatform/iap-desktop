@@ -25,7 +25,6 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Newtonsoft.Json;
