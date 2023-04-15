@@ -218,7 +218,7 @@ namespace Google.Solutions.Testing.Application.Views
             var username = "test" + Guid.NewGuid().ToString().Substring(0, 4);
             var credentialAdapter = new WindowsCredentialService(
                 new ComputeEngineAdapter(
-                    TestProject.GetAdminCredential()));
+                    TestProject.GetAdminCredential().ToAuthorization()));
 
             return await credentialAdapter
                 .CreateWindowsCredentialsAsync(

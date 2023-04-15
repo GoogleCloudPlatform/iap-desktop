@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
+using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;
@@ -56,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var service = new InventoryService(
-                new ComputeEngineAdapter(await credential));
+                new ComputeEngineAdapter(await credential.ToAuthorization()));
 
             var result = await service
                 .GetInstanceInventoryAsync(
@@ -75,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
         {
             var instanceRef = await testInstance;
             var service = new InventoryService(
-                new ComputeEngineAdapter(await credential));
+                new ComputeEngineAdapter(await credential.ToAuthorization()));
 
             var info = await service
                 .GetInstanceInventoryAsync(instanceRef, CancellationToken.None)
@@ -94,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
         {
             var instanceRef = await testInstance;
             var service = new InventoryService(
-                new ComputeEngineAdapter(await credential));
+                new ComputeEngineAdapter(await credential.ToAuthorization()));
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.GetInstanceInventoryAsync(
@@ -115,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
             var service = new InventoryService(
-                new ComputeEngineAdapter(await credential));
+                new ComputeEngineAdapter(await credential.ToAuthorization()));
 
             var info = await service
                 .ListProjectInventoryAsync(
@@ -136,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
             var service = new InventoryService(
-                new ComputeEngineAdapter(await credential));
+                new ComputeEngineAdapter(await credential.ToAuthorization()));
 
             var info = await service
                 .ListProjectInventoryAsync(
@@ -156,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
         {
             var instanceRef = await testInstance;
             var service = new InventoryService(
-                new ComputeEngineAdapter(await credential));
+                new ComputeEngineAdapter(await credential.ToAuthorization()));
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListProjectInventoryAsync(
@@ -178,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
             var service = new InventoryService(
-                new ComputeEngineAdapter(await credential));
+                new ComputeEngineAdapter(await credential.ToAuthorization()));
 
             var info = await service
                 .ListZoneInventoryAsync(
@@ -199,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
             // Make sure there is at least one instance.
             var instanceRef = await testInstance;
             var service = new InventoryService(
-                new ComputeEngineAdapter(await credential));
+                new ComputeEngineAdapter(await credential.ToAuthorization()));
 
             var info = await service
                 .ListZoneInventoryAsync(
@@ -219,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Invent
         {
             var instanceRef = await testInstance;
             var service = new InventoryService(
-                new ComputeEngineAdapter(await credential));
+                new ComputeEngineAdapter(await credential.ToAuthorization()));
 
             ExceptionAssert.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListZoneInventoryAsync(

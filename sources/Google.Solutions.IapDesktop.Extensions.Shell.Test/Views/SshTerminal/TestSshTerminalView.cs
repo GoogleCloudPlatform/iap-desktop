@@ -42,6 +42,7 @@ using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Auth;
+using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Application.Views;
 using Google.Solutions.Testing.Common.Integration;
@@ -112,8 +113,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
             var keyAdapter = new KeyAuthorizationService(
                 authorization.Object,
-                new ComputeEngineAdapter(credential),
-                new ResourceManagerAdapter(credential),
+                new ComputeEngineAdapter(credential.ToAuthorization()),
+                new ResourceManagerAdapter(credential.ToAuthorization()),
                 new Mock<IOsLoginService>().Object);
 
             var authorizedKey = await keyAdapter.AuthorizeKeyAsync(

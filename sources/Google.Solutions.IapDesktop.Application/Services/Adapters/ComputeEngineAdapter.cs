@@ -55,29 +55,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Ctor.
         //---------------------------------------------------------------------
 
-        private ComputeEngineAdapter(
-            ICredential credential,
-            IDeviceEnrollment deviceEnrollment)
+        public ComputeEngineAdapter(IAuthorization authorization)
         {
-            credential.ExpectNotNull(nameof(credential));
+            authorization.ExpectNotNull(nameof(authorization));
 
             this.service = new ComputeService(
-                new AuthorizedClientInitializer(
-                    credential,
-                    deviceEnrollment,
-                    MtlsBaseUri));
-        }
-
-        public ComputeEngineAdapter(ICredential credential)
-            : this(credential, null)
-        {
-            // This constructor should only be used for test cases
-            Debug.Assert(Install.IsExecutingTests);
-        }
-
-        public ComputeEngineAdapter(IAuthorization authorization)
-            : this(authorization.Credential, authorization.DeviceEnrollment)
-        {
+                new AuthorizedClientInitializer(authorization, MtlsBaseUri));
         }
 
         //---------------------------------------------------------------------
