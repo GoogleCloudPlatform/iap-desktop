@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                     It.IsAny<CancellationToken>()))
                 .Throws(new GoogleApiException("mock", "mock")
                 {
-                    Error = new Apis.Requests.RequestError()
+                    Error = new Google.Apis.Requests.RequestError()
                     {
                         Code = 412
                     }

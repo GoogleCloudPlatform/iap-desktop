@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\TestRestClient.cs" />
     <Compile Include="Compute\TestMetadataExtensions.cs" />
     <Compile Include="Locator\TestAccessLevelLocator.cs" />
     <Compile Include="Locator\TestDiskTypeLocator.cs" />
@@ -79,7 +80,7 @@
     <Compile Include="Locator\TestNodeTypeLocator.cs" />
     <Compile Include="Locator\TestProjectLocator.cs" />
     <Compile Include="Locator\TestZoneLocator.cs" />
-    <Compile Include="Requests\TestRequestExtensions.cs" />
+    <Compile Include="Client\TestRequestExtensions.cs" />
     <Compile Include="Compute\TestResourceMetadataExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

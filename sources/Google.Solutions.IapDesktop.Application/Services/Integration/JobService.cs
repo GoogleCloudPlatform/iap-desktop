@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Apis;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using System;

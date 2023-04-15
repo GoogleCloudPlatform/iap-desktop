@@ -63,6 +63,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiTraceSources.cs" />
+    <Compile Include="Client\RestClient.cs" />
+    <Compile Include="Diagnostics\TraceSourceLogger.cs" />
     <Compile Include="GoogleApiExceptionExtensions.cs" />
     <Compile Include="Compute\MetadataExtensions.cs" />
     <Compile Include="Locator\AccessLevelLocator.cs" />
@@ -80,7 +83,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Locator\ZoneLocator.cs" />
-    <Compile Include="Requests\RequestExtensions.cs" />
+    <Compile Include="Client\RequestExtensions.cs" />
     <Compile Include="Compute\ResourceMetadataExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

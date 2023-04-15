@@ -20,10 +20,11 @@
 //
 
 using Google.Apis.Logging;
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.Common.Diagnostics
+namespace Google.Solutions.Apis.Diagnostics
 {
     /// <summary>
     /// Adapter class to allow Google API libraries to log to a TraceSource.

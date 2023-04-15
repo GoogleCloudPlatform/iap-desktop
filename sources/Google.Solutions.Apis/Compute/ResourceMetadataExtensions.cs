@@ -21,7 +21,6 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Apis.Requests;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Apis.Locator;
@@ -29,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Apis.Client;
 
 namespace Google.Solutions.Apis.Compute
 {

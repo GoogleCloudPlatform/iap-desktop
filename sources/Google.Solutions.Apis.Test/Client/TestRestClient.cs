@@ -19,7 +19,9 @@
 // under the License.
 //
 
+using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Net;
+using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -28,7 +30,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Test.Net
+namespace Google.Solutions.Apis.Test.Client
 {
     [TestFixture]
     public class TestRestClient : CommonFixtureBase

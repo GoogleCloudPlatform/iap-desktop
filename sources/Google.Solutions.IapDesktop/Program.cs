@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.Apis;
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
@@ -74,7 +75,7 @@ namespace Google.Solutions.IapDesktop
 
         private static readonly TraceSource[] Traces = new[]
         {
-            CommonTraceSources.Google,
+            ApiTraceSources.Google,
             CommonTraceSources.Default,
             IapTraceSources.Default,
             SshTraceSources.Default,

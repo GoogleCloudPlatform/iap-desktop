@@ -20,7 +20,9 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
@@ -31,7 +33,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Net
+namespace Google.Solutions.Apis.Client
 {
     public class RestClient : IDisposable
     {

@@ -30,7 +30,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Apis.Requests
+namespace Google.Solutions.Apis.Client
 {
     public static class RequestExtensions
     {
