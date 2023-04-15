@@ -19,11 +19,12 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Reflection;
 using System.Text;
 
-namespace Google.Solutions.Common.Diagnostics
+namespace Google.Solutions.IapDesktop.Application.Diagnostics
 {
     public class BugReport
     {

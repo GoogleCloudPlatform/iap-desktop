@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Diagnostics;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters

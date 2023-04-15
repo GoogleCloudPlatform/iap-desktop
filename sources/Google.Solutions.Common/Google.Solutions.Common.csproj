@@ -44,7 +44,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Diagnostics\BugReport.cs" />
     <Compile Include="Diagnostics\ClrVersion.cs" />
     <Compile Include="Diagnostics\DumpObjectExtensions.cs" />
     <Compile Include="Diagnostics\SkipCodeCoverageAttribute.cs" />
