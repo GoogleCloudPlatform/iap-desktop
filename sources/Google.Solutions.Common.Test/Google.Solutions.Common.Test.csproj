@@ -71,7 +71,6 @@
     <Compile Include="Interop\TestWindowsFilename.cs" />
     <Compile Include="Interop\TestGlobalAllocSafeHandle.cs" />
     <Compile Include="Interop\TestLocalAllocSafeHandle.cs" />
-    <Compile Include="Net\TestUserAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\TestSecureStringExtensions.cs" />
     <Compile Include="Text\TestStringExtensions.cs" />

@@ -22,7 +22,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.Common.Net
+namespace Google.Solutions.Apis.Client
 {
     public class UserAgent
     {

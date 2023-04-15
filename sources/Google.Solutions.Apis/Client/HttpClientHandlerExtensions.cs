@@ -25,7 +25,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.Common.Net
+namespace Google.Solutions.Apis.Client
 {
     public static class HttpClientHandlerExtensions
     {

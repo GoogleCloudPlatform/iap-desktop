@@ -22,7 +22,6 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Common.Net;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Collections.Generic;
@@ -32,6 +31,7 @@ using System.Net.WebSockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Apis.Client;
 
 namespace Google.Solutions.IapTunneling.Iap
 {

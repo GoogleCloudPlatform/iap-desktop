@@ -19,14 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Net;
+using Google.Solutions.Apis.Client;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Common.Test.Net
+namespace Google.Solutions.Apis.Test.Client
 {
     [TestFixture]
-    public class TestUserAgent : CommonFixtureBase
+    public class TestUserAgent
     {
         [Test]
         public void WhenNoExtensionProvided_ToHeaderValueReturnsProperString()
