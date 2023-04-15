@@ -49,6 +49,7 @@
     <Compile Include="Diagnostics\SkipCodeCoverageAttribute.cs" />
     <Compile Include="Diagnostics\TraceCallScope.cs" />
     <Compile Include="Diagnostics\TraceSourceExtensions.cs" />
+    <Compile Include="Format\BigEndian.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Interop\ComReference.cs" />
     <Compile Include="Interop\CoTaskMemAllocSafeHandle.cs" />

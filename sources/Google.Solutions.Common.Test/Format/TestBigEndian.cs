@@ -19,12 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Format;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapTunneling.Test
+namespace Google.Solutions.Common.Test.Format
 {
     [TestFixture]
-    public class TestBigEndian : IapFixtureBase
+    public class TestBigEndian : CommonFixtureBase
     {
         [Test]
         public void EncodeDecodeInt16()

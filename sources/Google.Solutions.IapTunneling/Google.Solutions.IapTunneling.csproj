@@ -65,7 +65,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BigEndian.cs" />
     <Compile Include="Iap\ISshRelayPolicy.cs" />
     <Compile Include="Iap\AllowAllRelayPolicy.cs" />
     <Compile Include="Iap\SshRelaySession.cs" />

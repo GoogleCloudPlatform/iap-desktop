@@ -66,6 +66,7 @@
     <Compile Include="CommonFixtureBase.cs" />
     <Compile Include="Diagnostics\TestDumpObjectExtensions.cs" />
     <Compile Include="Diagnostics\TestTraceSourceExtensions.cs" />
+    <Compile Include="Format\TestBigEndian.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Interop\TestCoTaskMemAllocSafeHandle.cs" />
     <Compile Include="Interop\TestWindowsFilename.cs" />
