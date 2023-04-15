@@ -21,7 +21,7 @@
 
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == SampleProjectId),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
+                .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
                 {
                     ProjectId = SampleProjectId,
                     Name = $"[{SampleProjectId}]"
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "accessible-project"),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
+                .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
                 {
                     ProjectId = "accessible-project",
                     Name = "accessible-project"
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "inaccessible-project"),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
+                .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
                 {
                     ProjectId = "inaccessible-project",
                     Name = "inaccessible-project"

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInventory;
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
                     It.IsAny<CancellationToken>()))
                 .Throws(new GoogleApiException("mock", "mock")
                 {
-                    Error = new Apis.Requests.RequestError()
+                    Error = new Google.Apis.Requests.RequestError()
                     {
                         Code = 412
                     }

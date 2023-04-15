@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Inventory;
 using Google.Solutions.Testing.Application.Test;
 using NUnit.Framework;

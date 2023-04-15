@@ -21,7 +21,8 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
-using Google.Solutions.Common.Locator;
+using Google.Apis.Util;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events;
 using Google.Solutions.IapDesktop.Extensions.Management.Data.Events.Lifecycle;
@@ -81,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapte
                 await adapter.ListEventsAsync(
                         request,
                         events.Add,
-                        new Apis.Util.ExponentialBackOff(),
+                        new ExponentialBackOff(),
                         CancellationToken.None)
                     .ConfigureAwait(false);
 
@@ -147,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Services.Adapte
                 () => adapter.ListEventsAsync(
                     request,
                     _ => { },
-                    new Apis.Util.ExponentialBackOff(),
+                    new ExponentialBackOff(),
                     CancellationToken.None).Wait());
         }
 

@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var adapter = new SignInAdapter(
                 null,
-                new Apis.Auth.OAuth2.ClientSecrets(),
+                new Google.Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1" },
                 new Mock<IDataStore>().Object,
                 new Mock<ICodeReceiver>().Object,
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var adapter = new SignInAdapter(
                 null,
-                new Apis.Auth.OAuth2.ClientSecrets(),
+                new Google.Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1", "scope-2" },
                 new Mock<IDataStore>().Object,
                 new Mock<ICodeReceiver>().Object,
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var adapter = new SignInAdapter(
                 null,
-                new Apis.Auth.OAuth2.ClientSecrets(),
+                new Google.Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1" },
                 new Mock<IDataStore>().Object,
                 new Mock<ICodeReceiver>().Object,
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var adapter = new SignInAdapter(
                 null,
-                new Apis.Auth.OAuth2.ClientSecrets(),
+                new Google.Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1" },
                 new Mock<IDataStore>().Object,
                 receiver.Object,
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var adapter = new SignInAdapter(
                 null,
-                new Apis.Auth.OAuth2.ClientSecrets(),
+                new Google.Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1" },
                 new Mock<IDataStore>().Object,
                 receiver.Object,
@@ -237,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var adapter = new SignInAdapter(
                 null,
-                new Apis.Auth.OAuth2.ClientSecrets(),
+                new Google.Apis.Auth.OAuth2.ClientSecrets(),
                 new[] { "scope-1" },
                 new Mock<IDataStore>().Object,
                 receiver.Object,

@@ -19,11 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Test;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Common.Test.Locator
+namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
     public class TestLicenseLocator : CommonFixtureBase

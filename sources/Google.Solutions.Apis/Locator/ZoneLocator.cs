@@ -22,30 +22,32 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace Google.Solutions.Common.Locator
+namespace Google.Solutions.Apis.Locator
 {
     /// <summary>
-    /// Locator for projects. These locators are global, but differ from
+    /// Locator for zones. These locators are global, but differ from
     /// other global locators by not having a "global/" part in the URL.
     /// </summary>
-    public class ProjectLocator : ResourceLocator, IEquatable<ProjectLocator>
+    public class ZoneLocator : ResourceLocator, IEquatable<ZoneLocator>
     {
-        public override string ResourceType => "projects";
+        public override string ResourceType => "zones";
 
-        public ProjectLocator(string projectId)
-            : base(projectId, projectId)
+        public ZoneLocator(string projectId, string name)
+            : base(projectId, name)
         {
         }
 
-        public static ProjectLocator FromString(string resourceReference)
+        public static ZoneLocator FromString(string resourceReference)
         {
             resourceReference = StripUrlPrefix(resourceReference);
 
-            var match = new Regex("(?:/compute/beta/)?projects/([^/]*)$")
+            var match = new Regex("(?:/compute/beta/)?projects/(.*)/zones/(.*)")
                 .Match(resourceReference);
             if (match.Success)
             {
-                return new ProjectLocator(match.Groups[1].Value);
+                return new ZoneLocator(
+                    match.Groups[1].Value,
+                    match.Groups[2].Value);
             }
             else
             {
@@ -62,10 +64,10 @@ namespace Google.Solutions.Common.Locator
 
         public override string ToString()
         {
-            return $"projects/{this.ProjectId}";
+            return $"projects/{this.ProjectId}/{this.ResourceType}/{this.Name}";
         }
 
-        public bool Equals(ProjectLocator other)
+        public bool Equals(ZoneLocator other)
         {
             return other is object &&
                 this.Name == other.Name &&
@@ -74,10 +76,10 @@ namespace Google.Solutions.Common.Locator
 
         public override bool Equals(object obj)
         {
-            return obj is ProjectLocator locator && Equals(locator);
+            return obj is ZoneLocator locator && Equals(locator);
         }
 
-        public static bool operator ==(ProjectLocator obj1, ProjectLocator obj2)
+        public static bool operator ==(ZoneLocator obj1, ZoneLocator obj2)
         {
             if (obj1 is null)
             {
@@ -87,7 +89,7 @@ namespace Google.Solutions.Common.Locator
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(ProjectLocator obj1, ProjectLocator obj2)
+        public static bool operator !=(ZoneLocator obj1, ZoneLocator obj2)
         {
             return !(obj1 == obj2);
         }

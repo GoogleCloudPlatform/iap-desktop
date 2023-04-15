@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -61,14 +61,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
             gceAdapter.Setup(a => a.GetInstanceAsync(
                 It.Is((InstanceLocator loc) => loc.Name == "instance-1"),
                 It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Apis.Compute.v1.Data.Instance()
+                .ReturnsAsync(new Google.Apis.Compute.v1.Data.Instance()
                 {
                     Name = "instance-1"
                 });
             gceAdapter.Setup(a => a.GetProjectAsync(
                 It.Is<string>(projectId => projectId == "project-1"),
                 It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Apis.Compute.v1.Data.Project()
+                .ReturnsAsync(new Google.Apis.Compute.v1.Data.Project()
                 {
                     Name = "project-1"
                 });

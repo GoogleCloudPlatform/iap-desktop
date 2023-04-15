@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.Locator
+namespace Google.Solutions.Apis.Locator
 {
     public static class LicenseLocatorExtensions
     {

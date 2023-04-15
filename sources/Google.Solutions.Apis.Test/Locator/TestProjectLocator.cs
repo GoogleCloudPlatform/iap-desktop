@@ -19,86 +19,69 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Test;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Common.Test.Locator
+namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
-    public class TestNodeTypeLocator : CommonFixtureBase
+    public class TestProjectLocator : CommonFixtureBase
     {
-
         [Test]
         public void WhenPathIsValid_FromStringReturnsObject()
         {
-            var ref1 = NodeTypeLocator.FromString(
-                "projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240");
+            var ref1 = ProjectLocator.FromString(
+                "projects/project-1");
 
-            Assert.AreEqual("nodeTypes", ref1.ResourceType);
-            Assert.AreEqual("c2-node-60-240", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("projects", ref1.ResourceType);
+            Assert.AreEqual("project-1", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void WhenQualifiedByComputeGoogleapisHost_FromStringReturnsObject()
         {
-            var ref1 = NodeTypeLocator.FromString(
-                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240");
+            var ref1 = ProjectLocator.FromString(
+                "https://compute.googleapis.com/compute/v1/projects/project-1");
 
-            Assert.AreEqual("nodeTypes", ref1.ResourceType);
-            Assert.AreEqual("c2-node-60-240", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("projects", ref1.ResourceType);
+            Assert.AreEqual("project-1", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void WhenQualifiedByGoogleapisHost_FromStringReturnsObject()
         {
-            var ref1 = NodeTypeLocator.FromString(
-                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240");
+            var ref1 = ProjectLocator.FromString(
+                "https://www.googleapis.com/compute/v1/projects/project-1");
 
-            Assert.AreEqual("nodeTypes", ref1.ResourceType);
-            Assert.AreEqual("c2-node-60-240", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
-            Assert.AreEqual("project-1", ref1.ProjectId);
-        }
-
-        [Test]
-        public void WhenUsingBetaApi_FromStringReturnsObject()
-        {
-            var ref1 = NodeTypeLocator.FromString(
-                 "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240");
-            Assert.AreEqual("nodeTypes", ref1.ResourceType);
-            Assert.AreEqual("c2-node-60-240", ref1.Name);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("projects", ref1.ResourceType);
+            Assert.AreEqual("project-1", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void WhenPathLacksProject_FromStringThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => NodeTypeLocator.FromString(
-                "project-1/zones/us-central1-a/nodeTypes/c2-node-60-240"));
+            Assert.Throws<ArgumentException>(() => ProjectLocator.FromString(
+                "/project-1"));
         }
 
         [Test]
         public void WhenPathInvalid_FromStringThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => NodeTypeLocator.FromString(
-                "projects/project-1/zones/us-central1-a/nodeTypes/"));
-            Assert.Throws<ArgumentException>(() => NodeTypeLocator.FromString(
-                "/zones/us-central1-a/nodeTypes/c2-node-60-240 "));
-            Assert.Throws<ArgumentException>(() => NodeTypeLocator.FromString(
-                "/"));
+            Assert.Throws<ArgumentException>(() => ProjectLocator.FromString(
+                "projects/project-1/zone"));
+            Assert.Throws<ArgumentException>(() => ProjectLocator.FromString(""));
         }
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
-            var ref2 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
+            var ref1 = new ProjectLocator("proj");
+            var ref2 = new ProjectLocator("proj");
 
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
@@ -109,8 +92,8 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenReferencesAreEquivalent_ThenGetHasCodeIsSame()
         {
-            var ref1 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
-            var ref2 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
+            var ref1 = new ProjectLocator("proj");
+            var ref2 = new ProjectLocator("proj");
 
             Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
         }
@@ -118,7 +101,7 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
+            var ref1 = new ProjectLocator("proj");
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
@@ -130,8 +113,8 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new NodeTypeLocator("proj", "zone1", "c2-node-60-240");
-            var ref2 = new NodeTypeLocator("proj", "zone2", "c2-node-60-240");
+            var ref1 = new ProjectLocator("proj-1");
+            var ref2 = new ProjectLocator("proj-2");
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -142,7 +125,7 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new NodeTypeLocator("proj", "zone", "c2-node-60-240");
+            var ref1 = new ProjectLocator("proj");
 
             Assert.IsFalse(ref1.Equals(null));
             Assert.IsFalse(ref1.Equals((object)null));
@@ -155,21 +138,21 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()
         {
-            var path = "projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240";
+            var path = "projects/project-1";
 
             Assert.AreEqual(
                 path,
-                NodeTypeLocator.FromString(path).ToString());
+                ProjectLocator.FromString(path).ToString());
         }
 
         [Test]
         public void WhenCreatedFromUrl_ThenToStringReturnsPath()
         {
-            var path = "projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240";
+            var path = "projects/project-1";
 
             Assert.AreEqual(
                 path,
-                NodeTypeLocator.FromString(
+                ProjectLocator.FromString(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
     }

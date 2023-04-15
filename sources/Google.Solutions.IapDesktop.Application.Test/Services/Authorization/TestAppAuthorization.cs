@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
             return new UserCredential(
                 new Mock<IAuthorizationCodeFlow>().Object,
                 "mock",
-                new Apis.Auth.OAuth2.Responses.TokenResponse()
+                new Google.Apis.Auth.OAuth2.Responses.TokenResponse()
                 {
                     RefreshToken = refreshToken
                 });

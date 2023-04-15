@@ -70,6 +70,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\TestMetadataExtensions.cs" />
+    <Compile Include="Locator\TestAccessLevelLocator.cs" />
+    <Compile Include="Locator\TestDiskTypeLocator.cs" />
+    <Compile Include="Locator\TestImageLocator.cs" />
+    <Compile Include="Locator\TestInstanceLocator.cs" />
+    <Compile Include="Locator\TestLicenseLocator.cs" />
+    <Compile Include="Locator\TestMachineTypeLocator.cs" />
+    <Compile Include="Locator\TestNodeTypeLocator.cs" />
+    <Compile Include="Locator\TestProjectLocator.cs" />
+    <Compile Include="Locator\TestZoneLocator.cs" />
     <Compile Include="Requests\TestRequestExtensions.cs" />
     <Compile Include="Compute\TestResourceMetadataExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

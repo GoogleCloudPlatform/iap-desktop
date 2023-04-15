@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;

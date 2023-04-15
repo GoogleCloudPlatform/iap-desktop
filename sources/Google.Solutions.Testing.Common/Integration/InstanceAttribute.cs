@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System;

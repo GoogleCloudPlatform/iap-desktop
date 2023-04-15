@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Ssh.Native;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;

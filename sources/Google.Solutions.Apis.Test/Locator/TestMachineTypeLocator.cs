@@ -19,23 +19,25 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
+using Google.Solutions.Common.Test;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Common.Test.Locator
+namespace Google.Solutions.Apis.Test.Locator
 {
     [TestFixture]
-    public class TestDiskTypeLocator : CommonFixtureBase
+    public class TestMachineTypeLocator : CommonFixtureBase
     {
+
         [Test]
         public void WhenPathIsValid_FromStringReturnsObject()
         {
-            var ref1 = DiskTypeLocator.FromString(
-                "projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
+            var ref1 = MachineTypeLocator.FromString(
+                "projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
 
-            Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
+            Assert.AreEqual("machineTypes", ref1.ResourceType);
+            Assert.AreEqual("n2d-standard-64", ref1.Name);
             Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
@@ -43,11 +45,11 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenQualifiedByComputeGoogleapisHost_FromStringReturnsObject()
         {
-            var ref1 = DiskTypeLocator.FromString(
-                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
+            var ref1 = MachineTypeLocator.FromString(
+                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
 
-            Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
+            Assert.AreEqual("machineTypes", ref1.ResourceType);
+            Assert.AreEqual("n2d-standard-64", ref1.Name);
             Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
@@ -55,11 +57,11 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenQualifiedByGoogleapisHost_FromStringReturnsObject()
         {
-            var ref1 = DiskTypeLocator.FromString(
-                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
+            var ref1 = MachineTypeLocator.FromString(
+                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
 
-            Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
+            Assert.AreEqual("machineTypes", ref1.ResourceType);
+            Assert.AreEqual("n2d-standard-64", ref1.Name);
             Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
@@ -67,10 +69,10 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenUsingBetaApi_FromStringReturnsObject()
         {
-            var ref1 = DiskTypeLocator.FromString(
-                 "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
-            Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.Name);
+            var ref1 = MachineTypeLocator.FromString(
+                 "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64");
+            Assert.AreEqual("machineTypes", ref1.ResourceType);
+            Assert.AreEqual("n2d-standard-64", ref1.Name);
             Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
@@ -78,26 +80,26 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenPathLacksProject_FromStringThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => DiskTypeLocator.FromString(
-                "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
+            Assert.Throws<ArgumentException>(() => MachineTypeLocator.FromString(
+                "project-1/zones/us-central1-a/machineTypes/n2d-standard-64"));
         }
 
         [Test]
         public void WhenPathInvalid_FromStringThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => DiskTypeLocator.FromString(
-                "/project-1/zones/us-central1-a/diskTypes"));
-            Assert.Throws<ArgumentException>(() => DiskTypeLocator.FromString(
-                "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
-            Assert.Throws<ArgumentException>(() => DiskTypeLocator.FromString(
+            Assert.Throws<ArgumentException>(() => MachineTypeLocator.FromString(
+                "project-1/zones/us-central1-a/machineTypes/"));
+            Assert.Throws<ArgumentException>(() => MachineTypeLocator.FromString(
+                "project-1/zones/us-central1-a/machineTypes/ "));
+            Assert.Throws<ArgumentException>(() => MachineTypeLocator.FromString(
                 "/"));
         }
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new DiskTypeLocator("proj", "zone", "pd-standard");
-            var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");
+            var ref1 = new MachineTypeLocator("proj", "zone", "n2d-standard-64");
+            var ref2 = new MachineTypeLocator("proj", "zone", "n2d-standard-64");
 
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
@@ -108,8 +110,8 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenReferencesAreEquivalent_ThenGetHasCodeIsSame()
         {
-            var ref1 = new DiskTypeLocator("proj", "zone", "pd-standard");
-            var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");
+            var ref1 = new MachineTypeLocator("proj", "zone", "n2d-standard-64");
+            var ref2 = new MachineTypeLocator("proj", "zone", "n2d-standard-64");
 
             Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
         }
@@ -117,7 +119,7 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new DiskTypeLocator("proj", "zone", "pd-standard");
+            var ref1 = new MachineTypeLocator("proj", "zone", "n2d-standard-64");
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
@@ -129,8 +131,8 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new DiskTypeLocator("proj", "zone1", "pd-standard");
-            var ref2 = new DiskTypeLocator("proj", "zone2", "pd-standard");
+            var ref1 = new MachineTypeLocator("proj", "zone1", "n2d-standard-64");
+            var ref2 = new MachineTypeLocator("proj", "zone2", "n2d-standard-64");
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -141,7 +143,7 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new DiskTypeLocator("proj", "zone", "pd-standard");
+            var ref1 = new MachineTypeLocator("proj", "zone", "n2d-standard-64");
 
             Assert.IsFalse(ref1.Equals(null));
             Assert.IsFalse(ref1.Equals((object)null));
@@ -154,21 +156,21 @@ namespace Google.Solutions.Common.Test.Locator
         [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()
         {
-            var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
+            var path = "projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64";
 
             Assert.AreEqual(
                 path,
-                DiskTypeLocator.FromString(path).ToString());
+                MachineTypeLocator.FromString(path).ToString());
         }
 
         [Test]
         public void WhenCreatedFromUrl_ThenToStringReturnsPath()
         {
-            var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
+            var path = "projects/project-1/zones/us-central1-a/machineTypes/n2d-standard-64";
 
             Assert.AreEqual(
                 path,
-                DiskTypeLocator.FromString(
+                MachineTypeLocator.FromString(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
     }

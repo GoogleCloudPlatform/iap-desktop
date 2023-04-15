@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Util;
 using System.Diagnostics;
 
-namespace Google.Solutions.Common.Locator
+namespace Google.Solutions.Apis.Locator
 {
     public abstract class ResourceLocator
     {

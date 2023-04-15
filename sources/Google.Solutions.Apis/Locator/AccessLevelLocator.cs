@@ -22,7 +22,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace Google.Solutions.Common.Locator
+namespace Google.Solutions.Apis.Locator
 {
     /// <summary>
     /// Locator for access levels.

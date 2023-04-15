@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
 using System;
