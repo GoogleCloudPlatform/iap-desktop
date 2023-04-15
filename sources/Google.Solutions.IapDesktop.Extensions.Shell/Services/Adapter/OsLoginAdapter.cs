@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.service = new CloudOSLoginService(
-                ClientServiceFactory.ForMtlsEndpoint(
+                new AuthorizedClientInitializer(
                     authorization.Credential,
                     authorization.DeviceEnrollment,
                     MtlsBaseUri));

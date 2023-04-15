@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\TestClientServiceMtlsExtensions.cs" />
     <Compile Include="Client\TestRestClient.cs" />
     <Compile Include="Client\TestUserAgent.cs" />
     <Compile Include="Compute\TestMetadataExtensions.cs" />

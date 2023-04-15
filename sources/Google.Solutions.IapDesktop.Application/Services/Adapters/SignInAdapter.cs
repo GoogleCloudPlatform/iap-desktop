@@ -280,7 +280,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             var client = new RestClient(Install.UserAgent, this.deviceCertificate);
 
-            return await client.GetAsync<UserInfo>(
+            return await client
+                .GetAsync<UserInfo>(
                     CreateInitializer().UserInfoUrl,
                     credential,
                     token)

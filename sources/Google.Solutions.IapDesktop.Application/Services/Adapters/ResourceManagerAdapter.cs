@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             credential.ExpectNotNull(nameof(credential));
 
             this.service = new CloudResourceManagerService(
-                ClientServiceFactory.ForMtlsEndpoint(
+                new AuthorizedClientInitializer(
                     credential,
                     deviceEnrollment,
                     MtlsBaseUri));

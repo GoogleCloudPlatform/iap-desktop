@@ -32,38 +32,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public static class ClientServiceFactory
-    {
-        public static BaseClientService.Initializer ForMtlsEndpoint(
-            ICredential credential,
-            IDeviceEnrollment enrollment,
-            string baseUri)
-        {
-            var initializer = new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = Install.UserAgent.ToApplicationName()
-            };
-
-            if (enrollment?.Certificate != null &&
-                HttpClientHandlerExtensions.IsClientCertificateSupported)
-            {
-                ApplicationTraceSources.Default.TraceInformation(
-                    "Enabling MTLS for {0}",
-                    baseUri);
-
-                // Switch to mTLS endpoint.
-                initializer.BaseUri = baseUri;
-
-                // Add client certificate.
-                initializer.HttpClientFactory = new MtlsHttpClientFactory(enrollment.Certificate);
-            }
-
-            return initializer;
-        }
-    }
-
-    internal class MtlsHttpClientFactory : HttpClientFactory
+    internal class MtlsHttpClientFactory : HttpClientFactory //TODO: delete
     {
         private readonly X509Certificate2 clientCertificate;
 
@@ -81,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
     }
 
-    public static class ClientServiceExtensions
+    public static class ClientServiceExtensions //TODO: delete
     {
         public static bool IsMtlsEnabled(this IClientService service)
             => service.BaseUri.Contains(".mtls.googleapis.com");

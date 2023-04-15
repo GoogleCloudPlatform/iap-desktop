@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             credential.ExpectNotNull(nameof(credential));
 
             this.service = new LoggingService(
-                ClientServiceFactory.ForMtlsEndpoint(
+                new AuthorizedClientInitializer(
                     credential,
                     deviceEnrollment,
                     MtlsBaseUri));
