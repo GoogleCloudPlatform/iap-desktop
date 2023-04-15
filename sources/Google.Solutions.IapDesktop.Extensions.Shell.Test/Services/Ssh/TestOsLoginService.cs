@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.CloudOSLogin.v1.Data;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;

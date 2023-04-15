@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;

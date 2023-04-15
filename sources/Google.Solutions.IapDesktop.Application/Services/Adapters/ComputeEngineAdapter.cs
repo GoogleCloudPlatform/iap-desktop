@@ -23,9 +23,10 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
-using Google.Solutions.Common.ApiExtensions;
+using Google.Solutions.Apis;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Net;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
@@ -37,6 +38,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Apis.Client;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {

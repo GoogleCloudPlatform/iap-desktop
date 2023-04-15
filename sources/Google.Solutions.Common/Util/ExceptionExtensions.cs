@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2.Responses;
 using System;
 using System.Reflection;
 using System.Text;
@@ -55,26 +54,6 @@ namespace Google.Solutions.Common.Util
         public static bool IsCancellation(this Exception e)
         {
             return e.Is<TaskCanceledException>() || e.Is<OperationCanceledException>();
-        }
-
-        public static bool IsReauthError(this Exception e)
-        {
-            // The TokenResponseException might be hiding in an AggregateException
-            e = e.Unwrap();
-
-            if (e is TokenResponseException tokenException)
-            {
-                return tokenException.Error.Error == "invalid_grant";
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public static bool IsAccessDeniedError(this Exception e)
-        {
-            return e.Unwrap() is GoogleApiException apiEx && apiEx.Error.Code == 403;
         }
 
         public static string FullMessage(this Exception exception)

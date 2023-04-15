@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using System.Diagnostics;
 
 namespace Google.Solutions.Common
@@ -27,11 +26,5 @@ namespace Google.Solutions.Common
     public static class CommonTraceSources
     {
         public static readonly TraceSource Default = new TraceSource(typeof(CommonTraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
-
-        static CommonTraceSources()
-        {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
-        }
     }
 }

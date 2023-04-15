@@ -38,38 +38,8 @@
     <Reference Include="Castle.Core, Version=5.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.5.0.0\lib\net462\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.57.0\lib\net45\Google.Apis.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Auth, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.57.0\lib\net461\Google.Apis.Auth.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.57.0\lib\net461\Google.Apis.Auth.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.57.0.2677, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.57.0.2677\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Compute.v1, Version=1.57.0.2714, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Compute.v1.1.57.0.2714\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Core, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Core.1.57.0\lib\net45\Google.Apis.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Iam.v1, Version=1.57.0.2702, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Iam.v1.1.57.0.2702\lib\net45\Google.Apis.Iam.v1.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.IAMCredentials.v1, Version=1.57.0.2528, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.IAMCredentials.v1.1.57.0.2528\lib\net45\Google.Apis.IAMCredentials.v1.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.PlatformServices, Version=1.57.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.57.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
-    </Reference>
     <Reference Include="Moq, Version=4.18.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.18.1\lib\net462\Moq.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.13.3.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.13.3\lib\net45\nunit.framework.dll</HintPath>
@@ -92,9 +62,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiExtensions\TestResourceMetadataExtensions.cs" />
-    <Compile Include="ApiExtensions\TestMetadataExtensions.cs" />
-    <Compile Include="ApiExtensions\TestRequestExtensions.cs" />
     <Compile Include="Diagnostics\TestBugReport.cs" />
     <Compile Include="Diagnostics\TestClrVersion.cs" />
     <Compile Include="CommonFixtureBase.cs" />
@@ -105,18 +72,8 @@
     <Compile Include="Interop\TestWindowsFilename.cs" />
     <Compile Include="Interop\TestGlobalAllocSafeHandle.cs" />
     <Compile Include="Interop\TestLocalAllocSafeHandle.cs" />
-    <Compile Include="Locator\TestAccessLevelLocator.cs" />
-    <Compile Include="Locator\TestNodeTypeLocator.cs" />
-    <Compile Include="Locator\TestProjectLocator.cs" />
-    <Compile Include="Locator\TestZoneLocator.cs" />
-    <Compile Include="Locator\TestLicenseLocator.cs" />
-    <Compile Include="Locator\TestInstanceLocator.cs" />
-    <Compile Include="Locator\TestMachineTypeLocator.cs" />
-    <Compile Include="Net\TestRestClient.cs" />
     <Compile Include="Net\TestUserAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Locator\TestImageLocator.cs" />
-    <Compile Include="Locator\TestDiskTypeLocator.cs" />
     <Compile Include="Security\TestSecureStringExtensions.cs" />
     <Compile Include="Text\TestStringExtensions.cs" />
     <Compile Include="Text\TestTypographicQuotes.cs" />

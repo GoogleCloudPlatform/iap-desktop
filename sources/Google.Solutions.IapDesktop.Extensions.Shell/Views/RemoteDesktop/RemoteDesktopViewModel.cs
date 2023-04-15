@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;

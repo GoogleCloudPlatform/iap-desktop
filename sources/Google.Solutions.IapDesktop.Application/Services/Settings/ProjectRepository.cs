@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;

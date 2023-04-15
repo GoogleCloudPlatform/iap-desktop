@@ -205,6 +205,12 @@
           Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapTunneling.dll"
           Vital="yes"/>
         <File
+          Id="FileGoogleSolutionsApisDll"
+          Name="Google.Solutions.Apis.dll"
+          DiskId="1"
+          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Apis.dll"
+          Vital="yes"/>
+        <File
           Id="FileGoogleSolutionsCommonDll"
           Name="Google.Solutions.Common.dll"
           DiskId="1"

@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Controls;

@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Threading;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
@@ -34,6 +34,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Apis;
 
 namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {

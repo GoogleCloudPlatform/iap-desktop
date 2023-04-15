@@ -21,8 +21,8 @@
 
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.ApiExtensions;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;

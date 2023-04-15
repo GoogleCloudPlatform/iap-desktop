@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
+                .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
                 {
                     ProjectId = SampleProjectId,
                     Name = $"[{SampleProjectId}]"
@@ -437,7 +437,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "project-2"),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
+                .ReturnsAsync(new Google.Apis.CloudResourceManager.v1.Data.Project()
                 {
                     ProjectId = "project-2",
                     Name = "project-2"  // Same as id

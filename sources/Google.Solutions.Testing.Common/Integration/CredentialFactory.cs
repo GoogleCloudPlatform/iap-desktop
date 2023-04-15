@@ -82,7 +82,7 @@ namespace Google.Solutions.Testing.Common.Integration
                 foreach (var role in roles)
                 {
                     policy.Bindings.Add(
-                        new Apis.CloudResourceManager.v1.Data.Binding()
+                        new Google.Apis.CloudResourceManager.v1.Data.Binding()
                         {
                             Role = role,
                             Members = new string[] { $"serviceAccount:{member.Email}" }
@@ -92,7 +92,7 @@ namespace Google.Solutions.Testing.Common.Integration
                 try
                 {
                     await service.Projects.SetIamPolicy(
-                            new Apis.CloudResourceManager.v1.Data.SetIamPolicyRequest()
+                            new Google.Apis.CloudResourceManager.v1.Data.SetIamPolicyRequest()
                             {
                                 Policy = policy
                             },
@@ -115,7 +115,7 @@ namespace Google.Solutions.Testing.Common.Integration
         {
             var service = TestProject.CreateIamCredentialsService();
             var response = await service.Projects.ServiceAccounts.GenerateAccessToken(
-                    new Apis.IAMCredentials.v1.Data.GenerateAccessTokenRequest()
+                    new Google.Apis.IAMCredentials.v1.Data.GenerateAccessTokenRequest()
                     {
                         Scope = new string[] { TestProject.CloudPlatformScope }
                     },

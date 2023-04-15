@@ -21,7 +21,7 @@
 ////
 
 //using Google.Apis.Compute.v1.Data;
-//using Google.Solutions.Common.Locator;
+//using Google.Solutions.Apis.Locator;
 //using Google.Solutions.IapDesktop.Application.Services.Adapters;
 //using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 //using NUnit.Framework;

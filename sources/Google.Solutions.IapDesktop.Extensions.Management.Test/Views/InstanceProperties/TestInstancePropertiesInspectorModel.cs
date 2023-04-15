@@ -21,7 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProperties;
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.InstanceP
                     It.IsAny<CancellationToken>()))
                 .Throws(new GoogleApiException("mock", "mock")
                 {
-                    Error = new Apis.Requests.RequestError()
+                    Error = new Google.Apis.Requests.RequestError()
                     {
                         Code = 412
                     }

@@ -22,7 +22,7 @@
 using AxMSTSCLib;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Interop;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Security;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;

@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using System;
 using System.Net;
