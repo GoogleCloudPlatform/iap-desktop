@@ -175,10 +175,9 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Initialize the view model.
                 //
-                dialog.ViewModel.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
+                dialog.ViewModel.DeviceEnrollment = SecureConnectEnrollment.Create(
                     new CertificateStoreAdapter(),
-                    new ChromePolicy(),
-                    serviceProvider.GetService<ApplicationSettingsRepository>()).Result;
+                    serviceProvider.GetService<ApplicationSettingsRepository>());
                 dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
                 dialog.ViewModel.Scopes = new[] { IapTunnelingEndpoint.RequiredScope };
                 dialog.ViewModel.TokenStore = serviceProvider.GetService<AuthSettingsRepository>();

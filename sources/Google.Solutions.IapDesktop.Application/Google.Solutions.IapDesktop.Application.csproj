@@ -105,6 +105,7 @@
     <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
     <Compile Include="Data\OperatingSystems.cs" />
     <Compile Include="Data\Permissions.cs" />
+    <Compile Include="Services\SecureConnect\IChromeAutoSelectCertificateForUrlsPolicy.cs" />
     <Compile Include="Services\Windows\WindowsCredentialService.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Services\Adapters\SerialPortStream.cs" />
@@ -116,7 +117,6 @@
     <Compile Include="Services\ProjectModel\ProjectModelService.cs" />
     <Compile Include="Services\SecureConnect\ChromeAutoSelectCertificateForUrlsPolicy.cs" />
     <Compile Include="Services\SecureConnect\ChromeCertificateSelector.cs" />
-    <Compile Include="Services\SecureConnect\ChromePolicy.cs" />
     <Compile Include="Services\SecureConnect\ChromePolicyUrlPattern.cs" />
     <Compile Include="Services\SecureConnect\SecureConnectEnrollment.cs" />
     <Compile Include="Services\Integration\SessionBroker.cs" />

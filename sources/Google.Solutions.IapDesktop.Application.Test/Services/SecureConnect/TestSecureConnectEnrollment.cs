@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         //   -CertStoreLocation Cert:\CurrentUser\My\ `
         //   -NotAfter 01/01/2030
         //
-        private readonly X509Certificate2 CustomCertificateForClientAuth =
+        private static readonly X509Certificate2 CustomCertificateForClientAuth =
             CertificateUtil.CertificateFromPem(
                 @"-----BEGIN CERTIFICATE-----
                 MIIB7zCCAVigAwIBAgIQGZbilgXuAIBAGsCHQmoLUzANBgkqhkiG9w0BAQsFADAS
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         //     -CertStoreLocation Cert:\CurrentUser\My\ `
         //     -NotAfter 01/01/2030
         //
-        private readonly X509Certificate2 CustomCertificateForServerAuth =
+        private static readonly X509Certificate2 CustomCertificateForServerAuth =
             CertificateUtil.CertificateFromPem(
                 @"-----BEGIN CERTIFICATE-----
                 MIIB7zCCAVigAwIBAgIQFZEofVzvrbBEPLoXkVQdTDANBgkqhkiG9w0BAQsFADAS
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         //     -CertStoreLocation Cert:\CurrentUser\My\ `
         //     -NotAfter 01/01/2030
         //
-        private readonly X509Certificate2 EndpointVerificationCertificate =
+        private static readonly X509Certificate2 EndpointVerificationCertificate =
             CertificateUtil.CertificateFromPem(
                 @"-----BEGIN CERTIFICATE-----
                 MIICRTCCAa6gAwIBAgIQHCcsk4KAQYZMDN2kkJHX3jANBgkqhkiG9w0BAQsFADAn
@@ -139,24 +139,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenDcaIsDisabledInSettings_ThenStateIsNotInstalled()
+        public void WhenDcaIsDisabledInSettings_ThenStateIsNotInstalled()
         {
             // Disable DCA.
             var settings = this.settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
-                    It.IsAny<Uri>()))
-                .Returns(cert => false);
-
             var certificateStore = new Mock<ICertificateStoreAdapter>();
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                    certificateStore.Object,
-                    chromePolicy.Object,
-                    this.settingsRepository)
-                .ConfigureAwait(true);
+            var enrollment = SecureConnectEnrollment.Create(
+                certificateStore.Object,
+                this.settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
@@ -165,61 +158,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             certificateStore.Verify(s => s.ListUserCertitficates(), Times.Never);
         }
 
-
-        [Test]
-        public async Task WhenDisablingDca_ThenRefreshUpdatesStateToDisabled()
-        {
-            // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            this.settingsRepository.SetSettings(settings);
-
-            var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
-                    It.IsAny<Uri>()))
-                .Returns(cert => false);
-
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListUserCertitficates())
-                .Returns(new[] { EndpointVerificationCertificate });
-
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                    certificateStore.Object,
-                    chromePolicy.Object,
-                    this.settingsRepository)
-                .ConfigureAwait(true);
-
-            Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
-            Assert.IsNotNull(enrollment.Certificate);
-            Assert.AreEqual("CN=Google Endpoint Verification", enrollment.Certificate.Subject);
-
-            // Disable DCA.
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
-            this.settingsRepository.SetSettings(settings);
-
-            await enrollment.RefreshAsync()
-                .ConfigureAwait(true);
-
-            Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
-            Assert.IsNull(enrollment.Certificate);
-        }
-
         //---------------------------------------------------------------------
         // Default certificate selector.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingDefaultCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
+        public void WhenUsingDefaultCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
-
-            var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
-                    It.IsAny<Uri>()))
-                .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             certificateStore.Setup(s => s.ListUserCertitficates())
@@ -227,28 +176,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             certificateStore.Setup(s => s.ListComputerCertitficates())
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                    certificateStore.Object,
-                    chromePolicy.Object,
-                    this.settingsRepository)
-                .ConfigureAwait(true);
+            var enrollment = SecureConnectEnrollment.Create(
+                certificateStore.Object,
+                this.settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
         }
 
         [Test]
-        public async Task WhenUsingDefaultCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
+        public void WhenUsingDefaultCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
-
-            var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
-                    It.IsAny<Uri>()))
-                .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             certificateStore.Setup(s => s.ListComputerCertitficates())
@@ -256,11 +198,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             certificateStore.Setup(s => s.ListUserCertitficates())
                 .Returns(new[] { EndpointVerificationCertificate });
 
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                    certificateStore.Object,
-                    chromePolicy.Object,
-                    this.settingsRepository)
-                .ConfigureAwait(true);
+            var enrollment = SecureConnectEnrollment.Create(
+                certificateStore.Object,
+                this.settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
             Assert.IsNotNull(enrollment.Certificate);
@@ -268,17 +208,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         }
 
         [Test]
-        public async Task WhenUsingDefaultCertificateSelectorAndCertificateOnlyInComputerStore_ThenStateIsNotEnrolled()
+        public void WhenUsingDefaultCertificateSelectorAndCertificateOnlyInComputerStore_ThenStateIsNotEnrolled()
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
-
-            var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
-                    It.IsAny<Uri>()))
-                .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             certificateStore.Setup(s => s.ListComputerCertitficates())
@@ -286,11 +221,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             certificateStore.Setup(s => s.ListUserCertitficates())
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                    certificateStore.Object,
-                    chromePolicy.Object,
-                    this.settingsRepository)
-                .ConfigureAwait(true);
+            var enrollment = SecureConnectEnrollment.Create(
+                certificateStore.Object,
+                this.settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
@@ -301,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUsingCustomCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
+        public void WhenUsingCustomCertificateSelectorButNoCertificateInStore_ThenStateIsNotEnrolled()
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
@@ -316,29 +249,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 }";
             this.settingsRepository.SetSettings(settings);
 
-            var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
-                    It.IsAny<Uri>()))
-                .Returns(cert => false);
-
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             certificateStore.Setup(s => s.ListUserCertitficates())
                 .Returns(Enumerable.Empty<X509Certificate2>());
             certificateStore.Setup(s => s.ListComputerCertitficates())
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                    certificateStore.Object,
-                    chromePolicy.Object,
-                    this.settingsRepository)
-                .ConfigureAwait(true);
+            var enrollment = SecureConnectEnrollment.Create(
+                certificateStore.Object,
+                this.settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
         }
 
         [Test]
-        public async Task WhenUsingCustomCertificateSelectorButCertificateDoesNotPermitClientAuth_ThenStateIsNotEnrolled()
+        public void WhenUsingCustomCertificateSelectorButCertificateDoesNotPermitClientAuth_ThenStateIsNotEnrolled()
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
@@ -352,11 +278,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                     }
                 }";
             this.settingsRepository.SetSettings(settings);
-
-            var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
-                    It.IsAny<Uri>()))
-                .Returns(cert => false);
 
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             certificateStore.Setup(s => s.ListUserCertitficates())
@@ -364,18 +285,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             certificateStore.Setup(s => s.ListComputerCertitficates())
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                    certificateStore.Object,
-                    chromePolicy.Object,
-                    this.settingsRepository)
-                .ConfigureAwait(true);
+            var enrollment = SecureConnectEnrollment.Create(
+                certificateStore.Object,
+                this.settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
         }
 
         [Test]
-        public async Task WhenUsingCustomCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
+        public void WhenUsingCustomCertificateSelectorAndCertificateFoundInUserStore_ThenStateIsEnrolled()
         {
             // Enable DCA.
             var settings = this.settingsRepository.GetSettings();
@@ -390,89 +309,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 }";
             this.settingsRepository.SetSettings(settings);
 
-            var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
-                    It.IsAny<Uri>()))
-                .Returns(cert => false);
-
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             certificateStore.Setup(s => s.ListComputerCertitficates())
                 .Returns(Enumerable.Empty<X509Certificate2>());
             certificateStore.Setup(s => s.ListUserCertitficates())
                 .Returns(new[] { CustomCertificateForClientAuth });
 
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                    certificateStore.Object,
-                    chromePolicy.Object,
-                    this.settingsRepository)
-                .ConfigureAwait(true);
+            var enrollment = SecureConnectEnrollment.Create(
+                certificateStore.Object,
+                this.settingsRepository);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
             Assert.IsNotNull(enrollment.Certificate);
             Assert.AreEqual("CN=Example", enrollment.Certificate.Subject);
-        }
-
-        //---------------------------------------------------------------------
-        // Chrome policies.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenChromePolicySetAndCertificateFoundInUserStore_ThenStateIsEnrolled()
-        {
-            // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            this.settingsRepository.SetSettings(settings);
-
-            var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
-                    It.Is<Uri>(url => url.ToString() == "https://secureconnect-pa.mtls.clients6.google.com/")))
-                .Returns(cert => cert.Subject == "CN=Example");
-
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListComputerCertitficates())
-                .Returns(Enumerable.Empty<X509Certificate2>());
-            certificateStore.Setup(s => s.ListUserCertitficates())
-                .Returns(new[] { CustomCertificateForClientAuth });
-
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                    certificateStore.Object,
-                    chromePolicy.Object,
-                    this.settingsRepository)
-                .ConfigureAwait(true);
-
-            Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
-            Assert.IsNotNull(enrollment.Certificate);
-            Assert.AreEqual("CN=Example", enrollment.Certificate.Subject);
-        }
-
-        [Test]
-        public async Task WhenNoCustomCertificateSelectorAndChromePolicyNotFound_ThenStateIsNotEnrolled()
-        {
-            // Enable DCA.
-            var settings = this.settingsRepository.GetSettings();
-            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
-            this.settingsRepository.SetSettings(settings);
-
-            var chromePolicy = new Mock<IChromePolicy>();
-            chromePolicy.Setup(p => p.GetAutoSelectCertificateForUrlsPolicy(
-                    It.Is<Uri>(url => url.ToString() == "https://secureconnect-pa.mtls.clients6.google.com/")))
-                .Returns(cert => cert.Subject == "CN=ThisDoesNotExistInStore");
-
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListComputerCertitficates())
-                .Returns(Enumerable.Empty<X509Certificate2>());
-            certificateStore.Setup(s => s.ListUserCertitficates())
-                .Returns(Enumerable.Empty<X509Certificate2>());
-
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                    certificateStore.Object,
-                    chromePolicy.Object,
-                    this.settingsRepository)
-                .ConfigureAwait(true);
-
-            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
-            Assert.IsNull(enrollment.Certificate);
         }
     }
 }
