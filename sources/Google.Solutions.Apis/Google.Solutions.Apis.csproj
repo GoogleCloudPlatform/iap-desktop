@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="ApiTraceSources.cs" />
     <Compile Include="Client\RestClient.cs" />
+    <Compile Include="Compute\InstanceExtensions.cs" />
     <Compile Include="Diagnostics\TraceSourceLogger.cs" />
     <Compile Include="GoogleApiExceptionExtensions.cs" />
     <Compile Include="Compute\MetadataExtensions.cs" />

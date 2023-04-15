@@ -102,7 +102,6 @@
     <Compile Include="Services\Adapters\SignInAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
     <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
-    <Compile Include="Data\InstanceExtensions.cs" />
     <Compile Include="Data\OperatingSystems.cs" />
     <Compile Include="Data\Permissions.cs" />
     <Compile Include="Services\Windows\WindowsCredentialService.cs" />
