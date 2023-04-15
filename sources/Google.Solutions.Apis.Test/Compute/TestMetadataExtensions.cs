@@ -20,12 +20,13 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common.ApiExtensions;
+using Google.Solutions.Apis.Compute;
+using Google.Solutions.Common.Test;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.Common.Test.ApiExtensions
+namespace Google.Solutions.Apis.Test.Compute
 {
     [TestFixture]
     public class TestMetadataExtensions : CommonFixtureBase

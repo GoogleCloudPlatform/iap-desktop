@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.Common.ApiExtensions
+namespace Google.Solutions.Apis.Compute
 {
     public static class MetadataExtensions
     {

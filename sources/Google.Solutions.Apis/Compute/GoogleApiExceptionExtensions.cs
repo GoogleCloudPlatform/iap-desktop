@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.ApiExtensions
+namespace Google.Solutions.Apis.Compute
 {
     public static class GoogleApiExceptionExtensions
     {

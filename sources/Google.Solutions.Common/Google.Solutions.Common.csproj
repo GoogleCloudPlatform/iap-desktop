@@ -65,10 +65,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiExtensions\GoogleApiExceptionExtensions.cs" />
-    <Compile Include="ApiExtensions\ResourceMetadataExtensions.cs" />
-    <Compile Include="ApiExtensions\MetadataExtensions.cs" />
-    <Compile Include="ApiExtensions\RequestExtensions.cs" />
     <Compile Include="Diagnostics\BugReport.cs" />
     <Compile Include="Diagnostics\ClrVersion.cs" />
     <Compile Include="Diagnostics\DumpObjectExtensions.cs" />

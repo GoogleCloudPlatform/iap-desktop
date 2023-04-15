@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using System;
@@ -28,7 +29,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.ApiExtensions
+namespace Google.Solutions.Apis.Compute
 {
     /// <summary>
     /// Extension methods for mutating project and instance metadata.

@@ -22,6 +22,7 @@
 using Google.Apis.Compute.v1;
 using Google.Apis.Requests;
 using Google.Apis.Util;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
@@ -29,7 +30,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.ApiExtensions
+namespace Google.Solutions.Apis.Compute
 {
     public static class AwaitOperation
     {

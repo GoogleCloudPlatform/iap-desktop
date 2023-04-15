@@ -21,8 +21,8 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Apis.Compute;
 using Google.Solutions.Common;
-using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
@@ -152,8 +152,9 @@ namespace Google.Solutions.Testing.Common.Integration
                     };
                 }
 
-                await computeEngine.Instances.Insert(
-                        new Apis.Compute.v1.Data.Instance()
+                await computeEngine.Instances
+                    .Insert(
+                        new Google.Apis.Compute.v1.Data.Instance()
                         {
                             Name = name,
                             MachineType = $"zones/{locator.Zone}/machineTypes/{machineType}",
