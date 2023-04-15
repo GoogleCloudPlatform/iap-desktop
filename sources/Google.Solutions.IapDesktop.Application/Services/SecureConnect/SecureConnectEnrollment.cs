@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
@@ -28,7 +27,6 @@ using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
@@ -83,11 +81,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
         public DeviceEnrollmentState State { get; private set; }
         public X509Certificate2 Certificate { get; private set; }
-
-        public Task RefreshAsync() // TODO: Remove
-        {
-            return Task.CompletedTask;
-        }
 
         //---------------------------------------------------------------------
         // Publics.

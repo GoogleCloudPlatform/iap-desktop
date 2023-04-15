@@ -79,13 +79,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
         public async Task ReauthorizeAsync(CancellationToken token)
         {
             //
-            // Make sure we use the right certificate.
-            //
-            await this.DeviceEnrollment
-                .RefreshAsync()
-                .ConfigureAwait(false);
-
-            //
             // As this is a 3p OAuth app, we do not support Gnubby/Password-based
             // reauth. Instead, we simply trigger a new authorization (code flow).
             //
