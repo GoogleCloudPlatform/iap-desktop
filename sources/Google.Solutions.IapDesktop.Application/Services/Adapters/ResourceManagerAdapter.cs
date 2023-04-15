@@ -62,9 +62,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private readonly CloudResourceManagerService service;
 
-        public bool IsDeviceCertiticateAuthenticationEnabled
-            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
-
         public ResourceManagerAdapter(
             ICredential credential,
             IDeviceEnrollment deviceEnrollment)
@@ -80,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Debug.Assert(
                 (deviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == this.IsDeviceCertiticateAuthenticationEnabled);
+                    == this.service.IsDeviceCertificateAuthenticationEnabled());
         }
 
         public ResourceManagerAdapter(ICredential credential)

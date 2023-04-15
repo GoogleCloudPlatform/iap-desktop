@@ -31,6 +31,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     public class AuthorizedClientInitializer : BaseClientService.Initializer
     {
         public AuthorizedClientInitializer(
+            IAuthorization authorization,
+            string mtlsBaseUrl)
+            : this(authorization.Credential, authorization.DeviceEnrollment, mtlsBaseUrl)
+        { }
+
+        public AuthorizedClientInitializer(
             ICredential credential,
             IDeviceEnrollment deviceEnrollment,
             string mtlsBaseUrl)

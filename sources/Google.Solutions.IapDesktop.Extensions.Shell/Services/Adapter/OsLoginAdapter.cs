@@ -73,10 +73,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         private readonly IAuthorization authorization;
         private readonly CloudOSLoginService service;
 
-
-        internal bool IsDeviceCertiticateAuthenticationEnabled
-            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
-
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -93,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             Debug.Assert(
                 (authorization.DeviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == this.IsDeviceCertiticateAuthenticationEnabled);
+                    == this.service.IsDeviceCertificateAuthenticationEnabled());
         }
 
         //---------------------------------------------------------------------

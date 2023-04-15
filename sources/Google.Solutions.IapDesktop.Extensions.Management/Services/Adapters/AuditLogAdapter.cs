@@ -67,9 +67,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
 
         private readonly LoggingService service;
 
-        public bool IsDeviceCertiticateAuthenticationEnabled
-            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
-
         public AuditLogAdapter(
             ICredential credential,
             IDeviceEnrollment deviceEnrollment)
@@ -85,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
             Debug.Assert(
                 (deviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == this.IsDeviceCertiticateAuthenticationEnabled);
+                    == this.service.IsDeviceCertificateAuthenticationEnabled());
         }
 
         public AuditLogAdapter(ICredential credential)

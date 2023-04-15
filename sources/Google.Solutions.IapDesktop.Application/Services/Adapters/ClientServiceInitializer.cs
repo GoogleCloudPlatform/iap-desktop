@@ -49,29 +49,4 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             return handler;
         }
     }
-
-    public static class ClientServiceExtensions //TODO: delete
-    {
-        public static bool IsMtlsEnabled(this IClientService service)
-            => service.BaseUri.Contains(".mtls.googleapis.com");
-
-        public static bool IsClientCertificateProvided(this IClientService service)
-            => IsClientCertificateProvided(service.HttpClient.MessageHandler);
-
-        private static bool IsClientCertificateProvided(HttpMessageHandler handler)
-        {
-            if (handler is DelegatingHandler delegatingHandler)
-            {
-                return IsClientCertificateProvided(delegatingHandler.InnerHandler);
-            }
-            else if (handler is HttpClientHandler httpHandler)
-            {
-                return httpHandler.GetClientCertificates().Any();
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
 }

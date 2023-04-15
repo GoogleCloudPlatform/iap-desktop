@@ -47,12 +47,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     /// </summary>
     public sealed class ComputeEngineAdapter : IComputeEngineAdapter
     {
-        private const string MtlsBaseUri = "https://compute.mtls.googleapis.com/compute/v1/projects/";
+        internal const string MtlsBaseUri = "https://compute.mtls.googleapis.com/compute/v1/projects/";
 
         private readonly ComputeService service;
-
-        internal bool IsDeviceCertiticateAuthenticationEnabled
-            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -73,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Debug.Assert(
                 (deviceEnrollment?.Certificate != null &&
                     HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == this.IsDeviceCertiticateAuthenticationEnabled);
+                    == this.service.IsDeviceCertificateAuthenticationEnabled());
         }
 
         public ComputeEngineAdapter(ICredential credential)
