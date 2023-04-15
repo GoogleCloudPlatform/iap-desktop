@@ -96,7 +96,6 @@
     <Compile Include="Services\Adapters\AuthorizedClientInitializer.cs" />
     <Compile Include="Services\Adapters\Browser.cs" />
     <Compile Include="Services\Adapters\CertificateStoreAdapter.cs" />
-    <Compile Include="Services\Adapters\ClientServiceInitializer.cs" />
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\BuganizerAdapter.cs" />
     <Compile Include="Services\Adapters\ExternalRestAdapter.cs" />

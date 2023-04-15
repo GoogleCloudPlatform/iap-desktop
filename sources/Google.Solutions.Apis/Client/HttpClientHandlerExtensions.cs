@@ -27,7 +27,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Apis.Client
 {
-    public static class HttpClientHandlerExtensions
+    public static class HttpClientHandlerExtensions // TODO: Make internal
     {
         //
         // NB. The ClientCertificate property is only available as of v4.7.1. 

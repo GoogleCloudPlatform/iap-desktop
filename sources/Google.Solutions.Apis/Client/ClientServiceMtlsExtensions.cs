@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Solutions.Common.Util;
@@ -54,6 +55,27 @@ namespace Google.Solutions.Apis.Client
                 // Switch to mTLS endpoint.
                 //
                 initializer.BaseUri = mtlsBaseUrl;
+
+                //
+                // Add client certificate.
+                //
+                initializer.HttpClientFactory = new MtlsHttpClientFactory(deviceCertificate);
+            }
+        }
+
+        /// <summary>
+        /// Enable mTLS/device certificate authentication.
+        /// </summary>
+        public static void EnableDeviceCertificateAuthentication(
+            this AuthorizationCodeFlow.Initializer initializer,
+            X509Certificate2 deviceCertificate)
+        {
+            Precondition.ExpectNotNull(initializer, nameof(initializer));
+            Precondition.ExpectNotNull(deviceCertificate, nameof(deviceCertificate));
+
+            if (HttpClientHandlerExtensions.IsClientCertificateSupported)
+            {
+                ApiTraceSources.Google.TraceInformation("Enabling MTLS for OAuth");
 
                 //
                 // Add client certificate.

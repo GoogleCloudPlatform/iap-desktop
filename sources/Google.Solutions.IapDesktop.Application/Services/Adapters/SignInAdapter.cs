@@ -321,7 +321,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     //
                     // Inject the certificate into all HTTP communication.
                     //
-                    this.HttpClientFactory = new MtlsHttpClientFactory(certificate);
+                    ClientServiceMtlsExtensions.EnableDeviceCertificateAuthentication(
+                        this,
+                        certificate);
 
                     ApplicationTraceSources.Default.TraceVerbose("Using OAuth mTLS endpoints");
                 }
