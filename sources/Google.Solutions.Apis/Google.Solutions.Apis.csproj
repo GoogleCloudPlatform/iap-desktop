@@ -63,9 +63,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\GoogleApiExceptionExtensions.cs" />
+    <Compile Include="GoogleApiExceptionExtensions.cs" />
     <Compile Include="Compute\MetadataExtensions.cs" />
-    <Compile Include="Compute\RequestExtensions.cs" />
+    <Compile Include="Requests\RequestExtensions.cs" />
     <Compile Include="Compute\ResourceMetadataExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

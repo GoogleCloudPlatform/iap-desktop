@@ -30,9 +30,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Apis.Compute
+namespace Google.Solutions.Apis.Requests
 {
-    public static class AwaitOperation
+    public static class RequestExtensions
     {
         private static string ShortIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
 

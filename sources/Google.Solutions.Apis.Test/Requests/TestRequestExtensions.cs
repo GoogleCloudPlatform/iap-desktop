@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Services;
 using Google.Solutions.Apis.Compute;
+using Google.Solutions.Apis.Requests;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Testing.Common;
 using Google.Solutions.Testing.Common.Integration;
@@ -30,7 +31,7 @@ using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Apis.Test.Compute
+namespace Google.Solutions.Apis.Test.Requests
 {
     [TestFixture]
     [UsesCloudResources]

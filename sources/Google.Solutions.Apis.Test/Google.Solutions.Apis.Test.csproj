@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\TestMetadataExtensions.cs" />
-    <Compile Include="Compute\TestRequestExtensions.cs" />
+    <Compile Include="Requests\TestRequestExtensions.cs" />
     <Compile Include="Compute\TestResourceMetadataExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
