@@ -45,7 +45,7 @@ namespace Google.Solutions.Apis.Client
             Precondition.ExpectNotNull(deviceCertificate, nameof(deviceCertificate));
             Debug.Assert(mtlsBaseUrl.Contains(".mtls."));
 
-            if (HttpClientHandlerExtensions.IsClientCertificateSupported)
+            if (HttpClientHandlerExtensions.CanUseClientCertificates)
             {
                 ApiTraceSources.Google.TraceInformation(
                     "Enabling MTLS for {0}",
@@ -73,7 +73,7 @@ namespace Google.Solutions.Apis.Client
             Precondition.ExpectNotNull(initializer, nameof(initializer));
             Precondition.ExpectNotNull(deviceCertificate, nameof(deviceCertificate));
 
-            if (HttpClientHandlerExtensions.IsClientCertificateSupported)
+            if (HttpClientHandlerExtensions.CanUseClientCertificates)
             {
                 ApiTraceSources.Google.TraceInformation("Enabling MTLS for OAuth");
 
@@ -84,6 +84,9 @@ namespace Google.Solutions.Apis.Client
             }
         }
 
+        /// <summary>
+        /// Check if device certificate authentication is enabled.
+        /// </summary>
         public static bool IsDeviceCertificateAuthenticationEnabled(
             this IClientService service)
         {
@@ -109,6 +112,14 @@ namespace Google.Solutions.Apis.Client
                     return false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Check if the platform/runtime supports device certificate authentication.
+        /// </summary>
+        public static bool CanEnableDeviceCertificateAuthentication
+        {
+            get => HttpClientHandlerExtensions.CanUseClientCertificates;
         }
 
         //---------------------------------------------------------------------

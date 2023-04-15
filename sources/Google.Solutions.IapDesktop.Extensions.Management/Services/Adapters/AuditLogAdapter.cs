@@ -78,11 +78,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
                     credential,
                     deviceEnrollment,
                     MtlsBaseUri));
-
-            Debug.Assert(
-                (deviceEnrollment?.Certificate != null &&
-                    HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == this.service.IsDeviceCertificateAuthenticationEnabled());
         }
 
         public AuditLogAdapter(ICredential credential)

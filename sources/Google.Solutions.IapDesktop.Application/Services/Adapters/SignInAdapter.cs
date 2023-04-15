@@ -107,10 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             // Add email scope to requested scope so that we can query
             // user info.
             //
-            return new OAuthInitializer(
-                HttpClientHandlerExtensions.IsClientCertificateSupported ?
-                    this.deviceCertificate
-                    : null)
+            return new OAuthInitializer(this.deviceCertificate)
             {
                 ClientSecrets = clientSecrets,
                 Scopes = this.scopes.Concat(new[] { SignInAdapter.EmailScope }),
@@ -129,17 +126,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 var flow = new GoogleAuthorizationCodeFlow(initializer);
 
                 ApplicationTraceSources.Default.TraceVerbose(
-                    "mTLS supported: {0}", HttpClientHandlerExtensions.IsClientCertificateSupported);
+                    "mTLS supported: {0}", ClientServiceMtlsExtensions.CanEnableDeviceCertificateAuthentication);
                 ApplicationTraceSources.Default.TraceVerbose(
                     "mTLS certificate: {0}", this.deviceCertificate?.Subject);
                 ApplicationTraceSources.Default.TraceVerbose(
                     "TokenServerUrl: {0}", flow.TokenServerUrl);
                 ApplicationTraceSources.Default.TraceVerbose(
                     "RevokeTokenUrl: {0}", flow.RevokeTokenUrl);
-
-                Debug.Assert(
-                    flow.TokenServerUrl.Contains("mtls.") ==
-                    (HttpClientHandlerExtensions.IsClientCertificateSupported && this.deviceCertificate != null));
 
                 return flow;
             }

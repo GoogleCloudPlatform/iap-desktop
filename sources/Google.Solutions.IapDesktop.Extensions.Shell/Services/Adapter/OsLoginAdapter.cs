@@ -81,15 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         {
             this.authorization = authorization.ExpectNotNull(nameof(authorization));
             this.service = new CloudOSLoginService(
-                new AuthorizedClientInitializer(
-                    authorization.Credential,
-                    authorization.DeviceEnrollment,
-                    MtlsBaseUri));
-
-            Debug.Assert(
-                (authorization.DeviceEnrollment?.Certificate != null &&
-                    HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == this.service.IsDeviceCertificateAuthenticationEnabled());
+                new AuthorizedClientInitializer(authorization, MtlsBaseUri));
         }
 
         //---------------------------------------------------------------------
