@@ -88,11 +88,6 @@ namespace Google.Solutions.Testing.Application
             public DeviceEnrollmentState State => DeviceEnrollmentState.Disabled;
 
             public X509Certificate2 Certificate => null;
-
-            public Task RefreshAsync()
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }
