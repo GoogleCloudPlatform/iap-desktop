@@ -100,9 +100,9 @@
     <Compile Include="Host\TestInstall.cs" />
     <Compile Include="Host\TestProfile.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
+    <Compile Include="Services\Adapters\TestAuthorizedClientInitializer.cs" />
     <Compile Include="Services\Adapters\TestCertificateStoreAdapter.cs" />
     <Compile Include="Services\Adapters\TestComputeEngineAdapter.cs" />
-    <Compile Include="Services\Adapters\TestComputeEngineAdapterWithMtls.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Adapters\TestHttpProxyAdapter.cs" />
@@ -110,7 +110,6 @@
     <Compile Include="Services\TestUpdateService.cs" />
     <Compile Include="Services\Windows\TestWindowsCredentialService.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
-    <Compile Include="Services\Adapters\TestResourceManagerAdapterWithMtls.cs" />
     <Compile Include="Services\Authorization\TestAppAuthorization.cs" />
     <Compile Include="Services\Authorization\TestSignInAdapter.cs" />
     <Compile Include="Services\Integration\TestSessionBroker.cs" />

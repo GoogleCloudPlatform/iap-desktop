@@ -27,7 +27,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Apis.Client
 {
-    public static class HttpClientHandlerExtensions
+    internal static class HttpClientHandlerExtensions
     {
         //
         // NB. The ClientCertificate property is only available as of v4.7.1. 
@@ -40,14 +40,14 @@ namespace Google.Solutions.Apis.Client
                 "ClientCertificates",
                 BindingFlags.Instance | BindingFlags.Public);
 
-        public static bool IsClientCertificateSupported
+        public static bool CanUseClientCertificates
             => clientCertificatesProperty != null;
 
         public static bool TryAddClientCertificate(
             this HttpClientHandler handler,
             X509Certificate2 certificate)
         {
-            if (IsClientCertificateSupported)
+            if (CanUseClientCertificates)
             {
                 var clientCertificates = (X509CertificateCollection)
                     clientCertificatesProperty.GetValue(handler);
@@ -63,7 +63,7 @@ namespace Google.Solutions.Apis.Client
         public static IEnumerable<X509Certificate2> GetClientCertificates(
             this HttpClientHandler handler)
         {
-            if (IsClientCertificateSupported)
+            if (CanUseClientCertificates)
             {
                 var certificates = (X509CertificateCollection)
                     clientCertificatesProperty.GetValue(handler);

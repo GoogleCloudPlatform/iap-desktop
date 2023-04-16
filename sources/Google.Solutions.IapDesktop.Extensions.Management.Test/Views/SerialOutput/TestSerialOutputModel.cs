@@ -25,6 +25,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput;
+using Google.Solutions.Testing.Application;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common.Integration;
 using Moq;
@@ -51,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
             var model = await SerialOutputModel
                 .LoadAsync(
                     "display-name",
-                    new ComputeEngineAdapter(await credential),
+                    new ComputeEngineAdapter(await credential.ToAuthorization()),
                     await testInstance,
                     ConsolePort,
                     CancellationToken.None)

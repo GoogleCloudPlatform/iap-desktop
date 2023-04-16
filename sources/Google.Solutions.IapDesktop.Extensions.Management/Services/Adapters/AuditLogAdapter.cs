@@ -67,37 +67,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.Adapters
 
         private readonly LoggingService service;
 
-        public bool IsDeviceCertiticateAuthenticationEnabled
-            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
-
-        public AuditLogAdapter(
-            ICredential credential,
-            IDeviceEnrollment deviceEnrollment)
+        public AuditLogAdapter(IAuthorization authorization)
         {
-            credential.ExpectNotNull(nameof(credential));
+            authorization.ExpectNotNull(nameof(authorization));
 
             this.service = new LoggingService(
-                ClientServiceFactory.ForMtlsEndpoint(
-                    credential,
-                    deviceEnrollment,
-                    MtlsBaseUri));
-
-            Debug.Assert(
-                (deviceEnrollment?.Certificate != null &&
-                    HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == this.IsDeviceCertiticateAuthenticationEnabled);
-        }
-
-        public AuditLogAdapter(ICredential credential)
-            : this(credential, null)
-        {
-            // This constructor should only be used for test cases
-            Debug.Assert(Install.IsExecutingTests);
-        }
-
-        public AuditLogAdapter(IAuthorization authorization)
-            : this(authorization.Credential, authorization.DeviceEnrollment)
-        {
+                new AuthorizedClientInitializer(authorization, MtlsBaseUri));
         }
 
         internal async Task ListEventsAsync(

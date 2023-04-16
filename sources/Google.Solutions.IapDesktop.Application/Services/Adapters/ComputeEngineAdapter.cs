@@ -47,45 +47,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     /// </summary>
     public sealed class ComputeEngineAdapter : IComputeEngineAdapter
     {
-        private const string MtlsBaseUri = "https://compute.mtls.googleapis.com/compute/v1/projects/";
+        internal const string MtlsBaseUri = "https://compute.mtls.googleapis.com/compute/v1/projects/";
 
         private readonly ComputeService service;
-
-        internal bool IsDeviceCertiticateAuthenticationEnabled
-            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        private ComputeEngineAdapter(
-            ICredential credential,
-            IDeviceEnrollment deviceEnrollment)
+        public ComputeEngineAdapter(IAuthorization authorization)
         {
-            credential.ExpectNotNull(nameof(credential));
+            authorization.ExpectNotNull(nameof(authorization));
 
             this.service = new ComputeService(
-                ClientServiceFactory.ForMtlsEndpoint(
-                    credential,
-                    deviceEnrollment,
-                    MtlsBaseUri));
-
-            Debug.Assert(
-                (deviceEnrollment?.Certificate != null &&
-                    HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == this.IsDeviceCertiticateAuthenticationEnabled);
-        }
-
-        public ComputeEngineAdapter(ICredential credential)
-            : this(credential, null)
-        {
-            // This constructor should only be used for test cases
-            Debug.Assert(Install.IsExecutingTests);
-        }
-
-        public ComputeEngineAdapter(IAuthorization authorization)
-            : this(authorization.Credential, authorization.DeviceEnrollment)
-        {
+                new AuthorizedClientInitializer(authorization, MtlsBaseUri));
         }
 
         //---------------------------------------------------------------------

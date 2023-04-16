@@ -62,37 +62,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private readonly CloudResourceManagerService service;
 
-        public bool IsDeviceCertiticateAuthenticationEnabled
-            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
-
-        public ResourceManagerAdapter(
-            ICredential credential,
-            IDeviceEnrollment deviceEnrollment)
+        public ResourceManagerAdapter(IAuthorization authorization)
         {
-            credential.ExpectNotNull(nameof(credential));
+            authorization.ExpectNotNull(nameof(authorization));
 
             this.service = new CloudResourceManagerService(
-                ClientServiceFactory.ForMtlsEndpoint(
-                    credential,
-                    deviceEnrollment,
-                    MtlsBaseUri));
-
-            Debug.Assert(
-                (deviceEnrollment?.Certificate != null &&
-                    HttpClientHandlerExtensions.IsClientCertificateSupported)
-                    == this.IsDeviceCertiticateAuthenticationEnabled);
-        }
-
-        public ResourceManagerAdapter(ICredential credential)
-            : this(credential, null)
-        {
-            // This constructor should only be used for test cases
-            Debug.Assert(Install.IsExecutingTests);
-        }
-
-        public ResourceManagerAdapter(IAuthorization authorization)
-            : this(authorization.Credential, authorization.DeviceEnrollment)
-        {
+                new AuthorizedClientInitializer(authorization, MtlsBaseUri));
         }
 
         public async Task<Project> GetProjectAsync(
