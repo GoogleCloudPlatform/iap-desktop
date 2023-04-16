@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var adapter = new CertificateStoreAdapter();
             adapter.AddUserCertitficate(ExampleCertificate);
 
-            var certificates = adapter.ListUserCertitficates()
+            var certificates = adapter.ListUserCertificates()
                 .Where(cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
             Assert.IsNotNull(certificates);
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             var adapter = new CertificateStoreAdapter();
             adapter.AddUserCertitficate(ExampleCertificate);
 
-            var certificates = adapter.ListComputerCertitficates()
+            var certificates = adapter.ListComputerCertificates()
                 .Where(cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
             Assert.IsNotNull(certificates);

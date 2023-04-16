@@ -166,10 +166,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
             X509Certificate2 FirstCertificateMatchingPolicy(IChromeAutoSelectCertificateForUrlsPolicy policy)
             {
-                return certificateStore.ListUserCertitficates()
-                    .Where(IsCertificateUsableForClientAuthentication)
-                    .Where(cert => policy.IsApplicable(CertificateSelectorUrl, cert))
-                    .FirstOrDefault();
+                foreach (var certificate in certificateStore.ListUserCertificates())
+                {
+                    if (IsCertificateUsableForClientAuthentication(certificate) &&
+                        policy.IsApplicable(CertificateSelectorUrl, certificate))
+                    {
+                        return certificate;
+                    }
+                    else
+                    {
+                        certificate.Dispose();
+                    }
+                }
+
+                return null;
             }
         }
     }
