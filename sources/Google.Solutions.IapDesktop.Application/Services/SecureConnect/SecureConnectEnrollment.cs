@@ -124,33 +124,32 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             // EV-provisioned certificates are also placed in the user's
             // certificate store. 
             //
-            var policyBuilder = new ChromeAutoSelectCertificateForUrlsPolicy.Builder();
 
             //
             // Consider custom configuration and EV default certificate. These
             // take precedence over group policies.
             //
+            X509Certificate2 deviceCertificate = null;
             if (ChromeCertificateSelector.TryParse(
                 settings.DeviceCertificateSelector.StringValue,
                 out var selector))
             {
-                policyBuilder.Add(selector);
+                deviceCertificate = FirstCertificateMatchingPolicy(
+                    new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                        .Add(selector)
+                        .Build());
             }
 
             //
             // Consider group policies.
             //
-            var policy = policyBuilder
-                .AddGroupPoliciesForCurrentUser()
-                .Build();
-
-            //
-            // Try to find a certificate that satisfies the policy.
-            //
-            var deviceCertificate = certificateStore.ListUserCertitficates()
-                .Where(IsCertificateUsableForClientAuthentication)
-                .Where(cert => policy.IsApplicable(CertificateSelectorUrl, cert))
-                .FirstOrDefault();
+            if (deviceCertificate == null)
+            {
+                deviceCertificate = FirstCertificateMatchingPolicy(
+                    new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                        .AddGroupPoliciesForCurrentUser()
+                        .Build());
+            }
 
             if (deviceCertificate != null)
             {
@@ -163,6 +162,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             else
             {
                 return new SecureConnectEnrollment(DeviceEnrollmentState.NotEnrolled, null);
+            }
+
+            X509Certificate2 FirstCertificateMatchingPolicy(IChromeAutoSelectCertificateForUrlsPolicy policy)
+            {
+                return certificateStore.ListUserCertitficates()
+                    .Where(IsCertificateUsableForClientAuthentication)
+                    .Where(cert => policy.IsApplicable(CertificateSelectorUrl, cert))
+                    .FirstOrDefault();
             }
         }
     }
