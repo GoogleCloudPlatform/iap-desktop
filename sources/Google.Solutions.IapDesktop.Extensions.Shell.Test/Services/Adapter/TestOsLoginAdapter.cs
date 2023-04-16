@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
             var authz = new Mock<IAuthorization>();
             authz.SetupGet(a => a.Email).Returns(email);
             authz.SetupGet(a => a.Credential).Returns(TestProject.GetAdminCredential());
-
+            authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
             return new OsLoginAdapter(authz.Object);
         }
 
@@ -55,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
             var authz = new Mock<IAuthorization>();
             authz.SetupGet(a => a.Email).Returns(credential.Email);
             authz.SetupGet(a => a.Credential).Returns(credential);
+            authz.SetupGet(a => a.DeviceEnrollment).Returns(new Mock<IDeviceEnrollment>().Object);
 
             return new OsLoginAdapter(authz.Object);
         }
