@@ -24,6 +24,7 @@ using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
@@ -41,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         //  -CertStoreLocation Cert:\CurrentUser\My\ `
         //  -NotAfter 01/01/2030
         //
-        private readonly X509Certificate2 ExampleOrgCertificate =
+        private static readonly X509Certificate2 ExampleOrgCertificate =
             CertificateUtil.CertificateFromPem(
                 @"-----BEGIN CERTIFICATE-----
                 MIIDHjCCAgagAwIBAgIQSm95EZzky4xExS0A4QJgVzANBgkqhkiG9w0BAQsFADAW
@@ -75,60 +76,64 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenKeyIsNull_ThenFromKeyReturnsDefaultPolicy()
+        public void WhenKeyIsNull_ThenBuilderCreatesEmptyPolicy()
         {
-            var policy = ChromeAutoSelectCertificateForUrlsPolicy.FromKey(null);
+            var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                .AddGroupPolicy((RegistryKey)null)
+                .Build();
 
             Assert.IsNotNull(policy);
-            Assert.AreSame(ChromeAutoSelectCertificateForUrlsPolicy.Default, policy);
+            Assert.IsFalse(policy.Entries.Any());
         }
 
         [Test]
         public void WhenPolicyEmpty_ThenNoCertificatesMatch()
         {
-            var matcher = ChromeAutoSelectCertificateForUrlsPolicy
-                .Default
-                .CreateMatcher(new Uri("https://example.org"));
-
-            Assert.IsNotNull(matcher);
-            Assert.IsFalse(matcher(ExampleOrgCertificate));
+            Assert.IsFalse(new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                .Build()
+                .IsApplicable(new Uri("https://example.org"), ExampleOrgCertificate));
         }
 
         [Test]
-        public void WhenKeyContainsJunkValues_ThenFromKeyIgnoresJunkValues()
+        public void WhenKeyContainsJunkValues_ThenBuilderIgnoresJunkValues()
         {
             this.key.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
             this.key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{}}");
             this.key.SetValue("junk", 1);
             this.key.SetValue("-3", "junk");
 
-            var policy = ChromeAutoSelectCertificateForUrlsPolicy.FromKey(this.key);
+            var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                .AddGroupPolicy(this.key)
+                .Build();
             Assert.AreEqual(2, policy.Entries.Count);
         }
 
         [Test]
-        public void WhenKeyContainsMalformedValues_ThenFromKeyIgnoresJunkValues()
+        public void WhenKeyContainsMalformedValues_ThenBuilderIgnoresJunkValues()
         {
             this.key.SetValue("1", "{'pattern': 'https://[*.]example.org', 'filter':{}}");
             this.key.SetValue("2", "{'pattern': 'https://[*.]example.com', 'filter':{"); // Syntax error.
 
-            var policy = ChromeAutoSelectCertificateForUrlsPolicy.FromKey(this.key);
+            var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                .AddGroupPolicy(this.key)
+                .Build();
             Assert.AreEqual(1, policy.Entries.Count);
         }
 
         [Test]
-        public void WhenKeyContainsSelectors_ThenCreateMatchersEvaluatesSelectors()
+        public void WhenKeyContainsSelectors_ThenBuilderEvaluatesSelectors()
         {
             this.key.SetValue("11",
                 "{'pattern': 'https://[*.]example.org', 'filter':{'SUBJECT': {'CN': 'example.org'}}}");
             this.key.SetValue("20",
                 "{'pattern': 'https://[*.]example.com', 'filter':{'SUBJECT': {'CN': 'example.com'}}}");
 
-            var policy = ChromeAutoSelectCertificateForUrlsPolicy
-                .FromKey(this.key);
+            var policy = new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                .AddGroupPolicy(this.key)
+                .Build();
 
-            Assert.IsTrue(policy.CreateMatcher(new Uri("https://www.example.org"))(ExampleOrgCertificate));
-            Assert.IsFalse(policy.CreateMatcher(new Uri("https://www.example.com"))(ExampleOrgCertificate));
+            Assert.IsTrue(policy.IsApplicable(new Uri("https://www.example.org"), ExampleOrgCertificate));
+            Assert.IsFalse(policy.IsApplicable(new Uri("https://www.example.com"), ExampleOrgCertificate));
         }
     }
 }

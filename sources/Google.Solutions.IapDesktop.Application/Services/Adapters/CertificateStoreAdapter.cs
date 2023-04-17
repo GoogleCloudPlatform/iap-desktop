@@ -28,9 +28,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface ICertificateStoreAdapter
     {
-        IEnumerable<X509Certificate2> ListComputerCertitficates();
+        IEnumerable<X509Certificate2> ListComputerCertificates();
 
-        IEnumerable<X509Certificate2> ListUserCertitficates();
+        IEnumerable<X509Certificate2> ListUserCertificates();
     }
 
     public class CertificateStoreAdapter : ICertificateStoreAdapter
@@ -68,10 +68,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public IEnumerable<X509Certificate2> ListUserCertitficates()
+        public IEnumerable<X509Certificate2> ListUserCertificates()
             => ListCertitficates(StoreLocation.CurrentUser);
 
-        public IEnumerable<X509Certificate2> ListComputerCertitficates()
+        public IEnumerable<X509Certificate2> ListComputerCertificates()
             => ListCertitficates(StoreLocation.LocalMachine);
     }
 }

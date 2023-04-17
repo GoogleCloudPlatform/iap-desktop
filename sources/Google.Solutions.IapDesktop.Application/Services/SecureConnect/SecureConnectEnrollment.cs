@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -27,17 +27,16 @@ using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
     public class SecureConnectEnrollment : IDeviceEnrollment
     {
         //
-        // By default, use the certificate provisioned by the
+        // Pseudo-selector for the EV certificate installed by the
         // SecureConnect native helper.
         //
-        public const string DefaultDeviceCertificateSelector =
+        internal const string DefaultDeviceCertificateSelector =
             @"{
                 'filter':{
                     'ISSUER': {
@@ -58,126 +57,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         private const string EnhancedKeyUsageOid = "2.5.29.37";
         private const string ClientAuthenticationKeyUsageOid = "1.3.6.1.5.5.7.3.2";
 
-        private readonly ApplicationSettingsRepository applicationSettingsRepository;
-        private readonly ICertificateStoreAdapter certificateStore;
-        private readonly IChromePolicy chromePolicy;
+        private SecureConnectEnrollment(
+            DeviceEnrollmentState state,
+            X509Certificate2 certificate)
+        {
+            this.State = state;
+            this.Certificate = certificate;
+        }
 
-        private static bool IsCertificateUsableForClientAuthentication(X509Certificate2 certificate)
+        private static bool IsCertificateUsableForClientAuthentication(
+            X509Certificate2 certificate)
         {
             return certificate.Extensions
                 .OfType<X509EnhancedKeyUsageExtension>()
                 .Where(ext => ext.Oid.Value == EnhancedKeyUsageOid)
                 .SelectMany(ext => ext.EnhancedKeyUsages.Cast<Oid>())
                 .Any(oid => oid.Value == ClientAuthenticationKeyUsageOid);
-        }
-
-        private SecureConnectEnrollment(
-            ICertificateStoreAdapter certificateStore,
-            IChromePolicy chromePolicy,
-            ApplicationSettingsRepository applicationSettingsRepository)
-        {
-            this.applicationSettingsRepository = applicationSettingsRepository;
-            this.certificateStore = certificateStore;
-            this.chromePolicy = chromePolicy;
-
-            // Initialize to a default state. The real initialization
-            // happens in RefreshAsync().
-
-            this.State = DeviceEnrollmentState.Disabled;
-            this.Certificate = null;
-        }
-
-        private X509Certificate2 TryGetClientCertificateForCurrentUser(
-            Func<X509Certificate2, bool> filter)
-        {
-            return this.certificateStore.ListUserCertitficates()
-                .Where(IsCertificateUsableForClientAuthentication)
-                .Where(filter)
-                .FirstOrDefault();
-        }
-
-        private void Refresh()
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            {
-                if (!this.applicationSettingsRepository.GetSettings()
-                    .IsDeviceCertificateAuthenticationEnabled.BoolValue)
-                {
-                    this.State = DeviceEnrollmentState.Disabled;
-                    this.Certificate = null;
-                    return;
-                }
-
-                //
-                // Find the right client certificate for mTLS.
-                //
-                // Candidates are:
-                //  - custom certificate (=> from settings)
-                //  - enterprise certificate (=> from Chrome policy)
-                //  - EV default certificate
-                // 
-                // Priorities are (highest to lowest):
-                //  1. Custom certiticate
-                //  2. EV default certiticate
-                //  3. Enterprise certificate
-                //
-                // NB. Even if we find a certificiate, it might not be
-                // associated with the signed-on user. But finding out
-                // would require interacting with the undocumented APIs
-                // of the native helper. False positives are harmless,
-                // so err on assuming that the device is enrolled.
-                //
-                // NB. When looking for client certificates, Chrome only
-                // considers the current user's certificate store:
-                // https://source.chromium.org/chromium/chromium/src/+/main:net/ssl/client_cert_store_win.cc;l=252?q=certopenstore&ss=chromium.
-                // 
-                // A client certificate that only exists in the machine
-                // certificate store won't be picked up by Chrome and the
-                // EV extension, and thus won'e be usuable for mTLS.
-                //
-                // EV-provisioned certificates are also placed in the user's
-                // certificate store. 
-                //
-
-                if (ChromeCertificateSelector.TryParse(
-                        this.applicationSettingsRepository.GetSettings().DeviceCertificateSelector.StringValue,
-                        out var selector) &&
-                    TryGetClientCertificateForCurrentUser(
-                        cert => selector.IsMatch(CertificateSelectorUrl, cert)) is var customCertificate &&
-                    customCertificate != null)
-                {
-                    ApplicationTraceSources.Default.TraceInformation(
-                        "Device certificate found based on custom settings, " +
-                        "assuming device is enrolled");
-
-                    this.State = DeviceEnrollmentState.Enrolled;
-                    this.Certificate = customCertificate;
-                }
-                else if (TryGetClientCertificateForCurrentUser(
-                    this.chromePolicy.GetAutoSelectCertificateForUrlsPolicy(
-                        CertificateSelectorUrl)) is var chromeClientCertificate &&
-                    chromeClientCertificate != null)
-                {
-                    ApplicationTraceSources.Default.TraceInformation(
-                        "Device certificate found based on Chrome policy, " +
-                        "assuming device is enrolled");
-
-                    this.State = DeviceEnrollmentState.Enrolled;
-                    this.Certificate = chromeClientCertificate;
-                }
-                else
-                {
-                    //
-                    // No certiticate found, so the device cannot be enrolled.
-                    // 
-                    ApplicationTraceSources.Default.TraceInformation(
-                        "No suitable device certificate found " +
-                        "in certificate store, device not enrolled");
-
-                    this.State = DeviceEnrollmentState.NotEnrolled;
-                    this.Certificate = null;
-                }
-            }
         }
 
         //---------------------------------------------------------------------
@@ -187,27 +82,105 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         public DeviceEnrollmentState State { get; private set; }
         public X509Certificate2 Certificate { get; private set; }
 
-        public Task RefreshAsync()
-        {
-            return Task.Run(() => Refresh());
-        }
-
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
 
-        public static async Task<SecureConnectEnrollment> GetEnrollmentAsync(
+        public static SecureConnectEnrollment Create(
             ICertificateStoreAdapter certificateStore,
-            IChromePolicy chromePolicy,
             ApplicationSettingsRepository applicationSettingsRepository)
         {
-            var enrollment = new SecureConnectEnrollment(
-                certificateStore,
-                chromePolicy,
-                applicationSettingsRepository);
-            await enrollment.RefreshAsync()
-                .ConfigureAwait(false);
-            return enrollment;
+            certificateStore.ExpectNotNull(nameof(certificateStore));
+            applicationSettingsRepository.ExpectNotNull(nameof(applicationSettingsRepository));
+
+            var settings = applicationSettingsRepository.GetSettings();
+            if (!settings.IsDeviceCertificateAuthenticationEnabled.BoolValue)
+            {
+                return new SecureConnectEnrollment(DeviceEnrollmentState.Disabled, null);
+            }
+
+            //
+            // Find the right client certificate for mTLS.
+            //
+            // Candidates are (in order or priority):
+            //  1. Custom certiticate (from settings)
+            //  2. EV default certiticate
+            //  3. Enterprise certificate (from group policy)
+            //
+            // NB. Even if we find a certificiate, it might not be
+            // associated with the signed-on user. But finding out
+            // would require interacting with the undocumented APIs
+            // of the native helper. False positives are harmless,
+            // so err on assuming that the device is enrolled.
+            //
+            // NB. When looking for client certificates, Chrome only
+            // considers the current user's certificate store:
+            // https://source.chromium.org/chromium/chromium/src/+/main:net/ssl/client_cert_store_win.cc;l=252?q=certopenstore&ss=chromium.
+            // 
+            // A client certificate that only exists in the machine
+            // certificate store won't be picked up by Chrome and the
+            // EV extension, and thus won'e be usuable for mTLS.
+            //
+            // EV-provisioned certificates are also placed in the user's
+            // certificate store. 
+            //
+
+            //
+            // Consider custom configuration and EV default certificate. These
+            // take precedence over group policies.
+            //
+            X509Certificate2 deviceCertificate = null;
+            if (ChromeCertificateSelector.TryParse(
+                settings.DeviceCertificateSelector.StringValue,
+                out var selector))
+            {
+                deviceCertificate = FirstCertificateMatchingPolicy(
+                    new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                        .Add(selector)
+                        .Build());
+            }
+
+            //
+            // Consider group policies.
+            //
+            if (deviceCertificate == null)
+            {
+                deviceCertificate = FirstCertificateMatchingPolicy(
+                    new ChromeAutoSelectCertificateForUrlsPolicy.Builder()
+                        .AddGroupPoliciesForCurrentUser()
+                        .Build());
+            }
+
+            if (deviceCertificate != null)
+            {
+                ApplicationTraceSources.Default.TraceInformation(
+                    "Device certificate found: {0}", 
+                    deviceCertificate.Subject);
+
+                return new SecureConnectEnrollment(DeviceEnrollmentState.Enrolled, deviceCertificate);
+            }
+            else
+            {
+                return new SecureConnectEnrollment(DeviceEnrollmentState.NotEnrolled, null);
+            }
+
+            X509Certificate2 FirstCertificateMatchingPolicy(IChromeAutoSelectCertificateForUrlsPolicy policy)
+            {
+                foreach (var certificate in certificateStore.ListUserCertificates())
+                {
+                    if (IsCertificateUsableForClientAuthentication(certificate) &&
+                        policy.IsApplicable(CertificateSelectorUrl, certificate))
+                    {
+                        return certificate;
+                    }
+                    else
+                    {
+                        certificate.Dispose();
+                    }
+                }
+
+                return null;
+            }
         }
     }
 }

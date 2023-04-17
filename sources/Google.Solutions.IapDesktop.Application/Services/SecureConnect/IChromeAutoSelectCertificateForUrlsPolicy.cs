@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2021 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,34 +19,18 @@
 // under the License.
 //
 
-using Microsoft.Win32;
 using System;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
-    public interface IChromePolicy
+    public interface IChromeAutoSelectCertificateForUrlsPolicy
     {
-        Func<X509Certificate2, bool> GetAutoSelectCertificateForUrlsPolicy(
-            Uri url);
-    }
-
-    public class ChromePolicy : IChromePolicy
-    {
-        public Func<X509Certificate2, bool> GetAutoSelectCertificateForUrlsPolicy(Uri url)
-        {
-            //
-            // Consider machine- and user-based policies.
-            //
-            var machinePolicyMatcher = ChromeAutoSelectCertificateForUrlsPolicy
-                .FromKey(RegistryHive.LocalMachine)
-                .CreateMatcher(url);
-
-            var userPolicyMatcher = ChromeAutoSelectCertificateForUrlsPolicy
-                .FromKey(RegistryHive.CurrentUser)
-                .CreateMatcher(url);
-
-            return cert => machinePolicyMatcher(cert) || userPolicyMatcher(cert);
-        }
+        /// <summary>
+        /// Check if the certificate is applicable for the given URL.
+        /// </summary>
+        bool IsApplicable(
+            Uri uri,
+            X509Certificate2 clientCertificate);
     }
 }

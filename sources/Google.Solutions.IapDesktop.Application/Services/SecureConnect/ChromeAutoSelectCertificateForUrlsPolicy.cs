@@ -35,14 +35,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
     /// AutoSelectCertificateForUrls policy. See
     /// https://chromeenterprise.google/policies/#AutoSelectCertificateForUrls
     /// </summary>
-    internal class ChromeAutoSelectCertificateForUrlsPolicy
+    public class ChromeAutoSelectCertificateForUrlsPolicy : IChromeAutoSelectCertificateForUrlsPolicy
     {
         private const string KeyPath = @"SOFTWARE\Policies\Google\Chrome\AutoSelectCertificateForUrls";
 
-        public static ChromeAutoSelectCertificateForUrlsPolicy Default =
-            new ChromeAutoSelectCertificateForUrlsPolicy(Array.Empty<ChromeCertificateSelector>());
-
-        public IReadOnlyCollection<ChromeCertificateSelector> Entries { get; }
+        internal IReadOnlyCollection<ChromeCertificateSelector> Entries { get; }
 
         private ChromeAutoSelectCertificateForUrlsPolicy(
             IReadOnlyCollection<ChromeCertificateSelector> entries)
@@ -50,7 +47,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             this.Entries = entries;
         }
 
-        public Func<X509Certificate2, bool> CreateMatcher(Uri uri)
+        //---------------------------------------------------------------------
+        // IChromeAutoSelectCertificateForUrlsPolicy.
+        //---------------------------------------------------------------------
+
+        public bool IsApplicable(Uri uri, X509Certificate2 clientCertificate)
         {
             var selectors = this.Entries.Where(e => e.Pattern.IsMatch(uri));
             if (selectors == null)
@@ -58,69 +59,102 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                 //
                 // No selector => no certificate matches.
                 //
-                return _ => false;
+                return false;
             }
             else
             {
                 //
                 // At least one selector found => try them (in order) to match certificates.
                 //
-                return certificate => selectors.Any(s => s.IsMatch(uri, certificate));
+                return selectors.Any(s => s.IsMatch(uri, clientCertificate));
             }
         }
 
-        private static IEnumerable<ChromeCertificateSelector> LoadEntries(RegistryKey registryKey)
+        //---------------------------------------------------------------------
+        // Builder.
+        //---------------------------------------------------------------------
+
+        public class Builder
         {
-            //
-            // The key contains any number of values named "1", "2", ...
-            //
-            var sortedValueNames = registryKey
-                .GetValueNames()
-                .EnsureNotNull()
-                .Where(name => uint.TryParse(name, out var _))
-                .Select(name => uint.Parse(name))
-                .OrderBy(name => name)
-                .ToList();
+            private readonly LinkedList<ChromeCertificateSelector> entries
+                = new LinkedList<ChromeCertificateSelector>();
 
-            var selectors = new LinkedList<ChromeCertificateSelector>();
-
-            foreach (var valueName in sortedValueNames)
+            internal Builder Add(ChromeCertificateSelector entry)
             {
-                if (registryKey.GetValue(valueName.ToString(), null) is string value)
+                this.entries.AddLast(entry);
+                return this;
+            }
+
+            /// <summary>
+            /// Add entries from a specific group policy key.
+            /// </summary>
+            public Builder AddGroupPolicy(RegistryKey registryKey)
+            {
+                if (registryKey == null)
                 {
-                    try
+                    return this;
+                }
+
+                //
+                // The key contains any number of values named "1", "2", ...
+                //
+                var sortedValueNames = registryKey
+                    .GetValueNames()
+                    .EnsureNotNull()
+                    .Where(name => uint.TryParse(name, out var _))
+                    .Select(name => uint.Parse(name))
+                    .OrderBy(name => name)
+                    .ToList();
+
+                foreach (var valueName in sortedValueNames)
+                {
+                    if (registryKey.GetValue(valueName.ToString(), null) is string value)
                     {
-                        selectors.AddLast(ChromeCertificateSelector.Parse(value));
+                        try
+                        {
+                            this.entries.AddLast(ChromeCertificateSelector.Parse(value));
+                        }
+                        catch (JsonException e)
+                        {
+                            //
+                            // Malformed entry, ignore.
+                            //
+                            ApplicationTraceSources.Default.TraceVerbose(
+                                "Encountered malformed AutoSelectCertificateForUrls policy entry '{0}': {1}",
+                                value,
+                                e.Message);
+                        }
                     }
-                    catch (JsonException e)
-                    {
-                        //
-                        // Malformed entry, ignore.
-                        //
-                        ApplicationTraceSources.Default.TraceVerbose(
-                            "Encountered malformed AutoSelectCertificateForUrls policy entry '{0}': {1}",
-                            value,
-                            e.Message);
-                    }
+                }
+
+                return this;
+            }
+
+            /// <summary>
+            /// Add entries from default group policy key in the given hive.
+            /// </summary>
+            public Builder AddGroupPolicy(RegistryHive hive)
+            {
+                using (var hiveKey = RegistryKey.OpenBaseKey(hive, RegistryView.Default))
+                using (var key = hiveKey.OpenSubKey(KeyPath))
+                {
+                    return AddGroupPolicy(key);
                 }
             }
 
-            return selectors;
-        }
-
-        public static ChromeAutoSelectCertificateForUrlsPolicy FromKey(RegistryKey registryKey)
-        {
-            return registryKey == null
-                ? Default
-                : new ChromeAutoSelectCertificateForUrlsPolicy(LoadEntries(registryKey).ToList());
-        }
-
-        public static ChromeAutoSelectCertificateForUrlsPolicy FromKey(RegistryHive hive)
-        {
-            using (var hiveKey = RegistryKey.OpenBaseKey(hive, RegistryView.Default))
-            using (var key = hiveKey.OpenSubKey(KeyPath))
+            /// <summary>
+            /// Add entries from all group policies applying to the current user.
+            /// </summary>
+            public Builder AddGroupPoliciesForCurrentUser()
             {
-                return FromKey(key);
+                AddGroupPolicy(RegistryHive.LocalMachine);
+                AddGroupPolicy(RegistryHive.CurrentUser);
+                return this;
+            }
+
+            public ChromeAutoSelectCertificateForUrlsPolicy Build()
+            {
+                return new ChromeAutoSelectCertificateForUrlsPolicy(this.entries);
             }
         }
     }
