@@ -2877,7 +2877,7 @@
         <Background Type="CT_RAW" Source="FFE2E2E2" />
       </Color>
       <Color Name="FileTabHotBorder">
-        <Background Type="CT_RAW" Source="FF006CBE" />
+        <Background Type="CT_RAW" Source="FF3197DA" />
       </Color>
       <Color Name="FileTabHotGlyph">
         <Background Type="CT_RAW" Source="FFD0E6F5" />
