@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Util;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
+namespace Google.Solutions.Platform.Net
 {
     /// <summary>
     /// Content settings pattern as defined in 

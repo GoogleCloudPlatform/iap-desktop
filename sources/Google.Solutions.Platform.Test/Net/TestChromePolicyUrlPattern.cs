@@ -19,15 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Platform.Net;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
+namespace Google.Solutions.Platform.Test.Net
 {
     [TestFixture]
-    public class TestChromePolicyUrlPattern : ApplicationFixtureBase
+    public class TestChromePolicyUrlPattern
     {
         [Test]
         public void WhenPatternIsMalformed_ThenParseThrowsException()

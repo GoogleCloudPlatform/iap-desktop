@@ -24,6 +24,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using System;
 using System.Net;
+using Google.Solutions.Platform.Net;
 
 #pragma warning disable CA1822 // Mark members as static
 

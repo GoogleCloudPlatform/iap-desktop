@@ -26,7 +26,6 @@ using Google.Solutions.Mvvm.Shell;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;

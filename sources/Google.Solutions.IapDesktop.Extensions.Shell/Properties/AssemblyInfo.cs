@@ -22,14 +22,14 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Remote shell extension library")]
-[assembly: AssemblyDescription("Remote shell extension library")]
+[assembly: AssemblyTitle("Google.Solutions.IapDesktop.Extensions.Shell")]
+[assembly: AssemblyDescription("Session extension")]
 [assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright © 2019-2023 Google LLC")]
 [assembly: AssemblyTrademark("Google LLC")]
 
-[assembly: AssemblyVersion("2.35.1")]
-[assembly: AssemblyFileVersion("2.35.1")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
 
 [assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Shell.Test")]

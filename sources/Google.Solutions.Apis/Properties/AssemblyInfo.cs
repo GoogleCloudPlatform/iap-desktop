@@ -23,10 +23,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("Google.Solutions.Apis")]
-[assembly: AssemblyDescription("Google API extensions")]
+[assembly: AssemblyDescription("API extensions library")]
 [assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright © 2023")]
+[assembly: AssemblyCopyright("Copyright © 2019-2023 Google LLC")]
 [assembly: AssemblyTrademark("Google LLC")]
 
 [assembly: AssemblyVersion("1.0.1.0")]

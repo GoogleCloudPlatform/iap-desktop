@@ -19,16 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Platform.Net;
 using NUnit.Framework;
 using System;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
+namespace Google.Solutions.Platform.Test.Net
 {
     [TestFixture]
-    public class TestChromeCertificateSelector : ApplicationFixtureBase
+    public class TestChromeCertificateSelector
     {
         private static readonly X500DistinguishedName ComplexIssuerDn =
             new X500DistinguishedName("C=US,S=CA,L=MTV,O=Acme,OU=Sales,CN=Issuer");

@@ -1,5 +1,5 @@
-//
-// Copyright 2019 Google LLC
+﻿//
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -22,8 +22,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Google.Solutions.Mvvm")]
-[assembly: AssemblyDescription("MVVM and controls library")]
+[assembly: AssemblyTitle("Google.Solutions.Platform")]
+[assembly: AssemblyDescription("Platform extensions library")]
 [assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
 [assembly: AssemblyCopyright("Copyright © 2019-2023 Google LLC")]
@@ -32,4 +32,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyVersion("1.0.1.0")]
 [assembly: AssemblyFileVersion("1.0.1.0")]
 
-[assembly: InternalsVisibleTo("Google.Solutions.Mvvm.Test")]
+[assembly: InternalsVisibleTo("Google.Solutions.Platform.Test")]

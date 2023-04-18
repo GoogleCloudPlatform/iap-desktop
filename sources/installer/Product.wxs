@@ -211,6 +211,12 @@
           Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Apis.dll"
           Vital="yes"/>
         <File
+          Id="FileGoogleSolutionsPlatformDll"
+          Name="Google.Solutions.Platform.dll"
+          DiskId="1"
+          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Platform.dll"
+          Vital="yes"/>
+        <File
           Id="FileGoogleSolutionsCommonDll"
           Name="Google.Solutions.Common.dll"
           DiskId="1"

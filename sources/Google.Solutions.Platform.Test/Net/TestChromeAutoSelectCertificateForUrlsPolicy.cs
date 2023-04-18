@@ -19,18 +19,18 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Platform.Net;
+using Google.Solutions.Testing.Common.Cryptography;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
+namespace Google.Solutions.Platform.Test.Net
 {
     [TestFixture]
-    public class TestChromeAutoSelectCertificateForUrlsPolicy : ApplicationFixtureBase
+    public class TestChromeAutoSelectCertificateForUrlsPolicy
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 

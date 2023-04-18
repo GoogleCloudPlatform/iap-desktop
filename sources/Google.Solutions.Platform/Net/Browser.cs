@@ -23,7 +23,7 @@ using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Platform.Net
 {
     public enum BrowserPreference
     {

@@ -44,6 +44,7 @@ POLICIES_PACKAGE   = installer\bin\$(CONFIGURATION)\PolicyTemplates-$(BINARY_VER
 
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Apis.Test\bin\$(CONFIGURATION)\Google.Solutions.Apis.Test.dll	\
+	Google.Solutions.Platform.Test\bin\$(CONFIGURATION)\Google.Solutions.Platform.Test.dll	\
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
 	Google.Solutions.IapTunneling.Test\bin\$(CONFIGURATION)\Google.Solutions.IapTunneling.Test.dll \
 	Google.Solutions.Ssh.Test\bin\$(PLATFORM)\$(CONFIGURATION)\Google.Solutions.Ssh.Test.dll \
@@ -54,6 +55,7 @@ NUNIT_ASSEMBLIES = \
 
 NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.Apis]* \
+	+[Google.Solutions.Platform]* \
 	+[Google.Solutions.Common]* \
 	+[Google.Solutions.IapTunneling]* \
 	+[Google.Solutions.Ssh]* \

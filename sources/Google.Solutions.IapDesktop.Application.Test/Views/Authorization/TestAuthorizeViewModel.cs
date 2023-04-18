@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Views.Authorization;
+using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Application.Test;
 using Google.Solutions.Testing.Common;
 using Moq;

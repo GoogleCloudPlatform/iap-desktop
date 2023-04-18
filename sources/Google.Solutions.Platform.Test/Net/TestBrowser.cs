@@ -1,5 +1,5 @@
-//
-// Copyright 2019 Google LLC
+﻿//
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,17 +19,31 @@
 // under the License.
 //
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using Google.Solutions.Platform.Net;
+using NUnit.Framework;
 
-[assembly: AssemblyTitle("Google.Solutions.Mvvm")]
-[assembly: AssemblyDescription("MVVM and controls library")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright © 2019-2023 Google LLC")]
-[assembly: AssemblyTrademark("Google LLC")]
+namespace Google.Solutions.Platform.Test.Net
+{
+    [TestFixture]
+    public class TestBrowser
+    {
+        [Test]
+        public void WhenPreferenceIsDefault_ThenGetReturnsDefaultBrowser()
+        {
+            Assert.AreSame(Browser.Default, Browser.Get(BrowserPreference.Default));
+        }
 
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+        [Test]
+        public void WhenPreferenceIsChrome_ThenGetReturnsDefaultBrowser()
+        {
+            if (!ChromeBrowser.IsAvailable)
+            {
+                Assert.Inconclusive("Chrome not installed");
+                return;
+            }
 
-[assembly: InternalsVisibleTo("Google.Solutions.Mvvm.Test")]
+            var browser = Browser.Get(BrowserPreference.Chrome);
+            Assert.IsInstanceOf<ChromeBrowser>(browser);
+        }
+    }
+}

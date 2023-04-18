@@ -19,18 +19,13 @@
 // under the License.
 //
 
-using System;
-using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
+using System.Diagnostics;
+
+namespace Google.Solutions.Platform
 {
-    public interface IChromeAutoSelectCertificateForUrlsPolicy
+    public static class PlatformTraceSources
     {
-        /// <summary>
-        /// Check if the certificate is applicable for the given URL.
-        /// </summary>
-        bool IsApplicable(
-            Uri uri,
-            X509Certificate2 clientCertificate);
+        public static readonly TraceSource Default = new TraceSource(typeof(PlatformTraceSources).Namespace);
     }
 }

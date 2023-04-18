@@ -1,5 +1,5 @@
-//
-// Copyright 2019 Google LLC
+﻿//
+// Copyright 2021 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,17 +19,18 @@
 // under the License.
 //
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
 
-[assembly: AssemblyTitle("Google.Solutions.Mvvm")]
-[assembly: AssemblyDescription("MVVM and controls library")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright © 2019-2023 Google LLC")]
-[assembly: AssemblyTrademark("Google LLC")]
-
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
-
-[assembly: InternalsVisibleTo("Google.Solutions.Mvvm.Test")]
+namespace Google.Solutions.Testing.Common.Cryptography
+{
+    public static class CertificateUtil
+    {
+        public static X509Certificate2 CertificateFromPem(string pem)
+        {
+            var tempFile = Path.GetTempFileName();
+            File.WriteAllText(tempFile, pem);
+            return new X509Certificate2(tempFile);
+        }
+    }
+}
