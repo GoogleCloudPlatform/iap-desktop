@@ -22,11 +22,11 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Activity extension library")]
-[assembly: AssemblyDescription("Activity extension library")]
+[assembly: AssemblyTitle("Google.Solutions.IapDesktop.Extensions.Management")]
+[assembly: AssemblyDescription("Management extension")]
 [assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright © 2019-2023 Google LLC")]
 [assembly: AssemblyTrademark("Google LLC")]
 
 [assembly: AssemblyVersion("1.0.1.0")]

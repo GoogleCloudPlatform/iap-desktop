@@ -25,7 +25,7 @@ using System.Reflection;
 [assembly: AssemblyDescription("Zero-trust Remote Desktop and SSH client")]
 [assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  Google LLC")]
+[assembly: AssemblyCopyright("Copyright © 2019-2023 Google LLC")]
 [assembly: AssemblyTrademark("Google LLC")]
 
 [assembly: AssemblyVersion("1.0.1.0")]
