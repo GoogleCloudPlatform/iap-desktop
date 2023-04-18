@@ -28,7 +28,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Google.Solutions.Platform.Test.Cryptography
 {
     [TestFixture]
-    public class TestCertificateStoreAdapter 
+    public class TestCertificateStore 
     {
         //
         // Self-signed certificate, created using:
@@ -99,23 +99,23 @@ namespace Google.Solutions.Platform.Test.Cryptography
         [SetUp]
         public void SetUp()
         {
-            var adapter = new CertificateStoreAdapter();
-            adapter.RemoveUserCertitficate(ExampleCertificate);
+            var store = new CertificateStore();
+            store.RemoveUserCertitficate(ExampleCertificate);
         }
 
         [Test]
         public void ListUserCertificatesReturnsUserCertificate()
         {
-            var adapter = new CertificateStoreAdapter();
-            adapter.AddUserCertitficate(ExampleCertificate);
+            var store = new CertificateStore();
+            store.AddUserCertitficate(ExampleCertificate);
 
-            var certificates = adapter.ListUserCertificates()
+            var certificates = store.ListUserCertificates()
                 .Where(cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
             Assert.IsNotNull(certificates);
             Assert.AreEqual(1, certificates.Count());
             Assert.AreEqual(
-                TestCertificateStoreAdapter.ExampleCertificate.Thumbprint,
+                TestCertificateStore.ExampleCertificate.Thumbprint,
                 certificates.First().Thumbprint);
             Assert.AreEqual(
                 ExampleCertitficateSubject,
@@ -125,10 +125,10 @@ namespace Google.Solutions.Platform.Test.Cryptography
         [Test]
         public void ListComputerCertificatesDoesNotReturnUserCertificate()
         {
-            var adapter = new CertificateStoreAdapter();
-            adapter.AddUserCertitficate(ExampleCertificate);
+            var store = new CertificateStore();
+            store.AddUserCertitficate(ExampleCertificate);
 
-            var certificates = adapter.ListComputerCertificates()
+            var certificates = store.ListComputerCertificates()
                 .Where(cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
             Assert.IsNotNull(certificates);

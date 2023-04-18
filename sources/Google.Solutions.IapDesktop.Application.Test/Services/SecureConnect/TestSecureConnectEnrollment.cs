@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
             this.settingsRepository.SetSettings(settings);
 
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            var certificateStore = new Mock<ICertificateStore>();
             var enrollment = SecureConnectEnrollment.Create(
                 certificateStore.Object,
                 this.settingsRepository);
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            var certificateStore = new Mock<ICertificateStore>();
             certificateStore.Setup(s => s.ListUserCertificates())
                 .Returns(Enumerable.Empty<X509Certificate2>());
             certificateStore.Setup(s => s.ListComputerCertificates())
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            var certificateStore = new Mock<ICertificateStore>();
             certificateStore.Setup(s => s.ListComputerCertificates())
                 .Returns(Enumerable.Empty<X509Certificate2>());
             certificateStore.Setup(s => s.ListUserCertificates())
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
             this.settingsRepository.SetSettings(settings);
 
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            var certificateStore = new Mock<ICertificateStore>();
             certificateStore.Setup(s => s.ListComputerCertificates())
                 .Returns(() => new[] { CertificateUtil.CertificateFromPem(EndpointVerificationCertificate) });
             certificateStore.Setup(s => s.ListUserCertificates())
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 }";
             this.settingsRepository.SetSettings(settings);
 
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            var certificateStore = new Mock<ICertificateStore>();
             certificateStore.Setup(s => s.ListUserCertificates())
                 .Returns(Enumerable.Empty<X509Certificate2>());
             certificateStore.Setup(s => s.ListComputerCertificates())
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 }";
             this.settingsRepository.SetSettings(settings);
 
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            var certificateStore = new Mock<ICertificateStore>();
             certificateStore.Setup(s => s.ListUserCertificates())
                 .Returns(() => new[] { CertificateUtil.CertificateFromPem(CustomCertificateForServerAuth) });
             certificateStore.Setup(s => s.ListComputerCertificates())
@@ -308,7 +308,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 }";
             this.settingsRepository.SetSettings(settings);
 
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
+            var certificateStore = new Mock<ICertificateStore>();
             certificateStore.Setup(s => s.ListComputerCertificates())
                 .Returns(Enumerable.Empty<X509Certificate2>());
             certificateStore.Setup(s => s.ListUserCertificates())

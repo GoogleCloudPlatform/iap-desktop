@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         //---------------------------------------------------------------------
 
         public static SecureConnectEnrollment Create(
-            ICertificateStoreAdapter certificateStore,
+            ICertificateStore certificateStore,
             ApplicationSettingsRepository applicationSettingsRepository)
         {
             certificateStore.ExpectNotNull(nameof(certificateStore));

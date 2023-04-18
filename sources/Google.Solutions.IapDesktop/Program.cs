@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop
                 // Initialize the view model.
                 //
                 dialog.ViewModel.DeviceEnrollment = SecureConnectEnrollment.Create(
-                    new CertificateStoreAdapter(),
+                    new CertificateStore(),
                     serviceProvider.GetService<ApplicationSettingsRepository>());
                 dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
                 dialog.ViewModel.Scopes = new[] { IapTunnelingEndpoint.RequiredScope };

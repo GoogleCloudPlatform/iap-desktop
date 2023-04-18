@@ -26,14 +26,14 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Platform.Cryptography
 {
-    public interface ICertificateStoreAdapter
+    public interface ICertificateStore
     {
         IEnumerable<X509Certificate2> ListComputerCertificates();
 
         IEnumerable<X509Certificate2> ListUserCertificates();
     }
 
-    public class CertificateStoreAdapter : ICertificateStoreAdapter
+    public class CertificateStore : ICertificateStore
     {
         internal void AddUserCertitficate(
             X509Certificate2 certificate)
