@@ -80,7 +80,7 @@ try {
     $PlainTextPassword = [System.Text.Encoding]::UTF8.GetString(
         $Key.Decrypt(
             [Convert]::FromBase64String($JoinRequest.EncryptedPassword), 
-            [System.Security.Cryptography.RSAEncryptionPadding]::Pkcs1))
+            [System.Security.Cryptography.RSAEncryptionPadding]::OaepSHA256))
 
     $Password = ConvertTo-SecureString `
         -AsPlainText `

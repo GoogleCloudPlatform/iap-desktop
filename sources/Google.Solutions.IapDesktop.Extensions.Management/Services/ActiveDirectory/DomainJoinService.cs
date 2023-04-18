@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Services.ActiveDirec
                     var encryptedPassword = Convert.ToBase64String(
                         key.Encrypt(
                             Encoding.UTF8.GetBytes(domainCredential.Password),
-                            RSAEncryptionPadding.Pkcs1));
+                            RSAEncryptionPadding.OaepSHA256));
 
                     var joinRequest = new JoinRequest()
                     {
