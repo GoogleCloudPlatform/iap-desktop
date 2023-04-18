@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
+using Google.Solutions.Platform.Net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
