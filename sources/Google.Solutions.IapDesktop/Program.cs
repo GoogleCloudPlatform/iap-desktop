@@ -52,6 +52,7 @@ using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform;
+using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Ssh;
 using System;
 using System.Collections.Generic;

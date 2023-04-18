@@ -19,17 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Platform.Cryptography;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
+namespace Google.Solutions.Platform.Test.Cryptography
 {
     [TestFixture]
-    public class TestCertificateStoreAdapter : ApplicationFixtureBase
+    public class TestCertificateStoreAdapter 
     {
         //
         // Self-signed certificate, created using:

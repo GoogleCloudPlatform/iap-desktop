@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiTraceSources.cs" />
+    <Compile Include="Cryptography\CertificateStoreAdapter.cs" />
     <Compile Include="Net\Browser.cs" />
     <Compile Include="Net\ChromeAutoSelectCertificateForUrlsPolicy.cs" />
     <Compile Include="Net\ChromeCertificateSelector.cs" />

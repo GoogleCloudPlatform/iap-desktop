@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Platform.Cryptography
 {
     public interface ICertificateStoreAdapter
     {
@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         internal void AddUserCertitficate(
             X509Certificate2 certificate)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (PlatformTraceSources.Default.TraceMethod().WithoutParameters())
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadWrite);
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         internal void RemoveUserCertitficate(
             X509Certificate2 certificate)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (PlatformTraceSources.Default.TraceMethod().WithoutParameters())
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadWrite);
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         private IEnumerable<X509Certificate2> ListCertitficates(
             StoreLocation storeLocation)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(storeLocation))
+            using (PlatformTraceSources.Default.TraceMethod().WithParameters(storeLocation))
             using (var store = new X509Store(StoreName.My, storeLocation))
             {
                 store.Open(OpenFlags.ReadOnly);
