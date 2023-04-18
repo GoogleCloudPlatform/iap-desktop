@@ -44,6 +44,7 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cryptography\TestCertificateStore.cs" />
     <Compile Include="Net\TestBrowser.cs" />
     <Compile Include="Net\TestChromeAutoSelectCertificateForUrlsPolicy.cs" />
     <Compile Include="Net\TestChromeCertificateSelector.cs" />

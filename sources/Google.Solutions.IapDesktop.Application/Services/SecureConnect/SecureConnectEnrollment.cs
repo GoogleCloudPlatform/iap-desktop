@@ -23,6 +23,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Platform.Net;
 using System;
 using System.Linq;
@@ -88,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         //---------------------------------------------------------------------
 
         public static SecureConnectEnrollment Create(
-            ICertificateStoreAdapter certificateStore,
+            ICertificateStore certificateStore,
             ApplicationSettingsRepository applicationSettingsRepository)
         {
             certificateStore.ExpectNotNull(nameof(certificateStore));
@@ -167,20 +168,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
             X509Certificate2 FirstCertificateMatchingPolicy(IChromeAutoSelectCertificateForUrlsPolicy policy)
             {
-                foreach (var certificate in certificateStore.ListUserCertificates())
-                {
-                    if (IsCertificateUsableForClientAuthentication(certificate) &&
+                //
+                // Find a certificate that satisfies the policy and is a client certificate.
+                // There could be multiple matches, but we just use the first one.
+                //
+                return certificateStore
+                    .ListUserCertificates(certificate => 
+                        IsCertificateUsableForClientAuthentication(certificate) && 
                         policy.IsApplicable(CertificateSelectorUrl, certificate))
-                    {
-                        return certificate;
-                    }
-                    else
-                    {
-                        certificate.Dispose();
-                    }
-                }
-
-                return null;
+                    .FirstOrDefault();
             }
         }
     }

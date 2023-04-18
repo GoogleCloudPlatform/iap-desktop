@@ -20,25 +20,32 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Platform.Cryptography
 {
-    public interface ICertificateStoreAdapter
+    /// <summary>
+    /// Adapter for the Windows certificate store.
+    /// </summary>
+    public interface ICertificateStore
     {
-        IEnumerable<X509Certificate2> ListComputerCertificates();
+        IEnumerable<X509Certificate2> ListComputerCertificates(
+            Predicate<X509Certificate2> filter);
 
-        IEnumerable<X509Certificate2> ListUserCertificates();
+        IEnumerable<X509Certificate2> ListUserCertificates(
+            Predicate<X509Certificate2> filter);
     }
 
-    public class CertificateStoreAdapter : ICertificateStoreAdapter
+    public class CertificateStore : ICertificateStore
     {
         internal void AddUserCertitficate(
             X509Certificate2 certificate)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (PlatformTraceSources.Default.TraceMethod().WithoutParameters())
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadWrite);
@@ -48,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         internal void RemoveUserCertitficate(
             X509Certificate2 certificate)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (PlatformTraceSources.Default.TraceMethod().WithoutParameters())
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadWrite);
@@ -57,21 +64,40 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         private IEnumerable<X509Certificate2> ListCertitficates(
-            StoreLocation storeLocation)
+            StoreLocation storeLocation,
+            Predicate<X509Certificate2> filter)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(storeLocation))
+            filter.ExpectNotNull(nameof(filter));
+
+            using (PlatformTraceSources.Default.TraceMethod().WithParameters(storeLocation))
             using (var store = new X509Store(StoreName.My, storeLocation))
             {
                 store.Open(OpenFlags.ReadOnly);
-                return store.Certificates
-                    .Cast<X509Certificate2>();
+
+                foreach (var certificate in store.Certificates.Cast<X509Certificate2>())
+                {
+                    if (filter(certificate))
+                    {
+                        yield return certificate;
+                    }
+                    else
+                    {
+                        certificate.Dispose();
+                    }
+                }
             }
         }
 
-        public IEnumerable<X509Certificate2> ListUserCertificates()
-            => ListCertitficates(StoreLocation.CurrentUser);
+        public IEnumerable<X509Certificate2> ListUserCertificates(
+            Predicate<X509Certificate2> filter)
+        {
+            return ListCertitficates(StoreLocation.CurrentUser, filter);
+        }
 
-        public IEnumerable<X509Certificate2> ListComputerCertificates()
-            => ListCertitficates(StoreLocation.LocalMachine);
+        public IEnumerable<X509Certificate2> ListComputerCertificates(
+            Predicate<X509Certificate2> filter)
+        {
+            return ListCertitficates(StoreLocation.LocalMachine, filter);
+        }
     }
 }

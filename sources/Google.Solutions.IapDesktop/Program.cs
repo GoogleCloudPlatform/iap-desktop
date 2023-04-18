@@ -52,6 +52,7 @@ using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform;
+using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Ssh;
 using System;
 using System.Collections.Generic;
@@ -178,7 +179,7 @@ namespace Google.Solutions.IapDesktop
                 // Initialize the view model.
                 //
                 dialog.ViewModel.DeviceEnrollment = SecureConnectEnrollment.Create(
-                    new CertificateStoreAdapter(),
+                    new CertificateStore(),
                     serviceProvider.GetService<ApplicationSettingsRepository>());
                 dialog.ViewModel.ClientSecrets = OAuthClient.Secrets;
                 dialog.ViewModel.Scopes = new[] { IapTunnelingEndpoint.RequiredScope };
