@@ -49,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private ViewModelNode selectedNode;
         private string instanceFilter;
+        private OperatingSystems operatingSystemsFilter = OperatingSystems.All;
         private readonly IProjectExplorerSettings settings;
 
         private bool isUnloadProjectCommandVisible;
@@ -299,10 +300,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public OperatingSystems OperatingSystemsFilter
         {
-            get => this.settings.OperatingSystemsFilter;
+            get => this.operatingSystemsFilter;
             set
             {
-                this.settings.OperatingSystemsFilter = value;
+                this.operatingSystemsFilter = value;
 
                 RaisePropertyChange();
 

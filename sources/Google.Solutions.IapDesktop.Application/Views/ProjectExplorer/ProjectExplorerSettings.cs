@@ -32,11 +32,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     internal interface IProjectExplorerSettings : IDisposable
     {
         /// <summary>
-        /// Last used filter.
-        /// </summary>
-        OperatingSystems OperatingSystemsFilter { get; set; }
-
-        /// <summary>
         /// Collapsed projects. 
         /// NB. We store the collapsed projects instead of the expanded
         /// projects so that we're (a) backwards-compatible and (b)
@@ -64,15 +59,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             var settings = this.settingsRepository.GetSettings();
 
-            this.OperatingSystemsFilter = settings.IncludeOperatingSystems.EnumValue;
             this.CollapsedProjects = (settings.CollapsedProjects.StringValue ?? string.Empty)
                 .Split(',')
                 .Where(projectId => !string.IsNullOrWhiteSpace(projectId))
                 .Select(projectId => new ProjectLocator(projectId.Trim()))
                 .ToHashSet();
         }
-
-        public OperatingSystems OperatingSystemsFilter { get; set; }
 
         public ISet<ProjectLocator> CollapsedProjects { get; }
 
@@ -84,7 +76,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             var settings = this.settingsRepository.GetSettings();
 
-            settings.IncludeOperatingSystems.EnumValue = this.OperatingSystemsFilter;
             settings.CollapsedProjects.StringValue = string.Join(
                 ",",
                 this.CollapsedProjects.Select(locator => locator.ProjectId));
