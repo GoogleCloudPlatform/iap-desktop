@@ -103,14 +103,18 @@ namespace Google.Solutions.Platform.Test.Cryptography
             store.RemoveUserCertitficate(ExampleCertificate);
         }
 
+        //---------------------------------------------------------------------
+        // ListUserCertificates.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void ListUserCertificatesReturnsUserCertificate()
+        public void WhenPredicateMatches_ThenListUserCertificatesReturnsUserCertificate()
         {
             var store = new CertificateStore();
             store.AddUserCertitficate(ExampleCertificate);
 
-            var certificates = store.ListUserCertificates()
-                .Where(cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
+            var certificates = store.ListUserCertificates(
+                cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
             Assert.IsNotNull(certificates);
             Assert.AreEqual(1, certificates.Count());
@@ -123,16 +127,44 @@ namespace Google.Solutions.Platform.Test.Cryptography
         }
 
         [Test]
+        public void WhenPredicateDoesNotMatch_ThenListUserCertificatesReturnsEmpty()
+        {
+            var store = new CertificateStore();
+            store.AddUserCertitficate(ExampleCertificate);
+
+            var certificates = store.ListUserCertificates(cert => false);
+
+            Assert.IsNotNull(certificates);
+            CollectionAssert.IsEmpty(certificates);
+        }
+
+        //---------------------------------------------------------------------
+        // ListComputerCertificates.
+        //---------------------------------------------------------------------
+
+        [Test]
         public void ListComputerCertificatesDoesNotReturnUserCertificate()
         {
             var store = new CertificateStore();
             store.AddUserCertitficate(ExampleCertificate);
 
-            var certificates = store.ListComputerCertificates()
-                .Where(cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
+            var certificates = store.ListComputerCertificates(
+                cert => cert.Thumbprint == ExampleCertificate.Thumbprint);
 
             Assert.IsNotNull(certificates);
-            Assert.IsFalse(certificates.Any());
+            CollectionAssert.IsEmpty(certificates);
+        }
+
+        [Test]
+        public void WhenPredicateDoesNotMatch_ThenListComputerCertificatesReturnsEmpty()
+        {
+            var store = new CertificateStore();
+            store.AddUserCertitficate(ExampleCertificate);
+
+            var certificates = store.ListComputerCertificates(cert => false);
+
+            Assert.IsNotNull(certificates);
+            CollectionAssert.IsEmpty(certificates);
         }
     }
 }

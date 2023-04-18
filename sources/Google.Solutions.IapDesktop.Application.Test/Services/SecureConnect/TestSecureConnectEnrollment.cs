@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -32,7 +31,6 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 {
@@ -153,8 +151,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
 
-            certificateStore.Verify(s => s.ListComputerCertificates(), Times.Never);
-            certificateStore.Verify(s => s.ListUserCertificates(), Times.Never);
+            certificateStore.Verify(
+                s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()), 
+                Times.Never);
+            certificateStore.Verify(
+                s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()), 
+                Times.Never);
         }
 
         //---------------------------------------------------------------------
@@ -170,9 +172,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
-            certificateStore.Setup(s => s.ListUserCertificates())
+            certificateStore
+                .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
-            certificateStore.Setup(s => s.ListComputerCertificates())
+            certificateStore
+                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
             var enrollment = SecureConnectEnrollment.Create(
@@ -192,9 +196,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
-            certificateStore.Setup(s => s.ListComputerCertificates())
+            certificateStore
+                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
-            certificateStore.Setup(s => s.ListUserCertificates())
+            certificateStore
+                .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(() => new[] { CertificateUtil.CertificateFromPem(EndpointVerificationCertificate) });
 
             var enrollment = SecureConnectEnrollment.Create(
@@ -215,9 +221,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
-            certificateStore.Setup(s => s.ListComputerCertificates())
+            certificateStore
+                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(() => new[] { CertificateUtil.CertificateFromPem(EndpointVerificationCertificate) });
-            certificateStore.Setup(s => s.ListUserCertificates())
+            certificateStore
+                .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
             var enrollment = SecureConnectEnrollment.Create(
@@ -249,9 +257,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
-            certificateStore.Setup(s => s.ListUserCertificates())
+            certificateStore
+                .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
-            certificateStore.Setup(s => s.ListComputerCertificates())
+            certificateStore
+                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
             var enrollment = SecureConnectEnrollment.Create(
@@ -279,9 +289,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
-            certificateStore.Setup(s => s.ListUserCertificates())
-                .Returns(() => new[] { CertificateUtil.CertificateFromPem(CustomCertificateForServerAuth) });
-            certificateStore.Setup(s => s.ListComputerCertificates())
+            certificateStore
+                .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
+                .Returns((Predicate<X509Certificate2> predicate) => 
+                    new[] { CertificateUtil.CertificateFromPem(CustomCertificateForServerAuth) }
+                    .Where(c => predicate(c)));
+            certificateStore
+                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
             var enrollment = SecureConnectEnrollment.Create(
@@ -309,9 +323,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
-            certificateStore.Setup(s => s.ListComputerCertificates())
+            certificateStore
+                .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
-            certificateStore.Setup(s => s.ListUserCertificates())
+            certificateStore
+                .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(() => new[] { CertificateUtil.CertificateFromPem(CustomCertificateForClientAuth) });
 
             var enrollment = SecureConnectEnrollment.Create(

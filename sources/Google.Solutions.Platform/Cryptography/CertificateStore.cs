@@ -20,17 +20,24 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Platform.Cryptography
 {
+    /// <summary>
+    /// Adapter for the Windows certificate store.
+    /// </summary>
     public interface ICertificateStore
     {
-        IEnumerable<X509Certificate2> ListComputerCertificates();
+        IEnumerable<X509Certificate2> ListComputerCertificates(
+            Predicate<X509Certificate2> filter);
 
-        IEnumerable<X509Certificate2> ListUserCertificates();
+        IEnumerable<X509Certificate2> ListUserCertificates(
+            Predicate<X509Certificate2> filter);
     }
 
     public class CertificateStore : ICertificateStore
@@ -57,21 +64,40 @@ namespace Google.Solutions.Platform.Cryptography
         }
 
         private IEnumerable<X509Certificate2> ListCertitficates(
-            StoreLocation storeLocation)
+            StoreLocation storeLocation,
+            Predicate<X509Certificate2> filter)
         {
+            filter.ExpectNotNull(nameof(filter));
+
             using (PlatformTraceSources.Default.TraceMethod().WithParameters(storeLocation))
             using (var store = new X509Store(StoreName.My, storeLocation))
             {
                 store.Open(OpenFlags.ReadOnly);
-                return store.Certificates
-                    .Cast<X509Certificate2>();
+
+                foreach (var certificate in store.Certificates.Cast<X509Certificate2>())
+                {
+                    if (filter(certificate))
+                    {
+                        yield return certificate;
+                    }
+                    else
+                    {
+                        certificate.Dispose();
+                    }
+                }
             }
         }
 
-        public IEnumerable<X509Certificate2> ListUserCertificates()
-            => ListCertitficates(StoreLocation.CurrentUser);
+        public IEnumerable<X509Certificate2> ListUserCertificates(
+            Predicate<X509Certificate2> filter)
+        {
+            return ListCertitficates(StoreLocation.CurrentUser, filter);
+        }
 
-        public IEnumerable<X509Certificate2> ListComputerCertificates()
-            => ListCertitficates(StoreLocation.LocalMachine);
+        public IEnumerable<X509Certificate2> ListComputerCertificates(
+            Predicate<X509Certificate2> filter)
+        {
+            return ListCertitficates(StoreLocation.LocalMachine, filter);
+        }
     }
 }
