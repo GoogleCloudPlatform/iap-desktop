@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Options;
+using Google.Solutions.Platform.Net;
 using Google.Solutions.Testing.Application.Test;
 using Microsoft.Win32;
 using Moq;

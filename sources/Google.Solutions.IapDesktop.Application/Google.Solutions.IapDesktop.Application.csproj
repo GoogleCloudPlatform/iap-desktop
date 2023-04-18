@@ -123,7 +123,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\Settings\AppProtocolRegistry.cs" />
     <Compile Include="Services\Settings\ApplicationSettingsRepository.cs" />
     <Compile Include="Services\Settings\AuthSettingsRepository.cs" />
     <Compile Include="Services\Settings\IProjectRepository.cs" />
