@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2021 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,18 +19,18 @@
 // under the License.
 //
 
-using System.IO;
+using System;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Test
+namespace Google.Solutions.Platform.Net
 {
-    internal static class CertificateUtil
+    public interface IChromeAutoSelectCertificateForUrlsPolicy
     {
-        internal static X509Certificate2 CertificateFromPem(string pem)
-        {
-            var tempFile = Path.GetTempFileName();
-            File.WriteAllText(tempFile, pem);
-            return new X509Certificate2(tempFile);
-        }
+        /// <summary>
+        /// Check if the certificate is applicable for the given URL.
+        /// </summary>
+        bool IsApplicable(
+            Uri uri,
+            X509Certificate2 clientCertificate);
     }
 }

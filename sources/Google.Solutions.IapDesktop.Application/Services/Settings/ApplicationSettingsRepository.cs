@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.Platform.Net;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;

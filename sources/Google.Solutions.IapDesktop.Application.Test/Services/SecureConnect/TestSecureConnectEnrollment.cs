@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Authorization;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Testing.Common.Cryptography;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;

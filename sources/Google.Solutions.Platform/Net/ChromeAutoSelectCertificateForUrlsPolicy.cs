@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
+namespace Google.Solutions.Platform.Net
 {
     /// <summary>
     /// A collection of certificate selectors as defined by the Chrome
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             private readonly LinkedList<ChromeCertificateSelector> entries
                 = new LinkedList<ChromeCertificateSelector>();
 
-            internal Builder Add(ChromeCertificateSelector entry)
+            public Builder Add(ChromeCertificateSelector entry)
             {
                 this.entries.AddLast(entry);
                 return this;
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                             //
                             // Malformed entry, ignore.
                             //
-                            ApplicationTraceSources.Default.TraceVerbose(
+                            PlatformTraceSources.Default.TraceVerbose(
                                 "Encountered malformed AutoSelectCertificateForUrls policy entry '{0}': {1}",
                                 value,
                                 e.Message);

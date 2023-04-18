@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assert.cs" />
+    <Compile Include="Cryptography\CertificateUtil.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Integration\InteractiveTestAttribute.cs" />
     <Compile Include="Integration\CloudIntegrationTest.cs" />

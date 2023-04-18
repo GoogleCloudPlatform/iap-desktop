@@ -25,7 +25,7 @@ using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
+namespace Google.Solutions.Platform.Net
 {
     /// <summary>
     /// Certificate selector as defined in
@@ -34,10 +34,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
     /// In addition to the standard SUBJECT and ISSUER filters, this implementation
     /// supports a THUMBPRINT filter that lets you select a specific certificate.
     /// </summary>
-    internal class ChromeCertificateSelector
+    public class ChromeCertificateSelector
     {
-        public ChromePolicyUrlPattern Pattern { get; }
-        public CertificateFilter Filter { get; }
+        internal ChromePolicyUrlPattern Pattern { get; }
+        internal CertificateFilter Filter { get; }
 
         [JsonConstructor]
         public ChromeCertificateSelector(
