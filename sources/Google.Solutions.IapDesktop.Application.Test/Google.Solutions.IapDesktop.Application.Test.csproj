@@ -108,7 +108,7 @@
     <Compile Include="Services\TestUpdateService.cs" />
     <Compile Include="Services\Windows\TestWindowsCredentialService.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
-    <Compile Include="Services\Auth\TestAppAuthorization.cs" />
+    <Compile Include="Services\Auth\TestAuthorization.cs" />
     <Compile Include="Services\Auth\TestSignInAdapter.cs" />
     <Compile Include="Services\Integration\TestSessionBroker.cs" />
     <Compile Include="Services\Management\TestInstanceControlService.cs" />
@@ -127,7 +127,7 @@
     <Compile Include="Settings\TestRegistrySecureStringSetting.cs" />
     <Compile Include="Settings\TestRegistryStringSetting.cs" />
     <Compile Include="Host\TestCommandLineOptions.cs" />
-    <Compile Include="Services\SecureConnect\TestSecureConnectEnrollment.cs" />
+    <Compile Include="Services\Auth\TestDeviceEnrollment.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Theme\TestThemeSettingsRepository.cs" />

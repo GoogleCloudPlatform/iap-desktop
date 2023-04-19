@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,8 +20,6 @@
 //
 
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Platform.Net;
@@ -30,9 +28,29 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
+namespace Google.Solutions.IapDesktop.Application.Services.Auth
 {
-    public class SecureConnectEnrollment : IDeviceEnrollment
+    /// <summary>
+    /// Enrollment information for the current device. Device enrollment
+    /// is optional and only used in the context of BeyondCorp.
+    /// </summary>
+    public interface IDeviceEnrollment
+    {
+        DeviceEnrollmentState State { get; }
+        X509Certificate2 Certificate { get; }
+    }
+
+    public enum DeviceEnrollmentState
+    {
+        Disabled,
+        NotEnrolled,
+        Enrolled
+    }
+
+    /// <summary>
+    /// SecureConnect-based device enrollment.
+    /// </summary>
+    public class DeviceEnrollment : IDeviceEnrollment
     {
         //
         // Pseudo-selector for the EV certificate installed by the
@@ -59,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         private const string EnhancedKeyUsageOid = "2.5.29.37";
         private const string ClientAuthenticationKeyUsageOid = "1.3.6.1.5.5.7.3.2";
 
-        private SecureConnectEnrollment(
+        private DeviceEnrollment(
             DeviceEnrollmentState state,
             X509Certificate2 certificate)
         {
@@ -88,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         // Publics.
         //---------------------------------------------------------------------
 
-        public static SecureConnectEnrollment Create(
+        public static DeviceEnrollment Create(
             ICertificateStore certificateStore,
             ApplicationSettingsRepository applicationSettingsRepository)
         {
@@ -98,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             var settings = applicationSettingsRepository.GetSettings();
             if (!settings.IsDeviceCertificateAuthenticationEnabled.BoolValue)
             {
-                return new SecureConnectEnrollment(DeviceEnrollmentState.Disabled, null);
+                return new DeviceEnrollment(DeviceEnrollmentState.Disabled, null);
             }
 
             //
@@ -156,14 +174,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             if (deviceCertificate != null)
             {
                 ApplicationTraceSources.Default.TraceInformation(
-                    "Device certificate found: {0}", 
+                    "Device certificate found: {0}",
                     deviceCertificate.Subject);
 
-                return new SecureConnectEnrollment(DeviceEnrollmentState.Enrolled, deviceCertificate);
+                return new DeviceEnrollment(DeviceEnrollmentState.Enrolled, deviceCertificate);
             }
             else
             {
-                return new SecureConnectEnrollment(DeviceEnrollmentState.NotEnrolled, null);
+                return new DeviceEnrollment(DeviceEnrollmentState.NotEnrolled, null);
             }
 
             X509Certificate2 FirstCertificateMatchingPolicy(IChromeAutoSelectCertificateForUrlsPolicy policy)
@@ -173,8 +191,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                 // There could be multiple matches, but we just use the first one.
                 //
                 return certificateStore
-                    .ListUserCertificates(certificate => 
-                        IsCertificateUsableForClientAuthentication(certificate) && 
+                    .ListUserCertificates(certificate =>
+                        IsCertificateUsableForClientAuthentication(certificate) &&
                         policy.IsApplicable(CertificateSelectorUrl, certificate))
                     .FirstOrDefault();
             }

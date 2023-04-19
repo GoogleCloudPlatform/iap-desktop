@@ -106,13 +106,12 @@
     <Compile Include="Services\Windows\WindowsCredentialService.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Services\Adapters\SerialPortStream.cs" />
-    <Compile Include="Services\Auth\AppAuthorization.cs" />
-    <Compile Include="Services\Auth\IAuthorization.cs" />
+    <Compile Include="Services\Auth\Authorization.cs" />
+    <Compile Include="Services\Auth\DeviceEnrollment.cs" />
     <Compile Include="Services\Management\InstanceControlService.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelEvents.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelService.cs" />
-    <Compile Include="Services\SecureConnect\SecureConnectEnrollment.cs" />
     <Compile Include="Services\Integration\SessionBroker.cs" />
     <Compile Include="Services\Integration\EventService.cs" />
     <Compile Include="Services\Integration\JobService.cs" />
