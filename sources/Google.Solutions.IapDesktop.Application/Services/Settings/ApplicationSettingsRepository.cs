@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Data;
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
+using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.Platform.Net;
 using Microsoft.Win32;
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                         "DeviceCertificateSelector",
                         null,
                         null,
-                        SecureConnectEnrollment.DefaultDeviceCertificateSelector,
+                        DeviceEnrollment.DefaultDeviceCertificateSelector,
                         settingsKey,
                         selector => selector == null || ChromeCertificateSelector.TryParse(selector, out var _))
                     .ApplyPolicy(userPolicyKey)

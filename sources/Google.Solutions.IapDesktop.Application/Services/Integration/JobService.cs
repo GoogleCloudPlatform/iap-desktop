@@ -21,7 +21,7 @@
 
 using Google.Solutions.Apis;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.IapDesktop.Application.Services.Auth;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;

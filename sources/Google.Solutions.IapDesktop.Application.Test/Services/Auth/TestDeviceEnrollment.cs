@@ -19,8 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
+using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.Platform.Cryptography;
 using Google.Solutions.Testing.Application.Test;
@@ -32,10 +31,10 @@ using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Auth
 {
     [TestFixture]
-    public class TestSecureConnectEnrollment : ApplicationFixtureBase
+    public class TestDeviceEnrollment : ApplicationFixtureBase
     {
         //
         // New-SelfSignedCertificate `
@@ -144,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             this.settingsRepository.SetSettings(settings);
 
             var certificateStore = new Mock<ICertificateStore>();
-            var enrollment = SecureConnectEnrollment.Create(
+            var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
                 this.settingsRepository);
 
@@ -179,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
-            var enrollment = SecureConnectEnrollment.Create(
+            var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
                 this.settingsRepository);
 
@@ -203,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(() => new[] { CertificateUtil.CertificateFromPem(EndpointVerificationCertificate) });
 
-            var enrollment = SecureConnectEnrollment.Create(
+            var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
                 this.settingsRepository);
 
@@ -228,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
-            var enrollment = SecureConnectEnrollment.Create(
+            var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
                 this.settingsRepository);
 
@@ -264,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
-            var enrollment = SecureConnectEnrollment.Create(
+            var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
                 this.settingsRepository);
 
@@ -298,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 .Setup(s => s.ListComputerCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
-            var enrollment = SecureConnectEnrollment.Create(
+            var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
                 this.settingsRepository);
 
@@ -330,7 +329,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 .Setup(s => s.ListUserCertificates(It.IsAny<Predicate<X509Certificate2>>()))
                 .Returns(() => new[] { CertificateUtil.CertificateFromPem(CustomCertificateForClientAuth) });
 
-            var enrollment = SecureConnectEnrollment.Create(
+            var enrollment = DeviceEnrollment.Create(
                 certificateStore.Object,
                 this.settingsRepository);
 

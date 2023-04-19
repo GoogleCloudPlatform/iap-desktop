@@ -22,17 +22,17 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.Testing.Application.Test;
 using Moq;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Auth
 {
     [TestFixture]
-    public class TestAppAuthorization : ApplicationFixtureBase
+    public class TestAuthorization : ApplicationFixtureBase
     {
         private static UserCredential CreateUserCredentialMock(string refreshToken = null)
         {
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
 
             var deviceEnrollment = new Mock<IDeviceEnrollment>();
 
-            var authorization = await AppAuthorization.CreateAuthorizationAsync(
+            var authorization = await Authorization.CreateAuthorizationAsync(
                     adapter.Object,
                     deviceEnrollment.Object,
                     CancellationToken.None)
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     Email = "bob@example.com"
                 });
 
-            var authorization = await AppAuthorization.TryLoadExistingAuthorizationAsync(
+            var authorization = await Authorization.TryLoadExistingAuthorizationAsync(
                     adapter.Object,
                     new Mock<IDeviceEnrollment>().Object,
                     CancellationToken.None)
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((UserCredential)null);
 
-            var authorization = await AppAuthorization.TryLoadExistingAuthorizationAsync(
+            var authorization = await Authorization.TryLoadExistingAuthorizationAsync(
                     adapter.Object,
                     new Mock<IDeviceEnrollment>().Object,
                     CancellationToken.None)
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     Email = "bob@example.com"
                 });
 
-            var authorization = await AppAuthorization.CreateAuthorizationAsync(
+            var authorization = await Authorization.CreateAuthorizationAsync(
                     adapter.Object,
                     new Mock<IDeviceEnrollment>().Object,
                     CancellationToken.None)
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     Email = "alice@example.com"
                 });
 
-            var authorization = await AppAuthorization.CreateAuthorizationAsync(
+            var authorization = await Authorization.CreateAuthorizationAsync(
                     adapter.Object,
                     new Mock<IDeviceEnrollment>().Object,
                     CancellationToken.None)
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
                     Email = "alice@example.com"
                 });
 
-            var authorization = await AppAuthorization.CreateAuthorizationAsync(
+            var authorization = await Authorization.CreateAuthorizationAsync(
                     adapter.Object,
                     new Mock<IDeviceEnrollment>().Object,
                     CancellationToken.None)

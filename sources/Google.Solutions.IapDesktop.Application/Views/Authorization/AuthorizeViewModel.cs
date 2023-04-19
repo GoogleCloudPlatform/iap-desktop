@@ -25,7 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Mvvm.Controls;
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                 try
                 {
                     // Try to authorize using OAuth.
-                    var authorization = await AppAuthorization.TryLoadExistingAuthorizationAsync(
+                    var authorization = await Services.Auth.Authorization.TryLoadExistingAuthorizationAsync(
                             CreateSignInAdapter(BrowserPreference.Default),
                             this.DeviceEnrollment,
                             CancellationToken.None)
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authorization
                         //
                         await this.TokenStore.ClearAsync();
 
-                        this.Authorization.Value = await AppAuthorization
+                        this.Authorization.Value = await Services.Auth.Authorization
                             .CreateAuthorizationAsync(
                                 CreateSignInAdapter(browserPreference),
                                 this.DeviceEnrollment,

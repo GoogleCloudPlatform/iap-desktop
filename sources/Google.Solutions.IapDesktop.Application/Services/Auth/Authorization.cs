@@ -26,29 +26,60 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Authorization
+namespace Google.Solutions.IapDesktop.Application.Services.Auth
 {
     /// <summary>
     /// OAuth authorization for this app.
-    /// 
-    /// The Authorization object is initialized during startup and
-    /// a single instance is kept throughout the lifetime of the
-    /// process, even in the case of re-auth.
     /// </summary>
-    public class AppAuthorization : IAuthorization
+    public interface IAuthorization
+    {
+        /// <summary>
+        /// Event triggered after a successful reauthorization. Might be
+        /// triggere on any thread.
+        /// </summary>
+        event EventHandler Reauthorized;
+
+        /// <summary>
+        /// Credential to use for Google API requests.
+        /// </summary>
+        ICredential Credential { get; }
+
+        Task RevokeAsync();
+
+        Task ReauthorizeAsync(CancellationToken token);
+
+        string Email { get; }
+
+        /// <summary>
+        /// OIDC user info.
+        /// </summary>
+        UserInfo UserInfo { get; }
+
+        /// <summary>
+        /// Device. This is non-null, but the enrollment might be
+        /// in state "Disabled".
+        /// </summary>
+        IDeviceEnrollment DeviceEnrollment { get; }
+    }
+
+    public class Authorization : IAuthorization
     {
         private readonly ISignInAdapter adapter;
 
         private readonly UserCredential credential;
 
-        private AppAuthorization(
+        private Authorization(
             ISignInAdapter adapter,
             IDeviceEnrollment deviceEnrollment,
             UserCredential credential,
             UserInfo userInfo)
         {
             //
-            // NB. We must use the same UserCredential object throghout the
+            // The Authorization object is initialized during startup and
+            // a single instance is kept throughout the lifetime of the
+            // process, even in the case of re-auth.
+            //
+            // We must use the same UserCredential object throghout the
             // lifetime of the app because existing clients maintain a 
             // reference to the object.
             //
@@ -109,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
         // Factory methods.
         //---------------------------------------------------------------------
 
-        public static async Task<AppAuthorization> TryLoadExistingAuthorizationAsync(
+        public static async Task<Authorization> TryLoadExistingAuthorizationAsync(
             ISignInAdapter oauthAdapter,
             IDeviceEnrollment deviceEnrollment,
             CancellationToken token)
@@ -126,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
                     .QueryUserInfoAsync(credential, token)
                     .ConfigureAwait(false);
 
-                return new AppAuthorization(
+                return new Authorization(
                     oauthAdapter,
                     deviceEnrollment,
                     credential,
@@ -141,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
             }
         }
 
-        public static async Task<AppAuthorization> CreateAuthorizationAsync(
+        public static async Task<Authorization> CreateAuthorizationAsync(
             ISignInAdapter oauthAdapter,
             IDeviceEnrollment deviceEnrollment,
             CancellationToken token)
@@ -154,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Authorization
                 .QueryUserInfoAsync(credential, token)
                 .ConfigureAwait(false);
 
-            return new AppAuthorization(
+            return new Authorization(
                 oauthAdapter,
                 deviceEnrollment,
                 credential,
