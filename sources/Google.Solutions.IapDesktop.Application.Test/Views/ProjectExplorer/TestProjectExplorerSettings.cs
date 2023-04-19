@@ -47,36 +47,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         }
 
         //---------------------------------------------------------------------
-        // OperatingSystemsFilter.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenValueSaved_ThenOperatingSystemsFilterReturnsSavedValue()
-        {
-            var settings = this.settingsRepository.GetSettings();
-            settings.IncludeOperatingSystems.Value = OperatingSystems.Windows;
-            this.settingsRepository.SetSettings(settings);
-
-            using (var explorerSettings = new ProjectExplorerSettings(this.settingsRepository, true))
-            {
-                Assert.AreEqual(OperatingSystems.Windows, explorerSettings.OperatingSystemsFilter);
-            }
-        }
-
-        [Test]
-        public void WhenDisposed_ThenOperatingSystemsFilterIsSaved()
-        {
-            using (var explorerSettings = new ProjectExplorerSettings(this.settingsRepository, false))
-            {
-                Assert.AreNotEqual(OperatingSystems.Windows, explorerSettings.OperatingSystemsFilter);
-                explorerSettings.OperatingSystemsFilter = OperatingSystems.Windows;
-            }
-
-            var settings = this.settingsRepository.GetSettings();
-            Assert.AreEqual(OperatingSystems.Windows, settings.IncludeOperatingSystems.Value);
-        }
-
-        //---------------------------------------------------------------------
         // CollapsedProjects.
         //---------------------------------------------------------------------
 

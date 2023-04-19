@@ -80,8 +80,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public RegistryStringSetting FullScreenDevices { get; private set; }
 
-        public RegistryEnumSetting<OperatingSystems> IncludeOperatingSystems { get; private set; }
-
         public RegistryStringSetting DeviceCertificateSelector { get; private set; }
 
         public RegistryStringSetting CollapsedProjects { get; private set; }
@@ -102,7 +100,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.ProxyPassword,
             this.IsDeviceCertificateAuthenticationEnabled,
             this.FullScreenDevices,
-            this.IncludeOperatingSystems,
             this.DeviceCertificateSelector,
             this.CollapsedProjects,
             this.ConnectionLimit
@@ -244,13 +241,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     settingsKey,
                     _ => true),
-                IncludeOperatingSystems = RegistryEnumSetting<OperatingSystems>.FromKey(
-                    "IncludeOperatingSystems",
-                    "IncludeOperatingSystems",
-                    null,
-                    null,
-                    OperatingSystems.Windows | OperatingSystems.Linux,
-                    settingsKey),
                 CollapsedProjects = RegistryStringSetting.FromKey(
                     "CollapsedProjects",
                     "CollapsedProjects",

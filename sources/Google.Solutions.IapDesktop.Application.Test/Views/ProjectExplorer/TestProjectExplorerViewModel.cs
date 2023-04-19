@@ -193,38 +193,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         }
 
         [Test]
-        public void WhenAllOsEnabledInSettings_ThenAllOsAreIncluded()
-        {
-            // Write settings.
-            var initialViewModel = CreateViewModel();
-            initialViewModel.IsWindowsIncluded = true;
-            initialViewModel.IsLinuxIncluded = true;
-
-            // Read again.
-            var viewModel = CreateViewModel();
-            Assert.IsTrue(viewModel.IsWindowsIncluded);
-            Assert.IsTrue(viewModel.IsLinuxIncluded);
-        }
-
-        [Test]
-        public void WhenAllOsDisabledInSettings_ThenNoOsAreIncluded()
-        {
-            // Write settings.
-            using (var initialViewModel = CreateViewModel())
-            {
-                initialViewModel.IsWindowsIncluded = false;
-                initialViewModel.IsLinuxIncluded = false;
-            }
-
-            // Read again.
-            using (var viewModel = CreateViewModel())
-            {
-                Assert.IsFalse(viewModel.IsWindowsIncluded);
-                Assert.IsFalse(viewModel.IsLinuxIncluded);
-            }
-        }
-
-        [Test]
         public async Task WhenOsFilterChanged_ThenViewModelIsUpdated()
         {
             var viewModel = CreateViewModel();
