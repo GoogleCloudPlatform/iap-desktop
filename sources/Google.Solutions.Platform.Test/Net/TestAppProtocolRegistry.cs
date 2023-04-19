@@ -19,15 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.Testing.Application.Test;
+using Google.Solutions.Platform.Net;
 using Microsoft.Win32;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
+namespace Google.Solutions.Platform.Test.Net
 {
     [TestFixture]
-    public class TestAppProtocolRegistry : ApplicationFixtureBase
+    public class TestAppProtocolRegistry
     {
         private const string TestScheme = "iapdesktop-test";
 
@@ -37,18 +36,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             Registry.CurrentUser.DeleteSubKeyTree($@"SOFTWARE\Classes\{TestScheme}", false);
         }
 
+        //---------------------------------------------------------------------
+        // IsRegistered.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenProtocolNotRegistered_ThenIsRegisteredReturnsFalse()
         {
             var registry = new AppProtocolRegistry();
             Assert.IsFalse(registry.IsRegistered("unknown-scheme", "app.exe"));
-        }
-
-        [Test]
-        public void WhenProtocolNotRegistered_ThenUnregisterDoesNothing()
-        {
-            var registry = new AppProtocolRegistry();
-            registry.Unregister("unknown-scheme");
         }
 
         [Test]
@@ -62,6 +58,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         }
 
         [Test]
+        public void WhenProtocolRegistered_ThenIsRegisteredReturnsTrue()
+        {
+            var registry = new AppProtocolRegistry();
+            registry.Register(TestScheme, "Test", "app.exe");
+
+            Assert.IsTrue(registry.IsRegistered(TestScheme, "app.exe"));
+            Assert.IsFalse(registry.IsRegistered(TestScheme, "someotherapp.exe"));
+        }
+
+        //---------------------------------------------------------------------
+        // Register.
+        //---------------------------------------------------------------------
+
+        [Test]
         public void WhenProtocolRegisteredByDifferentApp_TheRegisterOverridesRegistration()
         {
             var registry = new AppProtocolRegistry();
@@ -71,14 +81,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             Assert.IsTrue(registry.IsRegistered(TestScheme, "app.exe"));
         }
 
+        //---------------------------------------------------------------------
+        // Unregister.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenProtocolRegistered_ThenIsRegisteredReturnsTrue()
+        public void WhenProtocolNotRegistered_ThenUnregisterDoesNothing()
         {
             var registry = new AppProtocolRegistry();
-            registry.Register(TestScheme, "Test", "app.exe");
-
-            Assert.IsTrue(registry.IsRegistered(TestScheme, "app.exe"));
-            Assert.IsFalse(registry.IsRegistered(TestScheme, "someotherapp.exe"));
+            registry.Unregister("unknown-scheme");
         }
     }
 }

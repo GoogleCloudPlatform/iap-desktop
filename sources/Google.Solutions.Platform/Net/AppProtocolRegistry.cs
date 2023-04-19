@@ -21,17 +21,30 @@
 
 using Microsoft.Win32;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Settings
+namespace Google.Solutions.Platform.Net
 {
+    /// <summary>
+    /// Registry for application protocols.
+    /// </summary>
     public interface IAppProtocolRegistry
     {
+        /// <summary>
+        /// Check if a protocol scheme has been registered.
+        /// </summary>
         bool IsRegistered(string scheme, string applicationLocation);
 
+        /// <summary>
+        /// Register a new protocol scheme so that it launches
+        /// an application.
+        /// </summary>
         void Register(
             string scheme,
             string friendlyName,
             string applicationLocation);
 
+        /// <summary>
+        /// Unregister a protocol scheme.
+        /// </summary>
         void Unregister(string scheme);
     }
 

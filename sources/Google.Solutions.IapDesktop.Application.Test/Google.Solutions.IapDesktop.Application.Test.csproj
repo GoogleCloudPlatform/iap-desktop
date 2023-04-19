@@ -116,7 +116,6 @@
     <Compile Include="Services\ProjectModel\TestProjectModelService.cs" />
     <Compile Include="Services\Settings\TestToolWindowStateRepository.cs" />
     <Compile Include="Services\Settings\TestApplicationSettingsRepository.cs" />
-    <Compile Include="Services\Settings\TestAppProtocolRegistry.cs" />
     <Compile Include="Services\Settings\TestAuthSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestProjectRepository.cs" />
     <Compile Include="Settings\TestRegistryBoolSetting.cs" />
