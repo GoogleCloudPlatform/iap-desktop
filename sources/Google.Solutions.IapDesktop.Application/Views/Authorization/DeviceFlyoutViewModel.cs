@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform.Net;
 using System.Diagnostics;

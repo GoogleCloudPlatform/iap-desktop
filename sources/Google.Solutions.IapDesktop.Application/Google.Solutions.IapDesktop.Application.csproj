@@ -106,8 +106,8 @@
     <Compile Include="Services\Windows\WindowsCredentialService.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Services\Adapters\SerialPortStream.cs" />
-    <Compile Include="Services\Authorization\AppAuthorization.cs" />
-    <Compile Include="Services\Authorization\IAuthorization.cs" />
+    <Compile Include="Services\Auth\AppAuthorization.cs" />
+    <Compile Include="Services\Auth\IAuthorization.cs" />
     <Compile Include="Services\Management\InstanceControlService.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelEvents.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />

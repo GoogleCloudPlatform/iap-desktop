@@ -24,7 +24,7 @@ using Google.Apis.Services;
 using Google.Solutions.Apis.Client;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Host;
-using Google.Solutions.IapDesktop.Application.Services.Authorization;
+using Google.Solutions.IapDesktop.Application.Services.Auth;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {

@@ -32,7 +32,7 @@ using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Authorization
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Auth
 {
     [TestFixture]
     public class TestSignInAdapter : ApplicationFixtureBase

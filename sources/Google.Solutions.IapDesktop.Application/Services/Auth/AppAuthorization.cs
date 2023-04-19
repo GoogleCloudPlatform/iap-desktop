@@ -26,7 +26,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Authorization
+namespace Google.Solutions.IapDesktop.Application.Services.Auth
 {
     /// <summary>
     /// OAuth authorization for this app.

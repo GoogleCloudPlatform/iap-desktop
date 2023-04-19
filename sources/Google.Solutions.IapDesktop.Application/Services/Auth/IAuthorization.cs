@@ -26,7 +26,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Authorization
+namespace Google.Solutions.IapDesktop.Application.Services.Auth
 {
     public interface IAuthorization
     {
