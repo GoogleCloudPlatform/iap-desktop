@@ -201,9 +201,9 @@
       <Project>{b5f53a65-1b67-4ca1-9ab0-a81799c0c215}</Project>
       <Name>Google.Solutions.IapDesktop.Extensions.Shell</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj">
+    <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.Iap.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
-      <Name>Google.Solutions.IapTunneling</Name>
+      <Name>Google.Solutions.Iap</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj">
       <Project>{83571A48-14E9-4CB2-8D7E-C12DEEB967B7}</Project>

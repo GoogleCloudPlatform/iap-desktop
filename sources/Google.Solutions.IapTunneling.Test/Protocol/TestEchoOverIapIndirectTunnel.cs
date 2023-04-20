@@ -21,29 +21,40 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Iap.Iap;
+using Google.Solutions.Iap.Net;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Test.Iap
+namespace Google.Solutions.Iap.Test.Protocol
 {
     [TestFixture]
     [UsesCloudResources]
-    public class TestEchoOverIapDirectTunnel : TestEchoOverIapBase
+    public class TestEchoOverIapIndirectTunnel : TestEchoOverIapBase
     {
         protected override INetworkStream ConnectToEchoServer(
             InstanceLocator vmRef,
             ICredential credential)
         {
-            return new SshRelayStream(
+            var listener = SshRelayListener.CreateLocalListener(
                 new IapTunnelingEndpoint(
                     credential,
                     vmRef,
                     7,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    TestProject.UserAgent));
+                    TestProject.UserAgent),
+                new AllowAllRelayPolicy());
+            listener.ClientAcceptLimit = 1; // Terminate after first connection.
+            listener.ListenAsync(CancellationToken.None);
+
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
+
+            return new SocketStream(socket, new ConnectionStatistics());
         }
 
         [Test]
@@ -56,20 +67,14 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 (int)SshRelayFormat.Data.MaxPayloadLength,
                 (int)SshRelayFormat.Data.MaxPayloadLength + 1,
                 (int)SshRelayFormat.Data.MaxPayloadLength * 2)] int messageSize,
-            [Values(
-                SshRelayStream.MaxWriteSize / 2,
-                SshRelayStream.MaxWriteSize)] int writeSize,
-            [Values(
-                SshRelayStream.MinReadSize,
-                SshRelayStream.MinReadSize * 2)] int readSize,
             [Values(1, 3)] int count)
         {
             await WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
                     await vm,
                     await credential,
                     messageSize,
-                    writeSize,
-                    readSize,
+                    messageSize,
+                    messageSize,
                     count)
                 .ConfigureAwait(false);
         }

@@ -22,7 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
-using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.Iap.Iap;
 using Google.Solutions.Testing.Common;
 using Moq;
 using NUnit.Framework;

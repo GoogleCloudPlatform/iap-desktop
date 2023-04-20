@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Iap.Iap;
+using Google.Solutions.Iap.Net;
 using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System.Diagnostics;
@@ -29,7 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 
-namespace Google.Solutions.IapTunneling.Test.Iap
+namespace Google.Solutions.Iap.Test.Protocol
 {
     [TestFixture]
     public class TestSshRelayStreamWriting : IapFixtureBase

@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.Iap.Iap;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapTunneling.Test.Iap
+namespace Google.Solutions.Iap.Test.Protocol
 {
     public class TestSshRelayFormat
     {

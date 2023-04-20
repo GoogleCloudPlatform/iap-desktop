@@ -28,7 +28,7 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Net
+namespace Google.Solutions.Iap.Net
 {
     /// <summary>
     /// Stream that allows sending and receiving WebSocket frames.

@@ -20,14 +20,14 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Iap.Net;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Iap
+namespace Google.Solutions.Iap.Protocol
 {
     /// <summary>
     /// Opens a TCP local socket and relays all sent data to an

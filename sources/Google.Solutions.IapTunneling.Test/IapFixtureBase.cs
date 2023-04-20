@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Google.Solutions.IapTunneling.Test
+namespace Google.Solutions.Iap.Test
 {
     public abstract class IapFixtureBase : FixtureBase
     {

@@ -21,13 +21,13 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Iap.Net;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Test.Iap
+namespace Google.Solutions.Iap.Test.Protocol
 {
     public abstract class TestEchoOverIapBase : IapFixtureBase
     {

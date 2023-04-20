@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Iap.Net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,7 +29,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Iap
+namespace Google.Solutions.Iap.Protocol
 {
     /// <summary>
     /// NetworkStream for reading/writing from a SshRelaySession.

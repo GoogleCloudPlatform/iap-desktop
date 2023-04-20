@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapTunneling.Test", "Google.Solutions.IapTunneling.Test\Google.Solutions.IapTunneling.Test.csproj", "{9C1AA910-798A-4571-9266-7280A677FE9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Iap.Test", "Google.Solutions.IapTunneling.Test\Google.Solutions.Iap.Test.csproj", "{9C1AA910-798A-4571-9266-7280A677FE9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Application", "Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj", "{842B003E-6EEB-429D-A3A1-53B4E642E83B}"
 EndProject
@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop", "Google.Solutions.IapDesktop\Google.Solutions.IapDesktop.csproj", "{274DA71A-6CD4-4E11-B3E9-1B39767039D5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base.IapTunneling", "Base.IapTunneling", "{7EFB4313-FCC0-4109-80EC-4AA017CC5D11}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base.Iap", "Base.Iap", "{7EFB4313-FCC0-4109-80EC-4AA017CC5D11}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop", "IapDesktop", "{5206FD39-47A5-4E69-AA4F-94275A1A4791}"
 EndProject
@@ -41,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Common", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Common.Test", "Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj", "{AA8CD2FB-D463-42BD-A880-9247C93F9395}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapTunneling", "Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj", "{D9493479-1751-402B-880F-60ED33EBB885}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Iap", "Google.Solutions.IapTunneling\Google.Solutions.Iap.csproj", "{D9493479-1751-402B-880F-60ED33EBB885}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop.Extensions.Shell", "IapDesktop.Extensions.Shell", "{CEE34323-B85C-4F7C-AB73-17FE47C6B5DF}"
 EndProject

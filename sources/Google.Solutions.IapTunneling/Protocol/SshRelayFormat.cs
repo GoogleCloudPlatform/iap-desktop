@@ -25,7 +25,7 @@ using System;
 using System.Diagnostics;
 using System.Text;
 
-namespace Google.Solutions.IapTunneling.Iap
+namespace Google.Solutions.Iap.Protocol
 {
     /// <summary>
     /// Encode/decode SSH Relay messages.

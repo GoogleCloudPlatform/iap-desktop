@@ -21,7 +21,7 @@
 
 using System.Diagnostics;
 
-namespace Google.Solutions.IapTunneling
+namespace Google.Solutions.Iap
 {
     public static class IapTraceSources
     {

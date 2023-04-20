@@ -24,7 +24,7 @@ using System.Collections;
 using System.Net;
 using System.Reflection;
 
-namespace Google.Solutions.IapTunneling.Net
+namespace Google.Solutions.Iap.Net
 {
     public static class RestrictedHeaderConfigPatch
     {

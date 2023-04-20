@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapTunneling.Iap
+namespace Google.Solutions.Iap.Protocol
 {
     /// <summary>
     /// Message tags used by SSH Relay v4.

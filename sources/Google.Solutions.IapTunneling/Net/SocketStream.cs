@@ -26,7 +26,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Net
+namespace Google.Solutions.Iap.Net
 {
     /// <summary>
     ///  Raw socket stream.

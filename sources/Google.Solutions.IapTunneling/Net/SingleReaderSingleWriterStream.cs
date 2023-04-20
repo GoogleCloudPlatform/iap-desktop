@@ -22,7 +22,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Net
+namespace Google.Solutions.Iap.Net
 {
     /// <summary>
     /// Base class for a stream that only allows one reader and one writer

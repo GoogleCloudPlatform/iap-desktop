@@ -199,10 +199,10 @@
           Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Application.dll"
           Vital="yes"/>
         <File
-          Id="FileGoogleSolutionsIapTunnelingDll"
-          Name="Google.Solutions.IapTunneling.dll"
+          Id="FileGoogleSolutionsIapDll"
+          Name="Google.Solutions.Iap.dll"
           DiskId="1"
-          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.IapTunneling.dll"
+          Source="$(var.BASEDIR)\obj\$(var.PLATFORM)\$(var.CONFIGURATION)\Google.Solutions.Iap.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleSolutionsApisDll"

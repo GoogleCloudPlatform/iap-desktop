@@ -21,14 +21,14 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Threading;
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Iap.Net;
 using System;
 using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Iap
+namespace Google.Solutions.Iap.Protocol
 {
     /// <summary>
     /// Factory for creating (Web Socket) connections to the tunneling 

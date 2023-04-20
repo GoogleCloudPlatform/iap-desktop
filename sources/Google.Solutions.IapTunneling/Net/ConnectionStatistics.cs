@@ -21,7 +21,7 @@
 
 using System.Threading;
 
-namespace Google.Solutions.IapTunneling.Net
+namespace Google.Solutions.Iap.Net
 {
     public class ConnectionStatistics
     {

@@ -21,8 +21,8 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Iap.Iap;
+using Google.Solutions.Iap.Net;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System.Net;
@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
-namespace Google.Solutions.IapTunneling.Test.Iap
+namespace Google.Solutions.Iap.Test.Protocol
 {
     [TestFixture]
     [UsesCloudResources]

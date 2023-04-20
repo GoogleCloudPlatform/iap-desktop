@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Iap.Net;
 using NUnit.Framework;
 using System;
 using System.Net.WebSockets;
 
-namespace Google.Solutions.IapTunneling.Test.Net
+namespace Google.Solutions.Iap.Test.Net
 {
     [TestFixture]
     public class TestRestrictedHeaderConfigPatch : IapFixtureBase

@@ -22,7 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Iap.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Apis.Client;
 
-namespace Google.Solutions.IapTunneling.Iap
+namespace Google.Solutions.Iap.Protocol
 {
     /// <summary>
     /// Cloud IAP endpoint for establishing SSH Relay tunnels.

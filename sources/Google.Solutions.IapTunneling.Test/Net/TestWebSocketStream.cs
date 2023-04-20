@@ -19,15 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.IapTunneling.Net;
-using Google.Solutions.IapTunneling.Test.Util;
+using Google.Solutions.Iap.Net;
+using Google.Solutions.Iap.Test.Util;
 using Google.Solutions.Testing.Common;
 using NUnit.Framework;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Test.Net
+namespace Google.Solutions.Iap.Test.Net
 {
     [TestFixture]
     public class TestWebSocketStream : IapFixtureBase

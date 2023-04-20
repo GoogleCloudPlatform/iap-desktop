@@ -21,7 +21,7 @@
 
 using System.Net;
 
-namespace Google.Solutions.IapTunneling.Iap
+namespace Google.Solutions.Iap.Protocol
 {
     public class AllowAllRelayPolicy : ISshRelayPolicy
     {

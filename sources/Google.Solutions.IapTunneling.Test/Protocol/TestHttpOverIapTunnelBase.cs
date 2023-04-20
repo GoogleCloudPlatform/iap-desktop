@@ -22,8 +22,8 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Iap.Iap;
+using Google.Solutions.Iap.Net;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;
 using System.Text;
@@ -31,7 +31,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Test.Iap
+namespace Google.Solutions.Iap.Test.Protocol
 {
     public abstract class TestHttpOverIapTunnelBase : IapFixtureBase
     {

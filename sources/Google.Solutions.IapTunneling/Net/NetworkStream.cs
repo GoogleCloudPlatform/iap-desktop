@@ -24,7 +24,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Net
+namespace Google.Solutions.Iap.Net
 {
     /// <summary>
     /// Extension methods for INetworkStream.

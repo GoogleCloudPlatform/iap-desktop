@@ -21,7 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.Iap.Iap;
 using Google.Solutions.Testing.Common.Integration;
 using System;
 using System.Threading;

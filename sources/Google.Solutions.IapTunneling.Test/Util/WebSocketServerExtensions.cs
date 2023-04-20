@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.Iap.Iap;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Test.Util
+namespace Google.Solutions.Iap.Test.Util
 {
     internal static class SshRelayServerExtensions
     {
