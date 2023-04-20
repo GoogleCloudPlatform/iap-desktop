@@ -21,7 +21,6 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Apis;
-using Google.Solutions.CloudIap;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
