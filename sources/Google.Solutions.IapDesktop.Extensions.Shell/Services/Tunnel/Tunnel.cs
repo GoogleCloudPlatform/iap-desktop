@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.Iap.Protocol;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

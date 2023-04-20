@@ -163,9 +163,9 @@
       <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
       <Name>Google.Solutions.IapDesktop.Application</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj">
+    <ProjectReference Include="..\Google.Solutions.Iap\Google.Solutions.Iap.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
-      <Name>Google.Solutions.IapTunneling</Name>
+      <Name>Google.Solutions.Iap</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Mvvm\Google.Solutions.Mvvm.csproj">
       <Project>{83571A48-14E9-4CB2-8D7E-C12DEEB967B7}</Project>

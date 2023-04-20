@@ -30,7 +30,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
-using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Common;
 using Moq;
