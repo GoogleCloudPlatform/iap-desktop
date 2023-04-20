@@ -2246,7 +2246,7 @@
         <Foreground Type="CT_RAW" Source="FFF1F1F1" />
       </Color>
       <Color Name="CommandBarMenuItemMouseOverBorder">
-        <Background Type="CT_RAW" Source="FF3C3F41" />
+        <Background Type="CT_RAW" Source="FF707070" />
       </Color>
       <Color Name="CommandBarMenuLinkText">
         <Background Type="CT_RAW" Source="FF007ACC" />
