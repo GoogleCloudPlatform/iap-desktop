@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Iap.Iap;
+using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Iap.Net;
 using NUnit.Framework;
 using System;

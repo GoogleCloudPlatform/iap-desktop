@@ -24,7 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
-using Google.Solutions.Iap.Iap;
+using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Iap.Net;
 using System;
 using System.Net;

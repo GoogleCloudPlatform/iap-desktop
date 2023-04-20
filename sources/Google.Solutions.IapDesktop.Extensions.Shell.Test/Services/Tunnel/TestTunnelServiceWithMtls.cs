@@ -24,7 +24,7 @@ using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
-using Google.Solutions.Iap.Iap;
+using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Testing.Application.Mocks;
 using Google.Solutions.Testing.Common.Integration;
 using Microsoft.Win32;

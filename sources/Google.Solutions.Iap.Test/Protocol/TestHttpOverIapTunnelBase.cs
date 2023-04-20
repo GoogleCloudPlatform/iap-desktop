@@ -22,7 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Apis.Locator;
-using Google.Solutions.Iap.Iap;
+using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Testing.Common.Integration;
 using NUnit.Framework;

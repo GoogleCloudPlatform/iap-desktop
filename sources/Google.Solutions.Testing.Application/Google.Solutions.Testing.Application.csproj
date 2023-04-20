@@ -114,7 +114,7 @@
       <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
       <Name>Google.Solutions.IapDesktop.Application</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.Iap.csproj">
+    <ProjectReference Include="..\Google.Solutions.Iap\Google.Solutions.Iap.csproj">
       <Project>{D9493479-1751-402B-880F-60ED33EBB885}</Project>
       <Name>Google.Solutions.Iap</Name>
     </ProjectReference>

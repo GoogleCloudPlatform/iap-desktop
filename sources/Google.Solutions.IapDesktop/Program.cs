@@ -47,7 +47,7 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.Iap;
-using Google.Solutions.Iap.Iap;
+using Google.Solutions.Iap.Protocol;
 using Google.Solutions.Iap.Net;
 using Google.Solutions.Mvvm.Binding;
 using Google.Solutions.Platform;
