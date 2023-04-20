@@ -1,6 +1,6 @@
 ﻿using Google.Apis.Auth.OAuth2;
 
-namespace Google.Solutions.CloudIap.IapDesktop
+namespace Google.Solutions.IapDesktop
 {
     internal class OAuthClient
     {
