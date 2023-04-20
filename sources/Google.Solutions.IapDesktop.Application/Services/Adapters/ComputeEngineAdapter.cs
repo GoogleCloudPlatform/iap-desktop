@@ -266,12 +266,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Serial port.
         //---------------------------------------------------------------------
 
-        public IAsyncReader<string> GetSerialPortOutput(InstanceLocator instanceRef, ushort portNumber)
+        public IAsyncReader<string> GetSerialPortOutput(
+            InstanceLocator instanceRef, 
+            ushort portNumber)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef))
             {
-                return new SerialPortStream(
-                    this.service.Instances,
+                return this.service.Instances.OpenSerialPort(
                     instanceRef,
                     portNumber);
             }
