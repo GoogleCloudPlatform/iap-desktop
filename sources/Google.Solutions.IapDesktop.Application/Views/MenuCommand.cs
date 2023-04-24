@@ -36,10 +36,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
     public abstract class MenuCommand<TContext> : CommandBase, IContextCommand<TContext>, IMenuCommand //TODO: Rename to MenuCommand
     {
         /// <summary>
-        /// If true, the command is never reported as Unavailable,
-        /// but only as Disabled.
+        /// Type of command. When set to ToolbarCommand, the command is
+        /// never reported as Unavailable, but only as Disabled.
         /// </summary>
-        public bool IsToolbarCommand { get; set; } = false; // TODO: Use MenuCommandType instead
+        public MenuCommandType CommandType { get; set; } = MenuCommandType.MenuCommand;
 
         /// <summary>
         /// Check if command should be made available for this context.
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             if (!this.IsAvailable(context))
             {
-                if (this.IsToolbarCommand)
+                if (this.CommandType == MenuCommandType.ToolbarCommand)
                 {
                     //
                     // Report as Disabled even if it's Unavailable.

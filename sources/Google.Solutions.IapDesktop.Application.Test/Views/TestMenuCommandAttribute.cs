@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         {
             public ContextCommandForToolbarsOnly()
             {
-                this.IsToolbarCommand = true;
+                this.CommandType = MenuCommandType.ToolbarCommand;
             }
         }
 

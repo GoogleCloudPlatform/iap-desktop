@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 sshConnectionService,
                 sessionBroker)
             {
-                IsToolbarCommand = true,                  // Never hide to avoid flicker.
+                CommandType = MenuCommandType.ToolbarCommand, // Never hide to avoid flicker.
                 AvailableForSsh = true,
                 AvailableForRdp = true,
                 Image = Resources.Connect_16,
