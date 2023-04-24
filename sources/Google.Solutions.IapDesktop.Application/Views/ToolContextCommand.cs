@@ -33,14 +33,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
     /// <summary>
     /// Base class for context command related to tools.
     /// </summary>
-    /// <typeparam name="TContext"></typeparam>
-    public abstract class ToolContextCommand<TContext> : CommandBase, IContextCommand<TContext>
+    public abstract class ToolContextCommand<TContext> : CommandBase, IContextCommand<TContext>, IMenuCommand //TODO: Rename to MenuCommand
     {
         /// <summary>
         /// If true, the command is never reported as Unavailable,
         /// but only as Disabled.
         /// </summary>
-        public bool IsToolbarCommand { get; set; } = false;
+        public bool IsToolbarCommand { get; set; } = false; // TODO: Use MenuCommandType instead
 
         /// <summary>
         /// Check if command should be made available for this context.

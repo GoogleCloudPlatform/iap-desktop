@@ -177,6 +177,7 @@
     </Compile>
     <Compile Include="Views\Diagnostics\DebugOptionsSheetViewModel.cs" />
     <Compile Include="Views\ToolContextCommand.cs" />
+    <Compile Include="Views\MenuCommandAttribute.cs" />
     <Compile Include="Views\UrlCommands.cs" />
     <Compile Include="Views\ViewBindingContext.cs" />
     <Compile Include="Views\Diagnostics\DebugCommonControlsView.cs">
