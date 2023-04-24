@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             //
             var commands = serviceProvider
                 .GetServicesByCategory<IMenuCommand>()
-                .OfType<ToolContextCommand<TContext>>()
+                .OfType<MenuCommand<TContext>>()
                 .Select(command =>
                     new {
                         Command = command,

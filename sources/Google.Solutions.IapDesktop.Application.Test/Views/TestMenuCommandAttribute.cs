@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         {
         }
 
-        internal abstract class SampleCommandBase<TContext> : ToolContextCommand<TContext>
+        internal abstract class SampleCommandBase<TContext> : MenuCommand<TContext>
         {
             public SampleCommandBase() : base("&test")
             {

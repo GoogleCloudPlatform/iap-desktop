@@ -31,9 +31,9 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views
 {
     /// <summary>
-    /// Base class for context command related to tools.
+    /// Base class for menu commands.
     /// </summary>
-    public abstract class ToolContextCommand<TContext> : CommandBase, IContextCommand<TContext>, IMenuCommand //TODO: Rename to MenuCommand
+    public abstract class MenuCommand<TContext> : CommandBase, IContextCommand<TContext>, IMenuCommand //TODO: Rename to MenuCommand
     {
         /// <summary>
         /// If true, the command is never reported as Unavailable,
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// <param name="context"></param>
         protected abstract bool IsEnabled(TContext context);
 
-        public ToolContextCommand(string text)
+        public MenuCommand(string text)
         {
             Debug.Assert(text.Contains("&"), "Command text should have a mnemonic");
             this.Text = text;
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         }
     }
 
-    public class OpenToolWindowCommand<TContext, TView, TViewModel> : ToolContextCommand<TContext>
+    public class OpenToolWindowCommand<TContext, TView, TViewModel> : MenuCommand<TContext>
         where TView : ToolWindow, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
