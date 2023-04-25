@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirector
         /// </summary>
         private void InitializeComponent()
         {
-            this.headlineLabel = new HeaderLabel();
+            this.headlineLabel = new Google.Solutions.Mvvm.Controls.HeaderLabel();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.domainLabel = new System.Windows.Forms.Label();
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirector
             this.domainWarning.TabIndex = 20;
             this.domainWarning.Text = "Enter the DNS domain name of your AD domain";
             // 
-            // JoinDialog
+            // JoinView
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -175,7 +175,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.ActiveDirector
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.headlineLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "JoinDialog";
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "JoinView";
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
