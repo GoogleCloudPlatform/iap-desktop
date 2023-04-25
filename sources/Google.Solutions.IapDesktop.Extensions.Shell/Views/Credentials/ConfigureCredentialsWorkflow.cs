@@ -34,17 +34,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
     [Service(typeof(IConfigureCredentialsWorkflow))]
     public class ConfigureCredentialsWorkflow : IConfigureCredentialsWorkflow
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IToolWindowHost toolWindowHost;
 
-        public ConfigureCredentialsWorkflow(IServiceProvider serviceProvider)
+        public ConfigureCredentialsWorkflow(IToolWindowHost toolWindowHost)
         {
-            this.serviceProvider = serviceProvider;
+            this.toolWindowHost = toolWindowHost;
         }
 
         public void ShowCredentialsDialog()
         {
-            ToolWindow
-                .GetWindow<ConnectionSettingsView, ConnectionSettingsViewModel>(this.serviceProvider)
+            toolWindowHost
+                .GetToolWindow<ConnectionSettingsView, ConnectionSettingsViewModel>()
                 .Show();
         }
     }

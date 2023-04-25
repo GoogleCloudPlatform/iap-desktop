@@ -110,21 +110,21 @@ namespace Google.Solutions.IapDesktop.Application.Views
     }
 
     public class OpenToolWindowCommand<TContext, TView, TViewModel> : MenuCommand<TContext>
-        where TView : ToolWindow, IView<TViewModel>
+        where TView : ToolWindowViewBase, IView<TViewModel>
         where TViewModel : ViewModelBase
     {
         private readonly Func<TContext, bool> isAvailableFunc;
         private readonly Func<TContext, bool> isEnabledFunc;
-        private readonly IServiceProvider serviceProvider;
+        private readonly IToolWindowHost toolWindowHost;
 
         public OpenToolWindowCommand(
-            IServiceProvider serviceProvider,
+            IToolWindowHost toolWindowHost,
             string text,
             Func<TContext, bool> isAvailableFunc,
             Func<TContext, bool> isEnabledFunc)
             : base(text)
         {
-            this.serviceProvider = serviceProvider.ExpectNotNull(nameof(serviceProvider));
+            this.toolWindowHost = toolWindowHost.ExpectNotNull(nameof(toolWindowHost));
             this.isAvailableFunc = isAvailableFunc.ExpectNotNull(nameof(isAvailableFunc));
             this.isEnabledFunc = isEnabledFunc.ExpectNotNull(nameof(isEnabledFunc));
         }
@@ -133,8 +133,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             Debug.Assert(IsAvailable(context) && IsEnabled(context));
 
-            ToolWindow
-                .GetWindow<TView, TViewModel>(serviceProvider)
+            toolWindowHost
+                .GetToolWindow<TView, TViewModel>()
                 .Show();
             return Task.CompletedTask;
         }

@@ -32,11 +32,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
     [Service]
     public class AuthorizedPublicKeysCommands
     {
-        public AuthorizedPublicKeysCommands(IServiceProvider serviceProvider)
+        public AuthorizedPublicKeysCommands(IToolWindowHost toolWindowHost)
         {
             this.ContextMenuOpen = new OpenToolWindowCommand
                 <IProjectModelNode, AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "Authorized SSH &keys",
                     context => AuthorizedPublicKeysModel.IsNodeSupported(context),
                     _ => true)
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshKeys
 
             this.WindowMenuOpen = new OpenToolWindowCommand
                 <IMainWindow, AuthorizedPublicKeysView, AuthorizedPublicKeysViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "Authorized SSH &keys",
                     _ => true,
                     _ => true)

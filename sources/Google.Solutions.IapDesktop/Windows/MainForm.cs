@@ -76,14 +76,14 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IBindingContext bindingContext;
 
         private readonly ContextSource<IMainWindow> viewMenuContextSource;
-        private readonly ContextSource<ToolWindow> windowMenuContextSource;
+        private readonly ContextSource<ToolWindowViewBase> windowMenuContextSource;
 
         private readonly CommandContainer<IMainWindow> viewMenuCommands;
-        private readonly CommandContainer<ToolWindow> windowMenuCommands;
+        private readonly CommandContainer<ToolWindowViewBase> windowMenuCommands;
 
         public IapRdpUrl StartupUrl { get; set; }
         public ICommandContainer<IMainWindow> ViewMenu => this.viewMenuCommands;
-        public ICommandContainer<ToolWindow> WindowMenu => this.windowMenuCommands;
+        public ICommandContainer<ToolWindowViewBase> WindowMenu => this.windowMenuCommands;
 
         public MainForm(IServiceProvider serviceProvider)
         {
@@ -150,11 +150,11 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Window menu.
             //
-            this.windowMenuContextSource = new ContextSource<ToolWindow>();
+            this.windowMenuContextSource = new ContextSource<ToolWindowViewBase>();
 
             this.windowToolStripMenuItem.DropDownOpening += (sender, args) =>
             {
-                this.windowMenuContextSource.Context = this.dockPanel.ActiveContent as ToolWindow;
+                this.windowMenuContextSource.Context = this.dockPanel.ActiveContent as ToolWindowViewBase;
             };
 
             this.dockPanel.ActiveContentChanged += (sender, args) =>
@@ -167,10 +167,10 @@ namespace Google.Solutions.IapDesktop.Windows
                 //
                 this.windowMenuContextSource.Context =
                     (this.dockPanel.ActiveContent ?? this.dockPanel.ActiveDocumentPane?.ActiveContent)
-                        as ToolWindow;
+                        as ToolWindowViewBase;
             };
 
-            this.windowMenuCommands = new CommandContainer<ToolWindow>(
+            this.windowMenuCommands = new CommandContainer<ToolWindowViewBase>(
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.windowMenuContextSource,
                 bindingContext);
@@ -289,14 +289,14 @@ namespace Google.Solutions.IapDesktop.Windows
             // Bind menu commands.
             //
             this.WindowMenu.AddCommand(
-                new ContextCommand<ToolWindow>(
+                new ContextCommand<ToolWindowViewBase>(
                     "&Close",
                     window => window != null && window.IsDockable
                         ? CommandState.Enabled
                         : CommandState.Disabled,
                     window => window.CloseSafely()));
             this.WindowMenu.AddCommand(
-                new ContextCommand<ToolWindow>(
+                new ContextCommand<ToolWindowViewBase>(
                     "&Float",
                     window => window != null &&
                               !window.IsFloat &&
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Windows
                         : CommandState.Disabled,
                     window => window.IsFloat = true));
             this.WindowMenu.AddCommand(
-                new ContextCommand<ToolWindow>(
+                new ContextCommand<ToolWindowViewBase>(
                     "&Auto hide",
                     window => window != null && window.IsDocked && !window.IsAutoHide
                         ? CommandState.Enabled
@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 });
 
             var dockCommand = this.WindowMenu.AddCommand(
-                new ContextCommand<ToolWindow>(
+                new ContextCommand<ToolWindowViewBase>(
                     "Dock",
                     _ => CommandState.Enabled,
                     context => { }));
@@ -343,13 +343,13 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.WindowMenu.AddSeparator();
 
-            CommandState showTabCommand(ToolWindow window)
+            CommandState showTabCommand(ToolWindowViewBase window)
                 => window != null && window.DockState == DockState.Document && window.Pane.Contents.Count > 1
                     ? CommandState.Enabled
                     : CommandState.Disabled;
 
             this.WindowMenu.AddCommand(
-                new ContextCommand<ToolWindow>(
+                new ContextCommand<ToolWindowViewBase>(
                     "&Next tab",
                     showTabCommand,
                     window => SwitchTab(window, 1))
@@ -357,7 +357,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageDown
                 });
             this.WindowMenu.AddCommand(
-                new ContextCommand<ToolWindow>(
+                new ContextCommand<ToolWindowViewBase>(
                     "&Previous tab",
                     showTabCommand,
                     window => SwitchTab(window, -1))
@@ -365,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.PageUp
                 });
             this.WindowMenu.AddCommand(
-                new ContextCommand<ToolWindow>(
+                new ContextCommand<ToolWindowViewBase>(
                     "Capture/release &focus",
                     _ => this.dockPanel.ActiveDocumentPane != null &&
                          this.dockPanel.ActiveDocumentPane.Contents.EnsureNotNull().Any()
@@ -377,6 +377,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 });
 
 #if DEBUG
+            var toolWindowHost = serviceProvider.GetService<IToolWindowHost>();
             var debugCommand = this.ViewMenu.AddCommand(
                 new ContextCommand<IMainWindow>(
                     "Debug",
@@ -385,44 +386,44 @@ namespace Google.Solutions.IapDesktop.Windows
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Job Service",
                 _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugJobServiceView, DebugJobServiceViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugJobServiceView, DebugJobServiceViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Docking ",
                 _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugDockingView, DebugDockingViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugDockingView, DebugDockingViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Project Explorer Tracking",
                 _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugProjectExplorerTrackingView, DebugProjectExplorerTrackingViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugProjectExplorerTrackingView, DebugProjectExplorerTrackingViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Full screen pane",
                 _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugFullScreenView, DebugFullScreenViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugFullScreenView, DebugFullScreenViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Theme",
                 _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugThemeView, DebugThemeViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugThemeView, DebugThemeViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Registered services",
                 _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Common controls",
                 _ => CommandState.Enabled,
-                _ => ToolWindow
-                    .GetWindow<DebugCommonControlsView, DebugCommonControlsViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugCommonControlsView, DebugCommonControlsViewModel>()
                     .Show()));
 
             var crashCommand = debugCommand.AddCommand(new ContextCommand<IMainWindow>(
@@ -543,13 +544,14 @@ namespace Google.Solutions.IapDesktop.Windows
             else
             {
                 // No startup URL provided, just show project explorer then.
-                ToolWindow
-                    .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(this.serviceProvider)
+                this.serviceProvider
+                    .GetService<IToolWindowHost>()
+                    .GetToolWindow<ProjectExplorerView, ProjectExplorerViewModel>()
                     .Show();
             }
         }
 
-        private void SwitchTab(ToolWindow reference, int delta)
+        private void SwitchTab(ToolWindowViewBase reference, int delta)
         {
             //
             // Find a sibling tab and activate it. Make sure
@@ -564,12 +566,12 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        private ContextCommand<ToolWindow> CreateDockCommand(
+        private ContextCommand<ToolWindowViewBase> CreateDockCommand(
             string caption,
             DockState dockState,
             Keys shortcutKeys)
         {
-            return new ContextCommand<ToolWindow>(
+            return new ContextCommand<ToolWindowViewBase>(
                 caption,
                 window => window != null &&
                             window.VisibleState != dockState &&
@@ -639,7 +641,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void dockPanel_ActiveContentChanged(object sender, EventArgs e)
         {
-            if (this.dockPanel.ActiveContent is ToolWindow toolWindow &&
+            if (this.dockPanel.ActiveContent is ToolWindowViewBase toolWindow &&
                 toolWindow.DockState == DockState.Document)
             {
                 //
@@ -780,8 +782,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            ToolWindow
-                .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(this.serviceProvider)
+            this.serviceProvider
+                .GetService<IToolWindowHost>()
+                .GetToolWindow<ProjectExplorerView, ProjectExplorerViewModel>()
                 .Show();
         }
 

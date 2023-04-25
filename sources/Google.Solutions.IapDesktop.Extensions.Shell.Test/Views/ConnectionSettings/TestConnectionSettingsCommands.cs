@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -40,13 +41,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [Test]
         public void WhenApplicable_ThenContextMenuOpenIsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.AddMock<IConnectionSettingsService>()
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
                 .Setup(s => s.IsConnectionSettingsAvailable(It.IsAny<IProjectModelNode>()))
                 .Returns(true);
             var context = new Mock<IProjectModelNode>();
 
-            var commands = new ConnectionSettingsCommands(serviceProvider.Object);
+            var commands = new ConnectionSettingsCommands(
+                new Mock<IToolWindowHost>().Object,
+                settingsService.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -56,13 +59,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [Test]
         public void WhenNotApplicable_ThenContextMenuOpenIsUnavailable()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.AddMock<IConnectionSettingsService>()
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
                 .Setup(s => s.IsConnectionSettingsAvailable(It.IsAny<IProjectModelNode>()))
                 .Returns(false);
             var context = new Mock<IProjectModelNode>();
 
-            var commands = new ConnectionSettingsCommands(serviceProvider.Object);
+            var commands = new ConnectionSettingsCommands(
+                new Mock<IToolWindowHost>().Object,
+                settingsService.Object);
 
             Assert.AreEqual(
                 CommandState.Unavailable,
@@ -76,13 +81,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [Test]
         public void WhenApplicable_ThenToolbarOpenIsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.AddMock<IConnectionSettingsService>()
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
                 .Setup(s => s.IsConnectionSettingsAvailable(It.IsAny<IProjectModelNode>()))
                 .Returns(true);
             var context = new Mock<IProjectModelNode>();
 
-            var commands = new ConnectionSettingsCommands(serviceProvider.Object);
+            var commands = new ConnectionSettingsCommands(
+                new Mock<IToolWindowHost>().Object,
+                settingsService.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -92,13 +99,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [Test]
         public void WhenNotApplicable_ThenToolbarOpenIsDisabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.AddMock<IConnectionSettingsService>()
+            var settingsService = new Mock<IConnectionSettingsService>();
+            settingsService
                 .Setup(s => s.IsConnectionSettingsAvailable(It.IsAny<IProjectModelNode>()))
                 .Returns(false);
             var context = new Mock<IProjectModelNode>();
 
-            var commands = new ConnectionSettingsCommands(serviceProvider.Object);
+            var commands = new ConnectionSettingsCommands(
+                new Mock<IToolWindowHost>().Object,
+                settingsService.Object);
 
             Assert.AreEqual(
                 CommandState.Disabled,

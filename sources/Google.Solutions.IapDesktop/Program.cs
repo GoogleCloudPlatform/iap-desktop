@@ -433,6 +433,7 @@ namespace Google.Solutions.IapDesktop
                 //
                 var mainLayer = new ServiceRegistry(preAuthLayer);
                 mainLayer.AddSingleton<IAuthorization>(authorization);
+                mainLayer.AddTransient<IToolWindowHost, ToolWindowHost>();
 
                 var mainForm = new MainForm(mainLayer)
                 {

@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     [ComVisible(false)]
     [SkipCodeCoverage("GUI plumbing")]
-    public class ProjectExplorerTrackingToolWindow<TViewModel> : ToolWindow
+    public class ProjectExplorerTrackingToolWindow<TViewModel> : ToolWindowViewBase
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly TaskScheduler taskScheduler;

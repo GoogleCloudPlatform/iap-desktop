@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         private const TabAccentColorIndex AccentColorForUrlBasedSessions 
             = TabAccentColorIndex.Hightlight2;
 
-        private readonly IServiceProvider serviceProvider;
+        private readonly IToolWindowHost toolWindowHost;
         private readonly IMainWindow mainForm;
 
         private void OnSessionConnected(SessionViewBase session)
@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public InstanceSessionBroker(IServiceProvider serviceProvider)
         {
             this.mainForm = serviceProvider.GetService<IMainWindow>();
-            this.serviceProvider = serviceProvider;
+            this.toolWindowHost = serviceProvider.GetService<IToolWindowHost>();
 
             //
             // NB. The ServiceCategory attribute causes this class to be 
@@ -150,8 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public async Task<ISshTerminalSession> ConnectSshSessionAsync(
             ConnectionTemplate<SshSessionParameters> template)
         {
-            var window = ToolWindow.GetWindow<SshTerminalView, SshTerminalViewModel>(
-                this.serviceProvider);
+            var window = this.toolWindowHost.GetToolWindow<SshTerminalView, SshTerminalViewModel>();
 
             window.ViewModel.Instance = template.Transport.Instance;
             window.ViewModel.Endpoint = template.Transport.Endpoint;
@@ -173,8 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public IRemoteDesktopSession ConnectRdpSession(
             ConnectionTemplate<RdpSessionParameters> template)
         {
-            var window = ToolWindow.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(
-                this.serviceProvider);
+            var window = this.toolWindowHost.GetToolWindow<RemoteDesktopView, RemoteDesktopViewModel>();
 
             window.ViewModel.Instance = template.Transport.Instance;
             window.ViewModel.Server = IPAddress.IsLoopback(template.Transport.Endpoint.Address)

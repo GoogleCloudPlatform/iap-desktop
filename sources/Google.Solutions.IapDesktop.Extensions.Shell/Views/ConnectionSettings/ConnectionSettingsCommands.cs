@@ -33,13 +33,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
     [Service]
     public class ConnectionSettingsCommands
     {
-        public ConnectionSettingsCommands(IServiceProvider serviceProvider)
+        public ConnectionSettingsCommands(
+            IToolWindowHost toolWindowHost,
+            IConnectionSettingsService settingsService)
         {
-            var settingsService = serviceProvider.GetService<IConnectionSettingsService>();
-
             this.ContextMenuOpen = new OpenToolWindowCommand
                 <IProjectModelNode, ConnectionSettingsView, ConnectionSettingsViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "Connection &settings",
                     context => settingsService.IsConnectionSettingsAvailable(context),
                     _ => true)
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 
             this.ToolbarOpen = new OpenToolWindowCommand
                 <IProjectModelNode, ConnectionSettingsView, ConnectionSettingsViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "Connection &settings",
                     _ => true,
                     context => settingsService.IsConnectionSettingsAvailable(context))
@@ -65,6 +65,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 
         public IContextCommand<IProjectModelNode> ContextMenuOpen { get; }
         public IContextCommand<IProjectModelNode> ToolbarOpen { get; }
-
     }
 }

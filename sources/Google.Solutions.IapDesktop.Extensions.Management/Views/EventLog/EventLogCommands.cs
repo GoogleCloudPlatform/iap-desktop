@@ -32,11 +32,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
     [Service]
     public class EventLogCommands
     {
-        public EventLogCommands(IServiceProvider serviceProvider)
+        public EventLogCommands(IToolWindowHost toolWindowHost)
         {
             this.ContextMenuOpen = new OpenToolWindowCommand
                 <IProjectModelNode, EventLogView, EventLogViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "Show &event log",
                     context => context is IProjectModelProjectNode
                         || context is IProjectModelZoneNode
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.EventLog
 
             this.WindowMenuOpen = new OpenToolWindowCommand
                 <IMainWindow, EventLogView, EventLogViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "&Event log",
                     _ => true,
                     _ => true)

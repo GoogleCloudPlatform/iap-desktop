@@ -34,7 +34,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
-    public class DocumentWindow : ToolWindow
+    public class DocumentWindow : ToolWindowViewBase
     {
         /// <summary>
         /// Hotkey to move focus to current document, or release focus

@@ -27,7 +27,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     [SkipCodeCoverage("For development purposes only")]
-    public partial class DebugCommonControlsView : ToolWindow, IView<DebugCommonControlsViewModel>
+    public partial class DebugCommonControlsView : ToolWindowViewBase, IView<DebugCommonControlsViewModel>
     {
         public DebugCommonControlsView(IServiceProvider serviceProvider)
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft)

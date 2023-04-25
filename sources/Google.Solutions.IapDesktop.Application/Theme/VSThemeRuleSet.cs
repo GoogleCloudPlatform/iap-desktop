@@ -407,7 +407,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             dockPanel.Theme = this.theme;
         }
 
-        private void StyleToolWindow(ToolWindow window, ControlTheme controlTheme)
+        private void StyleToolWindow(ToolWindowViewBase window, ControlTheme controlTheme)
         {
             if (window.TabPageContextMenuStrip != null)
             {
@@ -430,7 +430,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
             controlTheme.ExpectNotNull(nameof(controlTheme));
             controlTheme.AddRule<Form>(c => StyleDockWindow(c));
             controlTheme.AddRule<DockPanel>(c => StyleDockPanel(c));
-            controlTheme.AddRule<ToolWindow>(c => StyleToolWindow(c, controlTheme));
+            controlTheme.AddRule<ToolWindowViewBase>(c => StyleToolWindow(c, controlTheme));
             controlTheme.AddRule<FlyoutWindow>(c => StyleFlyoutWindow(c));
 
             base.AddRules(controlTheme);
