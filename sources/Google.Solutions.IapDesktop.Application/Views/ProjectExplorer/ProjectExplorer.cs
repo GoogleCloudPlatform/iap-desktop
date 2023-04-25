@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             serviceProvider.ExpectNotNull(nameof(serviceProvider));
 
-            var window = ToolWindow
+            var window = ToolWindowViewBase
                 .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(serviceProvider);
             this.view = window.Bind();
         }

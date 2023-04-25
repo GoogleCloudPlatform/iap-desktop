@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 {
     [ComVisible(false)]
     [SkipCodeCoverage("GUI plumbing")]
-    public partial class ToolWindow : DockContent
+    public partial class ToolWindowViewBase : DockContent
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly DockPanel panel;
@@ -87,13 +87,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        public ToolWindow()
+        public ToolWindowViewBase()
         {
             this.InitializeComponent();
             this.AutoScaleMode = AutoScaleMode.Dpi;
         }
 
-        public ToolWindow(
+        public ToolWindowViewBase(
             IServiceProvider serviceProvider,
             DockState defaultDockState) : this()
         {
@@ -413,7 +413,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// </summary>
         public static BoundToolWindow<TToolWindowView, TToolWindowViewModel> GetWindow<TToolWindowView, TToolWindowViewModel>(
             IServiceProvider serviceProvider)
-            where TToolWindowView : ToolWindow, IView<TToolWindowViewModel>
+            where TToolWindowView : ToolWindowViewBase, IView<TToolWindowViewModel>
             where TToolWindowViewModel : ViewModelBase
         {
             //
@@ -456,7 +456,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         }
 
         public class BoundToolWindow<TToolWindowView, TToolWindowViewModel>
-            where TToolWindowView : ToolWindow, IView<TToolWindowViewModel>
+            where TToolWindowView : ToolWindowViewBase, IView<TToolWindowViewModel>
             where TToolWindowViewModel : ViewModelBase
         {
             private bool bound = false;

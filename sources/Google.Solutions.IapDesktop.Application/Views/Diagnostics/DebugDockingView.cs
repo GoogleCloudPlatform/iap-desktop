@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     [ComVisible(false)]
     [SkipCodeCoverage("For debug purposes only")]
-    public partial class DebugDockingView : ToolWindow, IView<DebugDockingViewModel>
+    public partial class DebugDockingView : ToolWindowViewBase, IView<DebugDockingViewModel>
     {
         private DebugDockingViewModel viewModel;
 

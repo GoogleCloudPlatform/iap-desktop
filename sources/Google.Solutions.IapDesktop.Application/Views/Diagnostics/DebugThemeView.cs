@@ -35,7 +35,7 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     [SkipCodeCoverage("For development purposes only")]
-    public partial class DebugThemeView : ToolWindow, IView<DebugThemeViewModel>
+    public partial class DebugThemeView : ToolWindowViewBase, IView<DebugThemeViewModel>
     {
         public DebugThemeView(IServiceProvider serviceProvider)
             : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockLeft)

@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     [ComVisible(false)]
     [SkipCodeCoverage("For debug purposes only")]
-    public partial class DebugJobServiceView : ToolWindow, IView<DebugJobServiceViewModel>
+    public partial class DebugJobServiceView : ToolWindowViewBase, IView<DebugJobServiceViewModel>
     {
         public DebugJobServiceView(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockRightAutoHide)

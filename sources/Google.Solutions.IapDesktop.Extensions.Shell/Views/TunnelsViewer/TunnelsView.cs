@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
-    public partial class TunnelsView : ToolWindow, IView<TunnelsViewModel>
+    public partial class TunnelsView : ToolWindowViewBase, IView<TunnelsViewModel>
     {
         public TunnelsView(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockBottomAutoHide)

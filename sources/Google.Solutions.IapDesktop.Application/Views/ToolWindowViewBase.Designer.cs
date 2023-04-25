@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
-    partial class ToolWindow
+    partial class ToolWindowViewBase
     {
         /// <summary>
         /// Required designer variable.

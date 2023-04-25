@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public async Task<ISshTerminalSession> ConnectSshSessionAsync(
             ConnectionTemplate<SshSessionParameters> template)
         {
-            var window = ToolWindow.GetWindow<SshTerminalView, SshTerminalViewModel>(
+            var window = ToolWindowViewBase.GetWindow<SshTerminalView, SshTerminalViewModel>(
                 this.serviceProvider);
 
             window.ViewModel.Instance = template.Transport.Instance;
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         public IRemoteDesktopSession ConnectRdpSession(
             ConnectionTemplate<RdpSessionParameters> template)
         {
-            var window = ToolWindow.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(
+            var window = ToolWindowViewBase.GetWindow<RemoteDesktopView, RemoteDesktopViewModel>(
                 this.serviceProvider);
 
             window.ViewModel.Instance = template.Transport.Instance;

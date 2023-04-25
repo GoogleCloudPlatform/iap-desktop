@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     [ComVisible(false)]
     [SkipCodeCoverage("Logic is in view model")]
-    public partial class ProjectExplorerView : ToolWindow, IProjectExplorer, IView<ProjectExplorerViewModel>
+    public partial class ProjectExplorerView : ToolWindowViewBase, IProjectExplorer, IView<ProjectExplorerViewModel>
     {
         private readonly IMainWindow mainForm;
         private readonly IJobService jobService;

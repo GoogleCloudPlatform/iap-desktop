@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 
         public void ShowCredentialsDialog()
         {
-            ToolWindow
+            ToolWindowViewBase
                 .GetWindow<ConnectionSettingsView, ConnectionSettingsViewModel>(this.serviceProvider)
                 .Show();
         }

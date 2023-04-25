@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             Debug.Assert(IsAvailable(context) && IsEnabled(context));
 
-            ToolWindow
+            ToolWindowViewBase
                 .GetWindow<TView, TViewModel>(serviceProvider)
                 .Show();
             return Task.CompletedTask;

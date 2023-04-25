@@ -178,6 +178,7 @@
     <Compile Include="Views\Diagnostics\DebugOptionsSheetViewModel.cs" />
     <Compile Include="Views\MenuCommand.cs" />
     <Compile Include="Views\MenuCommandAttribute.cs" />
+    <Compile Include="Views\IToolWindowHost.cs" />
     <Compile Include="Views\UrlCommands.cs" />
     <Compile Include="Views\ViewBindingContext.cs" />
     <Compile Include="Views\Diagnostics\DebugCommonControlsView.cs">
@@ -318,11 +319,11 @@
     <Compile Include="Views\ProjectExplorer\ProjectExplorerView.Designer.cs">
       <DependentUpon>ProjectExplorerView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\ToolWindow.cs">
+    <Compile Include="Views\ToolWindowViewBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\ToolWindow.Designer.cs">
-      <DependentUpon>ToolWindow.cs</DependentUpon>
+    <Compile Include="Views\ToolWindowViewBase.Designer.cs">
+      <DependentUpon>ToolWindowViewBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\WaitDialog.cs">
       <SubType>Form</SubType>
@@ -436,8 +437,8 @@
     <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerView.resx">
       <DependentUpon>ProjectExplorerView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\ToolWindow.resx">
-      <DependentUpon>ToolWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\ToolWindowViewBase.resx">
+      <DependentUpon>ToolWindowViewBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\WaitDialog.resx">
       <DependentUpon>WaitDialog.cs</DependentUpon>
