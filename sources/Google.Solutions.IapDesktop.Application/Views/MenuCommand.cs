@@ -31,16 +31,15 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views
 {
     /// <summary>
-    /// Base class for context command related to tools.
+    /// Base class for menu commands.
     /// </summary>
-    /// <typeparam name="TContext"></typeparam>
-    public abstract class ToolContextCommand<TContext> : CommandBase, IContextCommand<TContext>
+    public abstract class MenuCommand<TContext> : CommandBase, IContextCommand<TContext>, IMenuCommand //TODO: Rename to MenuCommand
     {
         /// <summary>
-        /// If true, the command is never reported as Unavailable,
-        /// but only as Disabled.
+        /// Type of command. When set to ToolbarCommand, the command is
+        /// never reported as Unavailable, but only as Disabled.
         /// </summary>
-        public bool IsToolbarCommand { get; set; } = false;
+        public MenuCommandType CommandType { get; set; } = MenuCommandType.MenuCommand;
 
         /// <summary>
         /// Check if command should be made available for this context.
@@ -54,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// <param name="context"></param>
         protected abstract bool IsEnabled(TContext context);
 
-        public ToolContextCommand(string text)
+        public MenuCommand(string text)
         {
             Debug.Assert(text.Contains("&"), "Command text should have a mnemonic");
             this.Text = text;
@@ -74,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             if (!this.IsAvailable(context))
             {
-                if (this.IsToolbarCommand)
+                if (this.CommandType == MenuCommandType.ToolbarCommand)
                 {
                     //
                     // Report as Disabled even if it's Unavailable.
@@ -110,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         }
     }
 
-    public class OpenToolWindowCommand<TContext, TView, TViewModel> : ToolContextCommand<TContext>
+    public class OpenToolWindowCommand<TContext, TView, TViewModel> : MenuCommand<TContext>
         where TView : ToolWindow, IView<TViewModel>
         where TViewModel : ViewModelBase
     {

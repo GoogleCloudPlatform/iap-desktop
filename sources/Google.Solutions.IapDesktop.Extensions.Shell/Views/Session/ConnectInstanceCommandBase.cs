@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 {
     internal abstract class ConnectInstanceCommandBase<TContext>
-        : ToolContextCommand<TContext>
+        : MenuCommand<TContext>
     {
         protected ConnectInstanceCommandBase(string text) : base(text)
         {

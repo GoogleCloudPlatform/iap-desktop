@@ -148,6 +148,7 @@
     <Compile Include="Views\ProjectPicker\TestProjectPickerViewModel.cs" />
     <Compile Include="Views\Properties\TestPropertiesInspectorWindow.cs" />
     <Compile Include="Host\TestSingletonApplicationBase.cs" />
+    <Compile Include="Views\TestMenuCommandAttribute.cs" />
     <Compile Include="Views\TestToolWindow.cs" />
   </ItemGroup>
   <ItemGroup>

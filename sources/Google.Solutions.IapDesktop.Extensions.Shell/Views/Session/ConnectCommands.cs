@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 sshConnectionService,
                 sessionBroker)
             {
-                IsToolbarCommand = true,                  // Never hide to avoid flicker.
+                CommandType = MenuCommandType.ToolbarCommand, // Never hide to avoid flicker.
                 AvailableForSsh = true,
                 AvailableForRdp = true,
                 Image = Resources.Connect_16,
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
 
 
-        private class DuplicateSessionCommand : ToolContextCommand<ISession>
+        private class DuplicateSessionCommand : MenuCommand<ISession>
         {
             private readonly Service<IProjectModelService> modelService;
             private readonly IContextCommand<IProjectModelNode> connectInNewTerminalCommand;

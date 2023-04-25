@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     /// Only valid in extension DLLs.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public sealed class ServiceAttribute : Attribute
+    public class ServiceAttribute : Attribute
     {
         /// <summary>
         /// Interface by which the service can be looked up.
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     /// Only valid in extension DLLs.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public sealed class ServiceCategoryAttribute : Attribute
+    public class ServiceCategoryAttribute : Attribute
     {
         public Type Category { get; }
 

@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics
         /// Generate a HTML page that contains iap-rdp:// links for all
         /// Windows VMs in a project.
         /// </summary>
-        private class GenerateHtmlPageCommand : ToolContextCommand<IProjectModelNode>
+        private class GenerateHtmlPageCommand : MenuCommand<IProjectModelNode>
         {
             private readonly IConnectionSettingsService settingsService;
             private readonly IProjectModelService projectModelService;
