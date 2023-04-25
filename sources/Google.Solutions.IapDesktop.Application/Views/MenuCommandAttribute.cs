@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         Attribute = command.GetType().GetCustomAttribute<MenuCommandAttribute>()
                     })
                 .Where(item => item.Attribute != null)
-                .Where(item => item.Command.CommandType == MenuCommandType.ToolbarCommand)
+                .Where(item => item.Command.CommandType == commandType)
                 .OrderBy(item => item.Attribute.Rank);
 
             //
