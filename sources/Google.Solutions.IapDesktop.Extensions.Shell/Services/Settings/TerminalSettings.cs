@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
     /// 
     /// Service is a singleton so that objects can subscribe to events.
     /// </summary>
-    [Service(ServiceLifetime.Singleton, ServiceVisibility.Global)]
+    [Service(ServiceLifetime.Singleton)]
     public class TerminalSettingsRepository : SettingsRepositoryBase<TerminalSettings>
     {
         public event EventHandler<EventArgs<TerminalSettings>> SettingsChanged;

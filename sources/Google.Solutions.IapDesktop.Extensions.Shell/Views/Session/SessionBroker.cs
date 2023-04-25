@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
         ICommandContainer<ISession> SessionMenu { get; }
     }
 
-    [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
+    [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton)]
     [ServiceCategory(typeof(ISessionBroker))]
     public class InstanceSessionBroker : IInstanceSessionBroker
     {

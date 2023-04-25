@@ -28,7 +28,7 @@ using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    [Service(ServiceLifetime.Transient, ServiceVisibility.Global)]
+    [Service(ServiceLifetime.Transient)]
     public class TerminalOptionsViewModel : OptionsViewModelBase<TerminalSettings>
     {
         public TerminalOptionsViewModel(

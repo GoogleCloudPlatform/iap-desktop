@@ -32,7 +32,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    [Service(ServiceLifetime.Transient, ServiceVisibility.Global)]
+    [Service(ServiceLifetime.Transient)]
     [ServiceCategory(typeof(IPropertiesSheetView))]
     public partial class SshOptionsSheet : UserControl, IPropertiesSheetView
     {

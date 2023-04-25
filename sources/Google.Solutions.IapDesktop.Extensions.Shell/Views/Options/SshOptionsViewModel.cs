@@ -30,7 +30,7 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    [Service(ServiceLifetime.Transient, ServiceVisibility.Global)]
+    [Service(ServiceLifetime.Transient)]
     public class SshOptionsViewModel : OptionsViewModelBase<SshSettings>
     {
         private static readonly SshKeyType[] publicKeyTypes =

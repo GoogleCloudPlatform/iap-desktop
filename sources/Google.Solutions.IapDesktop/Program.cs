@@ -501,10 +501,9 @@ namespace Google.Solutions.IapDesktop
                 //
                 // Load extensions.
                 //
-                var extensionLayer = new ServiceRegistry(mainLayer);
                 foreach (var extension in LoadExtensionAssemblies())
                 {
-                    extensionLayer.AddExtensionAssembly(extension);
+                    mainLayer.AddExtensionAssembly(extension);
                 }
 
                 //

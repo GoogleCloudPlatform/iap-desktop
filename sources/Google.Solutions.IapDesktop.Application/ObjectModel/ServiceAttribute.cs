@@ -41,11 +41,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public ServiceLifetime Lifetime { get; }
 
         /// <summary>
-        /// Restrict visibility to other services.
-        /// </summary>
-        public ServiceVisibility Visibility { get; } = ServiceVisibility.Scoped;
-
-        /// <summary>
         /// Delay instance creation until first use. Ignored
         /// for transient services.
         /// </summary>
@@ -53,8 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         public ServiceAttribute(
             Type serviceInterface,
-            ServiceLifetime lifetime,
-            ServiceVisibility visibility)
+            ServiceLifetime lifetime)
         {
             if (serviceInterface != null && !serviceInterface.IsInterface)
             {
@@ -63,12 +57,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
             this.ServiceInterface = serviceInterface;
             this.Lifetime = lifetime;
-            this.Visibility = visibility;
-        }
-
-        public ServiceAttribute(Type serviceInterface, ServiceLifetime lifetime)
-            : this(serviceInterface, lifetime, ServiceVisibility.Scoped)
-        {
         }
 
         public ServiceAttribute(Type serviceInterface)
@@ -78,11 +66,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         public ServiceAttribute(ServiceLifetime lifetime)
             : this(null, lifetime)
-        {
-        }
-
-        public ServiceAttribute(ServiceLifetime lifetime, ServiceVisibility visibility)
-            : this(null, lifetime, visibility)
         {
         }
 
@@ -97,20 +80,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         Transient,
         Singleton
     }
-
-    public enum ServiceVisibility
-    {
-        /// <summary>
-        /// Visible across all layers of service registries.
-        /// </summary>
-        Global,
-
-        /// <summary>
-        /// Visible within current and lower layers.
-        /// </summary>
-        Scoped
-    }
-
 
     /// <summary>
     /// Declare that a class implements a category interface.
