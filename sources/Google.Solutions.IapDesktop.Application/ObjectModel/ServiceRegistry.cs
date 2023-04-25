@@ -372,14 +372,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         // Extension assembly handling.
         //---------------------------------------------------------------------
 
-        private ServiceRegistry GetServiceRegistryToRegisterWith(ServiceAttribute attribute)
-        {
-            // If it's visible globally, use the root registry.
-            return attribute.Visibility == ServiceVisibility.Global
-                ? this.RootRegistry
-                : this;
-        }
-
         public void AddExtensionAssembly(Assembly assembly)
         {
             //
@@ -399,7 +391,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
                     attribute.Lifetime == ServiceLifetime.Transient)
                 {
-                    GetServiceRegistryToRegisterWith(attribute).AddTransient(
+                    AddTransient(
                         attribute.ServiceInterface ?? type,
                         type);
                 }
@@ -419,7 +411,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                         ? new SingletonStub(() => CreateInstance(type))
                         : new SingletonStub(CreateInstance(type));
 
-                    GetServiceRegistryToRegisterWith(attribute).AddSingleton(
+                    AddSingleton(
                         attribute.ServiceInterface ?? type,
                         stub);
                 }
@@ -433,7 +425,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
                     type.GetCustomAttribute<ServiceCategoryAttribute>() is ServiceCategoryAttribute categoryAttribute)
                 {
-                    GetServiceRegistryToRegisterWith(attribute).AddServiceToCategory(
+                    AddServiceToCategory(
                         categoryAttribute.Category,
                         attribute.ServiceInterface ?? type);
                 }
