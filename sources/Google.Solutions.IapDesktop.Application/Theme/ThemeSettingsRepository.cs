@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Theme
 
             [Display(Name = "Dark theme")]
             Dark = 2,
-            _Default = Light
+            _Default = System
         }
 
         public RegistryEnumSetting<ApplicationTheme> Theme { get; private set; }
