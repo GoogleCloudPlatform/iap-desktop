@@ -91,7 +91,6 @@ namespace Google.Solutions.Testing.Application.Views
             registry.AddSingleton<IJobService>(mainForm);
             registry.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
             registry.AddSingleton<IEventService>(this.EventService);
-            registry.AddTransient<IToolWindowHost, ToolWindowHost>();
 
             this.exceptionDialog = new MockExceptionDialog();
             registry.AddSingleton<IExceptionDialog>(this.exceptionDialog);
