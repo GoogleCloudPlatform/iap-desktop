@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Pick roject";
+            this.Text = "Pick project";
             this.ResumeLayout(false);
             this.PerformLayout();
 
