@@ -61,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             registry.AddSingleton<SampleView>();
             registry.AddTransient<SampleViewModel>();
 
-            var window1 = ToolWindowViewBase.GetWindow<SampleView, SampleViewModel>(registry);
-            var window2 = ToolWindowViewBase.GetWindow<SampleView, SampleViewModel>(registry);
+            var window1 = ToolWindowViewBase.GetToolWindow<SampleView, SampleViewModel>(registry);
+            var window2 = ToolWindowViewBase.GetToolWindow<SampleView, SampleViewModel>(registry);
 
             var view1 = window1.Bind();
             var view2 = window2.Bind();
@@ -81,8 +81,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             registry.AddTransient<SampleView>();
             registry.AddTransient<SampleViewModel>();
 
-            var window1 = ToolWindowViewBase.GetWindow<SampleView, SampleViewModel>(registry);
-            var window2 = ToolWindowViewBase.GetWindow<SampleView, SampleViewModel>(registry);
+            var window1 = ToolWindowViewBase.GetToolWindow<SampleView, SampleViewModel>(registry);
+            var window2 = ToolWindowViewBase.GetToolWindow<SampleView, SampleViewModel>(registry);
 
             var view1 = window1.Bind();
             var view2 = window2.Bind();

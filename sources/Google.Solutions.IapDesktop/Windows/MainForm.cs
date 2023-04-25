@@ -377,6 +377,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 });
 
 #if DEBUG
+            var toolWindowHost = serviceProvider.GetService<IToolWindowHost>();
             var debugCommand = this.ViewMenu.AddCommand(
                 new ContextCommand<IMainWindow>(
                     "Debug",
@@ -385,44 +386,44 @@ namespace Google.Solutions.IapDesktop.Windows
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Job Service",
                 _ => CommandState.Enabled,
-                _ => ToolWindowViewBase
-                    .GetWindow<DebugJobServiceView, DebugJobServiceViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugJobServiceView, DebugJobServiceViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Docking ",
                 _ => CommandState.Enabled,
-                _ => ToolWindowViewBase
-                    .GetWindow<DebugDockingView, DebugDockingViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugDockingView, DebugDockingViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Project Explorer Tracking",
                 _ => CommandState.Enabled,
-                _ => ToolWindowViewBase
-                    .GetWindow<DebugProjectExplorerTrackingView, DebugProjectExplorerTrackingViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugProjectExplorerTrackingView, DebugProjectExplorerTrackingViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Full screen pane",
                 _ => CommandState.Enabled,
-                _ => ToolWindowViewBase
-                    .GetWindow<DebugFullScreenView, DebugFullScreenViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugFullScreenView, DebugFullScreenViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Theme",
                 _ => CommandState.Enabled,
-                _ => ToolWindowViewBase
-                    .GetWindow<DebugThemeView, DebugThemeViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugThemeView, DebugThemeViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Registered services",
                 _ => CommandState.Enabled,
-                _ => ToolWindowViewBase
-                    .GetWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugServiceRegistryView, DebugServiceRegistryViewModel>()
                     .Show()));
             debugCommand.AddCommand(new ContextCommand<IMainWindow>(
                 "Common controls",
                 _ => CommandState.Enabled,
-                _ => ToolWindowViewBase
-                    .GetWindow<DebugCommonControlsView, DebugCommonControlsViewModel>(this.serviceProvider)
+                _ => toolWindowHost
+                    .GetToolWindow<DebugCommonControlsView, DebugCommonControlsViewModel>()
                     .Show()));
 
             var crashCommand = debugCommand.AddCommand(new ContextCommand<IMainWindow>(
@@ -543,8 +544,9 @@ namespace Google.Solutions.IapDesktop.Windows
             else
             {
                 // No startup URL provided, just show project explorer then.
-                ToolWindowViewBase
-                    .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(this.serviceProvider)
+                this.serviceProvider
+                    .GetService<IToolWindowHost>()
+                    .GetToolWindow<ProjectExplorerView, ProjectExplorerViewModel>()
                     .Show();
             }
         }
@@ -780,8 +782,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            ToolWindowViewBase
-                .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(this.serviceProvider)
+            this.serviceProvider
+                .GetService<IToolWindowHost>()
+                .GetToolWindow<ProjectExplorerView, ProjectExplorerViewModel>()
                 .Show();
         }
 

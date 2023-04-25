@@ -32,11 +32,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
     [Service]
     public class PackageInventoryCommands
     {
-        public PackageInventoryCommands(IServiceProvider serviceProvider)
+        public PackageInventoryCommands(IToolWindowHost toolWindowHost)
         {
             this.ContextMenuOpenInstalledPackages = new OpenToolWindowCommand
                 <IProjectModelNode, InstalledPackageInventoryView, PackageInventoryViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "Show &installed packages",
                     context => context is IProjectModelInstanceNode ||
                         context is IProjectModelZoneNode ||
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             };
             this.ContextMenuOpenAvailablePackages = new OpenToolWindowCommand
                 <IProjectModelNode, AvailablePackageInventoryView, PackageInventoryViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "Show &available updates",
                     context => context is IProjectModelInstanceNode ||
                         context is IProjectModelZoneNode ||
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
 
             this.WindowMenuOpenInstalledPackages = new OpenToolWindowCommand
                 <IMainWindow, InstalledPackageInventoryView, PackageInventoryViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "I&nstalled packages",
                     _ => true,
                     _ => true)
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.PackageInvento
             };
             this.WindowMenuOpenAvailablePackages = new OpenToolWindowCommand
                 <IMainWindow, AvailablePackageInventoryView, PackageInventoryViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "&Available updates",
                     _ => true,
                     _ => true)

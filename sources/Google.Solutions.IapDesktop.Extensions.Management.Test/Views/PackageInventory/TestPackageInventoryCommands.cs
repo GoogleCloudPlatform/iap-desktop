@@ -39,8 +39,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
         [Test]
         public void WhenApplicable_ThenContextMenuOpenInstalledPackagesIsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new PackageInventoryCommands(serviceProvider.Object);
+            var toolWindowHost = new Mock<IToolWindowHost>();
+            var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -56,8 +56,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
         [Test]
         public void WhenNotApplicable_ThenContextMenuOpenInstalledPackagesIsUnavailable()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new PackageInventoryCommands(serviceProvider.Object);
+            var toolWindowHost = new Mock<IToolWindowHost>();
+            var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Unavailable,
@@ -71,8 +71,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
         [Test]
         public void WhenApplicable_ThenContextMenuOpenAvailablePackagesIsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new PackageInventoryCommands(serviceProvider.Object);
+            var toolWindowHost = new Mock<IToolWindowHost>();
+            var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -88,8 +88,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
         [Test]
         public void WhenNotApplicable_ThenContextMenuOpenAvailablePackagesIsUnavailable()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new PackageInventoryCommands(serviceProvider.Object);
+            var toolWindowHost = new Mock<IToolWindowHost>();
+            var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Unavailable,
@@ -103,10 +103,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
         [Test]
         public void WindowMenuOpenInstalledPackagesEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
+            var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();
 
-            var commands = new PackageInventoryCommands(serviceProvider.Object);
+            var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -120,10 +120,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.PackageIn
         [Test]
         public void WindowMenuOpenAvailablePackagesEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
+            var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();
 
-            var commands = new PackageInventoryCommands(serviceProvider.Object);
+            var commands = new PackageInventoryCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,

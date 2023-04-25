@@ -411,7 +411,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// Callers have the opportunity to customize the view model before calling
         /// .Show() on the returned object.
         /// </summary>
-        public static BoundToolWindow<TToolWindowView, TToolWindowViewModel> GetWindow<TToolWindowView, TToolWindowViewModel>(
+        internal static BoundToolWindow<TToolWindowView, TToolWindowViewModel> GetToolWindow<TToolWindowView, TToolWindowViewModel>(
             IServiceProvider serviceProvider)
             where TToolWindowView : ToolWindowViewBase, IView<TToolWindowViewModel>
             where TToolWindowViewModel : ViewModelBase
@@ -455,7 +455,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        public class BoundToolWindow<TToolWindowView, TToolWindowViewModel>
+        internal class BoundToolWindow<TToolWindowView, TToolWindowViewModel>
+            : IToolWindow<TToolWindowView, TToolWindowViewModel>
             where TToolWindowView : ToolWindowViewBase, IView<TToolWindowViewModel>
             where TToolWindowViewModel : ViewModelBase
         {

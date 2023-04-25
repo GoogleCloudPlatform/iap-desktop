@@ -32,11 +32,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
     [Service]
     public class InstancePropertiesInspectorCommands
     {
-        public InstancePropertiesInspectorCommands(IServiceProvider serviceProvider)
+        public InstancePropertiesInspectorCommands(IToolWindowHost toolWindowHost)
         {
             this.ContextMenuOpen = new OpenToolWindowCommand
                 <IProjectModelNode, InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "P&roperties",
                     context => context is IProjectModelInstanceNode,
                     _ => true)
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
 
             this.ToolbarOpen = new OpenToolWindowCommand
                 <IProjectModelNode, InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "P&roperties",
                     _ => true,
                     context => context is IProjectModelInstanceNode)
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.InstanceProper
 
             this.WindowMenuOpen = new OpenToolWindowCommand
                 <IMainWindow, InstancePropertiesInspectorView, InstancePropertiesInspectorViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "&Instance properties",
                     _ => true,
                     _ => true)

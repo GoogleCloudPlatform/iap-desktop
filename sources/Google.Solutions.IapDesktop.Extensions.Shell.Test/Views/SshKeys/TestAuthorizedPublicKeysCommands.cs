@@ -39,10 +39,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
         [Test]
         public void WhenApplicable_ThenContextMenuOpenIsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
             var context = new Mock<IProjectModelProjectNode>();
 
-            var commands = new AuthorizedPublicKeysCommands(serviceProvider.Object);
+            var commands = new AuthorizedPublicKeysCommands(
+                new Mock<IToolWindowHost>().Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -52,10 +52,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
         [Test]
         public void WhenNotApplicable_ThenContextMenuOpenIsUnavailable()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
             var context = new Mock<IProjectModelNode>();
 
-            var commands = new AuthorizedPublicKeysCommands(serviceProvider.Object);
+            var commands = new AuthorizedPublicKeysCommands(
+                new Mock<IToolWindowHost>().Object);
 
             Assert.AreEqual(
                 CommandState.Unavailable,
@@ -69,10 +69,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshKeys
         [Test]
         public void WindowMenuOpenIsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
             var context = new Mock<IMainWindow>();
 
-            var commands = new AuthorizedPublicKeysCommands(serviceProvider.Object);
+            var commands = new AuthorizedPublicKeysCommands(
+                new Mock<IToolWindowHost>().Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,

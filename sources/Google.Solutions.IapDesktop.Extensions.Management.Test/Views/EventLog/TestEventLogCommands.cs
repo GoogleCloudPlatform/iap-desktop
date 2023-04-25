@@ -39,8 +39,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
         [Test]
         public void WhenApplicable_ThenContextMenuOpenIsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new EventLogCommands(serviceProvider.Object);
+            var toolWindowHost = new Mock<IToolWindowHost>();
+            var commands = new EventLogCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -56,8 +56,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
         [Test]
         public void WhenNotApplicable_ThenContextMenuOpenIsUnavailable()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new EventLogCommands(serviceProvider.Object);
+            var toolWindowHost = new Mock<IToolWindowHost>();
+            var commands = new EventLogCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Unavailable,
@@ -71,10 +71,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.EventLog
         [Test]
         public void WindowMenuOpenIsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
+            var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();
 
-            var commands = new EventLogCommands(serviceProvider.Object);
+            var commands = new EventLogCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,

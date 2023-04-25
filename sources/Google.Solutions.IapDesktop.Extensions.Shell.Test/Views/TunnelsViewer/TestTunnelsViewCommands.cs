@@ -38,10 +38,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.TunnelsViewer
         [Test]
         public void WindowMenuOpenIsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
             var context = new Mock<IMainWindow>();
 
-            var commands = new TunnelsViewCommands(serviceProvider.Object);
+            var commands = new TunnelsViewCommands(
+                new Mock<IToolWindowHost>().Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,

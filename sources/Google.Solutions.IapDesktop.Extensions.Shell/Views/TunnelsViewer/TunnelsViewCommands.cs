@@ -31,11 +31,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
     [Service]
     public class TunnelsViewCommands
     {
-        public TunnelsViewCommands(IServiceProvider serviceProvider)
+        public TunnelsViewCommands(IToolWindowHost toolWindowHost)
         {
             this.WindowMenuOpen = new OpenToolWindowCommand
                 <IMainWindow, TunnelsView, TunnelsViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "Active IAP &tunnels",
                     _ => true,
                     _ => true)

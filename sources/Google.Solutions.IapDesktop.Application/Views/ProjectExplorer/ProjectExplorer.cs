@@ -41,12 +41,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         private readonly ProjectExplorerView view;
 
-        public ProjectExplorer(IServiceProvider serviceProvider)
+        public ProjectExplorer(IToolWindowHost toolWindowHost)
         {
-            serviceProvider.ExpectNotNull(nameof(serviceProvider));
+            toolWindowHost.ExpectNotNull(nameof(toolWindowHost));
 
-            var window = ToolWindowViewBase
-                .GetWindow<ProjectExplorerView, ProjectExplorerViewModel>(serviceProvider);
+            var window = toolWindowHost.GetToolWindow<ProjectExplorerView, ProjectExplorerViewModel>();
             this.view = window.Bind();
         }
 

@@ -21,23 +21,41 @@
 
 
 using Google.Solutions.Mvvm.Binding;
+using System;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
     public interface IToolWindowHost
     {
-        IToolWindow<TToolWindowView, TToolWindowViewModel> 
-            GetToolWindow<TToolWindowView, TToolWindowViewModel>()
-            where TToolWindowView : ToolWindowViewBase, IView<TToolWindowViewModel>
-            where TToolWindowViewModel : ViewModelBase;
+        IToolWindow<TView, TViewModel> 
+            GetToolWindow<TView, TViewModel>()
+            where TView : ToolWindowViewBase, IView<TViewModel>
+            where TViewModel : ViewModelBase;
     }
 
-    public interface IToolWindow<TToolWindowView, TToolWindowViewModel>
-            where TToolWindowView : ToolWindowViewBase, IView<TToolWindowViewModel>
-            where TToolWindowViewModel : ViewModelBase
+    public interface IToolWindow<TView, TViewModel>
+            where TView : ToolWindowViewBase, IView<TViewModel>
+            where TViewModel : ViewModelBase
     {
-        TToolWindowViewModel ViewModel { get; }
-        TToolWindowView Bind();
+        TViewModel ViewModel { get; }
+        TView Bind();
         void Show();
+    }
+
+    public class ToolWindowHost : IToolWindowHost
+    {
+        private readonly IServiceProvider serviceProvider;
+
+        public ToolWindowHost(IServiceProvider service)
+        {
+            this.serviceProvider = service;
+        }
+
+        public IToolWindow<TView, TViewModel> GetToolWindow<TView, TViewModel>()
+            where TView : ToolWindowViewBase, IView<TViewModel>
+            where TViewModel : ViewModelBase
+        {
+            return ToolWindowViewBase.GetToolWindow<TView, TViewModel>(this.serviceProvider);
+        }
     }
 }

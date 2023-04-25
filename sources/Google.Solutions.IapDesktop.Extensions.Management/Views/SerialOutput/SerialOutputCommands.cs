@@ -32,12 +32,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
     [Service]
     public class SerialOutputCommands
     {
-        public SerialOutputCommands(IServiceProvider serviceProvider)
+        public SerialOutputCommands(IToolWindowHost toolWindowHost)
         {
 
             this.ContextMenuOpenCom1 = new OpenToolWindowCommand
                 <IProjectModelNode, SerialOutputViewCom1, SerialOutputViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "Show serial port &output (COM1)",
                     context => context is IProjectModelInstanceNode,
                     context => context is IProjectModelInstanceNode vm && vm.IsRunning)
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
 
             this.WindowMenuOpenCom1 = new OpenToolWindowCommand
                 <IMainWindow, SerialOutputViewCom1, SerialOutputViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "COM&1 (log)",
                     _ => true,
                     _ => true)
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             };
             this.WindowMenuOpenCom3 = new OpenToolWindowCommand
                 <IMainWindow, SerialOutputViewCom3, SerialOutputViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "COM&3 (setup log)",
                     _ => true,
                     _ => true)
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views.SerialOutput
             };
             this.WindowMenuOpenCom4 = new OpenToolWindowCommand
                 <IMainWindow, SerialOutputViewCom4, SerialOutputViewModel>(
-                    serviceProvider,
+                    toolWindowHost,
                     "COM&4 (agent)",
                     _ => true,
                     _ => true)

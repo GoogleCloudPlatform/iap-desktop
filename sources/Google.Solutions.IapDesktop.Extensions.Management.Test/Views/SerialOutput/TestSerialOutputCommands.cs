@@ -39,8 +39,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
         [Test]
         public void WhenVmRunning_ThenContextMenuOpenCom1IsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new SerialOutputCommands(serviceProvider.Object);
+            var toolWindowHost = new Mock<IToolWindowHost>();
+            var commands = new SerialOutputCommands(toolWindowHost.Object);
 
             var runningVm = new Mock<IProjectModelInstanceNode>();
             runningVm.SetupGet(n => n.IsRunning).Returns(true);
@@ -53,8 +53,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
         [Test]
         public void WhenVmStopped_ThenContextMenuOpenCom1IsDisabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new SerialOutputCommands(serviceProvider.Object);
+            var toolWindowHost = new Mock<IToolWindowHost>();
+            var commands = new SerialOutputCommands(toolWindowHost.Object);
 
             var stoppedVm = new Mock<IProjectModelInstanceNode>();
             stoppedVm.SetupGet(n => n.IsRunning).Returns(false);
@@ -67,8 +67,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
         [Test]
         public void WhenNotApplicable_ThenContextMenuOpenCom1IsUnavailable()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
-            var commands = new SerialOutputCommands(serviceProvider.Object);
+            var toolWindowHost = new Mock<IToolWindowHost>();
+            var commands = new SerialOutputCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Unavailable,
@@ -88,10 +88,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
         [Test]
         public void WindowMenuOpenCom1IsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
+            var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();
 
-            var commands = new SerialOutputCommands(serviceProvider.Object);
+            var commands = new SerialOutputCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -105,10 +105,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
         [Test]
         public void WindowMenuOpenCom2IsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
+            var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();
 
-            var commands = new SerialOutputCommands(serviceProvider.Object);
+            var commands = new SerialOutputCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,
@@ -122,10 +122,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Test.Views.SerialOut
         [Test]
         public void WindowMenuOpenCom4IsEnabled()
         {
-            var serviceProvider = new Mock<IServiceProvider>();
+            var toolWindowHost = new Mock<IToolWindowHost>();
             var context = new Mock<IMainWindow>();
 
-            var commands = new SerialOutputCommands(serviceProvider.Object);
+            var commands = new SerialOutputCommands(toolWindowHost.Object);
 
             Assert.AreEqual(
                 CommandState.Enabled,
