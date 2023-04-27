@@ -172,6 +172,7 @@
     <Compile Include="Views\Menu.cs" />
     <Compile Include="Views\MenuCommandBase.cs" />
     <Compile Include="Views\MenuCommandAttribute.cs" />
+    <Compile Include="Views\ReleaseNotes\ReleaseNotesViewModel.cs" />
     <Compile Include="Views\ToolWindowHost.cs" />
     <Compile Include="Views\UrlCommands.cs" />
     <Compile Include="Views\ViewBindingContext.cs" />

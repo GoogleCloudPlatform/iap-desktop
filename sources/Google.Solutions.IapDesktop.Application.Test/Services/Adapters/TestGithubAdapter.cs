@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 .Setup(a => a.GetAsync<GithubAdapter.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubAdapter.Release("1.2.3.4", null, null));
+                .ReturnsAsync(new GithubAdapter.Release("1.2.3.4", null, null, null));
 
             var adapter = new GithubAdapter(restAdapter.Object);
             var release = await adapter
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 .Setup(a => a.GetAsync<GithubAdapter.Release>(
                     It.IsNotNull<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GithubAdapter.Release("not a version", null, null));
+                .ReturnsAsync(new GithubAdapter.Release("not a version", null, null, null));
 
             var adapter = new GithubAdapter(restAdapter.Object);
             var release = await adapter
@@ -129,6 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubAdapter.Release(
                     "1.2.3.4",
+                    null, 
                     null,
                     new System.Collections.Generic.List<GithubAdapter.ReleaseAsset>()
                     {
@@ -154,6 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GithubAdapter.Release(
                     "1.2.3.4",
+                    null,
                     null,
                     new System.Collections.Generic.List<GithubAdapter.ReleaseAsset>()
                     {
