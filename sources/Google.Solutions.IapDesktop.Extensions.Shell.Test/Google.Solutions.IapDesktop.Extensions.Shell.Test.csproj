@@ -131,6 +131,7 @@
     <Compile Include="IapTunnel.cs" />
     <Compile Include="Services\Adapter\TestKeyStoreAdapter.cs" />
     <Compile Include="Services\Connection\TestRdpCredentialCallbackService.cs" />
+    <Compile Include="Services\Session\TestRdpCredential.cs" />
     <Compile Include="Services\Ssh\TestMetadataAuthorizedPublicKeyProcessor.cs" />
     <Compile Include="Services\Ssh\TestProjectMetadataAuthorizedPublicKeyProcessor.cs" />
     <Compile Include="Services\Ssh\TestMetadataAuthorizedPublicKey.cs" />

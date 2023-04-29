@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.Mvvm.Binding;
@@ -89,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                             new IPEndPoint(IPAddress.Loopback, 1)),
                         new RdpSessionParameters(
                             RdpSessionParameters.ParameterSources.Inventory,
-                            RdpCredentials.Empty)
+                            RdpCredential.Empty)
                         {
                             ConnectionTimeout = TimeSpan.FromSeconds(5)
                         })))
@@ -115,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
                             new IPEndPoint(IPAddress.Loopback, 135)),// That one will be listening, but it is RPC, not RDP.
                         new RdpSessionParameters(
                             RdpSessionParameters.ParameterSources.Inventory, 
-                            RdpCredentials.Empty))))
+                            RdpCredential.Empty))))
                 .ConfigureAwait(true);
 
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
@@ -140,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             {
                 var parameters = new RdpSessionParameters(
                     RdpSessionParameters.ParameterSources.Inventory, 
-                    new RdpCredentials(
+                    new RdpCredential(
                         "wrong",
                         null,
                         SecureStringExtensions.FromClearText("wrong")))
@@ -202,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             {
                 var parameters = new RdpSessionParameters(
                     RdpSessionParameters.ParameterSources.Inventory,
-                    new RdpCredentials(
+                    new RdpCredential(
                         windowsCredentials.UserName,
                         windowsCredentials.Domain,
                         windowsCredentials.SecurePassword))
@@ -258,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             {
                 var parameters = new RdpSessionParameters(
                     RdpSessionParameters.ParameterSources.Inventory,
-                    new RdpCredentials(
+                    new RdpCredential(
                         windowsCredentials.UserName,
                         windowsCredentials.Domain,
                         windowsCredentials.SecurePassword));
@@ -310,7 +311,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
             {
                 var parameters = new RdpSessionParameters(
                     RdpSessionParameters.ParameterSources.Inventory,
-                    new RdpCredentials(
+                    new RdpCredential(
                         windowsCredentials.UserName,
                         windowsCredentials.Domain,
                         windowsCredentials.SecurePassword))

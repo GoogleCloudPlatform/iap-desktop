@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using System;
@@ -89,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 
             var rdpParameters = new RdpSessionParameters(
                 sources, 
-                new RdpCredentials(
+                new RdpCredential(
                     settings.RdpUsername.StringValue,
                     settings.RdpDomain.StringValue,
                     (SecureString)settings.RdpPassword.Value))
@@ -168,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
                 // Clear the password to force the default RDP logon
                 // screen to appear.
                 //
-                template.Session.Credentials = new RdpCredentials(
+                template.Session.Credentials = new RdpCredential(
                     template.Session.Credentials.User,
                     template.Session.Credentials.Domain,
                     null);

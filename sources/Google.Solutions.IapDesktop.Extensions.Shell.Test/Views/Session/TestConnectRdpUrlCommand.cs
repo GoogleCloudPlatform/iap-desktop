@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.Testing.Common.Mocks;
@@ -55,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                     new IPEndPoint(IPAddress.Loopback, 1234)),
                 new RdpSessionParameters(
                     RdpSessionParameters.ParameterSources.Inventory, 
-                    RdpCredentials.Empty));
+                    RdpCredential.Empty));
 
         //---------------------------------------------------------------------
         // ExecuteAsync.

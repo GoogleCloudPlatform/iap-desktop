@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Theme;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.Mvvm.Binding;
@@ -118,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
 
                 var parameters = new RdpSessionParameters(
                     RdpSessionParameters.ParameterSources.Inventory, 
-                    new RdpCredentials(
+                    new RdpCredential(
                         credentials.UserName,
                         credentials.Domain,
                         credentials.SecurePassword));

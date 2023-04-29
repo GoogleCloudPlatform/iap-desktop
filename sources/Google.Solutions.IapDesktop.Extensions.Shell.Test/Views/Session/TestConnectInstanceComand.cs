@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
@@ -56,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 SampleTransportParameters,
                 new RdpSessionParameters(
                     RdpSessionParameters.ParameterSources.Inventory, 
-                    RdpCredentials.Empty));
+                    RdpCredential.Empty));
 
         private static readonly ConnectionTemplate<SshSessionParameters> SshConnectionTemplate =
             new ConnectionTemplate<SshSessionParameters>(

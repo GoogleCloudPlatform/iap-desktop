@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 {
-    public class ConnectionServiceBase
+    public class ConnectionServiceBase // TODO: Remove class
     {
         private readonly IJobService jobService;
         private readonly ITunnelBrokerService tunnelBroker;

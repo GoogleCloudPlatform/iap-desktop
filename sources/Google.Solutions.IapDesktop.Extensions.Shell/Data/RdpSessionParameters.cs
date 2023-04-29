@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -39,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
         /// </summary>
         public ParameterSources Sources { get; }
 
-        public RdpCredentials Credentials { get; set; }
+        public RdpCredential Credentials { get; set; }
 
         public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromSeconds(DefaultTimeoutInSeconds);
 
@@ -62,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
 
         public RdpSessionParameters(
             ParameterSources sources,
-            RdpCredentials credentials)
+            RdpCredential credentials)
         {
             this.Credentials = credentials.ExpectNotNull(nameof(credentials));
             this.Sources = sources;
@@ -83,42 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
         }
     }
 
-    public class RdpCredentials
-    {
-        internal static RdpCredentials Empty = new RdpCredentials(null, null, null);
-
-        public string User { get; }
-        public SecureString Password { get; }
-        public string Domain { get; }
-
-        public RdpCredentials(
-            string user,
-            string domain,
-            SecureString password)
-        {
-            this.User = user;
-            this.Password = password;
-            this.Domain = domain;
-        }
-
-        public override string ToString()
-        {
-            if (!string.IsNullOrEmpty(this.Domain) && !string.IsNullOrEmpty(this.User))
-            {
-                return $"{this.Domain}\\{this.User}";
-            }
-            else if (!string.IsNullOrEmpty(this.User))
-            {
-                return this.User;
-            }
-            else
-            {
-                return "(empty)";
-            }
-        }
-    }
-
-
+    
     //-------------------------------------------------------------------------
     // Enums.
     //

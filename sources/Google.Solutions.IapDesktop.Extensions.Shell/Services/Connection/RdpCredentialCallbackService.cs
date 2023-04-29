@@ -23,6 +23,7 @@ using Google.Solutions.Common.Security;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -33,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 {
     public interface IRdpCredentialCallbackService
     {
-        Task<RdpCredentials> GetCredentialsAsync(
+        Task<RdpCredential> GetCredentialsAsync(
             Uri callbackUrl,
             CancellationToken cancellationToken);
     }
@@ -48,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
             this.restAdapter = restAdapter;
         }
 
-        public async Task<RdpCredentials> GetCredentialsAsync(
+        public async Task<RdpCredential> GetCredentialsAsync(
             Uri callbackUrl,
             CancellationToken cancellationToken)
         {
@@ -60,14 +61,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection
 
                 if (response != null)
                 {
-                    return new RdpCredentials(
+                    return new RdpCredential(
                         response.User,
                         response.Domain,
                         SecureStringExtensions.FromClearText(response.Password));
                 }
                 else
                 {
-                    return RdpCredentials.Empty;
+                    return RdpCredential.Empty;
                 }
             }
             catch (HttpRequestException e)

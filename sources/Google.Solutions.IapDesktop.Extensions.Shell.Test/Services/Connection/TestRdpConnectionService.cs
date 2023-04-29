@@ -40,6 +40,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
 {
@@ -364,7 +365,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Connection
                 s => s.GetCredentialsAsync(
                     It.IsAny<Uri>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new RdpCredentials(
+                .ReturnsAsync(new RdpCredential(
                     "user",
                     "domain",
                     SecureStringExtensions.FromClearText("password")));
