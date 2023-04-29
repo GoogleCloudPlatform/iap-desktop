@@ -49,10 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
     public abstract class Menu<TContext> : IMenu
         where TContext : class
     {
-        /// <summary>
-        /// Menu commands.
-        /// </summary>
-        public ICommandContainer<TContext> Commands { get; }
+        private readonly ICommandContainer<TContext> commands;
 
         /// <summary>
         /// Type of commands that this menu hosts.
@@ -64,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             ICommandContainer<TContext> commands)
         {
             this.CommandType = commandType;
-            this.Commands = commands.ExpectNotNull(nameof(commands));
+            this.commands = commands.ExpectNotNull(nameof(commands));
         }
 
         private void AddCommands(
@@ -112,10 +109,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             {
                 if (lastRank != 0 && (registration.Attribute.Rank >> 8) != (lastRank >> 8))
                 {
-                    this.Commands.AddSeparator();
+                    this.commands.AddSeparator();
                 }
 
-                var container = this.Commands.AddCommand(registration.Command);
+                var container = this.commands.AddCommand(registration.Command);
 
                 if (registration.Command is IMenu submenu)
                 {
