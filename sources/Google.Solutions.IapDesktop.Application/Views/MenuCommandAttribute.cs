@@ -19,60 +19,59 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.Mvvm.Binding.Commands;
+using System;
 using System.Linq;
 using System.Reflection;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
-    /// <summary>
-    /// Declare that a class can be surfaced as a context
-    /// command in a toolbar or menu.
-    /// </summary>
-    public class MenuCommandAttribute : ServiceCategoryAttribute
+    public interface IMenu 
     {
-        /// <summary>
-        /// Rank, used for ordering.
-        /// 
-        /// Whenever two consecutive ranks differ in more than the
-        /// least-significant byte, a separator is injected between
-        /// them.
-        /// </summary>
-        public ushort Rank { get; set; } = 0xFF00;
-
-        public MenuCommandAttribute() : base(typeof(IMenuCommand))
-        {
-        }
     }
 
-    public interface IMenuCommand
+    public interface IMenuCommand : ICommand
     { }
 
-    public enum MenuCommandType
-    {
-        ToolbarCommand,
-        MenuCommand
-    }
-
-    internal static class MenuCommandExtensions
+    /// <summary>
+    /// Extensible menu, such as a main menu or context menu.
+    /// </summary>
+    /// <typeparam name="TContext"></typeparam>
+    public abstract class Menu<TContext> : IMenu
+        where TContext : class
     {
         /// <summary>
-        /// Find commands that have been annotated with [MenuCommand] and
-        /// add them to the command container.
+        /// Menu commands.
         /// </summary>
-        public static void AddRegisteredCommands<TContext>(
-            this ICommandContainer<TContext> commandContainer,
-            IServiceCategoryProvider serviceProvider,
-            MenuCommandType commandType)
-            where TContext : class
+        public ICommandContainer<TContext> Commands { get; }
+
+        /// <summary>
+        /// Type of commands that this menu hosts.
+        /// </summary>
+        public MenuCommandType CommandType { get; }
+
+        protected Menu(
+            MenuCommandType commandType,
+            ICommandContainer<TContext> commands)
         {
+            this.CommandType = commandType;
+            this.Commands = commands.ExpectNotNull(nameof(commands));
+        }
+
+        protected void AddCommands<TMenu>(
+            IServiceCategoryProvider serviceProvider)
+            where TMenu : Menu<TContext>
+        {
+            serviceProvider.ExpectNotNull(nameof(serviceProvider));
+
             //
             // Determine the set of command that we need to register
             // and order them by rank. Ranks might have gaps.
             //
             var commands = serviceProvider
-                .GetServicesByCategory<IMenuCommand>()
+                .GetServicesByCategory<MenuCommandAttribute.MenuCommandFor<TMenu>>()
                 .OfType<MenuCommand<TContext>>()
                 .Select(command =>
                     new {
@@ -80,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         Attribute = command.GetType().GetCustomAttribute<MenuCommandAttribute>()
                     })
                 .Where(item => item.Attribute != null)
-                .Where(item => item.Command.CommandType == commandType)
+                .Where(item => item.Command.CommandType == this.CommandType)
                 .OrderBy(item => item.Attribute.Rank);
 
             //
@@ -106,12 +105,58 @@ namespace Google.Solutions.IapDesktop.Application.Views
             {
                 if (lastRank != 0 && (command.Attribute.Rank >> 8) != (lastRank >> 8))
                 {
-                    commandContainer.AddSeparator();
+                    this.Commands.AddSeparator();
                 }
 
-                commandContainer.AddCommand(command.Command);
+                this.Commands.AddCommand(command.Command);
                 lastRank = command.Attribute.Rank;
             }
         }
+
+        public abstract void AddCommands(IServiceCategoryProvider serviceProvider);
+    }
+
+    /// <summary>
+    /// Declare that a class can be surfaced as a context
+    /// command in a toolbar or menu.
+    /// </summary>
+    public class MenuCommandAttribute : ServiceCategoryAttribute
+    {
+        /// <summary>
+        /// Rank, used for ordering.
+        /// 
+        /// Whenever two consecutive ranks differ in more than the
+        /// least-significant byte, a separator is injected between
+        /// them.
+        /// </summary>
+        public ushort Rank { get; set; } = 0xFF00;
+
+        /// <summary>
+        /// Menu that this command is extending.
+        /// </summary>
+        public Type Menu { get; }
+
+        /// <summary>
+        /// Declare class as a command that extends a menu.
+        /// </summary>
+        /// <param name="menu">Marker type for the menu to extend</param>
+        public MenuCommandAttribute(Type menu) 
+            : base(typeof(MenuCommandFor<>).MakeGenericType(menu))
+        {
+            this.Menu = menu.ExpectNotNull(nameof(menu));
+        }
+
+        /// <summary>
+        /// Marker interface, used as service category.
+        /// </summary>
+        public interface MenuCommandFor<TMenu> where TMenu : IMenu
+        {
+        }
+    }
+
+    public enum MenuCommandType
+    {
+        ToolbarCommand,
+        MenuCommand
     }
 }

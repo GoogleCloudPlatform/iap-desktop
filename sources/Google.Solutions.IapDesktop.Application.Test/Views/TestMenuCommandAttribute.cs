@@ -37,13 +37,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public interface IRightContext { }
         public interface IWrongContext { }
 
+        public sealed class SampleMenu<TContext> : Menu<TContext>
+            where TContext : class
+        {
+            public SampleMenu(
+                MenuCommandType commandType,
+                ICommandContainer<TContext> commandContainer) 
+                : base(commandType, commandContainer)
+            {
+            }
+
+            public override void AddCommands(IServiceCategoryProvider serviceProvider)
+            {
+                AddCommands<SampleMenu<TContext>>(serviceProvider);
+            }
+        }
+
         //---------------------------------------------------------------------
         // AddRegisteredCommands - filtering commands.
         //---------------------------------------------------------------------
 
-        [MenuCommand]
+        [MenuCommand(typeof(SampleMenu<>))]
         internal class NotContextCommand : IMenuCommand
         {
+            public string Text => throw new NotImplementedException();
+
+            public string ActivityText => throw new NotImplementedException();
         }
 
         internal abstract class SampleCommandBase<TContext> : MenuCommand<TContext>
@@ -63,12 +82,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             }
         }
 
-        [MenuCommand(Rank = 1)]
+        [MenuCommand(typeof(SampleMenu<IWrongContext>), Rank = 1)]
         internal class ContextCommandForWrongContext : SampleCommandBase<IWrongContext>
         {
         }
 
-        [MenuCommand(Rank = 1)]
+        [MenuCommand(typeof(SampleMenu<IRightContext>), Rank = 1)]
         internal class ContextCommandForToolbarsOnly : SampleCommandBase<IRightContext>
         {
             public ContextCommandForToolbarsOnly()
@@ -83,12 +102,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<NotContextCommand>();
             serviceRegistry.AddTransient<ContextCommandForWrongContext>();
-            serviceRegistry.AddServiceToCategory<IMenuCommand, NotContextCommand>();
-            serviceRegistry.AddServiceToCategory<IMenuCommand, ContextCommandForWrongContext>();
+            serviceRegistry.AddServiceToCategory<MenuCommandAttribute.MenuCommandFor<SampleMenu<IRightContext>>, NotContextCommand>();
+            serviceRegistry.AddServiceToCategory<MenuCommandAttribute.MenuCommandFor<SampleMenu<IRightContext>>, ContextCommandForWrongContext>();
 
             var commandContainer = new Mock<ICommandContainer<IRightContext>>();
-
-            commandContainer.Object.AddRegisteredCommands(serviceRegistry, MenuCommandType.MenuCommand);
+            var menu = new SampleMenu<IRightContext>(MenuCommandType.MenuCommand, commandContainer.Object);
+            menu.AddCommands(serviceRegistry);
+            
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Never);
         }
 
@@ -97,11 +117,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandForToolbarsOnly>();
-            serviceRegistry.AddServiceToCategory<IMenuCommand, ContextCommandForToolbarsOnly>();
+            serviceRegistry.AddServiceToCategory<MenuCommandAttribute.MenuCommandFor<SampleMenu<IRightContext>>, ContextCommandForToolbarsOnly>();
 
             var commandContainer = new Mock<ICommandContainer<IRightContext>>();
+            var menu = new SampleMenu<IRightContext>(MenuCommandType.MenuCommand, commandContainer.Object);
+            menu.AddCommands(serviceRegistry);
 
-            commandContainer.Object.AddRegisteredCommands(serviceRegistry, MenuCommandType.MenuCommand);
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Never);
         }
 
@@ -110,11 +131,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandForToolbarsOnly>();
-            serviceRegistry.AddServiceToCategory<IMenuCommand, ContextCommandForToolbarsOnly>();
+            serviceRegistry.AddServiceToCategory<MenuCommandAttribute.MenuCommandFor<SampleMenu<IRightContext>>, ContextCommandForToolbarsOnly>();
 
             var commandContainer = new Mock<ICommandContainer<IRightContext>>();
+            var menu = new SampleMenu<IRightContext>(MenuCommandType.ToolbarCommand, commandContainer.Object);
+            menu.AddCommands(serviceRegistry);
 
-            commandContainer.Object.AddRegisteredCommands(serviceRegistry, MenuCommandType.ToolbarCommand);
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Once);
         }
 
@@ -122,17 +144,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         // AddRegisteredCommands - ranking.
         //---------------------------------------------------------------------
 
-        [MenuCommand(Rank = 0x100)]
+        [MenuCommand(typeof(SampleMenu<IRightContext>), Rank = 0x100)]
         internal class ContextCommandWithRank100 : SampleCommandBase<IRightContext>
         {
         }
 
-        [MenuCommand(Rank = 0x110)]
+        [MenuCommand(typeof(SampleMenu<IRightContext>), Rank = 0x110)]
         internal class ContextCommandWithRank110 : SampleCommandBase<IRightContext>
         {
         }
 
-        [MenuCommand(Rank = 0x300)]
+        [MenuCommand(typeof(SampleMenu<IRightContext>), Rank = 0x300)]
         internal class ContextCommandWithRank300 : SampleCommandBase<IRightContext>
         {
         }
@@ -144,13 +166,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             serviceRegistry.AddTransient<ContextCommandWithRank100>();
             serviceRegistry.AddTransient<ContextCommandWithRank110>();
             serviceRegistry.AddTransient<ContextCommandWithRank300>();
-            serviceRegistry.AddServiceToCategory<IMenuCommand, ContextCommandWithRank100>();
-            serviceRegistry.AddServiceToCategory<IMenuCommand, ContextCommandWithRank110>();
-            serviceRegistry.AddServiceToCategory<IMenuCommand, ContextCommandWithRank300>();
+            serviceRegistry.AddServiceToCategory<MenuCommandAttribute.MenuCommandFor<SampleMenu<IRightContext>>, ContextCommandWithRank100>();
+            serviceRegistry.AddServiceToCategory<MenuCommandAttribute.MenuCommandFor<SampleMenu<IRightContext>>, ContextCommandWithRank110>();
+            serviceRegistry.AddServiceToCategory<MenuCommandAttribute.MenuCommandFor<SampleMenu<IRightContext>>, ContextCommandWithRank300>();
 
             var commandContainer = new Mock<ICommandContainer<IRightContext>>();
+            var menu = new SampleMenu<IRightContext>(MenuCommandType.MenuCommand, commandContainer.Object);
+            menu.AddCommands(serviceRegistry);
 
-            commandContainer.Object.AddRegisteredCommands(serviceRegistry, MenuCommandType.MenuCommand);
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Exactly(3));
             commandContainer.Verify(c => c.AddSeparator(It.IsAny<int?>()), Times.Once);
         }
