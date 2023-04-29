@@ -20,12 +20,13 @@
 //
 
 using Google.Solutions.Apis.Locator;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    public interface ISessionContext<TCredential>
+    public interface ISessionContext<TCredential> : IDisposable
         where TCredential : ISessionCredential
     {
         /// <summary>

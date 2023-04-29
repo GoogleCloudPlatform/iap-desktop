@@ -33,9 +33,11 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    internal class SshSessionContext : ISessionContext<SshCredential>
+    internal sealed class SshSessionContext : ISessionContext<SshCredential>
     {
-        internal static readonly int DefaultTimeoutInSeconds = 30; // TODO: Sync with settings
+        internal const ushort DefaultPort = 22;
+        internal static readonly TimeSpan DefaultPublicKeyValidity = TimeSpan.FromDays(30);
+        internal static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(30);
 
         private readonly ITunnelBrokerService tunnelBroker;
         private readonly IKeyAuthorizationService keyAuthorizationService;
@@ -54,6 +56,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             this.Instance = instance.ExpectNotNull(nameof(instance));
         }
 
+        //---------------------------------------------------------------------
+        // Parameters.
+        //---------------------------------------------------------------------
+
         /// <summary>
         /// Terminal locale.
         /// </summary>
@@ -62,15 +68,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         /// <summary>
         /// Timeout to use for SSH connections.
         /// </summary>
-        public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromSeconds(DefaultTimeoutInSeconds);
+        public TimeSpan ConnectionTimeout { get; set; } = DefaultConnectionTimeout;
 
         /// <summary>
         /// Port to connect to (default: 22).
         /// </summary>
-        public ushort Port { get; set; } = 22;
+        public ushort Port { get; set; } = DefaultPort;
 
-        public string PreferredUsername { get; set; }
-        public TimeSpan PublicKeyValidity { get; set; } // TODO: WHich default?
+        /// <summary>
+        /// POSIX username to log in with, only applicable when
+        /// using metadata-based keys.
+        /// </summary>
+        public string PreferredUsername { get; set; } = null;
+
+        /// <summary>
+        /// Validity to apply when authorizing the public key.
+        /// </summary>
+        public TimeSpan PublicKeyValidity { get; set; } = DefaultPublicKeyValidity;
 
         //---------------------------------------------------------------------
         // ISessionContext.
@@ -78,7 +92,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public InstanceLocator Instance { get; }
 
-        public async Task<SshCredential> AuthorizeCredentialAsync(CancellationToken cancellationToken)
+        public async Task<SshCredential> AuthorizeCredentialAsync(
+            CancellationToken cancellationToken)
         {
             var authorizedKey = await this.keyAuthorizationService
                 .AuthorizeKeyAsync(
@@ -93,13 +108,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             return new SshCredential(authorizedKey);
         }
 
-        public Task<Transport> ConnectTransportAsync(CancellationToken cancellationToken)
+        public Task<Transport> ConnectTransportAsync(
+            CancellationToken cancellationToken)
         {
             return Transport.CreateIapTransportAsync(
                 this.tunnelBroker,
                 this.Instance,
                 this.Port,
                 this.ConnectionTimeout);
+        }
+
+        public void Dispose()
+        {
+            this.localKeyPair.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

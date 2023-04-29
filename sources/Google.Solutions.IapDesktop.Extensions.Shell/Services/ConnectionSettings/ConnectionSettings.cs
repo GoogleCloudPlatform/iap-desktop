@@ -23,6 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Microsoft.Win32;
 using System;
@@ -288,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 "Server port",
                 "Server port",
                 Categories.SshConnection,
-                22,
+                SshSessionContext.DefaultPort,
                 key,
                 1,
                 ushort.MaxValue);
@@ -306,7 +307,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 null, // Hidden.
                 null, // Hidden.
                 null, // Hidden.
-                30,
+                (int)SshSessionContext.DefaultConnectionTimeout.TotalSeconds,
                 key,
                 0, 300);
 

@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.Ssh.Auth;
 using Microsoft.Win32;
 using System;
@@ -74,6 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
 
     public class SshSettings : IRegistrySettingsCollection
     {
+
         public RegistryBoolSetting IsPropagateLocaleEnabled { get; private set; }
         public RegistryDwordSetting PublicKeyValidity { get; private set; }
         public RegistryEnumSetting<SshKeyType> PublicKeyType { get; private set; }
@@ -128,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                         "PublicKeyValidity",
                         "Validity of (OS Login/Metadata) keys in seconds",
                         null,
-                        (int)TimeSpan.FromDays(30).TotalSeconds,
+                        (int)SshSessionContext.DefaultPublicKeyValidity.TotalSeconds,
                         settingsKey,
                         (int)TimeSpan.FromMinutes(1).TotalSeconds,
                         int.MaxValue)

@@ -27,10 +27,12 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    internal class RdpSessionContext : ISessionContext<RdpCredential>
+    internal sealed class RdpSessionContext : ISessionContext<RdpCredential>
     {
         private readonly ITunnelBrokerService tunnelBroker;
 
+
+        // all settings
 
         //---------------------------------------------------------------------
         // ISessionContext.
@@ -56,6 +58,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             //    ...
             //    )
         }
-        // all settings
+
+        public void Dispose()
+        {
+        }
     }
 }
