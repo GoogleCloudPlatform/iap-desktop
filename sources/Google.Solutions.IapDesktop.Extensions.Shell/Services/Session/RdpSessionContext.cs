@@ -41,13 +41,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public bool AllowPersistentCredentials { get; set; }
 
-        public Task<RdpCredential> CreateCredentialAsync(CancellationToken cancellationToken)
+        public Task<RdpCredential> AuthorizeCredentialAsync(CancellationToken cancellationToken)
         {
             // TODO: XX - can't prompt from within a job! Do in factory?
             throw new System.NotImplementedException();
         }
 
-        public Task<Transport> CreateTransportAsync(CancellationToken cancellationToken)
+        public Task<Transport> ConnectTransportAsync(CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
             //return Transport.CreateIapTunnelAsync(

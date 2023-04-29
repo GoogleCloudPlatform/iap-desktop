@@ -34,16 +34,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         InstanceLocator Instance { get; }
 
         /// <summary>
-        /// Create or negotiate a credential. 
-        /// This should be performed in a job.
+        /// Authorize the credential, if necessary. This might require
+        /// remote calls, so the method should be called in a job.
         /// </summary>
-        Task<TCredential> CreateCredentialAsync(CancellationToken cancellationToken);
+        Task<TCredential> AuthorizeCredentialAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Create a transport, which might involve creating a tunnel.
-        /// This should be performed in a job.
+        /// This might require remote calls, so the method should be called in a job.
         /// </summary>
-        Task<Transport> CreateTransportAsync(CancellationToken cancellationToken);
+        Task<Transport> ConnectTransportAsync(CancellationToken cancellationToken);
     }
 
     public interface ISessionCredential

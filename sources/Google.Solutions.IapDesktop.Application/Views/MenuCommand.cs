@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
     /// <summary>
     /// Base class for menu commands.
     /// </summary>
-    public abstract class MenuCommand<TContext> : CommandBase, IContextCommand<TContext>, IMenuCommand //TODO: Rename to MenuCommand
+    public abstract class MenuCommand<TContext> : CommandBase, IContextCommand<TContext>, IMenuCommand
     {
         /// <summary>
         /// Type of command. When set to ToolbarCommand, the command is

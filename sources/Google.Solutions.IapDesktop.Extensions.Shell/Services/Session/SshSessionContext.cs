@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public InstanceLocator Instance { get; }
 
-        public async Task<SshCredential> CreateCredentialAsync(CancellationToken cancellationToken)
+        public async Task<SshCredential> AuthorizeCredentialAsync(CancellationToken cancellationToken)
         {
             var authorizedKey = await this.keyAuthorizationService
                 .AuthorizeKeyAsync(
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             return new SshCredential(authorizedKey);
         }
 
-        public Task<Transport> CreateTransportAsync(CancellationToken cancellationToken)
+        public Task<Transport> ConnectTransportAsync(CancellationToken cancellationToken)
         {
             return Transport.CreateIapTransportAsync(
                 this.tunnelBroker,

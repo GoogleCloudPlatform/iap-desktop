@@ -32,17 +32,30 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
     public interface ISessionContextFactory
     {
-        ISessionContext<SshCredential> CreateSshSession(IProjectModelInstanceNode node);
-        
-        ISessionContext<RdpCredential> CreateRdpSession(IProjectModelInstanceNode node);
+        /// <summary>
+        /// Create a new SSH session context. The method might require UI
+        /// interactiion.
+        /// </summary>
+        Task<ISessionContext<SshCredential>> CreateSshSessionAsync(IProjectModelInstanceNode node);
 
-        ISessionContext<RdpCredential> CreateRdpSession(IapRdpUrl url);
+        /// <summary>
+        /// Create a new RDP session context. The method might require UI
+        /// interactiion.
+        /// </summary>
+        Task<ISessionContext<RdpCredential>> CreateRdpSessionAsync(IProjectModelInstanceNode node);
+
+        /// <summary>
+        /// Create a new RDP session context. The method might require UI
+        /// interactiion.
+        /// </summary>
+        Task<ISessionContext<RdpCredential>> CreateRdpSessionAsync(IapRdpUrl url);
     }
 
     [Service(typeof(ISessionContextFactory))]
@@ -78,24 +91,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         // ISessionContextFactory.
         //---------------------------------------------------------------------
 
-        public ISessionContext<RdpCredential> CreateRdpSession(IProjectModelInstanceNode node)
+        public Task<ISessionContext<RdpCredential>> CreateRdpSessionAsync(IProjectModelInstanceNode node)
         {
             throw new System.NotImplementedException();
         }
 
-        public ISessionContext<RdpCredential> CreateRdpSession(IapRdpUrl url)
+        public Task<ISessionContext<RdpCredential>> CreateRdpSessionAsync(IapRdpUrl url)
         {
             throw new System.NotImplementedException();
         }
 
-        public ISessionContext<SshCredential> CreateSshSession(IProjectModelInstanceNode node)
+        public Task<ISessionContext<SshCredential>> CreateSshSessionAsync(IProjectModelInstanceNode node)
         {
             var settings = (InstanceConnectionSettings)this.settingsService
                 .GetConnectionSettings(node)
                 .TypedCollection;
 
             //
-            // Load persistent CNG key. This must be done on the UI thread.
+            // Load persistent CNG key. This might pop up dialogs.
             //
             var sshSettings = this.sshSettingsRepository.GetSettings();
             var localKeyPair = this.keyStoreAdapter.OpenSshKeyPair(
@@ -108,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             //
             // Initialize a context and pass ownership of the key to it.
             //
-            return new SshSessionContext(
+            var context = new SshSessionContext(
                 this.tunnelBrokerService,
                 this.keyAuthorizationService,
                 node.Instance,
@@ -122,6 +135,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
                     ? CultureInfo.CurrentUICulture
                     : null
             };
+
+            return Task.FromResult<ISessionContext<SshCredential>>(context);
         }
     }
 }
