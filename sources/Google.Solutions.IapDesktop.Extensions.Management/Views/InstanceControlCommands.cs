@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views
         // Commands classes.
         //---------------------------------------------------------------------
 
-        internal class ControlInstanceCommand : MenuCommand<IProjectModelNode>
+        internal class ControlInstanceCommand : MenuCommandBase<IProjectModelNode>
         {
             private readonly InstanceControlCommand controlCommand;
             private readonly IServiceProvider serviceProvider;
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Management.Views
             }
         }
 
-        internal class JoinToActiveDirectoryCommand : MenuCommand<IProjectModelNode>
+        internal class JoinToActiveDirectoryCommand : MenuCommandBase<IProjectModelNode>
         {
             private readonly IServiceProvider serviceProvider;
 

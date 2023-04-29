@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
 
 
-        private class DuplicateSessionCommand : MenuCommand<ISession>
+        private class DuplicateSessionCommand : MenuCommandBase<ISession>
         {
             private readonly Service<IProjectModelService> modelService;
             private readonly IContextCommand<IProjectModelNode> connectInNewTerminalCommand;

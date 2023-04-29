@@ -32,7 +32,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
     {
     }
 
-    public interface IMenuCommand : ICommand
+    public interface IMenuCommand<TMenu> : ICommand
+        where TMenu : IMenu
     { }
 
     /// <summary>
@@ -71,8 +72,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
             // and order them by rank. Ranks might have gaps.
             //
             var commands = serviceProvider
-                .GetServicesByCategory<MenuCommandAttribute.MenuCommandFor<TMenu>>()
-                .OfType<MenuCommand<TContext>>()
+                .GetServicesByCategory<IMenuCommand<TMenu>>()
+                .OfType<MenuCommandBase<TContext>>()
                 .Select(command =>
                     new {
                         Command = command,
@@ -141,16 +142,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// </summary>
         /// <param name="menu">Marker type for the menu to extend</param>
         public MenuCommandAttribute(Type menu) 
-            : base(typeof(MenuCommandFor<>).MakeGenericType(menu))
+            : base(typeof(IMenuCommand<>).MakeGenericType(menu))
         {
             this.Menu = menu.ExpectNotNull(nameof(menu));
-        }
-
-        /// <summary>
-        /// Marker interface, used as service category.
-        /// </summary>
-        public interface MenuCommandFor<TMenu> where TMenu : IMenu
-        {
         }
     }
 
