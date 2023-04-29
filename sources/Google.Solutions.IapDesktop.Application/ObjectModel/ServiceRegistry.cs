@@ -337,7 +337,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             AddServiceToCategory(typeof(TCategory), typeof(TService));
         }
 
-        public IEnumerable<TCategory> GetServicesByCategory<TCategory>()
+        public IEnumerable<object> GetServicesByCategory(Type category)
         {
             //
             // NB. Services registered for the same category in a lower layer
@@ -347,25 +347,30 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             //
             // Consider parent services.
             //
-            IEnumerable<TCategory> services;
+            IEnumerable<object> services;
             if (this.parent != null)
             {
-                services = this.parent.GetServicesByCategory<TCategory>();
+                services = this.parent.GetServicesByCategory(category);
             }
             else
             {
-                services = Enumerable.Empty<TCategory>();
+                services = Enumerable.Empty<object>();
             }
 
             //
             // Consider own services.
             //
-            if (this.categories.TryGetValue(typeof(TCategory), out var serviceTypes))
+            if (this.categories.TryGetValue(category, out var serviceTypes))
             {
-                services = services.Concat(serviceTypes.Select(t => (TCategory)GetService(t)));
+                services = services.Concat(serviceTypes.Select(t => GetService(t)));
             }
 
             return services;
+        }
+
+        public IEnumerable<TCategory> GetServicesByCategory<TCategory>()
+        {
+            return GetServicesByCategory(typeof(TCategory)).OfType<TCategory>();
         }
 
         //---------------------------------------------------------------------

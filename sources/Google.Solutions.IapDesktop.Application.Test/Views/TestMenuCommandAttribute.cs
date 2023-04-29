@@ -19,8 +19,6 @@
 // under the License.
 //
 
-
-
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -45,15 +43,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                 : base(commandType, commandContainer)
             {
             }
-
-            public override void AddCommands(IServiceCategoryProvider serviceProvider)
-            {
-                AddCommands<SampleMenu>(serviceProvider);
-            }
         }
 
         //---------------------------------------------------------------------
-        // AddRegisteredCommands - filtering commands.
+        // AddCommands - filtering.
         //---------------------------------------------------------------------
 
         [MenuCommand(typeof(SampleMenu))]
@@ -96,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         }
 
         [Test]
-        public void WhenCommandIsForDifferentContext_ThenAddRegisteredCommandsIgnoresIt()
+        public void WhenCommandIsForDifferentContext_ThenAddCommandsIgnoresIt()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<NotContextCommand>();
@@ -112,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         }
 
         [Test]
-        public void WhenCommandIsForDifferentMenu_ThenAddRegisteredCommandsIgnoresIt()
+        public void WhenCommandIsForDifferentMenu_ThenAddCommandsIgnoresIt()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandForToolbarsOnly>();
@@ -126,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         }
 
         [Test]
-        public void WhenCommandIsForDifferentCommandType_ThenAddRegisteredCommandsIgnoresIt()
+        public void WhenCommandIsForDifferentCommandType_ThenAddCommandsIgnoresIt()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandForToolbarsOnly>();
@@ -140,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         }
 
         [Test]
-        public void WhenCommandMatches_ThenAddRegisteredCommandsAddsCommand()
+        public void WhenCommandMatches_ThenAddCommandsAddsCommand()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandForToolbarsOnly>();
@@ -154,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         }
 
         //---------------------------------------------------------------------
-        // AddRegisteredCommands - ranking.
+        // AddCommands - ranking.
         //---------------------------------------------------------------------
 
         [MenuCommand(typeof(SampleMenu), Rank = 0x100)]
@@ -173,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         }
 
         [Test]
-        public void WhenRanksFarApart_ThenAddRegisteredCommandsInjectsSeparator()
+        public void WhenRanksFarApart_ThenAddCommandsInjectsSeparator()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddTransient<ContextCommandWithRank100>();
@@ -189,6 +182,43 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Exactly(3));
             commandContainer.Verify(c => c.AddSeparator(It.IsAny<int?>()), Times.Once);
+        }
+
+        //---------------------------------------------------------------------
+        // AddCommands - submenus.
+        //---------------------------------------------------------------------
+
+        [MenuCommand(typeof(SampleMenu))]
+        internal class ContextCommandWithSubMenu: SampleCommandBase<IRightContext>, IMenuCommand<SampleMenu>, IMenu
+        {
+        }
+
+        [MenuCommand(typeof(ContextCommandWithSubMenu))]
+        internal class NestedCommand : SampleCommandBase<IRightContext>, IMenuCommand<ContextCommandWithSubMenu>
+        {
+        }
+
+        [Test]
+        public void WhenCommandIsMenu_ThenAddCommandsAddsNestedCommands()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddTransient<ContextCommandWithSubMenu>();
+            serviceRegistry.AddServiceToCategory<IMenuCommand<SampleMenu>, ContextCommandWithSubMenu>();
+
+            serviceRegistry.AddTransient<NestedCommand>();
+            serviceRegistry.AddServiceToCategory<IMenuCommand<ContextCommandWithSubMenu>, NestedCommand>();
+
+            var commandContainer = new Mock<ICommandContainer<IRightContext>>();
+            var nestedCommandContainer = new Mock<ICommandContainer<IRightContext>>();
+            commandContainer
+                .Setup(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()))
+                .Returns(nestedCommandContainer.Object);
+
+            var menu = new SampleMenu(MenuCommandType.MenuCommand, commandContainer.Object);
+            menu.AddCommands(serviceRegistry);
+
+            commandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Once);
+            nestedCommandContainer.Verify(c => c.AddCommand(It.IsAny<IContextCommand<IRightContext>>()), Times.Once);
         }
     }
 }

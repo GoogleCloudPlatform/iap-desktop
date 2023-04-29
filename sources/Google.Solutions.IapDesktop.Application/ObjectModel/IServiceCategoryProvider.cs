@@ -26,6 +26,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
     public interface IServiceCategoryProvider : IServiceProvider
     {
+        IEnumerable<object> GetServicesByCategory(Type category);
+
         IEnumerable<TCategory> GetServicesByCategory<TCategory>();
     }
 }

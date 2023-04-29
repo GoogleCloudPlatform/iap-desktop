@@ -67,9 +67,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.Commands = commands.ExpectNotNull(nameof(commands));
         }
 
-        protected void AddCommands<TMenu>(
-            IServiceCategoryProvider serviceProvider)
-            where TMenu : Menu<TContext>
+        private void AddCommands(
+            IServiceCategoryProvider serviceProvider,
+            Type category)
         {
             serviceProvider.ExpectNotNull(nameof(serviceProvider));
 
@@ -77,9 +77,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
             // Determine the set of command that we need to register
             // and order them by rank. Ranks might have gaps.
             //
-            var commands = serviceProvider
-                .GetServicesByCategory<IMenuCommand<TMenu>>()
-                .OfType<MenuCommandBase<TContext>>()
+            var registrations = serviceProvider
+                .GetServicesByCategory(category)
+                .OfType<MenuCommandBase<TContext>>() // TODO: use IMenuCommand<>
                 .Select(command =>
                     new {
                         Command = command,
@@ -108,35 +108,48 @@ namespace Google.Solutions.IapDesktop.Application.Views
             //
 
             ushort lastRank = 0;
-            foreach (var command in commands)
+            foreach (var registration in registrations)
             {
-                if (lastRank != 0 && (command.Attribute.Rank >> 8) != (lastRank >> 8))
+                if (lastRank != 0 && (registration.Attribute.Rank >> 8) != (lastRank >> 8))
                 {
                     this.Commands.AddSeparator();
                 }
 
-                this.Commands.AddCommand(command.Command);
+                var container = this.Commands.AddCommand(registration.Command);
 
-                if (command.Command is IMenu submenu)
+                if (registration.Command is IMenu submenu)
                 {
-                    // TODO: Register sub-commands.
+                    //
+                    // Register sub-commands.
+                    //
+                    var subMenu = new SubMenu(
+                        registration.Command.CommandType,
+                        container);
+                    subMenu.AddCommands(
+                        serviceProvider,
+                        typeof(IMenuCommand<>).MakeGenericType(registration.Command.GetType()));
                 }
 
-                lastRank = command.Attribute.Rank;
+                lastRank = registration.Attribute.Rank;
             }
         }
 
-        /// <summary>
-        /// Add commands based on [MenuCommand] attributes.
-        /// 
-        /// Deriving classes should implement this method like so:
-        ///
-        ///   public override void AddCommands(IServiceCategoryProvider serviceProvider)
-        ///   {
-        ///       AddCommands<MyMenu>(serviceProvider);
-        ///   }
-        /// </summary>
-        public abstract void AddCommands(IServiceCategoryProvider serviceProvider);
+        public void AddCommands(IServiceCategoryProvider serviceProvider)
+        {
+            AddCommands(
+                serviceProvider,
+                typeof(IMenuCommand<>).MakeGenericType(GetType()));
+        }
+
+        private class SubMenu : Menu<TContext>
+        {
+            public SubMenu(
+                MenuCommandType commandType, 
+                ICommandContainer<TContext> commands) 
+                : base(commandType, commands)
+            {
+            }
+        }
     }
 
     /// <summary>
