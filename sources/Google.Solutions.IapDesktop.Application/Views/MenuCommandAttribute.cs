@@ -36,6 +36,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
         where TMenu : IMenu
     { }
 
+    public enum MenuCommandType
+    {
+        ToolbarCommand,
+        MenuCommand
+    }
+
     /// <summary>
     /// Extensible menu, such as a main menu or context menu.
     /// </summary>
@@ -110,16 +116,44 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 }
 
                 this.Commands.AddCommand(command.Command);
+
+                if (command.Command is IMenu submenu)
+                {
+                    // TODO: Register sub-commands.
+                }
+
                 lastRank = command.Attribute.Rank;
             }
         }
 
+        /// <summary>
+        /// Add commands based on [MenuCommand] attributes.
+        /// 
+        /// Deriving classes should implement this method like so:
+        ///
+        ///   public override void AddCommands(IServiceCategoryProvider serviceProvider)
+        ///   {
+        ///       AddCommands<MyMenu>(serviceProvider);
+        ///   }
+        /// </summary>
         public abstract void AddCommands(IServiceCategoryProvider serviceProvider);
     }
 
     /// <summary>
     /// Declare that a class can be surfaced as a context
     /// command in a toolbar or menu.
+    /// 
+    /// Classes that use this attribute must implement IMenuCommand<TMenu>
+    /// where TMenu matches the value of the Menu attribute.
+    /// 
+    /// Example:
+    /// 
+    ///   [MenuCommand(typeof(SampleMenu), Rank = 0x100)]
+    ///   internal class MyCommand : IMenuCommand<SampleMenu>
+    ///   {
+    ///      ...
+    ///   }
+    ///   
     /// </summary>
     public class MenuCommandAttribute : ServiceCategoryAttribute
     {
@@ -146,11 +180,5 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             this.Menu = menu.ExpectNotNull(nameof(menu));
         }
-    }
-
-    public enum MenuCommandType
-    {
-        ToolbarCommand,
-        MenuCommand
     }
 }
