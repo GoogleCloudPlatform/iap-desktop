@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         // Factory methods.
         //---------------------------------------------------------------------
 
-        internal async static Task<Transport> CreateIapTransportAsync( // TODO: Add tests
+        internal async static Task<Transport> CreateIapTransportAsync(
             ITunnelBrokerService tunnelBroker,
             InstanceLocator targetInstance,
             ushort targetPort,
