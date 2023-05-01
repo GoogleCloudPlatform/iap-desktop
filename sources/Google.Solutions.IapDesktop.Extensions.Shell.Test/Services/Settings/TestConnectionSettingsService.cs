@@ -23,13 +23,13 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
 {
     [TestFixture]
     public class TestConnectionSettingsService : ShellFixtureBase

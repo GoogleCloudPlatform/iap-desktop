@@ -22,13 +22,13 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
 {
     [TestFixture]
     public class TestConnectionSettingsRepository : ShellFixtureBase

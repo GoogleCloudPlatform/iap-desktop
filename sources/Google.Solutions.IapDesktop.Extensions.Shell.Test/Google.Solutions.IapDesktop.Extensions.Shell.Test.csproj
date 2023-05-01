@@ -151,9 +151,9 @@
     <Compile Include="Services\Ssh\TestAuthorizedKey.cs" />
     <Compile Include="Services\Ssh\TestKeyAuthorizationService.cs" />
     <Compile Include="Services\Ssh\TestOsLoginService.cs" />
-    <Compile Include="Services\ConnectionSettings\TestConnectionSettingsService.cs" />
-    <Compile Include="Services\ConnectionSettings\TestConnectionSettingsRepository.cs" />
-    <Compile Include="Services\ConnectionSettings\TestIapRdpUrlConnectionSettings.cs" />
+    <Compile Include="Services\Settings\TestConnectionSettingsService.cs" />
+    <Compile Include="Services\Settings\TestConnectionSettingsRepository.cs" />
+    <Compile Include="Services\Settings\TestIapRdpUrlConnectionSettings.cs" />
     <Compile Include="Services\Tunnel\TestTcpTable.cs" />
     <Compile Include="Services\Tunnel\TestTunnelServiceWithMtls.cs" />
     <Compile Include="ShellFixtureBase.cs" />
@@ -190,7 +190,9 @@
     <None Include="packages.config" />
     <Compile Include="Views\Session\TestConnectRdpUrlCommand.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Services\ConnectionSettings\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Apis\Google.Solutions.Apis.csproj">
       <Project>{790f1966-eb34-4cf2-8ed3-3e6c96cba397}</Project>
