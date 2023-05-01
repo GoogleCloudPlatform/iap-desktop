@@ -33,21 +33,29 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    public class Transport
+    public interface ITransport
     {
-        /// <summary>
-        /// Connection target.
-        /// </summary>
-        public InstanceLocator Instance { get; }
-
         /// <summary>
         /// Type of transport.
         /// </summary>
-        public TransportType Type { get; }
+        Transport.TransportType Type { get; }
 
         /// <summary>
         /// Endpoint to connect to. This might be a localhost endpoint.
         /// </summary>
+        IPEndPoint Endpoint { get; }
+
+        /// <summary>
+        /// Connection target.
+        /// </summary>
+        InstanceLocator Instance { get; }
+    }
+
+    public class Transport : ITransport
+    {
+        public InstanceLocator Instance { get; }
+        public TransportType Type { get; }
+
         public IPEndPoint Endpoint { get; }
 
         private Transport(

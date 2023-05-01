@@ -24,9 +24,11 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -38,8 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     /// </summary>
     internal class ConnectInstanceCommand : ConnectInstanceCommandBase<IProjectModelNode>
     {
-        private readonly Service<IRdpConnectionService> rdpConnectionService;
-        private readonly Service<ISshConnectionService> sshConnectionService;
+        private readonly Service<ISessionContextFactory> sessionContextFactory;
         private readonly Service<IInstanceSessionBroker> sessionBroker;
 
         public bool AvailableForSsh { get; set; } = false;
@@ -49,13 +50,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
         public ConnectInstanceCommand(
             string text,
-            Service<IRdpConnectionService> rdpConnectionService,
-            Service<ISshConnectionService> sshConnectionService,
+            Service<ISessionContextFactory> sessionContextFactory,
             Service<IInstanceSessionBroker> sessionBroker)
             : base(text)
         {
-            this.rdpConnectionService = rdpConnectionService;
-            this.sshConnectionService = sshConnectionService;
+            this.sessionContextFactory = sessionContextFactory;
             this.sessionBroker = sessionBroker;
         }
 
@@ -81,6 +80,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             var instanceNode = (IProjectModelInstanceNode)node;
             ISession session = null;
 
+            //TODO: Select node so that tracking windows are updated.
+
             if (!this.ForceNewConnection && this.sessionBroker
                 .GetInstance()
                 .TryActivate(instanceNode.Instance, out session))
@@ -95,6 +96,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 return;
             }
 
+            // TODO: use context.
+            throw new NotImplementedException();
+            /*
             //
             // Create new session.
             //
@@ -127,6 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             }
 
             Debug.Assert(session != null);
+            */
         }
     }
 }

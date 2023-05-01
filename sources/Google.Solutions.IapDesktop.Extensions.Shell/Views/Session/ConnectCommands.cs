@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
 using System.Threading;
@@ -37,8 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     {
         public ConnectCommands(
             UrlCommands urlCommands,
-            Service<IRdpConnectionService> rdpConnectionService,
-            Service<ISshConnectionService> sshConnectionService,
+            Service<ISessionContextFactory> sessionContextFactory,
             Service<IProjectModelService> modelService,
             Service<IInstanceSessionBroker> sessionBroker)
         {
@@ -46,13 +46,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             // Install command for launching URLs.
             //
             urlCommands.LaunchRdpUrl = new ConnectRdpUrlCommand(
-                rdpConnectionService,
+                sessionContextFactory,
                 sessionBroker);
 
             this.ToolbarActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
-                rdpConnectionService,
-                sshConnectionService,
+                sessionContextFactory,
                 sessionBroker)
             {
                 CommandType = MenuCommandType.ToolbarCommand, // Never hide to avoid flicker.
@@ -63,8 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             };
             this.ContextMenuActivateOrConnectInstance = new ConnectInstanceCommand(
                 "&Connect",
-                rdpConnectionService,
-                sshConnectionService,
+                sessionContextFactory,
                 sessionBroker)
             {
                 AvailableForSsh = true,
@@ -75,8 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             };
             this.ContextMenuConnectRdpAsUser = new ConnectInstanceCommand(
                 "Connect &as user...",
-                rdpConnectionService,
-                sshConnectionService,
+                sessionContextFactory,
                 sessionBroker)
             {
                 AvailableForSsh = false,
@@ -87,8 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             };
             this.ContextMenuConnectSshInNewTerminal = new ConnectInstanceCommand(
                 "Connect in &new terminal",
-                rdpConnectionService,
-                sshConnectionService,
+                sessionContextFactory,
                 sessionBroker)
             {
                 AvailableForSsh = true,                  // Linux/SSH only.

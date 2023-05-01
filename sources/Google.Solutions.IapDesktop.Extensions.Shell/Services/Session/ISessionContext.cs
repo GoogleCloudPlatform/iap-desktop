@@ -26,13 +26,18 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    public interface ISessionContext<TCredential> : IDisposable
+    public interface ISessionContext<TCredential, TParameters> : IDisposable
         where TCredential : ISessionCredential
     {
         /// <summary>
         /// Target instance of this session.
         /// </summary>
         InstanceLocator Instance { get; }
+
+        /// <summary>
+        /// Parameters for the session.
+        /// </summary>
+        TParameters Parameters { get; }
 
         /// <summary>
         /// Authorize the credential, if necessary. This might require
@@ -44,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         /// Create a transport, which might involve creating a tunnel.
         /// This might require remote calls, so the method should be called in a job.
         /// </summary>
-        Task<Transport> ConnectTransportAsync(CancellationToken cancellationToken);
+        Task<ITransport> ConnectTransportAsync(CancellationToken cancellationToken);
     }
 
     public interface ISessionCredential

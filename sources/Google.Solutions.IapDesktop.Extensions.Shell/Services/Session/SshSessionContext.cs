@@ -33,7 +33,38 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    internal sealed class SshSessionContext : ISessionContext<SshCredential>
+    public interface ISshSessionParameters
+    {
+
+        /// <summary>
+        /// Timeout to use for SSH connections.
+        /// </summary>
+        TimeSpan ConnectionTimeout { get; set; }
+
+        /// <summary>
+        /// Terminal locale.
+        /// </summary>
+        CultureInfo Language { get; set; }
+
+        /// <summary>
+        /// Port to connect to (default: 22).
+        /// </summary>
+        ushort Port { get; set; }
+
+        /// <summary>
+        /// POSIX username to log in with, only applicable when
+        /// using metadata-based keys.
+        /// </summary>
+        string PreferredUsername { get; set; }
+
+        /// <summary>
+        /// Validity to apply when authorizing the public key.
+        /// </summary>
+        TimeSpan PublicKeyValidity { get; set; }
+    }
+
+    internal sealed class SshSessionContext 
+        : ISshSessionParameters, ISessionContext<SshCredential, ISshSessionParameters>
     {
         internal const ushort DefaultPort = 22;
         internal static readonly TimeSpan DefaultPublicKeyValidity = TimeSpan.FromDays(30);
@@ -41,9 +72,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         private readonly ITunnelBrokerService tunnelBroker;
         private readonly IKeyAuthorizationService keyAuthorizationService;
-        private readonly ISshKeyPair localKeyPair; // TODO: Dispose or pass ownership?
+        private readonly ISshKeyPair localKeyPair;
 
-        public SshSessionContext(
+        internal SshSessionContext(
             ITunnelBrokerService tunnelBroker,
             IKeyAuthorizationService keyAuthService,
             InstanceLocator instance,
@@ -53,37 +84,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             this.keyAuthorizationService = keyAuthService.ExpectNotNull(nameof(keyAuthService));
 
             this.localKeyPair = localKeyPair.ExpectNotNull(nameof(localKeyPair));
-            this.Instance = instance.ExpectNotNull(nameof(instance));
         }
 
         //---------------------------------------------------------------------
         // Parameters.
         //---------------------------------------------------------------------
 
-        /// <summary>
-        /// Terminal locale.
-        /// </summary>
         public CultureInfo Language { get; set; } = null;
-
-        /// <summary>
-        /// Timeout to use for SSH connections.
-        /// </summary>
         public TimeSpan ConnectionTimeout { get; set; } = DefaultConnectionTimeout;
-
-        /// <summary>
-        /// Port to connect to (default: 22).
-        /// </summary>
         public ushort Port { get; set; } = DefaultPort;
-
-        /// <summary>
-        /// POSIX username to log in with, only applicable when
-        /// using metadata-based keys.
-        /// </summary>
         public string PreferredUsername { get; set; } = null;
-
-        /// <summary>
-        /// Validity to apply when authorizing the public key.
-        /// </summary>
         public TimeSpan PublicKeyValidity { get; set; } = DefaultPublicKeyValidity;
 
         //---------------------------------------------------------------------
@@ -92,9 +102,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 
         public InstanceLocator Instance { get; }
 
+        public ISshSessionParameters Parameters => this;
+
         public async Task<SshCredential> AuthorizeCredentialAsync(
             CancellationToken cancellationToken)
         {
+            //
+            // Authorize the key using OS Login or metadata-based keys.
+            //
             var authorizedKey = await this.keyAuthorizationService
                 .AuthorizeKeyAsync(
                     this.Instance,
@@ -108,14 +123,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
             return new SshCredential(authorizedKey);
         }
 
-        public Task<Transport> ConnectTransportAsync(
+        public async Task<ITransport> ConnectTransportAsync(
             CancellationToken cancellationToken)
         {
-            return Transport.CreateIapTransportAsync(
-                this.tunnelBroker,
-                this.Instance,
-                this.Port,
-                this.ConnectionTimeout);
+            return await Transport
+                .CreateIapTransportAsync(
+                    this.tunnelBroker,
+                    this.Instance,
+                    this.Port,
+                    this.ConnectionTimeout)
+                .ConfigureAwait(false);
         }
 
         public void Dispose()

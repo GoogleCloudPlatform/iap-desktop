@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Diagnostics;
@@ -118,8 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             var connectCommands = new ConnectCommands(
                 serviceProvider.GetService<UrlCommands>(),
-                serviceProvider.GetService<Service<IRdpConnectionService>>(),
-                serviceProvider.GetService<Service<ISshConnectionService>>(),
+                serviceProvider.GetService<Service<ISessionContextFactory>>(),
                 serviceProvider.GetService<Service<IProjectModelService>>(),
                 serviceProvider.GetService<Service<IInstanceSessionBroker>>());
             Debug.Assert(serviceProvider

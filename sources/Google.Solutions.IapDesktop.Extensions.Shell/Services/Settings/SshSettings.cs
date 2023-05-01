@@ -75,7 +75,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
 
     public class SshSettings : IRegistrySettingsCollection
     {
-
         public RegistryBoolSetting IsPropagateLocaleEnabled { get; private set; }
         public RegistryDwordSetting PublicKeyValidity { get; private set; }
         public RegistryEnumSetting<SshKeyType> PublicKeyType { get; private set; }

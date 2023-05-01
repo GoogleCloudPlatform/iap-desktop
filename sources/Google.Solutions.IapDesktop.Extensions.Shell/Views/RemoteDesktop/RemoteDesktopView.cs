@@ -44,6 +44,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 
 #pragma warning disable CA1031 // catch Exception
 #pragma warning disable CA1801 // Review unused parameters
@@ -243,11 +244,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 // Basic connection settings.
                 //
                 this.rdpClient.Server = this.viewModel.Server;
-                this.rdpClient.Domain = this.viewModel.Parameters.Credentials.Domain;
-                this.rdpClient.UserName = this.viewModel.Parameters.Credentials.User;
+                this.rdpClient.Domain = this.viewModel.Credential.Domain;
+                this.rdpClient.UserName = this.viewModel.Credential.User;
                 advancedSettings.RDPPort = this.viewModel.Port;
                 advancedSettings.ClearTextPassword =
-                    this.viewModel.Parameters.Credentials.Password?.AsClearText() ?? string.Empty;
+                    this.viewModel.Credential.Password?.AsClearText() ?? string.Empty;
                 nonScriptable.AllowCredentialSaving = false;
 
                 //

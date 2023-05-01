@@ -22,8 +22,10 @@
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
@@ -34,15 +36,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     /// </summary>
     internal class ConnectRdpUrlCommand : ConnectInstanceCommandBase<IapRdpUrl>
     {
-        private readonly Service<IRdpConnectionService> connectionService;
+        private readonly Service<ISessionContextFactory> sessionContextFactory;
         private readonly Service<IInstanceSessionBroker> sessionBroker;
 
         public ConnectRdpUrlCommand(
-            Service<IRdpConnectionService> connectionService,
+            Service<ISessionContextFactory> sessionContextFactory,
             Service<IInstanceSessionBroker> sessionBroker)
             : base("Launch &RDP URL")
         {
-            this.connectionService = connectionService;
+            this.sessionContextFactory = sessionContextFactory;
             this.sessionBroker = sessionBroker;
         }
 
@@ -73,14 +75,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 //
                 // Create new session.
                 //
-                var template = await this.connectionService
+                var context = await this.sessionContextFactory
                     .GetInstance()
-                    .PrepareConnectionAsync(url)
-                    .ConfigureAwait(true);
+                    .CreateRdpSessionContextAsync(url, CancellationToken.None)
+                    .ConfigureAwait(false);
 
-                var session = this.sessionBroker
+                var session = await this.sessionBroker
                     .GetInstance()
-                    .ConnectRdpSession(template);
+                    .CreateSessionAsync(context)
+                    .ConfigureAwait(false);
 
                 Debug.Assert(session != null);
             }
