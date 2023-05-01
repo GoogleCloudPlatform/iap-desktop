@@ -44,12 +44,8 @@ namespace Google.Solutions.Mvvm.Controls
             base.Dock = DockStyle.Fill;
             base.FixedPanel = FixedPanel.Panel1;
             base.IsSplitterFixed = true;
-            base.Orientation = Orientation.Horizontal;
-            base.SplitterWidth = 1;
-            base.SplitterDistance = 25;
             base.Panel1.BackColor = SystemColors.Info;
 
-            this.infoLabel.Location = new Point(30, 5);
             this.infoLabel.AutoEllipsis = true;
             this.infoLabel.AutoSize = false;
             this.infoLabel.TextAlign = ContentAlignment.MiddleLeft;
@@ -74,10 +70,16 @@ namespace Google.Solutions.Mvvm.Controls
             if (this.Width > 0)
             {
                 //
-                // NB. Width can be 0 if the panel os on an AutoHide
-                // tool window.
+                // NB. During OnCreateControl, the size might still be (0, 0). Trying
+                // to set Orientation in this state would cause an
+                // InvalidOperationException. Therefore, we set the Orientation here.
                 //
+                base.SplitterWidth = 1;
+                base.SplitterDistance = 25;
+                base.Orientation = Orientation.Horizontal;
+
                 this.infoLabel.Size = new Size(this.Width - 40, this.SplitterDistance - 10);
+                this.infoLabel.Location = new Point(30, 5);
             }
         }
 
