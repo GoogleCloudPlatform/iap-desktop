@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             {
                 AvailableForSsh = false,
                 AvailableForRdp = true,                  // Windows/RDP only.
-                AllowPersistentRdpCredentials = false,   // Force auth prompt.
+                Flags = RdpCreateSessionFlags.ForcePasswordPrompt,
                 Image = Resources.Connect_16,
                 ActivityText = "Connecting to VM instance"
             };
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             {
                 AvailableForSsh = true,                  // Linux/SSH only.
                 AvailableForRdp = false,
-                ForceNewConnection = true,            // Force new.
+                ForceNewConnection = true,               // Force new.
                 Image = Resources.Connect_16,
                 ActivityText = "Connecting to VM instance"
             };
