@@ -19,30 +19,18 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Security;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
 {
-    /// <summary>
-    /// Parameters for establishing an RDP session.
-    /// </summary>
     public class RdpSessionParameters
     {
-        internal static readonly int DefaultTimeoutInSeconds = 30;
+        internal const ushort DefaultPort = 3389;
+        internal static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(30);
 
-        /// <summary>
-        /// Source of these parameters.
-        /// </summary>
-        public ParameterSources Sources { get; }
-
-        public RdpCredentials Credentials { get; set; }
-
-        public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromSeconds(DefaultTimeoutInSeconds);
-
+        public ushort Port { get; set; } = DefaultPort;
+        public TimeSpan ConnectionTimeout { get; set; } = DefaultConnectionTimeout;
         public RdpConnectionBarState ConnectionBar { get; set; } = RdpConnectionBarState._Default;
         public RdpDesktopSize DesktopSize { get; set; } = RdpDesktopSize._Default;
         public RdpAuthenticationLevel AuthenticationLevel { get; set; } = RdpAuthenticationLevel._Default;
@@ -50,6 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
         public RdpAudioMode AudioMode { get; set; } = RdpAudioMode._Default;
         public RdpBitmapPersistence BitmapPersistence { get; set; } = RdpBitmapPersistence._Default;
         public RdpNetworkLevelAuthentication NetworkLevelAuthentication { get; set; } = RdpNetworkLevelAuthentication._Default;
+        public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; } = RdpUserAuthenticationBehavior._Default;
         public RdpRedirectClipboard RedirectClipboard { get; set; } = RdpRedirectClipboard._Default;
         public RdpRedirectPrinter RedirectPrinter { get; set; } = RdpRedirectPrinter._Default;
         public RdpRedirectSmartCard RedirectSmartCard { get; set; } = RdpRedirectSmartCard._Default;
@@ -58,15 +47,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
         public RdpRedirectDevice RedirectDevice { get; set; } = RdpRedirectDevice._Default;
         public RdpHookWindowsKeys HookWindowsKeys { get; set; } = RdpHookWindowsKeys._Default;
 
-        public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; } = RdpUserAuthenticationBehavior._Default;
+        public ParameterSources Sources { get; set; } = ParameterSources.Inventory;
 
-        public RdpSessionParameters(
-            ParameterSources sources,
-            RdpCredentials credentials)
-        {
-            this.Credentials = credentials.ExpectNotNull(nameof(credentials));
-            this.Sources = sources;
-        }
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
 
         [Flags]
         public enum ParameterSources
@@ -80,41 +65,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
             ///One or more parameter is sourced from the inventory.
             /// </summary>
             Inventory = 2
-        }
-    }
-
-    public class RdpCredentials
-    {
-        internal static RdpCredentials Empty = new RdpCredentials(null, null, null);
-
-        public string User { get; }
-        public SecureString Password { get; }
-        public string Domain { get; }
-
-        public RdpCredentials(
-            string user,
-            string domain,
-            SecureString password)
-        {
-            this.User = user;
-            this.Password = password;
-            this.Domain = domain;
-        }
-
-        public override string ToString()
-        {
-            if (!string.IsNullOrEmpty(this.Domain) && !string.IsNullOrEmpty(this.User))
-            {
-                return $"{this.Domain}\\{this.User}";
-            }
-            else if (!string.IsNullOrEmpty(this.User))
-            {
-                return this.User;
-            }
-            else
-            {
-                return "(empty)";
-            }
         }
     }
 

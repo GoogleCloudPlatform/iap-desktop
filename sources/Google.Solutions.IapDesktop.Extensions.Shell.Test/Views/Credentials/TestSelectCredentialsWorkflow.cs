@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.Testing.Application.ObjectModel;
 using Google.Solutions.Testing.Common;
@@ -44,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private ISelectCredentialsWorkflow CreateCredentialsWorkflow(
+        private ISelectCredentialsDialog CreateCredentialsWorkflow(
             bool isGrantedPermissionToGenerateCredentials,
             bool expectSilentCredentialGeneration,
             Mock<ITaskDialog> taskDialogMock)
@@ -74,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
                     It.IsAny<InstanceLocator>()))
                 .ReturnsAsync(isGrantedPermissionToGenerateCredentials);
 
-            return new SelectCredentialsWorkflow(serviceRegistry);
+            return new SelectCredentialsDialog(serviceRegistry);
         }
 
         //---------------------------------------------------------------------

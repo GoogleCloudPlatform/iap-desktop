@@ -19,40 +19,33 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.Auth;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
-using System;
-using System.Globalization;
+using Google.Solutions.Ssh.Auth;
+using Moq;
+using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Session
 {
-    /// <summary>
-    /// Parameters for establishing an SSH session.
-    /// </summary>
-    public struct SshSessionParameters
+    [TestFixture]
+    public class TestSshCredential
     {
-        /// <summary>
-        /// Key to authenticate with.
-        /// </summary>
-        public AuthorizedKeyPair AuthorizedKey { get; }
+        //---------------------------------------------------------------------
+        // ToString.
+        //---------------------------------------------------------------------
 
-        /// <summary>
-        /// Terminal locale.
-        /// </summary>
-        public CultureInfo Language { get; }
-
-        /// <summary>
-        /// Timeout to use for SSH connections.
-        /// </summary>
-        public TimeSpan ConnectionTimeout { get; }
-
-        public SshSessionParameters(
-            AuthorizedKeyPair authorizedKey,
-            CultureInfo language,
-            TimeSpan connectionTimeout)
+        [Test]
+        public void ToStringReturnsUsername()
         {
-            this.AuthorizedKey = authorizedKey;
-            this.Language = language;
-            this.ConnectionTimeout = connectionTimeout;
+            var authorizedKey = AuthorizedKeyPair.ForMetadata(
+                new Mock<ISshKeyPair>().Object,
+                "username",
+                false,
+                new Mock<IAuthorization>().Object);
+
+            var credential = new SshCredential(authorizedKey);
+            Assert.AreEqual("username", credential.ToString());
         }
     }
 }

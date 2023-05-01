@@ -22,6 +22,7 @@
 using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using NUnit.Framework;
 using System.Collections.Specialized;
 
@@ -164,9 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Data
         [Test]
         public void WhenQueryParameterMissing_ThenApplyLeavesOriginalValue()
         {
-            var parameters = new RdpSessionParameters(
-                RdpSessionParameters.ParameterSources.Url,
-                RdpCredentials.Empty);
+            var parameters = new RdpSessionParameters();
             parameters.AudioMode = RdpAudioMode.PlayOnServer;
             Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 
@@ -182,9 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Data
         public void WhenQueryParameterIsNullOrEmpty_ThenApplyLeavesOriginalValue(
             [Values(null, "", " ")] string emptyValue)
         {
-            var parameters = new RdpSessionParameters(
-                RdpSessionParameters.ParameterSources.Url, 
-                RdpCredentials.Empty);
+            var parameters = new RdpSessionParameters();
             parameters.AudioMode = RdpAudioMode.PlayOnServer;
             Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 
@@ -203,9 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Data
         public void WhenQueryParameterOutOfRange_ThenApplyLeavesOriginalValue(
             [Values("-1", "999999999")] string wrongValue)
         {
-            var parameters = new RdpSessionParameters(
-                RdpSessionParameters.ParameterSources.Url, 
-                RdpCredentials.Empty);
+            var parameters = new RdpSessionParameters();
             parameters.AudioMode = RdpAudioMode.PlayOnServer;
             Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 
@@ -223,9 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Data
         [Test]
         public void WhenQueryParameterValid_ThenApplyReplacesOriginalValue()
         {
-            var parameters = new RdpSessionParameters(
-                RdpSessionParameters.ParameterSources.Url, 
-                RdpCredentials.Empty);
+            var parameters = new RdpSessionParameters();
             parameters.AudioMode = RdpAudioMode.PlayOnServer;
             Assert.AreNotEqual(RdpAudioMode._Default, parameters.AudioMode);
 

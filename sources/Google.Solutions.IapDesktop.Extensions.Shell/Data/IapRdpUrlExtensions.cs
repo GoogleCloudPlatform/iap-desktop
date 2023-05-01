@@ -22,6 +22,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Data;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
@@ -70,20 +71,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Data
         }
 
         public static void ApplyUrlParameterIfSet<TEnum>(
-            this RdpSessionParameters parameters,
+            this RdpSessionParameters context,
             IapRdpUrl url,
             string queryParameterName,
             Action<RdpSessionParameters, TEnum> apply)
             where TEnum : struct
         {
-            Precondition.ExpectNotNull(parameters, nameof(parameters));
+            Precondition.ExpectNotNull(context, nameof(context));
             Precondition.ExpectNotNull(url, nameof(url));
             Precondition.ExpectNotNull(queryParameterName, nameof(queryParameterName));
             Precondition.ExpectNotNull(apply, nameof(apply));
 
             if (TryGetParameter<TEnum>(url, queryParameterName, out var value))
             {
-                apply(parameters, value);
+                apply(context, value);
             }
         }
     }

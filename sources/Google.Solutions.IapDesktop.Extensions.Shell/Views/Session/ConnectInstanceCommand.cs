@@ -22,12 +22,14 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
+using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
@@ -38,25 +40,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     /// </summary>
     internal class ConnectInstanceCommand : ConnectInstanceCommandBase<IProjectModelNode>
     {
-        private readonly Service<IRdpConnectionService> rdpConnectionService;
-        private readonly Service<ISshConnectionService> sshConnectionService;
+        private readonly Service<ISessionContextFactory> sessionContextFactory;
         private readonly Service<IInstanceSessionBroker> sessionBroker;
+        private readonly Service<IProjectModelService> modelService;
 
         public bool AvailableForSsh { get; set; } = false;
         public bool AvailableForRdp { get; set; } = false;
-        public bool AllowPersistentRdpCredentials { get; set; } = true;
         public bool ForceNewConnection { get; set; } = false;
+        public RdpCreateSessionFlags Flags { get; set; } = RdpCreateSessionFlags.None;
 
         public ConnectInstanceCommand(
             string text,
-            Service<IRdpConnectionService> rdpConnectionService,
-            Service<ISshConnectionService> sshConnectionService,
-            Service<IInstanceSessionBroker> sessionBroker)
+            Service<ISessionContextFactory> sessionContextFactory,
+            Service<IInstanceSessionBroker> sessionBroker,
+            Service<IProjectModelService> modelService)
             : base(text)
         {
-            this.rdpConnectionService = rdpConnectionService;
-            this.sshConnectionService = sshConnectionService;
+            this.sessionContextFactory = sessionContextFactory;
             this.sessionBroker = sessionBroker;
+            this.modelService = modelService;
         }
 
         protected override bool IsAvailable(IProjectModelNode node)
@@ -81,6 +83,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             var instanceNode = (IProjectModelInstanceNode)node;
             ISession session = null;
 
+            //
+            // Select node so that tracking windows are updated.
+            //
+            await this.modelService
+                .GetInstance()
+                .SetActiveNodeAsync(
+                    node,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
+
+            //
+            // Try to activate existing session, if any.
+            //
             if (!this.ForceNewConnection && this.sessionBroker
                 .GetInstance()
                 .TryActivate(instanceNode.Instance, out session))
@@ -100,30 +115,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             //
             if (instanceNode.IsRdpSupported())
             {
-                var template = await this.rdpConnectionService
+                var context = await this.sessionContextFactory
                     .GetInstance()
-                    .PrepareConnectionAsync(
+                    .CreateRdpSessionContextAsync(
                         instanceNode,
-                        this.AllowPersistentRdpCredentials)
+                        this.Flags,
+                        CancellationToken.None)
                     .ConfigureAwait(true);
 
-                Debug.Assert(this.AllowPersistentRdpCredentials || template.Session.Credentials.Password == null);
+                Debug.Assert(this.Flags == RdpCreateSessionFlags.None || 
+                    (context as RdpSessionContext)?.Credential.Password == null);
 
-                session = this.sessionBroker
-                    .GetInstance()
-                    .ConnectRdpSession(template);
+                try
+                {
+                    session = await this.sessionBroker
+                        .GetInstance()
+                        .CreateSessionAsync(context)
+                        .ConfigureAwait(true);
+                }
+                catch
+                {
+                    context.Dispose();
+                    throw;
+                }
             }
             else if (instanceNode.IsSshSupported())
             {
-                var template = await this.sshConnectionService
+                var context = await this.sessionContextFactory
                     .GetInstance()
-                    .PrepareConnectionAsync(instanceNode)
+                    .CreateSshSessionContextAsync(instanceNode, CancellationToken.None)
                     .ConfigureAwait(true);
 
-                session = await this.sessionBroker
-                    .GetInstance()
-                    .ConnectSshSessionAsync(template)
-                    .ConfigureAwait(true);
+                try
+                { 
+                    session = await this.sessionBroker
+                        .GetInstance()
+                        .CreateSessionAsync(context)
+                        .ConfigureAwait(true);
+                }
+                catch
+                {
+                    context.Dispose();
+                    throw;
+                }
             }
 
             Debug.Assert(session != null);

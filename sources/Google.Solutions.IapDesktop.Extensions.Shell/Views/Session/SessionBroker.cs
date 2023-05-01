@@ -23,8 +23,7 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Mvvm.Binding.Commands;
@@ -32,6 +31,7 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
@@ -39,22 +39,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
     public interface IInstanceSessionBroker : ISessionBroker
     {
         /// <summary>
-        /// Create a new SSH session.
-        /// </summary>
-        Task<ISshTerminalSession> ConnectSshSessionAsync(
-            ConnectionTemplate<SshSessionParameters> template);
-
-        /// <summary>
-        /// Create a new RDP session.
-        /// </summary>
-        IRemoteDesktopSession ConnectRdpSession(
-            ConnectionTemplate<RdpSessionParameters> template);
-
-        /// <summary>
         /// Command menu for sessions, exposed in the main menu
         /// and as context menu.
         /// </summary>
         ICommandContainer<ISession> SessionMenu { get; }
+
+        /// <summary>
+        /// Create a new SSH session.
+        /// </summary>
+        Task<ISession> CreateSessionAsync(
+            ISessionContext<SshCredential, SshSessionParameters> context);
+
+        /// <summary>
+        /// Create a new RDP session.
+        /// </summary>
+        Task<ISession> CreateSessionAsync(
+            ISessionContext<RdpCredential, RdpSessionParameters> context);
     }
 
     [Service(typeof(IInstanceSessionBroker), ServiceLifetime.Singleton)]
@@ -66,6 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
         private readonly IToolWindowHost toolWindowHost;
         private readonly IMainWindow mainForm;
+        private readonly IJobService jobService;
 
         private void OnSessionConnected(SessionViewBase session)
         {
@@ -76,10 +77,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             session.ContextCommands = this.SessionMenu;
         }
 
-        public InstanceSessionBroker(IServiceProvider serviceProvider)
+        public InstanceSessionBroker(
+            IMainWindow mainForm,
+            IToolWindowHost toolWindowHost,
+            IJobService jobService)
         {
-            this.mainForm = serviceProvider.GetService<IMainWindow>();
-            this.toolWindowHost = serviceProvider.GetService<IToolWindowHost>();
+            this.mainForm = mainForm;
+            this.toolWindowHost = toolWindowHost;
+            this.jobService = jobService;
 
             //
             // NB. The ServiceCategory attribute causes this class to be 
@@ -94,6 +99,72 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             this.SessionMenu = this.mainForm.AddMenu(
                 "&Session", 1,
                 () => this.ActiveSession);
+        }
+
+        internal InstanceSessionBroker(IServiceProvider serviceProvider)
+            : this(
+                  serviceProvider.GetService<IMainWindow>(),
+                  serviceProvider.GetService<IToolWindowHost>(),
+                  serviceProvider.GetService<IJobService>())
+        {
+
+        }
+
+        internal IRemoteDesktopSession ConnectRdpSession(
+            ITransport transport,
+            RdpSessionParameters parameters,
+            RdpCredential credential)
+        {
+            var window = this.toolWindowHost.GetToolWindow<RemoteDesktopView, RemoteDesktopViewModel>();
+
+            window.ViewModel.Instance = transport.Instance;
+            window.ViewModel.Server = IPAddress.IsLoopback(transport.Endpoint.Address)
+                ? "localhost"
+                : transport.Endpoint.Address.ToString();
+            window.ViewModel.Port = (ushort)transport.Endpoint.Port;
+            window.ViewModel.Parameters = parameters;
+            window.ViewModel.Credential = credential;
+
+            var session = window.Bind();
+
+            //
+            // Apply accent color if the session was initiated from a URL.
+            //
+            if (parameters.Sources.HasFlag(Services.Session.RdpSessionParameters.ParameterSources.Url))
+            {
+                session.DockHandler.TabAccentColor = AccentColorForUrlBasedSessions;
+            }
+
+            window.Show();
+            session.Connect();
+
+            OnSessionConnected(session);
+
+            return session;
+        }
+
+        internal async Task<ISshTerminalSession> ConnectSshSessionAsync(
+            ITransport transport,
+            SshSessionParameters parameters,
+            SshCredential credential)
+        {
+            var window = this.toolWindowHost.GetToolWindow<SshTerminalView, SshTerminalViewModel>();
+
+            window.ViewModel.Instance = transport.Instance;
+            window.ViewModel.Endpoint = transport.Endpoint;
+            window.ViewModel.AuthorizedKey = credential.Key;
+            window.ViewModel.Language = parameters.Language;
+            window.ViewModel.ConnectionTimeout = parameters.ConnectionTimeout;
+
+            var session = window.Bind();
+            window.Show();
+
+            await session.ConnectAsync()
+                .ConfigureAwait(false);
+
+            OnSessionConnected(session);
+
+            return session;
         }
 
         //---------------------------------------------------------------------
@@ -141,62 +212,82 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             }
         }
 
+        private struct AuthorizationResult<TCredential>
+        {
+            public TCredential Credential;
+            public ITransport Transport;
+        }
+
+        private Task<AuthorizationResult<TCredential>> CreateTransportAndAuthorizeAsync
+            <TCredential, TParameters>(
+            ISessionContext<TCredential, TParameters> context)
+            where TCredential : ISessionCredential
+        {
+            return this.jobService.RunInBackground(
+                new JobDescription(
+                    $"Connecting to {context.Instance.Name}...",
+                    JobUserFeedbackType.BackgroundFeedback),
+                async cancellationToken =>
+                {
+                    var credentialTask = context.AuthorizeCredentialAsync(cancellationToken);
+                    var transportTask = context.ConnectTransportAsync(cancellationToken);
+
+                    await Task.WhenAll(credentialTask, transportTask)
+                        .ConfigureAwait(true);
+
+                    return new AuthorizationResult<TCredential>
+                    {
+                        Credential = credentialTask.Result,
+                        Transport = transportTask.Result
+                    };
+                });
+        }
+
         //---------------------------------------------------------------------
         // IInstanceSessionBroker.
         //---------------------------------------------------------------------
 
         public ICommandContainer<ISession> SessionMenu { get; }
 
-        public async Task<ISshTerminalSession> ConnectSshSessionAsync(
-            ConnectionTemplate<SshSessionParameters> template)
+        public async Task<ISession> CreateSessionAsync(
+            ISessionContext<SshCredential, SshSessionParameters> context)
         {
-            var window = this.toolWindowHost.GetToolWindow<SshTerminalView, SshTerminalViewModel>();
+            var result = await CreateTransportAndAuthorizeAsync(context)
+                .ConfigureAwait(true);
 
-            window.ViewModel.Instance = template.Transport.Instance;
-            window.ViewModel.Endpoint = template.Transport.Endpoint;
-            window.ViewModel.AuthorizedKey = template.Session.AuthorizedKey;
-            window.ViewModel.Language = template.Session.Language;
-            window.ViewModel.ConnectionTimeout = template.Session.ConnectionTimeout;
+            //
+            // Back on the UI thread, create the corresponding view.
+            //
 
-            var session = window.Bind();
-            window.Show();
+            var session = await ConnectSshSessionAsync(
+                    result.Transport,
+                    context.Parameters,
+                    result.Credential)
+                .ConfigureAwait(true);
 
-            await session.ConnectAsync()
-                .ConfigureAwait(false);
+            ((SessionViewBase)session).Disposed += (_, __) => context.Dispose();
 
-            OnSessionConnected(session);
-
-            return session;
+            return (ISession)session;
         }
 
-        public IRemoteDesktopSession ConnectRdpSession(
-            ConnectionTemplate<RdpSessionParameters> template)
+        public async Task<ISession> CreateSessionAsync(
+            ISessionContext<RdpCredential, RdpSessionParameters> context)
         {
-            var window = this.toolWindowHost.GetToolWindow<RemoteDesktopView, RemoteDesktopViewModel>();
-
-            window.ViewModel.Instance = template.Transport.Instance;
-            window.ViewModel.Server = IPAddress.IsLoopback(template.Transport.Endpoint.Address)
-                ? "localhost"
-                : template.Transport.Endpoint.Address.ToString();
-            window.ViewModel.Port = (ushort)template.Transport.Endpoint.Port;
-            window.ViewModel.Parameters = template.Session;
-
-            var session = window.Bind();
+            var result = await CreateTransportAndAuthorizeAsync(context)
+                .ConfigureAwait(true);
 
             //
-            // Apply accent color if the session was initiated from a URL.
+            // Back on the UI thread, create the corresponding view.
             //
-            if (template.Session.Sources.HasFlag(RdpSessionParameters.ParameterSources.Url))
-            {
-                session.DockHandler.TabAccentColor = AccentColorForUrlBasedSessions;
-            }
 
-            window.Show();
-            session.Connect();
+            var session = ConnectRdpSession(
+                result.Transport,
+                context.Parameters,
+                result.Credential);
 
-            OnSessionConnected(session);
+            ((SessionViewBase)session).Disposed += (_, __) => context.Dispose();
 
-            return session;
+            return (ISession)session;
         }
     }
 }

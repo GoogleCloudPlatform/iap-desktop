@@ -25,6 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.Mvvm.Binding;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
@@ -59,12 +60,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         public string Server { get; set; }
         public ushort Port { get; set; }
         public RdpSessionParameters Parameters { get; set; }
+        public RdpCredential Credential { get; set; }
 
         protected override void OnValidate()
         {
             this.Instance.ExpectNotNull(nameof(this.Instance));
             this.Server.ExpectNotNull(nameof(this.Server));
             this.Parameters.ExpectNotNull(nameof(this.Parameters));
+            this.Credential.ExpectNotNull(nameof(this.Credential));
         }
 
         //---------------------------------------------------------------------

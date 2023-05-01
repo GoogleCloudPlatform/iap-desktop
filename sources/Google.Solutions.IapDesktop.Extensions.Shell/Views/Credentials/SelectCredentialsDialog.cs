@@ -19,12 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
+using Google.Solutions.Apis;
+using Google.Solutions.Apis.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,10 +37,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
     public interface ISelectCredentialsDialog
     {
-        Task SelectOrCreateCredentialsAsync(
+        Task SelectCredentialsAsync(
            IWin32Window owner,
            InstanceLocator instanceLocator,
            ConnectionSettingsBase settings,
+           RdpCredentialGenerationBehavior allowedBehavior,
            bool allowJumpToSettings);
     }
 
@@ -53,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
         }
 
         private async Task<bool> IsGrantedPermissionToGenerateCredentials(
-            INewCredentialsDialog credentialsService,
+            ICreateCredentialsWorkflow credentialsService,
             InstanceLocator instanceLocator)
         {
             //
@@ -75,13 +78,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
             }
         }
 
-        public async Task SelectOrCreateCredentialsAsync(
+        public async Task SelectCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
             ConnectionSettingsBase settings,
+            RdpCredentialGenerationBehavior allowedBehavior,
             bool allowJumpToSettings)
         {
-            var credentialsService = this.serviceProvider.GetService<INewCredentialsDialog>();
+            var credentialsService = this.serviceProvider.GetService<ICreateCredentialsWorkflow>();
 
             //
             // Determine which options to show in prompt.
@@ -90,14 +94,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                 !string.IsNullOrEmpty(settings.RdpUsername.StringValue) &&
                 !string.IsNullOrEmpty(settings.RdpPassword.ClearTextValue);
 
-            if (settings.RdpCredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Force
+            if (allowedBehavior == RdpCredentialGenerationBehavior.Force
                 && await IsGrantedPermissionToGenerateCredentials(
                             credentialsService,
                             instanceLocator)
                         .ConfigureAwait(true))
             {
                 // Generate new credentials right away and skip the prompt.
-                await credentialsService.ShowDialogAsync(
+                await credentialsService.CreateCredentialsAsync(
                         owner,
                         instanceLocator,
                         settings,
@@ -108,19 +112,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 
             var options = new List<CredentialOption>();
             if ((!credentialsExist
-                    && settings.RdpCredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
+                    && allowedBehavior == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
                     && await IsGrantedPermissionToGenerateCredentials(
                                 credentialsService,
                                 instanceLocator)
                             .ConfigureAwait(true))
-                || settings.RdpCredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Allow)
+                || allowedBehavior == RdpCredentialGenerationBehavior.Allow)
             {
                 options.Add(
                     new CredentialOption()
                     {
                         Title = "Generate new credentials",
                         Apply = () => credentialsService
-                            .ShowDialogAsync(
+                            .CreateCredentialsAsync(
                                 owner,
                                 instanceLocator,
                                 settings,
@@ -138,8 +142,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
                         {
                             // Configure credentials -> jump to settings.
                             this.serviceProvider
-                                .GetService<IConnectionSettingsWindow>()
-                                .ShowWindow();
+                                .GetService<IConfigureCredentialsWorkflow>()
+                                .ShowCredentialsDialog();
 
                             return Task.FromException(new OperationCanceledException());
                         }

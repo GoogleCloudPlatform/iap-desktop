@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.Mvvm.Binding.Commands;
 using Google.Solutions.Platform.Net;
 using System;

@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
@@ -52,44 +52,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             SampleLocator,
             new NameValueCollection());
 
-        private static readonly TransportParameters SampleTransportParameters =
-            new TransportParameters(
-                TransportParameters.TransportType.IapTunnel,
-                SampleLocator,
-                new IPEndPoint(IPAddress.Loopback, 1234));
-
-        private static readonly ConnectionTemplate<RdpSessionParameters> RdpConnectionTemplate =
-            new ConnectionTemplate<RdpSessionParameters>(
-                SampleTransportParameters,
-                new RdpSessionParameters(
-                    RdpSessionParameters.ParameterSources.Inventory, 
-                    RdpCredentials.Empty));
-
-        private static readonly ConnectionTemplate<SshSessionParameters> SshConnectionTemplate =
-            new ConnectionTemplate<SshSessionParameters>(
-                SampleTransportParameters,
-                new SshSessionParameters(
-                    null,
-                    null,
-                    TimeSpan.MaxValue));
-
         private static ConnectCommands CreateConnectCommands(
             UrlCommands urlCommands,
-            Mock<ISshConnectionService> sshConnectionService,
-            Mock<IRdpConnectionService> rdpConnectionService,
+            Mock<ISessionContextFactory> contextFactory,
             Mock<IProjectModelService> modelService,
             Mock<IInstanceSessionBroker> sessionBroker)
         {
             var serviceProvider = new Mock<IServiceProvider>();
-            serviceProvider.Add(sshConnectionService.Object);
-            serviceProvider.Add(rdpConnectionService.Object);
+            serviceProvider.Add(contextFactory.Object);
             serviceProvider.Add(modelService.Object);
             serviceProvider.Add(sessionBroker.Object);
 
             return new ConnectCommands(
                 urlCommands,
-                new Service<IRdpConnectionService>(serviceProvider.Object),
-                new Service<ISshConnectionService>(serviceProvider.Object),
+                new Service<ISessionContextFactory>(serviceProvider.Object),
                 new Service<IProjectModelService>(serviceProvider.Object),
                 new Service<IInstanceSessionBroker>(serviceProvider.Object));
         }
@@ -104,8 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             var urlCommands = new UrlCommands();
             CreateConnectCommands(
                 urlCommands,
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -117,21 +92,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task LaunchRdpUrlCommandConnectsInstance()
         {
-            var rdpConnectionService = new Mock<IRdpConnectionService>();
-            rdpConnectionService
-                .Setup(s => s.PrepareConnectionAsync(SampleUrl))
-                .ReturnsAsync(RdpConnectionTemplate);
+            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
+            var contextFactory = new Mock<ISessionContextFactory>();
+            contextFactory
+                .Setup(s => s.CreateRdpSessionContextAsync(SampleUrl, CancellationToken.None))
+                .ReturnsAsync(context.Object);
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectRdpSession(RdpConnectionTemplate))
-                .Returns(new Mock<IRemoteDesktopSession>().Object);
+                .Setup(s => s.CreateSessionAsync(context.Object))
+                .ReturnsAsync(new Mock<ISession>().Object);
 
             var urlCommands = new UrlCommands();
             CreateConnectCommands(
                 urlCommands,
-                new Mock<ISshConnectionService>(),
-                rdpConnectionService,
+                contextFactory,
                 new Mock<IProjectModelService>(),
                 sessionBroker);
 
@@ -139,8 +114,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ExecuteAsync(SampleUrl)
                 .ConfigureAwait(false);
 
-            rdpConnectionService.Verify(
-                s => s.PrepareConnectionAsync(SampleUrl),
+            contextFactory.Verify(
+                s => s.CreateRdpSessionContextAsync(SampleUrl, CancellationToken.None),
                 Times.Once);
         }
 
@@ -156,8 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -178,8 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -197,8 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -216,22 +188,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task WhenInstanceSupportsRdp_ThenToolbarActivateOrConnectInstanceUsesRdp()
         {
-            var rdpConnectionService = new Mock<IRdpConnectionService>();
-            rdpConnectionService
-                .Setup(s => s.PrepareConnectionAsync(
+            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
+            var contextFactory = new Mock<ISessionContextFactory>();
+            contextFactory
+                .Setup(s => s.CreateRdpSessionContextAsync(
                     It.IsAny<IProjectModelInstanceNode>(),
-                    true))
-                .ReturnsAsync(RdpConnectionTemplate);
+                    RdpCreateSessionFlags.None,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(context.Object);
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectRdpSession(RdpConnectionTemplate))
-                .Returns(new Mock<IRemoteDesktopSession>().Object);
+                .Setup(s => s.CreateSessionAsync(context.Object))
+                .ReturnsAsync(new Mock<ISession>().Object);
 
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                rdpConnectionService,
+                contextFactory,
                 new Mock<IProjectModelService>(),
                 sessionBroker);
 
@@ -243,28 +216,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ExecuteAsync(runningInstance.Object)
                 .ConfigureAwait(false);
 
-            rdpConnectionService.Verify(
-                s => s.PrepareConnectionAsync(runningInstance.Object, true),
+            contextFactory.Verify(
+                s => s.CreateRdpSessionContextAsync(
+                    runningInstance.Object, 
+                    RdpCreateSessionFlags.None,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
         [Test]
         public async Task WhenInstanceSupportsSsh_ThenToolbarActivateOrConnectInstanceUsesSsh()
         {
-            var sshConnectionService = new Mock<ISshConnectionService>();
-            sshConnectionService
-                .Setup(s => s.PrepareConnectionAsync(It.IsAny<IProjectModelInstanceNode>()))
-                .ReturnsAsync(SshConnectionTemplate);
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
+            var contextFactory = new Mock<ISessionContextFactory>();
+            contextFactory
+                .Setup(s => s.CreateSshSessionContextAsync(
+                    It.IsAny<IProjectModelInstanceNode>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(context.Object);
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectSshSessionAsync(SshConnectionTemplate))
-                .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
+                .Setup(s => s.CreateSessionAsync(context.Object))
+                .ReturnsAsync(new Mock<ISession>().Object);
 
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                sshConnectionService,
-                new Mock<IRdpConnectionService>(),
+                contextFactory,
                 new Mock<IProjectModelService>(),
                 sessionBroker);
 
@@ -276,8 +254,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ExecuteAsync(runningInstance.Object)
                 .ConfigureAwait(false);
 
-            sshConnectionService.Verify(
-                s => s.PrepareConnectionAsync(runningInstance.Object),
+            contextFactory.Verify(
+                s => s.CreateSshSessionContextAsync(
+                    runningInstance.Object,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -293,8 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -315,8 +294,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -334,8 +312,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -353,22 +330,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task WhenInstanceSupportsRdp_ThenContextMenuActivateOrConnectInstanceUsesRdp()
         {
-            var rdpConnectionService = new Mock<IRdpConnectionService>();
-            rdpConnectionService
-                .Setup(s => s.PrepareConnectionAsync(
+            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
+            var contextFactory = new Mock<ISessionContextFactory>();
+            contextFactory
+                .Setup(s => s.CreateRdpSessionContextAsync(
                     It.IsAny<IProjectModelInstanceNode>(),
-                    true))
-                .ReturnsAsync(RdpConnectionTemplate);
+                    RdpCreateSessionFlags.None,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(context.Object);
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectRdpSession(RdpConnectionTemplate))
-                .Returns(new Mock<IRemoteDesktopSession>().Object);
+                .Setup(s => s.CreateSessionAsync(context.Object))
+                .ReturnsAsync(new Mock<ISession>().Object);
 
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                rdpConnectionService,
+                contextFactory,
                 new Mock<IProjectModelService>(),
                 sessionBroker);
 
@@ -380,28 +358,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ExecuteAsync(runningInstance.Object)
                 .ConfigureAwait(false);
 
-            rdpConnectionService.Verify(
-                s => s.PrepareConnectionAsync(runningInstance.Object, true),
+            contextFactory.Verify(
+                s => s.CreateRdpSessionContextAsync(
+                    runningInstance.Object,
+                    RdpCreateSessionFlags.None,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
         [Test]
         public async Task WhenInstanceSupportsSsh_ThenContextMenuActivateOrConnectInstanceUsesSsh()
         {
-            var sshConnectionService = new Mock<ISshConnectionService>();
-            sshConnectionService
-                .Setup(s => s.PrepareConnectionAsync(It.IsAny<IProjectModelInstanceNode>()))
-                .ReturnsAsync(SshConnectionTemplate);
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
+            var contextFactory = new Mock<ISessionContextFactory>();
+            contextFactory
+                .Setup(s => s.CreateSshSessionContextAsync(
+                    It.IsAny<IProjectModelInstanceNode>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(context.Object);
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectSshSessionAsync(SshConnectionTemplate))
-                .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
+                .Setup(s => s.CreateSessionAsync(context.Object))
+                .ReturnsAsync(new Mock<ISession>().Object);
 
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                sshConnectionService,
-                new Mock<IRdpConnectionService>(),
+                contextFactory,
                 new Mock<IProjectModelService>(),
                 sessionBroker);
 
@@ -413,8 +396,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ExecuteAsync(runningInstance.Object)
                 .ConfigureAwait(false);
 
-            sshConnectionService.Verify(
-                s => s.PrepareConnectionAsync(runningInstance.Object),
+            contextFactory.Verify(
+                s => s.CreateSshSessionContextAsync(
+                    runningInstance.Object,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -427,8 +412,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -446,8 +430,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -465,8 +448,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -491,22 +473,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task ContextMenuConnectAsUserDisallowsPersistentCredentials()
         {
-            var rdpConnectionService = new Mock<IRdpConnectionService>();
-            rdpConnectionService
-                .Setup(s => s.PrepareConnectionAsync(
+            var context = new Mock<ISessionContext<RdpCredential, RdpSessionParameters>>();
+            var contextFactory = new Mock<ISessionContextFactory>();
+            contextFactory
+                .Setup(s => s.CreateRdpSessionContextAsync(
                     It.IsAny<IProjectModelInstanceNode>(),
-                    false))
-                .ReturnsAsync(RdpConnectionTemplate);
+                    RdpCreateSessionFlags.ForcePasswordPrompt,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(context.Object);
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectRdpSession(RdpConnectionTemplate))
-                .Returns(new Mock<IRemoteDesktopSession>().Object);
+                .Setup(s => s.CreateSessionAsync(context.Object))
+                .ReturnsAsync(new Mock<ISession>().Object);
 
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                rdpConnectionService,
+                contextFactory,
                 new Mock<IProjectModelService>(),
                 sessionBroker);
 
@@ -518,11 +501,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ExecuteAsync(runningInstance.Object)
                 .ConfigureAwait(false);
 
-            rdpConnectionService.Verify(
-                s => s.PrepareConnectionAsync(runningInstance.Object, false),
+            contextFactory.Verify(
+                s => s.CreateRdpSessionContextAsync(
+                    runningInstance.Object, 
+                    RdpCreateSessionFlags.ForcePasswordPrompt, 
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
-            rdpConnectionService.Verify(
-                s => s.PrepareConnectionAsync(runningInstance.Object, true),
+            contextFactory.Verify(
+                s => s.CreateRdpSessionContextAsync(
+                    runningInstance.Object, 
+                    RdpCreateSessionFlags.None,
+                    It.IsAny<CancellationToken>()),
                 Times.Never);
         }
 
@@ -535,8 +524,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -554,8 +542,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -573,8 +560,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         {
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                new Mock<ISshConnectionService>(),
-                new Mock<IRdpConnectionService>(),
+                new Mock<ISessionContextFactory>(),
                 new Mock<IProjectModelService>(),
                 new Mock<IInstanceSessionBroker>());
 
@@ -599,20 +585,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
         [Test]
         public async Task ContextMenuConnectSshInNewTerminalForcesNewConnection()
         {
-            var sshConnectionService = new Mock<ISshConnectionService>();
-            sshConnectionService
-                .Setup(s => s.PrepareConnectionAsync(It.IsAny<IProjectModelInstanceNode>()))
-                .ReturnsAsync(SshConnectionTemplate);
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
+            var contextFactory = new Mock<ISessionContextFactory>();
+            contextFactory
+                .Setup(s => s.CreateSshSessionContextAsync(
+                    It.IsAny<IProjectModelInstanceNode>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(context.Object);
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectSshSessionAsync(SshConnectionTemplate))
-                .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
+                .Setup(s => s.CreateSessionAsync(context.Object))
+                .ReturnsAsync(new Mock<ISession>().Object);
 
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                sshConnectionService,
-                new Mock<IRdpConnectionService>(),
+                contextFactory,
                 new Mock<IProjectModelService>(),
                 sessionBroker);
 
@@ -624,8 +612,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ExecuteAsync(runningInstance.Object)
                 .ConfigureAwait(false);
 
-            sshConnectionService.Verify(
-                s => s.PrepareConnectionAsync(runningInstance.Object),
+            contextFactory.Verify(
+                s => s.CreateSshSessionContextAsync(
+                    runningInstance.Object,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -681,20 +671,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
             connectedSession.SetupGet(s => s.IsConnected).Returns(true);
             connectedSession.SetupGet(s => s.Instance).Returns(locator);
 
-            var sshConnectionService = new Mock<ISshConnectionService>();
-            sshConnectionService
-                .Setup(s => s.PrepareConnectionAsync(runningInstance.Object))
-                .ReturnsAsync(SshConnectionTemplate);
+
+            var context = new Mock<ISessionContext<SshCredential, SshSessionParameters>>();
+            var contextFactory = new Mock<ISessionContextFactory>();
+            contextFactory
+                .Setup(s => s.CreateSshSessionContextAsync(
+                    runningInstance.Object,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(context.Object);
 
             var sessionBroker = new Mock<IInstanceSessionBroker>();
             sessionBroker
-                .Setup(s => s.ConnectSshSessionAsync(SshConnectionTemplate))
-                .ReturnsAsync(new Mock<ISshTerminalSession>().Object);
+                .Setup(s => s.CreateSessionAsync(context.Object))
+                .ReturnsAsync(new Mock<ISession>().Object);
 
             var commands = CreateConnectCommands(
                 new UrlCommands(),
-                sshConnectionService,
-                new Mock<IRdpConnectionService>(),
+                contextFactory,
                 modelService,
                 sessionBroker);
 
@@ -702,8 +695,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Session
                 .ExecuteAsync(connectedSession.Object)
                 .ConfigureAwait(false);
 
-            sshConnectionService.Verify(
-                s => s.PrepareConnectionAsync(runningInstance.Object),
+            contextFactory.Verify(
+                s => s.CreateSshSessionContextAsync(
+                    runningInstance.Object,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
         }
     }
