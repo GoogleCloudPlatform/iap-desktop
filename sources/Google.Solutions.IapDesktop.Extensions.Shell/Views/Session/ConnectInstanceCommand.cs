@@ -127,10 +127,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                 Debug.Assert(this.Flags == RdpCreateSessionFlags.None || 
                     (context as RdpSessionContext)?.Credential.Password == null);
 
-                session = await this.sessionBroker
-                    .GetInstance()
-                    .CreateSessionAsync(context)
-                    .ConfigureAwait(true);
+                try
+                {
+                    session = await this.sessionBroker
+                        .GetInstance()
+                        .CreateSessionAsync(context)
+                        .ConfigureAwait(true);
+                }
+                catch
+                {
+                    context.Dispose();
+                    throw;
+                }
             }
             else if (instanceNode.IsSshSupported())
             {
@@ -139,10 +147,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
                     .CreateSshSessionContextAsync(instanceNode, CancellationToken.None)
                     .ConfigureAwait(true);
 
-                session = await this.sessionBroker
-                    .GetInstance()
-                    .CreateSessionAsync(context)
-                    .ConfigureAwait(true);
+                try
+                { 
+                    session = await this.sessionBroker
+                        .GetInstance()
+                        .CreateSessionAsync(context)
+                        .ConfigureAwait(true);
+                }
+                catch
+                {
+                    context.Dispose();
+                    throw;
+                }
             }
 
             Debug.Assert(session != null);

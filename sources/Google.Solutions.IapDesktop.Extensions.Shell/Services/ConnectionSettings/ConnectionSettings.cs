@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 "Server port",
                 "Server port",
                 Categories.SshConnection,
-                RdpSessionParameters.DefaultPort,
+                SshSessionParameters.DefaultPort,
                 key,
                 1,
                 ushort.MaxValue);

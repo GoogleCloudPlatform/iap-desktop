@@ -23,7 +23,6 @@ using Google.Solutions.Apis.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Session;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
@@ -33,6 +32,7 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
@@ -67,6 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
 
         private readonly IToolWindowHost toolWindowHost;
         private readonly IMainWindow mainForm;
+        private readonly IJobService jobService;
 
         private void OnSessionConnected(SessionViewBase session)
         {
@@ -77,10 +78,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             session.ContextCommands = this.SessionMenu;
         }
 
-        public InstanceSessionBroker(IServiceProvider serviceProvider)
+        public InstanceSessionBroker(
+            IMainWindow mainForm,
+            IToolWindowHost toolWindowHost,
+            IJobService jobService)
         {
-            this.mainForm = serviceProvider.GetService<IMainWindow>();
-            this.toolWindowHost = serviceProvider.GetService<IToolWindowHost>();
+            this.mainForm = mainForm;
+            this.toolWindowHost = toolWindowHost;
+            this.jobService = jobService;
 
             //
             // NB. The ServiceCategory attribute causes this class to be 
@@ -95,6 +100,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             this.SessionMenu = this.mainForm.AddMenu(
                 "&Session", 1,
                 () => this.ActiveSession);
+        }
+
+        internal InstanceSessionBroker(IServiceProvider serviceProvider)
+            : this(
+                  serviceProvider.GetService<IMainWindow>(),
+                  serviceProvider.GetService<IToolWindowHost>(),
+                  serviceProvider.GetService<IJobService>())
+        {
+
         }
 
         internal IRemoteDesktopSession ConnectRdpSession(
@@ -199,23 +213,82 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Session
             }
         }
 
+        private struct AuthorizationResult<TCredential>
+        {
+            public TCredential Credential;
+            public ITransport Transport;
+        }
+
+        private Task<AuthorizationResult<TCredential>> CreateTransportAndAuthorizeAsync
+            <TCredential, TParameters>(
+            ISessionContext<TCredential, TParameters> context)
+            where TCredential : ISessionCredential
+        {
+            return this.jobService.RunInBackground(
+                new JobDescription(
+                    $"Connecting to {context.Instance.Name}...",
+                    JobUserFeedbackType.BackgroundFeedback),
+                async cancellationToken =>
+                {
+                    var credentialTask = context.AuthorizeCredentialAsync(cancellationToken);
+                    var transportTask = context.ConnectTransportAsync(cancellationToken);
+
+                    await Task.WhenAll(credentialTask, transportTask)
+                        .ConfigureAwait(true);
+
+                    return new AuthorizationResult<TCredential>
+                    {
+                        Credential = credentialTask.Result,
+                        Transport = transportTask.Result
+                    };
+                });
+        }
+
         //---------------------------------------------------------------------
         // IInstanceSessionBroker.
         //---------------------------------------------------------------------
 
         public ICommandContainer<ISession> SessionMenu { get; }
 
-        public Task<ISession> CreateSessionAsync(ISessionContext<SshCredential, SshSessionParameters> context)
+        public async Task<ISession> CreateSessionAsync(
+            ISessionContext<SshCredential, SshSessionParameters> context)
         {
-            // TODO: spawn job: authorize, create transport
-            throw new NotImplementedException();
+            var result = await CreateTransportAndAuthorizeAsync(context)
+                .ConfigureAwait(true);
+
+            //
+            // Back on the UI thread, create the corresponding view.
+            //
+
+            var session = await ConnectSshSessionAsync(
+                    result.Transport,
+                    context.Parameters,
+                    result.Credential)
+                .ConfigureAwait(true);
+
+            ((SessionViewBase)session).Disposed += (_, __) => context.Dispose();
+
+            return (ISession)session;
         }
 
-        public Task<ISession> CreateSessionAsync(ISessionContext<RdpCredential, RdpSessionParameters> context)
+        public async Task<ISession> CreateSessionAsync(
+            ISessionContext<RdpCredential, RdpSessionParameters> context)
         {
-            // TODO: spawn job: authorize, create transport
-            // TODO: dispose context
-            throw new NotImplementedException();
+            var result = await CreateTransportAndAuthorizeAsync(context)
+                .ConfigureAwait(true);
+
+            //
+            // Back on the UI thread, create the corresponding view.
+            //
+
+            var session = ConnectRdpSession(
+                result.Transport,
+                context.Parameters,
+                result.Credential);
+
+            ((SessionViewBase)session).Disposed += (_, __) => context.Dispose();
+
+            return (ISession)session;
         }
     }
 }

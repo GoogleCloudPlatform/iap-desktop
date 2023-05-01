@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Auth;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Data;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Connection;
@@ -93,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Session
         private readonly IRdpCredentialCallbackService rdpCredentialCallbackService;
 
         public SessionContextFactory(
-            IWin32Window window,
+            IMainWindow window,
             IAuthorization authorization,
             IProjectModelService projectModelService,
             IKeyStoreAdapter keyStoreAdapter,
